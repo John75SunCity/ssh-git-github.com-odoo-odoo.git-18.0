@@ -25,7 +25,6 @@ from odoo import models, fields, api, _
 
 from odoo.exceptions import UserError, ValidationError
 
-
 class PickupRequest(models.Model):
     """
     Pickup Request Management - Customer document and equipment pickup requests
@@ -233,9 +232,8 @@ class PickupRequest(models.Model):
     )
 
     approved_by_id = fields.Many2one(
-        "res.users", string="Approved By", help="User who approved the pickup request"
+         "res.users", string="Approved By", help="User who approved the pickup request" 
     )
-
     approval_date = fields.Datetime(
         string="Approval Date", help="Date when pickup was approved"
     )
@@ -277,7 +275,7 @@ class PickupRequest(models.Model):
     # FIELD SERVICE INTEGRATION
     # ============================================================================
     fsm_task_id = fields.Many2one(
-        "project.task",
+        "fsm.task",
         string="Field Service Task",
         help="Associated field service task",
     )
@@ -290,11 +288,10 @@ class PickupRequest(models.Model):
     )
 
     vehicle_id = fields.Many2one(
-        "records.vehicle", string="Assigned Vehicle", help="Vehicle assigned for pickup"
+         "records.vehicle", string="Assigned Vehicle", help="Vehicle assigned for pickup" 
     )
-
     route_id = fields.Many2one(
-        "pickup.route", string="Pickup Route", help="Route assignment for pickup"
+         "pickup.route", string="Pickup Route", help="Route assignment for pickup" 
     )
     fsm_route_id = fields.Many2one(
         "fsm.route.management",
@@ -343,9 +340,8 @@ class PickupRequest(models.Model):
     )
 
     currency_id = fields.Many2one(
-        "res.currency", string="Currency", related="company_id.currency_id", store=True
+         "res.currency", string="Currency", related="company_id.currency_id", store=True 
     )
-
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
@@ -423,7 +419,6 @@ class PickupRequest(models.Model):
     )
 
     shred_bin_id = fields.Many2one("shred.bin", string="Shred Bin")
-
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -616,7 +611,7 @@ class PickupRequest(models.Model):
         if self.assigned_technician_id:
             task_vals["user_ids"] = [(6, 0, [self.assigned_technician_id.id])]
 
-        task = self.env["project.task"].create(task_vals)
+        task = self.env["fsm.task"].create(task_vals)
         self.fsm_task_id = task.id
 
         self.message_post(body=_("Field service task created: %s", task.name))
@@ -624,7 +619,7 @@ class PickupRequest(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("Field Service Task"),
-            "res_model": "project.task",
+            "res_model": "fsm.task",
             "res_id": task.id,
             "view_mode": "form",
         }
@@ -794,7 +789,6 @@ class PickupRequest(models.Model):
             ]
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
-
 class PickupRequestItem(models.Model):
     """Individual items within a pickup request"""
 
@@ -803,9 +797,8 @@ class PickupRequestItem(models.Model):
     _order = "pickup_request_id, sequence, id"
 
     pickup_request_id = fields.Many2one(
-        "pickup.request", string="Pickup Request", required=True, ondelete="cascade"
+         "pickup.request", string="Pickup Request", required=True, ondelete="cascade" 
     )
-
     sequence = fields.Integer(string="Sequence", default=10)
     item_type = fields.Selection(
         [
@@ -821,9 +814,8 @@ class PickupRequestItem(models.Model):
     )
 
     container_id = fields.Many2one(
-        "records.container", string="Container", help="Related container if applicable"
+         "records.container", string="Container", help="Related container if applicable" 
     )
-
     description = fields.Text(string="Description", required=True)
     estimated_quantity = fields.Integer(string="Estimated Quantity", default=1)
     actual_quantity = fields.Integer(string="Actual Quantity")
@@ -831,7 +823,6 @@ class PickupRequestItem(models.Model):
     actual_weight = fields.Float(string="Actual Weight (lbs)")
     special_handling = fields.Boolean(string="Special Handling", default=False)
     notes = fields.Text(string="Notes")
-
     @api.constrains("estimated_quantity", "actual_quantity")
     def _check_quantities(self):
         """Validate quantities are positive"""
@@ -841,7 +832,6 @@ class PickupRequestItem(models.Model):
 
             if record.actual_quantity and record.actual_quantity < 0:
                 raise ValidationError(_("Actual quantity must be positive"))
-
 
 class PickupScheduleWizard(models.TransientModel):
     """Wizard for scheduling pickup requests"""
@@ -861,10 +851,7 @@ class PickupScheduleWizard(models.TransientModel):
         default=fields.Datetime.now
     )
 
-    assigned_technician_id = fields.Many2one(
-        "res.users", string="Assigned Technician", required=True
-    )
-
+    assigned_technician_id = fields.Many2one( "res.users", string="Assigned Technician", required=True )
     vehicle_id = fields.Many2one(
         "records.vehicle",
         string="Vehicle"

@@ -4,7 +4,7 @@ Work Order Integration Coordinator Module
 
 This module provides seamless integration between all work order types:
 - Container Retrieval Work Orders
-- File Retrieval Work Orders  
+- File Retrieval Work Orders
 - Scan Retrieval Work Orders
 - Container Destruction Work Orders
 - Container Access Work Orders
@@ -26,7 +26,6 @@ License: LGPL-3
 from datetime import timedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
-
 
 class WorkOrderCoordinator(models.Model):
     """Central coordination for all work order types"""
@@ -71,13 +70,13 @@ class WorkOrderCoordinator(models.Model):
         string="Container Retrievals"
     )
     file_retrieval_ids = fields.One2many(
-        "file.retrieval.work.order", 
+        "file.retrieval.work.order",
         "coordinator_id",
         string="File Retrievals"
     )
     scan_retrieval_ids = fields.One2many(
         "scan.retrieval.work.order",
-        "coordinator_id", 
+        "coordinator_id",
         string="Scan Retrievals"
     )
     destruction_ids = fields.One2many(
@@ -101,7 +100,7 @@ class WorkOrderCoordinator(models.Model):
     )
     completed_work_orders = fields.Integer(
         string="Completed",
-        compute="_compute_coordination_metrics", 
+        compute="_compute_coordination_metrics",
         store=True
     )
     coordination_progress = fields.Float(
@@ -120,7 +119,7 @@ class WorkOrderCoordinator(models.Model):
     )
     priority = fields.Selection([
         ('0', 'Low'),
-        ('1', 'Normal'), 
+        ('1', 'Normal'),
         ('2', 'High'),
         ('3', 'Urgent'),
         ('4', 'Emergency'),
@@ -128,7 +127,7 @@ class WorkOrderCoordinator(models.Model):
 
     coordination_type = fields.Selection([
         ('sequential', 'Sequential (One after another)'),
-        ('parallel', 'Parallel (Simultaneous)'), 
+        ('parallel', 'Parallel (Simultaneous)'),
         ('mixed', 'Mixed (Some parallel, some sequential)'),
     ], string='Coordination Type', default='sequential', required=True)
 
@@ -141,7 +140,7 @@ class WorkOrderCoordinator(models.Model):
         help="Vehicles available for all work orders"
     )
     employee_ids = fields.Many2many(
-        "hr.employee", 
+        "hr.employee",
         string="Assigned Team",
         help="Staff members assigned to coordinated work orders"
     )
@@ -155,7 +154,7 @@ class WorkOrderCoordinator(models.Model):
         help="Field service project for coordinated work orders"
     )
     fsm_task_ids = fields.One2many(
-        "project.task",
+        "fsm.task",
         "work_order_coordinator_id",
         string="FSM Tasks"
     )
@@ -164,7 +163,7 @@ class WorkOrderCoordinator(models.Model):
     # PORTAL AND CUSTOMER INTERFACE
     # ============================================================================
     portal_request_id = fields.Many2one(
-        "portal.request", 
+        "portal.request",
         string="Originating Portal Request",
         help="Portal request that initiated coordination"
     )
@@ -173,7 +172,7 @@ class WorkOrderCoordinator(models.Model):
         default=True,
         help="Customer can view coordination status in portal"
     )
-    
+
     # ============================================================================
     # BILLING COORDINATION
     # ============================================================================
@@ -192,8 +191,8 @@ class WorkOrderCoordinator(models.Model):
     # MAIL THREAD FRAMEWORK
     # ============================================================================
     activity_ids = fields.One2many(
-        "mail.activity", 
-        "res_id", 
+        "mail.activity",
+        "res_id",
         string="Activities",
         domain=lambda self: [('res_model', '=', self._name)]
     )
@@ -204,8 +203,8 @@ class WorkOrderCoordinator(models.Model):
         domain=lambda self: [('res_model', '=', self._name)]
     )
     message_ids = fields.One2many(
-        "mail.message", 
-        "res_id", 
+        "mail.message",
+        "res_id",
         string="Messages",
         domain=lambda self: [('res_model', '=', self._name)]
     )
@@ -225,18 +224,18 @@ class WorkOrderCoordinator(models.Model):
                  'destruction_ids', 'access_ids')
     def _compute_coordination_metrics(self):
         for record in self:
-            all_orders = (record.container_retrieval_ids + 
+            all_orders = (record.container_retrieval_ids +
                          record.file_retrieval_ids +
-                         record.scan_retrieval_ids + 
+                         record.scan_retrieval_ids +
                          record.destruction_ids +
                          record.access_ids)
-            
+
             record.total_work_orders = len(all_orders)
-            
+
             completed = all_orders.filtered(
                 lambda wo: wo.state in ['completed', 'closed', 'done'])
             record.completed_work_orders = len(completed)
-            
+
             if record.total_work_orders > 0:
                 record.coordination_progress = (
                     record.completed_work_orders / record.total_work_orders * 100)
@@ -249,10 +248,10 @@ class WorkOrderCoordinator(models.Model):
     def action_coordinate_all(self):
         """Start coordination of all work orders"""
         self.ensure_one()
-        
+
         # Update all work orders with shared resources
         all_orders = self._get_all_work_orders()
-        
+
         for order in all_orders:
             if hasattr(order, 'coordinator_id'):
                 order.coordinator_id = self.id
@@ -260,7 +259,7 @@ class WorkOrderCoordinator(models.Model):
                 order.vehicle_ids = [(6, 0, self.vehicle_ids.ids)]
             if hasattr(order, 'employee_ids') and self.employee_ids:
                 order.employee_ids = [(6, 0, self.employee_ids.ids)]
-        
+
         self.message_post(
             body=_("Coordination started for %s work orders", len(all_orders))
         )
@@ -268,7 +267,7 @@ class WorkOrderCoordinator(models.Model):
     def action_create_fsm_tasks(self):
         """Create FSM tasks for all work orders"""
         self.ensure_one()
-        
+
         if not self.fsm_project_id:
             # Create FSM project if not exists
             project_vals = {
@@ -278,14 +277,14 @@ class WorkOrderCoordinator(models.Model):
                 'allow_timesheets': True,
             }
             self.fsm_project_id = self.env['project.project'].create(project_vals)
-        
+
         # Create FSM tasks for each work order type
         task_count = 0
         for order in self._get_all_work_orders():
             if hasattr(order, 'create_fsm_task'):
                 order.create_fsm_task(self.fsm_project_id.id)
                 task_count += 1
-        
+
         self.message_post(
             body=_("Created %s FSM tasks for coordinated work orders", task_count)
         )
@@ -293,13 +292,13 @@ class WorkOrderCoordinator(models.Model):
     def action_consolidate_billing(self):
         """Create consolidated invoice for all work orders"""
         self.ensure_one()
-        
+
         if not self.consolidated_billing:
             raise UserError(_("Consolidated billing is not enabled"))
-        
+
         if self.invoice_id:
             raise UserError(_("Consolidated invoice already exists"))
-        
+
         # Create invoice
         invoice_vals = {
             'partner_id': self.partner_id.id,
@@ -308,19 +307,19 @@ class WorkOrderCoordinator(models.Model):
             'ref': self.name,
         }
         invoice = self.env['account.move'].create(invoice_vals)
-        
+
         # Add invoice lines from all work orders
         line_count = 0
         for order in self._get_all_work_orders():
             if hasattr(order, 'create_invoice_lines'):
                 lines = order.create_invoice_lines(invoice.id)
                 line_count += len(lines)
-        
+
         self.invoice_id = invoice.id
         self.message_post(
             body=_("Consolidated invoice created with %s lines", line_count)
         )
-        
+
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'account.move',
@@ -334,19 +333,19 @@ class WorkOrderCoordinator(models.Model):
     # ============================================================================
     def _get_all_work_orders(self):
         """Get all work orders managed by this coordinator"""
-        return (self.container_retrieval_ids + 
+        return (self.container_retrieval_ids +
                 self.file_retrieval_ids +
-                self.scan_retrieval_ids + 
+                self.scan_retrieval_ids +
                 self.destruction_ids +
                 self.access_ids)
 
     def get_next_available_slot(self, duration_hours=2):
         """Find next available time slot considering all work orders"""
         self.ensure_one()
-        
+
         # Logic to find optimal scheduling slot
         base_date = self.scheduled_date or fields.Datetime.now()
-        
+
         if self.coordination_type == 'sequential':
             # Sequential: each starts after previous completes
             current_date = base_date
@@ -356,24 +355,23 @@ class WorkOrderCoordinator(models.Model):
                     current_date += timedelta(hours=order.estimated_duration_hours or 2)
                 else:
                     current_date += timedelta(hours=duration_hours)
-        
+
         elif self.coordination_type == 'parallel':
             # Parallel: all start at same time
             for order in self._get_all_work_orders():
                 order.scheduled_date = base_date
-        
+
         # Mixed coordination handled case by case
 
     def create_customer_notification(self):
         """Create customer notification for coordination status"""
         self.ensure_one()
-        
+
         # Create portal notification or email
-        template = self.env.ref('records_management.email_template_work_order_coordination', 
+        template = self.env.ref('records_management.email_template_work_order_coordination',
                                raise_if_not_found=False)
         if template:
             template.send_mail(self.id, force_send=True)
-
 
 class WorkOrderIntegrationMixin(models.AbstractModel):
     """Mixin to add integration capabilities to all work order models"""
@@ -388,31 +386,31 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
         string="Coordinator",
         help="Work order coordination manager"
     )
-    
+
     # Related work orders (for dependencies)
     prerequisite_work_order_ids = fields.Many2many(
         "work.order.coordinator",
         "work_order_prerequisite_rel",
-        "work_order_id", 
+        "work_order_id",
         "prerequisite_id",
         string="Prerequisite Work Orders",
         help="Work orders that must complete before this one"
     )
-    
+
     # FSM Integration
     fsm_task_id = fields.Many2one(
-        "project.task",
+        "fsm.task",
         string="FSM Task",
         help="Related field service management task"
     )
-    
-    # Portal integration  
+
+    # Portal integration
     portal_visible = fields.Boolean(
         string="Visible in Portal",
         default=True,
         help="Customer can view this work order in portal"
     )
-    
+
     # Billing integration
     invoice_line_ids = fields.One2many(
         "account.move.line",
@@ -427,10 +425,10 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
         """Create FSM task for this work order"""
         if self.fsm_task_id:
             return self.fsm_task_id
-        
+
         if not project_id and self.coordinator_id:
             project_id = self.coordinator_id.fsm_project_id.id
-        
+
         if not project_id:
             # Create default FSM project
             project = self.env['project.project'].create({
@@ -439,7 +437,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
                 'partner_id': self.partner_id.id,
             })
             project_id = project.id
-        
+
         task_vals = {
             'name': _("%s: %s", self._description, self.display_name or self.name),
             'project_id': project_id,
@@ -447,16 +445,16 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
             'planned_date_begin': self.scheduled_date or fields.Datetime.now(),
             'description': getattr(self, 'description', ''),
         }
-        
-        task = self.env['project.task'].create(task_vals)
+
+        task = self.env['fsm.task'].create(task_vals)
         self.fsm_task_id = task.id
-        
+
         return task
 
     def create_invoice_lines(self, invoice_id):
         """Create invoice lines for this work order"""
         lines = []
-        
+
         # Get billing rates based on work order type
         if hasattr(self, '_get_billing_lines'):
             billing_lines = self._get_billing_lines()
@@ -467,7 +465,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
                 })
                 line = self.env['account.move.line'].create(line_vals)
                 lines.append(line)
-        
+
         return lines
 
     def _check_prerequisites(self):
@@ -475,7 +473,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
         for prereq in self.prerequisite_work_order_ids:
             if prereq.state not in ['completed', 'done', 'closed']:
                 raise UserError(
-                    _("Cannot start %s until prerequisite work order %s is completed", 
+                    _("Cannot start %s until prerequisite work order %s is completed",
                       self.display_name, prereq.name)
                 )
 
@@ -486,6 +484,6 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
             self.message_notify(
                 partner_ids=self.partner_id.ids,
                 subject=_("Update: %s", self.display_name),
-                body=_('Your work order %s has been updated. Status: %s', 
+                body=_('Your work order %s has been updated. Status: %s',
                        self.display_name, self.state)
             )

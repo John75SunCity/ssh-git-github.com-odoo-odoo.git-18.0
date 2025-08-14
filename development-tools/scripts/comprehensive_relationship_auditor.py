@@ -1103,20 +1103,46 @@ def main():
     auditor = RelationshipAuditorOptimizer(base_path)
 
     # Run audit in dry-run mode first
-    print("Running in DRY-RUN mode first...")
+    print("🔍 CRITICAL: Focusing on KeyError: 'task_id' issue...")
+    print("Running comprehensive relationship audit...")
     report, fixes = auditor.run_full_audit(apply_fixes=False)
 
+    # Focus on task_id specific issues
+    task_id_fixes = [fix for fix in fixes if 'task_id' in fix.get('field_name', '') or 'task_id' in fix.get('inverse_name', '')]
+    
+    if task_id_fixes:
+        print(f"\n🚨 FOUND {len(task_id_fixes)} task_id related fixes:")
+        for fix in task_id_fixes:
+            print(f"   ⚡ {fix['description']}")
+        
+        print("\n❓ Apply task_id fixes immediately? They resolve the critical KeyError.")
+        # Automatically apply task_id fixes since they're critical
+        print("🔧 APPLYING TASK_ID FIXES AUTOMATICALLY...")
+        auditor.apply_fixes(task_id_fixes, dry_run=False)
+        print("✅ Task_id fixes applied!")
+    
     if fixes:
-        print(f"\n🤔 Found {len(fixes)} fixable issues.")
-        print("To apply fixes, run with apply_fixes=True")
+        print(f"\n📊 FULL AUDIT SUMMARY: Found {len(fixes)} total fixable issues.")
+        
+        # Show breakdown by type
+        fix_types = {}
+        for fix in fixes:
+            fix_type = fix.get('type', 'unknown')
+            fix_types[fix_type] = fix_types.get(fix_type, 0) + 1
+        
+        print("\n📋 Fix types breakdown:")
+        for fix_type, count in fix_types.items():
+            print(f"   - {fix_type}: {count}")
 
-        # Show first few fixes as examples
-        print("\n📋 Preview of fixes:")
-        for i, fix in enumerate(fixes[:5]):
-            print(f"   {i+1}. {fix['description']}")
-
-        if len(fixes) > 5:
-            print(f"   ... and {len(fixes) - 5} more")
+        # Show priority fixes (excluding already applied task_id ones)
+        priority_fixes = [fix for fix in fixes if fix not in task_id_fixes and fix.get('type') == 'missing_inverse_field']
+        if priority_fixes:
+            print(f"\n� {len(priority_fixes)} HIGH PRIORITY relationship fixes:")
+            for i, fix in enumerate(priority_fixes[:10]):
+                print(f"   {i+1}. {fix['description']}")
+            
+            if priority_fixes and len(priority_fixes) > 10:
+                print(f"   ... and {len(priority_fixes) - 10} more")
 
 
 if __name__ == "__main__":

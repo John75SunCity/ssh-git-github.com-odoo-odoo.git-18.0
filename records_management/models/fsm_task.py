@@ -31,10 +31,7 @@ from odoo import _, api, fields, models
 
 from odoo.exceptions import UserError, ValidationError
 
-
-
 _logger = logging.getLogger(__name__)
-
 
 class FsmTask(models.Model):
     """
@@ -74,7 +71,6 @@ class FsmTask(models.Model):
     )
     active = fields.Boolean(string="Active", default=True, tracking=True)
     description = fields.Text(string="Description", tracking=True)
-
     # ============================================================================
     # TASK CLASSIFICATION AND PRIORITY
     # ============================================================================
@@ -123,11 +119,8 @@ class FsmTask(models.Model):
     start_date = fields.Datetime(string="Start Date", tracking=True)
     end_date = fields.Datetime(string="End Date", tracking=True)
     deadline = fields.Date(string="Deadline", tracking=True)
-    assigned_technician_id = fields.Many2one(
-        "res.users", string="Assigned Technician", tracking=True
-    )
+    assigned_technician_id = fields.Many2one( "res.users", string="Assigned Technician", tracking=True )
     team_name = fields.Char(string="Service Team")
-
     # ============================================================================
     # CUSTOMER AND LOCATION
     # NOTE: Current design is ONE TASK = ONE CUSTOMER
@@ -185,7 +178,6 @@ class FsmTask(models.Model):
     )
     estimated_hours = fields.Float(string="Estimated Hours", digits=(5, 2))
     actual_hours = fields.Float(string="Actual Hours", digits=(5, 2))
-
     # ============================================================================
     # QUALITY AND FEEDBACK
     # ============================================================================
@@ -236,7 +228,6 @@ class FsmTask(models.Model):
     customer_notes = fields.Text(string="Customer Notes")
     completion_notes = fields.Text(string="Completion Notes")
     special_instructions = fields.Text(string="Special Instructions")
-
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
@@ -255,10 +246,9 @@ class FsmTask(models.Model):
     # RELATIONSHIP FIELDS - DYNAMIC SERVICE SUPPORT
     # ============================================================================
     related_project_task_id = fields.Many2one(
-        "project.task", string="Related Project Task"
+        "fsm.task", string="Related Project Task"
     )
     equipment_ids = fields.Many2many("maintenance.equipment", string="Equipment Used")
-
     # DYNAMIC SERVICE LINE ITEMS - Support adding services on-site
     service_line_ids = fields.One2many(
         "fsm.task.service.line",
@@ -544,7 +534,6 @@ class FsmTask(models.Model):
                 if record.scheduled_date.date() > record.deadline:
                     raise ValidationError(_("Scheduled date cannot be after deadline"))
 
-
 class FsmTaskServiceLine(models.Model):
     """
     Service Line Items for Dynamic FSM Task Updates
@@ -565,7 +554,6 @@ class FsmTaskServiceLine(models.Model):
         "fsm.task", string="FSM Task", required=True, ondelete="cascade"
     )
     sequence = fields.Integer(string="Sequence", default=10)
-
     service_name = fields.Char(string="Service Name", required=True)
     service_type = fields.Selection(
         [
@@ -583,14 +571,12 @@ class FsmTaskServiceLine(models.Model):
     )
 
     description = fields.Text(string="Service Description")
-
     # ============================================================================
     # DYNAMIC ADDITION TRACKING
     # ============================================================================
     added_on_site = fields.Boolean(string="Added On-Site", default=False)
     added_by_id = fields.Many2one("res.users", string="Added By")
     added_date = fields.Datetime(string="Added Date", default=fields.Datetime.now)
-
     customer_approved = fields.Boolean(string="Customer Approved", default=False)
     approval_method = fields.Selection(
         [
