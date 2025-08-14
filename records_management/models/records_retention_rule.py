@@ -40,14 +40,12 @@ class RecordsRetentionRule(models.Model):
     active = fields.Boolean(
         string="Active",
         default=True,
-        tracking=True
-    )
+        tracking=True,)
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
-        required=True
-    )
+        required=True,)
 
     # ============================================================================
     # POLICY RELATIONSHIP
@@ -74,12 +72,12 @@ class RecordsRetentionRule(models.Model):
         ('tag', 'Document Tag'),
         ('category', 'Category'),
         ('custom', 'Custom Condition')
-    ], string="Condition Type", default='document_type')
+    ], string="Condition Type", default='document_type',)
     
     condition_value = fields.Char(
         string="Condition Value",
         help="Value to match against (tag name, category, etc.)"
-    )
+        )
 
     # ============================================================================
     # RULE ACTIONS
@@ -105,13 +103,13 @@ class RecordsRetentionRule(models.Model):
         ('destroy', 'Mark for Destruction'),
         ('review', 'Flag for Review'),
         ('archive', 'Archive')
-    ], string="Action", default='retain', required=True)
+    ], string="Action", default='retain', required=True,)
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance)
     # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers"),
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================

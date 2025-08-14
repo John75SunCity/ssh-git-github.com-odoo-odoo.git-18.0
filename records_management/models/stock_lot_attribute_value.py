@@ -14,7 +14,7 @@ class StockLotAttributeValue(models.Model):
     _description = "Stock Lot Attribute Value"
     _rec_name = "display_name"
 
-    display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True)
+    display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True),
     lot_id = fields.Many2one(
         "stock.lot",
         string="Stock Lot",
@@ -31,9 +31,9 @@ class StockLotAttributeValue(models.Model):
     )
 
     # Value fields for different types
-    value_text = fields.Char(string="Text Value", help="Text attribute value")
-    value_number = fields.Float(string="Number Value", help="Numeric attribute value")
-    value_date = fields.Date(string="Date Value", help="Date attribute value")
+    value_text = fields.Char(string="Text Value", help="Text attribute value"),
+    value_number = fields.Float(string="Number Value", help="Numeric attribute value"),
+    value_date = fields.Date(string="Date Value", help="Date attribute value"),
     value_boolean = fields.Boolean(
         string="Boolean Value", help="Boolean attribute value"
     )
@@ -153,7 +153,7 @@ class StockLotAttributeValue(models.Model):
                     self.attribute_id.name,
                     attr_type,
                     field.replace('value_', '')
-                ))
+                    ))
 
         # Check that the correct field has a value
         if not getattr(self, expected_field) and attr_type != 'boolean':

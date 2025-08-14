@@ -210,7 +210,7 @@ class RecordsAccessLog(models.Model):
         compute="_compute_risk_score",
         store=True,
         help="Risk score for this access event (0-100)",
-    )
+        )
 
     # ============================================================================
     # DOCUMENTATION AND NOTES
@@ -241,7 +241,7 @@ class RecordsAccessLog(models.Model):
     )
     file_size_accessed = fields.Integer(
         string="File Size Accessed (bytes)", help="Size of the file accessed"
-    )
+        )
     checksum_verified = fields.Boolean(
         string="Checksum Verified",
         help="Whether document integrity was verified during access",
@@ -266,19 +266,19 @@ class RecordsAccessLog(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+        )
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+        )
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
-    )
+        )
 
     # ============================================================================
     # COMPUTED FIELDS

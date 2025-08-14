@@ -31,7 +31,7 @@ class RecordsCustomerBillingProfile(models.Model):
         store=True,
         help="Customer name with billing profile",
     )
-    active = fields.Boolean(string="Active", default=True, tracking=True)
+    active = fields.Boolean(string="Active", default=True, tracking=True,),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -200,13 +200,13 @@ class RecordsCustomerBillingProfile(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+        )
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+        )
     message_ids = fields.One2many(
 
     # Workflow state management
@@ -223,7 +223,7 @@ class RecordsCustomerBillingProfile(models.Model):
         "res_id",
         string="Messages",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+        )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -268,7 +268,7 @@ class RecordsCustomerBillingProfile(models.Model):
                 if record.volume_discount_threshold <= 0:
                     raise ValidationError(
                         _("Volume discount threshold must be greater than 0")
-                    )
+                        )
                 if not (0 < record.volume_discount_percentage <= 100):
                     raise ValidationError(
                         _(
@@ -292,7 +292,7 @@ class RecordsCustomerBillingProfile(models.Model):
                 ("move_type", "=", "out_invoice"),
             ],
             "context": {"default_partner_id": self.partner_id.id},
-        }
+        )
 
     def action_generate_invoice(self):
         """Generate invoice for this customer"""
@@ -307,7 +307,7 @@ class RecordsCustomerBillingProfile(models.Model):
                     "Invoice generation initiated for %s", self.partner_id.name
                 ),
                 "type": "success",
-            },
+            ),
         }
 
     def action_duplicate_profile(self):
@@ -324,5 +324,5 @@ class RecordsCustomerBillingProfile(models.Model):
                 "default_partner_id": self.partner_id.id,
                 "default_billing_frequency": self.billing_frequency,
                 "default_payment_terms": self.payment_terms,
-            },
+            ),
         }

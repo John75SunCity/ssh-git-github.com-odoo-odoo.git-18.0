@@ -39,12 +39,11 @@ class PortalFeedback(models.Model):
     name = fields.Char(
         string="Feedback Reference", required=True, tracking=True, index=True
     )
-    subject = fields.Char(string="Subject", required=True, tracking=True)
-    description = fields.Text(string="Description")
-    active = fields.Boolean(string="Active", default=True)
+    subject = fields.Char(string="Subject", required=True, tracking=True,),
+    description = fields.Text(string="Description"),
+    active = fields.Boolean(string="Active", default=True),
     company_id = fields.Many2one(
-        "res.company", default=lambda self: self.env.company, required=True
-    )
+        "res.company", default=lambda self: self.env.company, required=True,)
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
@@ -162,24 +161,22 @@ class PortalFeedback(models.Model):
     )
 
     assigned_to_id = fields.Many2one(
-        "res.users", string="Assigned To", tracking=True
-    )
+        "res.users", string="Assigned To", tracking=True,)
     submission_date = fields.Datetime(
-        string="Submission Date", default=fields.Datetime.now, required=True
-    )
-    response_date = fields.Datetime(string="Response Date", tracking=True)
-    closure_date = fields.Datetime(string="Closure Date", tracking=True)
+        string="Submission Date", default=fields.Datetime.now, required=True,)
+    response_date = fields.Datetime(string="Response Date", tracking=True,),
+    closure_date = fields.Datetime(string="Closure Date", tracking=True,)
 
     # ============================================================================
     # CONTENT & COMMUNICATION
     # ============================================================================
-    comments = fields.Text(string="Customer Comments", required=True)
-    internal_notes = fields.Text(string="Internal Notes", groups="base.group_user")
-    response_text = fields.Html(string="Response to Customer")
-    resolution_notes = fields.Text(string="Resolution Notes")
+    comments = fields.Text(string="Customer Comments", required=True,),
+    internal_notes = fields.Text(string="Internal Notes", groups="base.group_user"),
+    response_text = fields.Html(string="Response to Customer"),
+    resolution_notes = fields.Text(string="Resolution Notes"),
 
-    follow_up_required = fields.Boolean(string="Follow-up Required", default=False)
-    follow_up_date = fields.Date(string="Follow-up Date")
+    follow_up_required = fields.Boolean(string="Follow-up Required", default=False),
+    follow_up_date = fields.Date(string="Follow-up Date"),
     escalation_reason = fields.Text(string="Escalation Reason")
 
     # ============================================================================
@@ -190,7 +187,7 @@ class PortalFeedback(models.Model):
         compute="_compute_sentiment_analysis",
         store=True,
         help="AI sentiment score from -1 (negative) to 1 (positive)",
-    )
+        )
     sentiment_category = fields.Selection(
         [("positive", "Positive"), ("neutral", "Neutral"), ("negative", "Negative")],
         string="Sentiment Category",
@@ -214,7 +211,7 @@ class PortalFeedback(models.Model):
         compute="_compute_nps_score",
         store=True,
         help="Net Promoter Score (0-10)",
-    )
+        )
     nps_category = fields.Selection(
         [
             ("detractor", "Detractor (0-6)"),
@@ -229,13 +226,13 @@ class PortalFeedback(models.Model):
     # Response Time Fields for SLA Tracking
     response_time_hours = fields.Float(
         string="Response Time (Hours)", compute="_compute_response_time", store=True
-    )
+        )
     resolution_time_hours = fields.Float(
         string="Resolution Time (Hours)", compute="_compute_resolution_time", store=True
-    )
+        )
 
     # SLA Fields
-    sla_deadline = fields.Datetime(string="SLA Deadline", tracking=True)
+    sla_deadline = fields.Datetime(string="SLA Deadline", tracking=True,),
     sla_met = fields.Boolean(
         string="SLA Met", compute="_compute_sla_compliance", store=True
     )
@@ -284,7 +281,7 @@ class PortalFeedback(models.Model):
     )
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
     )
@@ -372,7 +369,7 @@ class PortalFeedback(models.Model):
             if record.overall_rating:
                 rating_score = (
                     int(record.overall_rating) - 3
-                ) / 2  # Scale 1-5 to -1 to 1
+                    ) / 2  # Scale 1-5 to -1 to 1
                 score += rating_score * 0.7
 
             # Normalize score
@@ -474,7 +471,7 @@ class PortalFeedback(models.Model):
                 "response_date": fields.Datetime.now(),
                 "assigned_to": self.env.user.id,
             }
-        )
+        }
 
     def action_escalate(self):
         """Escalate feedback to higher priority"""
@@ -526,7 +523,7 @@ class PortalFeedback(models.Model):
             "context": {
                 "default_feedback_id": self.id,
                 "default_customer_id": self.customer_id.id,
-            },
+            ),
         }
 
     # ============================================================================
@@ -542,7 +539,7 @@ class PortalFeedback(models.Model):
             if not record.follow_up_required and record.follow_up_date:
                 raise ValidationError(
                     _("Follow-up date should not be set if follow-up is not required")
-                )
+                    )
 
     @api.constrains("sentiment_score")
     def _check_sentiment_score(self):
@@ -606,7 +603,7 @@ class PortalFeedback(models.Model):
         return color_map.get(self.sentiment_category, "secondary")
 
 
-class FeedbackImprovementArea(models.Model):
+    class FeedbackImprovementArea(models.Model):
     """
     Model representing areas for improvement identified from customer feedback.
     """
@@ -618,9 +615,9 @@ class FeedbackImprovementArea(models.Model):
     # ============================================================================
     # CORE FIELDS
     # ============================================================================
-    name = fields.Char(string="Area", required=True)
-    description = fields.Text(string="Description")
-    active = fields.Boolean(string="Active", default=True)
+    name = fields.Char(string="Area", required=True,),
+    description = fields.Text(string="Description"),
+    active = fields.Boolean(string="Active", default=True),
     color = fields.Integer(string="Color", default=1)
 
     # ============================================================================
@@ -650,7 +647,7 @@ class FeedbackImprovementArea(models.Model):
         for record in self:
             record.feedback_count = self.env["portal.feedback"].search_count(
                 [("improvement_areas", "in", record.id)]
-            )
+                )
 
     # ============================================================================
     # ACTION METHODS

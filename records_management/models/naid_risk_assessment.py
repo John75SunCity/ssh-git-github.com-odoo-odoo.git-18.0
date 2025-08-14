@@ -77,7 +77,7 @@ class NaidRiskAssessment(models.Model):
     # RISK EVALUATION
     # ============================================================================
 
-    risk_description = fields.Text(string="Risk Description", required=True)
+    risk_description = fields.Text(string="Risk Description", required=True,),
 
     impact_level = fields.Selection(
         [
@@ -126,13 +126,13 @@ class NaidRiskAssessment(models.Model):
     # MITIGATION FIELDS
     # ============================================================================
 
-    mitigation_measures = fields.Text(string="Mitigation Measures")
+    mitigation_measures = fields.Text(string="Mitigation Measures"),
 
     responsible_person_id = fields.Many2one(
         "res.users", string="Responsible Person"
     )
 
-    target_completion_date = fields.Date(string="Target Completion Date")
+    target_completion_date = fields.Date(string="Target Completion Date"),
 
     status = fields.Selection(
         [

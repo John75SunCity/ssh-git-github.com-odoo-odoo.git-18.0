@@ -187,21 +187,21 @@ class RecordsBillingProfile(models.Model):
         "res_id",
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+        )
 
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
-    )
+        )
 
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
-    )
+        )
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -277,7 +277,7 @@ class RecordsBillingProfile(models.Model):
             "context": {
                 "default_billing_profile_id": self.id,
                 "default_partner_id": self.partner_id.id,
-            },
+            ),
         }
 
     def action_view_services(self):
@@ -292,7 +292,7 @@ class RecordsBillingProfile(models.Model):
             "domain": [("id", "in", self.billing_service_ids.ids)],
             "context": {
                 "default_profile_id": self.id,
-            },
+            ),
         }
 
     def action_create_contact(self):
@@ -309,7 +309,7 @@ class RecordsBillingProfile(models.Model):
                 "default_billing_profile_id": self.id,
                 "default_partner_id": self.partner_id.id,
                 "default_name": f"{self.partner_id.name} Contact",
-            },
+            ),
         }
 
     # ============================================================================
@@ -338,4 +338,4 @@ class RecordsBillingProfile(models.Model):
         """Get billing profile for a specific partner"""
         return self.search(
             [("partner_id", "=", partner_id), ("active", "=", True)], limit=1
-        )
+            )

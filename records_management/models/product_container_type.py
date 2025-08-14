@@ -31,7 +31,7 @@ class ProductContainerType(models.Model):
         size=10,
         tracking=True,
         help='Unique code for this container type (e.g., TYPE01, TYPE02)'
-    )
+        )
     product_id = fields.Many2one(
         'product.product',
         string='Product',
@@ -43,8 +43,7 @@ class ProductContainerType(models.Model):
         'res.company',
         string='Company',
         default=lambda self: self.env.company,
-        required=True
-    )
+        required=True,)
     active = fields.Boolean(
         string='Active',
         default=True,
@@ -112,7 +111,7 @@ class ProductContainerType(models.Model):
         ('type_04', 'TYPE 04 - Odd Size/Temp Box'),
         ('type_06', 'TYPE 06 - Pathology Box'),
         ('custom', 'Custom Type')
-    ], string='Business Type Code', required=True, tracking=True)
+    ], string='Business Type Code', required=True, tracking=True,)
 
     usage_category = fields.Selection([
         ('general', 'General File Storage'),
@@ -121,7 +120,7 @@ class ProductContainerType(models.Model):
         ('blueprints', 'Blueprints/Maps'),
         ('temporary', 'Temporary Storage'),
         ('specialized', 'Specialized Storage')
-    ], string='Usage Category', default='general', required=True)
+    ], string='Usage Category', default='general', required=True,)
 
     document_capacity = fields.Integer(
         string='Document Capacity',
@@ -182,7 +181,7 @@ class ProductContainerType(models.Model):
         ('standard', 'Standard Security'),
         ('enhanced', 'Enhanced Security'),
         ('maximum', 'Maximum Security')
-    ], string='Security Level', default='standard', required=True)
+    ], string='Security Level', default='standard', required=True,)
 
     # ============================================================================
     # USAGE STATISTICS (COMPUTED)
@@ -345,7 +344,7 @@ class ProductContainerType(models.Model):
                     'height_inches': 10,
                     'usage_category': 'general',
                     'document_capacity': 2500
-                },
+                ),
                 'type_02': {
                     'name': 'Legal/Banker Box',
                     'volume_cubic_feet': 2.4,
@@ -355,7 +354,7 @@ class ProductContainerType(models.Model):
                     'height_inches': 10,
                     'usage_category': 'legal',
                     'document_capacity': 5000
-                },
+                ),
                 'type_03': {
                     'name': 'Map Box',
                     'volume_cubic_feet': 0.875,
@@ -365,14 +364,14 @@ class ProductContainerType(models.Model):
                     'height_inches': 6,
                     'usage_category': 'blueprints',
                     'document_capacity': 200
-                },
+                ),
                 'type_04': {
                     'name': 'Odd Size/Temp Box',
                     'volume_cubic_feet': 5.0,
                     'average_weight_lbs': 75,
                     'usage_category': 'temporary',
                     'document_capacity': 10000
-                },
+                ),
                 'type_06': {
                     'name': 'Pathology Box',
                     'volume_cubic_feet': 0.042,
@@ -383,7 +382,7 @@ class ProductContainerType(models.Model):
                     'usage_category': 'medical',
                     'document_capacity': 100
                 }
-            }
+            )
             
             if self.container_type_code in specs:
                 spec = specs[self.container_type_code]

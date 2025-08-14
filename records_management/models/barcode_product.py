@@ -137,12 +137,12 @@ class BarcodeProduct(models.Model):
         "records.location",
         string="Assigned Location",
         help="Location assigned to this barcode (for location barcodes)",
-    )
+        )
     container_id = fields.Many2one(
         "records.container",
         string="Related Container",
         help="Container related to this barcode (for container barcodes)",
-    )
+        )
 
     # Usage tracking
     scan_count = fields.Integer(
@@ -197,7 +197,7 @@ class BarcodeProduct(models.Model):
         for record in self:
             record.barcode_length = (
                 len(record.barcode.strip()) if record.barcode else 0
-            )
+                )
 
     @api.depends("barcode_length")
     def _compute_product_category(self):
@@ -248,7 +248,7 @@ class BarcodeProduct(models.Model):
                 "scan_count": self.scan_count + 1,
                 "last_scanned": fields.Datetime.now(),
             }
-        )
+        }
 
         # Process based on category
         if self.product_category == "location":
@@ -301,7 +301,7 @@ class BarcodeProduct(models.Model):
         """Process location barcode (5 or 15 digits)"""
         location = self.env["records.location"].search(
             [("barcode", "=", self.barcode)], limit=1
-        )
+            )
 
         if not location:
             # Create new location
@@ -311,12 +311,12 @@ class BarcodeProduct(models.Model):
                     "barcode": self.barcode,
                     "location_type": "warehouse",
                 }
-            )
+            }
 
         self.location_id = location.id
         self.message_post(
             body=_("Location barcode processed: %s", location.name)
-        )
+            )
 
         return self._return_location_action(location)
 
@@ -324,7 +324,7 @@ class BarcodeProduct(models.Model):
         """Process container barcode (6 digits)"""
         container = self.env["records.container"].search(
             [("barcode", "=", self.barcode)], limit=1
-        )
+            )
 
         if not container:
             # Create new container with default specifications
@@ -335,12 +335,12 @@ class BarcodeProduct(models.Model):
                     "container_type": "type_01",  # Default to most common type
                     "state": "draft",
                 }
-            )
+            }
 
         self.container_id = container.id
         self.message_post(
             body=_("Container barcode processed: %s", container.name)
-        )
+            )
 
         return self._return_container_action(container)
 
@@ -354,7 +354,7 @@ class BarcodeProduct(models.Model):
                 "folder_type": "permanent",
                 "state": "active",
             }
-        )
+        }
 
         self.message_post(body=_("Permanent folder created: %s", folder.name))
 
@@ -378,9 +378,9 @@ class BarcodeProduct(models.Model):
                 "state": "active",
                 "auto_expire_date": fields.Date.add(
                     fields.Date.today(), days=90
-                ),
+                    ),
             }
-        )
+        }
 
         self.message_post(
             body=_(
@@ -408,11 +408,11 @@ class BarcodeProduct(models.Model):
                 "state": "pending",
                 "estimated_weight": 1.0,  # Default weight
             }
-        )
+        }
 
         self.message_post(
             body=_("Shred bin item created: %s", shred_item.name)
-        )
+            )
 
         return {
             "type": "ir.actions.act_window",
@@ -477,14 +477,14 @@ class BarcodeProduct(models.Model):
                         "Invalid barcode length: %d. Valid lengths are: %s",
                         length,
                         ", ".join(map(str, valid_lengths)),
-                    )
+                        )
                 )
 
             # Check for numeric-only barcodes
             if not barcode.isdigit():
                 raise ValidationError(
                     _("Barcode must contain only numeric digits: %s", barcode)
-                )
+                    )
 
     @api.constrains("barcode")
     def _check_barcode_uniqueness(self):
@@ -493,7 +493,7 @@ class BarcodeProduct(models.Model):
             if record.barcode:
                 existing = self.search(
                     [("barcode", "=", record.barcode), ("id", "!=", record.id)]
-                )
+                    )
                 if existing:
                     raise ValidationError(
                         _(

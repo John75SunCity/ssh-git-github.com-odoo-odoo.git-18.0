@@ -12,8 +12,7 @@ class BinKeyHistory(models.Model):
 
     name = fields.Char(string="Reference", required=True, default="New")
     partner_bin_key_id = fields.Many2one(
-        "partner.bin.key", string="Partner Bin Key", required=True
-    )
+        "partner.bin.key", string="Partner Bin Key", required=True)
     action_type = fields.Selection(
         [
             ("created", "Created"),
@@ -44,6 +43,10 @@ class BinKeyHistory(models.Model):
     active = fields.Boolean(string="Active", default=True)
 
     partner_id = fields.Many2one(
+        "res.partner",
+        string="Partner",
+        help="Associated partner for this record"
+    )
 
     # Workflow state management
     state = fields.Selection([
@@ -53,10 +56,6 @@ class BinKeyHistory(models.Model):
         ('archived', 'Archived'),
     ], string='Status', default='draft', tracking=True, required=True, index=True,
        help='Current status of the record')
-        "res.partner",
-        string="Partner",
-        help="Associated partner for this record"
-    )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -64,5 +63,5 @@ class BinKeyHistory(models.Model):
             if vals.get("name", "New") == "New":
                 vals["name"] = (
                     self.env["ir.sequence"].next_by_code("bin.key.history") or "New"
-                )
+                    )
         return super().create(vals_list)

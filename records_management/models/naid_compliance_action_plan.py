@@ -24,7 +24,7 @@ class NaidComplianceActionPlan(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
 
-    name = fields.Char(string="Action Title", required=True, tracking=True)
+    name = fields.Char(string="Action Title", required=True, tracking=True,),
 
     company_id = fields.Many2one(
         "res.company",
@@ -47,7 +47,7 @@ class NaidComplianceActionPlan(models.Model):
     # ACTION DETAILS
     # ============================================================================
 
-    description = fields.Text(string="Action Description", required=True)
+    description = fields.Text(string="Action Description", required=True,),
 
     action_type = fields.Selection(
         [
@@ -71,9 +71,9 @@ class NaidComplianceActionPlan(models.Model):
         tracking=True,
     )
 
-    due_date = fields.Date(string="Due Date", required=True, tracking=True)
+    due_date = fields.Date(string="Due Date", required=True, tracking=True,),
 
-    start_date = fields.Date(string="Start Date")
+    start_date = fields.Date(string="Start Date"),
 
     completion_date = fields.Date(string="Completion Date")
 
@@ -82,12 +82,11 @@ class NaidComplianceActionPlan(models.Model):
     # ============================================================================
 
     responsible_user_id = fields.Many2one(
-        "res.users", string="Responsible Person", required=True, tracking=True
-    )
+        "res.users", string="Responsible Person", required=True, tracking=True,)
 
-    approval_required = fields.Boolean(string="Approval Required", default=False)
+    approval_required = fields.Boolean(string="Approval Required", default=False),
 
-    approved_by_id = fields.Many2one("res.users", string="Approved By")
+    approved_by_id = fields.Many2one("res.users", string="Approved By"),
 
     approval_date = fields.Date(string="Approval Date")
 
@@ -108,7 +107,7 @@ class NaidComplianceActionPlan(models.Model):
         tracking=True,
     )
 
-    progress_percentage = fields.Float(string="Progress %", default=0.0)
+    progress_percentage = fields.Float(string="Progress %", default=0.0),
 
     completion_notes = fields.Text(string="Completion Notes")
 
@@ -155,7 +154,7 @@ class NaidComplianceActionPlan(models.Model):
                 "approved_by": self.env.user.id,
                 "approval_date": fields.Date.today(),
             }
-        )
+        }
         self.message_post(body=_("Action plan approved by %s", self.env.user.name))
 
     def action_start(self):
@@ -167,7 +166,7 @@ class NaidComplianceActionPlan(models.Model):
                 "status": "in_progress",
                 "start_date": fields.Date.today(),
             }
-        )
+        }
         self.message_post(body=_("Action plan started by %s", self.env.user.name))
 
     def action_complete(self):
@@ -180,7 +179,7 @@ class NaidComplianceActionPlan(models.Model):
                 "completion_date": fields.Date.today(),
                 "progress_percentage": 100.0,
             }
-        )
+        }
         self.message_post(body=_("Action plan completed by %s", self.env.user.name))
 
     # ============================================================================
@@ -194,7 +193,7 @@ class NaidComplianceActionPlan(models.Model):
             if record.progress_percentage < 0 or record.progress_percentage > 100:
                 raise ValidationError(
                     _("Progress percentage must be between 0 and 100.")
-                )
+                    )
 
     @api.constrains("due_date", "start_date")
     def _check_dates(self):

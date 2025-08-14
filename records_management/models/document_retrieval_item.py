@@ -41,7 +41,7 @@ class DocumentRetrievalItem(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
     )
-    active = fields.Boolean(string="Active", default=True, tracking=True)
+    active = fields.Boolean(string="Active", default=True, tracking=True,)
 
     # ============================================================================
     # WORK ORDER RELATIONSHIP FIELDS
@@ -57,9 +57,9 @@ class DocumentRetrievalItem(models.Model):
     # ============================================================================
     # DOCUMENT REFERENCE FIELDS
     # ============================================================================
-    document_id = fields.Many2one("records.document", string="Document")
-    container_id = fields.Many2one("records.container", string="Container")
-    location_id = fields.Many2one("records.location", string="Storage Location")
+    document_id = fields.Many2one("records.document", string="Document"),
+    container_id = fields.Many2one("records.container", string="Container"),
+    location_id = fields.Many2one("records.location", string="Storage Location"),
 
     item_type = fields.Selection(
         [
@@ -73,8 +73,8 @@ class DocumentRetrievalItem(models.Model):
         default="document",
     )
 
-    description = fields.Text(string="Item Description")
-    barcode = fields.Char(string="Barcode/ID", tracking=True)
+    description = fields.Text(string="Item Description"),
+    barcode = fields.Char(string="Barcode/ID", tracking=True,)
 
     # ============================================================================
     # STATUS TRACKING FIELDS
@@ -99,7 +99,7 @@ class DocumentRetrievalItem(models.Model):
     # ============================================================================
     # LOCATION AND SEARCH FIELDS
     # ============================================================================
-    current_location = fields.Char(string="Current Location")
+    current_location = fields.Char(string="Current Location"),
     storage_location_id = fields.Many2one("records.location", string="Storage Location")
 
     # Search container tracking
@@ -145,22 +145,22 @@ class DocumentRetrievalItem(models.Model):
     # ============================================================================
     # PROCESSING DETAILS FIELDS
     # ============================================================================
-    retrieval_date = fields.Datetime(string="Retrieved Date", tracking=True)
+    retrieval_date = fields.Datetime(string="Retrieved Date", tracking=True,),
     retrieved_by_id = fields.Many2one("res.users", string="Retrieved By")  # Fixed to res.users
-    condition_notes = fields.Text(string="Condition Notes")
+    condition_notes = fields.Text(string="Condition Notes"),
     special_handling = fields.Boolean(string="Special Handling Required", default=False)
 
     # ============================================================================
     # QUALITY CONTROL FIELDS
     # ============================================================================
-    quality_checked = fields.Boolean(string="Quality Checked", default=False)
-    quality_issues = fields.Text(string="Quality Issues")
+    quality_checked = fields.Boolean(string="Quality Checked", default=False),
+    quality_issues = fields.Text(string="Quality Issues"),
     completeness_verified = fields.Boolean(
         string="Completeness Verified", default=False
     )
 
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
     )
@@ -228,16 +228,16 @@ class DocumentRetrievalItem(models.Model):
     )
 
     # Handling Instructions
-    handling_instructions = fields.Text(string="Handling Instructions")
+    handling_instructions = fields.Text(string="Handling Instructions"),
     fragile = fields.Boolean(string="Fragile Item", default=False)
 
     # Physical Attributes
     estimated_weight = fields.Float(
         string="Estimated Weight (kg)", digits="Product Price"
-    )
+        )
     actual_weight = fields.Float(
         string="Actual Weight (kg)", digits="Product Unit of Measure"
-    )
+        )
     dimensions = fields.Char(string="Dimensions (LxWxH)")
 
     # Security and Access
@@ -252,7 +252,7 @@ class DocumentRetrievalItem(models.Model):
         default="standard",
     )
 
-    access_authorized_by_id = fields.Many2one("res.users", string="Access Authorized By")
+    access_authorized_by_id = fields.Many2one("res.users", string="Access Authorized By"),
     authorization_date = fields.Datetime(string="Authorization Date")
 
     # Condition and Quality
@@ -280,8 +280,8 @@ class DocumentRetrievalItem(models.Model):
     )
 
     # Digital Processing
-    scan_required = fields.Boolean(string="Scan Required", default=False)
-    scan_completed = fields.Boolean(string="Scan Completed", default=False)
+    scan_required = fields.Boolean(string="Scan Required", default=False),
+    scan_completed = fields.Boolean(string="Scan Completed", default=False),
     digital_format = fields.Selection(
         [("pdf", "PDF"), ("jpg", "JPEG"), ("tiff", "TIFF"), ("png", "PNG")],
         string="Digital Format",
@@ -300,9 +300,9 @@ class DocumentRetrievalItem(models.Model):
     )
 
     # Return Information
-    return_required = fields.Boolean(string="Return Required", default=True)
-    return_date = fields.Date(string="Return Date")
-    return_location_id = fields.Many2one("records.location", string="Return Location")
+    return_required = fields.Boolean(string="Return Required", default=True),
+    return_date = fields.Date(string="Return Date"),
+    return_location_id = fields.Many2one("records.location", string="Return Location"),
     return_notes = fields.Text(string="Return Notes")
 
     # Cost and Billing - ENHANCED for container access billing
@@ -312,7 +312,7 @@ class DocumentRetrievalItem(models.Model):
         compute="_compute_retrieval_cost",
         store=True,
         help="Cost to retrieve this specific item (dynamic based on customer rates)",
-    )
+        )
 
     container_access_cost = fields.Monetary(
         string="Container Access Cost",
@@ -320,7 +320,7 @@ class DocumentRetrievalItem(models.Model):
         compute="_compute_container_access_cost",
         store=True,
         help="Cost for accessing containers where file was NOT found (excludes successful retrieval container)",
-    )
+        )
 
     total_cost = fields.Monetary(
         string="Total Cost",
@@ -328,7 +328,7 @@ class DocumentRetrievalItem(models.Model):
         compute="_compute_total_cost",
         store=True,
         help="Total cost: retrieval fee (if found) + container access fees (unsuccessful searches) + delivery + not found fee",
-    )
+        )
 
     currency_id = fields.Many2one(
         "res.currency",
@@ -339,7 +339,7 @@ class DocumentRetrievalItem(models.Model):
     )
 
     # Tracking and Audit
-    tracking_number = fields.Char(string="Tracking Number")
+    tracking_number = fields.Char(string="Tracking Number"),
     audit_trail = fields.Text(string="Audit Trail")
 
     # === COMPUTED FIELDS ===
@@ -770,12 +770,12 @@ class DocumentRetrievalItem(models.Model):
                 "status": "packaged",
                 "retrieval_date": fields.Datetime.now(),
             }
-        )
+        }
         # FIXED translation
         self.message_post(
             body=_("Item packaged by %s", self.env.user.name),
             message_type="notification",
-        )
+        }
 
     def action_deliver_item(self):
         """Mark item as delivered.
@@ -814,12 +814,12 @@ class DocumentRetrievalItem(models.Model):
                 "status": "returned",
                 "return_date": fields.Datetime.now(),
             }
-        )
+        }
         # Post a notification message to the chatter - FIXED translation
         self.message_post(
             body=_("Item returned by %s", self.env.user.name),
             message_type="notification",
-        )
+        }
 
     # === SEARCH WORKFLOW ACTION METHODS ===
     def action_begin_search_process(self):
@@ -864,7 +864,7 @@ class DocumentRetrievalItem(models.Model):
                     "discovery_container_id": container_id,
                     "container_id": container_id,  # Set as the official container
                 }
-            )
+            }
 
         return True
 
@@ -883,7 +883,7 @@ class DocumentRetrievalItem(models.Model):
                 "not_found_reason": reason,
                 "not_found_notes": notes,
             }
-        )
+        }
 
         # Create final search attempt record - FIXED translation
         reason_display = dict(self._fields["not_found_reason"].selection).get(reason, reason)
@@ -910,7 +910,7 @@ class DocumentRetrievalItem(models.Model):
                 "barcode": barcode,
                 "status": "located",
             }
-        )
+        }
 
         # Create document record if provided
         if document_vals and self.discovery_container_id:
@@ -921,7 +921,7 @@ class DocumentRetrievalItem(models.Model):
                     "container_id": self.discovery_container_id.id,
                     "partner_id": self.partner_id.id if self.partner_id else False,
                 }
-            )
+            }
             document = self.env["records.document"].create(document_vals)
             self.document_id = document.id
 

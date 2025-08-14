@@ -40,7 +40,7 @@ class NaidComplianceAlert(models.Model):
         default="New Alert",
     )
 
-    title = fields.Char(string="Alert Title", required=True, tracking=True)
+    title = fields.Char(string="Alert Title", required=True, tracking=True,),
 
     company_id = fields.Many2one(
         "res.company",
@@ -68,8 +68,7 @@ class NaidComplianceAlert(models.Model):
     # ============================================================================
 
     alert_date = fields.Datetime(
-        string="Alert Date", required=True, default=fields.Datetime.now, tracking=True
-    )
+        string="Alert Date", required=True, default=fields.Datetime.now, tracking=True,)
 
     alert_type = fields.Selection(
         [
@@ -114,9 +113,9 @@ class NaidComplianceAlert(models.Model):
         tracking=True,
     )
 
-    resolved_date = fields.Datetime(string="Resolved Date")
+    resolved_date = fields.Datetime(string="Resolved Date"),
 
-    resolved_by_id = fields.Many2one("res.users", string="Resolved By")
+    resolved_by_id = fields.Many2one("res.users", string="Resolved By"),
 
     resolution_notes = fields.Text(string="Resolution Notes")
 
@@ -161,7 +160,7 @@ class NaidComplianceAlert(models.Model):
                 "resolved_date": fields.Datetime.now(),
                 "resolved_by_id": self.env.user.id,
             }
-        )
+        }
         self.message_post(body=_("Alert resolved by %s", self.env.user.name))
 
     def action_dismiss(self):
@@ -172,7 +171,7 @@ class NaidComplianceAlert(models.Model):
         self.message_post(body=_("Alert dismissed by %s", self.env.user.name))
 
 
-class NaidComplianceChecklistItem(models.Model):
+    class NaidComplianceChecklistItem(models.Model):
     """Individual checklist items for NAID compliance"""
 
     _name = "naid.compliance.checklist.item"
@@ -184,11 +183,11 @@ class NaidComplianceChecklistItem(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
 
-    name = fields.Char(string="Item Name", required=True, tracking=True)
+    name = fields.Char(string="Item Name", required=True, tracking=True,),
 
-    sequence = fields.Integer(string="Sequence", default=10)
+    sequence = fields.Integer(string="Sequence", default=10),
 
-    description = fields.Text(string="Item Description")
+    description = fields.Text(string="Item Description"),
 
     active = fields.Boolean(string="Active", default=True)
 
@@ -219,13 +218,13 @@ class NaidComplianceChecklistItem(models.Model):
     # COMPLIANCE TRACKING
     # ============================================================================
 
-    is_compliant = fields.Boolean(string="Compliant", default=False, tracking=True)
+    is_compliant = fields.Boolean(string="Compliant", default=False, tracking=True,),
 
-    compliance_date = fields.Date(string="Compliance Date")
+    compliance_date = fields.Date(string="Compliance Date"),
 
-    verified_by_id = fields.Many2one("res.users", string="Verified By")
+    verified_by_id = fields.Many2one("res.users", string="Verified By"),
 
-    evidence_attachment = fields.Binary(string="Evidence")
+    evidence_attachment = fields.Binary(string="Evidence"),
 
     notes = fields.Text(string="Notes")
 
@@ -233,7 +232,7 @@ class NaidComplianceChecklistItem(models.Model):
     # REQUIREMENTS
     # ============================================================================
 
-    is_mandatory = fields.Boolean(string="Mandatory", default=True)
+    is_mandatory = fields.Boolean(string="Mandatory", default=True),
 
     risk_level = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High")],
@@ -264,7 +263,7 @@ class NaidComplianceChecklistItem(models.Model):
     )
 
 
-class NaidRiskAssessment(models.Model):
+    class NaidRiskAssessment(models.Model):
     """Risk assessment for NAID compliance"""
 
     _name = "naid.risk.assessment"
@@ -331,7 +330,7 @@ class NaidRiskAssessment(models.Model):
     # RISK EVALUATION
     # ============================================================================
 
-    risk_description = fields.Text(string="Risk Description", required=True)
+    risk_description = fields.Text(string="Risk Description", required=True,),
 
     impact_level = fields.Selection(
         [
@@ -380,11 +379,11 @@ class NaidRiskAssessment(models.Model):
     # MITIGATION FIELDS
     # ============================================================================
 
-    mitigation_measures = fields.Text(string="Mitigation Measures")
+    mitigation_measures = fields.Text(string="Mitigation Measures"),
 
-    responsible_person_id = fields.Many2one("res.users", string="Responsible Person")
+    responsible_person_id = fields.Many2one("res.users", string="Responsible Person"),
 
-    target_completion_date = fields.Date(string="Target Completion Date")
+    target_completion_date = fields.Date(string="Target Completion Date"),
 
     status = fields.Selection(
         [
@@ -453,7 +452,7 @@ class NaidRiskAssessment(models.Model):
                 record.risk_level = "low"
 
 
-class NaidComplianceActionPlan(models.Model):
+    class NaidComplianceActionPlan(models.Model):
     """Action plans for NAID compliance improvements"""
 
     _name = "naid.compliance.action.plan"
@@ -465,7 +464,7 @@ class NaidComplianceActionPlan(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
 
-    name = fields.Char(string="Action Title", required=True, tracking=True)
+    name = fields.Char(string="Action Title", required=True, tracking=True,),
 
     company_id = fields.Many2one(
         "res.company",
@@ -488,7 +487,7 @@ class NaidComplianceActionPlan(models.Model):
     # ACTION DETAILS
     # ============================================================================
 
-    description = fields.Text(string="Action Description", required=True)
+    description = fields.Text(string="Action Description", required=True,),
 
     action_type = fields.Selection(
         [
@@ -512,9 +511,9 @@ class NaidComplianceActionPlan(models.Model):
         tracking=True,
     )
 
-    due_date = fields.Date(string="Due Date", required=True, tracking=True)
+    due_date = fields.Date(string="Due Date", required=True, tracking=True,),
 
-    start_date = fields.Date(string="Start Date")
+    start_date = fields.Date(string="Start Date"),
 
     completion_date = fields.Date(string="Completion Date")
 
@@ -523,12 +522,11 @@ class NaidComplianceActionPlan(models.Model):
     # ============================================================================
 
     responsible_user_id = fields.Many2one(
-        "res.users", string="Responsible Person", required=True, tracking=True
-    )
+        "res.users", string="Responsible Person", required=True, tracking=True,)
 
-    approval_required = fields.Boolean(string="Approval Required", default=False)
+    approval_required = fields.Boolean(string="Approval Required", default=False),
 
-    approved_by_id = fields.Many2one("res.users", string="Approved By")
+    approved_by_id = fields.Many2one("res.users", string="Approved By"),
 
     approval_date = fields.Date(string="Approval Date")
 
@@ -549,7 +547,7 @@ class NaidComplianceActionPlan(models.Model):
         tracking=True,
     )
 
-    progress_percentage = fields.Float(string="Progress %", default=0.0)
+    progress_percentage = fields.Float(string="Progress %", default=0.0),
 
     completion_notes = fields.Text(string="Completion Notes")
 
@@ -596,7 +594,7 @@ class NaidComplianceActionPlan(models.Model):
                 "approved_by_id": self.env.user.id,
                 "approval_date": fields.Date.today(),
             }
-        )
+        }
         self.message_post(body=_("Action plan approved by %s", self.env.user.name))
 
     def action_start(self):
@@ -608,7 +606,7 @@ class NaidComplianceActionPlan(models.Model):
                 "status": "in_progress",
                 "start_date": fields.Date.today(),
             }
-        )
+        }
         self.message_post(body=_("Action plan started by %s", self.env.user.name))
 
     def action_complete(self):
@@ -621,7 +619,7 @@ class NaidComplianceActionPlan(models.Model):
                 "completion_date": fields.Date.today(),
                 "progress_percentage": 100.0,
             }
-        )
+        }
         self.message_post(body=_("Action plan completed by %s", self.env.user.name))
 
     # ============================================================================
@@ -635,7 +633,7 @@ class NaidComplianceActionPlan(models.Model):
             if record.progress_percentage < 0 or record.progress_percentage > 100:
                 raise ValidationError(
                     _("Progress percentage must be between 0 and 100.")
-                )
+                    )
 
     @api.constrains("due_date", "start_date")
     def _check_dates(self):

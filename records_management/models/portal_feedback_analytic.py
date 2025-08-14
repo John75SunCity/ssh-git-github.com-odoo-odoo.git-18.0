@@ -16,7 +16,7 @@ class PortalFeedbackAnalytic(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Analytics Period", required=True, tracking=True)
+    name = fields.Char(string="Analytics Period", required=True, tracking=True,),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -24,15 +24,14 @@ class PortalFeedbackAnalytic(models.Model):
         required=True,
     )
     user_id = fields.Many2one(
-        "res.users", string="User", default=lambda self: self.env.user, tracking=True
-    )
+        "res.users", string="User", default=lambda self: self.env.user, tracking=True,)
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
     # PERIOD DEFINITION
     # ============================================================================
-    period_start = fields.Date(string="Period Start", required=True)
-    period_end = fields.Date(string="Period End", required=True)
+    period_start = fields.Date(string="Period Start", required=True,),
+    period_end = fields.Date(string="Period End", required=True,)
 
     # ============================================================================
     # COMPUTED ANALYTICS FIELDS
@@ -48,7 +47,7 @@ class PortalFeedbackAnalytic(models.Model):
     )
     average_rating = fields.Float(
         string="Average Rating", digits=(3, 2), compute="_compute_analytics", store=True
-    )
+        )
     average_response_time = fields.Float(
         string="Avg Response Time (Hours)",
         digits=(8, 2),
@@ -126,10 +125,10 @@ class PortalFeedbackAnalytic(models.Model):
             record.total_feedback_count = len(feedback_records)
             record.positive_feedback_count = len(
                 feedback_records.filtered(lambda f: f.sentiment_category == "positive")
-            )
+                )
             record.negative_feedback_count = len(
                 feedback_records.filtered(lambda f: f.sentiment_category == "negative")
-            )
+                )
 
             # This is a simplified placeholder for the rest of the logic
             rated_feedback = feedback_records.filtered(lambda f: f.rating and f.rating != '0')
@@ -178,7 +177,7 @@ class PortalFeedbackAnalytic(models.Model):
                 "message": _("Analytics refreshed successfully"),
                 "type": "success",
                 "sticky": False,
-            },
+            ),
         }
 
     def action_view_period_feedback(self):
@@ -195,7 +194,7 @@ class PortalFeedbackAnalytic(models.Model):
                 ("company_id", "=", self.company_id.id),
             ],
             "target": "current",
-        }
+        )
 
     # ============================================================================
     # VALIDATION METHODS
@@ -208,4 +207,4 @@ class PortalFeedbackAnalytic(models.Model):
                 if record.period_start >= record.period_end:
                     raise ValidationError(
                         _("Period start date must be before end date.")
-                    )
+                        )

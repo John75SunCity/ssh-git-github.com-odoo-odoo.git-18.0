@@ -31,7 +31,7 @@ class NaidComplianceAlert(models.Model):
         default="New Alert",
     )
 
-    title = fields.Char(string="Alert Title", required=True, tracking=True)
+    title = fields.Char(string="Alert Title", required=True, tracking=True,),
 
     company_id = fields.Many2one(
         "res.company",
@@ -59,8 +59,7 @@ class NaidComplianceAlert(models.Model):
     # ============================================================================
 
     alert_date = fields.Datetime(
-        string="Alert Date", required=True, default=fields.Datetime.now, tracking=True
-    )
+        string="Alert Date", required=True, default=fields.Datetime.now, tracking=True,)
 
     alert_type = fields.Selection(
         [
@@ -105,9 +104,9 @@ class NaidComplianceAlert(models.Model):
         tracking=True,
     )
 
-    resolved_date = fields.Datetime(string="Resolved Date")
+    resolved_date = fields.Datetime(string="Resolved Date"),
 
-    resolved_by_id = fields.Many2one("res.users", string="Resolved By")
+    resolved_by_id = fields.Many2one("res.users", string="Resolved By"),
 
     resolution_notes = fields.Text(string="Resolution Notes")
 
@@ -161,7 +160,7 @@ class NaidComplianceAlert(models.Model):
                 "resolved_date": fields.Datetime.now(),
                 "resolved_by": self.env.user.id,
             }
-        )
+        }
         self.message_post(body=_("Alert resolved by %s", self.env.user.name))
 
     def action_dismiss(self):

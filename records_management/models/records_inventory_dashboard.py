@@ -31,8 +31,7 @@ class RecordsInventoryDashboard(models.Model):
         'res.company',
         string='Company',
         default=lambda self: self.env.company,
-        required=True
-    )
+        required=True,)
     user_id = fields.Many2one(
         'res.users',
         string='Owner',
@@ -56,7 +55,7 @@ class RecordsInventoryDashboard(models.Model):
         ('department', 'Department-Specific'),
         ('financial', 'Financial Dashboard'),
         ('operational', 'Operational Dashboard')
-    ], string='Dashboard Type', default='overview', required=True)
+    ], string='Dashboard Type', default='overview', required=True,)
 
     refresh_interval = fields.Integer(
         string='Refresh Interval (minutes)',
@@ -95,7 +94,7 @@ class RecordsInventoryDashboard(models.Model):
         ('quarter', 'This Quarter'),
         ('year', 'This Year'),
         ('custom', 'Custom Range')
-    ], string='Date Range', default='month', required=True)
+    ], string='Date Range', default='month', required=True,)
 
     date_from = fields.Date(
         string='From Date',
@@ -385,8 +384,8 @@ class RecordsInventoryDashboard(models.Model):
             'params': {
                 'message': _('Dashboard refreshed successfully'),
                 'type': 'success'
-            }
-        }
+            )
+        )
 
     def action_export_data(self):
         """Export dashboard data to Excel"""
@@ -398,8 +397,8 @@ class RecordsInventoryDashboard(models.Model):
             'params': {
                 'message': _('Export functionality coming soon'),
                 'type': 'info'
-            }
-        }
+            )
+        )
 
     def action_view_containers(self):
         """View containers in list view with dashboard filters applied"""
@@ -413,7 +412,7 @@ class RecordsInventoryDashboard(models.Model):
             'view_mode': 'tree,form',
             'domain': domain,
             'context': {'default_company_id': self.company_id.id}
-        }
+        )
 
     def action_view_locations(self):
         """View locations with utilization details"""
@@ -429,7 +428,7 @@ class RecordsInventoryDashboard(models.Model):
             'view_mode': 'tree,form',
             'domain': domain,
             'context': {'default_company_id': self.company_id.id}
-        }
+        )
 
     def action_view_customers(self):
         """View customers with storage details"""
@@ -445,4 +444,4 @@ class RecordsInventoryDashboard(models.Model):
             'view_mode': 'tree,form',
             'domain': domain,
             'context': {'default_company_id': self.company_id.id}
-        }
+        )

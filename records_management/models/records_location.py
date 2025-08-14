@@ -15,13 +15,12 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Location Name", required=True, tracking=True, index=True)
+    name = fields.Char(string="Location Name", required=True, tracking=True, index=True),
     code = fields.Char(
-        string="Location Code", required=True, index=True, tracking=True
-    )
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10, tracking=True)
-    active = fields.Boolean(string="Active", default=True, tracking=True)
+        string="Location Code", required=True, index=True, tracking=True,)
+    description = fields.Text(string="Description"),
+    sequence = fields.Integer(string="Sequence", default=10, tracking=True,),
+    active = fields.Boolean(string="Active", default=True, tracking=True,),
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -43,21 +42,21 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # PHYSICAL LOCATION DETAILS
     # ============================================================================
-    building = fields.Char(string="Building", tracking=True)
-    floor = fields.Char(string="Floor", tracking=True)
-    zone = fields.Char(string="Zone", tracking=True)
-    aisle = fields.Char(string="Aisle", tracking=True)
-    rack = fields.Char(string="Rack", tracking=True)
-    shelf = fields.Char(string="Shelf", tracking=True)
-    position = fields.Char(string="Position", tracking=True)
+    building = fields.Char(string="Building", tracking=True,),
+    floor = fields.Char(string="Floor", tracking=True,),
+    zone = fields.Char(string="Zone", tracking=True,),
+    aisle = fields.Char(string="Aisle", tracking=True,),
+    rack = fields.Char(string="Rack", tracking=True,),
+    shelf = fields.Char(string="Shelf", tracking=True,),
+    position = fields.Char(string="Position", tracking=True,)
 
     # Address Information
-    street = fields.Char(string="Street")
-    street2 = fields.Char(string="Street 2")
-    city = fields.Char(string="City")
-    state_id = fields.Many2one("res.country.state", string="State/Province")
-    zip = fields.Char(string="ZIP Code")
-    country_id = fields.Many2one("res.country", string="Country")
+    street = fields.Char(string="Street"),
+    street2 = fields.Char(string="Street 2"),
+    city = fields.Char(string="City"),
+    state_id = fields.Many2one("res.country.state", string="State/Province"),
+    zip = fields.Char(string="ZIP Code"),
+    country_id = fields.Many2one("res.country", string="Country"),
     full_address = fields.Text(
         string="Full Address",
         compute="_compute_full_address",
@@ -83,7 +82,7 @@ class RecordsLocation(models.Model):
         tracking=True,
     )
     storage_capacity = fields.Integer(string="Storage Capacity (boxes)")
-    max_capacity = fields.Integer(string="Maximum Capacity", default=1000)
+    max_capacity = fields.Integer(string="Maximum Capacity", default=1000),
     current_utilization = fields.Integer(
         string="Current Utilization", compute="_compute_current_utilization"
     )
@@ -110,7 +109,7 @@ class RecordsLocation(models.Model):
     humidity_controlled = fields.Boolean(
         string="Humidity Controlled", default=False
     )
-    fire_suppression = fields.Boolean(string="Fire Suppression", default=False)
+    fire_suppression = fields.Boolean(string="Fire Suppression", default=False),
     security_level = fields.Selection(
         [("standard", "Standard"), ("high", "High"), ("maximum", "Maximum")],
         string="Security Level",
@@ -121,12 +120,12 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # ACCESS & SECURITY
     # ============================================================================
-    access_restrictions = fields.Text(string="Access Restrictions")
+    access_restrictions = fields.Text(string="Access Restrictions"),
     authorized_user_ids = fields.Many2many(
         "res.users", string="Authorized Users"
     )
-    requires_escort = fields.Boolean(string="Requires Escort", default=False)
-    security_camera = fields.Boolean(string="Security Camera", default=False)
+    requires_escort = fields.Boolean(string="Requires Escort", default=False),
+    security_camera = fields.Boolean(string="Security Camera", default=False),
     access_card_required = fields.Boolean(string="Access Card Required", default=False)
 
     # ============================================================================
@@ -143,8 +142,8 @@ class RecordsLocation(models.Model):
         default="active",
         tracking=True,
     )
-    availability_schedule = fields.Text(string="Availability Schedule")
-    last_inspection_date = fields.Date(string="Last Inspection Date")
+    availability_schedule = fields.Text(string="Availability Schedule"),
+    last_inspection_date = fields.Date(string="Last Inspection Date"),
     next_inspection_date = fields.Date(string="Next Inspection Date")
 
     # ============================================================================
@@ -168,7 +167,7 @@ class RecordsLocation(models.Model):
         "res_id",
         string="Activities",
         domain=[("res_model", "=", "records.location")],
-    )
+        )
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
     )
@@ -177,7 +176,7 @@ class RecordsLocation(models.Model):
         "res_id",
         string="Messages",
         domain=[("model", "=", "records.location")],
-    )
+        )
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -376,7 +375,7 @@ class RecordsLocation(models.Model):
                     if current == record:
                         raise ValidationError(
                             _("Circular reference detected in location hierarchy")
-                        )
+                            )
                     current = current.parent_location_id
 
     @api.constrains("code")
@@ -385,6 +384,6 @@ class RecordsLocation(models.Model):
             if record.code:
                 existing = self.search(
                     [("code", "=", record.code), ("id", "!=", record.id)], limit=1
-                )
+                    )
                 if existing:
                     raise ValidationError(_("Location code must be unique"))

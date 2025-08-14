@@ -140,7 +140,7 @@ class FileRetrievalWorkOrderItem(models.Model):
     file_position = fields.Char(
         string="File Position",
         help="Position or folder location within container (e.g., 'Folder A-C, Tab 2')",
-    )
+        )
 
     # ============================================================================
     # STATUS AND PROGRESS TRACKING
@@ -266,14 +266,14 @@ class FileRetrievalWorkOrderItem(models.Model):
         self.ensure_one()
         self.write(
             {"status": "located", "date_located": fields.Datetime.now()}
-        )
+            )
 
         # Update work order progress
         self.work_order_id._update_progress_metrics()
 
         self.message_post(
             body=_("File located successfully"), message_type="notification"
-        )
+            )
         return True
 
     def action_mark_retrieved(self):
@@ -282,18 +282,18 @@ class FileRetrievalWorkOrderItem(models.Model):
         if self.status not in ["located", "retrieving"]:
             raise ValidationError(
                 _("Item must be located before it can be retrieved")
-            )
+                )
 
         self.write(
             {"status": "retrieved", "date_retrieved": fields.Datetime.now()}
-        )
+            )
 
         # Update work order progress
         self.work_order_id._update_progress_metrics()
 
         self.message_post(
             body=_("File retrieved successfully"), message_type="notification"
-        )
+            )
         return True
 
     def action_quality_check(self):
@@ -302,7 +302,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         if self.status != "retrieved":
             raise ValidationError(
                 _("Item must be retrieved before quality check")
-            )
+                )
 
         return {
             "type": "ir.actions.act_window",
@@ -313,7 +313,7 @@ class FileRetrievalWorkOrderItem(models.Model):
             "context": {
                 "default_item_id": self.id,
                 "default_work_order_id": self.work_order_id.id,
-            },
+            ),
         }
 
     def action_approve_quality(self):
@@ -327,7 +327,7 @@ class FileRetrievalWorkOrderItem(models.Model):
                 "quality_approved_date": fields.Datetime.now(),
                 "date_quality_checked": fields.Datetime.now(),
             }
-        )
+        }
 
         # Update work order progress
         self.work_order_id._update_progress_metrics()
@@ -345,7 +345,7 @@ class FileRetrievalWorkOrderItem(models.Model):
 
         self.message_post(
             body=_("File marked as not found"), message_type="notification"
-        )
+            )
 
         # Update work order progress
         self.work_order_id._update_progress_metrics()

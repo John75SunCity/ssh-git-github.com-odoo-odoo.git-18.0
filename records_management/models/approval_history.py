@@ -282,11 +282,11 @@ class ApprovalHistory(models.Model):
                 "approved_by_id": self.env.user.id,
                 "completed_date": fields.Datetime.now(),
             }
-        )
+        }
         self.message_post(
             body=_("Approval request approved by %s", self.env.user.name),
             message_type="notification",
-        )
+        }
 
     def action_reject(self):
         """Reject the request"""
@@ -301,11 +301,11 @@ class ApprovalHistory(models.Model):
                 "approved_by_id": self.env.user.id,
                 "completed_date": fields.Datetime.now(),
             }
-        )
+        }
         self.message_post(
             body=_("Approval request rejected by %s", self.env.user.name),
             message_type="notification",
-        )
+        }
 
     def action_cancel(self):
         """Cancel the request"""
@@ -319,12 +319,12 @@ class ApprovalHistory(models.Model):
                 "approval_status": "cancelled",
                 "completed_date": fields.Datetime.now(),
             }
-        )
+        }
 
         self.message_post(
             body=_("Approval request cancelled by %s", self.env.user.name),
             message_type="notification",
-        )
+        }
 
     # ============================================================================
     # UTILITY METHODS
@@ -343,7 +343,7 @@ class ApprovalHistory(models.Model):
                 name_parts.append("- %s%s" % (
                     record.currency_id.symbol,
                     "{:.2f}".format(record.approval_amount)
-                ))
+                    ))
 
             result.append((record.id, " ".join(name_parts)))
         return result

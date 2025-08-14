@@ -60,7 +60,7 @@ class BaseRate(models.Model):
         string='Expiration Date',
         tracking=True,
         help='Date these rates expire (leave blank for no expiration)'
-    )
+        )
     version = fields.Char(
         string='Version',
         default='1.0',
@@ -78,8 +78,7 @@ class BaseRate(models.Model):
         'res.currency',
         string='Currency',
         default=lambda self: self.env.company.currency_id,
-        required=True
-    )
+        required=True,)
 
     # ============================================================================
     # CONTAINER STORAGE RATES (Monthly)
@@ -89,31 +88,31 @@ class BaseRate(models.Model):
         currency_field='currency_id',
         required=True,
         help='Monthly rate for TYPE 01 standard boxes (1.2 CF, 35 lbs avg)'
-    )
+        )
     legal_box_rate = fields.Monetary(
         string='TYPE 02 - Legal/Banker Box Rate',
         currency_field='currency_id',
         required=True,
         help='Monthly rate for TYPE 02 legal boxes (2.4 CF, 65 lbs avg)'
-    )
+        )
     map_box_rate = fields.Monetary(
         string='TYPE 03 - Map Box Rate',
         currency_field='currency_id',
         required=True,
         help='Monthly rate for TYPE 03 map boxes (0.875 CF, 35 lbs avg)'
-    )
+        )
     odd_size_rate = fields.Monetary(
         string='TYPE 04 - Odd Size/Temp Box Rate',
         currency_field='currency_id',
         required=True,
         help='Monthly rate for TYPE 04 odd size boxes (5.0 CF, 75 lbs avg)'
-    )
+        )
     pathology_rate = fields.Monetary(
         string='TYPE 06 - Pathology Box Rate',
         currency_field='currency_id',
         required=True,
         help='Monthly rate for TYPE 06 pathology boxes (0.042 CF, 40 lbs avg)'
-    )
+        )
 
     # ============================================================================
     # SERVICE RATES
@@ -198,7 +197,7 @@ class BaseRate(models.Model):
         string='Small Volume Threshold',
         default=25,
         help='Container count for small volume (higher rate)'
-    )
+        )
     small_volume_multiplier = fields.Float(
         string='Small Volume Multiplier',
         default=1.1,
@@ -209,7 +208,7 @@ class BaseRate(models.Model):
         string='Large Volume Threshold',
         default=100,
         help='Container count for large volume (discounted rate)'
-    )
+        )
     large_volume_multiplier = fields.Float(
         string='Large Volume Multiplier',
         default=0.9,
@@ -220,7 +219,7 @@ class BaseRate(models.Model):
         string='Enterprise Volume Threshold',
         default=500,
         help='Container count for enterprise volume (maximum discount)'
-    )
+        )
     enterprise_volume_multiplier = fields.Float(
         string='Enterprise Volume Multiplier',
         default=0.75,
@@ -259,13 +258,13 @@ class BaseRate(models.Model):
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('annually', 'Annually')
-    ], string='Default Billing Frequency', default='monthly')
+    ], string='Default Billing Frequency', default='monthly',)
     
     proration_method = fields.Selection([
         ('daily', 'Daily Proration'),
         ('monthly', 'Full Month'),
         ('none', 'No Proration')
-    ], string='Proration Method', default='daily')
+    ], string='Proration Method', default='daily',)
     
     minimum_monthly_charge = fields.Monetary(
         string='Minimum Monthly Charge',
@@ -346,7 +345,7 @@ class BaseRate(models.Model):
                 rate.pickup_rate + rate.delivery_rate + rate.destruction_rate +
                 (rate.document_retrieval_rate or 0.0) + (rate.scanning_rate or 0.0) +
                 (rate.indexing_rate or 0.0)
-            )
+                )
 
     def _compute_usage_stats(self):
         """Compute statistics on rate usage"""
