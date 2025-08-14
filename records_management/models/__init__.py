@@ -131,6 +131,7 @@ from . import customer_negotiated_rates
 from . import records_billing_config
 from . import records_billing_line
 from . import records_billing_contact
+from . import records_billing_service
 
 # Individual billing support models
 from . import invoice_generation_log

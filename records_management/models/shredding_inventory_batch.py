@@ -26,10 +26,7 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
-
 from odoo.exceptions import UserError, ValidationError
-
-
 
 
 class ShreddingInventoryBatch(models.Model):
@@ -50,6 +47,7 @@ class ShreddingInventoryBatch(models.Model):
         string="Batch Name",
         required=True,
         tracking=True,
+        index=True,
         help="Unique identifier for this shredding batch",
     )
     company_id = fields.Many2one(
@@ -84,7 +82,9 @@ class ShreddingInventoryBatch(models.Model):
         help="Current state of the batch",
     )
     batch_number = fields.Char(
-        string="Batch Number", help="Sequential batch number for tracking"
+        string="Batch Number",
+        copy=False,
+        help="Sequential batch number for tracking",
     )
     priority = fields.Selection(
         [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
@@ -120,7 +120,9 @@ class ShreddingInventoryBatch(models.Model):
         string="Scheduled Processing Date", help="Planned date for processing"
     )
     completion_date = fields.Date(
-        string="Completion Date", help="Date when batch processing was completed"
+        string="Completion Date",
+        readonly=True,
+        help="Date when batch processing was completed",
     )
 
     # ============================================================================
@@ -132,11 +134,11 @@ class ShreddingInventoryBatch(models.Model):
         string="Picklist Items",
         help="Items included in this batch",
     )
-    work_order_ids = fields.One2many(
-        "work.order.shredding",
+    shredding_service_ids = fields.One2many(
+        "shredding.service",
         "batch_id",
-        string="Work Orders",
-        help="Related work orders",
+        string="Shredding Services",
+        help="Related shredding services",
     )
 
     # ============================================================================
@@ -162,26 +164,15 @@ class ShreddingInventoryBatch(models.Model):
     )
 
     # ============================================================================
-    # MAIL THREAD FIELDS
+    # MAIL THREAD FRAMEWORK FIELDS (REQUIRED)
     # ============================================================================
     activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=[("res_model", "=", "shredding.inventory.batch")],
+        "mail.activity", "res_id", string="Activities"
     )
     message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        domain=[("res_model", "=", "shredding.inventory.batch")],
+        "mail.followers", "res_id", string="Followers"
     )
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=[("res_model", "=", "shredding.inventory.batch")],
-    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
     # COMPUTE METHODS
@@ -214,15 +205,29 @@ class ShreddingInventoryBatch(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Generate batch number sequence on creation"""
+        for vals in vals_list:
+            if vals.get("batch_number", "New") == "New":
+                vals["batch_number"] = (
+                    self.env["ir.sequence"].next_by_code(
+                        "shredding.inventory.batch"
+                    )
+                    or "New"
+                )
+        return super().create(vals_list)
 
     def action_confirm(self):
         """Confirm batch for processing"""
-
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft batches can be confirmed."))
 
         self.write({"state": "confirmed", "scheduled_date": fields.Date.today()})
+
+        # Create NAID audit log entry
+        self._create_naid_audit_log("batch_confirmed")
 
         return {
             "type": "ir.actions.client",
@@ -236,12 +241,14 @@ class ShreddingInventoryBatch(models.Model):
 
     def action_start_processing(self):
         """Start processing the batch"""
-
         self.ensure_one()
         if self.state != "confirmed":
             raise UserError(_("Only confirmed batches can be processed."))
 
         self.write({"state": "processing"})
+
+        # Create NAID audit log entry
+        self._create_naid_audit_log("processing_started")
 
         return {
             "type": "ir.actions.client",
@@ -255,12 +262,14 @@ class ShreddingInventoryBatch(models.Model):
 
     def action_done(self):
         """Mark batch as completed"""
-
         self.ensure_one()
         if self.state not in ["confirmed", "processing"]:
             raise UserError(_("Only confirmed or processing batches can be completed."))
 
         self.write({"state": "done", "completion_date": fields.Date.today()})
+
+        # Create NAID audit log entry
+        self._create_naid_audit_log("batch_completed")
 
         return {
             "type": "ir.actions.client",
@@ -274,12 +283,14 @@ class ShreddingInventoryBatch(models.Model):
 
     def action_cancel(self):
         """Cancel the batch"""
-
         self.ensure_one()
         if self.state == "done":
             raise UserError(_("Completed batches cannot be cancelled."))
 
         self.write({"state": "cancelled"})
+
+        # Create NAID audit log entry
+        self._create_naid_audit_log("batch_cancelled")
 
         return {
             "type": "ir.actions.client",
@@ -290,6 +301,28 @@ class ShreddingInventoryBatch(models.Model):
                 "type": "warning",
             },
         }
+
+    def _create_naid_audit_log(self, event_type):
+        """Create NAID compliance audit log entry"""
+        self.env["naid.audit.log"].create(
+            {
+                "name": _(
+                    "Batch %s: %s",
+                    self.name,
+                    event_type.replace("_", " ").title(),
+                ),
+                "event_type": event_type,
+                "resource_model": self._name,
+                "resource_id": self.id,
+                "user_id": self.env.user.id,
+                "description": _(
+                    "Shredding batch %s - %s",
+                    self.name,
+                    event_type.replace("_", " "),
+                ),
+                "timestamp": fields.Datetime.now(),
+            }
+        )
 
     # ============================================================================
     # VALIDATION METHODS
@@ -320,6 +353,7 @@ class ShreddingPicklistItem(models.Model):
         string="Item Name",
         required=True,
         tracking=True,
+        index=True,
         help="Name of the item to be picked",
     )
     display_name = fields.Char(
@@ -339,6 +373,7 @@ class ShreddingPicklistItem(models.Model):
         "shredding.inventory.batch",
         string="Batch",
         ondelete="cascade",
+        required=True,
         help="Related shredding batch",
     )
     container_id = fields.Many2one(
@@ -347,8 +382,10 @@ class ShreddingPicklistItem(models.Model):
     document_id = fields.Many2one(
         "records.document", string="Document", help="Related document record"
     )
-    work_order_id = fields.Many2one(
-        "work.order.shredding", string="Work Order", help="Related shredding work order"
+    shredding_service_id = fields.Many2one(
+        "shredding.service",
+        string="Shredding Service",
+        help="Related shredding service",
     )
     location_id = fields.Many2one(
         "records.location", string="Location", help="Storage location of the item"
@@ -407,31 +444,19 @@ class ShreddingPicklistItem(models.Model):
     barcode = fields.Char(string="Barcode", help="Item barcode for scanning")
 
     # ============================================================================
-    # MAIL THREAD FIELDS
+    # MAIL THREAD FRAMEWORK FIELDS (REQUIRED)
     # ============================================================================
     activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        domain=[("res_model", "=", "shredding.picklist.item")],
+        "mail.activity", "res_id", string="Activities"
     )
     message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        domain=[("res_model", "=", "shredding.picklist.item")],
+        "mail.followers", "res_id", string="Followers"
     )
-    message_ids = fields.One2many(
-        "mail.message",
-        "res_id",
-        string="Messages",
-        domain=[("res_model", "=", "shredding.picklist.item")],
-    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-
     @api.depends("name", "container_id", "document_id")
     def _compute_display_name(self):
         """Compute display name with context information"""
@@ -448,7 +473,6 @@ class ShreddingPicklistItem(models.Model):
     # ============================================================================
     def action_mark_picked(self):
         """Mark item as picked"""
-
         self.ensure_one()
         if self.status != "pending_pickup":
             raise UserError(_("Only pending items can be marked as picked."))
@@ -456,10 +480,13 @@ class ShreddingPicklistItem(models.Model):
         self.write(
             {
                 "status": "picked",
-                "picked_by": self.env.user.id,
+                "picked_by_id": self.env.user.id,
                 "picked_date": fields.Datetime.now(),
             }
         )
+
+        # Create NAID audit log entry
+        self._create_naid_audit_log("item_picked")
 
         return {
             "type": "ir.actions.client",
@@ -473,7 +500,6 @@ class ShreddingPicklistItem(models.Model):
 
     def action_mark_verified(self):
         """Mark item as verified"""
-
         self.ensure_one()
         if self.status != "picked":
             raise UserError(_("Only picked items can be verified."))
@@ -481,10 +507,13 @@ class ShreddingPicklistItem(models.Model):
         self.write(
             {
                 "status": "verified",
-                "verified_by": self.env.user.id,
+                "verified_by_id": self.env.user.id,
                 "verified_date": fields.Datetime.now(),
             }
         )
+
+        # Create NAID audit log entry
+        self._create_naid_audit_log("item_verified")
 
         return {
             "type": "ir.actions.client",
@@ -498,7 +527,6 @@ class ShreddingPicklistItem(models.Model):
 
     def action_mark_not_found(self):
         """Mark item as not found"""
-
         self.ensure_one()
         if self.status not in ["pending_pickup", "picked"]:
             raise UserError(
@@ -506,6 +534,9 @@ class ShreddingPicklistItem(models.Model):
             )
 
         self.write({"status": "not_found"})
+
+        # Create NAID audit log entry
+        self._create_naid_audit_log("item_not_found")
 
         return {
             "type": "ir.actions.client",
@@ -519,7 +550,6 @@ class ShreddingPicklistItem(models.Model):
 
     def action_confirm(self):
         """Confirm item for pickup"""
-
         self.ensure_one()
         if self.status != "draft":
             raise UserError(_("Only draft items can be confirmed."))
@@ -538,7 +568,6 @@ class ShreddingPicklistItem(models.Model):
 
     def action_reset_to_draft(self):
         """Reset item to draft status"""
-
         self.ensure_one()
         if self.status == "verified":
             raise UserError(_("Verified items cannot be reset to draft."))
@@ -546,9 +575,9 @@ class ShreddingPicklistItem(models.Model):
         self.write(
             {
                 "status": "draft",
-                "picked_by": False,
+                "picked_by_id": False,
                 "picked_date": False,
-                "verified_by": False,
+                "verified_by_id": False,
                 "verified_date": False,
             }
         )
@@ -562,6 +591,28 @@ class ShreddingPicklistItem(models.Model):
                 "type": "info",
             },
         }
+
+    def _create_naid_audit_log(self, event_type):
+        """Create NAID compliance audit log entry"""
+        self.env["naid.audit.log"].create(
+            {
+                "name": _(
+                    "Picklist Item %s: %s",
+                    self.name,
+                    event_type.replace("_", " ").title(),
+                ),
+                "event_type": event_type,
+                "resource_model": self._name,
+                "resource_id": self.id,
+                "user_id": self.env.user.id,
+                "description": _(
+                    "Picklist item %s - %s",
+                    self.name,
+                    event_type.replace("_", " "),
+                ),
+                "timestamp": fields.Datetime.now(),
+            }
+        )
 
     # ============================================================================
     # VALIDATION METHODS

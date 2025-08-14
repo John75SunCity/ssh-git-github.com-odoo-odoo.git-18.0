@@ -93,7 +93,7 @@ class SystemDiagramData(models.TransientModel):
         help="JSON data for diagram edges",
     )
     diagram_config = fields.Text(
-        string="Diagram Configuration",
+        string="Diagram Configuration", 
         compute="_compute_diagram_config",
         store=False,
         help="Configuration options for the diagram",

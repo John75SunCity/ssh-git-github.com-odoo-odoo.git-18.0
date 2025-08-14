@@ -589,3 +589,106 @@ class NaidCertificate(models.Model):
 
         for cert in expired_certificates:
             cert.action_archive_certificate()
+
+
+class NAIDCertificate(models.Model):
+    _name = "naid.certificate"
+    _description = "NAID Destruction Certificate"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "certificate_number desc"
+    _rec_name = "certificate_number"
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    certificate_number = fields.Char(
+        string="Certificate Number", required=True, tracking=True, copy=False
+    )
+    company_id = fields.Many2one(
+        "res.company", default=lambda self: self.env.company, required=True
+    )
+    active = fields.Boolean(string="Active", default=True)
+
+    # ============================================================================
+    # BUSINESS FIELDS
+    # ============================================================================
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Customer",
+        required=True,
+        help="Customer for whom destruction was performed",
+    )
+
+    destruction_date = fields.Datetime(
+        string="Destruction Date", required=True, tracking=True
+    )
+
+    issue_date = fields.Datetime(
+        string="Issue Date", default=fields.Datetime.now, required=True
+    )
+
+    naid_compliance_level = fields.Selection(
+        [
+            ("aaa", "AAA - Highest Security"),
+            ("aa", "AA - High Security"),
+            ("a", "A - Standard Security"),
+        ],
+        string="NAID Compliance Level",
+        default="aaa",
+        required=True,
+    )
+
+    destruction_method = fields.Selection(
+        [
+            ("shred", "Cross-Cut Shredding"),
+            ("pulverize", "Pulverization"),
+            ("incinerate", "Incineration"),
+            ("degauss", "Degaussing"),
+            ("wipe", "Data Wiping"),
+        ],
+        string="Destruction Method",
+        required=True,
+    )
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS
+    # ============================================================================
+    destruction_item_ids = fields.One2many(
+        "destruction.item", "naid_certificate_id", string="Destruction Items"
+    )
+
+    shredding_service_id = fields.Many2one(
+        "shredding.service", string="Shredding Service"
+    )
+
+    # Mail Thread Framework Fields
+    activity_ids = fields.One2many(
+        "mail.activity", "res_id", string="Activities"
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers"
+    )
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends("destruction_item_ids")
+    def _compute_total_items(self):
+        """Compute total number of items destroyed"""
+        for record in self:
+            record.total_items = len(record.destruction_item_ids)
+
+    total_items = fields.Integer(
+        string="Total Items", compute="_compute_total_items", store=True
+    )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Generate certificate number on creation"""
+        for vals in vals_list:
+            if not vals.get("certificate_number"):
+                vals["certificate_number"] = self.env[
+                    "ir.sequence"
+                ].next_by_code("naid.certificate") or _("New")
+        return super().create(vals_list)

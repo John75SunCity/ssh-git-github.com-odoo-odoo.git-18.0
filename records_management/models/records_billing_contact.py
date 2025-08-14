@@ -116,7 +116,7 @@ class RecordsBillingContact(models.Model):
     # BILLING PROFILE RELATIONSHIP
     # ============================================================================
     billing_profile_id = fields.Many2one(
-        "customer.billing.profile",
+        "records.billing.profile",
         string="Billing Profile",
         required=True,
         tracking=True,
@@ -130,6 +130,18 @@ class RecordsBillingContact(models.Model):
         related="billing_profile_id.partner_id",
         store=True,
         help="Customer associated with this contact",
+    )
+
+    # ============================================================================
+    # BILLING SERVICE RELATIONSHIPS
+    # ============================================================================
+    billing_service_ids = fields.Many2many(
+        "records.billing.service",
+        "billing_contact_service_rel",
+        "contact_id",
+        "service_id",
+        string="Associated Billing Services",
+        help="Billing services this contact should receive invoices for",
     )
 
     # ============================================================================
@@ -252,6 +264,68 @@ class RecordsBillingContact(models.Model):
         help="Schedule for invoice delivery",
     )
 
+    invoice_delivery_method = fields.Selection(
+        [
+            ("email", "Email"),
+            ("mail", "Postal Mail"),
+            ("portal", "Customer Portal"),
+            ("fax", "Fax"),
+        ],
+        string="Invoice Delivery Method",
+        default="email",
+        help="Method for delivering invoices to this contact",
+    )
+
+    invoice_format = fields.Selection(
+        [
+            ("pdf", "PDF"),
+            ("html", "HTML"),
+            ("both", "Both"),
+        ],
+        string="Invoice Format",
+        default="pdf",
+        help="Format for invoice delivery",
+    )
+
+    consolidated_invoicing = fields.Boolean(
+        string="Consolidated Invoicing",
+        default=False,
+        help="Consolidate multiple invoices into single delivery",
+    )
+
+    # ============================================================================
+    # COMMUNICATION NOTIFICATION SETTINGS
+    # ============================================================================
+    email_notifications = fields.Boolean(
+        string="Email Notifications",
+        default=True,
+        help="Receive email notifications for billing events",
+    )
+
+    notification_frequency = fields.Selection(
+        [
+            ("immediate", "Immediate"),
+            ("hourly", "Hourly"),
+            ("daily", "Daily"),
+            ("weekly", "Weekly"),
+        ],
+        string="Notification Frequency",
+        default="immediate",
+        help="Frequency of notification delivery",
+    )
+
+    sms_notifications = fields.Boolean(
+        string="SMS Notifications",
+        default=False,
+        help="Receive SMS notifications for urgent billing matters",
+    )
+
+    urgent_notifications_only = fields.Boolean(
+        string="Urgent Notifications Only",
+        default=False,
+        help="Only receive notifications for urgent matters",
+    )
+
     # ============================================================================
     # CONTACT DETAILS
     # ============================================================================
@@ -286,6 +360,17 @@ class RecordsBillingContact(models.Model):
         string="Communication Count",
         default=0,
         help="Number of communications sent to this contact",
+    )
+
+    # ============================================================================
+    # CURRENCY FIELDS
+    # ============================================================================
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        related="company_id.currency_id",
+        store=True,
+        help="Company currency for billing",
     )
 
     # ============================================================================
@@ -372,6 +457,19 @@ class RecordsBillingContact(models.Model):
         help="Priority level for contact sorting",
     )
 
+    @api.depends("billing_service_ids")
+    def _compute_service_count(self):
+        """Compute number of associated billing services"""
+        for record in self:
+            record.service_count = len(record.billing_service_ids)
+
+    service_count = fields.Integer(
+        string="Service Count",
+        compute="_compute_service_count",
+        store=True,
+        help="Number of associated billing services",
+    )
+
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
@@ -389,7 +487,7 @@ class RecordsBillingContact(models.Model):
         """Override write to handle primary contact changes"""
         if "primary_contact" in vals and vals["primary_contact"]:
             for record in self:
-                self._ensure_single_primary(record.billing_profile_id.id, record.id)
+                self._ensure_single_primary(record.billing_profile_id.id, record.id  # pylint: disable=no-member)
 
         return super().write(vals)
 
@@ -407,6 +505,8 @@ class RecordsBillingContact(models.Model):
 
         existing_primary = self.search(domain)
         if existing_primary:
+            # pylint: disable=no-member
+
             existing_primary.write({"primary_contact": False})
 
     def _get_languages(self):
@@ -427,6 +527,8 @@ class RecordsBillingContact(models.Model):
             )
 
         # Update activity tracking
+        # pylint: disable=no-member
+
         self.write(
             {
                 "last_contact_date": fields.Datetime.now(),
@@ -449,6 +551,9 @@ class RecordsBillingContact(models.Model):
         """Update tracking when invoice is delivered to this contact"""
         self.ensure_one()
 
+        # pylint: disable=no-member
+
+
         self.write(
             {
                 "last_invoice_sent": fields.Datetime.now(),
@@ -461,10 +566,11 @@ class RecordsBillingContact(models.Model):
     # ============================================================================
     def action_set_primary(self):
         """Set this contact as primary"""
-
         self.ensure_one()
 
         # Remove primary flag from other contacts in same profile
+        # pylint: disable=no-member
+
         other_contacts = self.search(
             [
                 ("billing_profile_id", "=", self.billing_profile_id.id),
@@ -472,9 +578,14 @@ class RecordsBillingContact(models.Model):
             ]
         )
 
+        # pylint: disable=no-member
+
+
         other_contacts.write({"primary_contact": False})
 
         # Set this contact as primary
+        # pylint: disable=no-member
+
         self.write(
             {
                 "primary_contact": True,
@@ -496,7 +607,6 @@ class RecordsBillingContact(models.Model):
 
     def action_test_email(self):
         """Send test email to verify contact information"""
-
         self.ensure_one()
 
         if not self.email:
@@ -517,7 +627,6 @@ class RecordsBillingContact(models.Model):
 
     def action_view_communications(self):
         """View all communications sent to this contact"""
-
         self.ensure_one()
 
         return {
@@ -532,9 +641,24 @@ class RecordsBillingContact(models.Model):
             "context": {"default_model": self._name, "default_res_id": self.id},
         }
 
+    def action_view_billing_services(self):
+        """View associated billing services"""
+        self.ensure_one()
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Billing Services: %s", self.name),
+            "res_model": "records.billing.service",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", self.billing_service_ids.ids  # pylint: disable=no-member)],
+            "context": {
+                "default_contact_id": self.id,
+                "search_default_group_by_service_type": 1,
+            },
+        }
+
     def action_update_preferences(self):
         """Open wizard to update communication preferences"""
-
         self.ensure_one()
 
         return {
@@ -552,11 +676,12 @@ class RecordsBillingContact(models.Model):
 
     def action_deactivate_contact(self):
         """Deactivate billing contact"""
-
         self.ensure_one()
 
         # If this is a primary contact, promote backup contact
         if self.primary_contact:
+            # pylint: disable=no-member
+
             backup_contacts = self.search(
                 [
                     ("billing_profile_id", "=", self.billing_profile_id.id),
@@ -568,6 +693,8 @@ class RecordsBillingContact(models.Model):
             )
 
             if backup_contacts:
+                # pylint: disable=no-member
+
                 backup_contacts.write(
                     {
                         "primary_contact": True,
@@ -579,6 +706,9 @@ class RecordsBillingContact(models.Model):
                 self.message_post(
                     body=_("Primary contact role transferred to %s", backup_contacts[0].name)
                 )
+
+        # pylint: disable=no-member
+
 
         self.write({"active": False})
 
@@ -600,11 +730,13 @@ class RecordsBillingContact(models.Model):
         """Ensure only one primary contact per billing profile"""
         for record in self:
             if record.primary_contact:
+                # pylint: disable=no-member
+
                 existing = self.search(
                     [
                         ("billing_profile_id", "=", record.billing_profile_id.id),
                         ("primary_contact", "=", True),
-                        ("id", "!=", record.id),
+                        ("id", "!=", record.id  # pylint: disable=no-member),
                     ]
                 )
 
@@ -663,7 +795,7 @@ class RecordsBillingContact(models.Model):
             if record.job_title:
                 name_parts.append(f"- {record.job_title}")
 
-            result.append((record.id, " ".join(name_parts)))
+            result.append((record.id  # pylint: disable=no-member, " ".join(name_parts)))
 
         return result
 
@@ -689,6 +821,8 @@ class RecordsBillingContact(models.Model):
     @api.model
     def get_primary_contact(self, billing_profile_id):
         """Get primary contact for billing profile"""
+        # pylint: disable=no-member
+
         return self.search(
             [
                 ("billing_profile_id", "=", billing_profile_id),
@@ -716,3 +850,16 @@ class RecordsBillingContact(models.Model):
             domain.append(("receive_overdue_notices", "=", True))
 
         return self.search(domain, order="contact_priority, sequence, name")
+
+    @api.model
+    def get_contacts_for_service(self, service_id):
+        """Get contacts associated with specific billing service"""
+        # pylint: disable=no-member
+
+        return self.search(
+            [
+                ("billing_service_ids", "in", [service_id]),
+                ("active", "=", True),
+            ],
+            order="contact_priority, sequence, name",
+        )

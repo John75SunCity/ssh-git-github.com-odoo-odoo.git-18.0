@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <data>
+<!-- Destruction Item Sequence -->
+<record id="sequence_destruction_item" model="ir.sequence">
+    <field name="name">Destruction Item</field>
+    <field name="code">destruction.item</field>
+    <field name="prefix">DI</field>
+    <field name="padding">4</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name="company_id" eval="False"/>
+</record>
+
+<!-- NAID Certificate Sequence -->
+<record id="sequence_naid_certificate" model="ir.sequence">
+    <field name="name">NAID Certificate</field>
+    <field name="code">naid.certificate</field>
+    <field name="prefix">NAID-</field>
+    <field name="padding">6</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name="company_id" eval="False"/>
+</record>
+
         <!-- Additional sequence variations for records management -->
         <record id="seq_shredding_service" model="ir.sequence">
             <field name="name">Shredding Service</field>

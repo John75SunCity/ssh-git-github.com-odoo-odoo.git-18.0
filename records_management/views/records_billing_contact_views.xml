@@ -1,59 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+<!-- Tree view for records.billing.contact -->
     <record id="records_billing_contact_view_tree" model="ir.ui.view">
         <field name="name">records.billing.contact.view.tree</field>
         <field name="model">records.billing.contact</field>
         <field name="arch" type="xml">
             <tree>
+<field name="sequence" widget="handle"/>
+
                 <field name="name"/>
+<field name="email"/>
+<field name="job_title"/>
+<field name="billing_profile_id"/>
+<field name="primary_contact"/>
+<field name="contact_priority"/>
+<field name="receive_storage_invoices"/>
+<field name="receive_service_invoices"/>
+<field name="active"/>
+
             </tree>
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+<!-- Form view for records.billing.contact -->
     <record id="records_billing_contact_view_form" model="ir.ui.view">
         <field name="name">records.billing.contact.view.form</field>
         <field name="model">records.billing.contact</field>
         <field name="arch" type="xml">
-            <form string="Records Billing Contact">
+<form string="Billing Contact">
                 <sheet>
+<div class="oe_button_box" name="button_box">
+    <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+        <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+    </button>
+</div>
+                    
                     <div class="oe_title">
                         <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="Name..."/>
+<field name="name" placeholder="Contact Name..."/>
+
                         </h1>
                     </div>
+<group>
+    <group string="Contact Information">
+        <field name="billing_profile_id" required="1"/>
+        <field name="email"/>
+        <field name="phone"/>
+        <field name="mobile"/>
+        <field name="job_title"/>
+        <field name="department"/>
+    </group>
+    <group string="Contact Settings">
+        <field name="sequence"/>
+        <field name="primary_contact"/>
+        <field name="contact_priority"/>
+        <field name="active"/>
+    </group>
+</group>
+
+<notebook>
+    <page string="Invoice Preferences">
+        <group>
+            <group string="Invoice Types">
+                <field name="receive_storage_invoices"/>
+                <field name="receive_service_invoices"/>
+                <field name="receive_statements"/>
+                <field name="receive_overdue_notices"/>
+            </group>
+            <group string="Delivery Preferences">
+                <field name="invoice_delivery_method"/>
+                <field name="invoice_format"/>
+                <field name="consolidated_invoicing"/>
+            </group>
+        </group>
+    </page>
+
+    <page string="Communication">
+        <group>
+            <group string="Email Settings">
+                <field name="email_notifications"/>
+                <field name="notification_frequency"/>
+            </group>
+            <group string="SMS Settings">
+                <field name="sms_notifications"/>
+                <field name="urgent_notifications_only"/>
+            </group>
+        </group>
+        <group string="Additional Information">
+            <field name="notes" nolabel="1" placeholder="Internal notes about this contact..."/>
+        </group>
+    </page>
+
+    <page string="Services" attrs="{'invisible': [('billing_service_ids', '=', [])]}">
+        <field name="billing_service_ids">
+            <tree editable="bottom">
+                <field name="name"/>
+                <field name="service_type"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </page>
+</notebook>
                 </sheet>
+<div class="oe_chatter">
+    <field name="message_follower_ids"/>
+    <field name="activity_ids"/>
+    <field name="message_ids"/>
+</div>
             </form>
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+<!-- Search view for records.billing.contact -->
     <record id="records_billing_contact_view_search" model="ir.ui.view">
         <field name="name">records.billing.contact.view.search</field>
         <field name="model">records.billing.contact</field>
         <field name="arch" type="xml">
             <search>
+<field name="name"/>
+<field name="email"/>
+<field name="job_title"/>
+<field name="department"/>
+<field name="billing_profile_id"/>
+
+<filter name="active" string="Active" domain="[('active','=',True)]"/>
+<filter name="inactive" string="Inactive" domain="[('active','=',False)]"/>
+<separator/>
+<filter name="primary" string="Primary Contacts" domain="[('primary_contact','=',True)]"/>
+<filter name="high_priority" string="High Priority" domain="[('contact_priority','=','high')]"/>
+<separator/>
+<filter name="receive_storage" string="Storage Invoices" domain="[('receive_storage_invoices','=',True)]"/>
+<filter name="receive_service" string="Service Invoices" domain="[('receive_service_invoices','=',True)]"/>
+<filter name="receive_statements" string="Statements" domain="[('receive_statements','=',True)]"/>
+                
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="Billing Profile" name="billing_profile" domain="[]" context="{'group_by':'billing_profile_id'}"/>
+<filter string="Priority" name="priority" domain="[]" context="{'group_by':'contact_priority'}"/>
+<filter string="Job Title" name="job_title" domain="[]" context="{'group_by':'job_title'}"/>
+<filter string="Department" name="department" domain="[]" context="{'group_by':'department'}"/>
+
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+<!-- Action for records.billing.contact -->
     <record id="action_records_billing_contact" model="ir.actions.act_window">
-        <field name="name">Records Billing Contact</field>
+<field name="name">Billing Contacts</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.billing.contact</field>
         <field name="view_mode">tree,form</field>
         <field name="domain">[]</field>
-        <field name="context">{}</field>
+<field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Records Billing Contact.
+Click to create a new billing contact.
+</p>
+<p>
+                Billing contacts are used to manage who receives invoices, statements,
+                and other billing communications for each customer account.
             </p>
         </field>
     </record>

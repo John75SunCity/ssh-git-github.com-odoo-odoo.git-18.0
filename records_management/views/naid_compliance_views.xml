@@ -128,7 +128,7 @@
                             <field string="Destructions" name="destruction_count" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-shield" 
-                                invisible="naid_level != 'AAA'">>
+invisible="naid_level != 'AAA'">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">🏆</span>
                                 <span class="o_stat_text">NAID AAA</span>
@@ -303,7 +303,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Calendar -->
+<!-- Calendar view for NAID compliance -->
     <record id="naid_compliance_view_calendar" model="ir.ui.view">
         <field name="name">naid.compliance.view.calendar</field>
         <field name="model">naid.compliance</field>
@@ -364,12 +364,13 @@
         </field>
     </record>
 
-    <!-- Tree view for ENTERPRISE -->
+<!-- Action for NAID Compliance -->
     <record id="action_naid_compliance" model="ir.actions.act_window">
         <field name="name">🏆 NAID Compliance</field>
         <field name="res_model">naid.compliance</field>
         <field name="view_mode">kanban,tree,form,calendar</field>
-        <field name="search_view_id" ref="view_naid_compliance_search"/>
+<field name="search_view_id" ref="naid_compliance_view_search"/>
+
         <field name="context">{
             'search_default_certified': 1,
             'search_default_valid_certs': 1

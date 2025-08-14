@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="report_records_billing_service" model="ir.actions.report">
-        <field name="name">Records Billing Service</field>
+<field name="name">Records Billing Service Report</field>
         <field name="model">records.billing.service</field>
         <field name="report_type">qweb-html</field>
-        <field name="report_name">addon.report_records_billing_service_view</field>
-        <field name="report_file">addon.report_records_billing_service</field>
-        <field name="print_report_name">'%s' % object.name</field>
+<field name="report_name">records_management.report_records_billing_service_view</field>
+<field name="report_file">records_management.report_records_billing_service</field>
+<field name="print_report_name">'Billing Service - %s' % object.name</field>
         <field name="binding_model_id" ref="model_records_billing_service"/>
         <field name="binding_type">report</field>
     </record>
@@ -16,25 +16,193 @@
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Title</h2>
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+<!-- Header Section -->
+<div class="row">
+    <div class="col-xs-12">
+        <h2 class="text-center">
+            <strong>Records Billing Service Report</strong>
+        </h2>
+        <h3 class="text-center text-muted">
+            <span t-field="doc.name"/>
+        </h3>
+    </div>
+</div>
+
+<br/>
+
+<!-- Service Details -->
+<div class="row">
+    <div class="col-xs-6">
+        <strong>Service Information:</strong>
+        <table class="table table-condensed">
+<tr>
+    <td>
+        <strong>Service Name:</strong>
+    </td>
+    <td>
+        <span t-field="doc.name"/>
+    </td>
+</tr>
+<tr>
+    <td>
+        <strong>Service Type:</strong>
+    </td>
+    <td>
+        <span t-field="doc.service_type"/>
+    </td>
+</tr>
+<tr>
+    <td>
+        <strong>Description:</strong>
+    </td>
+    <td>
+        <span t-field="doc.description"/>
+    </td>
+</tr>
+<tr>
+    <td>
+        <strong>Active:</strong>
+    </td>
+    <td>
+        <span t-field="doc.active"/>
+    </td>
+</tr>
+</table>
+</div>
+<div class="col-xs-6">
+<strong>Billing Information:</strong>
+<table class="table table-condensed">
+<tr>
+    <td>
+        <strong>Unit Price:</strong>
+    </td>
+    <td>
+        <span t-field="doc.unit_price" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+    </td>
+</tr>
+<tr>
+    <td>
+        <strong>Billing Unit:</strong>
+    </td>
+    <td>
+        <span t-field="doc.billing_unit"/>
+    </td>
+</tr>
+<tr>
+    <td>
+        <strong>Currency:</strong>
+    </td>
+    <td>
+        <span t-field="doc.currency_id"/>
+    </td>
+</tr>
+<tr>
+    <td>
+        <strong>Company:</strong>
+    </td>
+    <td>
+        <span t-field="doc.company_id"/>
+    </td>
+</tr>
+</table>
+</div>
+</div>
+
+<br/>
+
+<!-- Billing Rules Section (if exists) -->
+<t t-if="doc.billing_rule_ids">
+<div class="row">
+<div class="col-xs-12">
+<strong>Associated Billing Rules:</strong>
+<table class="table table-striped table-condensed">
+<thead>
+    <tr>
+<th>Rule Name</th>
+<th>Rule Type</th>
+<th>Rate</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr t-foreach="doc.billing_rule_ids" t-as="rule">
+    <td>
+        <span t-field="rule.name"/>
+    </td>
+    <td>
+        <span t-field="rule.rule_type"/>
+    </td>
+    <td>
+<span t-field="rule.rate" t-options="{'widget': 'monetary', 'display_currency': rule.currency_id}"/>
+</td>
+<td>
+    <span t-field="rule.description"/>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</t>
+
+<!-- Container Types Section (if exists) -->
+<t t-if="doc.container_type_ids">
+<br/>
+<div class="row">
+<div class="col-xs-12">
+<strong>Applicable Container Types:</strong>
+<table class="table table-striped table-condensed">
+<thead>
+<tr>
+<th>Container Type</th>
+<th>Volume (CF)</th>
+<th>Max Weight (lbs)</th>
+<th>Dimensions</th>
+</tr>
+</thead>
+<tbody>
+<tr t-foreach="doc.container_type_ids" t-as="container_type">
+<td>
+    <span t-field="container_type.name"/>
+</td>
+<td>
+    <span t-field="container_type.volume"/>
+</td>
+<td>
+    <span t-field="container_type.max_weight"/>
+</td>
+<td>
+    <span t-field="container_type.dimensions"/>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</t>
+
+<!-- Service Notes/Additional Information -->
+<t t-if="doc.notes">
+<br/>
+<div class="row">
+<div class="col-xs-12">
+<strong>Service Notes:</strong>
+<div style="border: 1px solid #ddd; padding: 10px; margin-top: 5px;">
+    <span t-field="doc.notes"/>
+</div>
+</div>
+</div>
+</t>
+
+<!-- Footer with timestamp -->
+<br/>
+<div class="row">
+<div class="col-xs-12 text-right text-muted">
+<small>
+                                    Report generated on <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/>
+</small>
+</div>
+</div>
                     </div>
                 </t>
             </t>

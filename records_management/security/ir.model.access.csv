@@ -42,6 +42,14 @@ access_records_survey_user_input_manager,access_records_survey_user_input_manage
 access_records_survey_user_input_portal,access_records_survey_user_input_portal,model_records_survey_user_input,base.group_portal,1,1,1,0
 
 # ============================================================================
+# SHREDDING SERVICE ACCESS RULES
+# ============================================================================
+access_shredding_service_user,access_shredding_service_user,model_shredding_service,records_management.group_records_user,1,1,1,0
+access_shredding_service_manager,access_shredding_service_manager,model_shredding_service,records_management.group_records_manager,1,1,1,1
+access_shredding_service_portal,access_shredding_service_portal,model_shredding_service,base.group_portal,1,1,1,0
+access_shredding_service_fsm,access_shredding_service_fsm,model_shredding_service,industry_fsm.group_fsm_user,1,1,1,0
+
+# ============================================================================
 # SHRED BIN AND BIN KEY MANAGEMENT ACCESS RULES
 # ============================================================================
 access_shred_bin_user,access_shred_bin_user,model_shred_bin,records_management.group_records_user,1,1,1,0
@@ -115,7 +123,7 @@ access_bin_key_history_manager,bin_key_history_manager,model_bin_key_history,rec
 access_bin_key_management_manager,bin_key_management_manager,model_bin_key_management,records_management.group_records_manager,1,1,1,1
 
 # ============================================================================
-# NEW INTEGRATED WORK ORDER ACCESS RULES (5 Work Order Types)
+# WORK ORDER ACCESS RULES
 # ============================================================================
 access_container_retrieval_work_order_user,access_container_retrieval_work_order_user,model_container_retrieval_work_order,records_management.group_records_user,1,1,1,0
 access_container_retrieval_work_order_manager,access_container_retrieval_work_order_manager,model_container_retrieval_work_order,records_management.group_records_manager,1,1,1,1
@@ -148,94 +156,26 @@ access_container_access_work_order_manager,access_container_access_work_order_ma
 access_container_access_work_order_portal,access_container_access_work_order_portal,model_container_access_work_order,base.group_portal,1,1,1,0
 access_container_access_work_order_fsm,access_container_access_work_order_fsm,model_container_access_work_order,industry_fsm.group_fsm_user,1,1,1,0
 
-# ============================================================================
-# WORK ORDER INTEGRATION COORDINATOR ACCESS RULES
-# ============================================================================
 access_work_order_coordinator_user,access_work_order_coordinator_user,model_work_order_coordinator,records_management.group_records_user,1,1,1,0
 access_work_order_coordinator_manager,access_work_order_coordinator_manager,model_work_order_coordinator,records_management.group_records_manager,1,1,1,1
 access_work_order_coordinator_portal,access_work_order_coordinator_portal,model_work_order_coordinator,base.group_portal,1,0,0,0
 access_work_order_coordinator_fsm,access_work_order_coordinator_fsm,model_work_order_coordinator,industry_fsm.group_fsm_user,1,1,1,0
 
 # ============================================================================
-# LEGACY DOCUMENT RETRIEVAL WORK ORDER ACCESS RULES (For Migration)
+# FIELD CUSTOMIZATION ACCESS RULES
 # ============================================================================
-access_records_retrieval_work_order_user,access_records_retrieval_work_order_user,model_records_retrieval_work_order,records_management.group_records_user,1,1,1,0
-access_records_retrieval_work_order_manager,access_records_retrieval_work_order_manager,model_records_retrieval_work_order,records_management.group_records_manager,1,1,1,1
-access_records_retrieval_work_order_portal,access_records_retrieval_work_order_portal,model_records_retrieval_work_order,base.group_portal,1,0,0,0
-access_document_retrieval_item_user,access_document_retrieval_item_user,model_document_retrieval_item,records_management.group_records_user,1,1,1,0
-access_document_retrieval_item_manager,access_document_retrieval_item_manager,model_document_retrieval_item,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_item_portal,access_document_retrieval_item_portal,model_document_retrieval_item,base.group_portal,1,0,0,0
-access_document_retrieval_team_user,access_document_retrieval_team_user,model_document_retrieval_team,records_management.group_records_user,1,1,1,0
-access_document_retrieval_team_manager,access_document_retrieval_team_manager,model_document_retrieval_team,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_pricing_user,access_document_retrieval_pricing_user,model_document_retrieval_pricing,records_management.group_records_user,1,1,1,0
-access_document_retrieval_pricing_manager,access_document_retrieval_pricing_manager,model_document_retrieval_pricing,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_equipment_user,access_document_retrieval_equipment_user,model_document_retrieval_equipment,records_management.group_records_user,1,1,1,0
-access_document_retrieval_equipment_manager,access_document_retrieval_equipment_manager,model_document_retrieval_equipment,records_management.group_records_manager,1,1,1,1
+access_field_label_customization_manager,field_label_customization_manager,model_field_label_customization,records_management.group_records_manager,1,1,1,1
+
+# ============================================================================
+# REPORT ACCESS RULES
+# ============================================================================
+access_naid_compliance_user,naid.compliance.user,model_naid_compliance,records_management.group_records_user,1,0,0,0
+access_naid_compliance_manager,naid.compliance.manager,model_naid_compliance,records_management.group_records_manager,1,1,1,1
+
+access_records_management_dashboard_user,records.management.dashboard.user,model_records_management_dashboard,records_management.group_records_user,1,0,0,0
+access_records_management_dashboard_manager,records.management.dashboard.manager,model_records_management_dashboard,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_metrics_user,access_document_retrieval_metrics_user,model_document_retrieval_metrics,records_management.group_records_user,1,1,1,0
 access_document_retrieval_metrics_manager,access_document_retrieval_metrics_manager,model_document_retrieval_metrics,records_management.group_records_manager,1,1,1,1
-access_records_audit_log_manager,records_audit_log_manager,model_records_audit_log,,1,1,1,1
-access_records_approval_workflow_manager,records_approval_workflow_manager,model_records_approval_workflow,,1,1,1,1
-access_records_approval_step_manager,records_approval_step_manager,model_records_approval_step,,1,1,1,1
-access_records_advanced_billing_period_manager,records_advanced_billing_period_manager,model_records_advanced_billing_period,,1,1,1,1
-access_proj_task_ext_manager,proj_task_ext_manager,model_proj_task_ext,,1,1,1,1
-access_prod_ext_manager,prod_ext_manager,model_prod_ext,,1,1,1,1
-access_records_access_log_manager,records_access_log_manager,model_records_access_log,,1,1,1,1
-access_processing_log_manager,processing_log_manager,model_processing_log,,1,1,1,1
-access_pickup_route_manager,pickup_route_manager,model_pickup_route,,1,1,1,1
-access_pickup_route_stop_manager,pickup_route_stop_manager,model_pickup_route_stop,,1,1,1,1
-access_shredding_team_manager,shredding_team_manager,model_shredding_team,,1,1,1,1
-access_shredding_service_log_manager,shredding_service_log_manager,model_shredding_service_log,,1,1,1,1
-access_shredding_service_manager,shredding_service_manager,model_shredding_service,,1,1,1,1
-access_field_label_helper_wizard_manager,field_label_helper_wizard_manager,model_field_label_helper_wizard,,1,1,1,1
-access_fsm_reschedule_wizard_placeholder_manager,fsm_reschedule_wizard_placeholder_manager,model_fsm_reschedule_wizard_placeholder,,1,1,1,1
-access_hard_drive_scan_wizard_manager,hard_drive_scan_wizard_manager,model_hard_drive_scan_wizard,,1,1,1,1
-access_key_restriction_checker_manager,key_restriction_checker_manager,model_key_restriction_checker,,1,1,1,1
-access_location_report_wizard_manager,location_report_wizard_manager,model_location_report_wizard,,1,1,1,1
-access_permanent_flag_wizard_manager,permanent_flag_wizard_manager,model_permanent_flag_wizard,,1,1,1,1
-access_rate_change_confirmation_wizard_manager,rate_change_confirmation_wizard_manager,model_rate_change_confirmation_wizard,,1,1,1,1
-access_records_container_type_converter_wizard_manager,records_container_type_converter_wizard_manager,model_records_container_type_converter_wizard,,1,1,1,1
-access_records_location_report_wizard_manager,records_location_report_wizard_manager,model_records_location_report_wizard,,1,1,1,1
-access_records_user_invitation_wizard_manager,records_user_invitation_wizard_manager,model_records_user_invitation_wizard,,1,1,1,1
-access_visitor_pos_wizard_manager,visitor_pos_wizard_manager,model_visitor_pos_wizard,,1,1,1,1
-access_work_order_bin_assignment_wizard_manager,work_order_bin_assignment_wizard_manager,model_work_order_bin_assignment_wizard,,1,1,1,1
-access_custom_box_volume_calculator_manager,custom_box_volume_calculator_manager,model_custom_box_volume_calculator,,1,1,1,1
-access_naid_audit_log_manager,naid_audit_log_manager,model_naid_audit_log,,1,1,1,1
-access_naid_certificate_manager,naid_certificate_manager,model_naid_certificate,,1,1,1,1
-access_load_manager,load_manager,model_load,,1,1,1,1
-access_file_retrieval_work_order_manager,file_retrieval_work_order_manager,model_file_retrieval_work_order,,1,1,1,1
-access_paper_bale_manager,paper_bale_manager,model_paper_bale,,1,1,1,1
-access_paper_bale_inspection_manager,paper_bale_inspection_manager,model_paper_bale_inspection,,1,1,1,1
-access_paper_bale_inspection_wizard_manager,paper_bale_inspection_wizard_manager,model_paper_bale_inspection_wizard,,1,1,1,1
-access_paper_bale_movement_manager,paper_bale_movement_manager,model_paper_bale_movement,,1,1,1,1
-access_paper_bale_recycling_manager,paper_bale_recycling_manager,model_paper_bale_recycling,,1,1,1,1
-access_paper_bale_source_document_manager,paper_bale_source_document_manager,model_paper_bale_source_document,,1,1,1,1
-access_paper_bale_weigh_wizard_manager,paper_bale_weigh_wizard_manager,model_paper_bale_weigh_wizard,,1,1,1,1
-access_paper_load_shipment_manager,paper_load_shipment_manager,model_paper_load_shipment,,1,1,1,1
-access_partner_bin_key_manager,partner_bin_key_manager,model_partner_bin_key,,1,1,1,1
-access_payment_split_manager,payment_split_manager,model_payment_split,,1,1,1,1
-access_photo_manager,photo_manager,model_photo,,1,1,1,1
-access_pickup_request_manager,pickup_request_manager,model_pickup_request,,1,1,1,1
-access_pickup_request_item_manager,pickup_request_item_manager,model_pickup_request_item,,1,1,1,1
-access_portal_feedback_escalation_manager,portal_feedback_escalation_manager,model_portal_feedback_escalation,,1,1,1,1
-access_portal_feedback_action_manager,portal_feedback_action_manager,model_portal_feedback_action,,1,1,1,1
-access_portal_feedback_communication_manager,portal_feedback_communication_manager,model_portal_feedback_communication,,1,1,1,1
-access_shredding_hard_drive_manager,shredding_hard_drive_manager,model_shredding_hard_drive,,1,1,1,1
-access_records_security_audit_manager,records_security_audit_manager,model_records_security_audit,,1,1,1,1
-access_records_storage_department_user_manager,records_storage_department_user_manager,model_records_storage_department_user,,1,1,1,1
-access_records_tag_manager,records_tag_manager,model_records_tag,,1,1,1,1
-access_records_usage_tracking_manager,records_usage_tracking_manager,model_records_usage_tracking,,1,1,1,1
-access_required_document_manager,required_document_manager,model_required_document,,1,1,1,1
-access_shredding_certificate_manager,shredding_certificate_manager,model_shredding_certificate,,1,1,1,1
-access_shredding_inventory_batch_manager,shredding_inventory_batch_manager,model_shredding_inventory_batch,,1,1,1,1
-access_signed_document_audit_manager,signed_document_audit_manager,model_signed_document_audit,,1,1,1,1
-access_signed_document_manager,signed_document_manager,model_signed_document,,1,1,1,1
-access_visitor_manager,visitor_manager,model_visitor,,1,1,1,1
-access_wizard_template_manager,wizard_template_manager,model_wizard_template,,1,1,1,1
-access_work_order_shredding_manager,work_order_shredding_manager,model_work_order_shredding,,1,1,1,1
-access_records_deletion_request_enhanced_user,access_records_deletion_request_enhanced_user,model_records_deletion_request_enhanced,records_management.group_records_user,1,1,1,0
-access_records_deletion_request_enhanced_manager,access_records_deletion_request_enhanced_manager,model_records_deletion_request_enhanced,records_management.group_records_manager,1,1,1,1
-access_records_user_invitation_wizard_manager,access_records_user_invitation_wizard_manager,model_records_user_invitation_wizard,records_management.group_records_manager,1,1,1,1
-access_records_bulk_user_import_manager,access_records_bulk_user_import_manager,model_records_bulk_user_import,records_management.group_records_manager,1,1,1,1
 
 # ============================================================================
 # NEW INTEGRATED WORK ORDER ACCESS RULES (5 Work Order Types)
@@ -278,25 +218,18 @@ access_container_access_work_order_portal,access_container_access_work_order_por
 access_container_access_work_order_fsm,access_container_access_work_order_fsm,model_container_access_work_order,industry_fsm.group_fsm_user,1,1,1,0
 
 # ============================================================================
-# LEGACY DOCUMENT RETRIEVAL WORK ORDER ACCESS RULES (For Migration)
+# DESTRUCTION ITEM ACCESS RULES
 # ============================================================================
-access_records_retrieval_work_order_user,access_records_retrieval_work_order_user,model_records_retrieval_work_order,records_management.group_records_user,1,1,1,0
-access_records_retrieval_work_order_manager,access_records_retrieval_work_order_manager,model_records_retrieval_work_order,records_management.group_records_manager,1,1,1,1
-access_records_retrieval_work_order_portal,access_records_retrieval_work_order_portal,model_records_retrieval_work_order,base.group_portal,1,0,0,0
-access_work_order_retrieval_user,access_work_order_retrieval_user,model_work_order_retrieval,records_management.group_records_user,1,1,1,0
-access_work_order_retrieval_manager,access_work_order_retrieval_manager,model_work_order_retrieval,records_management.group_records_manager,1,1,1,1
-access_work_order_retrieval_portal,access_work_order_retrieval_portal,model_work_order_retrieval,base.group_portal,1,0,0,0
-access_document_retrieval_item_user,access_document_retrieval_item_user,model_document_retrieval_item,records_management.group_records_user,1,1,1,0
-access_document_retrieval_item_manager,access_document_retrieval_item_manager,model_document_retrieval_item,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_item_portal,access_document_retrieval_item_portal,model_document_retrieval_item,base.group_portal,1,0,0,0
-access_document_retrieval_team_user,access_document_retrieval_team_user,model_document_retrieval_team,records_management.group_records_user,1,1,1,0
-access_document_retrieval_team_manager,access_document_retrieval_team_manager,model_document_retrieval_team,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_pricing_user,access_document_retrieval_pricing_user,model_document_retrieval_pricing,records_management.group_records_user,1,1,1,0
-access_document_retrieval_pricing_manager,access_document_retrieval_pricing_manager,model_document_retrieval_pricing,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_equipment_user,access_document_retrieval_equipment_user,model_document_retrieval_equipment,records_management.group_records_user,1,1,1,0
-access_document_retrieval_equipment_manager,access_document_retrieval_equipment_manager,model_document_retrieval_equipment,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_metrics_user,access_document_retrieval_metrics_user,model_document_retrieval_metrics,records_management.group_records_user,1,1,1,0
-access_document_retrieval_metrics_manager,access_document_retrieval_metrics_manager,model_document_retrieval_metrics,records_management.group_records_manager,1,1,1,1
+access_destruction_item_user,destruction.item.user,model_destruction_item,records_management.group_records_user,1,1,1,0
+access_destruction_item_manager,destruction.item.manager,model_destruction_item,records_management.group_records_manager,1,1,1,1
+access_destruction_item_portal,destruction.item.portal,model_destruction_item,base.group_portal,1,0,0,0
+
+# ============================================================================
+# NAID CERTIFICATE ACCESS RULES  
+# ============================================================================
+access_naid_certificate_user,naid.certificate.user,model_naid_certificate,records_management.group_records_user,1,1,1,0
+access_naid_certificate_manager,naid.certificate.manager,model_naid_certificate,records_management.group_records_manager,1,1,1,1
+access_naid_certificate_portal,naid.certificate.portal,model_naid_certificate,base.group_portal,1,0,0,0
 
 # ============================================================================
 # WORK ORDER INTEGRATION COORDINATOR ACCESS RULES
@@ -326,3 +259,171 @@ access_naid_compliance_manager,naid.compliance.manager,model_naid_compliance,rec
 # Management Dashboard
 access_records_management_dashboard_user,records.management.dashboard.user,model_records_management_dashboard,records_management.group_records_user,1,0,0,0
 access_records_management_dashboard_manager,records.management.dashboard.manager,model_records_management_dashboard,records_management.group_records_manager,1,1,1,1
+
+# ============================================================================
+# NEW INTEGRATED WORK ORDER ACCESS RULES (5 Work Order Types)
+# ============================================================================
+
+# Container Retrieval Work Order Access
+access_container_retrieval_work_order_user,access_container_retrieval_work_order_user,model_container_retrieval_work_order,records_management.group_records_user,1,1,1,0
+access_container_retrieval_work_order_manager,access_container_retrieval_work_order_manager,model_container_retrieval_work_order,records_management.group_records_manager,1,1,1,1
+access_container_retrieval_work_order_portal,access_container_retrieval_work_order_portal,model_container_retrieval_work_order,base.group_portal,1,1,1,0
+access_container_retrieval_work_order_fsm,access_container_retrieval_work_order_fsm,model_container_retrieval_work_order,industry_fsm.group_fsm_user,1,1,1,0
+
+# File Retrieval Work Order Access
+access_file_retrieval_work_order_user,access_file_retrieval_work_order_user,model_file_retrieval_work_order,records_management.group_records_user,1,1,1,0
+access_file_retrieval_work_order_manager,access_file_retrieval_work_order_manager,model_file_retrieval_work_order,records_management.group_records_manager,1,1,1,1
+access_file_retrieval_work_order_portal,access_file_retrieval_work_order_portal,model_file_retrieval_work_order,base.group_portal,1,1,1,0
+access_file_retrieval_work_order_fsm,access_file_retrieval_work_order_fsm,model_file_retrieval_work_order,industry_fsm.group_fsm_user,1,1,1,0
+access_file_retrieval_item_user,access_file_retrieval_item_user,model_file_retrieval_item,records_management.group_records_user,1,1,1,0
+access_file_retrieval_item_manager,access_file_retrieval_item_manager,model_file_retrieval_item,records_management.group_records_manager,1,1,1,1
+access_file_retrieval_item_portal,access_file_retrieval_item_portal,model_file_retrieval_item,base.group_portal,1,0,0,0
+
+# Scan Retrieval Work Order Access
+access_scan_retrieval_work_order_user,access_scan_retrieval_work_order_user,model_scan_retrieval_work_order,records_management.group_records_user,1,1,1,0
+access_scan_retrieval_work_order_manager,access_scan_retrieval_work_order_manager,model_scan_retrieval_work_order,records_management.group_records_manager,1,1,1,1
+access_scan_retrieval_work_order_portal,access_scan_retrieval_work_order_portal,model_scan_retrieval_work_order,base.group_portal,1,1,1,0
+access_scan_retrieval_work_order_fsm,access_scan_retrieval_work_order_fsm,model_scan_retrieval_work_order,industry_fsm.group_fsm_user,1,1,1,0
+access_scan_retrieval_item_user,access_scan_retrieval_item_user,model_scan_retrieval_item,records_management.group_records_user,1,1,1,0
+access_scan_retrieval_item_manager,access_scan_retrieval_item_manager,model_scan_retrieval_item,records_management.group_records_manager,1,1,1,1
+access_scan_retrieval_item_portal,access_scan_retrieval_item_portal,model_scan_retrieval_item,base.group_portal,1,0,0,0
+
+# Container Destruction Work Order Access
+access_container_destruction_work_order_user,access_container_destruction_work_order_user,model_container_destruction_work_order,records_management.group_records_user,1,1,1,0
+access_container_destruction_work_order_manager,access_container_destruction_work_order_manager,model_container_destruction_work_order,records_management.group_records_manager,1,1,1,1
+access_container_destruction_work_order_portal,access_container_destruction_work_order_portal,model_container_destruction_work_order,base.group_portal,1,1,1,0
+access_container_destruction_work_order_fsm,access_container_destruction_work_order_fsm,model_container_destruction_work_order,industry_fsm.group_fsm_user,1,1,1,0
+
+# Container Access Work Order Access
+access_container_access_work_order_user,access_container_access_work_order_user,model_container_access_work_order,records_management.group_records_user,1,1,1,0
+access_container_access_work_order_manager,access_container_access_work_order_manager,model_container_access_work_order,records_management.group_records_manager,1,1,1,1
+access_container_access_work_order_portal,access_container_access_work_order_portal,model_container_access_work_order,base.group_portal,1,1,1,0
+access_container_access_work_order_fsm,access_container_access_work_order_fsm,model_container_access_work_order,industry_fsm.group_fsm_user,1,1,1,0
+
+# ============================================================================
+# DESTRUCTION ITEM ACCESS RULES
+# ============================================================================
+access_destruction_item_user,destruction.item.user,model_destruction_item,records_management.group_records_user,1,1,1,0
+access_destruction_item_manager,destruction.item.manager,model_destruction_item,records_management.group_records_manager,1,1,1,1
+access_destruction_item_portal,destruction.item.portal,model_destruction_item,base.group_portal,1,0,0,0
+
+# ============================================================================
+# NAID CERTIFICATE ACCESS RULES  
+# ============================================================================
+access_naid_certificate_user,naid.certificate.user,model_naid_certificate,records_management.group_records_user,1,1,1,0
+access_naid_certificate_manager,naid.certificate.manager,model_naid_certificate,records_management.group_records_manager,1,1,1,1
+access_naid_certificate_portal,naid.certificate.portal,model_naid_certificate,base.group_portal,1,0,0,0
+
+# ============================================================================
+# WORK ORDER INTEGRATION COORDINATOR ACCESS RULES
+# ============================================================================
+access_work_order_coordinator_user,access_work_order_coordinator_user,model_work_order_coordinator,records_management.group_records_user,1,1,1,0
+access_work_order_coordinator_manager,access_work_order_coordinator_manager,model_work_order_coordinator,records_management.group_records_manager,1,1,1,1
+access_work_order_coordinator_portal,access_work_order_coordinator_portal,model_work_order_coordinator,base.group_portal,1,0,0,0
+access_work_order_coordinator_fsm,access_work_order_coordinator_fsm,model_work_order_coordinator,industry_fsm.group_fsm_user,1,1,1,0
+
+# Work Order Integration Mixin (abstract model - no direct access needed)
+access_file_retrieveal_work_order_item_py_manager,file_retrieveal_work_order_item_py_manager,model_file_retrieveal_work_order_item_py,,1,1,1,1
+access_file_retrieval_work_order_item_manager,file_retrieval_work_order_item_manager,model_file_retrieval_work_order_item,,1,1,1,1
+access_field_label_customization_manager,field_label_customization_manager,model_field_label_customization,,1,1,1,1
+
+# ============================================================================
+# REPORT ACCESS RULES
+# ============================================================================
+
+# Revenue Forecasting Report
+access_report_revenue_forecasting_user,report.revenue.forecasting.user,records_management.report.records_management.report_revenue_forecasting,records_management.group_records_user,1,0,0,0
+access_report_revenue_forecasting_manager,report.revenue.forecasting.manager,records_management.report.records_management.report_revenue_forecasting,records_management.group_records_manager,1,0,0,0
+
+# NAID Compliance Report
+access_naid_compliance_user,naid.compliance.user,model_naid_compliance,records_management.group_records_user,1,0,0,0
+access_naid_compliance_manager,naid.compliance.manager,model_naid_compliance,records_management.group_records_manager,1,1,1,1
+
+# Management Dashboard
+access_records_management_dashboard_user,records.management.dashboard.user,model_records_management_dashboard,records_management.group_records_user,1,0,0,0
+access_records_management_dashboard_manager,records.management.dashboard.manager,model_records_management_dashboard,records_management.group_records_manager,1,1,1,1
+
+# ============================================================================
+# NEW INTEGRATED WORK ORDER ACCESS RULES (5 Work Order Types)
+# ============================================================================
+
+# Container Retrieval Work Order Access
+access_container_retrieval_work_order_user,access_container_retrieval_work_order_user,model_container_retrieval_work_order,records_management.group_records_user,1,1,1,0
+access_container_retrieval_work_order_manager,access_container_retrieval_work_order_manager,model_container_retrieval_work_order,records_management.group_records_manager,1,1,1,1
+access_container_retrieval_work_order_portal,access_container_retrieval_work_order_portal,model_container_retrieval_work_order,base.group_portal,1,1,1,0
+access_container_retrieval_work_order_fsm,access_container_retrieval_work_order_fsm,model_container_retrieval_work_order,industry_fsm.group_fsm_user,1,1,1,0
+
+# File Retrieval Work Order Access
+access_file_retrieval_work_order_user,access_file_retrieval_work_order_user,model_file_retrieval_work_order,records_management.group_records_user,1,1,1,0
+access_file_retrieval_work_order_manager,access_file_retrieval_work_order_manager,model_file_retrieval_work_order,records_management.group_records_manager,1,1,1,1
+access_file_retrieval_work_order_portal,access_file_retrieval_work_order_portal,model_file_retrieval_work_order,base.group_portal,1,1,1,0
+access_file_retrieval_work_order_fsm,access_file_retrieval_work_order_fsm,model_file_retrieval_work_order,industry_fsm.group_fsm_user,1,1,1,0
+access_file_retrieval_item_user,access_file_retrieval_item_user,model_file_retrieval_item,records_management.group_records_user,1,1,1,0
+access_file_retrieval_item_manager,access_file_retrieval_item_manager,model_file_retrieval_item,records_management.group_records_manager,1,1,1,1
+access_file_retrieval_item_portal,access_file_retrieval_item_portal,model_file_retrieval_item,base.group_portal,1,0,0,0
+
+# Scan Retrieval Work Order Access
+access_scan_retrieval_work_order_user,access_scan_retrieval_work_order_user,model_scan_retrieval_work_order,records_management.group_records_user,1,1,1,0
+access_scan_retrieval_work_order_manager,access_scan_retrieval_work_order_manager,model_scan_retrieval_work_order,records_management.group_records_manager,1,1,1,1
+access_scan_retrieval_work_order_portal,access_scan_retrieval_work_order_portal,model_scan_retrieval_work_order,base.group_portal,1,1,1,0
+access_scan_retrieval_work_order_fsm,access_scan_retrieval_work_order_fsm,model_scan_retrieval_work_order,industry_fsm.group_fsm_user,1,1,1,0
+access_scan_retrieval_item_user,access_scan_retrieval_item_user,model_scan_retrieval_item,records_management.group_records_user,1,1,1,0
+access_scan_retrieval_item_manager,access_scan_retrieval_item_manager,model_scan_retrieval_item,records_management.group_records_manager,1,1,1,1
+access_scan_retrieval_item_portal,access_scan_retrieval_item_portal,model_scan_retrieval_item,base.group_portal,1,0,0,0
+
+# Container Destruction Work Order Access
+access_container_destruction_work_order_user,access_container_destruction_work_order_user,model_container_destruction_work_order,records_management.group_records_user,1,1,1,0
+access_container_destruction_work_order_manager,access_container_destruction_work_order_manager,model_container_destruction_work_order,records_management.group_records_manager,1,1,1,1
+access_container_destruction_work_order_portal,access_container_destruction_work_order_portal,model_container_destruction_work_order,base.group_portal,1,1,1,0
+access_container_destruction_work_order_fsm,access_container_destruction_work_order_fsm,model_container_destruction_work_order,industry_fsm.group_fsm_user,1,1,1,0
+
+# Container Access Work Order Access
+access_container_access_work_order_user,access_container_access_work_order_user,model_container_access_work_order,records_management.group_records_user,1,1,1,0
+access_container_access_work_order_manager,access_container_access_work_order_manager,model_container_access_work_order,records_management.group_records_manager,1,1,1,1
+access_container_access_work_order_portal,access_container_access_work_order_portal,model_container_access_work_order,base.group_portal,1,1,1,0
+access_container_access_work_order_fsm,access_container_access_work_order_fsm,model_container_access_work_order,industry_fsm.group_fsm_user,1,1,1,0
+
+# ============================================================================
+# DESTRUCTION ITEM ACCESS RULES
+# ============================================================================
+access_destruction_item_user,destruction.item.user,model_destruction_item,records_management.group_records_user,1,1,1,0
+access_destruction_item_manager,destruction.item.manager,model_destruction_item,records_management.group_records_manager,1,1,1,1
+access_destruction_item_portal,destruction.item.portal,model_destruction_item,base.group_portal,1,0,0,0
+
+# ============================================================================
+# NAID CERTIFICATE ACCESS RULES  
+# ============================================================================
+access_naid_certificate_user,naid.certificate.user,model_naid_certificate,records_management.group_records_user,1,1,1,0
+access_naid_certificate_manager,naid.certificate.manager,model_naid_certificate,records_management.group_records_manager,1,1,1,1
+access_naid_certificate_portal,naid.certificate.portal,model_naid_certificate,base.group_portal,1,0,0,0
+
+# ============================================================================
+# WORK ORDER INTEGRATION COORDINATOR ACCESS RULES
+# ============================================================================
+access_work_order_coordinator_user,access_work_order_coordinator_user,model_work_order_coordinator,records_management.group_records_user,1,1,1,0
+access_work_order_coordinator_manager,access_work_order_coordinator_manager,model_work_order_coordinator,records_management.group_records_manager,1,1,1,1
+access_work_order_coordinator_portal,access_work_order_coordinator_portal,model_work_order_coordinator,base.group_portal,1,0,0,0
+access_work_order_coordinator_fsm,access_work_order_coordinator_fsm,model_work_order_coordinator,industry_fsm.group_fsm_user,1,1,1,0
+
+# Work Order Integration Mixin (abstract model - no direct access needed)
+access_file_retrieveal_work_order_item_py_manager,file_retrieveal_work_order_item_py_manager,model_file_retrieveal_work_order_item_py,,1,1,1,1
+access_file_retrieval_work_order_item_manager,file_retrieval_work_order_item_manager,model_file_retrieval_work_order_item,,1,1,1,1
+access_field_label_customization_manager,field_label_customization_manager,model_field_label_customization,,1,1,1,1
+
+# ============================================================================
+# REPORT ACCESS RULES
+# ============================================================================
+
+# Revenue Forecasting Report
+access_report_revenue_forecasting_user,report.revenue.forecasting.user,records_management.report.records_management.report_revenue_forecasting,records_management.group_records_user,1,0,0,0
+access_report_revenue_forecasting_manager,report.revenue.forecasting.manager,records_management.report.records_management.report_revenue_forecasting,records_management.group_records_manager,1,0,0,0
+
+# NAID Compliance Report
+access_naid_compliance_user,naid.compliance.user,model_naid_compliance,records_management.group_records_user,1,0,0,0
+access_naid_compliance_manager,naid.compliance.manager,model_naid_compliance,records_management.group_records_manager,1,1,1,1
+
+# Management Dashboard
+access_records_management_dashboard_user,records.management.dashboard.user,model_records_management_dashboard,records_management.group_records_user,1,0,0,0
+access_records_management_dashboard_manager,records.management.dashboard.manager,model_records_management_dashboard,records_management.group_records_manager,1,1,1,1
+access_mobile_bin_key_wizard_manager,mobile_bin_key_wizard_manager,model_mobile_bin_key_wizard,,1,1,1,1
+access_bin_key_unlock_service_manager,bin_key_unlock_service_manager,model_bin_key_unlock_service,,1,1,1,1

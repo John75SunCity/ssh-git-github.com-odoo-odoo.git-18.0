@@ -1,61 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+<!-- Tree View for Records Billing Service -->
     <record id="records_billing_service_view_tree" model="ir.ui.view">
         <field name="name">records.billing.service.view.tree</field>
         <field name="model">records.billing.service</field>
         <field name="arch" type="xml">
-            <tree>
+<tree string="Billing Services" sample="1" decoration-info="state=='draft'" decoration-success="state=='active'" decoration-muted="state=='inactive'">
                 <field name="name"/>
+<field name="service_code"/>
+<field name="service_type"/>
+<field name="billing_frequency"/>
+<field name="base_rate" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+<field name="unit_of_measure"/>
+<field name="partner_id"/>
+<field name="state"/>
+<field name="active"/>
+<field name="currency_id" invisible="1"/>
+<field name="company_id" invisible="1"/>
+
             </tree>
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+<!-- Form View for Records Billing Service -->
     <record id="records_billing_service_view_form" model="ir.ui.view">
         <field name="name">records.billing.service.view.form</field>
         <field name="model">records.billing.service</field>
         <field name="arch" type="xml">
             <form string="Records Billing Service">
+<header>
+    <button name="action_activate_service" type="object" string="Activate" class="oe_highlight" states="draft"/>
+    <button name="action_deactivate_service" type="object" string="Deactivate" states="active" confirm="Are you sure you want to deactivate this service?"/>
+    <button name="action_archive_service" type="object" string="Archive" states="active,inactive"/>
+    <field name="state" widget="statusbar" statusbar_visible="draft,active,inactive"/>
+</header>
+
                 <sheet>
+<div class="oe_button_box" name="button_box">
+    <button name="action_view_billing_history" type="object" class="oe_stat_button" icon="fa-history">
+        <div class="o_field_widget o_stat_info">
+            <span class="o_stat_value">
+                <field name="billing_count"/>
+            </span>
+            <span class="o_stat_text">Billing Records</span>
+        </div>
+    </button>
+    <button name="action_view_service_requests" type="object" class="oe_stat_button" icon="fa-tasks">
+        <div class="o_field_widget o_stat_info">
+            <span class="o_stat_value">
+                <field name="service_request_count"/>
+            </span>
+            <span class="o_stat_text">Service Requests</span>
+        </div>
+    </button>
+</div>
+
+<widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
                     <div class="oe_title">
-                        <label for="name"/>
+<label for="name" class="oe_edit_only"/>
+
                         <h1>
-                            <field name="name" placeholder="Name..."/>
+<field name="name" placeholder="Service Name"/>
+
                         </h1>
-                    </div>
+<div class="oe_edit_only">
+    <label for="service_code"/>
+    <field name="service_code" placeholder="SVC-001"/>
+
+</div>
+</div>
+
+<group>
+<group name="service_details" string="Service Details">
+    <field name="service_type"/>
+    <field name="service_category"/>
+    <field name="description"/>
+    <field name="partner_id"/>
+    <field name="company_id" groups="base.group_multi_company"/>
+</group>
+<group name="billing_information" string="Billing Information">
+    <field name="billing_frequency"/>
+    <field name="base_rate" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+    <field name="currency_id"/>
+    <field name="unit_of_measure"/>
+    <field name="minimum_charge" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+    <field name="taxable"/>
+</group>
+</group>
+
+<notebook>
+<page string="Service Configuration" name="configuration">
+    <group>
+        <group string="Service Settings">
+            <field name="requires_approval"/>
+            <field name="auto_billing_enabled"/>
+            <field name="prorate_billing"/>
+            <field name="service_level"/>
+        </group>
+        <group string="Container Integration">
+            <field name="applicable_container_types" widget="many2many_tags"/>
+            <field name="volume_based_pricing"/>
+            <field name="weight_based_pricing"/>
+        </group>
+    </group>
+</page>
+
+<page string="Rate Structure" name="rates">
+    <field name="rate_tier_ids" nolabel="1">
+        <tree editable="bottom">
+            <field name="tier_name"/>
+            <field name="minimum_quantity"/>
+            <field name="maximum_quantity"/>
+            <field name="tier_rate" widget="monetary"/>
+            <field name="effective_date"/>
+            <field name="expiry_date"/>
+        </tree>
+    </field>
+</page>
+
+<page string="Terms &amp; Conditions" name="terms">
+    <group>
+        <field name="service_terms" widget="html"/>
+        <field name="cancellation_policy"/>
+        <field name="penalty_rate" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+    </group>
+</page>
+
+<page string="Audit &amp; History" name="audit">
+    <group>
+        <group string="Tracking Information">
+            <field name="create_date" readonly="1"/>
+            <field name="write_date" readonly="1"/>
+            <field name="create_uid" readonly="1"/>
+            <field name="write_uid" readonly="1"/>
+        </group>
+        <group string="Service Metrics">
+            <field name="total_billed_amount" widget="monetary" readonly="1"/>
+            <field name="last_billing_date" readonly="1"/>
+            <field name="next_billing_date" readonly="1"/>
+        </group>
+    </group>
+</page>
+</notebook>
                 </sheet>
+<div class="oe_chatter">
+    <field name="message_follower_ids"/>
+    <field name="activity_ids"/>
+    <field name="message_ids"/>
+</div>
             </form>
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+<!-- Kanban View for Records Billing Service -->
+<record id="records_billing_service_view_kanban" model="ir.ui.view">
+    <field name="name">records.billing.service.view.kanban</field>
+    <field name="model">records.billing.service</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="service_type" class="o_kanban_small_column" sample="1">
+            <field name="name"/>
+            <field name="service_code"/>
+            <field name="base_rate"/>
+            <field name="currency_id"/>
+            <field name="state"/>
+            <field name="partner_id"/>
+            <field name="billing_frequency"/>
+            <field name="color"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+                        <div class="ribbon ribbon-top-right" attrs="{'invisible': [('state', '!=', 'inactive')]}">
+                            <span class="bg-danger">Inactive</span>
+                        </div>
+
+                        <div class="o_kanban_record_top">
+                            <div class="o_kanban_record_headings">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <small class="o_kanban_record_subtitle text-muted">
+                                    <field name="service_code"/>
+                                </small>
+                            </div>
+                            <div class="o_kanban_manage_button_section">
+                                <a class="o_kanban_manage_toggle_button" href="#" tabindex="-1" aria-label="Manage">
+                                    <i class="fa fa-ellipsis-v" role="img" aria-label="Selection" title="Selection"/>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="o_kanban_record_body">
+                            <div class="o_kanban_record_details">
+                                <div class="o_kanban_tags_section">
+                                    <span class="o_kanban_tag">
+                                        <field name="billing_frequency"/>
+                                    </span>
+                                </div>
+                                <ul>
+                                    <li t-if="record.partner_id.value">
+                                        <strong>Customer: </strong>
+                                        <field name="partner_id"/>
+                                    </li>
+                                    <li>
+                                        <strong>Rate: </strong>
+                                        <field name="base_rate" widget="monetary"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="o_kanban_record_bottom">
+                            <div class="oe_kanban_bottom_left">
+                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'secondary', 'active': 'success', 'inactive': 'warning'}}"/>
+                            </div>
+                            <div class="oe_kanban_bottom_right">
+                                <field name="activity_ids" widget="kanban_activity"/>
+                            </div>
+                        </div>
+
+                        <div class="o_kanban_manage_section">
+                            <h5>Actions</h5>
+                            <div>
+                                <a name="action_activate_service" type="object" tabindex="-1">Activate</a>
+                            </div>
+                            <div>
+                                <a name="action_view_billing_history" type="object" tabindex="-1">View Billing History</a>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+<!-- Search View for Records Billing Service -->
     <record id="records_billing_service_view_search" model="ir.ui.view">
         <field name="name">records.billing.service.view.search</field>
         <field name="model">records.billing.service</field>
         <field name="arch" type="xml">
-            <search>
+<search string="Billing Services">
+    <field name="name" string="Service" filter_domain="['|', ('name', 'ilike', self), ('service_code', 'ilike', self)]"/>
+    <field name="service_type"/>
+    <field name="partner_id"/>
+    <field name="service_category"/>
+
+    <filter string="Active" name="active_services" domain="[('state', '=', 'active')]"/>
+    <filter string="Draft" name="draft_services" domain="[('state', '=', 'draft')]"/>
+    <filter string="Inactive" name="inactive_services" domain="[('state', '=', 'inactive')]"/>
+
+    <separator/>
+    <filter string="Requires Approval" name="requires_approval" domain="[('requires_approval', '=', True)]"/>
+    <filter string="Auto Billing Enabled" name="auto_billing" domain="[('auto_billing_enabled', '=', True)]"/>
+    <filter string="Taxable" name="taxable" domain="[('taxable', '=', True)]"/>
+
+    <separator/>
+    <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="Service Type" name="group_service_type" domain="[]" context="{'group_by': 'service_type'}"/>
+<filter string="Service Category" name="group_service_category" domain="[]" context="{'group_by': 'service_category'}"/>
+<filter string="Billing Frequency" name="group_billing_frequency" domain="[]" context="{'group_by': 'billing_frequency'}"/>
+<filter string="Customer" name="group_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+<filter string="State" name="group_state" domain="[]" context="{'group_by': 'state'}"/>
+
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+<!-- Action for Records Billing Service -->
     <record id="action_records_billing_service" model="ir.actions.act_window">
-        <field name="name">Records Billing Service</field>
+<field name="name">Billing Services</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.billing.service</field>
-        <field name="view_mode">tree,form</field>
+<field name="view_mode">kanban,tree,form</field>
         <field name="domain">[]</field>
-        <field name="context">{}</field>
+<field name="context">{'search_default_active_services': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Records Billing Service.
+Click to create a new billing service.
+</p>
+<p>
+                Billing services define the various services offered to customers with their
+                associated rates, billing frequencies, and terms. Configure service types,
+                pricing tiers, and billing rules to automate your invoicing process.
+</p>
+<p>
+                Services can be linked to containers, pickup requests, destruction services,
+                and other business operations for comprehensive billing management.
             </p>
         </field>
     </record>
+
+<!-- Menu Integration -->
+<menuitem id="menu_records_billing_service" name="Billing Services" parent="records_management.menu_billing_configuration" action="action_records_billing_service" sequence="10"/>
 
 </odoo>

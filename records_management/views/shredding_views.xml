@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for SHREDDING -->
-
-    <!-- Kanban view for Kanban -->
+<!-- Kanban view for Shredding Services -->
     <record id="shredding_service_view_kanban" model="ir.ui.view">
         <field name="name">shredding.service.view.kanban</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="status" class="o_kanban_shredding_dashboard">
+<kanban default_group_by="state" class="o_kanban_shredding_dashboard">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="service_type"/>
-                <field name="status"/>
+<field name="state"/>
+
                 <field name="scheduled_date"/>
                 <field name="destruction_method"/>
                 <field name="naid_compliance_level"/>
@@ -49,19 +48,20 @@
         </field>
     </record>
 
-    <!-- Tree view for List -->
+<!-- Tree view for Shredding Services -->
     <record id="shredding_service_view_tree" model="ir.ui.view">
         <field name="name">shredding.service.view.tree</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
-            <tree decoration-warning="status=='scheduled'" decoration-success="status=='completed'" decoration-danger="status=='cancelled'">
+<tree decoration-warning="state=='scheduled'" decoration-success="state=='completed'" decoration-danger="state=='cancelled'">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="service_type"/>
                 <field name="destruction_method"/>
                 <field name="scheduled_date" widget="date"/>
                 <field name="naid_compliance_level"/>
-                <field name="status" widget="badge"/>
+<field name="state" widget="badge"/>
+
                 <field name="certificate_required" widget="boolean_toggle"/>
                 <field name="witness_required" widget="boolean_toggle"/>
                 <field name="total_weight"/>
@@ -69,7 +69,7 @@
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+<!-- Form view for Shredding Services -->
     <record id="shredding_service_view_form" model="ir.ui.view">
         <field name="name">shredding.service.view.form</field>
         <field name="model">shredding.service</field>
@@ -80,17 +80,20 @@
                     <button name="action_start_shredding" type="object" string="Start Shredding" states="confirmed" class="btn-success"/>
                     <button name="action_complete" type="object" string="Complete" states="in_progress" class="btn-success"/>
                     <button name="action_generate_certificate" type="object" string="Generate Certificate" states="completed" class="btn-info"/>
-                    <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
+<field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
+
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_destruction_items" icon="fa-file-text-o">
                             <div class="o_stat_info">
-                                <span class="o_stat_value"><field name="item_count"/></span>
+<span class="o_stat_value">
+    <field name="destruction_item_count"/>
+</span>
                                 <span class="o_stat_text">Items</span>
                             </div>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_certificate" icon="fa-certificate" t-if="certificate_id">
+<button class="oe_stat_button" type="object" name="action_view_certificate" icon="fa-certificate" attrs="{'invisible': [('certificate_id', '=', False)]}">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">Certificate</span>
                             </div>
@@ -140,14 +143,15 @@
                                 <field name="completion_notes" placeholder="Service completion notes..."/>
                             </group>
                         </page>
-                        <page string="Compliance &amp;amp; Certification">
+<page string="Compliance &amp; Certification">
                             <group>
                                 <field name="certificate_id" readonly="1"/>
-                                <field name="chain_of_custody_ids" mode="list">
+<field name="naid_audit_log_ids" mode="list">
                                     <tree>
                                         <field name="event_type"/>
                                         <field name="event_date"/>
-                                        <field name="responsible_person"/>
+<field name="user_id"/>
+
                                         <field name="location"/>
                                     </tree>
                                 </field>
@@ -164,7 +168,7 @@
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+<!-- Search view for Shredding Services -->
     <record id="shredding_service_view_search" model="ir.ui.view">
         <field name="name">shredding.service.view.search</field>
         <field name="model">shredding.service</field>
@@ -175,16 +179,20 @@
                 <field name="service_type"/>
                 <field name="destruction_method"/>
                 
-                <filter string="Scheduled" name="scheduled" domain="[('status', '=', 'scheduled')]"/>
-                <filter string="In Progress" name="in_progress" domain="[('status', '=', 'in_progress')]"/>
+<filter string="Scheduled" name="scheduled" domain="[('state', '=', 'scheduled')]"/>
+<filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+
                 <filter string="Certificate Required" name="cert_required" domain="[('certificate_required', '=', True)]"/>
                 <filter string="Witness Required" name="witness_required" domain="[('witness_required', '=', True)]"/>
                 
                 <separator/>
-                <filter string="This Week" name="this_week" domain="[('scheduled_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+<filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), 
+                                ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+
                 
                 <group expand="0" string="Group By">
-                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+<filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
+
                     <filter string="Service Type" name="group_type" context="{'group_by': 'service_type'}"/>
                     <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Date" name="group_date" context="{'group_by': 'scheduled_date'}"/>
@@ -193,7 +201,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+<!-- Action for Shredding Services -->
     <record id="action_shredding_service" model="ir.actions.act_window">
         <field name="name">Shredding Services</field>
         <field name="res_model">shredding.service</field>
