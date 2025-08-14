@@ -620,26 +620,16 @@ class FsmTaskServiceLine(models.Model):
     # ============================================================================
     # STATUS TRACKING
     # ============================================================================
-    status = fields.Selection(
-
     # Workflow state management
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-        ('archived', 'Archived'),
+        ('pending', 'Pending Approval'),
+        ('approved', 'Approved'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True, required=True, index=True,
-       help='Current status of the record')
-        [
-            ("pending", "Pending Approval"),
-            ("approved", "Approved"),
-            ("in_progress", "In Progress"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
-        ],
-        string="Status",
-        default="pending",
-    )
+       help='Current status of the FSM task service line')
 
     # ============================================================================
     # COMPUTE METHODS
@@ -670,10 +660,6 @@ class FsmTaskServiceLine(models.Model):
         """Approve the additional service"""
 
         self.ensure_one()
-        self.write({"status": "approved", "customer_approved": True})
-        self.task_id.message_post(
-            body=_("Additional service approved: %s", self.service_name)
-        )
         self.write({"status": "approved", "customer_approved": True})
         self.task_id.message_post(
             body=_("Additional service approved: %s", self.service_name)
