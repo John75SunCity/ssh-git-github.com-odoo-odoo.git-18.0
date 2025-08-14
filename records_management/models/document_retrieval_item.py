@@ -629,10 +629,10 @@ class DocumentRetrievalItem(models.Model):
                 type_display = dict(item._fields["item_type"].selection).get(
                     item.item_type, item.item_type
                 )
-                parts.append(f"({type_display})")
+                parts.append(f"({type_display))")
 
             if item.barcode:
-                parts.append(f"[{item.barcode}]")
+                parts.append(f"[{item.barcode)]")
 
             item.display_name = " ".join(parts)
 
