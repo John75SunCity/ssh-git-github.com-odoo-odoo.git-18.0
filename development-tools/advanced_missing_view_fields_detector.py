@@ -39,6 +39,12 @@ class MissingViewFieldsDetector:
         self.invalid_view_fields = defaultdict(
             set
         )  # model_name -> invalid references
+        self.inherited_models = defaultdict(
+            set
+        )  # model_name -> set(inherited_model_names)
+        self.inherited_fields = defaultdict(
+            set
+        )  # model_name -> set(inherited_field_names)
 
         # Business critical field patterns
         self.critical_patterns = [
@@ -73,6 +79,131 @@ class MissingViewFieldsDetector:
             "audit": ["create_date", "write_date", "create_uid", "write_uid"],
         }
 
+        # Standard Odoo inherited field patterns to filter out
+        self.odoo_inherited_fields = {
+            # From mail.thread
+            "activity_ids",
+            "activity_exception_decoration",
+            "activity_exception_icon",
+            "activity_state",
+            "activity_summary",
+            "activity_type_id",
+            "activity_user_id",
+            "message_attachment_count",
+            "message_follower_ids",
+            "message_has_error",
+            "message_has_error_counter",
+            "message_has_sms_error",
+            "message_ids",
+            "message_is_follower",
+            "message_main_attachment_id",
+            "message_needaction",
+            "message_needaction_counter",
+            "message_partner_ids",
+            "message_unread",
+            "message_unread_counter",
+            # From res.partner inheritance
+            "category_id",
+            "child_ids",
+            "commercial_company_name",
+            "commercial_partner_id",
+            "contact_address",
+            "contact_type",
+            "country_code",
+            "country_id",
+            "credit_limit",
+            "customer_rank",
+            "debit_limit",
+            "display_name",
+            "email",
+            "email_formatted",
+            "function",
+            "image_1024",
+            "image_128",
+            "image_1920",
+            "image_256",
+            "image_512",
+            "is_company",
+            "lang",
+            "mobile",
+            "parent_id",
+            "parent_name",
+            "phone",
+            "ref",
+            "signup_expiration",
+            "signup_token",
+            "signup_type",
+            "signup_url",
+            "state_id",
+            "street",
+            "street2",
+            "supplier_rank",
+            "title",
+            "tz",
+            "user_id",
+            "user_ids",
+            "vat",
+            "website",
+            "zip",
+            # From res.company inheritance
+            "currency_id",
+            "partner_id",
+            # Standard Odoo system fields
+            "create_date",
+            "create_uid",
+            "write_date",
+            "write_uid",
+            "__last_update",
+            "id",
+            "display_name",
+            # Common computed/related fields that appear in many models
+            "access_url",
+            "access_token",
+            "portal_url",
+        }
+
+    def _is_valid_model_field_reference(self, field_name):
+        """Check if field name is a valid model field reference (Odoo-aware)"""
+        if not field_name or not field_name.strip():
+            return False
+
+        # Odoo view structure elements (not model fields)
+        view_definition_fields = {
+            "arch",
+            "model",
+            "name",
+            "inherit_id",
+            "priority",
+            "groups",
+            "active",
+            "type",
+            "mode",
+            "key",
+            "res_id",
+            "ref",
+            "eval",
+            "search_view_id",
+        }
+
+        # Odoo special field patterns that shouldn't be treated as missing
+        special_patterns = {
+            # Related field expressions
+            lambda f: "." in f and len(f.split(".")) > 1,  # partner_id.name
+            lambda f: "/" in f,  # xpath expressions
+            lambda f: f.startswith("_") and f != "_name",  # internal fields
+            lambda f: f.endswith("_count")
+            and "_" in f,  # computed count fields
+            lambda f: f.startswith("computed_"),  # computed field prefixes
+            lambda f: f in view_definition_fields,  # view structure fields
+        }
+
+        # Check against special patterns
+        for pattern_check in special_patterns:
+            if pattern_check(field_name):
+                return False
+
+        return True
+
     def scan_model_files(self):
         """Extract all model definitions and their fields"""
         print("🔍 Scanning model files...")
@@ -98,6 +229,9 @@ class MissingViewFieldsDetector:
                 return
 
             model_name = model_match.group(1)
+
+            # Extract inheritance information
+            self._extract_inheritance_info(content, model_name)
 
             # Extract field definitions
             field_pattern = r"(\w+)\s*=\s*fields\.(\w+)\s*\("
@@ -128,6 +262,60 @@ class MissingViewFieldsDetector:
 
         except Exception as e:
             print(f"❌ Error processing {filepath}: {e}")
+
+    def _extract_inheritance_info(self, content, model_name):
+        """Extract model inheritance information"""
+        # Look for _inherit declarations
+        inherit_match = re.search(
+            r"_inherit\s*=\s*\[(.*?)\]", content, re.DOTALL
+        )
+        if inherit_match:
+            inherit_list_str = inherit_match.group(1)
+            # Extract individual inherited models
+            inherit_models = re.findall(
+                r'["\']([^"\']+)["\']', inherit_list_str
+            )
+            self.inherited_models[model_name].update(inherit_models)
+        else:
+            # Single inheritance
+            inherit_match = re.search(
+                r'_inherit\s*=\s*["\']([^"\']+)["\']', content
+            )
+            if inherit_match:
+                inherited_model = inherit_match.group(1)
+                self.inherited_models[model_name].add(inherited_model)
+
+        # Add inherited fields based on known inheritance patterns
+        for inherited_model in self.inherited_models[model_name]:
+            if (
+                "mail.thread" in inherited_model
+                or "mail.activity.mixin" in inherited_model
+            ):
+                self.inherited_fields[model_name].update(
+                    {"activity_ids", "message_follower_ids", "message_ids"}
+                )
+            if "portal.mixin" in inherited_model:
+                self.inherited_fields[model_name].update(
+                    {"access_url", "access_token"}
+                )
+
+    def _filter_inherited_fields(self, model_name, missing_fields):
+        """Filter out inherited fields that shouldn't be reported as missing"""
+        filtered_fields = set()
+
+        for field_name in missing_fields:
+            # Skip if it's a standard Odoo inherited field
+            if field_name in self.odoo_inherited_fields:
+                continue
+
+            # Skip if it's a field we know is inherited from parent models
+            if field_name in self.inherited_fields.get(model_name, set()):
+                continue
+
+            # Keep the field - it's genuinely missing from views
+            filtered_fields.add(field_name)
+
+        return filtered_fields
 
     def _analyze_field_definition(
         self, content, start_pos, field_name, field_type
@@ -180,7 +368,7 @@ class MissingViewFieldsDetector:
         print(f"📊 Found field references in {len(self.view_fields)} models")
 
     def _extract_view_fields(self, filepath, filename):
-        """Extract field references from XML view file"""
+        """Extract field references from XML view file - Enhanced Odoo-aware parsing"""
         try:
             # Read file content and fix common XML issues
             with open(filepath, "r", encoding="utf-8") as f:
@@ -196,19 +384,25 @@ class MissingViewFieldsDetector:
 
             current_models = set()
 
-            # Find all record elements with model references
+            # Find all record elements that define views (Odoo structure)
             for record in root.findall(".//record[@model='ir.ui.view']"):
+                # Get the model this view is for
                 model_elem = record.find("field[@name='model']")
                 if model_elem is not None and model_elem.text:
-                    current_models.add(model_elem.text)
+                    model_name = model_elem.text.strip()
+                    current_models.add(model_name)
 
-                # Extract field references from arch
+                # Extract field references from arch (the actual view content)
                 arch_elem = record.find("field[@name='arch']")
                 if arch_elem is not None:
-                    self._extract_arch_fields(arch_elem, current_models)
+                    # Only pass the current model, not all models (more precise)
+                    self._extract_arch_fields(
+                        arch_elem,
+                        {model_name} if model_name else current_models,
+                    )
 
             if current_models:
-                model_list = ", ".join(current_models)
+                model_list = ", ".join(sorted(current_models))
                 print(f"✅ {filename}: {model_list}")
 
         except ET.ParseError as e:
@@ -220,33 +414,44 @@ class MissingViewFieldsDetector:
             return
 
     def _extract_arch_fields(self, arch_elem, current_models):
-        """Extract field names from view architecture"""
-        # Convert to string for regex processing (handles nested XML better)
-        arch_str = ET.tostring(arch_elem, encoding="unicode")
+        """Extract field names from view architecture content - Odoo-aware parsing"""
+        # We should only look for field references within the arch content
+        # Skip if there's no actual content in the arch element
+        if arch_elem is None:
+            return
 
-        # Find all field references
-        field_pattern = r'<field\s+name\s*=\s*["\']([^"\']+)["\']'
-        field_matches = re.finditer(field_pattern, arch_str)
+        # Look for field elements within the arch content
+        for field_elem in arch_elem.findall(".//field[@name]"):
+            field_name = field_elem.get("name")
+            if field_name and field_name.strip():
+                # Use Odoo-aware validation
+                if not self._is_valid_model_field_reference(field_name):
+                    continue
 
-        for match in field_matches:
-            field_name = match.group(1)
-
-            # Add field to all current models (some views might reference multiple models)
-            for model_name in current_models:
-                self.view_fields[model_name].add(field_name)
+                # Add field to all current models (these are genuine model field references)
+                for model_name in current_models:
+                    self.view_fields[model_name].add(field_name)
 
     def analyze_missing_fields(self):
         """Identify missing fields and categorize them"""
         print("\n🚨 ANALYZING MISSING VIEW FIELDS...")
+        print("🔍 Filtering out inherited fields from standard Odoo models...")
 
         total_missing = 0
         critical_missing = 0
+        filtered_out_count = 0
 
         for model_name, model_fields in self.model_fields.items():
             view_fields = self.view_fields.get(model_name, set())
 
             # Find fields in model but not in views
             missing = set(model_fields.keys()) - view_fields
+
+            # Filter out inherited fields that shouldn't be reported
+            original_missing_count = len(missing)
+            missing = self._filter_inherited_fields(model_name, missing)
+            filtered_out_count += original_missing_count - len(missing)
+
             self.missing_in_views[model_name] = missing
 
             if missing:
@@ -274,7 +479,8 @@ class MissingViewFieldsDetector:
         self._find_invalid_view_references()
 
         print(f"\n📊 SUMMARY:")
-        print(f"   Total missing fields: {total_missing}")
+        print(f"   Total missing fields (after filtering): {total_missing}")
+        print(f"   Inherited fields filtered out: {filtered_out_count}")
         print(f"   Critical missing fields: {critical_missing}")
         print(
             f"   Models with missing fields: {len([m for m in self.missing_in_views.values() if m])}"
@@ -397,11 +603,14 @@ class MissingViewFieldsDetector:
             f"   4. Include audit fields (create_date, write_date) in list views"
         )
         print(f"   5. Add search fields to search views for better UX")
+        print(
+            f"   📝 Note: Inherited fields from mail.thread, res.partner, etc. are automatically filtered out"
+        )
 
     def generate_detailed_report(self):
         """Generate detailed JSON report for further analysis"""
         report = {
-            "timestamp": "2025-08-13",
+            "timestamp": "2025-08-14",
             "summary": {
                 "models_analyzed": len(self.model_fields),
                 "total_missing_fields": sum(
@@ -413,6 +622,8 @@ class MissingViewFieldsDetector:
                 "invalid_view_references": sum(
                     len(fields) for fields in self.invalid_view_fields.values()
                 ),
+                "inherited_fields_filtered": True,
+                "filtering_note": "Standard Odoo inherited fields automatically filtered out",
             },
             "missing_fields": {
                 model: list(fields)
