@@ -9,6 +9,35 @@ class PaperBaleMovement(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "movement_date desc, id desc"
 
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Movement Reference",
+        required=True,
+        tracking=True,
+        index=True,
+        default=lambda self: _('New'),
+        help="Unique identifier for this movement"
+    )
+    active = fields.Boolean(
+        string="Active",
+        default=True,
+        tracking=True,
+        help="Set to false to hide this record"
+    )
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        required=True,
+        index=True,
+        help="Company this movement belongs to"
+    )
+    
+    # ============================================================================
+    # BUSINESS SPECIFIC FIELDS  
+    # ============================================================================
     bale_id = fields.Many2one(
         "paper.bale", string="Paper Bale", required=True, ondelete="cascade"
     )
@@ -60,3 +89,21 @@ class PaperBaleMovement(models.Model):
     def action_cancel_movement(self):
         self.ensure_one()
         self.write({"state": "cancelled"})
+    
+    # ============================================================================
+    # ORM METHODS
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to add auto-numbering"""
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('paper.bale.movement') or _('New')
+        return super().create(vals_list)
+    
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")

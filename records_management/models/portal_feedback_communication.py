@@ -9,6 +9,35 @@ class PortalFeedbackCommunication(models.Model):
     _name = "portal.feedback.communication"
     _description = "Portal Feedback Communication"
     _inherit = ["mail.thread", "mail.activity.mixin"]
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string='Name',
+        required=True,
+        tracking=True,
+        index=True,
+        default=lambda self: _('New'),
+        help='Unique identifier for this record'
+    )
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', tracking=True, required=True)
+
+    # ============================================================================
+    # ORM METHODS
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to add auto-numbering"""
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('portal.feedback.communication') or _('New')
+        return super().create(vals_list)
     _order = "feedback_id, communication_date desc"
     _rec_name = "subject"
 

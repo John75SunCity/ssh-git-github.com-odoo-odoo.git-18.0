@@ -17,6 +17,28 @@ class DocumentSearchAttempt(models.Model):
     _description = "Document Search Attempt"
     _order = "search_date desc"
 
+
+    # Framework fields
+    active = fields.Boolean(
+        string='Active',
+        default=True,
+        tracking=True,
+        help='Set to false to hide this record'
+    )
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        required=True,
+        index=True,
+        help='Company this record belongs to'
+    )
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', tracking=True, required=True)
     retrieval_item_id = fields.Many2one(
         "document.retrieval.item",
         string="Retrieval Item",

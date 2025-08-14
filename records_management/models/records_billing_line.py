@@ -15,6 +15,41 @@ class RecordsBillingLine(models.Model):
     _name = "records.billing.line"
     _description = "Records Billing Line"
     _inherit = ["mail.thread", "mail.activity.mixin"]
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string='Name',
+        required=True,
+        tracking=True,
+        index=True,
+        default=lambda self: _('New'),
+        help='Unique identifier for this record'
+    )
+    active = fields.Boolean(
+        string='Active',
+        default=True,
+        tracking=True,
+        help='Set to false to hide this record'
+    )
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', tracking=True, required=True)
+
+    # ============================================================================
+    # ORM METHODS
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to add auto-numbering"""
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('records.billing.line') or _('New')
+        return super().create(vals_list)
     _order = "config_id, date desc"
 
     # ============================================================================

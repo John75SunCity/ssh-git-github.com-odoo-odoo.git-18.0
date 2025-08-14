@@ -487,7 +487,7 @@ class RecordsBillingContact(models.Model):
         """Override write to handle primary contact changes"""
         if "primary_contact" in vals and vals["primary_contact"]:
             for record in self:
-                self._ensure_single_primary(record.billing_profile_id.id, record.id  # pylint: disable=no-member)
+                self._ensure_single_primary(record.billing_profile_id.id, record.id)  # pylint: disable=no-member
 
         return super().write(vals)
 
@@ -650,7 +650,7 @@ class RecordsBillingContact(models.Model):
             "name": _("Billing Services: %s", self.name),
             "res_model": "records.billing.service",
             "view_mode": "tree,form",
-            "domain": [("id", "in", self.billing_service_ids.ids  # pylint: disable=no-member)],
+            "domain": [("id", "in", self.billing_service_ids.ids)],  # pylint: disable=no-member
             "context": {
                 "default_contact_id": self.id,
                 "search_default_group_by_service_type": 1,
@@ -736,7 +736,7 @@ class RecordsBillingContact(models.Model):
                     [
                         ("billing_profile_id", "=", record.billing_profile_id.id),
                         ("primary_contact", "=", True),
-                        ("id", "!=", record.id  # pylint: disable=no-member),
+                        ("id", "!=", record.id),  # pylint: disable=no-member
                     ]
                 )
 
@@ -795,7 +795,7 @@ class RecordsBillingContact(models.Model):
             if record.job_title:
                 name_parts.append(f"- {record.job_title}")
 
-            result.append((record.id  # pylint: disable=no-member, " ".join(name_parts)))
+            result.append((record.id, " ".join(name_parts)))  # pylint: disable=no-member
 
         return result
 
