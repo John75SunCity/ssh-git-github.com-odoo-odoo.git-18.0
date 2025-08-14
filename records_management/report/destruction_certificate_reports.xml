@@ -88,18 +88,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <t t-foreach="service.destruction_item_ids" t-as="item">
-                                        <tr>
-                                            <td><span t-field="item.container_id.name"/></td>
-                                            <td><span t-field="item.description"/></td>
-                                            <td><span t-field="item.weight"/></td>
-                                            <td><span t-field="item.volume"/></td>
-                                            <td><span t-field="item.document_type_id.name"/></td>
-                                        </tr>
-                                    </t>
-                                    <tr t-if="not service.destruction_item_ids">
-                                        <td colspan="5" class="text-center text-muted">No destruction items recorded</td>
-                                    </tr>
+                                                                    <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr style="background-color: #e9ecef; font-weight: bold;">
@@ -149,14 +149,18 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <t t-foreach="service.custody_event_ids" t-as="event">
-                                        <tr>
-                                            <td><span t-field="event.event_date" t-options="{'widget': 'datetime'}"/></td>
-                                            <td><span t-field="event.event_type"/></td>
-                                            <td><span t-field="event.responsible_person_id.name"/></td>
-                                            <td><span t-field="event.location"/></td>
-                                        </tr>
-                                    </t>
+                                                                    <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>

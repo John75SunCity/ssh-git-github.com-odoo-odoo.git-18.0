@@ -142,6 +142,10 @@ class RecordsRetentionRule(models.Model):
                 rule.display_name = rule.name or "New Rule"
     
     display_name = fields.Char(
+        string="Display Name",
+        compute="_compute_display_name",
+        store=True
+    )
 
     # Workflow state management
     state = fields.Selection([
@@ -151,7 +155,3 @@ class RecordsRetentionRule(models.Model):
         ('archived', 'Archived'),
     ], string='Status', default='draft', tracking=True, required=True, index=True,
        help='Current status of the record')
-        string="Display Name",
-        compute="_compute_display_name",
-        store=True
-    )

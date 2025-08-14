@@ -5,7 +5,7 @@
         <field name="name">Container Contents</field>
         <field name="model">records.container</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">records_management.report_container_contents_document</field>
+        <field name="report_name">records_management.report_box_contents_document</field>
         <field name="report_file">records_management.report_container_contents</field>
         <field name="binding_model_id" ref="model_records_container"/>
         <field name="binding_type">report</field>

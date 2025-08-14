@@ -2,12 +2,12 @@
 """
 NAID Risk Assessment Model
 
-Model for risk assessment for NAID compliance.
+Risk assessment for NAID compliance with automated scoring,
+mitigation tracking, and comprehensive risk management.
 """
 
-from odoo import api, fields, models
-
-
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 
 class NaidRiskAssessment(models.Model):
@@ -17,168 +17,133 @@ class NaidRiskAssessment(models.Model):
     _description = "NAID Risk Assessment"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "assessment_date desc"
+    _rec_name = "name"
 
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-
     name = fields.Char(
-        string="Risk Assessment Reference", required=True, tracking=True, index=True
+        string="Risk Assessment Reference",
+        required=True,
+        tracking=True,
+        index=True
     )
-
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
-        required=True,
+        required=True
     )
-
-    active = fields.Boolean(string="Active", default=True)
+    active = fields.Boolean(string="Active", default=True, tracking=True)
 
     # ============================================================================
     # ASSESSMENT RELATIONSHIPS
     # ============================================================================
-
     compliance_id = fields.Many2one(
-        "naid.compliance", string="Compliance Record", required=True, ondelete="cascade"
+        "naid.compliance",
+        string="Compliance Record",
+        required=True,
+        ondelete="cascade"
     )
 
     # ============================================================================
     # ASSESSMENT DETAILS
     # ============================================================================
-
     assessment_date = fields.Date(
         string="Assessment Date",
         required=True,
         default=fields.Date.today,
-        tracking=True,
+        tracking=True
     )
-
     assessor_id = fields.Many2one(
         "res.users",
         string="Assessor",
         required=True,
-        default=lambda self: self.env.user,
+        default=lambda self: self.env.user
     )
-
-    risk_category = fields.Selection(
-        [
-            ("operational", "Operational Risk"),
-            ("security", "Security Risk"),
-            ("compliance", "Compliance Risk"),
-            ("financial", "Financial Risk"),
-            ("reputational", "Reputational Risk"),
-        ],
-        string="Risk Category",
-        required=True,
-    )
+    
+    risk_category = fields.Selection([
+        ("operational", "Operational Risk"),
+        ("security", "Security Risk"),
+        ("compliance", "Compliance Risk"),
+        ("financial", "Financial Risk"),
+        ("reputational", "Reputational Risk"),
+    ], string="Risk Category", required=True)
 
     # ============================================================================
     # RISK EVALUATION
     # ============================================================================
-
-    risk_description = fields.Text(string="Risk Description", required=True,),
-
-    impact_level = fields.Selection(
-        [
-            ("low", "Low"),
-            ("medium", "Medium"),
-            ("high", "High"),
-            ("critical", "Critical"),
-        ],
-        string="Impact Level",
-        required=True,
+    risk_description = fields.Text(
+        string="Risk Description", 
+        required=True
     )
-
-    probability = fields.Selection(
-        [
-            ("rare", "Rare"),
-            ("unlikely", "Unlikely"),
-            ("possible", "Possible"),
-            ("likely", "Likely"),
-            ("certain", "Certain"),
-        ],
-        string="Probability",
-        required=True,
-    )
+    
+    impact_level = fields.Selection([
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+        ("critical", "Critical"),
+    ], string="Impact Level", required=True)
+    
+    probability = fields.Selection([
+        ("rare", "Rare"),
+        ("unlikely", "Unlikely"),
+        ("possible", "Possible"),
+        ("likely", "Likely"),
+        ("certain", "Certain"),
+    ], string="Probability", required=True)
 
     # ============================================================================
     # COMPUTED RISK FIELDS
     # ============================================================================
-
     risk_score = fields.Integer(
-        string="Risk Score", compute="_compute_risk_score", store=True
+        string="Risk Score",
+        compute="_compute_risk_score",
+        store=True
     )
-
-    risk_level = fields.Selection(
-        [
-            ("low", "Low"),
-            ("medium", "Medium"),
-            ("high", "High"),
-            ("critical", "Critical"),
-        ],
-        string="Risk Level",
-        compute="_compute_risk_level",
-        store=True,
-    )
+    risk_level = fields.Selection([
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+        ("critical", "Critical"),
+    ], string="Risk Level", compute="_compute_risk_level", store=True)
 
     # ============================================================================
     # MITIGATION FIELDS
     # ============================================================================
+    mitigation_measures = fields.Text(string="Mitigation Measures")
+    responsible_person_id = fields.Many2one("res.users", string="Responsible Person")
+    target_completion_date = fields.Date(string="Target Completion Date")
+    
+    status = fields.Selection([
+        ("identified", "Identified"),
+        ("in_progress", "In Progress"),
+        ("mitigated", "Mitigated"),
+        ("accepted", "Accepted"),
+    ], string="Status", default="identified", tracking=True)
 
-    mitigation_measures = fields.Text(string="Mitigation Measures"),
-
-    responsible_person_id = fields.Many2one(
-        "res.users", string="Responsible Person"
-    )
-
-    target_completion_date = fields.Date(string="Target Completion Date"),
-
-    status = fields.Selection(
-        [
-            ("identified", "Identified"),
-            ("in_progress", "In Progress"),
-            ("mitigated", "Mitigated"),
-            ("accepted", "Accepted"),
-        ],
-        string="Status",
-        default="identified",
-        tracking=True,
-    )
+    # ============================================================================
+    # REVIEW AND MONITORING
+    # ============================================================================
+    review_date = fields.Date(string="Next Review Date")
+    last_review_date = fields.Date(string="Last Review Date")
+    residual_risk_level = fields.Selection([
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+        ("critical", "Critical"),
+    ], string="Residual Risk Level")
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
-
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        auto_join=True,
-        groups="base.group_user",
-    )
-
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers", groups="base.group_user"
-    )
-
-    message_ids = fields.One2many(
-
-    # Workflow state management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-        ('archived', 'Archived'),
-    ], string='Status', default='draft', tracking=True, required=True, index=True,
-       help='Current status of the record')
-        "mail.message", "res_id", string="Messages", groups="base.group_user"
-    )
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-
     @api.depends("impact_level", "probability")
     def _compute_risk_score(self):
         """Compute risk score based on impact and probability"""
@@ -208,3 +173,37 @@ class NaidRiskAssessment(models.Model):
                 record.risk_level = "medium"
             else:
                 record.risk_level = "low"
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_start_mitigation(self):
+        """Start mitigation process"""
+        self.ensure_one()
+        self.write({"status": "in_progress"})
+        self.message_post(body=_("Risk mitigation started by %s", self.env.user.name))
+
+    def action_complete_mitigation(self):
+        """Complete mitigation"""
+        self.ensure_one()
+        self.write({
+            "status": "mitigated",
+            "last_review_date": fields.Date.today(),
+        })
+        self.message_post(body=_("Risk mitigation completed by %s", self.env.user.name))
+
+    def action_accept_risk(self):
+        """Accept risk without mitigation"""
+        self.ensure_one()
+        self.write({"status": "accepted"})
+        self.message_post(body=_("Risk accepted by %s", self.env.user.name))
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains("target_completion_date")
+    def _check_target_completion_date(self):
+        """Validate target completion date"""
+        for record in self:
+            if record.target_completion_date and record.target_completion_date < fields.Date.today():
+                raise ValidationError(_("Target completion date cannot be in the past"))

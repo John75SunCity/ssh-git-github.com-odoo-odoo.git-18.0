@@ -31,31 +31,39 @@ class FileRetrievalWorkOrderItem(models.Model):
         required=True,
         tracking=True,
         index=True,
-        help="Reference number or identifier for this specific file",
+        help="Reference number or identifier for this specific file"
     )
+    
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
-        help="Formatted display name combining reference and description",
+        help="Formatted display name combining reference and description"
     )
+    
     description = fields.Text(
         string="File Description",
         required=True,
-        help="Detailed description of the file to be retrieved",
+        help="Detailed description of the file to be retrieved"
     )
+    
     sequence = fields.Integer(
         string="Sequence",
         default=10,
-        help="Order sequence for processing items",
+        help="Order sequence for processing items"
     )
+    
     company_id = fields.Many2one(
         "res.company",
         related="work_order_id.company_id",
         store=True,
-        string="Company",
+        string="Company"
     )
-    active = fields.Boolean(string="Active", default=True)
+    
+    active = fields.Boolean(
+        string="Active", 
+        default=True
+    )
 
     # ============================================================================
     # WORK ORDER RELATIONSHIP
@@ -65,59 +73,58 @@ class FileRetrievalWorkOrderItem(models.Model):
         string="Work Order",
         required=True,
         ondelete="cascade",
-        index=True,
+        index=True
     )
+    
     partner_id = fields.Many2one(
         "res.partner",
         related="work_order_id.partner_id",
         store=True,
-        string="Customer",
+        string="Customer"
     )
 
     # ============================================================================
     # FILE DETAILS AND SPECIFICATIONS
     # ============================================================================
     file_name = fields.Char(
-        string="File Name", help="Specific name or title of the file"
+        string="File Name", 
+        help="Specific name or title of the file"
     )
+    
     estimated_pages = fields.Integer(
         string="Estimated Pages",
         default=1,
-        help="Estimated number of pages in this file",
+        help="Estimated number of pages in this file"
     )
+    
     actual_pages = fields.Integer(
         string="Actual Pages",
-        help="Actual number of pages found during retrieval",
+        help="Actual number of pages found during retrieval"
     )
-    file_type = fields.Selection(
-        [
-            ("document", "Document"),
-            ("photo", "Photograph"),
-            ("blueprint", "Blueprint"),
-            ("legal", "Legal Document"),
-            ("medical", "Medical Record"),
-            ("financial", "Financial Record"),
-            ("contract", "Contract"),
-            ("correspondence", "Correspondence"),
-            ("other", "Other"),
-        ],
-        string="File Type",
-        default="document",
-        help="Category of file being retrieved",
-    )
+    
+    file_type = fields.Selection([
+        ("document", "Document"),
+        ("photo", "Photograph"),
+        ("blueprint", "Blueprint"),
+        ("legal", "Legal Document"),
+        ("medical", "Medical Record"),
+        ("financial", "Financial Record"),
+        ("contract", "Contract"),
+        ("correspondence", "Correspondence"),
+        ("other", "Other"),
+    ], string="File Type",
+       default="document",
+       help="Category of file being retrieved")
 
-    file_format = fields.Selection(
-        [
-            ("paper", "Paper Document"),
-            ("microfiche", "Microfiche"),
-            ("microfilm", "Microfilm"),
-            ("digital_printout", "Digital Printout"),
-            ("other", "Other Format"),
-        ],
-        string="File Format",
-        default="paper",
-        help="Physical format of the file",
-    )
+    file_format = fields.Selection([
+        ("paper", "Paper Document"),
+        ("microfiche", "Microfiche"),
+        ("microfilm", "Microfilm"),
+        ("digital_printout", "Digital Printout"),
+        ("other", "Other Format"),
+    ], string="File Format",
+       default="paper",
+       help="Physical format of the file")
 
     # ============================================================================
     # LOCATION AND CONTAINER INFORMATION
@@ -125,109 +132,99 @@ class FileRetrievalWorkOrderItem(models.Model):
     container_id = fields.Many2one(
         "records.container",
         string="Source Container",
-        help="Container where this file is stored",
+        help="Container where this file is stored"
     )
+    
     container_location = fields.Char(
         string="Container Location",
         related="container_id.current_location",
         store=True,
-        help="Current location of the source container",
+        help="Current location of the source container"
     )
+    
     location_notes = fields.Text(
         string="Location Notes",
-        help="Specific notes about where to find this file within the container",
+        help="Specific notes about where to find this file within the container"
     )
+    
     file_position = fields.Char(
         string="File Position",
-        help="Position or folder location within container (e.g., 'Folder A-C, Tab 2')",
-        )
+        help="Position or folder location within container (e.g., 'Folder A-C, Tab 2')"
+    )
 
     # ============================================================================
     # STATUS AND PROGRESS TRACKING
     # ============================================================================
-    status = fields.Selection(
-        [
-            ("pending", "Pending"),
-            ("locating", "Locating"),
-            ("located", "Located"),
-            ("retrieving", "Retrieving"),
-            ("retrieved", "Retrieved"),
-            ("quality_checked", "Quality Checked"),
-            ("packaged", "Packaged"),
-            ("not_found", "Not Found"),
-            ("damaged", "Damaged"),
-        ],
-        string="Status",
-        default="pending",
-        tracking=True,
-        help="Current status of this file retrieval",
-    )
+    status = fields.Selection([
+        ("pending", "Pending"),
+        ("locating", "Locating"),
+        ("located", "Located"),
+        ("retrieving", "Retrieving"),
+        ("retrieved", "Retrieved"),
+        ("quality_checked", "Quality Checked"),
+        ("packaged", "Packaged"),
+        ("not_found", "Not Found"),
+        ("damaged", "Damaged"),
+    ], string="Status",
+       default="pending",
+       tracking=True,
+       help="Current status of this file retrieval")
 
     # ============================================================================
     # QUALITY AND CONDITION ASSESSMENT
     # ============================================================================
-    condition = fields.Selection(
-        [
-            ("excellent", "Excellent"),
-            ("good", "Good"),
-            ("fair", "Fair"),
-            ("poor", "Poor"),
-            ("damaged", "Damaged"),
-            ("illegible", "Illegible"),
-        ],
-        string="Condition",
-        help="Physical condition of the file when retrieved",
-    )
+    condition = fields.Selection([
+        ("excellent", "Excellent"),
+        ("good", "Good"),
+        ("fair", "Fair"),
+        ("poor", "Poor"),
+        ("damaged", "Damaged"),
+        ("illegible", "Illegible"),
+    ], string="Condition",
+       help="Physical condition of the file when retrieved")
 
     quality_notes = fields.Text(
         string="Quality Notes",
-        help="Notes about file condition or quality issues",
+        help="Notes about file condition or quality issues"
     )
+    
     quality_approved = fields.Boolean(
         string="Quality Approved",
-        help="Whether this file passed quality inspection",
+        help="Whether this file passed quality inspection"
     )
-    quality_approved_by = fields.Many2one(
+    
+    quality_approved_by_id = fields.Many2one(
         "res.users",
         string="Quality Approved By",
-        help="User who approved the quality of this file",
+        help="User who approved the quality of this file"
     )
+    
     quality_approved_date = fields.Datetime(
-        string="Quality Approved Date", help="Date when quality was approved"
+        string="Quality Approved Date", 
+        help="Date when quality was approved"
     )
 
     # ============================================================================
     # TIMING FIELDS
     # ============================================================================
     date_located = fields.Datetime(
-        string="Date Located", help="Date and time when file was located"
+        string="Date Located", 
+        help="Date and time when file was located"
     )
+    
     date_retrieved = fields.Datetime(
-        string="Date Retrieved", help="Date and time when file was retrieved"
+        string="Date Retrieved", 
+        help="Date and time when file was retrieved"
     )
+    
     date_quality_checked = fields.Datetime(
         string="Date Quality Checked",
-        help="Date when quality check was performed",
+        help="Date when quality check was performed"
     )
 
     # ============================================================================
-    # MAIL THREAD FRAMEWORK FIELDS
+    # WORKFLOW STATE MANAGEMENT
     # ============================================================================
-    activity_ids = fields.One2many(
-        "mail.activity",
-        "res_id",
-        domain="[('res_model', '=', 'file.retrieval.work.order.item')]",
-        string="Activities",
-    )
-    message_follower_ids = fields.One2many(
-        "mail.followers",
-        "res_id",
-        domain="[('res_model', '=', 'file.retrieval.work.order.item')]",
-        string="Followers",
-    )
-    message_ids = fields.One2many(
-
-    # Workflow state management
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),
@@ -235,10 +232,29 @@ class FileRetrievalWorkOrderItem(models.Model):
         ('archived', 'Archived'),
     ], string='Status', default='draft', tracking=True, required=True, index=True,
        help='Current status of the record')
+
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        domain=lambda self: [('res_model', '=', self._name)],
+        string="Activities"
+    )
+    
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        domain=lambda self: [('res_model', '=', self._name)],
+        string="Followers"
+    )
+    
+    message_ids = fields.One2many(
         "mail.message",
         "res_id",
-        domain="[('res_model', '=', 'file.retrieval.work.order.item')]",
-        string="Messages",
+        domain=lambda self: [('model', '=', self._name)],
+        string="Messages"
     )
 
     # ============================================================================
@@ -246,15 +262,15 @@ class FileRetrievalWorkOrderItem(models.Model):
     # ============================================================================
     @api.depends("name", "description")
     def _compute_display_name(self):
+        """Compute display name combining reference and description"""
         for record in self:
             if record.description:
                 # Limit description to 50 characters for display
-                short_desc = (
-                    record.description[:47] + "..."
-                    if len(record.description) > 50
-                    else record.description
-                )
-                record.display_name = _("%s - %s", record.name, short_desc)
+                if len(record.description) > 50:
+                    short_desc = record.description[:47] + "..."
+                else:
+                    short_desc = record.description
+                record.display_name = _("%(name)s - %(desc)s", name=record.name, desc=short_desc)
             else:
                 record.display_name = record.name or _("New Item")
 
@@ -264,16 +280,19 @@ class FileRetrievalWorkOrderItem(models.Model):
     def action_mark_located(self):
         """Mark item as located"""
         self.ensure_one()
-        self.write(
-            {"status": "located", "date_located": fields.Datetime.now()}
-            )
+        self.write({
+            "status": "located", 
+            "date_located": fields.Datetime.now()
+        })
 
         # Update work order progress
-        self.work_order_id._update_progress_metrics()
+        if hasattr(self.work_order_id, '_update_progress_metrics'):
+            self.work_order_id._update_progress_metrics()
 
         self.message_post(
-            body=_("File located successfully"), message_type="notification"
-            )
+            body=_("File located successfully"), 
+            message_type="notification"
+        )
         return True
 
     def action_mark_retrieved(self):
@@ -282,18 +301,21 @@ class FileRetrievalWorkOrderItem(models.Model):
         if self.status not in ["located", "retrieving"]:
             raise ValidationError(
                 _("Item must be located before it can be retrieved")
-                )
-
-        self.write(
-            {"status": "retrieved", "date_retrieved": fields.Datetime.now()}
             )
+
+        self.write({
+            "status": "retrieved", 
+            "date_retrieved": fields.Datetime.now()
+        })
 
         # Update work order progress
-        self.work_order_id._update_progress_metrics()
+        if hasattr(self.work_order_id, '_update_progress_metrics'):
+            self.work_order_id._update_progress_metrics()
 
         self.message_post(
-            body=_("File retrieved successfully"), message_type="notification"
-            )
+            body=_("File retrieved successfully"), 
+            message_type="notification"
+        )
         return True
 
     def action_quality_check(self):
@@ -302,7 +324,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         if self.status != "retrieved":
             raise ValidationError(
                 _("Item must be retrieved before quality check")
-                )
+            )
 
         return {
             "type": "ir.actions.act_window",
@@ -313,24 +335,23 @@ class FileRetrievalWorkOrderItem(models.Model):
             "context": {
                 "default_item_id": self.id,
                 "default_work_order_id": self.work_order_id.id,
-            ),
+            }
         }
 
     def action_approve_quality(self):
         """Approve quality for this item"""
         self.ensure_one()
-        self.write(
-            {
-                "status": "quality_checked",
-                "quality_approved": True,
-                "quality_approved_by": self.env.user.id,
-                "quality_approved_date": fields.Datetime.now(),
-                "date_quality_checked": fields.Datetime.now(),
-            }
-        }
+        self.write({
+            "status": "quality_checked",
+            "quality_approved": True,
+            "quality_approved_by_id": self.env.user.id,
+            "quality_approved_date": fields.Datetime.now(),
+            "date_quality_checked": fields.Datetime.now(),
+        })
 
         # Update work order progress
-        self.work_order_id._update_progress_metrics()
+        if hasattr(self.work_order_id, '_update_progress_metrics'):
+            self.work_order_id._update_progress_metrics()
 
         self.message_post(
             body=_("File quality approved by %s", self.env.user.name),
@@ -344,13 +365,131 @@ class FileRetrievalWorkOrderItem(models.Model):
         self.write({"status": "not_found"})
 
         self.message_post(
-            body=_("File marked as not found"), message_type="notification"
-            )
+            body=_("File marked as not found"), 
+            message_type="notification"
+        )
 
         # Update work order progress
-        self.work_order_id._update_progress_metrics()
+        if hasattr(self.work_order_id, '_update_progress_metrics'):
+            self.work_order_id._update_progress_metrics()
 
         return True
+
+    def action_mark_damaged(self):
+        """Mark item as damaged"""
+        self.ensure_one()
+        self.write({
+            "status": "damaged",
+            "condition": "damaged"
+        })
+
+        self.message_post(
+            body=_("File marked as damaged"),
+            message_type="notification"
+        )
+
+        # Update work order progress
+        if hasattr(self.work_order_id, '_update_progress_metrics'):
+            self.work_order_id._update_progress_metrics()
+
+        return True
+
+    def action_start_locating(self):
+        """Start the locating process"""
+        self.ensure_one()
+        if self.status != "pending":
+            raise ValidationError(
+                _("Can only start locating pending items")
+            )
+
+        self.write({"status": "locating"})
+        self.message_post(
+            body=_("Started locating file"),
+            message_type="notification"
+        )
+        return True
+
+    def action_start_retrieving(self):
+        """Start the retrieving process"""
+        self.ensure_one()
+        if self.status != "located":
+            raise ValidationError(
+                _("Can only start retrieving located items")
+            )
+
+        self.write({"status": "retrieving"})
+        self.message_post(
+            body=_("Started retrieving file"),
+            message_type="notification"
+        )
+        return True
+
+    def action_package(self):
+        """Package the item for delivery"""
+        self.ensure_one()
+        if self.status != "quality_checked":
+            raise ValidationError(
+                _("Item must pass quality check before packaging")
+            )
+
+        self.write({"status": "packaged"})
+        self.message_post(
+            body=_("File packaged for delivery"),
+            message_type="notification"
+        )
+        return True
+
+    # ============================================================================
+    # BUSINESS METHODS
+    # ============================================================================
+    def get_retrieval_summary(self):
+        """Get retrieval summary for this item"""
+        self.ensure_one()
+        return {
+            'item_reference': self.name,
+            'file_name': self.file_name or '',
+            'file_type': self.file_type,
+            'file_format': self.file_format,
+            'status': self.status,
+            'condition': self.condition or '',
+            'estimated_pages': self.estimated_pages,
+            'actual_pages': self.actual_pages or 0,
+            'container': self.container_id.name if self.container_id else '',
+            'quality_approved': self.quality_approved,
+            'location_notes': self.location_notes or '',
+        }
+
+    def update_progress_status(self, new_status, notes=None):
+        """Update item status with optional notes"""
+        self.ensure_one()
+        vals = {'status': new_status}
+        
+        # Set timing fields based on status
+        if new_status == 'located':
+            vals['date_located'] = fields.Datetime.now()
+        elif new_status == 'retrieved':
+            vals['date_retrieved'] = fields.Datetime.now()
+        elif new_status == 'quality_checked':
+            vals['date_quality_checked'] = fields.Datetime.now()
+
+        self.write(vals)
+
+        # Add notes if provided
+        if notes:
+            self.message_post(body=notes, message_type="comment")
+
+        # Update work order progress
+        if hasattr(self.work_order_id, '_update_progress_metrics'):
+            self.work_order_id._update_progress_metrics()
+
+    @api.model
+    def get_status_statistics(self):
+        """Get statistics by status"""
+        return self.read_group(
+            domain=[],
+            fields=['status'],
+            groupby=['status']
+        )
 
     # ============================================================================
     # VALIDATION METHODS
@@ -369,11 +508,148 @@ class FileRetrievalWorkOrderItem(models.Model):
         """Ensure quality approval is consistent with status"""
         for record in self:
             if record.quality_approved and record.status not in [
-                "quality_checked",
-                "packaged",
+                "quality_checked", "packaged"
             ]:
                 raise ValidationError(
-                    _(
-                        "Quality can only be approved for quality checked or packaged items"
-                    )
+                    _("Quality can only be approved for quality checked or packaged items")
                 )
+
+    @api.constrains("work_order_id", "name")
+    def _check_unique_reference_per_order(self):
+        """Ensure item reference is unique within work order"""
+        for record in self:
+            if record.work_order_id and record.name:
+                existing = self.search([
+                    ('work_order_id', '=', record.work_order_id.id),
+                    ('name', '=', record.name),
+                    ('id', '!=', record.id)
+                ])
+                if existing:
+                    raise ValidationError(
+                        _("Item reference %s already exists in this work order", record.name)
+                    )
+
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to generate sequence and validate"""
+        for vals in vals_list:
+            if vals.get("name", "New") == "New":
+                vals["name"] = self.env["ir.sequence"].next_by_code(
+                    "file.retrieval.work.order.item"
+                ) or _("New")
+        
+        return super().create(vals_list)
+
+    def write(self, vals):
+        """Override write to track important changes"""
+        result = super().write(vals)
+        
+        # Track status changes
+        if "status" in vals:
+            for record in self:
+                status_display = dict(record._fields['status'].selection).get(vals["status"], vals["status"])
+                record.message_post(
+                    body=_("Item status changed to %s", status_display)
+                )
+        
+        return result
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def name_get(self):
+        """Custom name display"""
+        result = []
+        for record in self:
+            name = record.display_name or record.name
+            result.append((record.id, name))
+        return result
+
+    @api.model
+    def _name_search(self, name="", args=None, operator="ilike", limit=100, name_get_uid=None):
+        """Enhanced search by name, file name, or description"""
+        args = args or []
+        domain = []
+        
+        if name:
+            domain = [
+                "|", "|", "|",
+                ("name", operator, name),
+                ("file_name", operator, name),
+                ("description", operator, name),
+                ("display_name", operator, name),
+            ]
+        
+        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
+
+    def get_item_details(self):
+        """Get detailed information about the item"""
+        self.ensure_one()
+        return {
+            'reference': self.name,
+            'file_name': self.file_name,
+            'description': self.description,
+            'type': self.file_type,
+            'format': self.file_format,
+            'status': self.status,
+            'condition': self.condition,
+            'estimated_pages': self.estimated_pages,
+            'actual_pages': self.actual_pages,
+            'container': self.container_id.name if self.container_id else None,
+            'location': self.container_location,
+            'position': self.file_position,
+            'quality_approved': self.quality_approved,
+            'quality_notes': self.quality_notes,
+        }
+
+    # ============================================================================
+    # REPORTING METHODS
+    # ============================================================================
+    @api.model
+    def generate_retrieval_report(self, work_order_ids=None, date_from=None, date_to=None):
+        """Generate retrieval report for items"""
+        domain = []
+        
+        if work_order_ids:
+            domain.append(('work_order_id', 'in', work_order_ids))
+        if date_from:
+            domain.append(('create_date', '>=', date_from))
+        if date_to:
+            domain.append(('create_date', '<=', date_to))
+        
+        items = self.search(domain)
+        
+        # Compile statistics
+        total_items = len(items)
+        by_status = {}
+        by_type = {}
+        total_pages = 0
+        
+        for item in items:
+            # By status
+            if item.status not in by_status:
+                by_status[item.status] = 0
+            by_status[item.status] += 1
+            
+            # By type
+            if item.file_type not in by_type:
+                by_type[item.file_type] = 0
+            by_type[item.file_type] += 1
+            
+            # Total pages
+            if item.actual_pages:
+                total_pages += item.actual_pages
+            elif item.estimated_pages:
+                total_pages += item.estimated_pages
+        
+        return {
+            'total_items': total_items,
+            'by_status': by_status,
+            'by_type': by_type,
+            'total_pages': total_pages,
+            'items': [item.get_retrieval_summary() for item in items],
+            'quality_approval_rate': len(items.filtered('quality_approved')) / total_items * 100 if total_items > 0 else 0,
+        }

@@ -16,22 +16,28 @@ class PortalFeedbackAction(models.Model):
     # ============================================================================
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Action Name", required=True, tracking=True,),
+    name = fields.Char(string="Action Name", required=True, tracking=True)
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
-        required=True,
+        required=True
     )
+    
     user_id = fields.Many2one(
-        "res.users", string="User", default=lambda self: self.env.user, tracking=True,)
+        "res.users", 
+        string="User", 
+        default=lambda self: self.env.user, 
+        tracking=True
+    )
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         related="feedback_id.partner_id",
         store=True,
-        help="Associated partner for this record",
+        help="Associated partner for this record"
     )
+    
     active = fields.Boolean(string="Active", default=True)
 
     # ============================================================================
@@ -42,43 +48,53 @@ class PortalFeedbackAction(models.Model):
         string="Feedback",
         required=True,
         ondelete="cascade",
-        index=True,
+        index=True
     )
-    description = fields.Text(string="Action Description"),
-    action_type = fields.Selection(
-        [
-            ("training", "Training"),
-            ("process_improvement", "Process Improvement"),
-            ("system_enhancement", "System Enhancement"),
-            ("policy_update", "Policy Update"),
-            ("communication", "Communication"),
-            ("follow_up", "Follow-up"),
-        ],
+    
+    description = fields.Text(string="Action Description")
+    action_type = fields.Selection([
+        ("training", "Training"),
+        ("process_improvement", "Process Improvement"),
+        ("system_enhancement", "System Enhancement"),
+        ("policy_update", "Policy Update"),
+        ("communication", "Communication"),
+        ("follow_up", "Follow-up")
+    ],
         string="Action Type",
         required=True,
-        tracking=True,
+        tracking=True
     )
+    
     assigned_to_id = fields.Many2one(
-        "res.users", string="Assigned To", required=True, tracking=True,)
-    due_date = fields.Date(string="Due Date", required=True, tracking=True,),
-    priority = fields.Selection(
-        [("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")],
+        "res.users", 
+        string="Assigned To", 
+        required=True, 
+        tracking=True
+    )
+    due_date = fields.Date(string="Due Date", required=True, tracking=True)
+    priority = fields.Selection([
+        ("low", "Low"), 
+        ("medium", "Medium"), 
+        ("high", "High"), 
+        ("urgent", "Urgent")
+    ],
         string="Priority",
         default="medium",
-        tracking=True,
+        tracking=True
     )
-    status = fields.Selection(
-        [
-            ("not_started", "Not Started"),
-            ("in_progress", "In Progress"),
-            ("completed", "Completed"),
-            ("cancelled", "Cancelled"),
-        ],
+    
+    status = fields.Selection([
+        ("not_started", "Not Started"),
+        ("in_progress", "In Progress"),
+        ("completed", "Completed"),
+        ("cancelled", "Cancelled")
+    ],
         string="Status",
         default="not_started",
-        tracking=True,
+        tracking=True
     )
-    completion_date = fields.Date(string="Completion Date", tracking=True,),
+    
+    completion_date = fields.Date(string="Completion Date", tracking=True)
     completion_notes = fields.Text(string="Completion Notes")
 
     # ============================================================================
@@ -93,12 +109,28 @@ class PortalFeedbackAction(models.Model):
     is_overdue = fields.Boolean(
         string="Is Overdue",
         compute="_compute_is_overdue",
-        help="True if action is past due date and not completed",
+        help="True if action is past due date and not completed"
     )
+    
     days_remaining = fields.Integer(
         string="Days Remaining",
         compute="_compute_days_remaining",
-        help="Days remaining until due date",
+        help="Days remaining until due date"
+    )
+    
+    # Workflow state management
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+        ('archived', 'Archived')
+    ], 
+        string='Status', 
+        default='draft', 
+        tracking=True, 
+        required=True, 
+        index=True,
+        help='Current status of the record'
     )
 
     # ============================================================================
@@ -119,15 +151,6 @@ class PortalFeedbackAction(models.Model):
     def _compute_days_remaining(self):
         """Calculate days remaining until due date"""
         today = fields.Date.today()
-
-    # Workflow state management
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-        ('archived', 'Archived'),
-    ], string='Status', default='draft', tracking=True, required=True, index=True,
-       help='Current status of the record')
         for record in self:
             if record.due_date:
                 delta = record.due_date - today
@@ -147,7 +170,7 @@ class PortalFeedbackAction(models.Model):
         self.write({"status": "in_progress"})
         self.message_post(
             body=_("Action has been started."), message_type="notification"
-            )
+        )
 
     def action_complete(self):
         """Mark action as completed"""
@@ -158,7 +181,7 @@ class PortalFeedbackAction(models.Model):
         self.write({"status": "completed", "completion_date": fields.Date.today()})
         self.message_post(
             body=_("Action has been completed."), message_type="notification"
-            )
+        )
 
     def action_cancel(self):
         """Cancel the action"""
@@ -169,7 +192,7 @@ class PortalFeedbackAction(models.Model):
         self.write({"status": "cancelled"})
         self.message_post(
             body=_("Action has been cancelled."), message_type="notification"
-            )
+        )
 
     # ============================================================================
     # VALIDATION METHODS
@@ -194,4 +217,4 @@ class PortalFeedbackAction(models.Model):
             ):
                 raise ValidationError(
                     _("Due date cannot be in the past for new actions.")
-                    )
+                )

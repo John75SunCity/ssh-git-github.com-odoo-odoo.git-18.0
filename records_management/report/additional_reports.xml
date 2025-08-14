@@ -45,22 +45,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <t t-foreach="docs" t-as="o">
-                            <tr>
-                                <td>
-                                    <span t-field="o.pickup_date"/>
-                                </td>
-                                <td>
-                                    <span t-field="o.partner_id.name"/>
-                                </td>
-                                <td>
-                                    <span t-esc="len(o.pickup_item_ids)"/>
-                                </td>
-                                <td>
-                                    <span t-field="o.driver_id.name"/>
-                                </td>
-                            </tr>
-                        </t>
+                                                        <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
                     </tbody>
                 </table>
             </div>

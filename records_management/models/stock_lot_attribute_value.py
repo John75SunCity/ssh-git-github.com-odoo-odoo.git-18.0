@@ -36,8 +36,10 @@ class StockLotAttributeValue(models.Model):
     value_date = fields.Date(string="Date Value", help="Date attribute value"),
     value_boolean = fields.Boolean(
         string="Boolean Value", help="Boolean attribute value"
-    )
+    ),
     value_selection = fields.Char(
+        string="Selection Value", help="Selected option value"
+    ),
 
     # Workflow state management
     state = fields.Selection([
@@ -46,9 +48,7 @@ class StockLotAttributeValue(models.Model):
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
     ], string='Status', default='draft', tracking=True, required=True, index=True,
-       help='Current status of the record')
-        string="Selection Value", help="Selected option value"
-    )
+       help='Current status of the record'),
 
     @api.depends(
         "attribute_id",

@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "python",
             "args": [
-                "development-tools/find_syntax_errors.py"
+                "development-tools/syntax-tools/find_syntax_errors.py"
             ],
             "group": {
                 "kind": "test",
@@ -27,7 +27,7 @@
             "type": "shell",
             "command": "python",
             "args": [
-                "development-tools/fix_pylint_no_member.py"
+                "development-tools/archive/fix_pylint_no_member.py"
             ],
             "group": "build",
             "presentation": {
@@ -92,7 +92,7 @@
             "command": "bash",
             "args": [
                 "-c",
-                "python development-tools/find_syntax_errors.py && git add . && git commit -m 'fix: Automated syntax and translation fixes'"
+                "python development-tools/syntax-tools/find_syntax_errors.py && git add . && git commit -m 'fix: Automated syntax and translation fixes'"
             ],
             "group": "build",
             "presentation": {
@@ -144,7 +144,7 @@
             "command": "bash",
             "args": [
                 "-c",
-                "echo '🚀 Starting Multi-AI Validation Workflow...' && echo '✅ GitHub Copilot: Development assistance active' && echo '🔍 Cybrosys Assista: Odoo 18.0 validation ready' && echo '🎯 Odoo Extension Pack: Professional patterns loaded' && echo '📚 Arkademy Training: Advanced learning context active' && python development-tools/find_syntax_errors.py --odoo-validation"
+                "echo '🚀 Starting Multi-AI Validation Workflow...' && echo '✅ GitHub Copilot: Development assistance active' && echo '🔍 Cybrosys Assista: Odoo 18.0 validation ready' && echo '🎯 Odoo Extension Pack: Professional patterns loaded' && echo '📚 Arkademy Training: Advanced learning context active' && python development-tools/syntax-tools/find_syntax_errors.py --odoo-validation"
             ],
             "group": {
                 "kind": "test",
@@ -215,7 +215,7 @@
             "command": "bash",
             "args": [
                 "-c",
-                "echo '🔄 Complete AI-Assisted Development Workflow' && echo '1. GitHub Copilot: Code generation and assistance' && python development-tools/find_syntax_errors.py && echo '2. Cybrosys Assista: Odoo 18.0 validation complete' && echo '3. Ready for Git deployment' && git status --porcelain"
+                "echo '🔄 Complete AI-Assisted Development Workflow' && echo '1. GitHub Copilot: Code generation and assistance' && python development-tools/syntax-tools/find_syntax_errors.py && echo '2. Cybrosys Assista: Odoo 18.0 validation complete' && echo '3. Ready for Git deployment' && git status --porcelain"
             ],
             "group": {
                 "kind": "build",

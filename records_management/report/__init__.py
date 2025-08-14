@@ -10,22 +10,22 @@ _logger = logging.getLogger(__name__)
 
 # Import existing Python report models
 try:
-    from . import records_tag_report
+    from . import records_tag_reports
 
-    _imported_reports = ["records_tag_report"]
-    _logger.info("Successfully imported records_tag_report")
+    _imported_reports = ["records_tag_reports"]
+    _logger.info("Successfully imported records_tag_reports")
 except ImportError as e:
-    _logger.warning("Could not import records_tag_report: %s", str(e))
+    _logger.warning("Could not import records_tag_reports: %s", str(e))
     _imported_reports = []
 
 # Import revenue forecasting report
 try:
-    from . import revenue_forecasting_report
+    from . import revenue_forecasting_reports
 
-    _imported_reports.append("revenue_forecasting_report")
-    _logger.info("Successfully imported revenue_forecasting_report")
+    _imported_reports.append("revenue_forecasting_reports")
+    _logger.info("Successfully imported revenue_forecasting_reports")
 except ImportError as e:
-    _logger.warning("Could not import revenue_forecasting_report: %s", str(e))
+    _logger.warning("Could not import revenue_forecasting_reports: %s", str(e))
 
 # =============================================================================
 # FUTURE PYTHON REPORT MODELS - TO BE DEVELOPED

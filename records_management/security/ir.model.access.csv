@@ -78,6 +78,8 @@ access_naid_compliance_action_plan_user,access_naid_compliance_action_plan_user,
 access_naid_compliance_action_plan_manager,access_naid_compliance_action_plan_manager,model_naid_compliance_action_plan,records_management.group_records_manager,1,1,1,1
 access_naid_compliance_alert_user,access_naid_compliance_alert_user,model_naid_compliance_alert,records_management.group_records_user,1,1,1,0
 access_naid_compliance_alert_manager,access_naid_compliance_alert_manager,model_naid_compliance_alert,records_management.group_records_manager,1,1,1,1
+access_naid_risk_assessment_user,access_naid_risk_assessment_user,model_naid_risk_assessment,records_management.group_records_user,1,1,1,0
+access_naid_risk_assessment_manager,access_naid_risk_assessment_manager,model_naid_risk_assessment,records_management.group_records_manager,1,1,1,1
 
 # ============================================================================
 # TEMPORARY INVENTORY AND RETENTION POLICY ACCESS RULES

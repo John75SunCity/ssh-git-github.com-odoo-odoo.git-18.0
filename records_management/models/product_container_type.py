@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class ProductContainerType(models.Model):
@@ -25,13 +25,15 @@ class ProductContainerType(models.Model):
         tracking=True,
         help='Display name for this container type'
     )
+    
     code = fields.Char(
         string='Container Code',
         required=True,
         size=10,
         tracking=True,
         help='Unique code for this container type (e.g., TYPE01, TYPE02)'
-        )
+    )
+    
     product_id = fields.Many2one(
         'product.product',
         string='Product',
@@ -39,17 +41,21 @@ class ProductContainerType(models.Model):
         domain=[('type', '=', 'service')],
         help='Product record for billing this container type'
     )
+    
     company_id = fields.Many2one(
         'res.company',
         string='Company',
         default=lambda self: self.env.company,
-        required=True,)
+        required=True
+    )
+    
     active = fields.Boolean(
         string='Active',
         default=True,
         tracking=True,
         help='Whether this container type is active'
     )
+    
     sequence = fields.Integer(
         string='Sequence',
         default=10,
@@ -65,12 +71,14 @@ class ProductContainerType(models.Model):
         digits=(8, 3),
         help='Container volume in cubic feet'
     )
+    
     average_weight_lbs = fields.Float(
         string='Average Weight (lbs)',
         required=True,
         digits=(8, 2),
         help='Average weight when full in pounds'
     )
+    
     max_weight_lbs = fields.Float(
         string='Maximum Weight (lbs)',
         digits=(8, 2),
@@ -83,11 +91,13 @@ class ProductContainerType(models.Model):
         digits=(6, 2),
         help='Container length in inches'
     )
+    
     width_inches = fields.Float(
         string='Width (inches)',
         digits=(6, 2),
         help='Container width in inches'
     )
+    
     height_inches = fields.Float(
         string='Height (inches)',
         digits=(6, 2),
@@ -111,7 +121,7 @@ class ProductContainerType(models.Model):
         ('type_04', 'TYPE 04 - Odd Size/Temp Box'),
         ('type_06', 'TYPE 06 - Pathology Box'),
         ('custom', 'Custom Type')
-    ], string='Business Type Code', required=True, tracking=True,)
+    ], string='Business Type Code', required=True, tracking=True)
 
     usage_category = fields.Selection([
         ('general', 'General File Storage'),
@@ -120,13 +130,13 @@ class ProductContainerType(models.Model):
         ('blueprints', 'Blueprints/Maps'),
         ('temporary', 'Temporary Storage'),
         ('specialized', 'Specialized Storage')
-    ], string='Usage Category', default='general', required=True,)
+    ], string='Usage Category', default='general', required=True)
 
     document_capacity = fields.Integer(
         string='Document Capacity',
         help='Approximate number of documents this container can hold'
     )
-    
+
     # ============================================================================
     # PRICING CONFIGURATION
     # ============================================================================
@@ -150,6 +160,7 @@ class ProductContainerType(models.Model):
         currency_field='currency_id',
         help='One-time setup fee for this container type'
     )
+    
     handling_fee = fields.Monetary(
         string='Handling Fee',
         currency_field='currency_id',
@@ -181,7 +192,7 @@ class ProductContainerType(models.Model):
         ('standard', 'Standard Security'),
         ('enhanced', 'Enhanced Security'),
         ('maximum', 'Maximum Security')
-    ], string='Security Level', default='standard', required=True,)
+    ], string='Security Level', default='standard', required=True)
 
     # ============================================================================
     # USAGE STATISTICS (COMPUTED)
@@ -191,11 +202,13 @@ class ProductContainerType(models.Model):
         compute='_compute_usage_stats',
         help='Number of containers of this type'
     )
+    
     active_containers = fields.Integer(
         string='Active Containers',
         compute='_compute_usage_stats',
         help='Number of active containers of this type'
     )
+    
     monthly_revenue = fields.Monetary(
         string='Monthly Revenue',
         compute='_compute_usage_stats',
@@ -209,9 +222,16 @@ class ProductContainerType(models.Model):
         compute='_compute_customer_stats',
         help='Number of customers using this container type'
     )
+    
     top_customers = fields.Text(
+        string='Top Customers',
+        compute='_compute_customer_stats',
+        help='List of top customers by container count'
+    )
 
-    # Workflow state management
+    # ============================================================================
+    # WORKFLOW STATE MANAGEMENT
+    # ============================================================================
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),
@@ -219,9 +239,26 @@ class ProductContainerType(models.Model):
         ('archived', 'Archived'),
     ], string='Status', default='draft', tracking=True, required=True, index=True,
        help='Current status of the record')
-        string='Top Customers',
-        compute='_compute_customer_stats',
-        help='List of top customers by container count'
+
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities"
+    )
+    
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers"
+    )
+    
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages"
     )
 
     # ============================================================================
@@ -232,13 +269,12 @@ class ProductContainerType(models.Model):
         """Format dimensions for display"""
         for record in self:
             if record.length_inches and record.width_inches and record.height_inches:
-                record.dimensions_display = '%.1f" × %.1f" × %.1f"' % (
-                    record.length_inches,
-                    record.width_inches,
-                    record.height_inches
-                )
+                record.dimensions_display = _('%.1f" × %.1f" × %.1f"',
+                                            record.length_inches,
+                                            record.width_inches,
+                                            record.height_inches)
             else:
-                record.dimensions_display = 'Dimensions not specified'
+                record.dimensions_display = _('Dimensions not specified')
 
     @api.depends('container_type_code')
     def _compute_usage_stats(self):
@@ -281,10 +317,10 @@ class ProductContainerType(models.Model):
                 top_5 = sorted_customers[:5]
                 
                 container_type.top_customers = '\n'.join([
-                    '%s (%d containers)' % (name, count) for name, count in top_5
+                    _('%s (%d containers)', name, count) for name, count in top_5
                 ])
             else:
-                container_type.top_customers = 'No customers yet'
+                container_type.top_customers = _('No customers yet')
 
     # ============================================================================
     # CONSTRAINT VALIDATIONS
@@ -315,7 +351,10 @@ class ProductContainerType(models.Model):
         """Check that dimensions are consistent with volume"""
         for record in self:
             if all([record.length_inches, record.width_inches, record.height_inches]):
-                calculated_volume = (record.length_inches * record.width_inches * record.height_inches) / 1728  # cubic inches to cubic feet
+                # Convert cubic inches to cubic feet (1728 cubic inches = 1 cubic foot)
+                calculated_volume = (
+                    record.length_inches * record.width_inches * record.height_inches
+                ) / 1728
                 if abs(calculated_volume - record.volume_cubic_feet) > 0.1:
                     raise ValidationError(_('Dimensions do not match specified volume'))
 
@@ -324,7 +363,9 @@ class ProductContainerType(models.Model):
         """Ensure max weight is greater than average weight"""
         for record in self:
             if record.max_weight_lbs and record.max_weight_lbs < record.average_weight_lbs:
-                raise ValidationError(_('Maximum weight must be greater than or equal to average weight'))
+                raise ValidationError(_(
+                    'Maximum weight must be greater than or equal to average weight'
+                ))
 
     # ============================================================================
     # ONCHANGE METHODS
@@ -344,7 +385,7 @@ class ProductContainerType(models.Model):
                     'height_inches': 10,
                     'usage_category': 'general',
                     'document_capacity': 2500
-                ),
+                },
                 'type_02': {
                     'name': 'Legal/Banker Box',
                     'volume_cubic_feet': 2.4,
@@ -354,7 +395,7 @@ class ProductContainerType(models.Model):
                     'height_inches': 10,
                     'usage_category': 'legal',
                     'document_capacity': 5000
-                ),
+                },
                 'type_03': {
                     'name': 'Map Box',
                     'volume_cubic_feet': 0.875,
@@ -364,14 +405,14 @@ class ProductContainerType(models.Model):
                     'height_inches': 6,
                     'usage_category': 'blueprints',
                     'document_capacity': 200
-                ),
+                },
                 'type_04': {
                     'name': 'Odd Size/Temp Box',
                     'volume_cubic_feet': 5.0,
                     'average_weight_lbs': 75,
                     'usage_category': 'temporary',
                     'document_capacity': 10000
-                ),
+                },
                 'type_06': {
                     'name': 'Pathology Box',
                     'volume_cubic_feet': 0.042,
@@ -382,7 +423,7 @@ class ProductContainerType(models.Model):
                     'usage_category': 'medical',
                     'document_capacity': 100
                 }
-            )
+            }
             
             if self.container_type_code in specs:
                 spec = specs[self.container_type_code]
@@ -445,7 +486,7 @@ class ProductContainerType(models.Model):
                 'type': 'service',
                 'categ_id': self.env.ref('product.product_category_all').id,
                 'list_price': 0.0,  # Will be set based on base rates
-                'description': 'Storage service for %s containers' % self.name,
+                'description': _('Storage service for %s containers', self.name),
                 'company_id': self.company_id.id
             }
             
@@ -464,7 +505,7 @@ class ProductContainerType(models.Model):
             # Update existing product
             self.product_id.write({
                 'name': self.name,
-                'description': 'Storage service for %s containers' % self.name
+                'description': _('Storage service for %s containers', self.name)
             })
             
             return {
@@ -489,6 +530,27 @@ class ProductContainerType(models.Model):
             'context': {'default_container_type_id': self.id}
         }
 
+    def action_activate(self):
+        """Activate container type"""
+        for record in self:
+            record.write({'state': 'active'})
+            record.message_post(body=_("Container type activated"))
+
+    def action_deactivate(self):
+        """Deactivate container type"""
+        for record in self:
+            record.write({'state': 'inactive'})
+            record.message_post(body=_("Container type deactivated"))
+
+    def action_archive(self):
+        """Archive container type"""
+        for record in self:
+            if record.active_containers > 0:
+                raise UserError(_("Cannot archive container type with active containers"))
+            
+            record.write({'state': 'archived', 'active': False})
+            record.message_post(body=_("Container type archived"))
+
     # ============================================================================
     # REPORTING METHODS
     # ============================================================================
@@ -512,3 +574,144 @@ class ProductContainerType(models.Model):
             'customer_count': len(containers.mapped('partner_id')),
             'monthly_revenue': self.monthly_revenue
         }
+
+    def get_revenue_forecast(self, months=12):
+        """Get revenue forecast for this container type"""
+        self.ensure_one()
+        
+        # Simple growth calculation based on recent trends
+        current_revenue = self.monthly_revenue
+        
+        # Calculate growth rate from last 6 months
+        forecast_data = []
+        for month in range(1, months + 1):
+            # Simple linear growth model - can be enhanced with ML
+            projected_revenue = current_revenue * (1 + 0.05 * month)  # 5% growth assumption
+            forecast_data.append({
+                'month': month,
+                'projected_revenue': projected_revenue,
+                'container_type': self.name
+            })
+        
+        return forecast_data
+
+    @api.model
+    def get_container_type_analytics(self):
+        """Get analytics for all container types"""
+        container_types = self.search([('active', '=', True)])
+        
+        analytics = {
+            'total_types': len(container_types),
+            'total_containers': sum(container_types.mapped('container_count')),
+            'total_revenue': sum(container_types.mapped('monthly_revenue')),
+            'type_breakdown': []
+        }
+        
+        for container_type in container_types:
+            analytics['type_breakdown'].append({
+                'name': container_type.name,
+                'code': container_type.container_type_code,
+                'containers': container_type.container_count,
+                'revenue': container_type.monthly_revenue,
+                'customers': container_type.customer_count
+            })
+        
+        return analytics
+
+    # ============================================================================
+    # BUSINESS LOGIC METHODS
+    # ============================================================================
+    def get_effective_rate(self, customer=None):
+        """Get effective rate for this container type for a specific customer"""
+        self.ensure_one()
+        
+        if customer:
+            # Check for customer-specific rates
+            negotiated_rate = self.env['customer.negotiated.rates'].search([
+                ('partner_id', '=', customer.id),
+                ('container_type', '=', self.container_type_code),
+                ('active', '=', True)
+            ], limit=1)
+            
+            if negotiated_rate:
+                return negotiated_rate.monthly_rate
+        
+        # Fall back to base rate
+        return self.base_monthly_rate
+
+    def calculate_monthly_billing(self, customer, container_count):
+        """Calculate monthly billing for a customer"""
+        self.ensure_one()
+        
+        rate = self.get_effective_rate(customer)
+        subtotal = rate * container_count
+        
+        # Apply volume discounts if applicable
+        billing_profile = customer.billing_profile_id
+        if billing_profile and billing_profile.volume_discount_enabled:
+            if container_count >= billing_profile.volume_discount_threshold:
+                discount = subtotal * (billing_profile.volume_discount_percentage / 100)
+                subtotal -= discount
+        
+        return {
+            'rate': rate,
+            'container_count': container_count,
+            'subtotal': subtotal,
+            'total': subtotal + self.handling_fee
+        }
+
+    def validate_container_specifications(self):
+        """Validate container specifications against business rules"""
+        self.ensure_one()
+        
+        # Business validation rules
+        if self.container_type_code == 'type_01' and self.volume_cubic_feet != 1.2:
+            return False, _('TYPE 01 containers must have exactly 1.2 cubic feet volume')
+        
+        if self.container_type_code == 'type_02' and self.volume_cubic_feet != 2.4:
+            return False, _('TYPE 02 containers must have exactly 2.4 cubic feet volume')
+        
+        if self.container_type_code == 'type_06' and self.volume_cubic_feet != 0.042:
+            return False, _('TYPE 06 containers must have exactly 0.042 cubic feet volume')
+        
+        return True, _('Specifications are valid')
+
+    # ============================================================================
+    # INTEGRATION METHODS
+    # ============================================================================
+    def sync_with_product_catalog(self):
+        """Synchronize with product catalog"""
+        self.ensure_one()
+        
+        if not self.product_id:
+            self.action_create_product()
+        else:
+            # Update product information
+            self.product_id.write({
+                'name': self.name,
+                'description': _('Storage service for %s containers', self.name),
+                'active': self.active
+            })
+        
+        return True
+
+    @api.model
+    def import_container_specifications(self, specifications_data):
+        """Import container specifications from external data"""
+        created_types = []
+        
+        for spec_data in specifications_data:
+            # Create or update container type
+            existing = self.search([
+                ('code', '=', spec_data.get('code')),
+                ('company_id', '=', self.env.company.id)
+            ])
+            
+            if existing:
+                existing.write(spec_data)
+                created_types.append(existing)
+            else:
+                new_type = self.create(spec_data)
+                created_types.append(new_type)
+        
+        return created_types

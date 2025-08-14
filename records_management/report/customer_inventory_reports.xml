@@ -100,23 +100,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-foreach="containers" t-as="container">
-                                    <tr>
-                                        <td><span t-field="container.name"/></td>
-                                        <td><span t-field="container.container_type_id.name"/></td>
-                                        <td><span t-field="container.location_id.name"/></td>
-                                        <td><span t-field="container.document_count"/></td>
-                                        <td><span t-field="container.cubic_feet"/></td>
-                                        <td><span t-field="container.weight"/></td>
-                                        <td>
-                                            <span t-field="container.state" 
-                                                  t-options='{"widget": "badge", "success": "active", "warning": "transit", "danger": "inactive"}'/>
-                                        </td>
-                                        <td><span t-field="container.write_date" t-options='{"format": "MMM dd, yyyy"}'/></td>
-                                    </tr>
-                                </t>
-                                <tr t-if="not containers">
-                                    <td colspan="8" class="text-center text-muted">No containers found for this customer</td>
+                                                                <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -240,16 +234,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <t t-set="containers" t-value="env['records.container'].search([('customer_id', '=', partner.id)])"/>
-                    <t t-foreach="containers" t-as="container">
-                        <tr>
-                            <td><span t-field="container.name"/></td>
-                            <td><span t-field="container.location_id.name"/></td>
-                            <td><span t-field="container.document_count"/></td>
-                            <td><span t-field="container.cubic_feet"/> CF</td>
-                            <td><span t-field="container.state"/></td>
-                        </tr>
-                    </t>
+                                                    <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
                 </tbody>
             </table>
         </template>

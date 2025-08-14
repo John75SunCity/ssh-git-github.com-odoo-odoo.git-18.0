@@ -154,16 +154,18 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <t t-foreach="request.container_ids" t-as="container">
-                                                <tr>
-                                                    <td><span t-field="container.name"/></td>
-                                                    <td><span t-field="container.container_type_id.name"/></td>
-                                                    <td><span t-field="container.location_id.name"/></td>
-                                                    <td><span t-field="container.cubic_feet"/></td>
-                                                    <td><span t-field="container.document_count"/></td>
-                                                    <td><span t-field="container.state"/></td>
-                                                </tr>
-                                            </t>
+                                                                            <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -199,20 +201,18 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <t t-foreach="audit_logs" t-as="log">
-                                                    <tr>
-                                                        <td><span t-field="log.create_date" t-options="{'widget': 'datetime'}"/></td>
-                                                        <td>
-                                                            <span t-field="log.action"/>
-                                                            <span t-if="log.compliance_flag" class="badge badge-success ml-2">
-                                                                NAID
-                                                            </span>
-                                                        </td>
-                                                        <td><span t-field="log.user_id.name"/></td>
-                                                        <td><span t-field="log.description"/></td>
-                                                        <td><span t-field="log.ip_address"/></td>
-                                                    </tr>
-                                                </t>
+                                                                                <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -402,15 +402,18 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <t t-foreach="request.attachment_ids" t-as="attachment">
-                                                <tr>
-                                                    <td><span t-field="attachment.name"/></td>
-                                                    <td><span t-field="attachment.mimetype"/></td>
-                                                    <td><span t-esc="'%.2f KB' % (attachment.file_size / 1024.0 if attachment.file_size else 0)"/></td>
-                                                    <td><span t-field="attachment.create_date" t-options="{'widget': 'datetime'}"/></td>
-                                                    <td><span t-field="attachment.create_uid.name"/></td>
-                                                </tr>
-                                            </t>
+                                                                            <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
                                         </tbody>
                                     </table>
                                 </div>

@@ -32,46 +32,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Employee Background Screening</td>
-                                <td>
-                                    <span class="badge badge-success">Compliant</span>
-                                </td>
-                                <td>All employees background checked and certified</td>
-                                <td>2024-08-01</td>
-                            </tr>
-                            <tr>
-                                <td>Destruction Process Documentation</td>
-                                <td>
-                                    <span class="badge badge-success">Compliant</span>
-                                </td>
-                                <td>All destructions logged with certificates</td>
-                                <td>Daily</td>
-                            </tr>
-                            <tr>
-                                <td>Chain of Custody Tracking</td>
-                                <td>
-                                    <span class="badge badge-success">Compliant</span>
-                                </td>
-                                <td>Complete audit trail maintained</td>
-                                <td>Real-time</td>
-                            </tr>
-                            <tr>
-                                <td>Facility Security</td>
-                                <td>
-                                    <span class="badge badge-success">Compliant</span>
-                                </td>
-                                <td>Access controls and monitoring active</td>
-                                <td>2024-07-15</td>
-                            </tr>
-                            <tr>
-                                <td>Equipment Calibration</td>
-                                <td>
-                                    <span class="badge badge-success">Compliant</span>
-                                </td>
-                                <td>Shredding equipment certified and maintained</td>
-                                <td>2024-07-01</td>
-                            </tr>
+                                                            <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
                         </tbody>
                     </table>
                 </div>

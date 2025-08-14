@@ -373,3 +373,4 @@ from . import records_inventory_dashboard
 from . import customer_negotiated_rate
 from . import base_rate
 from . import product_container_type
+from . import feedback_improvement_area

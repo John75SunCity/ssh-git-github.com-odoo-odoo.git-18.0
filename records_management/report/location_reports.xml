@@ -24,23 +24,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-foreach="o.records_box_ids" t-as="box">
-                                <tr>
-                                    <td>
-                                        <span t-field="box.name"/>
-                                    </td>
-                                    <td>Box</td>
-                                    <td>
-                                        <span t-field="box.partner_id.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="box.state"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="box.create_date" t-options="{'widget': 'date'}"/>
-                                    </td>
+                                                            <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
                                 </tr>
-                            </t>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
                         </tbody>
                     </table>
 

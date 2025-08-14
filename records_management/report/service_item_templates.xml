@@ -42,24 +42,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Age (Months)</td>
-                                    <td>
-                                        <span t-field="o.age_months"/>
-                                    </td>
+                                                                <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
                                 </tr>
-                                <tr>
-                                    <td>Capacity</td>
-                                    <td>
-                                        <span t-field="o.capacity"/>
-                                        <span t-field="o.capacity_unit"/>
-                                    </td>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
                                 </tr>
-                                <tr>
-                                    <td>Maintenance Due</td>
-                                    <td>
-                                        <span t-field="o.maintenance_due"/>
-                                    </td>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -107,19 +100,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.maintenance_request_ids" t-as="req">
-                                    <td>
-                                        <span t-field="req.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="req.request_date"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="req.maintenance_type"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="req.stage_id.name"/>
-                                    </td>
+                                                                <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
                                 </tr>
                             </tbody>
                         </table>
