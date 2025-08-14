@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Records Usage Tracking Model
 
-from odoo import fields, models
+from odoo import api, fields, models, _
 
 
 
@@ -55,6 +55,10 @@ class RecordsUsageTracking(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.usage.tracking') or _('New')
         return super().create(vals_list)
+
+    # ============================================================================
+    # BUSINESS FIELDS
+    # ============================================================================
     _order = "config_id, date desc"
 
     config_id = fields.Many2one(

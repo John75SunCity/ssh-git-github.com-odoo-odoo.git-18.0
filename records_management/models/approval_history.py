@@ -509,21 +509,21 @@ class ApprovalHistory(models.Model):
         return result
 
     @api.model
-    def _name_search(self, name="", args=None, operator="ilike", limit=100, name_get_uid=None):
+    def name_search(self, name="", args=None, operator="ilike", limit=100):
         """Enhanced search by name, type, or reference"""
         args = args or []
-        domain = []
         
         if name:
             domain = [
                 "|", "|", "|",
                 ("name", operator, name),
-                ("approval_type", operator, name),
+                ("approval_type", operator, name), 
                 ("reference_document", operator, name),
                 ("description", operator, name),
             ]
+            args = domain + args
         
-        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
+        return super().name_search(name=name, args=args, operator=operator, limit=limit)
 
     # ============================================================================
     # VALIDATION METHODS
