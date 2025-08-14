@@ -8,7 +8,8 @@ _logger = logging.getLogger(__name__)
 # REPORTS MODULE INITIALIZATION - RECORDS MANAGEMENT SYSTEM
 # =============================================================================
 
-
+# Initialize imported reports list
+_imported_reports = []
 
 # Import revenue forecasting report
 try:
