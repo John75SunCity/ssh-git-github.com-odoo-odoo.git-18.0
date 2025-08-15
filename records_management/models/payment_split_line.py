@@ -12,8 +12,8 @@ from odoo.exceptions import ValidationError
 class PaymentSplitLine(models.Model):
     """Payment Split Line"""
 
-    _name = "payment.split.line"
-    _description = "Payment Split Line"
+    _name = "payment.allocation.line"
+    _description = "Payment Allocation Line"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "payment_id, allocation_order, service_type"
     _rec_name = "display_name"
