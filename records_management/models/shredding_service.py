@@ -391,7 +391,7 @@ class ShreddingService(models.Model):
     )
     photo_ids = fields.One2many(
         "shredding.service.photo",
-        "service_id",
+        "shredding_service_id",
         string="Photos",
         help="Photos taken during service",
     )

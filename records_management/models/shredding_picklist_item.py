@@ -45,6 +45,12 @@ class ShreddingPicklistItem(models.Model):
         index=True
     )
 
+    batch_id = fields.Many2one(
+        "shredding.inventory.batch",
+        string="Inventory Batch",
+        help="Batch this item belongs to"
+    )
+
     container_id = fields.Many2one(
         "records.container",
         string="Container",

@@ -59,6 +59,12 @@ class DocumentRetrievalMetrics(models.Model):
         help="Related work order"
     )
 
+    team_id = fields.Many2one(
+        "document.retrieval.team",
+        string="Retrieval Team",
+        help="Team responsible for this retrieval metric"
+    )
+
     employee_id = fields.Many2one(
         "hr.employee",
         string="Employee",

@@ -72,7 +72,7 @@ class PaymentSplitLine(models.Model):
     )
 
     service_id = fields.Many2one(
-        "records.service",
+        "shredding.service",
         string="Service",
         help="Service this split applies to"
     )
