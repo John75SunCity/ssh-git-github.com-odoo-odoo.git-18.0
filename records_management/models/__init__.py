@@ -425,10 +425,10 @@ from . import records_billing_config_audit
 from . import records_billing_config_line
 
 # FSM service line sub-models
-from . import fsm_task_service_line
+from . import fsmtask_service_line
 
 # Document retrieval metrics sub-models
-from . import document_retrieval_metrics
+from . import document_retrieval_metric
 
 # Payment processing sub-models
 from . import payment_split_line
