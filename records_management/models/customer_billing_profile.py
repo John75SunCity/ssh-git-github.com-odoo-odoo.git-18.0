@@ -68,7 +68,7 @@ class CustomerBillingProfile(models.Model):
     )
 
     # ============================================================================
-    # BILLING CONFIGURATION FIELDS
+    # BILLING CONFIGURATION FIELDS  
     # ============================================================================
     billing_cycle = fields.Selection(
         [
@@ -92,6 +92,103 @@ class CustomerBillingProfile(models.Model):
         string="Auto Generate Invoices",
         default=True,
         help="Automatically generate invoices based on billing cycle",
+    )
+    
+    # ============================================================================
+    # AUTOMATED BILLING FIELDS
+    # ============================================================================
+    
+    auto_generate_service_invoices = fields.Boolean(
+        string="Auto Generate Service Invoices",
+        default=True,
+        help="Automatically generate invoices for services (pickup, delivery, etc.)",
+        tracking=True,
+    )
+    
+    auto_generate_storage_invoices = fields.Boolean(
+        string="Auto Generate Storage Invoices", 
+        default=True,
+        help="Automatically generate invoices for storage fees",
+        tracking=True,
+    )
+    
+    auto_send_invoices = fields.Boolean(
+        string="Auto Send Invoices",
+        default=True,
+        help="Automatically send invoices when generated",
+        tracking=True,
+    )
+    
+    auto_send_statements = fields.Boolean(
+        string="Auto Send Statements",
+        default=False,
+        help="Automatically send monthly statements",
+        tracking=True,
+    )
+    
+    # ============================================================================
+    # BILLING CYCLES & SCHEDULING
+    # ============================================================================
+    
+    service_billing_cycle = fields.Selection(
+        [
+            ('monthly', 'Monthly'),
+            ('quarterly', 'Quarterly'),
+            ('semi_annual', 'Semi-Annual'),
+            ('annual', 'Annual'),
+            ('per_service', 'Per Service'),
+        ],
+        string='Service Billing Cycle',
+        default='monthly',
+        help="Billing frequency for service charges",
+        tracking=True,
+    )
+    
+    storage_billing_cycle = fields.Selection(
+        [
+            ('monthly', 'Monthly'),
+            ('quarterly', 'Quarterly'),
+            ('semi_annual', 'Semi-Annual'),
+            ('annual', 'Annual'),
+        ],
+        string='Storage Billing Cycle',
+        default='monthly', 
+        help="Billing frequency for storage fees",
+        tracking=True,
+    )
+    
+    storage_bill_in_advance = fields.Boolean(
+        string="Bill Storage in Advance",
+        default=False,
+        help="Bill storage fees in advance rather than arrears",
+        tracking=True,
+    )
+    
+    storage_advance_months = fields.Integer(
+        string="Storage Advance Months",
+        default=1,
+        help="Number of months to bill storage in advance",
+    )
+    
+    # ============================================================================
+    # PAYMENT TERMS & DUE DATES
+    # ============================================================================
+    
+    invoice_due_days = fields.Integer(
+        string="Invoice Due Days",
+        default=30,
+        help="Number of days from invoice date until payment due",
+        tracking=True,
+    )
+    
+    # ============================================================================ 
+    # PREPAID SYSTEM ENHANCEMENTS
+    # ============================================================================
+    
+    prepaid_months = fields.Integer(
+        string="Prepaid Months",
+        default=12,
+        help="Number of months covered by prepaid payments",
     )
 
     invoice_template_id = fields.Many2one(
@@ -179,6 +276,13 @@ class CustomerBillingProfile(models.Model):
     billing_contact_ids = fields.One2many(
         "records.billing.contact", "billing_profile_id", string="Billing Contacts"
     )
+    
+    contact_count = fields.Integer(
+        string="Contact Count",
+        compute="_compute_contact_count",
+        store=True,
+        help="Number of billing contacts",
+    )
 
     invoice_ids = fields.One2many(
         "account.move",
@@ -201,6 +305,13 @@ class CustomerBillingProfile(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    
+    @api.depends("billing_contact_ids")
+    def _compute_contact_count(self):
+        """Calculate number of billing contacts"""
+        for record in self:
+            record.contact_count = len(record.billing_contact_ids)
+    
     @api.depends("prepaid_payment_ids", "prepaid_payment_ids.amount")
     def _compute_prepaid_balance(self):
         """Calculate current prepaid balance"""

@@ -89,6 +89,23 @@ class ShreddingService(models.Model):
         tracking=True,
         help="Primary service technician"
     )
+    
+    # ============================================================================
+    # TEAM & RESOURCE ASSIGNMENT
+    # ============================================================================
+    
+    assigned_technician_id = fields.Many2one(
+        'hr.employee',
+        string='Assigned Technician',
+        tracking=True,
+        help="Primary technician assigned to this shredding service",
+    )
+    
+    assigned_team_ids = fields.Many2many(
+        'hr.employee',
+        string='Assigned Team',
+        help="Team members assigned to this shredding service",
+    )
 
     # ============================================================================
     # STATE MANAGEMENT
@@ -159,6 +176,67 @@ class ShreddingService(models.Model):
         default="paper",
         required=True,
         help="Type of material to be shredded"
+    )
+    
+    # ============================================================================
+    # DESTRUCTION & COMPLIANCE CONFIGURATION
+    # ============================================================================
+    
+    destruction_method = fields.Selection([
+        ('cross_cut', 'Cross Cut Shredding'),
+        ('strip_cut', 'Strip Cut Shredding'),
+        ('pulverization', 'Pulverization'),
+        ('incineration', 'Incineration'),
+        ('degaussing', 'Degaussing (Magnetic Media)'),
+        ('physical_destruction', 'Physical Destruction'),
+    ],
+        string='Destruction Method',
+        required=True,
+        default='cross_cut',
+        tracking=True,
+        help="Method used for material destruction",
+    )
+    
+    certificate_required = fields.Boolean(
+        string='Certificate Required',
+        default=True,
+        tracking=True,
+        help="Whether a destruction certificate is required for this service",
+    )
+    
+    naid_compliance_required = fields.Boolean(
+        string='NAID Compliance Required',
+        default=True,
+        help="Whether NAID AAA compliance is required",
+    )
+    
+    # ============================================================================
+    # CONTAINER & VOLUME TRACKING
+    # ============================================================================
+    
+    container_type = fields.Selection(
+        related="container_type_id.standard_type",
+        readonly=True,
+        store=True,
+        string='Container Type',
+        help="Standard container type classification",
+    )
+    
+    destruction_item_count = fields.Integer(
+        string='Items Count',
+        compute='_compute_destruction_items',
+        store=True,
+        help="Number of items to be destroyed",
+    )
+    
+    estimated_volume = fields.Float(
+        string='Estimated Volume (cubic feet)',
+        help="Estimated volume of materials to be destroyed",
+    )
+    
+    actual_volume = fields.Float(
+        string='Actual Volume (cubic feet)',
+        help="Actual volume of materials destroyed",
     )
 
     # ============================================================================
@@ -465,6 +543,21 @@ class ShreddingService(models.Model):
                 service.duration_hours = delta.total_seconds() / 3600.0
             else:
                 service.duration_hours = 0.0
+
+    @api.depends("inventory_item_ids")
+    def _compute_destruction_items(self):
+        """Compute number of items to be destroyed"""
+        for service in self:
+            # Count inventory items if available
+            if hasattr(service, 'inventory_item_ids'):
+                service.destruction_item_count = len(service.inventory_item_ids)
+            else:
+                # Fallback to estimated count based on volume
+                if service.estimated_volume:
+                    # Rough estimate: 1 item per 0.1 cubic feet
+                    service.destruction_item_count = int(service.estimated_volume / 0.1)
+                else:
+                    service.destruction_item_count = 0
 
     # ============================================================================
     # BUSINESS METHODS

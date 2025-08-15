@@ -76,6 +76,66 @@ class SystemDiagramData(models.TransientModel):
         default=False,
         help="Show only access-related connections",
     )
+    
+    # ============================================================================
+    # FRAMEWORK FIELDS FOR MAIL THREAD COMPATIBILITY
+    # ============================================================================
+    activity_ids = fields.One2many(
+        'mail.activity',
+        'res_id',
+        string='Activities',
+        domain=lambda self: [('res_model', '=', self._name)],
+        auto_join=True,
+    )
+    message_follower_ids = fields.One2many(
+        'mail.followers', 
+        'res_id', 
+        string='Followers',
+        domain=lambda self: [('res_model', '=', self._name)],
+        help="List of partners following the record.",
+    )
+    message_ids = fields.One2many(
+        'mail.message',
+        'res_id',
+        string='Messages',
+        domain=lambda self: [('res_model', '=', self._name)],
+        auto_join=True,
+    )
+    
+    # ============================================================================
+    # BUSINESS DIAGRAM FIELDS
+    # ============================================================================
+    diagram_html = fields.Html(
+        string='Diagram HTML',
+        readonly=True,
+        help="Generated HTML for the interactive diagram",
+    )
+    cache_timestamp = fields.Datetime(
+        string='Cache Timestamp',
+        readonly=True,
+        help="Last time the diagram data was cached",
+    )
+    cache_size = fields.Integer(
+        string='Cache Size',
+        readonly=True,
+        help="Size of cached diagram data in bytes",
+    )
+    edge_count = fields.Integer(
+        string='Edge Count',
+        readonly=True,
+        help="Number of relationships in the diagram",
+    )
+    node_count = fields.Integer(
+        string='Node Count', 
+        readonly=True,
+        help="Number of entities in the diagram",
+    )
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        help="Company scope for diagram data",
+    )
 
     # ============================================================================
     # DIAGRAM DATA FIELDS

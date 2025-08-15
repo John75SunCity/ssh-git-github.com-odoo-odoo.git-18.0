@@ -74,6 +74,44 @@ class PortalRequest(models.Model):
         tracking=True,
         index=True,
     )
+    
+    # ============================================================================
+    # APPROVAL & WORKFLOW FIELDS
+    # ============================================================================
+    
+    approval_status = fields.Selection(
+        [
+            ('pending', 'Pending Approval'),
+            ('approved', 'Approved'),
+            ('rejected', 'Rejected'),
+            ('escalated', 'Escalated'),
+        ],
+        string='Approval Status',
+        default='pending',
+        tracking=True,
+        help="Current approval status of the request",
+    )
+    
+    # ============================================================================
+    # FRAMEWORK FIELDS FOR MAIL THREAD
+    # ============================================================================
+    
+    activity_state = fields.Selection(
+        [
+            ('overdue', 'Overdue'),
+            ('today', 'Today'),
+            ('planned', 'Planned'),
+        ],
+        string='Activity State',
+        compute='_compute_activity_state',
+        help="State of activities for this request",
+    )
+    
+    message_count = fields.Integer(
+        string='Message Count',
+        compute='_compute_message_count',
+        help="Number of messages on this request",
+    )
 
     # ============================================================================
     # REQUEST DETAILS
@@ -126,9 +164,40 @@ class PortalRequest(models.Model):
     scheduled_date = fields.Datetime(string="Scheduled Date", tracking=True)
     deadline = fields.Datetime(string="Deadline", tracking=True)
     completion_date = fields.Datetime(string="Completion Date", tracking=True)
+    actual_completion = fields.Datetime(
+        string="Actual Completion",
+        tracking=True,
+        help="Actual date and time when request was completed",
+    )
     due_date = fields.Date(string="Due Date", tracking=True)
     estimated_hours = fields.Float(string="Estimated Hours")
     actual_hours = fields.Float(string="Actual Hours")
+    
+    # ============================================================================
+    # COMPLETION & NOTES TRACKING
+    # ============================================================================
+    
+    completion_notes = fields.Text(
+        string="Completion Notes",
+        tracking=True,
+        help="Notes about the completion of this request",
+    )
+    
+    customer_contact_info = fields.Text(
+        string="Customer Contact Info", 
+        help="Additional customer contact information for this request",
+    )
+    
+    # ============================================================================
+    # CHAIN OF CUSTODY & COMPLIANCE
+    # ============================================================================
+    
+    chain_of_custody_id = fields.Many2one(
+        'records.chain.of.custody',
+        string='Chain of Custody',
+        help="Chain of custody record for this request",
+        tracking=True,
+    )
 
     # ============================================================================
     # FINANCIAL INFORMATION
@@ -258,6 +327,31 @@ class PortalRequest(models.Model):
                 )
             else:
                 record.attachment_count = 0
+
+    @api.depends("activity_ids", "activity_ids.activity_type_id")
+    def _compute_activity_state(self):
+        """Compute activity state for mail thread compatibility"""
+        for record in self:
+            if not record.activity_ids:
+                record.activity_state = False
+                continue
+                
+            # Get the closest activity
+            today = fields.Date.today()
+            closest_activity = record.activity_ids.sorted('date_deadline')[0]
+            
+            if closest_activity.date_deadline < today:
+                record.activity_state = 'overdue'
+            elif closest_activity.date_deadline == today:
+                record.activity_state = 'today'
+            else:
+                record.activity_state = 'planned'
+
+    @api.depends("message_ids")
+    def _compute_message_count(self):
+        """Compute message count for mail thread compatibility"""
+        for record in self:
+            record.message_count = len(record.message_ids)
 
     @api.depends("due_date", "completion_date", "state")
     def _compute_is_overdue(self):

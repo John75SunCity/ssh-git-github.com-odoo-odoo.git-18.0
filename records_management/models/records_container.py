@@ -221,10 +221,189 @@ class RecordsContainer(models.Model):
     received_date = fields.Date(
         string="Received Date", default=fields.Date.today, tracking=True
     )
+    collection_date = fields.Date(
+        string="Collection Date", 
+        tracking=True,
+        help="Date when container was collected from customer"
+    )
+    service_date = fields.Date(
+        string="Service Date",
+        tracking=True, 
+        help="Date of last service performed on this container"
+    )
     storage_start_date = fields.Date(string="Storage Start Date")
     stored_date = fields.Date(string="Stored Date", tracking=True)
     last_access_date = fields.Date(string="Last Access Date")
     destruction_date = fields.Date(string="Destruction Date")
+
+    # ============================================================================
+    # MOVEMENT TRACKING FIELDS
+    # ============================================================================
+    
+    from_location_id = fields.Many2one(
+        'records.location',
+        string='From Location',
+        help="Location where container was moved from during last movement",
+        tracking=True,
+    )
+    to_location_id = fields.Many2one(
+        'records.location', 
+        string='To Location',
+        help="Location where container was moved to during last movement",
+        tracking=True,
+    )
+    movement_date = fields.Datetime(
+        string='Movement Date',
+        help="Date and time of last container movement",
+        tracking=True,
+    )
+    movement_type = fields.Selection(
+        [
+            ('in', 'Incoming'),
+            ('out', 'Outgoing'),
+            ('transfer', 'Transfer'),
+            ('pickup', 'Customer Pickup'),
+            ('delivery', 'Customer Delivery'),
+        ],
+        string='Movement Type',
+        help="Type of the last movement performed",
+        tracking=True,
+    )
+
+    # ============================================================================
+    # SERVICE & BUSINESS CLASSIFICATION
+    # ============================================================================
+    
+    service_type = fields.Selection(
+        [
+            ('pickup', 'Pickup Service'),
+            ('delivery', 'Delivery Service'),
+            ('destruction', 'Destruction Service'), 
+            ('storage', 'Storage Service'),
+            ('retrieval', 'Retrieval Service'),
+            ('scanning', 'Document Scanning'),
+            ('other', 'Other Service'),
+        ],
+        string='Service Type',
+        help="Primary service type for this container",
+        index=True,
+        tracking=True,
+    )
+    
+    access_level = fields.Selection(
+        [
+            ('public', 'Public Access'),
+            ('restricted', 'Restricted Access'),
+            ('confidential', 'Confidential'),
+            ('top_secret', 'Top Secret'),
+        ],
+        string='Access Level',
+        default='public',
+        help="Security access level for container contents",
+        tracking=True,
+    )
+    
+    # ============================================================================
+    # ADVANCED CATEGORIZATION & METADATA
+    # ============================================================================
+    
+    compliance_category = fields.Char(
+        string='Compliance Category',
+        help="Regulatory compliance category (HIPAA, SOX, PCI, etc.)",
+        index=True,
+    )
+    
+    industry_category = fields.Selection(
+        [
+            ('healthcare', 'Healthcare'),
+            ('financial', 'Financial Services'),
+            ('legal', 'Legal Services'), 
+            ('education', 'Education'),
+            ('government', 'Government'),
+            ('manufacturing', 'Manufacturing'),
+            ('retail', 'Retail'),
+            ('other', 'Other'),
+        ],
+        string='Industry Category',
+        help="Industry classification for specialized handling",
+        index=True,
+    )
+    
+    department_code = fields.Char(
+        string='Department Code',
+        help="Internal department code for organization",
+        index=True,
+    )
+    
+    project_number = fields.Char(
+        string='Project Number',
+        help="Associated project or job number",
+        index=True,
+    )
+    
+    priority_level = fields.Selection(
+        [
+            ('low', 'Low Priority'),
+            ('normal', 'Normal Priority'),
+            ('high', 'High Priority'),
+            ('urgent', 'Urgent'),
+        ],
+        string='Priority Level',
+        default='normal',
+        help="Priority level for handling and processing",
+        tracking=True,
+    )
+    
+    # ============================================================================
+    # ADDITIONAL METADATA & TRACKING
+    # ============================================================================
+    
+    media_type = fields.Selection(
+        [
+            ('paper', 'Paper Documents'),
+            ('digital', 'Digital Media'),
+            ('film', 'Microfilm/Microfiche'),
+            ('magnetic', 'Magnetic Media'),
+            ('optical', 'Optical Media'),
+            ('mixed', 'Mixed Media'),
+        ],
+        string='Media Type',
+        default='paper',
+        help="Primary media type stored in container",
+    )
+    
+    language_codes = fields.Char(
+        string='Language Codes', 
+        help="Language codes for multilingual content (e.g., en,es,fr)",
+    )
+    
+    retention_category = fields.Char(
+        string='Retention Category',
+        help="Categorization for retention policy application",
+        index=True,
+    )
+    
+    special_dates = fields.Text(
+        string='Special Dates',
+        help="JSON or text field for storing special dates and milestones",
+    )
+    
+    bale_weight = fields.Float(
+        string='Bale Weight',
+        digits='Stock Weight',
+        help="Weight when container is prepared for baling/recycling",
+    )
+    
+    # Key-value metadata fields for flexible data storage
+    key = fields.Char(
+        string='Metadata Key',
+        help="Key for key-value metadata pairs",
+    )
+    
+    value = fields.Text(
+        string='Metadata Value', 
+        help="Value for key-value metadata pairs",
+    )
 
     # ============================================================================
     # RETENTION MANAGEMENT
