@@ -154,6 +154,14 @@ class NAIDAuditLog(models.Model):
         string="Related Shredding Service",
         ondelete="set null",
     )
+    
+    # Task relationships
+    task_id = fields.Many2one(
+        "project.task", 
+        string="Related Task", 
+        ondelete="set null",
+        help="Project task associated with this audit event"
+    )
 
     # Portal and customer relationships
     portal_request_id = fields.Many2one(
