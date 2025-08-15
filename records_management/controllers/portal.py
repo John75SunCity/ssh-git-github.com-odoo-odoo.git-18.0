@@ -15,16 +15,15 @@ Key Features:
 - Operational efficiency metrics
 """
 
-import logging
-from datetime import datetime, timedelta
-from odoo.http import request
-
-from odoo import http
-
+# Python stdlib imports
 import csv
 import io
+import logging
+from datetime import datetime, timedelta
 
-
+# Odoo core imports
+from odoo import http
+from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 
@@ -40,7 +39,7 @@ class RecordsManagementController(http.Controller):
     # ============================================================================
 
     @http.route("/records/dashboard", type="http", auth="user", website=True)
-    def records_dashboard(self, **kw):
+    def records_dashboard(self):
         """
         Enhanced dashboard with comprehensive business intelligence.
         Provides real-time operational metrics and performance indicators.
@@ -114,7 +113,7 @@ class RecordsManagementController(http.Controller):
     # ============================================================================
 
     @http.route("/records/analytics", type="http", auth="user", website=True)
-    def records_analytics(self, **kw):
+    def records_analytics(self):
         """
         Comprehensive analytics dashboard for business intelligence.
         """
@@ -187,10 +186,6 @@ class RecordsManagementController(http.Controller):
         Bulk update operations for containers.
         Supports location changes, status updates, and batch processing.
         """
-
-        self.ensure_one()
-        # Note: This is a controller method handling multiple containers, not a model method
-        # so self.ensure_one() is not applicable here
         if not request.env.user.has_group('records_management.group_records_user'):
             return {'success': False, 'error': 'Insufficient permissions'}
 
@@ -351,7 +346,7 @@ class RecordsManagementController(http.Controller):
     # ============================================================================
 
     @http.route("/records/system/health", type="json", auth="user", methods=["POST"])
-    def _check_system_health(self, **post):
+    def _check_system_health(self):
         """
         System health check endpoint for monitoring.
         """
@@ -693,10 +688,6 @@ class RecordsManagementController(http.Controller):
         # Implementation would check actual location capacity limits
         return []  # Placeholder
 
-    def _check_compliance_warnings(self):
-        """Check for compliance-related warnings."""
-        # Implementation would check for compliance violations
-        return []  # Placeholder
     def _check_compliance_warnings(self):
         """Check for compliance-related warnings."""
         # Implementation would check for compliance violations

@@ -10,10 +10,15 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-# Standard Odoo imports
-from odoo import api, fields, models, _
-
-from odoo.exceptions import ValidationError
+# Standard Odoo imports with development environment handling
+try:
+    from odoo import api, fields, models, _
+    from odoo.exceptions import ValidationError
+except ImportError:
+    # Development environment fallback
+    api = fields = models = None
+    ValidationError = Exception
+    _ = lambda x, *args, **kwargs: x % args if args else x
 
 
 class AdvancedBilling(models.Model):
@@ -168,7 +173,7 @@ class AdvancedBilling(models.Model):
             "invoice_id": invoice.id,
         })
 
-        self.message_post(body=_("Invoice generated: %s", invoice.name))
+        self.message_post(body=_("Invoice generated: %s") % invoice.name)
 
         return {
             'type': 'ir.actions.act_window',

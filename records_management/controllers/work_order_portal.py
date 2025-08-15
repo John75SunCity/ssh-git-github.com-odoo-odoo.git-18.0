@@ -22,11 +22,17 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+# Standard library imports
+from datetime import datetime
+
+# Odoo core imports
 from odoo import http, _
 from odoo.http import request
-from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
 from odoo.exceptions import AccessError, MissingError
 from odoo.osv.expression import OR
+
+# Odoo addons imports
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
 
 
 class WorkOrderPortal(CustomerPortal):
@@ -40,7 +46,7 @@ class WorkOrderPortal(CustomerPortal):
         if 'work_order_count' in counters:
             # Count all work orders for the customer
             domain = [('partner_id', '=', partner.id), ('portal_visible', '=', True)]
-            
+
             work_order_count = 0
             # Count each work order type
             for model in ['container.retrieval.work.order', 'file.retrieval.work.order',
@@ -62,14 +68,14 @@ class WorkOrderPortal(CustomerPortal):
 
         return values
 
-    @http.route(['/my/work_orders', '/my/work_orders/page/<int:page>'], type='http', 
+    @http.route(['/my/work_orders', '/my/work_orders/page/<int:page>'], type='http',
                 auth="user", website=True)
     def portal_my_work_orders(self, page=1, date_begin=None, date_end=None,
                               sortby=None, filterby=None, search=None, search_in='all', **kw):
         """Display customer work orders in portal"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         # Domain for all work orders
         domain = [('partner_id', '=', partner.id), ('portal_visible', '=', True)]
 
@@ -101,7 +107,7 @@ class WorkOrderPortal(CustomerPortal):
 
         # Collect all work orders from different models
         all_work_orders = []
-        
+
         work_order_models = {
             'container.retrieval.work.order': _('Container Retrieval'),
             'file.retrieval.work.order': _('File Retrieval'),
@@ -118,7 +124,7 @@ class WorkOrderPortal(CustomerPortal):
                         'record': order,
                         'type': type_label,
                         'model': model_name,
-                        'url': f'/my/work_order/{model_name}/{order.id}',
+                        'url': '/my/work_order/%s/%s' % (model_name, order.id),
                     })
             except AccessError:
                 pass
@@ -130,29 +136,42 @@ class WorkOrderPortal(CustomerPortal):
                 search_domain = OR([search_domain, [('name', 'ilike', search)]])
             if search_in in ('all', 'description'):
                 search_domain = OR([search_domain, [('description', 'ilike', search)]])
-            
+
             # Filter work orders by search
             filtered_orders = []
             for wo in all_work_orders:
-                if search.lower() in wo['record'].name.lower() or \
-                   (wo['record'].description and search.lower() in wo['record'].description.lower()):
+                record_name = wo['record'].name or ''
+                record_description = wo['record'].description or ''
+                if search.lower() in record_name.lower() or \
+                   search.lower() in record_description.lower():
                     filtered_orders.append(wo)
             all_work_orders = filtered_orders
 
         # Sort work orders
         if sortby == 'date':
-            all_work_orders.sort(key=lambda x: x['record'].scheduled_date or x['record'].create_date, reverse=True)
+            all_work_orders.sort(
+                key=lambda x: x['record'].scheduled_date or x['record'].create_date,
+                reverse=True
+            )
         elif sortby == 'name':
-            all_work_orders.sort(key=lambda x: x['record'].name)
+            all_work_orders.sort(key=lambda x: x['record'].name or '')
         elif sortby == 'priority':
             all_work_orders.sort(key=lambda x: int(x['record'].priority or 0), reverse=True)
 
         # Pagination
         total = len(all_work_orders)
+        url_args = {
+            'date_begin': date_begin,
+            'date_end': date_end,
+            'sortby': sortby,
+            'filterby': filterby,
+            'search': search,
+            'search_in': search_in
+        }
+
         pager = portal_pager(
             url="/my/work_orders",
-            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 
-                     'filterby': filterby, 'search': search, 'search_in': search_in},
+            url_args=url_args,
             total=total,
             page=page,
             step=20
@@ -182,7 +201,7 @@ class WorkOrderPortal(CustomerPortal):
     def portal_work_order_detail(self, model, order_id, access_token=None, **kw):
         """Display individual work order details"""
         try:
-            work_order = self._document_check_access(model, order_id, access_token)
+            work_order = self._check_work_order_access(model, order_id, access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
 
@@ -227,7 +246,7 @@ class WorkOrderPortal(CustomerPortal):
         """Display work order coordinators in portal"""
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
-        
+
         domain = [('partner_id', '=', partner.id), ('customer_visible', '=', True)]
 
         # Date filters
@@ -261,14 +280,14 @@ class WorkOrderPortal(CustomerPortal):
 
         return request.render("records_management.portal_my_coordinators", values)
 
-    def _document_check_access(self, model_name, document_id, access_token=None):
+    def _check_work_order_access(self, model_name, document_id, access_token=None):
         """Check access to work order document"""
         document = request.env[model_name].browse([document_id])
         document_sudo = document.sudo().exists()
-        
+
         if not document_sudo:
             raise MissingError(_("This document does not exist."))
-        
+
         # Check if user has access
         try:
             document.check_access_rights('read')
@@ -277,5 +296,170 @@ class WorkOrderPortal(CustomerPortal):
             if not access_token or not document_sudo.access_token or \
                not document_sudo._portal_ensure_token() == access_token:
                 raise
-        
+
         return document_sudo
+
+    # ============================================================================
+    # PORTAL INTEGRATION METHODS
+    # ============================================================================
+    def _get_work_order_searchbar_inputs(self):
+        """Get search inputs for work orders"""
+        return {
+            'all': {'input': 'all', 'label': _('Search in All')},
+            'name': {'input': 'name', 'label': _('Search in Reference')},
+            'description': {'input': 'description', 'label': _('Search in Description')},
+        }
+
+    def _get_work_order_groupby_mapping(self):
+        """Get groupby options for work orders"""
+        return {
+            'none': _('None'),
+            'type': _('Work Order Type'),
+            'state': _('Status'),
+            'priority': _('Priority'),
+            'assigned_technician': _('Assigned Technician'),
+        }
+
+    def _prepare_work_order_domain(self, partner_id, search=None, search_in=None,
+                                  filterby=None, date_begin=None, date_end=None):
+        """Prepare domain for work order search"""
+        domain = [
+            ('partner_id', '=', partner_id),
+            ('portal_visible', '=', True)
+        ]
+
+        # Apply date filters
+        if date_begin and date_end:
+            domain += [
+                ('scheduled_date', '>=', date_begin),
+                ('scheduled_date', '<=', date_end)
+            ]
+
+        # Apply status filters
+        if filterby == 'active':
+            domain += [('state', 'not in', ['completed', 'cancelled'])]
+        elif filterby == 'completed':
+            domain += [('state', 'in', ['completed', 'done'])]
+
+        return domain
+
+    # ============================================================================
+    # NOTIFICATION METHODS
+    # ============================================================================
+    def _send_work_order_notification(self, work_order, message_type='update'):
+        """Send notification about work order updates"""
+        if not work_order.partner_id:
+            return False
+
+        template_mapping = {
+            'update': 'records_management.work_order_status_update_template',
+            'completion': 'records_management.work_order_completion_template',
+            'delay': 'records_management.work_order_delay_template',
+        }
+
+        template = request.env.ref(template_mapping.get(message_type), False)
+        if template:
+            template.send_mail(work_order.id, force_send=True)
+            return True
+        return False
+
+    def _create_portal_activity(self, work_order, activity_type='follow_up'):
+        """Create portal activity for work order"""
+        activity_types = {
+            'follow_up': request.env.ref('mail.mail_activity_data_todo'),
+            'call': request.env.ref('mail.mail_activity_data_call'),
+            'meeting': request.env.ref('mail.mail_activity_data_meeting'),
+        }
+
+        activity_type_id = activity_types.get(activity_type)
+        if not activity_type_id:
+            return False
+
+        values = {
+            'activity_type_id': activity_type_id.id,
+            'res_id': work_order.id,
+            'res_model_id': request.env['ir.model']._get(work_order._name).id,
+            'user_id': work_order.user_id.id or request.env.user.id,
+            'summary': _('Follow up on work order: %s', work_order.name),
+            'note': _('Customer portal activity for work order follow-up'),
+        }
+
+        return request.env['mail.activity'].create(values)
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def _format_work_order_data(self, work_order, model_name):
+        """Format work order data for portal display"""
+        return {
+            'id': work_order.id,
+            'name': work_order.name or _('Draft'),
+            'display_name': work_order.display_name,
+            'state': work_order.state,
+            'priority': work_order.priority or '1',
+            'scheduled_date': work_order.scheduled_date,
+            'completion_date': getattr(work_order, 'completion_date', None),
+            'assigned_technician': getattr(work_order, 'assigned_technician', None),
+            'description': work_order.description or '',
+            'partner_id': work_order.partner_id,
+            'company_id': work_order.company_id,
+            'portal_url': '/my/work_order/%s/%s' % (model_name, work_order.id),
+            'access_token': getattr(work_order, 'access_token', ''),
+        }
+
+    def _get_work_order_status_badge(self, state):
+        """Get Bootstrap badge class for work order status"""
+        status_mapping = {
+            'draft': 'secondary',
+            'confirmed': 'primary',
+            'in_progress': 'warning',
+            'completed': 'success',
+            'cancelled': 'danger',
+            'on_hold': 'info',
+        }
+        return status_mapping.get(state, 'secondary')
+
+    def _get_work_order_priority_label(self, priority):
+        """Get human-readable priority label"""
+        priority_mapping = {
+            '0': _('Low'),
+            '1': _('Normal'),
+            '2': _('High'),
+            '3': _('Urgent'),
+        }
+        return priority_mapping.get(str(priority), _('Normal'))
+
+    # ============================================================================
+    # EXPORT AND DOWNLOAD METHODS
+    # ============================================================================
+    @http.route(['/my/work_order/<string:model>/<int:order_id>/download'], 
+                type='http', auth="user", website=True)
+    def portal_work_order_download(self, model, order_id, access_token=None, **kw):
+        """Download work order documents"""
+        try:
+            work_order = self._check_work_order_access(model, order_id, access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        # Generate work order report
+        report = request.env.ref('records_management.work_order_report')
+        if report:
+            pdf_content, content_type = report._render_qweb_pdf([work_order.id])
+            pdf_name = _("Work_Order_%s.pdf", work_order.name)
+
+            return request.make_response(
+                pdf_content,
+                headers=[
+                    ('Content-Type', content_type),
+                    ('Content-Disposition', 'attachment; filename=%s' % pdf_name)
+                ]
+            )
+
+        return request.redirect('/my/work_orders')
+
+    def _get_work_order_attachments(self, work_order):
+        """Get attachments for work order"""
+        return request.env['ir.attachment'].search([
+            ('res_model', '=', work_order._name),
+            ('res_id', '=', work_order.id)
+        ])
