@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Records Billing Config Audit Views -->
+    
+    <!-- Tree View -->
+    <record id="view_records_billing_config_audit_tree" model="ir.ui.view">
+        <field name="name">records.billing.config.audit.tree</field>
+        <field name="model">records.billing.config.audit</field>
+        <field name="arch" type="xml">
+            <tree string="Billing Config Audit" default_order="audit_date desc">
+                <field name="name"/>
+                <field name="audit_date"/>
+                <field name="action_type"/>
+                <field name="user_id"/>
+                <field name="approval_status"/>
+                <field name="financial_impact" sum="Total Impact"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_records_billing_config_audit_form" model="ir.ui.view">
+        <field name="name">records.billing.config.audit.form</field>
+        <field name="model">records.billing.config.audit</field>
+        <field name="arch" type="xml">
+            <form string="Billing Config Audit">
+                <header>
+                    <button name="action_submit_for_approval" string="Submit for Approval" type="object" class="btn-primary" attrs="{'invisible': [('approval_status', '!=', 'draft')]}"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-success" groups="records_management.group_records_manager" attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
+                    <button name="action_reject" string="Reject" type="object" class="btn-danger" groups="records_management.group_records_manager" attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
+                    <field name="approval_status" widget="statusbar" statusbar_visible="draft,pending,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Audit Description"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="billing_config_id"/>
+                            <field name="action_type"/>
+                            <field name="audit_date"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group>
+                            <field name="financial_impact"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="approval_required"/>
+                            <field name="approved_by"/>
+                            <field name="approval_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Change Details">
+                            <group>
+                                <group>
+                                    <field name="field_changed"/>
+                                    <field name="old_value"/>
+                                </group>
+                                <group>
+                                    <field name="new_value"/>
+                                    <field name="change_reason"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Impact Assessment">
+                            <group>
+                                <field name="impact_assessment" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Compliance">
+                            <group>
+                                <field name="compliance_notes" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page string="Session Info">
+                            <group>
+                                <group>
+                                    <field name="session_id"/>
+                                    <field name="ip_address"/>
+                                </group>
+                                <group>
+                                    <field name="user_agent"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_records_billing_config_audit_search" model="ir.ui.view">
+        <field name="name">records.billing.config.audit.search</field>
+        <field name="model">records.billing.config.audit</field>
+        <field name="arch" type="xml">
+            <search string="Search Billing Config Audit">
+                <field name="name"/>
+                <field name="billing_config_id"/>
+                <field name="user_id"/>
+                <field name="action_type"/>
+                <field name="field_changed"/>
+                <separator/>
+                <filter name="filter_pending_approval" string="Pending Approval" domain="[('approval_status', '=', 'pending')]"/>
+                <filter name="filter_approved" string="Approved" domain="[('approval_status', '=', 'approved')]"/>
+                <filter name="filter_high_impact" string="High Financial Impact" domain="[('financial_impact', '>', 1000)]"/>
+                <separator/>
+                <filter name="filter_today" string="Today" domain="[('audit_date', '=', today)]"/>
+                <filter name="filter_this_week" string="This Week" domain="[('audit_date', '>=', (context_today() - datetime.timedelta(days=7)))]"/>
+                <filter name="filter_this_month" string="This Month" domain="[('audit_date', '>=', (context_today().replace(day=1)))]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_action_type" string="Action Type" context="{'group_by': 'action_type'}"/>
+                    <filter name="group_user" string="User" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_approval_status" string="Approval Status" context="{'group_by': 'approval_status'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'audit_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_records_billing_config_audit" model="ir.actions.act_window">
+        <field name="name">Billing Config Audit</field>
+        <field name="res_model">records.billing.config.audit</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No audit records found!
+            </p>
+            <p>
+                Audit records are automatically created when billing configurations are modified.
+            </p>
+        </field>
+    </record>
+</odoo>

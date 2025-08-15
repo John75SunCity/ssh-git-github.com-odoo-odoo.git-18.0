@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Revenue Forecast Line Tree View -->
+    <record id="view_revenue_forecast_line_tree" model="ir.ui.view">
+        <field name="name">revenue.forecast.line.tree</field>
+        <field name="model">revenue.forecast.line</field>
+        <field name="arch" type="xml">
+            <tree string="Revenue Forecast Lines" 
+                  decoration-success="status=='achieved'" 
+                  decoration-warning="status=='in_progress'"
+                  decoration-danger="status=='missed'">
+                <field name="customer_id"/>
+                <field name="service_type"/>
+                <field name="period_type"/>
+                <field name="forecasted_amount" sum="Total Forecasted"/>
+                <field name="actual_amount" sum="Total Actual"/>
+                <field name="variance_amount" sum="Total Variance"/>
+                <field name="variance_percentage" widget="percentage"/>
+                <field name="confidence_level"/>
+                <field name="status"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Revenue Forecast Line Form View -->
+    <record id="view_revenue_forecast_line_form" model="ir.ui.view">
+        <field name="name">revenue.forecast.line.form</field>
+        <field name="model">revenue.forecast.line</field>
+        <field name="arch" type="xml">
+            <form string="Revenue Forecast Line">
+                <header>
+                    <button name="action_confirm_forecast" type="object" 
+                            string="Confirm" class="oe_highlight"
+                            attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                    <button name="action_start_tracking" type="object" 
+                            string="Start Tracking"
+                            attrs="{'invisible': [('status', '!=', 'confirmed')]}"/>
+                    <button name="action_mark_achieved" type="object" 
+                            string="Mark Achieved" class="oe_highlight"
+                            attrs="{'invisible': [('status', '!=', 'in_progress')]}"/>
+                    <button name="action_mark_missed" type="object" 
+                            string="Mark Missed"
+                            attrs="{'invisible': [('status', '!=', 'in_progress')]}"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,achieved"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group name="main_info">
+                            <field name="forecast_id"/>
+                            <field name="customer_id"/>
+                            <field name="service_type"/>
+                            <field name="period_type"/>
+                        </group>
+                        <group name="financial">
+                            <field name="currency_id" invisible="1"/>
+                            <field name="forecasted_amount"/>
+                            <field name="actual_amount"/>
+                            <field name="variance_amount"/>
+                            <field name="variance_percentage" widget="percentage"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group name="volume_metrics">
+                            <field name="forecasted_volume"/>
+                            <field name="actual_volume"/>
+                            <field name="forecasted_containers"/>
+                            <field name="actual_containers"/>
+                        </group>
+                        <group name="confidence">
+                            <field name="confidence_level"/>
+                            <field name="probability_percentage" widget="percentage"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Revenue Forecast Line Search View -->
+    <record id="view_revenue_forecast_line_search" model="ir.ui.view">
+        <field name="name">revenue.forecast.line.search</field>
+        <field name="model">revenue.forecast.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Forecast Lines">
+                <field name="customer_id"/>
+                <field name="service_type"/>
+                <field name="status"/>
+                <field name="forecast_id"/>
+                
+                <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('status', '=', 'confirmed')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('status', '=', 'in_progress')]"/>
+                <filter string="Achieved" name="achieved" domain="[('status', '=', 'achieved')]"/>
+                <filter string="Missed" name="missed" domain="[('status', '=', 'missed')]"/>
+                
+                <separator/>
+                <filter string="High Confidence" name="high_confidence" 
+                        domain="[('confidence_level', 'in', ['high', 'very_high'])]"/>
+                <filter string="Storage Services" name="storage" 
+                        domain="[('service_type', '=', 'storage')]"/>
+                <filter string="Destruction Services" name="destruction" 
+                        domain="[('service_type', '=', 'destruction')]"/>
+                
+                <group expand="1" string="Group By">
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Service Type" name="group_service" context="{'group_by': 'service_type'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Confidence" name="group_confidence" context="{'group_by': 'confidence_level'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_revenue_forecast_line" model="ir.actions.act_window">
+        <field name="name">Revenue Forecast Lines</field>
+        <field name="res_model">revenue.forecast.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first revenue forecast line!
+            </p>
+            <p>
+                Track detailed revenue forecasts by customer and service type to improve planning accuracy.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,359 @@
+# -*- coding: utf-8 -*-
+"""
+Custody Transfer Event Model
+
+Individual custody transfer events for NAID compliance.
+"""
+
+import json
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+
+
+class CustodyTransferEvent(models.Model):
+    """Custody Transfer Event"""
+
+    _name = "custody.transfer.event"
+    _description = "Custody Transfer Event" 
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = "transfer_date desc, transfer_time desc"
+
+    # ============================================================================
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(
+        string="Transfer Event ID",
+        required=True,
+        tracking=True,
+        index=True,
+        help="Unique identifier for this transfer event"
+    )
+
+    company_id = fields.Many2one(
+        "res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True
+    )
+
+    active = fields.Boolean(
+        string="Active",
+        default=True,
+        help="Set to false to archive this transfer event"
+    )
+
+    # ============================================================================
+    # RELATIONSHIP FIELDS  
+    # ============================================================================
+    custody_record_id = fields.Many2one(
+        "chain.of.custody",
+        string="Custody Record",
+        required=True,
+        ondelete="cascade",
+        help="Parent chain of custody record"
+    )
+
+    work_order_id = fields.Many2one(
+        "container.destruction.work.order",
+        string="Destruction Work Order",
+        help="Related container destruction work order"
+    )
+
+    # ============================================================================
+    # TRANSFER DETAILS
+    # ============================================================================
+    transfer_date = fields.Date(
+        string="Transfer Date",
+        required=True,
+        default=fields.Date.today,
+        tracking=True,
+        help="Date of custody transfer"
+    )
+
+    transfer_time = fields.Datetime(
+        string="Transfer Time",
+        default=fields.Datetime.now,
+        required=True,
+        tracking=True,
+        help="Exact time of custody transfer"
+    )
+
+    transfer_type = fields.Selection([
+        ('pickup', 'Pickup from Customer'),
+        ('delivery', 'Delivery to Facility'),
+        ('internal', 'Internal Transfer'),
+        ('destruction', 'Transfer for Destruction'),
+        ('return', 'Return to Customer'),
+        ('archive', 'Transfer to Archive'),
+        ('other', 'Other Transfer')
+    ], string='Transfer Type', required=True, tracking=True)
+
+    # ============================================================================
+    # CUSTODY PARTIES
+    # ============================================================================
+    transferred_from_id = fields.Many2one(
+        "res.users",
+        string="Transferred From",
+        required=True,
+        tracking=True,
+        help="User/employee transferring custody"
+    )
+
+    transferred_to_id = fields.Many2one(
+        "res.users", 
+        string="Transferred To",
+        required=True,
+        tracking=True,
+        help="User/employee receiving custody"
+    )
+
+    witness_id = fields.Many2one(
+        "res.users",
+        string="Witness",
+        help="Witness to the custody transfer"
+    )
+
+    # ============================================================================
+    # LOCATION INFORMATION
+    # ============================================================================
+    from_location = fields.Char(
+        string="From Location",
+        required=True,
+        help="Location where items are transferred from"
+    )
+
+    to_location = fields.Char(
+        string="To Location", 
+        required=True,
+        help="Location where items are transferred to"
+    )
+
+    gps_latitude = fields.Float(
+        string="GPS Latitude",
+        help="GPS latitude of transfer location"
+    )
+
+    gps_longitude = fields.Float(
+        string="GPS Longitude",
+        help="GPS longitude of transfer location"
+    )
+
+    # ============================================================================
+    # ITEMS TRANSFERRED
+    # ============================================================================
+    items_description = fields.Text(
+        string="Items Description",
+        required=True,
+        help="Description of items being transferred"
+    )
+
+    item_count = fields.Integer(
+        string="Item Count",
+        help="Number of items transferred"
+    )
+
+    total_weight = fields.Float(
+        string="Total Weight (lbs)",
+        help="Total weight of transferred items"
+    )
+
+    total_volume = fields.Float(
+        string="Total Volume (CF)",
+        help="Total volume of transferred items"
+    )
+
+    container_numbers = fields.Text(
+        string="Container Numbers",
+        help="List of container numbers involved"
+    )
+
+    # ============================================================================
+    # VERIFICATION AND SECURITY
+    # ============================================================================
+    verification_method = fields.Selection([
+        ('visual', 'Visual Inspection'),
+        ('barcode', 'Barcode Scan'),
+        ('rfid', 'RFID Scan'),
+        ('signature', 'Signature Verification'),
+        ('biometric', 'Biometric Verification'),
+        ('photo', 'Photographic Evidence')
+    ], string='Verification Method', required=True)
+
+    security_seal_number = fields.Char(
+        string="Security Seal Number",
+        help="Security seal number if applicable"
+    )
+
+    transfer_authorized = fields.Boolean(
+        string="Transfer Authorized",
+        default=True,
+        tracking=True,
+        help="Whether transfer was properly authorized"
+    )
+
+    authorization_code = fields.Char(
+        string="Authorization Code",
+        help="Authorization code for transfer"
+    )
+
+    # ============================================================================
+    # DOCUMENTATION
+    # ============================================================================
+    transfer_document = fields.Binary(
+        string="Transfer Document",
+        help="Scanned transfer document"
+    )
+
+    transfer_document_filename = fields.Char(
+        string="Document Filename"
+    )
+
+    photos_taken = fields.Boolean(
+        string="Photos Taken",
+        default=False,
+        help="Whether photos were taken during transfer"
+    )
+
+    notes = fields.Text(
+        string="Transfer Notes",
+        help="Additional notes about the transfer"
+    )
+
+    # ============================================================================
+    # SIGNATURES
+    # ============================================================================
+    transferred_from_signature = fields.Binary(
+        string="Transferor Signature",
+        help="Digital signature of person transferring"
+    )
+
+    transferred_to_signature = fields.Binary(
+        string="Receiver Signature", 
+        help="Digital signature of person receiving"
+    )
+
+    witness_signature = fields.Binary(
+        string="Witness Signature",
+        help="Digital signature of witness"
+    )
+
+    # ============================================================================
+    # STATUS AND COMPLIANCE
+    # ============================================================================
+    status = fields.Selection([
+        ('pending', 'Pending'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('verified', 'Verified'),
+        ('disputed', 'Disputed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='pending', required=True, tracking=True)
+
+    naid_compliant = fields.Boolean(
+        string="NAID Compliant",
+        compute='_compute_naid_compliant',
+        help="Whether transfer meets NAID requirements"
+    )
+
+    compliance_issues = fields.Text(
+        string="Compliance Issues",
+        help="Any compliance issues identified"
+    )
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('transferred_from_signature', 'transferred_to_signature', 'transfer_authorized')
+    def _compute_naid_compliant(self):
+        """Check NAID compliance requirements"""
+        for record in self:
+            record.naid_compliant = bool(
+                record.transferred_from_signature and 
+                record.transferred_to_signature and
+                record.transfer_authorized and
+                record.verification_method
+            )
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_start_transfer(self):
+        """Start the custody transfer"""
+        self.ensure_one()
+        if self.status != 'pending':
+            raise UserError(_('Can only start pending transfers'))
+        
+        self.write({'status': 'in_progress'})
+        self.message_post(body=_('Custody transfer started'))
+
+    def action_complete_transfer(self):
+        """Complete the custody transfer"""
+        self.ensure_one()
+        if self.status != 'in_progress':
+            raise UserError(_('Can only complete transfers in progress'))
+        
+        # Validate required signatures
+        if not self.transferred_from_signature or not self.transferred_to_signature:
+            raise UserError(_('Both transferor and receiver signatures are required'))
+        
+        self.write({
+            'status': 'completed',
+            'transfer_time': fields.Datetime.now()
+        })
+        self.message_post(body=_('Custody transfer completed'))
+
+    def action_verify_transfer(self):
+        """Verify the custody transfer"""
+        self.ensure_one()
+        if self.status != 'completed':
+            raise UserError(_('Can only verify completed transfers'))
+        
+        self.write({'status': 'verified'})
+        self.message_post(body=_('Custody transfer verified'))
+
+    def action_dispute_transfer(self):
+        """Mark transfer as disputed"""
+        self.ensure_one()
+        if self.status in ('cancelled', 'disputed'):
+            raise UserError(_('Cannot dispute cancelled or already disputed transfers'))
+        
+        self.write({'status': 'disputed'})
+        self.message_post(body=_('Custody transfer disputed'))
+
+    def action_cancel_transfer(self):
+        """Cancel the custody transfer"""
+        self.ensure_one()
+        if self.status in ('completed', 'verified', 'cancelled'):
+            raise UserError(_('Cannot cancel completed, verified, or already cancelled transfers'))
+        
+        self.write({'status': 'cancelled'})
+        self.message_post(body=_('Custody transfer cancelled'))
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains('gps_latitude', 'gps_longitude')
+    def _check_gps_coordinates(self):
+        """Validate GPS coordinates"""
+        for record in self:
+            if record.gps_latitude and not (-90 <= record.gps_latitude <= 90):
+                raise ValidationError(_('GPS latitude must be between -90 and 90 degrees'))
+            if record.gps_longitude and not (-180 <= record.gps_longitude <= 180):
+                raise ValidationError(_('GPS longitude must be between -180 and 180 degrees'))
+
+    @api.constrains('item_count', 'total_weight', 'total_volume')
+    def _check_quantities(self):
+        """Validate quantities are positive"""
+        for record in self:
+            if record.item_count and record.item_count < 0:
+                raise ValidationError(_('Item count cannot be negative'))
+            if record.total_weight and record.total_weight < 0:
+                raise ValidationError(_('Total weight cannot be negative'))
+            if record.total_volume and record.total_volume < 0:
+                raise ValidationError(_('Total volume cannot be negative'))

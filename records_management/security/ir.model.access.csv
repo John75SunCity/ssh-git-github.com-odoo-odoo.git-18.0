@@ -429,3 +429,48 @@ access_records_management_dashboard_user,records.management.dashboard.user,model
 access_records_management_dashboard_manager,records.management.dashboard.manager,model_records_management_dashboard,records_management.group_records_manager,1,1,1,1
 access_mobile_bin_key_wizard_manager,mobile_bin_key_wizard_manager,model_mobile_bin_key_wizard,,1,1,1,1
 access_bin_key_unlock_service_manager,bin_key_unlock_service_manager,model_bin_key_unlock_service,,1,1,1,1
+
+# ============================================================================
+# SUB-MODEL ACCESS RULES (Individual models for One2many relationships)
+# ============================================================================
+
+# Revenue Forecast Line Access Rules
+access_revenue_forecast_line_user,access_revenue_forecast_line_user,model_revenue_forecast_line,records_management.group_records_user,1,1,1,0
+access_revenue_forecast_line_manager,access_revenue_forecast_line_manager,model_revenue_forecast_line,records_management.group_records_manager,1,1,1,1
+
+# Records Billing Config Audit Access Rules  
+access_records_billing_config_audit_user,access_records_billing_config_audit_user,model_records_billing_config_audit,records_management.group_records_user,1,1,1,0
+access_records_billing_config_audit_manager,access_records_billing_config_audit_manager,model_records_billing_config_audit,records_management.group_records_manager,1,1,1,1
+
+# Records Billing Config Line Access Rules
+access_records_billing_config_line_user,access_records_billing_config_line_user,model_records_billing_config_line,records_management.group_records_user,1,1,1,0
+access_records_billing_config_line_manager,access_records_billing_config_line_manager,model_records_billing_config_line,records_management.group_records_manager,1,1,1,1
+
+# FSM Task Service Line Access Rules
+access_fsm_task_service_line_user,access_fsm_task_service_line_user,model_fsm_task_service_line,records_management.group_records_user,1,1,1,0
+access_fsm_task_service_line_manager,access_fsm_task_service_line_manager,model_fsm_task_service_line,records_management.group_records_manager,1,1,1,1
+access_fsm_task_service_line_fsm,access_fsm_task_service_line_fsm,model_fsm_task_service_line,industry_fsm.group_fsm_user,1,1,1,0
+
+# Document Retrieval Metrics Access Rules
+access_document_retrieval_metrics_user,access_document_retrieval_metrics_user,model_document_retrieval_metrics,records_management.group_records_user,1,1,1,0
+access_document_retrieval_metrics_manager,access_document_retrieval_metrics_manager,model_document_retrieval_metrics,records_management.group_records_manager,1,1,1,1
+
+# Payment Split Line Access Rules
+access_payment_split_line_user,access_payment_split_line_user,model_payment_split_line,records_management.group_records_user,1,1,1,0
+access_payment_split_line_manager,access_payment_split_line_manager,model_payment_split_line,records_management.group_records_manager,1,1,1,1
+access_payment_split_line_accounting,access_payment_split_line_accounting,model_payment_split_line,account.group_account_user,1,0,0,0
+
+# Shredding Service Photo Access Rules
+access_shredding_service_photo_user,access_shredding_service_photo_user,model_shredding_service_photo,records_management.group_records_user,1,1,1,0
+access_shredding_service_photo_manager,access_shredding_service_photo_manager,model_shredding_service_photo,records_management.group_records_manager,1,1,1,1
+access_shredding_service_photo_fsm,access_shredding_service_photo_fsm,model_shredding_service_photo,industry_fsm.group_fsm_user,1,1,1,0
+
+# Shredding Picklist Item Access Rules
+access_shredding_picklist_item_user,access_shredding_picklist_item_user,model_shredding_picklist_item,records_management.group_records_user,1,1,1,0
+access_shredding_picklist_item_manager,access_shredding_picklist_item_manager,model_shredding_picklist_item,records_management.group_records_manager,1,1,1,1
+access_shredding_picklist_item_fsm,access_shredding_picklist_item_fsm,model_shredding_picklist_item,industry_fsm.group_fsm_user,1,1,1,0
+
+# Customer Inventory Report Line Access Rules
+access_customer_inventory_report_line_user,access_customer_inventory_report_line_user,model_customer_inventory_report_line,records_management.group_records_user,1,1,1,0
+access_customer_inventory_report_line_manager,access_customer_inventory_report_line_manager,model_customer_inventory_report_line,records_management.group_records_manager,1,1,1,1
+access_customer_inventory_report_line_portal,access_customer_inventory_report_line_portal,model_customer_inventory_report_line,base.group_portal,1,0,0,0

@@ -67,6 +67,12 @@ class FsmNotification(models.Model):
         help="Related pickup request"
     )
 
+    route_id = fields.Many2one(
+        "fsm.route",
+        string="FSM Route",
+        help="Related FSM route"
+    )
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Recipient",

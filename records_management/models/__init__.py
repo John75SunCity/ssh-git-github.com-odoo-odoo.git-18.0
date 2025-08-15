@@ -380,3 +380,62 @@ from . import customer_negotiated_rate
 from . import base_rate
 from . import product_container_type
 from . import feedback_improvement_area
+
+# =============================================================================
+# NEWLY CREATED MISSING MODELS (10 MODELS)
+# =============================================================================
+
+# Digital asset models
+from . import scan_digital_asset
+
+# Mobile and photo models  
+from . import mobile_photo
+
+# FSM route planning
+from . import fsm_route
+
+# Portal feedback enhancements
+from . import portal_feedback_resolution
+
+# Container access control
+from . import container_access_visitor
+from . import container_access_activity
+
+# Route optimization
+from . import route_optimizer
+
+# Chain of custody events
+from . import custody_transfer_event
+
+# Certificate template system
+from . import certificate_template_data
+
+# Invoice line extensions
+from . import invoice_line
+
+# =============================================================================
+# SUB-MODEL EXTENSIONS (Individual models for One2many relationships)
+# =============================================================================
+
+# Revenue forecasting sub-models
+from . import revenue_forecast_line
+
+# Billing configuration audit and line sub-models
+from . import records_billing_config_audit
+from . import records_billing_config_line
+
+# FSM service line sub-models
+from . import fsm_task_service_line
+
+# Document retrieval metrics sub-models
+from . import document_retrieval_metrics
+
+# Payment processing sub-models
+from . import payment_split_line
+
+# Shredding service sub-models
+from . import shredding_service_photo
+from . import shredding_picklist_item
+
+# Customer inventory sub-models
+from . import customer_inventory_report_line
