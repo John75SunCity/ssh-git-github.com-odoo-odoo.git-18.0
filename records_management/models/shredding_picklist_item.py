@@ -123,7 +123,7 @@ class ShreddingPicklistItem(models.Model):
     # CONTAINER SPECIFICATIONS
     # ============================================================================
     container_type = fields.Selection(
-        related="container_id.container_type",
+        related="container_id.container_type_id.standard_type",
         readonly=True,
         store=True,
         string="Container Type",

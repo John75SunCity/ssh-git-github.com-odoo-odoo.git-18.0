@@ -392,16 +392,17 @@ class PaymentSplitLine(models.Model):
     # ============================================================================
     # ORM METHODS
     # ============================================================================
-    @api.model
-    def create(self, vals):
-        """Override create to set default name"""
-        if not vals.get('name'):
-            service_type = vals.get('service_type', 'other')
-            service_dict = dict(self._fields['service_type'].selection)
-            service_label = service_dict.get(service_type, service_type)
-            vals['name'] = _('Allocation: %s', service_label)
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to set default name - Odoo 18.0 batch creation support"""
+        for vals in vals_list:
+            if not vals.get('name'):
+                service_type = vals.get('service_type', 'other')
+                service_dict = dict(self._fields['service_type'].selection)
+                service_label = service_dict.get(service_type, service_type)
+                vals['name'] = _('Allocation: %s', service_label)
         
-        return super().create(vals)
+        return super().create(vals_list)
 
     def name_get(self):
         """Custom name display for selection fields"""
