@@ -15,6 +15,7 @@ class DocumentSearchAttempt(models.Model):
 
     _name = "document.search.attempt"
     _description = "Document Search Attempt"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "search_date desc"
 
 
@@ -86,6 +87,11 @@ class DocumentSearchAttempt(models.Model):
         string="Customer",
         readonly=True,
     )
+
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
     def get_history_summary(self):
         """Get summary of search attempt history"""

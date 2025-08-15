@@ -128,6 +128,11 @@ from . import file_retrieval_work_order
 # Service rates and billing (consolidated system)
 from . import base_rates
 from . import customer_negotiated_rates
+
+# Billing profiles (MUST be loaded before records_billing_contact)
+from . import records_billing_profile
+from . import records_customer_billing_profile
+
 from . import records_billing_config
 from . import records_billing_line
 from . import records_billing_contact
@@ -174,6 +179,7 @@ from . import naid_compliance_checklist_item
 from . import naid_compliance_action_plan
 from . import naid_compliance_alert
 from . import naid_destruction_record
+from . import records_destruction  # New destruction model
 from . import naid_performance_history
 
 # Chain of custody tracking
@@ -320,8 +326,8 @@ from . import wizard_template
 try:
     # Check if we can import additional FSM models without errors
     from . import fsm_route_management
-    from . import fsm_notification
-    from . import fsm_notification_record  # Individual notification records
+    from . import fsm_notification_manager
+    from . import fsm_notification  # Individual notification records
     _logger.info("Additional FSM modules loaded successfully")
 except (ImportError, AttributeError) as e:
     _logger.warning(
