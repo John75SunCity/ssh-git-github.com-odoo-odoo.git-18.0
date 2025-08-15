@@ -21,6 +21,15 @@ class ComprehensiveRelationshipValidator:
         self.model_fields = {}
         self.broken_relationships = []
         
+        # Framework models to exclude from validation (these are core Odoo models)
+        self.framework_models = {
+            'mail.activity', 'mail.message', 'mail.followers', 'mail.thread',
+            'account.move', 'account.move.line', 'account.payment',
+            'quality.check', 'maintenance.request', 'maintenance.equipment',
+            'project.task', 'hr.employee', 'res.partner', 'res.company',
+            'stock.picking', 'stock.move', 'stock.lot',
+        }
+        
     def extract_model_name_from_file(self, filepath):
         """Extract the _name value from a model file"""
         try:
@@ -187,14 +196,19 @@ class ComprehensiveRelationshipValidator:
                         'target_file': self.model_fields[comodel]['file']
                     })
                     broken_count += 1
+            elif comodel in self.framework_models:
+                # Skip framework models - they're not broken, just not in our custom modules
+                print(f"⚪ {source_file}: {field_name} → {comodel}.{inverse_name} (FRAMEWORK - SKIPPED)")
+                valid_count += 1
             else:
                 # Try to find the model file
                 model_file = self.find_model_file_for_name(comodel)
                 if model_file:
                     print(f"⚠️  {source_file}: {field_name} → {comodel}.{inverse_name} (model found but not scanned)")
+                    broken_count += 1
                 else:
                     print(f"❌ {source_file}: {field_name} → {comodel} (MODEL NOT FOUND)")
-                broken_count += 1
+                    broken_count += 1
         
         # Step 4: Summary
         print("\n" + "=" * 60)
@@ -216,6 +230,11 @@ class ComprehensiveRelationshipValidator:
                 print(f"   💡 FIX: Add '{broken['inverse_name']} = fields.Many2one(\"{self.get_model_name_from_file(broken['source_file'])}\")' to {broken['target_file']}")
         else:
             print("\n🎉 SUCCESS: All One2many relationships are properly configured!")
+            
+        # Summary of exclusions
+        framework_count = len([r for r in all_relationships if r['comodel'] in self.framework_models])
+        print(f"\n📋 FRAMEWORK MODELS EXCLUDED: {framework_count} relationships")
+        print("   (These are core Odoo models - mail.*, account.*, hr.*, etc.)")
             
         return broken_count == 0
     

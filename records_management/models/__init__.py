@@ -321,6 +321,7 @@ try:
     # Check if we can import additional FSM models without errors
     from . import fsm_route_management
     from . import fsm_notification
+    from . import fsm_notification_record  # Individual notification records
     _logger.info("Additional FSM modules loaded successfully")
 except (ImportError, AttributeError) as e:
     _logger.warning(
