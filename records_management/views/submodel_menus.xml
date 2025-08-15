@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sub-Model Menu Items and Actions -->
+
+    <!-- Revenue Forecasting Menu -->
+    <menuitem id="menu_revenue_forecasting" 
+              name="Revenue Forecasting" 
+              parent="records_management.menu_records_billing"
+              sequence="30"/>
+    
+    <menuitem id="menu_revenue_forecast_lines"
+              name="Forecast Lines"
+              parent="menu_revenue_forecasting"
+              action="action_revenue_forecast_line"
+              sequence="10"/>
+
+    <!-- Billing Configuration Menu -->
+    <menuitem id="menu_billing_configuration" 
+              name="Billing Configuration" 
+              parent="records_management.menu_records_billing"
+              sequence="40"/>
+              
+    <menuitem id="menu_billing_config_lines"
+              name="Configuration Lines"
+              parent="menu_billing_configuration"
+              action="action_records_billing_config_line"
+              sequence="10"/>
+              
+    <menuitem id="menu_billing_config_audit"
+              name="Configuration Audit"
+              parent="menu_billing_configuration"
+              action="action_records_billing_config_audit"
+              sequence="20"/>
+
+    <!-- FSM Service Management Menu -->
+    <menuitem id="menu_fsm_service_management" 
+              name="FSM Services" 
+              parent="records_management.menu_fsm"
+              sequence="50"/>
+              
+    <menuitem id="menu_fsm_service_lines"
+              name="Service Lines"
+              parent="menu_fsm_service_management"
+              action="action_fsm_task_service_line"
+              sequence="10"/>
+
+    <!-- Performance Analytics Menu -->
+    <menuitem id="menu_performance_analytics" 
+              name="Performance Analytics" 
+              parent="records_management.menu_reports"
+              sequence="60"/>
+              
+    <menuitem id="menu_document_retrieval_metrics"
+              name="Retrieval Metrics"
+              parent="menu_performance_analytics"
+              action="action_document_retrieval_metrics"
+              sequence="10"/>
+
+    <!-- Payment Management Menu -->
+    <menuitem id="menu_payment_management" 
+              name="Payment Management" 
+              parent="records_management.menu_records_billing"
+              sequence="50"/>
+              
+    <menuitem id="menu_payment_split_lines"
+              name="Payment Splits"
+              parent="menu_payment_management"
+              action="action_payment_split_line"
+              sequence="10"/>
+
+    <!-- Shredding Documentation Menu -->
+    <menuitem id="menu_shredding_documentation" 
+              name="Shredding Documentation" 
+              parent="records_management.menu_shredding"
+              sequence="70"/>
+              
+    <menuitem id="menu_shredding_service_photos"
+              name="Service Photos"
+              parent="menu_shredding_documentation"
+              action="action_shredding_service_photo"
+              sequence="10"/>
+
+    <!-- Additional Window Actions for Integration -->
+    
+    <!-- Revenue Forecast Line Action (if not already defined) -->
+    <record id="action_revenue_forecast_line" model="ir.actions.act_window">
+        <field name="name">Revenue Forecast Lines</field>
+        <field name="res_model">revenue.forecast.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No forecast lines found!
+            </p>
+            <p>
+                Revenue forecast lines track individual customer and service forecasts with variance analysis.
+            </p>
+        </field>
+    </record>
+
+    <!-- Server Actions for Batch Operations -->
+    
+    <!-- Batch Approve Billing Config Audits -->
+    <record id="action_batch_approve_billing_audit" model="ir.actions.server">
+        <field name="name">Batch Approve Audits</field>
+        <field name="model_id" ref="model_records_billing_config_audit"/>
+        <field name="binding_model_id" ref="model_records_billing_config_audit"/>
+        <field name="state">code</field>
+        <field name="code">
+            for record in records:
+                if record.approval_status == 'pending':
+                    record.action_approve()
+        </field>
+        <field name="groups_id" eval="[(4, ref('records_management.group_records_manager'))]"/>
+    </record>
+
+    <!-- Generate Performance Report -->
+    <record id="action_generate_performance_report" model="ir.actions.server">
+        <field name="name">Generate Performance Report</field>
+        <field name="model_id" ref="model_document_retrieval_metrics"/>
+        <field name="binding_model_id" ref="model_document_retrieval_metrics"/>
+        <field name="state">code</field>
+        <field name="code">
+            # Generate performance summary report
+            action = {
+                'type': 'ir.actions.act_window',
+                'name': 'Performance Summary',
+                'res_model': 'document.retrieval.metrics',
+                'view_mode': 'graph,pivot',
+                'domain': [('id', 'in', records.ids)],
+                'context': {'group_by': ['performance_rating', 'metric_type']},
+            }
+        </field>
+    </record>
+
+</odoo>

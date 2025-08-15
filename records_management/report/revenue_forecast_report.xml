@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Revenue Forecast Report Template -->
+    <template id="revenue_forecast_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        
+                        <!-- Report Header -->
+                        <div class="row mb32">
+                            <div class="col-8">
+                                <h2>Revenue Forecast Report</h2>
+                                <p><strong>Forecast Period:</strong> <span t-field="doc.forecast_period"/></p>
+                                <p><strong>Generated:</strong> <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/></p>
+                            </div>
+                            <div class="col-4 text-right">
+                                <p><strong>Status:</strong> <span t-field="doc.status"/></p>
+                                <p><strong>Confidence Level:</strong> <span t-field="doc.confidence_level"/>%</p>
+                            </div>
+                        </div>
+
+                        <!-- Summary Section -->
+                        <div class="row mb16">
+                            <div class="col-12">
+                                <h3>Forecast Summary</h3>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Total Forecasted Revenue:</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.total_forecasted_revenue" 
+                                                  t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="doc.total_actual_revenue > 0">
+                                        <td><strong>Actual Revenue:</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.total_actual_revenue" 
+                                                  t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="doc.variance_amount != 0">
+                                        <td><strong>Variance:</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.variance_amount" 
+                                                  t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                                            (<span t-field="doc.variance_percentage"/>%)
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Forecast Lines -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h3>Forecast Details</h3>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Customer</th>
+                                            <th>Service Type</th>
+                                            <th class="text-right">Forecasted Amount</th>
+                                            <th class="text-right">Probability</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="doc.forecast_line_ids" t-as="line">
+                                            <tr>
+                                                <td><span t-field="line.customer_id.name"/></td>
+                                                <td><span t-field="line.service_type"/></td>
+                                                <td class="text-right">
+                                                    <span t-field="line.forecasted_amount" 
+                                                          t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                                                </td>
+                                                <td class="text-right"><span t-field="line.probability_percentage"/>%</td>
+                                                <td><span t-field="line.status"/></td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Report Action -->
+    <record id="action_revenue_forecast_report" model="ir.actions.report">
+        <field name="name">Revenue Forecast Report</field>
+        <field name="model">revenue.forecaster</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.revenue_forecast_report_template</field>
+        <field name="report_file">records_management.revenue_forecast_report_template</field>
+        <field name="binding_model_id" ref="model_revenue_forecaster"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

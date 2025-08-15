@@ -435,7 +435,18 @@
         "templates/portal_document_retrieval.xml",
         "templates/portal_feedback_template.xml",
         "templates/portal_inventory_template.xml",
-        "templates/portal_quote_template.xml"
+        "templates/portal_quote_template.xml",
+        # Sub-Model View Files  
+        "views/revenue_forecast_line_views.xml",
+        "views/records_billing_config_audit_views.xml",
+        "views/records_billing_config_line_views.xml",
+        "views/fsm_task_service_line_views.xml",
+        "views/document_retrieval_metrics_views.xml",
+        "views/payment_split_line_views.xml",
+        "views/shredding_service_photo_views.xml",
+        "views/submodel_menus.xml",
+        # Sub-Model Report Files
+        "report/revenue_forecast_report.xml",
     ],
     "demo": [
         "demo/demo_records.xml",
