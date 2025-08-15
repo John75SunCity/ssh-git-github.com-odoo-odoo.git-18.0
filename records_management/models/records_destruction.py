@@ -186,12 +186,13 @@ class RecordsDestruction(models.Model):
     # ============================================================================
     # ORM METHODS
     # ============================================================================
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to generate sequence number"""
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('records.destruction') or _('New')
-        return super().create(vals)
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('records.destruction') or _('New')
+        return super().create(vals_list)
 
     # ============================================================================
     # ACTION METHODS

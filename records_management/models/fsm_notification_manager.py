@@ -9,7 +9,7 @@ proximity alerts, task status updates, and route optimization notifications.
 Key Features:
 - Automated day of service notifications to customers
 - Real-time driver proximity alerts based on GPS location
-- Task status update notifications throughout service lifecycle  
+- Task status update notifications throughout service lifecycle
 - Route optimization notifications for efficiency improvements
 - Integration with pickup requests and container management
 - Multi-channel delivery (email, SMS, portal notifications)
@@ -20,13 +20,10 @@ License: LGPL-3
 """
 
 import logging
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from odoo import models, fields, api, _
-
 from odoo.exceptions import UserError, ValidationError
-
-
 
 _logger = logging.getLogger(__name__)
 
@@ -34,7 +31,7 @@ _logger = logging.getLogger(__name__)
 class FsmNotificationManager(models.Model):
     """
     FSM Notification Manager
-    
+
     Manages all field service notifications including customer communications,
     driver alerts, task updates, and route optimization notifications.
     Provides automated and manual notification capabilities with multi-channel
@@ -51,28 +48,31 @@ class FsmNotificationManager(models.Model):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
-        string="Notification Reference", 
+        string="Notification Reference",
         required=True,
         tracking=True,
         index=True,
         help="Unique reference for this notification"
     )
+
     company_id = fields.Many2one(
-        "res.company", 
+        "res.company",
         string="Company",
-        default=lambda self: self.env.company, 
+        default=lambda self: self.env.company,
         required=True,
         help="Company context for FSM operations"
     )
+
     user_id = fields.Many2one(
-        "res.users", 
+        "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for managing this notification"
     )
+
     active = fields.Boolean(
-        string="Active", 
+        string="Active",
         default=True,
         help="Whether this notification is active"
     )
@@ -90,7 +90,7 @@ class FsmNotificationManager(models.Model):
         ('delay_notification', 'Service Delay Notification'),
         ('reschedule_confirmation', 'Reschedule Confirmation'),
     ], string="Notification Type", required=True, tracking=True,
-    help="Type of FSM notification to send")
+       help="Type of FSM notification to send")
 
     delivery_method = fields.Selection([
         ('email', 'Email'),
@@ -98,7 +98,7 @@ class FsmNotificationManager(models.Model):
         ('portal', 'Portal Notification'),
         ('all', 'All Methods'),
     ], string="Delivery Method", default='email', required=True,
-    help="Method for delivering the notification")
+       help="Method for delivering the notification")
 
     # ============================================================================
     # RELATIONSHIP FIELDS
@@ -108,11 +108,13 @@ class FsmNotificationManager(models.Model):
         string='Related Pickup Request',
         help="Pickup request associated with this notification"
     )
+
     container_ids = fields.Many2many(
         'records.container',
         string='Related Containers',
         help="Containers involved in the service notification"
     )
+
     partner_id = fields.Many2one(
         'res.partner',
         string='Customer',
@@ -120,6 +122,7 @@ class FsmNotificationManager(models.Model):
         tracking=True,
         help="Customer receiving the notification"
     )
+
     technician_id = fields.Many2one(
         'hr.employee',
         string='Assigned Technician',
@@ -134,15 +137,18 @@ class FsmNotificationManager(models.Model):
         required=True,
         help="Notification subject line"
     )
+
     message_body = fields.Html(
         string="Message Content",
         required=True,
         help="Main notification message content"
     )
+
     scheduled_datetime = fields.Datetime(
         string="Scheduled Send Time",
         help="When to send this notification automatically"
     )
+
     sent_datetime = fields.Datetime(
         string="Sent At",
         readonly=True,
@@ -156,18 +162,22 @@ class FsmNotificationManager(models.Model):
         string="Service Date",
         help="Date when field service is scheduled"
     )
+
     service_time_window = fields.Char(
         string="Service Time Window",
         help="Estimated time window for service (e.g., '9:00 AM - 11:00 AM')"
     )
+
     driver_location = fields.Char(
         string="Driver Current Location",
         help="Current location of assigned driver/technician"
     )
+
     estimated_arrival = fields.Datetime(
         string="Estimated Arrival Time",
         help="Estimated arrival time at customer location"
     )
+
     proximity_radius = fields.Float(
         string="Proximity Radius (miles)",
         default=5.0,
@@ -184,7 +194,7 @@ class FsmNotificationManager(models.Model):
         ('failed', 'Failed'),
         ('cancelled', 'Cancelled'),
     ], string="Status", default='draft', tracking=True,
-    help="Current status of the notification")
+       help="Current status of the notification")
 
     # ============================================================================
     # ADDITIONAL TRACKING FIELDS
@@ -195,18 +205,20 @@ class FsmNotificationManager(models.Model):
         ('high', 'High'),
         ('urgent', 'Urgent'),
     ], string="Priority", default='normal',
-    help="Notification priority level")
+       help="Notification priority level")
 
     delivery_status = fields.Text(
         string="Delivery Status",
         readonly=True,
         help="Status details of notification delivery attempt"
     )
+
     retry_count = fields.Integer(
         string="Retry Count",
         default=0,
         help="Number of delivery retry attempts"
     )
+
     max_retries = fields.Integer(
         string="Max Retries",
         default=3,
@@ -221,20 +233,50 @@ class FsmNotificationManager(models.Model):
         default=True,
         help="Whether to send this notification automatically"
     )
+
     template_id = fields.Many2one(
         'mail.template',
         string='Email Template',
         help="Email template to use for notification"
     )
+
     sms_template = fields.Text(
         string="SMS Template",
         help="SMS message template"
     )
 
-    # Mail Thread Framework Fields (inherited)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    is_driver_nearby = fields.Boolean(
+        string="Driver Nearby",
+        compute='_compute_proximity_status',
+        help="Whether driver is within proximity radius"
+    )
+
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=lambda self: [("res_model", "=", self._name)]
+    )
+
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", self._name)]
+    )
+
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=lambda self: [("model", "=", self._name)]
+    )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -244,9 +286,9 @@ class FsmNotificationManager(models.Model):
         """Generate notification reference name"""
         for record in self:
             if record.pickup_request_id:
-                base_name = f"FSM-{record.pickup_request_id.name}"
+                base_name = _("FSM-%s", record.pickup_request_id.name)
             else:
-                base_name = f"FSM-{record.id or 'NEW'}"
+                base_name = _("FSM-%s", record.id or 'NEW')
 
             type_abbrev = {
                 'day_of_service': 'DOS',
@@ -259,7 +301,7 @@ class FsmNotificationManager(models.Model):
                 'reschedule_confirmation': 'RESCHED',
             }.get(record.notification_type, 'GEN')
 
-            record.name = f"{base_name}-{type_abbrev}"
+            record.name = _("%s-%s", base_name, type_abbrev)
 
     @api.depends('estimated_arrival', 'proximity_radius')
     def _compute_proximity_status(self):
@@ -269,11 +311,23 @@ class FsmNotificationManager(models.Model):
             record.is_driver_nearby = False  # Placeholder for GPS integration
 
     # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to generate sequence"""
+        for vals in vals_list:
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code(
+                    'fsm.notification.manager'
+                ) or _('New')
+        return super().create(vals_list)
+
+    # ============================================================================
     # ACTION METHODS
     # ============================================================================
     def action_send_notification(self):
         """Send the notification using configured delivery method"""
-
         self.ensure_one()
 
         if self.state == 'sent':
@@ -302,14 +356,13 @@ class FsmNotificationManager(models.Model):
                 self._handle_send_failure()
 
         except Exception as e:
-            _logger.error(f"Failed to send notification {self.name}: {str(e)}")
+            _logger.error("Failed to send notification %s: %s", self.name, str(e))
             self._handle_send_failure(str(e))
 
         return True
 
     def action_schedule_notification(self):
         """Schedule notification for automatic sending"""
-
         self.ensure_one()
 
         if not self.scheduled_datetime:
@@ -318,7 +371,7 @@ class FsmNotificationManager(models.Model):
         self.write({'state': 'scheduled'})
 
         # Create scheduled action for automatic sending
-        self._create_scheduled_action()
+        self.action_create_scheduled_action()
 
         self.message_post(
             body=_("Notification scheduled for %s", self.scheduled_datetime)
@@ -328,7 +381,6 @@ class FsmNotificationManager(models.Model):
 
     def action_cancel_notification(self):
         """Cancel the notification"""
-
         self.ensure_one()
 
         self.write({'state': 'cancelled'})
@@ -338,7 +390,6 @@ class FsmNotificationManager(models.Model):
 
     def action_retry_send(self):
         """Retry sending failed notification"""
-
         self.ensure_one()
 
         if self.retry_count >= self.max_retries:
@@ -350,6 +401,26 @@ class FsmNotificationManager(models.Model):
         })
 
         return self.action_send_notification()
+
+    def action_create_scheduled_action(self):
+        """Create scheduled action for automatic notification"""
+        self.ensure_one()
+
+        # Create ir.cron record for scheduled sending
+        cron_vals = {
+            'name': _('FSM Notification: %s', self.name),
+            'model_id': self.env.ref('base.model_fsm_notification_manager').id,
+            'state': 'code',
+            'code': 'model.browse([%d]).action_send_notification()' % self.id,
+            'interval_number': 1,
+            'interval_type': 'minutes',
+            'nextcall': self.scheduled_datetime,
+            'doall': False,
+            'active': True,
+        }
+
+        cron_job = self.env['ir.cron'].create(cron_vals)
+        return cron_job
 
     # ============================================================================
     # NOTIFICATION DELIVERY METHODS
@@ -371,14 +442,14 @@ class FsmNotificationManager(models.Model):
                 mail.send()
             return True
         except Exception as e:
-            _logger.error(f"Email send failed: {str(e)}")
+            _logger.error("Email send failed: %s", str(e))
             return False
 
     def _send_sms_notification(self):
         """Send SMS notification"""
         try:
             if not self.partner_id.mobile:
-                _logger.warning(f"No mobile number for partner {self.partner_id.name}")
+                _logger.warning("No mobile number for partner %s", self.partner_id.name)
                 return False
 
             sms_content = self.sms_template or self.subject
@@ -393,7 +464,7 @@ class FsmNotificationManager(models.Model):
             sms_composer.action_send_sms()
             return True
         except Exception as e:
-            _logger.error(f"SMS send failed: {str(e)}")
+            _logger.error("SMS send failed: %s", str(e))
             return False
 
     def _send_portal_notification(self):
@@ -410,7 +481,7 @@ class FsmNotificationManager(models.Model):
             })
             return True
         except Exception as e:
-            _logger.error(f"Portal notification failed: {str(e)}")
+            _logger.error("Portal notification failed: %s", str(e))
             return False
 
     # ============================================================================
@@ -469,58 +540,84 @@ class FsmNotificationManager(models.Model):
     # ============================================================================
     def _get_day_of_service_template(self, pickup_request):
         """Get day of service notification template"""
-        return f"""
-        <p>Dear {pickup_request.partner_id.name},</p>
-        
-        <p>This is a reminder that your records service is scheduled for tomorrow, 
-        {pickup_request.pickup_date.strftime('%B %d, %Y')}.</p>
-        
+        service_date = pickup_request.pickup_date.strftime('%B %d, %Y') if pickup_request.pickup_date else _('(Date TBD)')
+        service_type = pickup_request.service_type or _('Records Pickup')
+        time_window = pickup_request.time_window or _('Business hours')
+        contact_person = pickup_request.contact_person or _('Main contact')
+
+        return _("""
+        <p>Dear %(customer)s,</p>
+
+        <p>This is a reminder that your records service is scheduled for tomorrow,
+        %(date)s.</p>
+
         <p><strong>Service Details:</strong></p>
         <ul>
-            <li>Service Type: {pickup_request.service_type or 'Records Pickup'}</li>
-            <li>Estimated Time: {pickup_request.time_window or 'Business hours'}</li>
-            <li>Contact: {pickup_request.contact_person or 'Main contact'}</li>
+            <li>Service Type: %(service)s</li>
+            <li>Estimated Time: %(time)s</li>
+            <li>Contact: %(contact)s</li>
         </ul>
-        
+
         <p>Our technician will contact you when they are on their way.</p>
-        
+
         <p>Thank you for choosing our records management services.</p>
-        """
+        """, {
+            'customer': pickup_request.partner_id.name,
+            'date': service_date,
+            'service': service_type,
+            'time': time_window,
+            'contact': contact_person,
+        })
 
     def _get_proximity_template(self, pickup_request, location):
         """Get proximity notification template"""
-        return f"""
-        <p>Dear {pickup_request.partner_id.name},</p>
-        
-        <p>Your assigned technician is now nearby and will arrive shortly for your 
+        service_type = pickup_request.service_type or _('Records Service')
+
+        return _("""
+        <p>Dear %(customer)s,</p>
+
+        <p>Your assigned technician is now nearby and will arrive shortly for your
         scheduled service.</p>
-        
+
         <p><strong>Current Status:</strong></p>
         <ul>
-            <li>Technician Location: {location}</li>
+            <li>Technician Location: %(location)s</li>
             <li>Estimated Arrival: Within 15-20 minutes</li>
-            <li>Service: {pickup_request.service_type or 'Records Service'}</li>
+            <li>Service: %(service)s</li>
         </ul>
-        
+
         <p>Please ensure someone is available to meet our technician.</p>
-        """
+        """, {
+            'customer': pickup_request.partner_id.name,
+            'location': location,
+            'service': service_type,
+        })
 
     def _get_completion_template(self, pickup_request):
         """Get service completion template"""
-        return f"""
-        <p>Dear {pickup_request.partner_id.name},</p>
-        
+        today = fields.Date.today().strftime('%B %d, %Y')
+        technician = pickup_request.assigned_technician or _('Field Team')
+        item_count = len(pickup_request.pickup_item_ids) if hasattr(pickup_request, 'pickup_item_ids') else 0
+
+        return _("""
+        <p>Dear %(customer)s,</p>
+
         <p>Your records service has been completed successfully.</p>
-        
+
         <p><strong>Service Summary:</strong></p>
         <ul>
-            <li>Service Date: {fields.Date.today().strftime('%B %d, %Y')}</li>
-            <li>Technician: {pickup_request.assigned_technician or 'Field Team'}</li>
-            <li>Items Processed: {len(pickup_request.pickup_item_ids)} items</li>
+            <li>Service Date: %(date)s</li>
+            <li>Technician: %(technician)s</li>
+            <li>Items Processed: %(items)d items</li>
         </ul>
-        
+
         <p>Thank you for your business. You will receive detailed documentation shortly.</p>
-        """
+        """, {
+            'customer': pickup_request.partner_id.name,
+            'date': today,
+            'technician': technician,
+            'items': item_count,
+        })
 
     # ============================================================================
     # HELPER METHODS
@@ -536,27 +633,55 @@ class FsmNotificationManager(models.Model):
         self.activity_schedule(
             "mail.mail_activity_data_todo",
             summary=_("Failed Notification Needs Attention"),
-            note=_(
-                "Notification send failed: %s", error_msg or "Unknown error"
-            ),
+            note=_("Notification send failed: %s", error_msg or "Unknown error"),
             user_id=self.user_id.id,
         )
 
     def _log_notification_sent(self):
         """Log successful notification send"""
         self.message_post(
-            body=_(
-                "Notification sent via %s to %s",
-                self.delivery_method,
-                self.partner_id.name,
-            )
+            body=_("Notification sent via %s to %s", self.delivery_method, self.partner_id.name)
         )
 
-    def _create_scheduled_action(self):
-        """Create scheduled action for automatic notification"""
-        # This would create ir.cron record for scheduled sending
-        # Implementation depends on specific requirements
-        pass
+    # ============================================================================
+    # BUSINESS METHODS
+    # ============================================================================
+    def get_notification_summary(self):
+        """Get notification summary for reporting"""
+        self.ensure_one()
+        return {
+            'name': self.name,
+            'type': self.notification_type,
+            'status': self.state,
+            'customer': self.partner_id.name,
+            'delivery_method': self.delivery_method,
+            'scheduled_datetime': self.scheduled_datetime,
+            'sent_datetime': self.sent_datetime,
+            'priority': self.priority,
+        }
+
+    @api.model
+    def get_notification_statistics(self):
+        """Get notification statistics for dashboard"""
+        stats = {}
+
+        # Count by status
+        for status in ["draft", "scheduled", "sent", "failed", "cancelled"]:
+            stats[status] = self.search_count([("state", "=", status)])
+
+        # Count by type
+        stats['by_type'] = {}
+        for notification_type, label in self._fields['notification_type'].selection:
+            stats['by_type'][label] = self.search_count([("notification_type", "=", notification_type)])
+
+        # Success rate
+        total_sent = stats["sent"] + stats["failed"]
+        if total_sent > 0:
+            stats["success_rate"] = round((stats["sent"] / total_sent) * 100, 2)
+        else:
+            stats["success_rate"] = 0.0
+
+        return stats
 
     # ============================================================================
     # VALIDATION METHODS
@@ -575,6 +700,15 @@ class FsmNotificationManager(models.Model):
             if record.proximity_radius and record.proximity_radius <= 0:
                 raise ValidationError(_("Proximity radius must be greater than zero."))
 
+    @api.constrains('partner_id')
+    def _check_partner_contact_info(self):
+        """Validate partner has required contact information"""
+        for record in self:
+            if record.delivery_method == 'email' and not record.partner_id.email:
+                raise ValidationError(_("Customer must have an email address for email notifications"))
+            if record.delivery_method == 'sms' and not record.partner_id.mobile:
+                raise ValidationError(_("Customer must have a mobile number for SMS notifications"))
+
     # ============================================================================
     # CRON/SCHEDULED METHODS
     # ============================================================================
@@ -586,11 +720,21 @@ class FsmNotificationManager(models.Model):
             ('scheduled_datetime', '<=', fields.Datetime.now()),
         ])
 
+        processed_count = 0
+        failed_count = 0
+
         for notification in notifications:
             try:
                 notification.action_send_notification()
+                processed_count += 1
             except Exception as e:
-                _logger.error(f"Failed to send scheduled notification {notification.name}: {str(e)}")
+                _logger.error("Failed to send scheduled notification %s: %s", notification.name, str(e))
+                failed_count += 1
+
+        return {
+            'processed': processed_count,
+            'failed': failed_count
+        }
 
     @api.model
     def _cleanup_old_notifications(self, days=90):
@@ -600,6 +744,47 @@ class FsmNotificationManager(models.Model):
             ('state', '=', 'sent'),
             ('sent_datetime', '<', cutoff_date),
         ])
+
+        count = len(old_notifications)
         old_notifications.unlink()
 
-        return len(old_notifications)
+        _logger.info("Cleaned up %d old FSM notifications", count)
+        return count
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def name_get(self):
+        """Custom display name"""
+        result = []
+        for record in self:
+            name_parts = [record.name]
+
+            if record.notification_type:
+                type_label = dict(record._fields['notification_type'].selection).get(
+                    record.notification_type, record.notification_type
+                )
+                name_parts.append(_("(%s)", type_label))
+
+            if record.partner_id:
+                name_parts.append(_("- %s", record.partner_id.name))
+
+            result.append((record.id, " ".join(name_parts)))
+        return result
+
+    @api.model
+    def _name_search(self, name="", args=None, operator="ilike", limit=100, name_get_uid=None):
+        """Enhanced search by name, customer, or type"""
+        args = args or []
+        domain = []
+
+        if name:
+            domain = [
+                "|", "|", "|",
+                ("name", operator, name),
+                ("partner_id.name", operator, name),
+                ("subject", operator, name),
+                ("notification_type", operator, name),
+            ]
+
+        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)

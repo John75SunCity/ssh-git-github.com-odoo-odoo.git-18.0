@@ -3,7 +3,7 @@
     <!-- Form view for Hard -->
     <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
         <field name="name">hard_drive.scan.wizard.view.form</field>
-        <field name="model">hard_drive.scan.wizard</field>
+        <field name="model">shredding.hard_drive</field>
         <field name="arch" type="xml">
             <form string="Hard Drive Serial Number Scanner">
                 <header>
@@ -19,8 +19,8 @@
                             <field name="scan_location" widget="radio" options="{'horizontal': true}"/>
                         </h1>
                         <div class="o_row">
-                            <label for="service_id" string="Service:"/>
-                            <field name="service_id" readonly="1"/>
+                            <label for="service_request_id" string="Service:"/>
+                            <field name="service_request_id"/>
                         </div>
                     </div>
                     
@@ -103,8 +103,8 @@
                             <field name="serial_number" placeholder="Serial Number"/>
                         </h1>
                         <div class="o_row">
-                            <label for="service_id" string="Service:"/>
-                            <field name="service_id"/>
+                            <label for="service_request_id" string="Service:"/>
+                            <field name="service_request_id"/>
                         </div>
                     </div>
                     
@@ -160,7 +160,7 @@
     <!-- Tree view for Scanner -->
     <record id="action_hard_drive_scan_customer" model="ir.actions.act_window">
         <field name="name">Scan at Customer Location</field>
-        <field name="res_model">hard_drive.scan.wizard</field>
+        <field name="res_model">shredding.hard_drive</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="context">{'default_scan_location': 'customer'}</field>
@@ -168,7 +168,7 @@
 
     <record id="action_hard_drive_scan_facility" model="ir.actions.act_window">
         <field name="name">Verify at Facility</field>
-        <field name="res_model">hard_drive.scan.wizard</field>
+        <field name="res_model">shredding.hard_drive</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="context">{'default_scan_location': 'facility'}</field>

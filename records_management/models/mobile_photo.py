@@ -6,7 +6,7 @@ Photo attachments for mobile bin key operations and field service work.
 """
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 
 class MobilePhoto(models.Model):
@@ -83,7 +83,7 @@ class MobilePhoto(models.Model):
     )
 
     gps_longitude = fields.Float(
-        string="GPS Longitude", 
+        string="GPS Longitude",
         help="GPS longitude where photo was taken"
     )
 
@@ -114,10 +114,38 @@ class MobilePhoto(models.Model):
         help="Photo resolution (e.g., '1920x1080')"
     )
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    has_gps = fields.Boolean(
+        string="Has GPS",
+        compute='_compute_has_gps',
+        help="Whether photo has GPS coordinates"
+    )
+
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many(
+        "mail.activity",
+        "res_id",
+        string="Activities",
+        domain=lambda self: [("res_model", "=", self._name)]
+    )
+
+    message_follower_ids = fields.One2many(
+        "mail.followers",
+        "res_id",
+        string="Followers",
+        domain=lambda self: [("res_model", "=", self._name)]
+    )
+
+    message_ids = fields.One2many(
+        "mail.message",
+        "res_id",
+        string="Messages",
+        domain=lambda self: [("model", "=", self._name)]
+    )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -128,12 +156,6 @@ class MobilePhoto(models.Model):
         for record in self:
             record.has_gps = bool(record.gps_latitude and record.gps_longitude)
 
-    has_gps = fields.Boolean(
-        string="Has GPS",
-        compute='_compute_has_gps',
-        help="Whether photo has GPS coordinates"
-    )
-
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
@@ -141,12 +163,128 @@ class MobilePhoto(models.Model):
     def _check_gps_latitude(self):
         """Validate GPS latitude range"""
         for record in self:
-            if record.gps_latitude and not (-90 <= record.gps_latitude <= 90):
+            if record.gps_latitude and not -90 <= record.gps_latitude <= 90:
                 raise ValidationError(_('GPS latitude must be between -90 and 90 degrees'))
 
     @api.constrains('gps_longitude')
     def _check_gps_longitude(self):
         """Validate GPS longitude range"""
         for record in self:
-            if record.gps_longitude and not (-180 <= record.gps_longitude <= 180):
+            if record.gps_longitude and not -180 <= record.gps_longitude <= 180:
                 raise ValidationError(_('GPS longitude must be between -180 and 180 degrees'))
+
+    @api.constrains('file_size')
+    def _check_file_size(self):
+        """Validate reasonable file size limits"""
+        for record in self:
+            if record.file_size and record.file_size > 50 * 1024 * 1024:  # 50MB limit
+                raise ValidationError(_('Photo file size cannot exceed 50MB'))
+            if record.file_size and record.file_size < 0:
+                raise ValidationError(_('Photo file size cannot be negative'))
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_view_photo(self):
+        """Open photo in full view"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Photo: %s', self.name),
+            'res_model': 'mobile.photo',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
+
+    def action_download_photo(self):
+        """Download photo file"""
+        self.ensure_one()
+        if not self.photo_data:
+            raise ValidationError(_('No photo data available to download'))
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': '/web/content/mobile.photo/%s/photo_data/%s?download=true' % (
+                self.id, self.photo_filename or 'photo.jpg'
+            ),
+            'target': 'self',
+        }
+
+    # ============================================================================
+    # BUSINESS METHODS
+    # ============================================================================
+    def get_gps_coordinates_string(self):
+        """Get formatted GPS coordinates string"""
+        self.ensure_one()
+        if self.has_gps:
+            return _("Lat: %s, Lon: %s", self.gps_latitude, self.gps_longitude)
+        return _("No GPS coordinates available")
+
+    @api.model
+    def create_from_mobile_data(self, mobile_data):
+        """Create photo from mobile device data"""
+        vals = {
+            'name': mobile_data.get('name', _('Mobile Photo')),
+            'photo_data': mobile_data.get('photo_data'),
+            'photo_filename': mobile_data.get('filename'),
+            'photo_type': mobile_data.get('photo_type', 'other'),
+            'gps_latitude': mobile_data.get('gps_latitude'),
+            'gps_longitude': mobile_data.get('gps_longitude'),
+            'device_info': mobile_data.get('device_info'),
+            'file_size': mobile_data.get('file_size'),
+            'resolution': mobile_data.get('resolution'),
+        }
+
+        # Associate with wizard if provided
+        if mobile_data.get('wizard_id'):
+            vals['wizard_id'] = mobile_data['wizard_id']
+            vals['mobile_bin_key_wizard_id'] = mobile_data['wizard_id']
+
+        return self.create(vals)
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    def name_get(self):
+        """Custom display name"""
+        result = []
+        for record in self:
+            name_parts = [record.name]
+            
+            if record.photo_type:
+                type_label = dict(record._fields['photo_type'].selection).get(
+                    record.photo_type, record.photo_type
+                )
+                name_parts.append(_("(%s)", type_label))
+            
+            if record.photo_date:
+                name_parts.append(record.photo_date.strftime("- %Y-%m-%d"))
+
+            result.append((record.id, " ".join(name_parts)))
+        return result
+
+    @api.model
+    def get_photos_for_wizard(self, wizard_id):
+        """Get all photos for a specific wizard"""
+        domain = [
+            '|',
+            ('wizard_id', '=', wizard_id),
+            ('mobile_bin_key_wizard_id', '=', wizard_id)
+        ]
+        return self.search(domain, order='photo_date desc')
+
+    def get_photo_metadata(self):
+        """Get comprehensive photo metadata"""
+        self.ensure_one()
+        return {
+            'name': self.name,
+            'type': self.photo_type,
+            'date': self.photo_date,
+            'has_gps': self.has_gps,
+            'gps_coordinates': self.get_gps_coordinates_string(),
+            'device_info': self.device_info or _('Unknown device'),
+            'file_size': self.file_size,
+            'resolution': self.resolution,
+            'filename': self.photo_filename,
+        }
