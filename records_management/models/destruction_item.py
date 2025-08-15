@@ -79,6 +79,20 @@ class DestructionItem(models.Model):
         help="Associated NAID destruction certificate",
     )
 
+    certificate_id = fields.Many2one(
+        "shredding.certificate",
+        string="Shredding Certificate",
+        help="Associated shredding certificate for this destruction item",
+        ondelete="set null"
+    )
+
+    destruction_record_id = fields.Many2one(
+        "naid.destruction.record",
+        string="Destruction Record",
+        help="Associated NAID destruction record",
+        ondelete="set null"
+    )
+
     # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"

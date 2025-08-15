@@ -225,6 +225,13 @@ class ShreddingService(models.Model):
         help="Associated recycling bale"
     )
 
+    batch_id = fields.Many2one(
+        "shredding.inventory.batch",
+        string="Inventory Batch",
+        help="Associated shredding inventory batch",
+        ondelete="set null"
+    )
+
     # ============================================================================
     # MATERIAL DETAILS
     # ============================================================================

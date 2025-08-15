@@ -124,6 +124,14 @@ class RecordsBillingContact(models.Model):
         help="Associated billing profile",
     )
 
+    customer_billing_profile_id = fields.Many2one(
+        "records.customer.billing.profile",
+        string="Customer Billing Profile",
+        tracking=True,
+        ondelete="cascade",
+        help="Associated customer billing profile from records_customer_billing_profile",
+    )
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Customer",

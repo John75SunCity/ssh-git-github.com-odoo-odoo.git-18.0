@@ -145,6 +145,13 @@ class BarcodeProduct(models.Model):
         help="Container record if applicable"
     )
 
+    storage_box_id = fields.Many2one(
+        "barcode.storage.box",
+        string="Storage Box",
+        help="Associated storage box for this barcode product",
+        ondelete="set null"
+    )
+
     # ============================================================================
     # VALIDATION AND STATUS
     # ============================================================================
