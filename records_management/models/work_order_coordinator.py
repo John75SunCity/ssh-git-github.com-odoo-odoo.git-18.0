@@ -414,7 +414,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
     # Billing integration
     invoice_line_ids = fields.One2many(
         "account.move.line",
-        "work_order_id",
+        "work_order_coordinator_id",
         string="Invoice Lines"
     )
 

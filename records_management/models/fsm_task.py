@@ -145,6 +145,13 @@ class FsmTask(models.Model):
         help="Primary contact person at the service location",
     )
 
+    work_order_coordinator_id = fields.Many2one(
+        "work.order.coordinator",
+        string="Work Order Coordinator",
+        help="Associated work order coordinator for this FSM task",
+        ondelete="set null"
+    )
+
     # ============================================================================
     # SERVICE SPECIFICATIONS
     # ============================================================================

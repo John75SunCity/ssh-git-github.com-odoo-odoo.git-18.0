@@ -23,6 +23,8 @@ class AccountMoveLine(models.Model):
         help="Work order that generated this invoice line"
     )
 
+    # NOTE: This Many2one field is needed for the One2many relationship from work_order_coordinator
+    # The Reference field above handles the polymorphic relationships to different work order types
     work_order_coordinator_id = fields.Many2one(
         "work.order.coordinator",
         string="Work Order Coordinator",
