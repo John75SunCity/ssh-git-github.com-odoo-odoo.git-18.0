@@ -117,6 +117,13 @@ class RecordsDestruction(models.Model):
         help="User responsible for this destruction operation"
     )
 
+    compliance_id = fields.Many2one(
+        'naid.compliance',
+        string='NAID Compliance Record',
+        tracking=True,
+        help="Associated NAID compliance record"
+    )
+
     # ============================================================================
     # COMPLIANCE FIELDS
     # ============================================================================
