@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Payment Split Line Views -->
+    
+    <!-- Tree View -->
+    <record id="payment_split_line_view_tree" model="ir.ui.view">
+        <field name="name">payment.split.line.view.tree</field>
+        <field name="model">payment.split.line</field>
+        <field name="arch" type="xml">
+            <tree string="Payment Split Lines" default_order="payment_id, allocation_order">
+                <field name="allocation_order" widget="handle"/>
+                <field name="name"/>
+                <field name="service_type"/>
+                <field name="allocated_amount" sum="Total Allocated"/>
+                <field name="allocation_percentage"/>
+                <field name="billing_period"/>
+                <field name="currency_id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="payment_split_line_view_form" model="ir.ui.view">
+        <field name="name">payment.split.line.view.form</field>
+        <field name="model">payment.split.line</field>
+        <field name="arch" type="xml">
+            <form string="Payment Split Line">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Split Description"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="payment_id"/>
+                            <field name="service_type"/>
+                            <field name="allocated_amount"/>
+                            <field name="allocation_percentage"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="billing_period"/>
+                            <field name="allocation_order"/>
+                            <field name="invoice_id"/>
+                            <field name="service_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="payment_split_line_view_search" model="ir.ui.view">
+        <field name="name">payment.split.line.view.search</field>
+        <field name="model">payment.split.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Payment Split Lines">
+                <field name="name"/>
+                <field name="payment_id"/>
+                <field name="service_type"/>
+                <field name="billing_period"/>
+                <separator/>
+                <filter name="filter_current_period" string="Current Period" domain="[('billing_period', '=', 'current')]"/>
+                <filter name="filter_high_allocation" string="High Allocation" domain="[('allocation_percentage', '>', 50)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_service_type" string="Service Type" context="{'group_by': 'service_type'}"/>
+                    <filter name="group_billing_period" string="Billing Period" context="{'group_by': 'billing_period'}"/>
+                    <filter name="group_payment" string="Payment" context="{'group_by': 'payment_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_payment_split_line" model="ir.actions.act_window">
+        <field name="name">Payment Split Lines</field>
+        <field name="res_model">payment.split.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No payment split lines found!
+            </p>
+            <p>
+                Split lines track how payments are allocated across different services and billing periods.
+            </p>
+        </field>
+    </record>
+</odoo>
