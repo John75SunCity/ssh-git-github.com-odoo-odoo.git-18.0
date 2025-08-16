@@ -167,6 +167,18 @@ class PickupRouteStop(models.Model):
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
+    contact_person = fields.Char(string="Contact Person")
+    contact_phone = fields.Char(string="Contact Phone")
+    contact_email = fields.Char(string="Contact Email")
+    access_instructions = fields.Text(string="Access Instructions")
+    estimated_duration = fields.Float(string="Estimated Duration (hours)", digits=(4,2))
+    estimated_weight = fields.Float(string="Estimated Weight (lbs)", digits=(8,2))
+    actual_weight = fields.Float(string="Actual Weight (lbs)", digits=(8,2))
+    delivery_instructions = fields.Text(string="Delivery Instructions")
+    customer_signature = fields.Binary(string="Customer Signature")
+    driver_signature = fields.Binary(string="Driver Signature")
+    photos_taken = fields.Integer(string="Photos Taken")
+    verification_code = fields.Char(string="Verification Code")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

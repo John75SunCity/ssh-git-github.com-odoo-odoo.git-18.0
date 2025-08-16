@@ -102,6 +102,15 @@ class SystemDiagramData(models.TransientModel):
         auto_join=True,
     )
     
+    generation_time = fields.Float(string="Generation Time (seconds)", digits=(6,2))
+    node_spacing = fields.Integer(string="Node Spacing", default=100)
+    edge_length = fields.Integer(string="Edge Length", default=150)
+    layout_algorithm = fields.Selection([("hierarchical", "Hierarchical"), ("spring", "Spring"), ("circular", "Circular")], string="Layout Algorithm")
+    include_inactive = fields.Boolean(string="Include Inactive", default=False)
+    group_by_module = fields.Boolean(string="Group By Module", default=True)
+    max_depth = fields.Integer(string="Maximum Depth", default=3)
+    exclude_system_models = fields.Boolean(string="Exclude System Models", default=True)
+    last_access = fields.Datetime(string="Last Access")
     # ============================================================================
     # BUSINESS DIAGRAM FIELDS
     # ============================================================================

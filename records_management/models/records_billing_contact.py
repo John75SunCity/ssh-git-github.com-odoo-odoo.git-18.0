@@ -510,6 +510,7 @@ class RecordsBillingContact(models.Model):
 
         return super().write(vals)
 
+    service_type = fields.Selection([("primary", "Primary"), ("billing", "Billing"), ("technical", "Technical"), ("emergency", "Emergency")], string="Contact Type")
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================

@@ -394,6 +394,10 @@ class TempInventory(models.Model):
         help="Applicable rate for this inventory"
     )
 
+    inventory_id = fields.Many2one("records.inventory.dashboard", string="Related Inventory")
+    document_type_id = fields.Many2one("records.document.type", string="Document Type")
+    container_type = fields.Selection([("type_01", "Standard Box"), ("type_02", "Legal Box"), ("type_03", "Map Box")], string="Container Type")
+    movement_type = fields.Selection([("in", "Incoming"), ("out", "Outgoing"), ("transfer", "Transfer")], string="Movement Type")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

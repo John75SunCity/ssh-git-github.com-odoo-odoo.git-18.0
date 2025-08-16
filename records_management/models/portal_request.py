@@ -314,9 +314,43 @@ class PortalRequest(models.Model):
         string="Time Variance (%)", compute="_compute_time_variance", store=False
     )
 
+    # Added by Safe Business Fields Fixer
+    estimated_completion = fields.Datetime(string="Estimated Completion")
+
+    # Added by Safe Business Fields Fixer
+    processing_notes = fields.Text(string="Processing Notes")
+
+    # Added by Safe Business Fields Fixer
+    special_instructions = fields.Text(string="Special Instructions")
+
+    # Added by Safe Business Fields Fixer
+    requires_approval = fields.Boolean(string="Requires Approval", default=False)
+
+    # Added by Safe Business Fields Fixer
+    urgency_level = fields.Selection([("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")], string="Urgency")
+
+    # Added by Safe Business Fields Fixer
+    customer_feedback = fields.Text(string="Customer Feedback")
+
+    # Added by Safe Business Fields Fixer
+    related_tasks_count = fields.Integer(string="Related Tasks", compute="_compute_related_tasks_count")
+
+    # Added by Safe Business Fields Fixer
+    staff_signature = fields.Binary(string="Staff Signature")
+
+    # Added by Safe Business Fields Fixer
+    naid_audit_required = fields.Boolean(string="NAID Audit Required", default=False)
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    @api.depends('related_tasks_count')
+    def _compute_related_tasks_count(self):
+        """Compute Related Tasks Count"""
+        for record in self:
+            # TODO: Implement business logic for related_tasks_count
+            record.related_tasks_count = 0  # Default value
+
     @api.depends()
     def _compute_attachment_count(self):
         """Compute the number of attachments for this portal request."""

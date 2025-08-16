@@ -419,6 +419,30 @@ class PickupRequest(models.Model):
     )
 
     shred_bin_id = fields.Many2one("shred.bin", string="Shred Bin")
+    # Added by Safe Business Fields Fixer
+    route_optimized = fields.Boolean(string="Route Optimized", default=False)
+
+    # Added by Safe Business Fields Fixer
+    gps_coordinates = fields.Char(string="GPS Coordinates")
+
+    # Added by Safe Business Fields Fixer
+    access_instructions = fields.Text(string="Access Instructions")
+
+    # Added by Safe Business Fields Fixer
+    loading_dock_available = fields.Boolean(string="Loading Dock Available", default=False)
+
+    # Added by Safe Business Fields Fixer
+    equipment_needed = fields.Text(string="Special Equipment Needed")
+
+    # Added by Safe Business Fields Fixer
+    hazardous_materials = fields.Boolean(string="Hazardous Materials", default=False)
+
+    # Added by Safe Business Fields Fixer
+    weekend_pickup = fields.Boolean(string="Weekend Pickup Available", default=False)
+
+    # Added by Safe Business Fields Fixer
+    after_hours_pickup = fields.Boolean(string="After Hours Pickup", default=False)
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

@@ -231,6 +231,12 @@ class ResPartner(models.Model):
             else:
                 partner.container_count = 0
 
+    active_bin_key_count = fields.Integer(string="Active Bin Keys", compute="_compute_active_bin_key_count")
+    emergency_contact = fields.Char(string="Emergency Contact")
+    has_bin_key = fields.Boolean(string="Has Bin Key", compute="_compute_has_bin_key")
+    key_restriction_status = fields.Selection([("allowed", "Allowed"), ("restricted", "Restricted"), ("suspended", "Suspended")], string="Key Restriction Status")
+    unlock_service_count = fields.Integer(string="Unlock Service Count", compute="_compute_unlock_service_count")
+    total_unlock_charges = fields.Monetary(string="Total Unlock Charges", currency_field="currency_id", compute="_compute_total_unlock_charges")
     # ============================================================================
     # DEVELOPMENT ADMINISTRATION METHODS
     # ============================================================================

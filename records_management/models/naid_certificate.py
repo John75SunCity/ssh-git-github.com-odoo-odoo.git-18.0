@@ -272,6 +272,24 @@ class NaidCertificate(models.Model):
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
+    # Added by Safe Business Fields Fixer
+    chain_of_custody_id = fields.Many2one("naid.chain.custody", string="Chain of Custody")
+
+    # Added by Safe Business Fields Fixer
+    custodian_name = fields.Char(string="Custodian Name")
+
+    # Added by Safe Business Fields Fixer
+    witness_name = fields.Char(string="Witness Name")
+
+    # Added by Safe Business Fields Fixer
+    environmental_compliance = fields.Boolean(string="Environmental Compliance", default=True)
+
+    # Added by Safe Business Fields Fixer
+    carbon_neutral_destruction = fields.Boolean(string="Carbon Neutral Destruction", default=False)
+
+    # Added by Safe Business Fields Fixer
+    recycling_percentage = fields.Float(string="Recycling Percentage", digits=(5,2))
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

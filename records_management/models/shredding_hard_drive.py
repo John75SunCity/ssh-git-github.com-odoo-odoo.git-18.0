@@ -385,6 +385,15 @@ class ShreddingHardDrive(models.Model):
         domain=lambda self: [("model", "=", self._name)],
     )
 
+    scan_count = fields.Integer(string="Scan Count")
+    scan_location = fields.Char(string="Scan Location")
+    scan_notes = fields.Text(string="Scan Notes")
+    scanned_at_customer_by = fields.Many2one("hr.employee", string="Scanned At Customer By")
+    scanned_serials = fields.Text(string="Scanned Serials")
+    verified_at_facility_by = fields.Many2one("hr.employee", string="Verified At Facility By")
+    verified_at_facility_date = fields.Datetime(string="Verified At Facility Date")
+    verified_before_destruction = fields.Boolean(string="Verified Before Destruction", default=False)
+    bulk_serial_input = fields.Text(string="Bulk Serial Input", help="Input multiple serial numbers separated by lines")
     # ============================================================================
     # ODOO FRAMEWORK METHODS
     # ============================================================================

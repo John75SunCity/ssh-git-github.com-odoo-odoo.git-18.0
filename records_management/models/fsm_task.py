@@ -296,6 +296,15 @@ class FsmTask(models.Model):
         domain=[("res_model", "=", "fsm.task")],
     )
 
+    container_ids = fields.Many2many("records.container", string="Containers")
+    total_cubic_feet = fields.Float(string="Total Cubic Feet", compute="_compute_totals")
+    total_weight = fields.Float(string="Total Weight (lbs)", compute="_compute_totals")
+    naid_compliant = fields.Boolean(string="NAID Compliant", default=True)
+    chain_of_custody_required = fields.Boolean(string="Chain of Custody Required", default=False)
+    destruction_certificate_required = fields.Boolean(string="Destruction Certificate Required", default=False)
+    customer_signature = fields.Binary(string="Customer Signature")
+    technician_signature = fields.Binary(string="Technician Signature")
+    compliance_verified = fields.Boolean(string="Compliance Verified", default=False)
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

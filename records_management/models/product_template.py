@@ -336,6 +336,16 @@ class ProductTemplate(models.Model):
         string="Service Benefits", help="Benefits and features of this service"
     )
 
+    detailed_type = fields.Selection([("consu", "Consumable"), ("service", "Service"), ("product", "Storable Product")], string="Product Type")
+    list_price = fields.Float(string="Sales Price", digits="Product Price")
+    standard_price = fields.Float(string="Cost", digits="Product Price")
+    categ_id = fields.Many2one("product.category", string="Product Category")
+    uom_id = fields.Many2one("uom.uom", string="Unit of Measure")
+    uom_po_id = fields.Many2one("uom.uom", string="Purchase Unit of Measure")
+    sale_ok = fields.Boolean(string="Can be Sold", default=True)
+    purchase_ok = fields.Boolean(string="Can be Purchased", default=True)
+    naid_compliance_level = fields.Selection([("aaa", "NAID AAA"), ("aa", "NAID AA"), ("a", "NAID A")], string="NAID Compliance")
+    service_type = fields.Selection([("storage", "Storage"), ("retrieval", "Retrieval"), ("destruction", "Destruction"), ("scanning", "Scanning")], string="Service Type")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

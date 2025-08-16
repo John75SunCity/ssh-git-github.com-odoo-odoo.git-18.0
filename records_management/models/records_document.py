@@ -249,6 +249,33 @@ class RecordsDocument(models.Model):
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
+    # Added by Safe Business Fields Fixer
+    digitized = fields.Boolean(string="Digitized", default=False)
+
+    # Added by Safe Business Fields Fixer
+    digital_scan_ids = fields.One2many("records.digital.scan", "document_id", string="Digital Scans")
+
+    # Added by Safe Business Fields Fixer
+    chain_of_custody_ids = fields.One2many("records.chain.of.custody", "document_id", string="Chain of Custody")
+
+    # Added by Safe Business Fields Fixer
+    audit_trail_ids = fields.One2many("naid.audit.log", "document_id", string="Audit Trail")
+
+    # Added by Safe Business Fields Fixer
+    compliance_verified = fields.Boolean(string="Compliance Verified", default=False)
+
+    # Added by Safe Business Fields Fixer
+    destruction_authorized_by = fields.Many2one("res.users", string="Destruction Authorized By")
+
+    # Added by Safe Business Fields Fixer
+    destruction_date = fields.Datetime(string="Destruction Date")
+
+    # Added by Safe Business Fields Fixer
+    destruction_method = fields.Char(string="Destruction Method")
+
+    # Added by Safe Business Fields Fixer
+    naid_destruction_verified = fields.Boolean(string="NAID Destruction Verified", default=False)
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

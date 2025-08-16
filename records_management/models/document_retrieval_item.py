@@ -393,6 +393,7 @@ class DocumentRetrievalItem(models.Model):
         string="Messages",
         domain=lambda self: [("model", "=", self._name)]
     )
+    effective_priority = fields.Selection([("0", "Low"), ("1", "Normal"), ("2", "High"), ("3", "Very High")], string="Effective Priority", compute="_compute_effective_priority")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

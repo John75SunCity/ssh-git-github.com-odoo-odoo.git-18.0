@@ -112,6 +112,12 @@ class MaintenanceRequest(models.Model):
         digits="Product Price",
     )
 
+    naid_certification_date = fields.Date(string="NAID Certification Date")
+    naid_certification_expiry = fields.Date(string="NAID Certification Expiry")
+    shredding_capacity_per_hour = fields.Float(string="Shredding Capacity (lbs/hour)", digits=(8,2))
+    maintenance_frequency = fields.Selection([("daily", "Daily"), ("weekly", "Weekly"), ("monthly", "Monthly"), ("quarterly", "Quarterly")], string="Maintenance Frequency")
+    records_department_id = fields.Many2one("records.department", string="Records Department")
+    destruction_service_ids = fields.One2many("shredding.service", "equipment_id", string="Destruction Services")
     @api.depends("parts_cost", "labor_cost", "external_cost")
     def _compute_total_cost(self):
         for request in self:

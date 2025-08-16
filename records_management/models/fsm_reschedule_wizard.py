@@ -246,6 +246,8 @@ class FsmRescheduleWizard(models.TransientModel):
     message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
+    reschedule_reason = fields.Text(string="Reschedule Reason", required=True)
+    schedule_date = fields.Datetime(string="New Schedule Date", required=True)
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

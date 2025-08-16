@@ -263,6 +263,24 @@ class RecordsBillingConfig(models.Model):
         string="Messages",
         domain=lambda self: [("model", "=", self._name)]
     )
+    # Added by Safe Business Fields Fixer
+    auto_invoice_generation = fields.Boolean(string="Auto Invoice Generation", default=True)
+
+    # Added by Safe Business Fields Fixer
+    billing_cycle_days = fields.Integer(string="Billing Cycle (days)", default=30)
+
+    # Added by Safe Business Fields Fixer
+    late_fee_percentage = fields.Float(string="Late Fee %", digits=(5,2))
+
+    # Added by Safe Business Fields Fixer
+    discount_early_payment = fields.Float(string="Early Payment Discount %", digits=(5,2))
+
+    # Added by Safe Business Fields Fixer
+    minimum_billing_amount = fields.Monetary(string="Minimum Billing Amount", currency_field="currency_id")
+
+    # Added by Safe Business Fields Fixer
+    tax_exempt = fields.Boolean(string="Tax Exempt", default=False)
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

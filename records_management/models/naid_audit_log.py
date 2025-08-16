@@ -296,6 +296,11 @@ class NAIDAuditLog(models.Model):
             else:
                 record.display_name = record.name or "Audit Log Entry"
 
+    event_level = fields.Selection([("info", "Info"), ("warning", "Warning"), ("error", "Error"), ("critical", "Critical")], string="Event Level")
+    res_id = fields.Integer(string="Related Record ID")
+    chain_of_custody_id = fields.Many2one("records.chain.of.custody", string="Chain of Custody")
+    naid_compliance_id = fields.Many2one("naid.compliance", string="NAID Compliance Record")
+    event_date = fields.Datetime(string="Event Date", default=lambda self: fields.Datetime.now())
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================

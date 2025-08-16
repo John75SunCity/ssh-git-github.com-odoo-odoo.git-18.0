@@ -522,6 +522,30 @@ class RecordsContainer(models.Model):
         string="Messages",
         domain=lambda self: [("model", "=", self._name)]
     )
+    # Added by Safe Business Fields Fixer
+    security_seal_number = fields.Char(string="Security Seal Number", tracking=True)
+
+    # Added by Safe Business Fields Fixer
+    last_inventory_date = fields.Date(string="Last Inventory Date")
+
+    # Added by Safe Business Fields Fixer
+    next_inspection_due = fields.Date(string="Next Inspection Due")
+
+    # Added by Safe Business Fields Fixer
+    temperature_controlled = fields.Boolean(string="Temperature Controlled", default=False)
+
+    # Added by Safe Business Fields Fixer
+    humidity_controlled = fields.Boolean(string="Humidity Controlled", default=False)
+
+    # Added by Safe Business Fields Fixer
+    fire_suppression = fields.Boolean(string="Fire Suppression Available", default=False)
+
+    # Added by Safe Business Fields Fixer
+    access_restrictions = fields.Text(string="Access Restrictions")
+
+    # Added by Safe Business Fields Fixer
+    insurance_value = fields.Monetary(string="Insurance Value", currency_field="currency_id")
+
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================

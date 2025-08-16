@@ -351,6 +351,24 @@ class RecordsLocation(models.Model):
         domain=[("model", "=", "records.location")]
     )
 
+    # Added by Safe Business Fields Fixer
+    climate_controlled = fields.Boolean(string="Climate Controlled", default=False)
+
+    # Added by Safe Business Fields Fixer
+    fire_protection_system = fields.Char(string="Fire Protection System")
+
+    # Added by Safe Business Fields Fixer
+    biometric_access = fields.Boolean(string="Biometric Access", default=False)
+
+    # Added by Safe Business Fields Fixer
+    surveillance_cameras = fields.Integer(string="Number of Cameras")
+
+    # Added by Safe Business Fields Fixer
+    last_security_audit = fields.Date(string="Last Security Audit")
+
+    # Added by Safe Business Fields Fixer
+    next_security_audit_due = fields.Date(string="Next Security Audit Due")
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

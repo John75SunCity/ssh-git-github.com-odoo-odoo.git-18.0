@@ -251,6 +251,14 @@ class ShredBin(models.Model):
         help="Number of services in current billing period",
     )
 
+    actual_weight = fields.Float(string="Actual Weight (lbs)", digits=(8,2))
+    can_downsize = fields.Boolean(string="Can Downsize", default=False)
+    can_upsize = fields.Boolean(string="Can Upsize", default=False)
+    next_size_down = fields.Char(string="Next Size Down")
+    next_size_up = fields.Char(string="Next Size Up")
+    request_type = fields.Selection([("pickup", "Pickup"), ("exchange", "Exchange"), ("resize", "Resize")], string="Request Type")
+    service_type = fields.Selection([("scheduled", "Scheduled"), ("on_demand", "On Demand"), ("emergency", "Emergency")], string="Service Type")
+    urgency = fields.Selection([("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")], string="Urgency")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

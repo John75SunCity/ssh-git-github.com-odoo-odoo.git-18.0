@@ -515,6 +515,27 @@ class ShreddingService(models.Model):
         string="Messages",
         domain=lambda self: [("model", "=", self._name)]
     )
+    # Added by Safe Business Fields Fixer
+    destruction_status = fields.Selection([("pending", "Pending"), ("in_progress", "In Progress"), ("completed", "Completed")], string="Destruction Status")
+
+    # Added by Safe Business Fields Fixer
+    witness_company = fields.Char(string="Witness Company")
+
+    # Added by Safe Business Fields Fixer
+    witness_name = fields.Char(string="Witness Name")
+
+    # Added by Safe Business Fields Fixer
+    naid_compliance_level = fields.Selection([("aaa", "NAID AAA"), ("aa", "NAID AA"), ("a", "NAID A")], string="NAID Compliance")
+
+    # Added by Safe Business Fields Fixer
+    destruction_method_detail = fields.Text(string="Destruction Method Details")
+
+    # Added by Safe Business Fields Fixer
+    pre_destruction_weight = fields.Float(string="Pre-Destruction Weight (lbs)", digits=(8,2))
+
+    # Added by Safe Business Fields Fixer
+    post_destruction_weight = fields.Float(string="Post-Destruction Weight (lbs)", digits=(8,2))
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

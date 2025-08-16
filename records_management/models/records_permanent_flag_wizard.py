@@ -273,6 +273,12 @@ class RecordsPermanentFlagWizard(models.TransientModel):
         domain=lambda self: [("model", "=", self._name)],
     )
 
+    action_type = fields.Selection([("set", "Set Flag"), ("remove", "Remove Flag")], string="Action Type")
+    box_id = fields.Many2one("records.container", string="Container")
+    permanent_flag = fields.Boolean(string="Permanent Flag")
+    permanent_flag_set_by = fields.Many2one("res.users", string="Flag Set By")
+    permanent_flag_set_date = fields.Datetime(string="Flag Set Date")
+    user_password = fields.Char(string="User Password", help="Password verification for security")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

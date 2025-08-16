@@ -333,6 +333,12 @@ class RecordsRetentionPolicy(models.Model):
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
 
+    policy_version = fields.Char(string="Policy Version", default="1.0")
+    effective_date = fields.Date(string="Effective Date", required=True)
+    approval_status = fields.Selection([("draft", "Draft"), ("approved", "Approved"), ("expired", "Expired")], string="Approval Status")
+    legal_basis = fields.Text(string="Legal Basis")
+    risk_level = fields.Selection([("low", "Low"), ("medium", "Medium"), ("high", "High")], string="Risk Level")
+    compliance_rate = fields.Float(string="Compliance Rate %", digits=(5,2), compute="_compute_compliance_rate")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

@@ -217,6 +217,17 @@ class WorkOrderCoordinator(models.Model):
                     'work.order.coordinator') or _('New')
         return super().create(vals_list)
 
+    coordinator_type = fields.Selection([("internal", "Internal"), ("external", "External"), ("contractor", "Contractor")], string="Coordinator Type")
+    certification_type = fields.Selection([("naid", "NAID"), ("iso", "ISO"), ("other", "Other")], string="Certification Type")
+    skill_level = fields.Selection([("junior", "Junior"), ("senior", "Senior"), ("expert", "Expert")], string="Skill Level")
+    specialization = fields.Selection([("destruction", "Destruction"), ("storage", "Storage"), ("retrieval", "Retrieval")], string="Specialization")
+    naid_certified = fields.Boolean(string="NAID Certified", default=False)
+    background_check_date = fields.Date(string="Background Check Date")
+    safety_training_date = fields.Date(string="Safety Training Date")
+    productivity_score = fields.Float(string="Productivity Score", digits=(5,2))
+    quality_score = fields.Float(string="Quality Score", digits=(5,2))
+    customer_satisfaction = fields.Float(string="Customer Satisfaction", digits=(5,2))
+    years_experience = fields.Integer(string="Years Experience")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

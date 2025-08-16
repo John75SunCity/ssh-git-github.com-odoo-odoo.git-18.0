@@ -170,3 +170,13 @@ class BinKey(models.Model):
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    key_number = fields.Char(string="Key Number", required=True, index=True)
+    bin_location = fields.Char(string="Bin Location")
+    assigned_to = fields.Many2one("res.partner", string="Assigned To")
+    issue_date = fields.Date(string="Issue Date")
+    return_date = fields.Date(string="Return Date")
+    security_deposit_required = fields.Boolean(string="Security Deposit Required", default=False)
+    security_deposit_amount = fields.Monetary(string="Security Deposit Amount", currency_field="currency_id")
+    emergency_access = fields.Boolean(string="Emergency Access", default=False)
+    last_maintenance_date = fields.Date(string="Last Maintenance Date")
+    next_maintenance_due = fields.Date(string="Next Maintenance Due")

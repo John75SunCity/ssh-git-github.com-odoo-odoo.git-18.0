@@ -256,6 +256,18 @@ class PaperBaleRecycling(models.Model):
     contamination = fields.Char(string="Contamination Notes", tracking=True)
     mobile_entry = fields.Boolean(string="Mobile Entry", default=False, tracking=True)
 
+    load_shipment_id = fields.Many2one("paper.load.shipment", string="Load Shipment")
+    bale_number = fields.Char(string="Bale Number", required=True, index=True)
+    weight_lbs = fields.Float(string="Weight (lbs)", digits=(8,2))
+    weight_net = fields.Float(string="Net Weight (lbs)", digits=(8,2))
+    moisture_level = fields.Float(string="Moisture Level %", digits=(5,2))
+    contamination_notes = fields.Text(string="Contamination Notes")
+    processed_from_service = fields.Many2one("shredding.service", string="Processed From Service")
+    storage_location = fields.Char(string="Storage Location")
+    weighed_by = fields.Many2one("hr.employee", string="Weighed By")
+    scale_reading = fields.Float(string="Scale Reading", digits=(8,2))
+    load_number = fields.Char(string="Load Number")
+    gps_coordinates = fields.Char(string="GPS Coordinates")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
