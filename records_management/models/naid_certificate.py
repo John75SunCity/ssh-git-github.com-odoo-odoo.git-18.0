@@ -288,7 +288,37 @@ class NaidCertificate(models.Model):
     carbon_neutral_destruction = fields.Boolean(string="Carbon Neutral Destruction", default=False)
 
     # Added by Safe Business Fields Fixer
-    recycling_percentage = fields.Float(string="Recycling Percentage", digits=(5,2))
+    recycling_percentage = fields.Float(string="Recycling Percentage", digits=(5,2)
+    action_cancel = fields.Char(string='Action Cancel')
+    action_draft = fields.Char(string='Action Draft')
+    action_issue = fields.Char(string='Action Issue')
+    action_send = fields.Char(string='Action Send')
+    action_view_destruction_service = fields.Char(string='Action View Destruction Service')
+    button_box = fields.Char(string='Button Box')
+    compliance_details = fields.Char(string='Compliance Details')
+    context = fields.Char(string='Context')
+    destroyed_materials = fields.Char(string='Destroyed Materials')
+    domain = fields.Char(string='Domain')
+    group_by_issue_date = fields.Date(string='Group By Issue Date')
+    group_by_partner = fields.Char(string='Group By Partner')
+    group_by_state = fields.Selection([], string='Group By State')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    my_certificates = fields.Char(string='My Certificates')
+    product_id = fields.Many2one('product', string='Product Id')
+    res_model = fields.Char(string='Res Model')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    state_draft = fields.Char(string='State Draft')
+    state_issued = fields.Char(string='State Issued')
+    total_weight = fields.Float(string='Total Weight', digits=(12, 2))
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    uom_id = fields.Many2one('uom', string='Uom Id')
+    view_mode = fields.Char(string='View Mode')
+    weight = fields.Char(string='Weight')
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_weight(self):
+        for record in self:
+            record.total_weight = sum(record.line_ids.mapped('amount')))
 
     # ============================================================================
     # COMPUTE METHODS

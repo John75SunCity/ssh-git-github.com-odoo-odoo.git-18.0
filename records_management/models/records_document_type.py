@@ -496,7 +496,22 @@ class RecordsDocumentType(models.Model):
         "mail.message",
         "res_id",
         string="Messages",
-        domain="[('res_model', '=', 'records.document.type')]",
+        domain="[('res_model', '=', 'records.document.type')
+    action_view_type_documents = fields.Char(string='Action View Type Documents')
+    analytics = fields.Char(string='Analytics')
+    approved_by = fields.Char(string='Approved By')
+    auto_classification = fields.Char(string='Auto Classification')
+    button_box = fields.Char(string='Button Box')
+    card = fields.Char(string='Card')
+    compliance = fields.Char(string='Compliance')
+    confidential = fields.Char(string='Confidential')
+    group_compliance = fields.Char(string='Group Compliance')
+    group_risk = fields.Char(string='Group Risk')
+    group_security = fields.Char(string='Group Security')
+    help = fields.Char(string='Help')
+    inactive = fields.Boolean(string='Inactive', default=False)
+    res_model = fields.Char(string='Res Model')
+    view_mode = fields.Char(string='View Mode')]",
     )
 
     # ============================================================================

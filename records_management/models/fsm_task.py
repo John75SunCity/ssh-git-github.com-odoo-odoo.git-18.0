@@ -335,7 +335,50 @@ class FsmTask(models.Model):
     weight_lbs = fields.Float(string='Weight (lbs)', digits=(12, 2), help='Weight in pounds')
     work_order_count = fields.Integer(string='Work Orders Count', compute='_compute_work_order_count')
     work_order_ids = fields.One2many('file.retrieval.work.order', 'fsm_task_id', string='Work Orders')
-    work_order_type = fields.Selection([('retrieval', 'Document Retrieval'), ('destruction', 'Destruction'), ('container_access', 'Container Access')], string='Work Order Type')
+    work_order_type = fields.Selection([('retrieval', 'Document Retrieval')
+    action_complete_service = fields.Char(string='Action Complete Service')
+    action_start_service = fields.Char(string='Action Start Service')
+    action_verify_service = fields.Char(string='Action Verify Service')
+    context = fields.Char(string='Context')
+    filter_completed = fields.Boolean(string='Filter Completed', default=False)
+    filter_in_progress = fields.Char(string='Filter In Progress')
+    filter_today = fields.Char(string='Filter Today')
+    group_employee = fields.Char(string='Group Employee')
+    group_service_type = fields.Selection([], string='Group Service Type')  # TODO: Define selection options
+    group_status = fields.Selection([], string='Group Status')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    view_mode = fields.Char(string='View Mode')
+    action_complete_task = fields.Char(string='Action Complete Task')
+    action_create_naid_audit = fields.Char(string='Action Create Naid Audit')
+    action_reschedule = fields.Char(string='Action Reschedule')
+    action_start_task = fields.Char(string='Action Start Task')
+    action_view_containers = fields.Char(string='Action View Containers')
+    action_view_work_orders = fields.Char(string='Action View Work Orders')
+    button_box = fields.Char(string='Button Box')
+    card = fields.Char(string='Card')
+    completed = fields.Boolean(string='Completed', default=False)
+    context = fields.Char(string='Context')
+    custody_required = fields.Boolean(string='Custody Required', default=False)
+    customer_satisfaction_rating = fields.Char(string='Customer Satisfaction Rating')
+    group_customer = fields.Char(string='Group Customer')
+    group_date = fields.Date(string='Group Date')
+    group_priority = fields.Selection([], string='Group Priority')  # TODO: Define selection options
+    group_status = fields.Selection([], string='Group Status')  # TODO: Define selection options
+    group_technician = fields.Char(string='Group Technician')
+    group_type = fields.Selection([], string='Group Type')  # TODO: Define selection options
+    has_containers = fields.Char(string='Has Containers')
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    in_progress = fields.Char(string='In Progress')
+    medium_priority = fields.Selection([], string='Medium Priority')  # TODO: Define selection options
+    my_tasks = fields.Char(string='My Tasks')
+    overdue = fields.Char(string='Overdue')
+    res_model = fields.Char(string='Res Model')
+    scheduled = fields.Char(string='Scheduled')
+    this_week = fields.Char(string='This Week')
+    today = fields.Char(string='Today')
+    view_mode = fields.Char(string='View Mode'), ('destruction', 'Destruction'), ('container_access', 'Container Access')], string='Work Order Type')
 
     @api.depends("start_date", "end_date")
     def _compute_duration(self):

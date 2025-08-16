@@ -81,6 +81,12 @@ class Billing(models.Model):
     internal_notes = fields.Text(string='Internal Notes')
     discount_amount = fields.Float(string="Discount Amount", default=0.0, help="Discount amount")
     payment_status = fields.Char(string="Payment Status", help="Payment status")
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     # ==========================================
     # COMPUTED FIELDS

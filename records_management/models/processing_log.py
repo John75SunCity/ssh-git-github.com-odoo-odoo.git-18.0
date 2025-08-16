@@ -304,6 +304,11 @@ class ProcessingLog(models.Model):
         store=True,
         help="Whether the related task is a pickup task",
     )
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # COMPUTE METHODS

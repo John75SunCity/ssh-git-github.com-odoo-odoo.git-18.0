@@ -275,6 +275,76 @@ class RecordsDocument(models.Model):
 
     # Added by Safe Business Fields Fixer
     naid_destruction_verified = fields.Boolean(string="NAID Destruction Verified", default=False)
+    action_audit_trail = fields.Char(string='Action Audit Trail')
+    action_download = fields.Char(string='Action Download')
+    action_mark_permanent = fields.Char(string='Action Mark Permanent')
+    action_scan_document = fields.Char(string='Action Scan Document')
+    action_schedule_destruction = fields.Char(string='Action Schedule Destruction')
+    action_type = fields.Selection([], string='Action Type')  # TODO: Define selection options
+    action_unmark_permanent = fields.Char(string='Action Unmark Permanent')
+    action_view_chain_of_custody = fields.Char(string='Action View Chain Of Custody')
+    audit = fields.Char(string='Audit')
+    audit_trail_count = fields.Integer(string='Audit Trail Count', compute='_compute_audit_trail_count', store=True)
+    button_box = fields.Char(string='Button Box')
+    card = fields.Char(string='Card')
+    chain_of_custody_count = fields.Integer(string='Chain Of Custody Count', compute='_compute_chain_of_custody_count', store=True)
+    context = fields.Char(string='Context')
+    created_date = fields.Date(string='Created Date')
+    custody_chain = fields.Char(string='Custody Chain')
+    days_until_destruction = fields.Char(string='Days Until Destruction')
+    department_id = fields.Many2one('department', string='Department Id')
+    destroyed = fields.Char(string='Destroyed')
+    destruction = fields.Char(string='Destruction')
+    destruction_certificate_id = fields.Many2one('destruction.certificate', string='Destruction Certificate Id')
+    destruction_due = fields.Char(string='Destruction Due')
+    destruction_facility = fields.Char(string='Destruction Facility')
+    destruction_notes = fields.Char(string='Destruction Notes')
+    destruction_this_month = fields.Char(string='Destruction This Month')
+    destruction_witness = fields.Char(string='Destruction Witness')
+    details = fields.Char(string='Details')
+    digital = fields.Char(string='Digital')
+    document_category = fields.Char(string='Document Category')
+    event_date = fields.Date(string='Event Date')
+    event_type = fields.Selection([], string='Event Type')  # TODO: Define selection options
+    file_format = fields.Char(string='File Format')
+    file_size = fields.Char(string='File Size')
+    group_by_container = fields.Char(string='Group By Container')
+    group_by_customer = fields.Char(string='Group By Customer')
+    group_by_destruction = fields.Char(string='Group By Destruction')
+    group_by_state = fields.Selection([], string='Group By State')  # TODO: Define selection options
+    group_by_type = fields.Selection([], string='Group By Type')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    last_access_date = fields.Date(string='Last Access Date')
+    location = fields.Char(string='Location')
+    media_type = fields.Selection([], string='Media Type')  # TODO: Define selection options
+    non_permanent = fields.Char(string='Non Permanent')
+    notes = fields.Char(string='Notes')
+    original_format = fields.Char(string='Original Format')
+    pending_destruction = fields.Char(string='Pending Destruction')
+    permanent = fields.Char(string='Permanent')
+    permanent_flag_set_by = fields.Char(string='Permanent Flag Set By')
+    permanent_flag_set_date = fields.Date(string='Permanent Flag Set Date')
+    recent_access = fields.Char(string='Recent Access')
+    res_model = fields.Char(string='Res Model')
+    resolution = fields.Char(string='Resolution')
+    responsible_person = fields.Char(string='Responsible Person')
+    scan_date = fields.Date(string='Scan Date')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    signature_verified = fields.Boolean(string='Signature Verified', default=False)
+    storage_date = fields.Date(string='Storage Date')
+    storage_location = fields.Char(string='Storage Location')
+    timestamp = fields.Char(string='Timestamp')
+    view_mode = fields.Char(string='View Mode')
+
+    @api.depends('audit_trail_ids')
+    def _compute_audit_trail_count(self):
+        for record in self:
+            record.audit_trail_count = len(record.audit_trail_ids)
+
+    @api.depends('chain_of_custody_ids')
+    def _compute_chain_of_custody_count(self):
+        for record in self:
+            record.chain_of_custody_count = len(record.chain_of_custody_ids)
 
     # ============================================================================
     # COMPUTE METHODS

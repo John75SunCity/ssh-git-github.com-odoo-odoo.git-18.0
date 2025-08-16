@@ -397,7 +397,29 @@ class TempInventory(models.Model):
     inventory_id = fields.Many2one("records.inventory.dashboard", string="Related Inventory")
     document_type_id = fields.Many2one("records.document.type", string="Document Type")
     container_type = fields.Selection([("type_01", "Standard Box"), ("type_02", "Legal Box"), ("type_03", "Map Box")], string="Container Type")
-    movement_type = fields.Selection([("in", "Incoming"), ("out", "Outgoing"), ("transfer", "Transfer")], string="Movement Type")
+    movement_type = fields.Selection([("in", "Incoming")
+    Inventories = fields.Char(string='Inventories')
+    Movements = fields.Char(string='Movements')
+    action_activate = fields.Char(string='Action Activate')
+    action_approve = fields.Char(string='Action Approve')
+    action_archive = fields.Char(string='Action Archive')
+    action_check_capacity_status = fields.Selection([], string='Action Check Capacity Status')  # TODO: Define selection options
+    action_deactivate = fields.Char(string='Action Deactivate')
+    action_view_containers = fields.Char(string='Action View Containers')
+    action_view_documents = fields.Char(string='Action View Documents')
+    action_view_movements = fields.Char(string='Action View Movements')
+    active_inventories = fields.Char(string='Active Inventories')
+    button_box = fields.Char(string='Button Box')
+    date = fields.Char(string='Date')
+    full_inventories = fields.Char(string='Full Inventories')
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    nearly_full = fields.Char(string='Nearly Full')
+    quarantine = fields.Char(string='Quarantine')
+    res_model = fields.Char(string='Res Model')
+    staging = fields.Char(string='Staging')
+    temporary = fields.Char(string='Temporary')
+    view_mode = fields.Char(string='View Mode'), ("out", "Outgoing"), ("transfer", "Transfer")], string="Movement Type")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

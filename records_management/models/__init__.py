@@ -439,3 +439,5 @@ from . import shredding_picklist_item
 
 # Customer inventory sub-models
 from . import customer_inventory_report_line
+
+from . import shredding_rates

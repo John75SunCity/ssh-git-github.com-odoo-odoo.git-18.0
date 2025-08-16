@@ -216,6 +216,78 @@ class PickupRoute(models.Model):
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
     total_weight = fields.Float(string="Total Weight", default=0.0, help="Total weight")
     actual_arrival_time = fields.Char(string="Actual Arrival Time", help="Actual arrival time")
+    action_cancel_route = fields.Char(string='Action Cancel Route')
+    action_complete_route = fields.Char(string='Action Complete Route')
+    action_plan_route = fields.Char(string='Action Plan Route')
+    action_start_route = fields.Char(string='Action Start Route')
+    action_view_pickup_requests = fields.Char(string='Action View Pickup Requests')
+    action_view_route_map = fields.Char(string='Action View Route Map')
+    actual_pickup_time = fields.Float(string='Actual Pickup Time', digits=(12, 2))
+    audit_trail_complete = fields.Char(string='Audit Trail Complete')
+    button_box = fields.Char(string='Button Box')
+    certificates_generated = fields.Char(string='Certificates Generated')
+    color = fields.Char(string='Color')
+    company = fields.Char(string='Company')
+    completed = fields.Boolean(string='Completed', default=False)
+    container_count = fields.Integer(string='Container Count', compute='_compute_container_count', store=True)
+    context = fields.Char(string='Context')
+    create_date = fields.Date(string='Create Date')
+    current_load = fields.Char(string='Current Load')
+    current_location = fields.Char(string='Current Location')
+    domain = fields.Char(string='Domain')
+    draft = fields.Char(string='Draft')
+    driver = fields.Char(string='Driver')
+    end_location_id = fields.Many2one('end.location', string='End Location Id')
+    estimated_pickup_time = fields.Float(string='Estimated Pickup Time', digits=(12, 2))
+    eta_next_stop = fields.Char(string='Eta Next Stop')
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    history = fields.Char(string='History')
+    in_progress = fields.Char(string='In Progress')
+    last_update_time = fields.Float(string='Last Update Time', digits=(12, 2))
+    max_capacity = fields.Char(string='Max Capacity')
+    my_driving = fields.Char(string='My Driving')
+    my_routes = fields.Char(string='My Routes')
+    naid_compliance_required = fields.Boolean(string='Naid Compliance Required', default=False)
+    naid_required = fields.Boolean(string='Naid Required', default=False)
+    overdue = fields.Char(string='Overdue')
+    partner_id = fields.Many2one('res.partner', string='Partner Id')
+    pickup_address = fields.Char(string='Pickup Address')
+    pickup_count = fields.Integer(string='Pickup Count', compute='_compute_pickup_count', store=True)
+    pickup_stops = fields.Char(string='Pickup Stops')
+    planned = fields.Char(string='Planned')
+    res_model = fields.Char(string='Res Model')
+    route_details = fields.Char(string='Route Details')
+    route_month = fields.Char(string='Route Month')
+    route_type = fields.Selection([], string='Route Type')  # TODO: Define selection options
+    route_week = fields.Char(string='Route Week')
+    signatures_collected = fields.Char(string='Signatures Collected')
+    start_location_id = fields.Many2one('start.location', string='Start Location Id')
+    this_week = fields.Char(string='This Week')
+    today = fields.Char(string='Today')
+    total_stops = fields.Char(string='Total Stops')
+    tracking = fields.Char(string='Tracking')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    urgent_priority = fields.Selection([], string='Urgent Priority')  # TODO: Define selection options
+    vehicle = fields.Char(string='Vehicle')
+    view_mode = fields.Char(string='View Mode')
+    web_ribbon = fields.Char(string='Web Ribbon')
+    write_date = fields.Date(string='Write Date')
+
+    @api.depends('container_ids')
+    def _compute_container_count(self):
+        for record in self:
+            record.container_count = len(record.container_ids)
+
+    @api.depends('pickup_ids')
+    def _compute_pickup_count(self):
+        for record in self:
+            record.pickup_count = len(record.pickup_ids)
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_stops(self):
+        for record in self:
+            record.total_stops = sum(record.line_ids.mapped('amount'))
 
     # ============================================================================
     # COMPUTE METHODS

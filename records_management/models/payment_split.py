@@ -323,6 +323,32 @@ class PaymentSplit(models.Model):
         currency_field="currency_id",
         help="Sum of all split line amounts",
     )
+activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities', auto_join=True)
+    allocated_amount = fields.Float(string='Allocated Amount', digits=(12, 2))
+    allocation_order = fields.Char(string='Allocation Order')
+    allocation_percentage = fields.Char(string='Allocation Percentage')
+    billing_period = fields.Char(string='Billing Period')
+    context = fields.Char(string='Context')
+    filter_current_period = fields.Char(string='Filter Current Period')
+    filter_high_allocation = fields.Char(string='Filter High Allocation')
+    group_billing_period = fields.Char(string='Group Billing Period')
+    group_payment = fields.Char(string='Group Payment')
+    group_service_type = fields.Selection([], string='Group Service Type')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    invoice_id = fields.Many2one('invoice', string='Invoice Id')
+message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers', auto_join=True)
+message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_join=True)
+    payment_id = fields.Many2one('payment', string='Payment Id')
+    res_model = fields.Char(string='Res Model')
+    service_id = fields.Many2one('service', string='Service Id')
+    service_type = fields.Selection([], string='Service Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # COMPUTE METHODS

@@ -442,6 +442,15 @@ class PickupRequest(models.Model):
 
     # Added by Safe Business Fields Fixer
     after_hours_pickup = fields.Boolean(string="After Hours Pickup", default=False)
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    view_mode = fields.Char(string='View Mode')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # COMPUTE METHODS

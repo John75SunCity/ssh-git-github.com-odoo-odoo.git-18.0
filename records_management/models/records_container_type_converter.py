@@ -209,6 +209,15 @@ class RecordsContainerTypeConverter(models.Model):
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    action_convert_containers = fields.Char(string='Action Convert Containers')
+    action_preview_changes = fields.Char(string='Action Preview Changes')
+    context = fields.Char(string='Context')
+    current_type = fields.Selection([], string='Current Type')  # TODO: Define selection options
+    new_container_type_code = fields.Char(string='New Container Type Code')
+    res_model = fields.Char(string='Res Model')
+    target = fields.Char(string='Target')
+    update_location = fields.Char(string='Update Location')
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # COMPUTE METHODS

@@ -207,6 +207,19 @@ class RecordsDigitalScan(models.Model):
         readonly=True,
         help="Displays a summary of the scan's resolution and file size.",
     )
+    action_confirm = fields.Char(string='Action Confirm')
+    action_done = fields.Char(string='Action Done')
+    done = fields.Char(string='Done')
+    draft = fields.Char(string='Draft')
+    group_document = fields.Char(string='Group Document')
+    group_format = fields.Char(string='Group Format')
+    group_scanned_by = fields.Char(string='Group Scanned By')
+    group_state = fields.Selection([], string='Group State')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    my_scans = fields.Char(string='My Scans')
+    res_model = fields.Char(string='Res Model')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # VALIDATION METHODS

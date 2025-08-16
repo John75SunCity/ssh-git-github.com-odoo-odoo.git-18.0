@@ -202,6 +202,20 @@ class KeyRestrictionChecker(models.Model):
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    action_buttons = fields.Char(string='Action Buttons')
+    action_check_customer = fields.Char(string='Action Check Customer')
+    action_create_unlock_service = fields.Char(string='Action Create Unlock Service')
+    action_reset = fields.Char(string='Action Reset')
+    bin_info = fields.Char(string='Bin Info')
+    context = fields.Char(string='Context')
+    customer_info = fields.Char(string='Customer Info')
+    input_section = fields.Char(string='Input Section')
+    res_model = fields.Char(string='Res Model')
+    restriction_details = fields.Char(string='Restriction Details')
+    results_section = fields.Char(string='Results Section')
+    target = fields.Char(string='Target')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # COMPUTE METHODS

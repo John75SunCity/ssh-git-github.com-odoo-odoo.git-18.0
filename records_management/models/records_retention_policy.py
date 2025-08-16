@@ -358,6 +358,21 @@ class RecordsRetentionPolicy(models.Model):
     version_date = fields.Date(string='Version Date', help='Date this version was created')
     version_history_ids = fields.One2many('records.policy.version', 'policy_id', string='Version History')
     version_number = fields.Integer(string='Version Number', help='Sequential version number')
+    action_activate_policy = fields.Char(string='Action Activate Policy')
+    action_deactivate_policy = fields.Char(string='Action Deactivate Policy')
+    action_review_policy = fields.Char(string='Action Review Policy')
+    action_view_exceptions = fields.Char(string='Action View Exceptions')
+    action_view_policy_documents = fields.Char(string='Action View Policy Documents')
+    button_box = fields.Char(string='Button Box')
+    group_policy_type = fields.Selection([], string='Group Policy Type')  # TODO: Define selection options
+    group_risk = fields.Char(string='Group Risk')
+    group_status = fields.Selection([], string='Group Status')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    high_risk = fields.Char(string='High Risk')
+    res_model = fields.Char(string='Res Model')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    under_review = fields.Char(string='Under Review')
+    view_mode = fields.Char(string='View Mode')
 
     @api.depends("last_review_date", "review_frequency")
     def _compute_next_review_date(self):

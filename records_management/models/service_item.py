@@ -383,7 +383,102 @@ class ServiceItem(models.Model):
         "mail.message",
         "res_id",
         string="Messages",
-        domain=lambda self: [("model", "=", self._name)],
+        domain=lambda self: [("model", "=", self._name)
+    action_activate = fields.Char(string='Action Activate')
+    action_deactivate = fields.Char(string='Action Deactivate')
+    action_duplicate_service = fields.Char(string='Action Duplicate Service')
+    action_view_pricing_history = fields.Char(string='Action View Pricing History')
+    action_view_related_requests = fields.Char(string='Action View Related Requests')
+    activities = fields.Char(string='Activities')
+    activity_state = fields.Selection([], string='Activity State')  # TODO: Define selection options
+    adjustment_type = fields.Selection([], string='Adjustment Type')  # TODO: Define selection options
+    analytics = fields.Char(string='Analytics')
+    approval_level = fields.Char(string='Approval Level')
+    audit_trail_required = fields.Boolean(string='Audit Trail Required', default=False)
+    auto_create_task = fields.Char(string='Auto Create Task')
+    average_completion_time = fields.Float(string='Average Completion Time', digits=(12, 2))
+    base_price = fields.Float(string='Base Price', digits=(12, 2))
+    button_box = fields.Char(string='Button Box')
+    certificate_required = fields.Boolean(string='Certificate Required', default=False)
+    certification_required = fields.Boolean(string='Certification Required', default=False)
+    completed_count = fields.Integer(string='Completed Count', compute='_compute_completed_count', store=True)
+    compliance = fields.Char(string='Compliance')
+    condition_field = fields.Char(string='Condition Field')
+    condition_operator = fields.Char(string='Condition Operator')
+    condition_value = fields.Char(string='Condition Value')
+    context = fields.Char(string='Context')
+    cost_price = fields.Float(string='Cost Price', digits=(12, 2))
+    customer_can_request = fields.Char(string='Customer Can Request')
+    customer_satisfaction = fields.Char(string='Customer Satisfaction')
+    domain = fields.Char(string='Domain')
+    email_confirmation_required = fields.Boolean(string='Email Confirmation Required', default=False)
+    equipment_ids = fields.One2many('equipment', 'service_item_id', string='Equipment Ids')
+    estimated_duration = fields.Char(string='Estimated Duration')
+    group_active = fields.Boolean(string='Group Active', default=False)
+    group_approval = fields.Char(string='Group Approval')
+    group_category = fields.Char(string='Group Category')
+    group_company = fields.Char(string='Group Company')
+    group_create_date = fields.Date(string='Group Create Date')
+    group_naid = fields.Char(string='Group Naid')
+    group_type = fields.Selection([], string='Group Type')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    high_demand = fields.Char(string='High Demand')
+    inactive = fields.Boolean(string='Inactive', default=False)
+    internal_notes = fields.Char(string='Internal Notes')
+    iso_compliant = fields.Char(string='Iso Compliant')
+    last_revenue_date = fields.Date(string='Last Revenue Date')
+    low_revenue = fields.Char(string='Low Revenue')
+    margin_percent = fields.Float(string='Margin Percent', digits=(12, 2))
+    max_technicians = fields.Char(string='Max Technicians')
+    min_technicians = fields.Char(string='Min Technicians')
+    monthly_revenue = fields.Char(string='Monthly Revenue')
+    my_services = fields.Char(string='My Services')
+    naid_compliant = fields.Char(string='Naid Compliant')
+    notification_template_id = fields.Many2one('notification.template', string='Notification Template Id')
+    operational_settings = fields.Char(string='Operational Settings')
+    portal_category = fields.Char(string='Portal Category')
+    portal_description = fields.Char(string='Portal Description')
+    portal_settings = fields.Char(string='Portal Settings')
+    portal_visible = fields.Char(string='Portal Visible')
+    price_adjustment = fields.Char(string='Price Adjustment')
+    pricing = fields.Char(string='Pricing')
+    pricing_rule_ids = fields.One2many('pricing.rule', 'service_item_id', string='Pricing Rule Ids')
+    pricing_rules = fields.Char(string='Pricing Rules')
+    quality_check_required = fields.Boolean(string='Quality Check Required', default=False)
+    request_count = fields.Integer(string='Request Count', compute='_compute_request_count', store=True)
+    require_customer_approval = fields.Char(string='Require Customer Approval')
+    requires_approval = fields.Char(string='Requires Approval')
+    requires_equipment = fields.Char(string='Requires Equipment')
+    requires_witness = fields.Char(string='Requires Witness')
+    res_model = fields.Char(string='Res Model')
+    resources = fields.Char(string='Resources')
+    revenue_trend = fields.Char(string='Revenue Trend')
+    service_category = fields.Char(string='Service Category')
+    service_code = fields.Char(string='Service Code')
+    service_details = fields.Char(string='Service Details')
+    skill_level_required = fields.Boolean(string='Skill Level Required', default=False)
+    special_tools_required = fields.Boolean(string='Special Tools Required', default=False)
+    total_revenue = fields.Char(string='Total Revenue')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    unit_of_measure = fields.Char(string='Unit Of Measure')
+    vehicle_type_required = fields.Boolean(string='Vehicle Type Required', default=False)
+    view_mode = fields.Char(string='View Mode')
+    web_ribbon = fields.Char(string='Web Ribbon')
+
+    @api.depends('completed_ids')
+    def _compute_completed_count(self):
+        for record in self:
+            record.completed_count = len(record.completed_ids)
+
+    @api.depends('request_ids')
+    def _compute_request_count(self):
+        for record in self:
+            record.request_count = len(record.request_ids)
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_revenue(self):
+        for record in self:
+            record.total_revenue = sum(record.line_ids.mapped('amount'))],
     )
 
     # ============================================================================

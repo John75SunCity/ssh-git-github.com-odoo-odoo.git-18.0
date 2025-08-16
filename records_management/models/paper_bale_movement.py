@@ -107,3 +107,9 @@ class PaperBaleMovement(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')

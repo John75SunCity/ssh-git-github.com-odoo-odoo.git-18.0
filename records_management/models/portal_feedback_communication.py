@@ -136,6 +136,12 @@ class PortalFeedbackCommunication(models.Model):
         string="Response Required", default=False, tracking=True
     )
     response_deadline = fields.Datetime(string="Response Deadline")
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # ACTION METHODS

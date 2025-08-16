@@ -534,7 +534,25 @@ class ShreddingService(models.Model):
     pre_destruction_weight = fields.Float(string="Pre-Destruction Weight (lbs)", digits=(8,2))
 
     # Added by Safe Business Fields Fixer
-    post_destruction_weight = fields.Float(string="Post-Destruction Weight (lbs)", digits=(8,2))
+    post_destruction_weight = fields.Float(string="Post-Destruction Weight (lbs)
+    group_by_partner = fields.Char(string='Group By Partner')
+    group_by_service_type = fields.Selection([], string='Group By Service Type')  # TODO: Define selection options
+    group_by_shredding_method = fields.Char(string='Group By Shredding Method')
+    group_by_state = fields.Selection([], string='Group By State')  # TODO: Define selection options
+    service_type_off_site = fields.Char(string='Service Type Off Site')
+    service_type_on_site = fields.Char(string='Service Type On Site')
+    shredding_method_strip_cut = fields.Char(string='Shredding Method Strip Cut')
+    context = fields.Char(string='Context')
+    filter_after = fields.Char(string='Filter After')
+    filter_before = fields.Char(string='Filter Before')
+    filter_today = fields.Char(string='Filter Today')
+    filter_witnessed = fields.Char(string='Filter Witnessed')
+    group_date = fields.Date(string='Group Date')
+    group_photo_type = fields.Selection([], string='Group Photo Type')  # TODO: Define selection options
+    group_service = fields.Char(string='Group Service')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    view_mode = fields.Char(string='View Mode')", digits=(8,2))
 
     # ============================================================================
     # COMPUTE METHODS

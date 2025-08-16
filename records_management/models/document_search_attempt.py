@@ -339,7 +339,18 @@ class DocumentSearchAttempt(models.Model):
         "mail.message",
         "res_id",
         string="Messages",
-        domain=lambda self: [("model", "=", self._name)]
+        domain=lambda self: [("model", "=", self._name)
+    customer_id = fields.Many2one('res.partner', string='Customer Id', domain=[('is_company', '=', True)])
+    group_by_container = fields.Char(string='Group By Container')
+    group_by_customer = fields.Char(string='Group By Customer')
+    group_by_found = fields.Char(string='Group By Found')
+    group_by_searched_by = fields.Char(string='Group By Searched By')
+    help = fields.Char(string='Help')
+    not_found = fields.Char(string='Not Found')
+    notes = fields.Char(string='Notes')
+    res_model = fields.Char(string='Res Model')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    view_mode = fields.Char(string='View Mode')]
     )
 
     # ============================================================================

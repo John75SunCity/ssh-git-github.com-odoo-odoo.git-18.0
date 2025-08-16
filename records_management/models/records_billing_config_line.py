@@ -219,6 +219,28 @@ class RecordsBillingConfigLine(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    applies_to_count = fields.Integer(string='Applies To Count', compute='_compute_applies_to_count', store=True)
+    applies_to_volume = fields.Char(string='Applies To Volume')
+    applies_to_weight = fields.Float(string='Applies To Weight', digits=(12, 2))
+    billing_config_id = fields.Many2one('billing.config', string='Billing Config Id')
+    context = fields.Char(string='Context')
+    filter_active = fields.Boolean(string='Filter Active', default=False)
+    filter_default = fields.Char(string='Filter Default')
+    filter_discounted = fields.Char(string='Filter Discounted')
+    group_billing_method = fields.Char(string='Group Billing Method')
+    group_container_type = fields.Selection([], string='Group Container Type')  # TODO: Define selection options
+    group_service_type = fields.Selection([], string='Group Service Type')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    is_default = fields.Char(string='Is Default')
+    notes = fields.Char(string='Notes')
+    quantity_parameter = fields.Char(string='Quantity Parameter')
+    res_model = fields.Char(string='Res Model')
+    view_mode = fields.Char(string='View Mode')
+
+    @api.depends('applies_to_ids')
+    def _compute_applies_to_count(self):
+        for record in self:
+            record.applies_to_count = len(record.applies_to_ids)
 
     # ============================================================================
     # COMPUTE METHODS

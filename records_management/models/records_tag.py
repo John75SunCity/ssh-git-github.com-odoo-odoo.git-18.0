@@ -92,6 +92,11 @@ class RecordsTag(models.Model):
         string="Partner",
         help="Associated partner for this record"
     )
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    view_id = fields.Many2one('view', string='View Id')
+    view_mode = fields.Char(string='View Mode')
 
     def action_deactivate(self):
         """Deactivate the record."""

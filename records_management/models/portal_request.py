@@ -340,6 +340,27 @@ class PortalRequest(models.Model):
 
     # Added by Safe Business Fields Fixer
     naid_audit_required = fields.Boolean(string="NAID Audit Required", default=False)
+    action_approve = fields.Char(string='Action Approve')
+    action_reject = fields.Char(string='Action Reject')
+    action_reset_to_draft = fields.Char(string='Action Reset To Draft')
+    action_submit = fields.Char(string='Action Submit')
+    action_view_related_documents = fields.Char(string='Action View Related Documents')
+    approved = fields.Boolean(string='Approved', default=False)
+    button_box = fields.Char(string='Button Box')
+    context = fields.Char(string='Context')
+    customer = fields.Char(string='Customer')
+    domain = fields.Char(string='Domain')
+    draft = fields.Char(string='Draft')
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    my_requests = fields.Char(string='My Requests')
+    overdue = fields.Char(string='Overdue')
+    rejected = fields.Char(string='Rejected')
+    request_date = fields.Date(string='Request Date')
+    res_model = fields.Char(string='Res Model')
+    submitted = fields.Char(string='Submitted')
+    user = fields.Char(string='User')
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # COMPUTE METHODS

@@ -735,6 +735,37 @@ class RecordsContainer(models.Model):
         compute="_compute_is_due_for_destruction",
         search="_search_due_for_destruction",
     )
+    action_bulk_convert_container_type = fields.Selection([], string='Action Bulk Convert Container Type')  # TODO: Define selection options
+    action_destroy_container = fields.Char(string='Action Destroy Container')
+    action_generate_barcode = fields.Char(string='Action Generate Barcode')
+    action_index_container = fields.Char(string='Action Index Container')
+    action_retrieve_container = fields.Char(string='Action Retrieve Container')
+    action_store_container = fields.Char(string='Action Store Container')
+    action_view_documents = fields.Char(string='Action View Documents')
+    button_box = fields.Char(string='Button Box')
+    card = fields.Char(string='Card')
+    context = fields.Char(string='Context')
+    create_date = fields.Date(string='Create Date')
+    destroyed = fields.Char(string='Destroyed')
+    details = fields.Char(string='Details')
+    documents = fields.Char(string='Documents')
+    group_by_creation_date = fields.Date(string='Group By Creation Date')
+    group_by_customer = fields.Char(string='Group By Customer')
+    group_by_department = fields.Char(string='Group By Department')
+    group_by_location = fields.Char(string='Group By Location')
+    group_by_state = fields.Selection([], string='Group By State')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    indexed = fields.Char(string='Indexed')
+    movements = fields.Char(string='Movements')
+    near_destruction = fields.Char(string='Near Destruction')
+    received = fields.Char(string='Received')
+    res_model = fields.Char(string='Res Model')
+    retrieved = fields.Char(string='Retrieved')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    stored = fields.Char(string='Stored')
+    this_month = fields.Char(string='This Month')
+    this_year = fields.Char(string='This Year')
+    view_mode = fields.Char(string='View Mode')
 
     @api.depends("destruction_due_date")
     def _compute_is_due_for_destruction(self):

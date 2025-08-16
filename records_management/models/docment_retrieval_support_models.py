@@ -134,6 +134,21 @@ class DocumentRetrievalItem(models.Model):
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    action_locate_item = fields.Char(string='Action Locate Item')
+    action_package_item = fields.Char(string='Action Package Item')
+    action_retrieve_item = fields.Char(string='Action Retrieve Item')
+    active_items = fields.Char(string='Active Items')
+    context = fields.Char(string='Context')
+    group_partner = fields.Char(string='Group Partner')
+    group_priority = fields.Selection([], string='Group Priority')  # TODO: Define selection options
+    group_status = fields.Selection([], string='Group Status')  # TODO: Define selection options
+    group_work_order = fields.Char(string='Group Work Order')
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    pending_items = fields.Char(string='Pending Items')
+    res_model = fields.Char(string='Res Model')
+    very_high_priority = fields.Selection([], string='Very High Priority')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
 
 class DocumentRetrievalTeam(models.Model):

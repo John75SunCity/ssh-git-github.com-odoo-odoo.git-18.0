@@ -510,7 +510,21 @@ class RecordsBillingContact(models.Model):
 
         return super().write(vals)
 
-    service_type = fields.Selection([("primary", "Primary"), ("billing", "Billing"), ("technical", "Technical"), ("emergency", "Emergency")], string="Contact Type")
+    service_type = fields.Selection([("primary", "Primary")
+    billing_profile = fields.Char(string='Billing Profile')
+    button_box = fields.Char(string='Button Box')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    inactive = fields.Boolean(string='Inactive', default=False)
+    primary = fields.Char(string='Primary')
+    receive_service = fields.Char(string='Receive Service')
+    receive_storage = fields.Char(string='Receive Storage')
+    res_model = fields.Char(string='Res Model')
+    toggle_active = fields.Boolean(string='Toggle Active', default=False)
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode'), ("billing", "Billing"), ("technical", "Technical"), ("emergency", "Emergency")], string="Contact Type")
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================

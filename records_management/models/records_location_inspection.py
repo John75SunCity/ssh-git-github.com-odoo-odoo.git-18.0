@@ -34,6 +34,12 @@ class RecordsLocationInspection(models.Model):
     description = fields.Text()
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     def action_confirm(self):
         """Confirm the record"""

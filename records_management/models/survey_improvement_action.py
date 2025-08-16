@@ -42,6 +42,12 @@ class SurveyImprovementAction(models.Model):
     # Control Fields
     active = fields.Boolean(string='Active', default=True)
     notes = fields.Text(string='Internal Notes')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     # ORM Overrides
     def write(self, vals):

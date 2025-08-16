@@ -253,7 +253,13 @@ class FileRetrievalWorkOrderItem(models.Model):
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
-        domain=lambda self: [('model', '=', self._name)],
+        domain=lambda self: [('model', '=', self._name)
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')],
         string="Messages"
     )
 

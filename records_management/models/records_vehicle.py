@@ -303,6 +303,21 @@ class RecordsVehicle(models.Model):
     maintenance_due_date = fields.Char(string="Maintenance Due Date", help="Next maintenance due date")
     insurance_expiry = fields.Char(string="Insurance Expiry", help="Insurance expiry date")
     registration_number = fields.Char(string="Registration Number", help="Vehicle registration number")
+    Vehicles = fields.Char(string='Vehicles')
+    action_set_available = fields.Char(string='Action Set Available')
+    action_set_in_use = fields.Char(string='Action Set In Use')
+    action_set_maintenance = fields.Char(string='Action Set Maintenance')
+    available = fields.Char(string='Available')
+    group_driver = fields.Char(string='Group Driver')
+    group_status = fields.Selection([], string='Group Status')  # TODO: Define selection options
+    group_type = fields.Selection([], string='Group Type')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    in_use = fields.Char(string='In Use')
+    maintenance = fields.Char(string='Maintenance')
+    res_model = fields.Char(string='Res Model')
+    routes = fields.Char(string='Routes')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # COMPUTE METHODS

@@ -312,7 +312,121 @@ class FieldLabelCustomization(models.Model):
     )
 
     # ============================================================================
-    customer_id = fields.Many2one('res.partner', string='Customer', domain=[('is_company', '=', True)])
+    customer_id = fields.Many2one('res.partner', string='Customer', domain=[('is_company', '=', True)
+    action_apply_corporate_preset = fields.Char(string='Action Apply Corporate Preset')
+    action_apply_financial_preset = fields.Char(string='Action Apply Financial Preset')
+    action_apply_healthcare_preset = fields.Char(string='Action Apply Healthcare Preset')
+    action_apply_legal_preset = fields.Char(string='Action Apply Legal Preset')
+    action_reset_to_defaults = fields.Char(string='Action Reset To Defaults')
+    action_setup_field_labels = fields.Char(string='Action Setup Field Labels')
+    action_setup_transitory_config = fields.Char(string='Action Setup Transitory Config')
+    active_transitory_items = fields.Char(string='Active Transitory Items')
+    admin_fields = fields.Char(string='Admin Fields')
+    allow_transitory_items = fields.Char(string='Allow Transitory Items')
+    business_fields = fields.Char(string='Business Fields')
+    config_preset = fields.Char(string='Config Preset')
+    core_fields = fields.Char(string='Core Fields')
+    customer_specific = fields.Char(string='Customer Specific')
+    customized_label_count = fields.Integer(string='Customized Label Count', compute='_compute_customized_label_count', store=True)
+    date_fields = fields.Char(string='Date Fields')
+    department_specific = fields.Char(string='Department Specific')
+    field_config = fields.Char(string='Field Config')
+    field_label_config_id = fields.Many2one('field.label.config', string='Field Label Config Id')
+    global = fields.Char(string='Global')
+    group_customer = fields.Char(string='Group Customer')
+    group_department = fields.Char(string='Group Department')
+    group_priority = fields.Selection([], string='Group Priority')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    inactive = fields.Boolean(string='Inactive', default=False)
+    label_compliance_notes = fields.Char(string='Label Compliance Notes')
+    label_destruction_date = fields.Date(string='Label Destruction Date')
+    label_file_count = fields.Integer(string='Label File Count', compute='_compute_label_file_count', store=True)
+    label_filing_system = fields.Char(string='Label Filing System')
+    label_folder_type = fields.Selection([], string='Label Folder Type')  # TODO: Define selection options
+    label_hierarchy_display = fields.Char(string='Label Hierarchy Display')
+    label_parent_container = fields.Char(string='Label Parent Container')
+    label_sequence_from = fields.Char(string='Label Sequence From')
+    label_sequence_to = fields.Char(string='Label Sequence To')
+    label_size_estimate = fields.Char(string='Label Size Estimate')
+    label_special_handling = fields.Char(string='Label Special Handling')
+    label_weight_estimate = fields.Char(string='Label Weight Estimate')
+    max_transitory_items = fields.Char(string='Max Transitory Items')
+    physical_fields = fields.Char(string='Physical Fields')
+    require_client_reference = fields.Char(string='Require Client Reference')
+    require_confidentiality = fields.Char(string='Require Confidentiality')
+    require_container_number = fields.Char(string='Require Container Number')
+    require_content_description = fields.Char(string='Require Content Description')
+    require_date_from = fields.Char(string='Require Date From')
+    require_date_to = fields.Char(string='Require Date To')
+    require_description = fields.Char(string='Require Description')
+    require_destruction_date = fields.Date(string='Require Destruction Date')
+    require_project_code = fields.Char(string='Require Project Code')
+    require_record_type = fields.Selection([], string='Require Record Type')  # TODO: Define selection options
+    require_sequence_from = fields.Char(string='Require Sequence From')
+    require_sequence_to = fields.Char(string='Require Sequence To')
+    required_field_count = fields.Integer(string='Required Field Count', compute='_compute_required_field_count', store=True)
+    requirements = fields.Char(string='Requirements')
+    res_model = fields.Char(string='Res Model')
+    scope_display = fields.Char(string='Scope Display')
+    show_authorized_by = fields.Char(string='Show Authorized By')
+    show_client_reference = fields.Char(string='Show Client Reference')
+    show_compliance_notes = fields.Char(string='Show Compliance Notes')
+    show_confidentiality = fields.Char(string='Show Confidentiality')
+    show_container_number = fields.Char(string='Show Container Number')
+    show_content_description = fields.Char(string='Show Content Description')
+    show_created_by_dept = fields.Char(string='Show Created By Dept')
+    show_date_ranges = fields.Char(string='Show Date Ranges')
+    show_description = fields.Char(string='Show Description')
+    show_destruction_date = fields.Date(string='Show Destruction Date')
+    show_file_count = fields.Integer(string='Show File Count', compute='_compute_show_file_count', store=True)
+    show_filing_system = fields.Char(string='Show Filing System')
+    show_project_code = fields.Char(string='Show Project Code')
+    show_record_type = fields.Selection([], string='Show Record Type')  # TODO: Define selection options
+    show_sequence_ranges = fields.Char(string='Show Sequence Ranges')
+    show_size_estimate = fields.Char(string='Show Size Estimate')
+    show_special_handling = fields.Char(string='Show Special Handling')
+    show_weight_estimate = fields.Char(string='Show Weight Estimate')
+    total_records_containers = fields.Char(string='Total Records Containers')
+    total_transitory_items = fields.Char(string='Total Transitory Items')
+    transitory_field_config_id = fields.Many2one('transitory.field.config', string='Transitory Field Config Id')
+    view_mode = fields.Char(string='View Mode')
+    visibility = fields.Char(string='Visibility')
+    visible_field_count = fields.Integer(string='Visible Field Count', compute='_compute_visible_field_count', store=True)
+
+    @api.depends('customized_label_ids')
+    def _compute_customized_label_count(self):
+        for record in self:
+            record.customized_label_count = len(record.customized_label_ids)
+
+    @api.depends('label_file_ids')
+    def _compute_label_file_count(self):
+        for record in self:
+            record.label_file_count = len(record.label_file_ids)
+
+    @api.depends('required_field_ids')
+    def _compute_required_field_count(self):
+        for record in self:
+            record.required_field_count = len(record.required_field_ids)
+
+    @api.depends('show_file_ids')
+    def _compute_show_file_count(self):
+        for record in self:
+            record.show_file_count = len(record.show_file_ids)
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_records_containers(self):
+        for record in self:
+            record.total_records_containers = sum(record.line_ids.mapped('amount'))
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_transitory_items(self):
+        for record in self:
+            record.total_transitory_items = sum(record.line_ids.mapped('amount'))
+
+    @api.depends('visible_field_ids')
+    def _compute_visible_field_count(self):
+        for record in self:
+            record.visible_field_count = len(record.visible_field_ids)])
     # HELPER METHODS
     # ============================================================================
     @api.model

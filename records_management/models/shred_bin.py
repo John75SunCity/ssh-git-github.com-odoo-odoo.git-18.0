@@ -258,7 +258,42 @@ class ShredBin(models.Model):
     next_size_up = fields.Char(string="Next Size Up")
     request_type = fields.Selection([("pickup", "Pickup"), ("exchange", "Exchange"), ("resize", "Resize")], string="Request Type")
     service_type = fields.Selection([("scheduled", "Scheduled"), ("on_demand", "On Demand"), ("emergency", "Emergency")], string="Service Type")
-    urgency = fields.Selection([("low", "Low"), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")], string="Urgency")
+    urgency = fields.Selection([("low", "Low")
+    action_complete_service = fields.Char(string='Action Complete Service')
+    action_customer_mark_full = fields.Char(string='Action Customer Mark Full')
+    action_deploy = fields.Char(string='Action Deploy')
+    action_mark_full = fields.Char(string='Action Mark Full')
+    action_request_additional_bins = fields.Char(string='Action Request Additional Bins')
+    action_request_downsize = fields.Char(string='Action Request Downsize')
+    action_request_upsize = fields.Char(string='Action Request Upsize')
+    action_schedule_pickup = fields.Char(string='Action Schedule Pickup')
+    action_start_collection = fields.Char(string='Action Start Collection')
+    action_view_services = fields.Char(string='Action View Services')
+    archived = fields.Char(string='Archived')
+    button_box = fields.Char(string='Button Box')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    full = fields.Char(string='Full')
+    group_bin_size = fields.Char(string='Group Bin Size')
+    group_customer = fields.Char(string='Group Customer')
+    group_service_rep = fields.Char(string='Group Service Rep')
+    group_state = fields.Selection([], string='Group State')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    in_service = fields.Char(string='In Service')
+    maintenance = fields.Char(string='Maintenance')
+    notes = fields.Char(string='Notes')
+    request_date = fields.Date(string='Request Date')
+    res_model = fields.Char(string='Res Model')
+    service_date = fields.Date(string='Service Date')
+    total_weight = fields.Float(string='Total Weight', digits=(12, 2))
+    view_ids = fields.One2many('view', 'shred_bin_id', string='View Ids')
+    view_mode = fields.Char(string='View Mode')
+    web_ribbon = fields.Char(string='Web Ribbon')
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_weight(self):
+        for record in self:
+            record.total_weight = sum(record.line_ids.mapped('amount')), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")], string="Urgency")
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

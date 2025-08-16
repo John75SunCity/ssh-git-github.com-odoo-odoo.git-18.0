@@ -286,6 +286,12 @@ class BarcodePricingTier(models.Model):
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
     )
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # COMPUTE METHODS

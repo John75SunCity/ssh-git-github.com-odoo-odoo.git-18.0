@@ -152,7 +152,71 @@ class ScanRetrievalItem(models.Model):
 
     # Workflow state management
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft')
+    action_cancel = fields.Char(string='Action Cancel')
+    action_complete = fields.Char(string='Action Complete')
+    action_start_processing = fields.Char(string='Action Start Processing')
+    action_view_work_order = fields.Char(string='Action View Work Order')
+    active = fields.Boolean(string='Active', default=True)
+    actual_completion_date = fields.Date(string='Actual Completion Date')
+    additional_attachments = fields.Char(string='Additional Attachments')
+    assigned_user_id = fields.Many2one('assigned.user', string='Assigned User Id')
+    assignment = fields.Char(string='Assignment')
+    attachments = fields.Char(string='Attachments')
+    barcode = fields.Char(string='Barcode')
+    button_box = fields.Char(string='Button Box')
+    color_depth = fields.Char(string='Color Depth')
+    company_id = fields.Many2one('res.company', string='Company Id', default=lambda self: self.env.company)
+    completed = fields.Boolean(string='Completed', default=False)
+    compression_type = fields.Selection([], string='Compression Type')  # TODO: Define selection options
+    context = fields.Char(string='Context')
+    create_date = fields.Date(string='Create Date')
+    create_uid = fields.Char(string='Create Uid')
+    document_description = fields.Char(string='Document Description')
+    document_type = fields.Selection([], string='Document Type')  # TODO: Define selection options
+    draft = fields.Char(string='Draft')
+    due_today = fields.Char(string='Due Today')
+    expected_completion_date = fields.Date(string='Expected Completion Date')
+    file_size = fields.Char(string='File Size')
+    group_by_company = fields.Char(string='Group By Company')
+    group_by_document_type = fields.Selection([], string='Group By Document Type')  # TODO: Define selection options
+    group_by_priority = fields.Selection([], string='Group By Priority')  # TODO: Define selection options
+    group_by_scan_date = fields.Date(string='Group By Scan Date')
+    group_by_state = fields.Selection([], string='Group By State')  # TODO: Define selection options
+    group_by_user = fields.Char(string='Group By User')
+    group_by_work_order = fields.Char(string='Group By Work Order')
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    in_progress = fields.Char(string='In Progress')
+    low_priority = fields.Selection([], string='Low Priority')  # TODO: Define selection options
+    main_info = fields.Char(string='Main Info')
+    medium_priority = fields.Selection([], string='Medium Priority')  # TODO: Define selection options
+    metadata = fields.Char(string='Metadata')
+    my_items = fields.Char(string='My Items')
+    notes = fields.Char(string='Notes')
+    ocr_confidence = fields.Char(string='Ocr Confidence')
+    overdue = fields.Char(string='Overdue')
+    processing_notes = fields.Char(string='Processing Notes')
+    quality = fields.Char(string='Quality')
+    quality_check_passed = fields.Char(string='Quality Check Passed')
+    quality_passed = fields.Char(string='Quality Passed')
+    quality_score = fields.Char(string='Quality Score')
+    res_model = fields.Char(string='Res Model')
+    resolution_dpi = fields.Char(string='Resolution Dpi')
+    retrieval_work_order_id = fields.Many2one('retrieval.work.order', string='Retrieval Work Order Id')
+    scan_date = fields.Date(string='Scan Date')
+    scan_quality = fields.Char(string='Scan Quality')
+    scanned_document_attachment = fields.Char(string='Scanned Document Attachment')
+    scanned_this_month = fields.Char(string='Scanned This Month')
+    scanned_this_week = fields.Char(string='Scanned This Week')
+    scanned_today = fields.Char(string='Scanned Today')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    unassigned = fields.Char(string='Unassigned')
+    view_mode = fields.Char(string='View Mode')
+    web_ribbon = fields.Char(string='Web Ribbon')
+    write_date = fields.Date(string='Write Date')
+    write_uid = fields.Char(string='Write Uid'),
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),

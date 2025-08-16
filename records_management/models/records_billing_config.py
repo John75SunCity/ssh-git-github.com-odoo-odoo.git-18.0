@@ -373,6 +373,12 @@ class RecordsBillingConfig(models.Model):
         string="Partner",
         help="Associated partner for this record"
     )
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     def calculate_storage_cost(self, box_count, months=1):
         """Calculate storage cost based on configuration"""

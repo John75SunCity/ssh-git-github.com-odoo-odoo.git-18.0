@@ -260,7 +260,30 @@ class RecordsSurveyUserInput(models.Model):
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
-        domain="[('res_model', '=', 'records.survey.user.input')]",
+        domain="[('res_model', '=', 'records.survey.user.input')
+    button_box = fields.Char(string='Button Box')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    draft = fields.Char(string='Draft')
+    followup = fields.Char(string='Followup')
+    group_date = fields.Date(string='Group Date')
+    group_partner = fields.Char(string='Group Partner')
+    group_priority = fields.Selection([], string='Group Priority')  # TODO: Define selection options
+    group_sentiment = fields.Char(string='Group Sentiment')
+    group_service = fields.Char(string='Group Service')
+    group_status = fields.Selection([], string='Group Status')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    negative = fields.Char(string='Negative')
+    positive = fields.Char(string='Positive')
+    related_records = fields.Char(string='Related Records')
+    res_model = fields.Char(string='Res Model')
+    reviewed = fields.Char(string='Reviewed')
+    submitted = fields.Char(string='Submitted')
+    system_info = fields.Char(string='System Info')
+    toggle_active = fields.Boolean(string='Toggle Active', default=False)
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')]",
         string="Messages",
     )
 

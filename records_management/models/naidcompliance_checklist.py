@@ -35,6 +35,24 @@ class NAIDComplianceChecklist(models.Model):
     description = fields.Text()
     notes = fields.Text()
     date = fields.Date(default=fields.Date.today)
+activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities', auto_join=True)
+    button_box = fields.Char(string='Button Box')
+    category = fields.Char(string='Category')
+    checklist_item_ids = fields.One2many('checklist.item', 'naid_compliance_checklist_id', string='Checklist Item Ids')
+    checklist_items = fields.Char(string='Checklist Items')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    group_by_category = fields.Char(string='Group By Category')
+    help = fields.Char(string='Help')
+    inactive = fields.Boolean(string='Inactive', default=False)
+    is_required = fields.Boolean(string='Is Required', default=False)
+message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers', auto_join=True)
+message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_join=True)
+    res_model = fields.Char(string='Res Model')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    toggle_active = fields.Boolean(string='Toggle Active', default=False)
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     def action_confirm(self):
         """Confirm the record"""

@@ -167,6 +167,35 @@ class PartnerBinKey(models.Model):
         default=10, 
         help="Order sequence for sorting"
     )
+    action_issue_new_key = fields.Char(string='Action Issue New Key')
+    action_report_lost_key = fields.Char(string='Action Report Lost Key')
+    action_return_key = fields.Char(string='Action Return Key')
+    action_view_active_key = fields.Char(string='Action View Active Key')
+    action_view_bin_keys = fields.Char(string='Action View Bin Keys')
+    action_view_unlock_services = fields.Char(string='Action View Unlock Services')
+    binding_view_types = fields.Char(string='Binding View Types')
+    button_box = fields.Char(string='Button Box')
+    context = fields.Char(string='Context')
+    customer = fields.Char(string='Customer')
+    has_bin_key = fields.Char(string='Has Bin Key')
+    invoice_created = fields.Char(string='Invoice Created')
+    is_emergency_key_contact = fields.Char(string='Is Emergency Key Contact')
+    no_bin_key = fields.Char(string='No Bin Key')
+    res_model = fields.Char(string='Res Model')
+    target = fields.Char(string='Target')
+    total_bin_keys_issued = fields.Char(string='Total Bin Keys Issued')
+    total_unlock_charges = fields.Char(string='Total Unlock Charges')
+    view_mode = fields.Char(string='View Mode')
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_bin_keys_issued(self):
+        for record in self:
+            record.total_bin_keys_issued = sum(record.line_ids.mapped('amount'))
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_unlock_charges(self):
+        for record in self:
+            record.total_unlock_charges = sum(record.line_ids.mapped('amount'))
 
     # ============================================================================
     # COMPUTE METHODS

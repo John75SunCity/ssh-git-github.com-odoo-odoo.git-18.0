@@ -369,6 +369,129 @@ class WorkOrderShredding(models.Model):
     )
 
     batch_id = fields.Many2one("shredding.inventory.batch", string="Batch")
+    access_restrictions = fields.Char(string='Access Restrictions')
+    action_bulk_confirm = fields.Char(string='Action Bulk Confirm')
+    action_bulk_start = fields.Char(string='Action Bulk Start')
+    action_cancel = fields.Char(string='Action Cancel')
+    action_complete = fields.Char(string='Action Complete')
+    action_confirm = fields.Char(string='Action Confirm')
+    action_pause = fields.Char(string='Action Pause')
+    action_reset_to_draft = fields.Char(string='Action Reset To Draft')
+    action_resume = fields.Char(string='Action Resume')
+    action_start = fields.Char(string='Action Start')
+    action_view_audit_logs = fields.Char(string='Action View Audit Logs')
+    action_view_certificates = fields.Char(string='Action View Certificates')
+    action_view_containers = fields.Char(string='Action View Containers')
+    action_view_documents = fields.Char(string='Action View Documents')
+    assigned_technicians = fields.Char(string='Assigned Technicians')
+    audit_log_count = fields.Integer(string='Audit Log Count', compute='_compute_audit_log_count', store=True)
+    bin_location_id = fields.Many2one('bin.location', string='Bin Location Id')
+    button_box = fields.Char(string='Button Box')
+    certificate_count = fields.Integer(string='Certificate Count', compute='_compute_certificate_count', store=True)
+    chain_of_custody_id = fields.Many2one('chain.of.custody', string='Chain Of Custody Id')
+    check_item = fields.Char(string='Check Item')
+    completed = fields.Boolean(string='Completed', default=False)
+    completed_by = fields.Char(string='Completed By')
+    completed_date = fields.Date(string='Completed Date')
+    completion_percentage = fields.Char(string='Completion Percentage')
+    compliance = fields.Char(string='Compliance')
+    compliance_checklist_ids = fields.One2many('compliance.checklist', 'work_order_shredding_id', string='Compliance Checklist Ids')
+    confirmed = fields.Boolean(string='Confirmed', default=False)
+    container_ids = fields.One2many('container', 'work_order_shredding_id', string='Container Ids')
+    container_type = fields.Selection([], string='Container Type')  # TODO: Define selection options
+    containers = fields.Char(string='Containers')
+    context = fields.Char(string='Context')
+    coordinator_id = fields.Many2one('coordinator', string='Coordinator Id')
+    deadline_date = fields.Date(string='Deadline Date')
+    department_id = fields.Many2one('department', string='Department Id')
+    description = fields.Char(string='Description')
+    document_count = fields.Integer(string='Document Count', compute='_compute_document_count', store=True)
+    documentation_level = fields.Char(string='Documentation Level')
+    domain = fields.Char(string='Domain')
+    draft = fields.Char(string='Draft')
+    duration = fields.Char(string='Duration')
+    equipment = fields.Char(string='Equipment')
+    equipment_info = fields.Char(string='Equipment Info')
+    equipment_operator_id = fields.Many2one('equipment.operator', string='Equipment Operator Id')
+    equipment_status = fields.Selection([], string='Equipment Status')  # TODO: Define selection options
+    estimated_volume = fields.Char(string='Estimated Volume')
+    event_type = fields.Selection([], string='Event Type')  # TODO: Define selection options
+    group_coordinator = fields.Char(string='Group Coordinator')
+    group_department = fields.Char(string='Group Department')
+    group_partner = fields.Char(string='Group Partner')
+    group_priority = fields.Selection([], string='Group Priority')  # TODO: Define selection options
+    group_scheduled_date = fields.Date(string='Group Scheduled Date')
+    group_shredding_type = fields.Selection([], string='Group Shredding Type')  # TODO: Define selection options
+    group_state = fields.Selection([], string='Group State')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    in_progress = fields.Char(string='In Progress')
+    inactive = fields.Boolean(string='Inactive', default=False)
+    internal_notes = fields.Char(string='Internal Notes')
+    is_completed = fields.Boolean(string='Is Completed', default=False)
+    is_shredded = fields.Char(string='Is Shredded')
+    location_id = fields.Many2one('location', string='Location Id')
+    maintenance_due_date = fields.Date(string='Maintenance Due Date')
+    my_orders = fields.Char(string='My Orders')
+    naid_compliant = fields.Char(string='Naid Compliant')
+    naid_info = fields.Char(string='Naid Info')
+    naid_level = fields.Char(string='Naid Level')
+    notes = fields.Char(string='Notes')
+    order_info = fields.Char(string='Order Info')
+    overdue = fields.Char(string='Overdue')
+    priority_row = fields.Char(string='Priority Row')
+    progress_info = fields.Char(string='Progress Info')
+    res_model = fields.Char(string='Res Model')
+    resource_allocation = fields.Char(string='Resource Allocation')
+    security_info = fields.Char(string='Security Info')
+    security_level = fields.Char(string='Security Level')
+    service_location = fields.Char(string='Service Location')
+    shredded_date = fields.Date(string='Shredded Date')
+    shredding_equipment_id = fields.Many2one('shredding.equipment', string='Shredding Equipment Id')
+    shredding_priority = fields.Selection([], string='Shredding Priority')  # TODO: Define selection options
+    shredding_type = fields.Selection([], string='Shredding Type')  # TODO: Define selection options
+    started_date = fields.Date(string='Started Date')
+    tag_ids = fields.One2many('tag', 'work_order_shredding_id', string='Tag Ids')
+    this_week = fields.Char(string='This Week')
+    timeline = fields.Char(string='Timeline')
+    timeline_ids = fields.One2many('timeline', 'work_order_shredding_id', string='Timeline Ids')
+    timestamp = fields.Char(string='Timestamp')
+    today = fields.Char(string='Today')
+    total_volume = fields.Char(string='Total Volume')
+    total_weight = fields.Float(string='Total Weight', digits=(12, 2))
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    urgent = fields.Char(string='Urgent')
+    video_recording = fields.Char(string='Video Recording')
+    view_mode = fields.Char(string='View Mode')
+    web_ribbon = fields.Char(string='Web Ribbon')
+    weight = fields.Char(string='Weight')
+    witness_name = fields.Char(string='Witness Name')
+    witness_signature = fields.Char(string='Witness Signature')
+
+    @api.depends('audit_log_ids')
+    def _compute_audit_log_count(self):
+        for record in self:
+            record.audit_log_count = len(record.audit_log_ids)
+
+    @api.depends('certificate_ids')
+    def _compute_certificate_count(self):
+        for record in self:
+            record.certificate_count = len(record.certificate_ids)
+
+    @api.depends('document_ids')
+    def _compute_document_count(self):
+        for record in self:
+            record.document_count = len(record.document_ids)
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_volume(self):
+        for record in self:
+            record.total_volume = sum(record.line_ids.mapped('amount'))
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_weight(self):
+        for record in self:
+            record.total_weight = sum(record.line_ids.mapped('amount'))
 
     # ============================================================================
     # COMPUTED FIELDS

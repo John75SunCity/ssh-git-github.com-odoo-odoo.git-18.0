@@ -43,7 +43,14 @@ class StockLotAttributeValue(models.Model):
 
     # Workflow state management
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    name = fields.Char(string='Name')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode'),
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),

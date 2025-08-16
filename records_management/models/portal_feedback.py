@@ -428,6 +428,32 @@ class PortalFeedback(models.Model):
         "res_id",
         string="Messages"
     )
+    action_close = fields.Char(string='Action Close')
+    action_escalate = fields.Char(string='Action Escalate')
+    action_mark_reviewed = fields.Char(string='Action Mark Reviewed')
+    action_respond = fields.Char(string='Action Respond')
+    action_view_related_records = fields.Char(string='Action View Related Records')
+    activity_exception_decoration = fields.Char(string='Activity Exception Decoration')
+    activity_state = fields.Selection([], string='Activity State')  # TODO: Define selection options
+    assigned_to = fields.Char(string='Assigned To')
+    button_box = fields.Char(string='Button Box')
+    card = fields.Char(string='Card')
+    context = fields.Char(string='Context')
+    group_assigned = fields.Char(string='Group Assigned')
+    group_customer = fields.Char(string='Group Customer')
+    group_date = fields.Date(string='Group Date')
+    group_priority = fields.Selection([], string='Group Priority')  # TODO: Define selection options
+    group_status = fields.Selection([], string='Group Status')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    high_priority = fields.Selection([], string='High Priority')  # TODO: Define selection options
+    improvement_areas = fields.Char(string='Improvement Areas')
+    low_satisfaction = fields.Char(string='Low Satisfaction')
+    my_assignments = fields.Char(string='My Assignments')
+    needs_response = fields.Char(string='Needs Response')
+    new = fields.Char(string='New')
+    res_model = fields.Char(string='Res Model')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # COMPUTE METHODS

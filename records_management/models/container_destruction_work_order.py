@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 Containeclass ContainerDestructionWorkOrder(models.Model):
-    _name = "container.destruction.work.order"
+
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')    _name = "container.destruction.work.order"
     _description = "Container Destruction Work Order"
     _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.integration.mixin']
     _order = "priority desc, scheduled_date asc, name"

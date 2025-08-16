@@ -377,6 +377,24 @@ class RecordsLocation(models.Model):
     # ============================================================================
     access_instructions = fields.Text(string='Access Instructions', help='Special instructions for accessing this location')
     storage_start_date = fields.Date(string='Storage Start Date', help='When storage began at this location')
+    action_location_report = fields.Char(string='Action Location Report')
+    action_view_containers = fields.Char(string='Action View Containers')
+    at_capacity = fields.Char(string='At Capacity')
+    button_box = fields.Char(string='Button Box')
+    card = fields.Char(string='Card')
+    containers = fields.Char(string='Containers')
+    context = fields.Char(string='Context')
+    details = fields.Char(string='Details')
+    group_by_parent = fields.Char(string='Group By Parent')
+    group_by_type = fields.Selection([], string='Group By Type')  # TODO: Define selection options
+    help = fields.Char(string='Help')
+    inactive = fields.Boolean(string='Inactive', default=False)
+    lots_of_space = fields.Char(string='Lots Of Space')
+    near_capacity = fields.Char(string='Near Capacity')
+    optimal_load = fields.Char(string='Optimal Load')
+    res_model = fields.Char(string='Res Model')
+    search_view_id = fields.Many2one('search.view', string='Search View Id')
+    view_mode = fields.Char(string='View Mode')
 
     @api.depends("street", "street2", "city", "state_id", "zip", "country_id")
     def _compute_full_address(self):

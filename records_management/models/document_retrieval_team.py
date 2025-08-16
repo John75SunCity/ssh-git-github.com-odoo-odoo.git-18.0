@@ -131,7 +131,100 @@ class DocumentRetrievalTeam(models.Model):
 
     # Workflow state management
     state = fields.Selection([
-        ('draft', 'Draft'),
+        ('draft', 'Draft')
+    action_activate_team = fields.Char(string='Action Activate Team')
+    action_deactivate_team = fields.Char(string='Action Deactivate Team')
+    action_mark_available = fields.Char(string='Action Mark Available')
+    action_mark_busy = fields.Char(string='Action Mark Busy')
+    action_view_performance_metrics = fields.Char(string='Action View Performance Metrics')
+    action_view_team_members = fields.Char(string='Action View Team Members')
+    action_view_work_order = fields.Char(string='Action View Work Order')
+    action_view_work_orders = fields.Char(string='Action View Work Orders')
+    active_workorders = fields.Char(string='Active Workorders')
+    after_hours_available = fields.Char(string='After Hours Available')
+    availability = fields.Char(string='Availability')
+    available = fields.Char(string='Available')
+    avg_completion_time_days = fields.Char(string='Avg Completion Time Days')
+    avg_items_per_day = fields.Char(string='Avg Items Per Day')
+    avg_retrieval_time_hours = fields.Char(string='Avg Retrieval Time Hours')
+    busy = fields.Char(string='Busy')
+    button_box = fields.Char(string='Button Box')
+    can_access_offsite_locations = fields.Char(string='Can Access Offsite Locations')
+    can_work_after_hours = fields.Char(string='Can Work After Hours')
+    can_work_weekends = fields.Char(string='Can Work Weekends')
+    capacity_info = fields.Char(string='Capacity Info')
+    context = fields.Char(string='Context')
+    current_location_id = fields.Many2one('current.location', string='Current Location Id')
+    current_orders = fields.Char(string='Current Orders')
+    current_workorder_ids = fields.One2many('current.workorder', 'document_retrieval_team_id', string='Current Workorder Ids')
+    customer_satisfaction_score = fields.Char(string='Customer Satisfaction Score')
+    date_joined = fields.Char(string='Date Joined')
+    description = fields.Char(string='Description')
+    domain = fields.Char(string='Domain')
+    efficiency_metrics = fields.Char(string='Efficiency Metrics')
+    emergency_teams = fields.Char(string='Emergency Teams')
+    equipment = fields.Char(string='Equipment')
+    has_heavy_lifting_tools = fields.Char(string='Has Heavy Lifting Tools')
+    has_ladder_equipment = fields.Char(string='Has Ladder Equipment')
+    has_mobile_scanner = fields.Char(string='Has Mobile Scanner')
+    has_safety_equipment = fields.Char(string='Has Safety Equipment')
+    has_tablet_device = fields.Char(string='Has Tablet Device')
+    help = fields.Char(string='Help')
+    id = fields.Char(string='Id')
+    inactive = fields.Boolean(string='Inactive', default=False)
+    internal_notes = fields.Char(string='Internal Notes')
+    is_emergency_team = fields.Char(string='Is Emergency Team')
+    item_count = fields.Integer(string='Item Count', compute='_compute_item_count', store=True)
+    max_container_access_height = fields.Char(string='Max Container Access Height')
+    member_count = fields.Integer(string='Member Count', compute='_compute_member_count', store=True)
+    next_available_date = fields.Date(string='Next Available Date')
+    notes = fields.Char(string='Notes')
+    partner_id = fields.Many2one('res.partner', string='Partner Id')
+    performance = fields.Char(string='Performance')
+    priority_level = fields.Char(string='Priority Level')
+    productivity_metrics = fields.Char(string='Productivity Metrics')
+    res_model = fields.Char(string='Res Model')
+    role = fields.Char(string='Role')
+    schedule = fields.Char(string='Schedule')
+    scheduled_date = fields.Date(string='Scheduled Date')
+    shift_end_time = fields.Float(string='Shift End Time', digits=(12, 2))
+    shift_start_time = fields.Float(string='Shift Start Time', digits=(12, 2))
+    specialized_tools = fields.Char(string='Specialized Tools')
+    standard_equipment = fields.Char(string='Standard Equipment')
+    success_rate_percentage = fields.Char(string='Success Rate Percentage')
+    team_code = fields.Char(string='Team Code')
+    team_info = fields.Char(string='Team Info')
+    team_leader_id = fields.Many2one('team.leader', string='Team Leader Id')
+    team_members = fields.Char(string='Team Members')
+    total_containers_accessed = fields.Char(string='Total Containers Accessed')
+    total_items_retrieved = fields.Char(string='Total Items Retrieved')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    unavailable = fields.Char(string='Unavailable')
+    vehicle_id = fields.Many2one('vehicle', string='Vehicle Id')
+    view_mode = fields.Char(string='View Mode')
+    web_ribbon = fields.Char(string='Web Ribbon')
+    weekend_available = fields.Char(string='Weekend Available')
+    working_hours = fields.Char(string='Working Hours')
+
+    @api.depends('item_ids')
+    def _compute_item_count(self):
+        for record in self:
+            record.item_count = len(record.item_ids)
+
+    @api.depends('member_ids')
+    def _compute_member_count(self):
+        for record in self:
+            record.member_count = len(record.member_ids)
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_containers_accessed(self):
+        for record in self:
+            record.total_containers_accessed = sum(record.line_ids.mapped('amount'))
+
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
+    def _compute_total_items_retrieved(self):
+        for record in self:
+            record.total_items_retrieved = sum(record.line_ids.mapped('amount')),
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),

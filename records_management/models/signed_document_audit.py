@@ -290,6 +290,12 @@ class SignedDocumentAudit(models.Model):
         store=True,
         help="Brief summary of the audit entry"
     )
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
     # ORM OVERRIDES
