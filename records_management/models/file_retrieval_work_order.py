@@ -257,7 +257,7 @@ class FileRetrievalWorkOrder(models.Model):
     )
 
     # ============================================================================
-    rate_id = fields.Many2one('base.rates', string='Applicable Rate')
+    rate_id = fields.Many2one('base.rate', string='Applicable Rate')
     # MODEL CREATE WITH SEQUENCE
     invoice_id = fields.Many2one('account.move', string='Invoice')
     # ============================================================================

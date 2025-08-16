@@ -240,7 +240,7 @@ class RecordsDeletionRequest(models.Model):
     )
 
     chain_of_custody_id = fields.Many2one(
-        "chain.of.custody",
+        "records.chain.of.custody",
         string="Chain of Custody",
         help="Associated chain of custody record"
     )
@@ -622,7 +622,7 @@ class RecordsDeletionRequest(models.Model):
     def _create_chain_of_custody(self):
         """Create chain of custody record"""
         if not self.chain_of_custody_id:
-            custody = self.env['chain.of.custody'].create({
+            custody = self.env['records.chain.of.custody'].create({
                 'name': _('Deletion Chain: %s', self.name),
                 'deletion_request_id': self.id,
                 'partner_id': self.partner_id.id,

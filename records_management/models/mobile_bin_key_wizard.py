@@ -337,7 +337,7 @@ class MobileBinKeyWizard(models.TransientModel):
     )
 
     chain_of_custody_id = fields.Many2one(
-        "chain.of.custody",
+        "records.chain.of.custody",
         string="Chain of Custody",
         help="Chain of custody record for this operation"
     )
@@ -740,7 +740,7 @@ class MobileBinKeyWizard(models.TransientModel):
         """Create chain of custody record for NAID compliance"""
         self.ensure_one()
         
-        if 'chain.of.custody' in self.env:
+        if 'records.chain.of.custody' in self.env:
             custody_vals = {
                 'name': _("Mobile Operation: %s", self.name),
                 'event_type': 'mobile_access',
@@ -750,7 +750,7 @@ class MobileBinKeyWizard(models.TransientModel):
                 'description': self.operation_description or '',
                 'mobile_wizard_id': self.id,
             }
-            custody_record = self.env['chain.of.custody'].create(custody_vals)
+            custody_record = self.env['records.chain.of.custody'].create(custody_vals)
             self.chain_of_custody_id = custody_record.id
 
     def _create_billing_record(self):

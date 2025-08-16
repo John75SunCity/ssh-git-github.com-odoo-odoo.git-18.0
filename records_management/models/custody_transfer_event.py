@@ -47,7 +47,7 @@ class CustodyTransferEvent(models.Model):
     # RELATIONSHIP FIELDS  
     # ============================================================================
     custody_record_id = fields.Many2one(
-        "chain.of.custody",
+        "records.chain.of.custody",
         string="Custody Record",
         required=True,
         ondelete="cascade",

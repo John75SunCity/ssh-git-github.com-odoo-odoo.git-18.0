@@ -261,7 +261,7 @@ class ShreddingPicklistItem(models.Model):
     # COMPLIANCE AND CERTIFICATION
     # ============================================================================
     destruction_certificate_id = fields.Many2one(
-        "destruction.certificate",
+        "naid.certificate",
         string="Destruction Certificate",
         readonly=True,
         help="Generated destruction certificate"
@@ -282,7 +282,7 @@ class ShreddingPicklistItem(models.Model):
     )
 
     chain_of_custody_id = fields.Many2one(
-        "chain.of.custody",
+        "records.chain.of.custody",
         string="Chain of Custody",
         help="Chain of custody record for this item"
     )
@@ -583,7 +583,7 @@ class ShreddingPicklistItem(models.Model):
             'naid_compliant': self.naid_compliant,
         }
 
-        certificate = self.env['destruction.certificate'].create(certificate_vals)
+        certificate = self.env['naid.certificate'].create(certificate_vals)
         self.destruction_certificate_id = certificate.id
         return certificate
 
@@ -724,7 +724,7 @@ class ShreddingPicklistItem(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Destruction Certificate'),
-            'res_model': 'destruction.certificate',
+            'res_model': 'naid.certificate',
             'res_id': self.destruction_certificate_id.id,
             'view_mode': 'form',
             'target': 'current',

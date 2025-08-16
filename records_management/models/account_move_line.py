@@ -154,7 +154,7 @@ class AccountMoveLine(models.Model):
     ], string="Destruction Method", help="Method used for document destruction")
 
     certificate_of_destruction_id = fields.Many2one(
-        "destruction.certificate",
+        "naid.certificate",
         string="Certificate of Destruction",
         help="Generated certificate of destruction"
     )
@@ -242,13 +242,13 @@ class AccountMoveLine(models.Model):
     )
 
     base_rate_id = fields.Many2one(
-        "base.rates",
+        "base.rate",
         string="Base Rate",
         help="Base rate applied to this service"
     )
 
     customer_rate_id = fields.Many2one(
-        "customer.negotiated.rates",
+        "customer.negotiated.rate",
         string="Customer Rate",
         help="Customer-specific negotiated rate"
     )
@@ -304,7 +304,7 @@ class AccountMoveLine(models.Model):
     )
 
     chain_of_custody_id = fields.Many2one(
-        "chain.of.custody",
+        "records.chain.of.custody",
         string="Chain of Custody",
         help="Chain of custody record for this service"
     )
@@ -541,7 +541,7 @@ class AccountMoveLine(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Certificate of Destruction'),
-            'res_model': 'destruction.certificate',
+            'res_model': 'naid.certificate',
             'res_id': self.certificate_of_destruction_id.id,
             'view_mode': 'form',
             'target': 'current',
