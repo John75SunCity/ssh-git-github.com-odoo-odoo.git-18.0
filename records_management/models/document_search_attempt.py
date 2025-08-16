@@ -233,7 +233,7 @@ class DocumentSearchAttempt(models.Model):
     )
 
     requested_file_description = fields.Text(
-        related="retrieval_item_id.file_description",
+        related="retrieval_item_id.description",
         string="File Description",
         readonly=True,
         help="Description of requested file"

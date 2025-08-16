@@ -299,6 +299,10 @@ class RecordsVehicle(models.Model):
         "mail.followers", "res_id", string="Followers"
     )
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    fuel_capacity = fields.Float(string="Fuel Capacity", default=0.0, help="Fuel tank capacity")
+    maintenance_due_date = fields.Char(string="Maintenance Due Date", help="Next maintenance due date")
+    insurance_expiry = fields.Char(string="Insurance Expiry", help="Insurance expiry date")
+    registration_number = fields.Char(string="Registration Number", help="Vehicle registration number")
 
     # ============================================================================
     # COMPUTE METHODS
@@ -607,3 +611,17 @@ class RecordsVehicle(models.Model):
                 user_id=vehicle.user_id.id,
                 date_deadline=fields.Date.today(),
             )
+
+    @api.depends('vehicle_capacity_weight')
+    def _compute_capacity_status(self):
+        """Compute vehicle capacity status"""
+        for record in self:
+            if record.vehicle_capacity_weight:
+                if record.vehicle_capacity_weight >= 10000:
+                    record.capacity_status = 'heavy_duty'
+                elif record.vehicle_capacity_weight >= 5000:
+                    record.capacity_status = 'medium_duty'
+                else:
+                    record.capacity_status = 'light_duty'
+            else:
+                record.capacity_status = 'unknown'

@@ -324,3 +324,13 @@ class BinUnlockService(models.Model):
         for record in self:
             if record.witness_required and not record.witness_name:
                 raise ValidationError(_("Witness name is required when witness is required."))
+
+    @api.depends('service_start_time', 'service_end_time')
+    def _compute_service_duration(self):
+        """Calculate service duration"""
+        for record in self:
+            if record.service_start_time and record.service_end_time:
+                delta = record.service_end_time - record.service_start_time
+                record.service_duration = delta.total_seconds() / 3600.0  # Hours
+            else:
+                record.service_duration = 0.0

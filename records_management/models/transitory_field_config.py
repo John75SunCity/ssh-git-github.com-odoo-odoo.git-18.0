@@ -989,6 +989,7 @@ class TransitoryFieldAuditLog(models.Model):
 
     partner_id = fields.Many2one("res.partner", string="Customer", required=True)
     show_box_number = fields.Boolean(string='Show Box Number', default=True)
+    customer_id = fields.Many2one('res.partner', string='Customer', required=True)
 
     @api.depends("action", "config_id", "date")
     def _compute_display_name(self):

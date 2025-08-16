@@ -38,6 +38,7 @@ class HrEmployee(models.Model):
 
     # Documentation
     records_notes = fields.Text(string="Records Management Notes")
+    naid_certification_date = fields.Char(string="Naid Certification Date", help="NAID certification date")
 
     # Action methods
     def action_grant_records_access(self):
@@ -54,3 +55,28 @@ class HrEmployee(models.Model):
         self.records_access_level = "read"
         """_summary_
         """
+    @api.depends('naid_certification_date')
+    def _compute_certification_status(self):
+        """Compute NAID certification status"""
+        for record in self:
+            if record.naid_certification_date:
+                from datetime import date
+                days_since = (date.today() - record.naid_certification_date).days
+                if days_since > 365:
+                    record.certification_status = 'expired'
+                elif days_since > 330:
+                    record.certification_status = 'expiring'
+                else:
+                    record.certification_status = 'valid'
+            else:
+                record.certification_status = 'none'    @api.depends('records_access_level')
+    def _compute_access_description(self):
+        """Compute access level description"""
+        for record in self:
+            access_levels = {
+                'basic': 'Basic access to public records',
+                'standard': 'Standard access to most records',
+                'elevated': 'Elevated access including confidential records',
+                'admin': 'Full administrative access to all records'
+            }
+            record.access_description = access_levels.get(record.records_access_level, 'No access defined')

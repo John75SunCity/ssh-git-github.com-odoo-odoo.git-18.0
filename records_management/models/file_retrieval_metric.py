@@ -596,8 +596,8 @@ class FileRetrievalMetric(models.Model):
         """Override create to set default name"""
         for vals in vals_list:
             if not vals.get('name'):
-                metric_type = vals.get('metric_type', 'unknown')
-                vals['name'] = _('Metric: %s', metric_type.replace('_', ' ').title())
+                metric_type_val = vals.get('metric_type', 'unknown')
+                vals['name'] = _('Metric: %s', metric_type_val.replace('_', ' ').title())
 
         return super().create(vals_list)
 
@@ -650,22 +650,22 @@ class FileRetrievalMetric(models.Model):
         }
         
         # Performance rating distribution
-        for rating in ['excellent', 'good', 'acceptable', 'poor', 'unacceptable']:
-            rating_count = len(metrics.filtered(lambda m: m.performance_rating == rating))
-            summary['performance_distribution'][rating] = rating_count
+        for rating_key in ['excellent', 'good', 'acceptable', 'poor', 'unacceptable']:
+            rating_count = len(metrics.filtered(lambda m: m.performance_rating == rating_key))
+            summary['performance_distribution'][rating_key] = rating_count
         
         # Metric type breakdown
-        for metric in metrics:
-            if metric.metric_type not in summary['metric_type_breakdown']:
-                summary['metric_type_breakdown'][metric.metric_type] = {
+        for metric_record in metrics:
+            if metric_record.metric_type not in summary['metric_type_breakdown']:
+                summary['metric_type_breakdown'][metric_record.metric_type] = {
                     'count': 0,
                     'average_value': 0,
                     'total_value': 0
                 }
             
-            breakdown = summary['metric_type_breakdown'][metric.metric_type]
+            breakdown = summary['metric_type_breakdown'][metric_record.metric_type]
             breakdown['count'] += 1
-            breakdown['total_value'] += metric.metric_value
+            breakdown['total_value'] += metric_record.metric_value
             breakdown['average_value'] = breakdown['total_value'] / breakdown['count']
         
         return summary

@@ -751,3 +751,11 @@ class RecordsLocation(models.Model):
             return _('NORMAL: Utilization is within acceptable range.')
         else:
             return _('GOOD: Location has ample available capacity.')
+    @api.depends('box_count', 'max_capacity')
+    def _compute_utilization(self):
+        """Calculate current utilization percentage"""
+        for record in self:
+            if record.max_capacity and record.max_capacity > 0:
+                record.current_utilization = (record.box_count / record.max_capacity) * 100
+            else:
+                record.current_utilization = 0.0

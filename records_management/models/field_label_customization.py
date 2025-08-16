@@ -312,6 +312,7 @@ class FieldLabelCustomization(models.Model):
     )
 
     # ============================================================================
+    customer_id = fields.Many2one('res.partner', string='Customer', domain=[('is_company', '=', True)])
     # HELPER METHODS
     # ============================================================================
     @api.model

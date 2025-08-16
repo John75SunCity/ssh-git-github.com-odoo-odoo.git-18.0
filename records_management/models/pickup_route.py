@@ -214,6 +214,8 @@ class PickupRoute(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    total_weight = fields.Float(string="Total Weight", default=0.0, help="Total weight")
+    actual_arrival_time = fields.Char(string="Actual Arrival Time", help="Actual arrival time")
 
     # ============================================================================
     # COMPUTE METHODS

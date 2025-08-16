@@ -795,6 +795,31 @@ class ShreddingService(models.Model):
             ("state", "in", ["scheduled"]),
             ("service_date", "<", fields.Date.today()),
         ])
+    @api.depends('actual_start_time', 'actual_completion_time')
+    def _compute_actual_duration(self):
+        """Calculate actual service duration"""
+        for record in self:
+            if record.actual_start_time and record.actual_completion_time:
+                delta = record.actual_completion_time - record.actual_start_time
+                record.actual_duration = delta.total_seconds() / 3600.0  # Convert to hours
+            else:
+                record.actual_duration = 0.0
+    @api.depends('destruction_item_ids', 'destruction_item_ids.weight')
+    def _compute_total_weight(self):
+        """Calculate total weight from items"""
+        for record in self:
+            record.total_weight = sum(record.destruction_item_ids.mapped('weight'))
+    @api.depends('hourly_rate', 'actual_duration')
+    def _compute_total_cost(self):
+        """Calculate total service cost"""
+        for record in self:
+            if record.hourly_rate and record.actual_duration:
+                record.total_cost = record.hourly_rate * record.actual_duration
+            else:
+                record.total_cost = 0.0
+
+
+
 
 
 class ShreddingServicePhoto(models.Model):

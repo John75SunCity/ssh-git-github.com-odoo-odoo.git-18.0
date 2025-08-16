@@ -370,11 +370,28 @@ class TempInventory(models.Model):
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)],
     )
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)],
+    )
+
+    # ============================================================================
+    # ADDITIONAL RELATIONSHIP FIELDS
+    # ============================================================================
+    retrieval_item_ids = fields.One2many(
+        "document.retrieval.item",
+        "temp_inventory_id",
+        string="Retrieval Items",
+        help="Items for retrieval"
+    )
+
+    rate_id = fields.Many2one(
+        "base.rate",
+        string="Applicable Rate",
+        help="Applicable rate for this inventory"
     )
 
     # ============================================================================

@@ -125,6 +125,9 @@ class AdvancedBilling(models.Model):
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
     )
+    billing_line_ids = fields.Char(string="Billing Line Ids", help="Billing line items")
+    billing_ids = fields.Char(string="Billing Ids", help="Related billing records")
+    quantity = fields.Float(string="Quantity", default=1.0, help="Quantity")
 
     # ============================================================================
     # COMPUTE METHODS
@@ -212,3 +215,21 @@ class AdvancedBilling(models.Model):
         for record in self:
             if record.total_amount < 0:
                 raise ValidationError(_("Total amount cannot be negative"))
+
+    @api.depends('billing_line_ids', 'billing_line_ids.subtotal')
+    def _compute_subtotal(self):
+        """Calculate billing subtotal"""
+        for record in self:
+            record.subtotal = sum(record.billing_line_ids.mapped('subtotal'))
+
+    @api.depends('billing_ids', 'billing_ids.total_amount')
+    def _compute_total(self):
+        """Calculate total from billing lines"""
+        for record in self:
+            record.total_amount = sum(record.billing_ids.mapped('total_amount'))
+
+    @api.depends('quantity', 'unit_price')
+    def _compute_line_total(self):
+        """Calculate line total"""
+        for record in self:
+            record.line_total = (record.quantity or 0.0) * (record.unit_price or 0.0)
