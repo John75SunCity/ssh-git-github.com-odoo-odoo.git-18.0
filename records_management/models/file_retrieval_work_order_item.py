@@ -33,35 +33,35 @@ class FileRetrievalWorkOrderItem(models.Model):
         index=True,
         help="Reference number or identifier for this specific file"
     )
-    
+
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
         help="Formatted display name combining reference and description"
     )
-    
+
     description = fields.Text(
         string="File Description",
         required=True,
         help="Detailed description of the file to be retrieved"
     )
-    
+
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Order sequence for processing items"
     )
-    
+
     company_id = fields.Many2one(
         "res.company",
         related="work_order_id.company_id",
         store=True,
         string="Company"
     )
-    
+
     active = fields.Boolean(
-        string="Active", 
+        string="Active",
         default=True
     )
 
@@ -75,7 +75,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         ondelete="cascade",
         index=True
     )
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         related="work_order_id.partner_id",
@@ -87,21 +87,21 @@ class FileRetrievalWorkOrderItem(models.Model):
     # FILE DETAILS AND SPECIFICATIONS
     # ============================================================================
     file_name = fields.Char(
-        string="File Name", 
+        string="File Name",
         help="Specific name or title of the file"
     )
-    
+
     estimated_pages = fields.Integer(
         string="Estimated Pages",
         default=1,
         help="Estimated number of pages in this file"
     )
-    
+
     actual_pages = fields.Integer(
         string="Actual Pages",
         help="Actual number of pages found during retrieval"
     )
-    
+
     file_type = fields.Selection([
         ("document", "Document"),
         ("photo", "Photograph"),
@@ -134,19 +134,19 @@ class FileRetrievalWorkOrderItem(models.Model):
         string="Source Container",
         help="Container where this file is stored"
     )
-    
+
     container_location = fields.Char(
         string="Container Location",
-        related="container_id.current_location",
+        related="container_id.location_id.name",
         store=True,
         help="Current location of the source container"
     )
-    
+
     location_notes = fields.Text(
         string="Location Notes",
         help="Specific notes about where to find this file within the container"
     )
-    
+
     file_position = fields.Char(
         string="File Position",
         help="Position or folder location within container (e.g., 'Folder A-C, Tab 2')"
@@ -187,20 +187,20 @@ class FileRetrievalWorkOrderItem(models.Model):
         string="Quality Notes",
         help="Notes about file condition or quality issues"
     )
-    
+
     quality_approved = fields.Boolean(
         string="Quality Approved",
         help="Whether this file passed quality inspection"
     )
-    
+
     quality_approved_by_id = fields.Many2one(
         "res.users",
         string="Quality Approved By",
         help="User who approved the quality of this file"
     )
-    
+
     quality_approved_date = fields.Datetime(
-        string="Quality Approved Date", 
+        string="Quality Approved Date",
         help="Date when quality was approved"
     )
 
@@ -208,15 +208,15 @@ class FileRetrievalWorkOrderItem(models.Model):
     # TIMING FIELDS
     # ============================================================================
     date_located = fields.Datetime(
-        string="Date Located", 
+        string="Date Located",
         help="Date and time when file was located"
     )
-    
+
     date_retrieved = fields.Datetime(
-        string="Date Retrieved", 
+        string="Date Retrieved",
         help="Date and time when file was retrieved"
     )
-    
+
     date_quality_checked = fields.Datetime(
         string="Date Quality Checked",
         help="Date when quality check was performed"
@@ -242,14 +242,14 @@ class FileRetrievalWorkOrderItem(models.Model):
         domain=lambda self: [('res_model', '=', self._name)],
         string="Activities"
     )
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         domain=lambda self: [('res_model', '=', self._name)],
         string="Followers"
     )
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -281,7 +281,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         """Mark item as located"""
         self.ensure_one()
         self.write({
-            "status": "located", 
+            "status": "located",
             "date_located": fields.Datetime.now()
         })
 
@@ -290,7 +290,7 @@ class FileRetrievalWorkOrderItem(models.Model):
             self.work_order_id._update_progress_metrics()
 
         self.message_post(
-            body=_("File located successfully"), 
+            body=_("File located successfully"),
             message_type="notification"
         )
         return True
@@ -304,7 +304,7 @@ class FileRetrievalWorkOrderItem(models.Model):
             )
 
         self.write({
-            "status": "retrieved", 
+            "status": "retrieved",
             "date_retrieved": fields.Datetime.now()
         })
 
@@ -313,7 +313,7 @@ class FileRetrievalWorkOrderItem(models.Model):
             self.work_order_id._update_progress_metrics()
 
         self.message_post(
-            body=_("File retrieved successfully"), 
+            body=_("File retrieved successfully"),
             message_type="notification"
         )
         return True
@@ -365,7 +365,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         self.write({"status": "not_found"})
 
         self.message_post(
-            body=_("File marked as not found"), 
+            body=_("File marked as not found"),
             message_type="notification"
         )
 
@@ -463,7 +463,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         """Update item status with optional notes"""
         self.ensure_one()
         vals = {'status': new_status}
-        
+
         # Set timing fields based on status
         if new_status == 'located':
             vals['date_located'] = fields.Datetime.now()
@@ -540,13 +540,13 @@ class FileRetrievalWorkOrderItem(models.Model):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "file.retrieval.work.order.item"
                 ) or _("New")
-        
+
         return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track important changes"""
         result = super().write(vals)
-        
+
         # Track status changes
         if "status" in vals:
             for record in self:
@@ -554,7 +554,7 @@ class FileRetrievalWorkOrderItem(models.Model):
                 record.message_post(
                     body=_("Item status changed to %s", status_display)
                 )
-        
+
         return result
 
     # ============================================================================
@@ -573,7 +573,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         """Enhanced search by name, file name, or description"""
         args = args or []
         domain = []
-        
+
         if name:
             domain = [
                 "|", "|", "|",
@@ -582,7 +582,7 @@ class FileRetrievalWorkOrderItem(models.Model):
                 ("description", operator, name),
                 ("display_name", operator, name),
             ]
-        
+
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
     def get_item_details(self):
@@ -612,39 +612,39 @@ class FileRetrievalWorkOrderItem(models.Model):
     def generate_retrieval_report(self, work_order_ids=None, date_from=None, date_to=None):
         """Generate retrieval report for items"""
         domain = []
-        
+
         if work_order_ids:
             domain.append(('work_order_id', 'in', work_order_ids))
         if date_from:
             domain.append(('create_date', '>=', date_from))
         if date_to:
             domain.append(('create_date', '<=', date_to))
-        
+
         items = self.search(domain)
-        
+
         # Compile statistics
         total_items = len(items)
         by_status = {}
         by_type = {}
         total_pages = 0
-        
+
         for item in items:
             # By status
             if item.status not in by_status:
                 by_status[item.status] = 0
             by_status[item.status] += 1
-            
+
             # By type
             if item.file_type not in by_type:
                 by_type[item.file_type] = 0
             by_type[item.file_type] += 1
-            
+
             # Total pages
             if item.actual_pages:
                 total_pages += item.actual_pages
             elif item.estimated_pages:
                 total_pages += item.estimated_pages
-        
+
         return {
             'total_items': total_items,
             'by_status': by_status,

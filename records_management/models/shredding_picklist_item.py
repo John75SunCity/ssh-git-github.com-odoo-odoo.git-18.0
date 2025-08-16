@@ -18,7 +18,7 @@ from odoo.exceptions import UserError, ValidationError
 class ShreddingPicklistItem(models.Model):
     """
     Shredding Picklist Item Management
-    
+
     Manages individual container items within shredding picklists,
     providing detailed tracking from collection through certified
     destruction with complete NAID compliance audit trails.
@@ -140,7 +140,7 @@ class ShreddingPicklistItem(models.Model):
 
     container_volume_cf = fields.Float(
         string="Container Volume (CF)",
-        related="container_id.volume_cubic_feet",
+        related="container_id.cubic_feet",
         readonly=True,
         store=True,
         digits=(8, 3),
@@ -547,7 +547,7 @@ class ShreddingPicklistItem(models.Model):
     def _create_audit_log(self, action_type):
         """Create NAID compliance audit log entry"""
         self.ensure_one()
-        
+
         audit_vals = {
             'action_type': action_type,
             'user_id': self.env.user.id,
@@ -557,7 +557,7 @@ class ShreddingPicklistItem(models.Model):
             'description': _("Shred item %s: %s", self.display_name, action_type),
             'naid_compliant': self.naid_compliant,
         }
-        
+
         return self.env['naid.audit.log'].create(audit_vals)
 
     def _update_container_status(self):
@@ -572,7 +572,7 @@ class ShreddingPicklistItem(models.Model):
     def _generate_destruction_certificate(self):
         """Generate destruction certificate for this item"""
         self.ensure_one()
-        
+
         certificate_vals = {
             'name': _("Certificate - %s", self.display_name),
             'container_ids': [(6, 0, [self.container_id.id])],
@@ -582,7 +582,7 @@ class ShreddingPicklistItem(models.Model):
             'witness_id': self.witness_employee_id.id if self.witness_employee_id else False,
             'naid_compliant': self.naid_compliant,
         }
-        
+
         certificate = self.env['destruction.certificate'].create(certificate_vals)
         self.destruction_certificate_id = certificate.id
         return certificate
@@ -590,9 +590,9 @@ class ShreddingPicklistItem(models.Model):
     def get_process_duration(self):
         """Calculate processing duration metrics"""
         self.ensure_one()
-        
+
         durations = {}
-        
+
         if self.collection_date and self.shred_start_time:
             delta = self.shred_start_time - self.collection_date
             durations['queue_time'] = delta.total_seconds() / 3600  # hours

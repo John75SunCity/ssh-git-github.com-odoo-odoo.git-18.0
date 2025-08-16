@@ -18,7 +18,7 @@ from odoo.exceptions import UserError, ValidationError
 class CustomerInventoryReportLine(models.Model):
     """
     Customer Inventory Report Line Management
-    
+
     Manages individual line items within customer inventory reports,
     providing detailed container tracking, document counting, and
     storage cost calculations with full audit trail support.
@@ -134,7 +134,7 @@ class CustomerInventoryReportLine(models.Model):
 
     container_volume_cf = fields.Float(
         string="Container Volume (CF)",
-        related="container_id.volume_cubic_feet",
+        related="container_id.cubic_feet",
         readonly=True,
         store=True,
         digits=(8, 3),
@@ -143,7 +143,7 @@ class CustomerInventoryReportLine(models.Model):
 
     container_weight_lbs = fields.Float(
         string="Container Weight (lbs)",
-        related="container_id.weight_pounds",
+        related="container_id.weight",
         readonly=True,
         store=True,
         digits=(8, 2),
@@ -219,7 +219,7 @@ class CustomerInventoryReportLine(models.Model):
     # ============================================================================
     location_code = fields.Char(
         string="Location Code",
-        related="location_id.location_code",
+        related="location_id.code",
         readonly=True,
         store=True,
         help="Storage location identifier"
@@ -380,7 +380,7 @@ class CustomerInventoryReportLine(models.Model):
             # Auto-populate container-related fields
             if not self.name:
                 self.name = _("Inventory Line: %s", self.container_id.name or self.container_id.barcode)
-            
+
             if not self.storage_date and self.container_id.create_date:
                 self.storage_date = self.container_id.create_date.date()
 
@@ -492,7 +492,7 @@ class CustomerInventoryReportLine(models.Model):
     def get_container_utilization_data(self):
         """Get container utilization statistics"""
         self.ensure_one()
-        
+
         if not self.container_id:
             return {}
 
@@ -562,9 +562,9 @@ class CustomerInventoryReportLine(models.Model):
     def generate_line_summary(self):
         """Generate summary information for this line"""
         self.ensure_one()
-        
+
         utilization_data = self.get_container_utilization_data()
-        
+
         return {
             'line_name': self.display_name,
             'container_barcode': self.container_barcode,
@@ -596,7 +596,7 @@ class CustomerInventoryReportLine(models.Model):
     def write(self, vals):
         """Override write for tracking important changes"""
         result = super().write(vals)
-        
+
         if 'document_count' in vals:
             for line in self:
                 if not line.document_count_verified:
@@ -604,7 +604,7 @@ class CustomerInventoryReportLine(models.Model):
                         "Document count changed to %d (verification required)",
                         line.document_count
                     ))
-        
+
         return result
 
     def name_get(self):
@@ -624,7 +624,7 @@ class CustomerInventoryReportLine(models.Model):
     def _get_cost_center_allocation(self):
         """Get cost center allocation for financial reporting"""
         self.ensure_one()
-        
+
         # Allocate costs based on document type and access level
         base_allocation = {
             'storage_operations': 0.6,  # Base storage cost
@@ -632,10 +632,10 @@ class CustomerInventoryReportLine(models.Model):
             'customer_service': 0.1,    # Customer service overhead
             'facility_maintenance': 0.1  # Facility costs
         }
-        
+
         # Adjust allocation based on access level
         if self.access_level in ['confidential', 'secure']:
             base_allocation['security_compliance'] += 0.1
             base_allocation['storage_operations'] -= 0.1
-        
+
         return base_allocation
