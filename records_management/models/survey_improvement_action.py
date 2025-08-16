@@ -7,57 +7,64 @@ class SurveyImprovementAction(models.Model):
     _description = 'Survey Improvement Action'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name desc'
-    _rec_name = 'name'  # Changed to 'name' as display_name is for display purposes
+    _rec_name = 'name'  # Changed to 'name' as display_name is for display purposes:
+        # Basic Information
+    name = fields.Char(string='Name', required=True, tracking=True,,
+    index=True),
+    description = fields.Text(string='Description'),
+    sequence = fields.Integer(string='Sequence',,
+    default=10)
 
-    # Basic Information
-    name = fields.Char(string='Name', required=True, tracking=True, index=True)
-    description = fields.Text(string='Description')
-    sequence = fields.Integer(string='Sequence', default=10)
-
-    # State Management
-    state = fields.Selection([
+        # State Management
+    state = fields.Selection([))
         ('draft', 'Draft'),
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived')
-    ], string='Status', default='draft', tracking=True)
+    
 
-    # Company and User
-    company_id = fields.Many2one('res.company', string='Company',
-                                 default=lambda self: self.env.company)
-    user_id = fields.Many2one("res.users", string="Assigned User",
-                              default=lambda self: self.env.user)
+        # Company and User
+    company_id = fields.Many2one('res.company',,
+    string='Company'),
+                                    default=lambda self: self.env.company
+    user_id = fields.Many2one("res.users",,
+    string="Assigned User"),
+                                default=lambda self: self.env.user
 
-    # Partner Relationship
+    # Partner Relationship)
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
-        help="Associated partner for this record"
-    )
+        help="Associated partner for this record":
+            pass
+    
 
-    # Timestamps
-    date_created = fields.Datetime(string='Created Date', default=fields.Datetime.now, readonly=True)
-    date_modified = fields.Datetime(string='Modified Date', readonly=True)
+        # Timestamps
+    date_created = fields.Datetime(string='Created Date', default=fields.Datetime.now,,
+    readonly=True),
+    date_modified = fields.Datetime(string='Modified Date',,
+    readonly=True)
 
-    # Control Fields
-    active = fields.Boolean(string='Active', default=True)
-    notes = fields.Text(string='Internal Notes')
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection([], string='Type')  # TODO: Define selection options
+        # Control Fields
+    active = fields.Boolean(string='Active',,
+    default=True),
+    notes = fields.Text(string='Internal Notes'),
+    context = fields.Char(string='Context'),
+    domain = fields.Char(string='Domain'),
+    help = fields.Char(string='Help'),
+    res_model = fields.Char(string='Res Model'),
+    type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
 
-    # ORM Overrides
+        # ORM Overrides
     def write(self, vals):
         """Override write to update modification date."""
-        vals['date_modified'] = fields.Datetime.now()
+    vals['date_modified') = fields.Datetime.now()
         return super().write(vals)
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to set a default name if not provided."""
+        """Override create to set a default name if not provided.""":
         for vals in vals_list:
             if not vals.get('name'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('survey.improvement.action') or _('New')

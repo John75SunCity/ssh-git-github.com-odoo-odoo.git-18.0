@@ -6,39 +6,41 @@ class HrEmployee(models.Model):
     _inherit = "hr.employee"
     _description = "Hr Employee Records Management Extension"
 
-    # Records Management specific fields (don't redefine base fields)
+        # Records Management specific fields (don't redefine base fields)'
     records_manager_id = fields.Many2one(
         "res.users",
         string="Records Manager",
-        help="User responsible for this employee's records management",
-    )
+        help="User responsible for this employee's records management",:'
+            pass
+    
 
-    # NAID compliance fields
+        # NAID compliance fields
+    ,
     naid_security_clearance = fields.Selection(
-        [
+        [)
             ("none", "None"),
             ("basic", "Basic"),
             ("advanced", "Advanced"),
             ("certified", "Certified"),
-        ],
+        
         string="NAID Security Level",
         default="none",
         tracking=True,
-    )
+    
 
-    # Records access permissions
+        # Records access permissions
     records_access_level = fields.Selection(
-        [("read", "Read Only"), ("write", "Read/Write"), ("admin", "Administrator")],
-        string="Records Access Level",
+        [("read", "Read Only"), ("write", "Read/Write"), ("admin", "Administrator")), string="Records Access Level",
         default="read",
         tracking=True,
-    )
+    
 
-    # Documentation
-    records_notes = fields.Text(string="Records Management Notes")
-    naid_certification_date = fields.Char(string="Naid Certification Date", help="NAID certification date")
+        # Documentation
+    records_notes = fields.Text(string="Records Management Notes"),
+    naid_certification_date = fields.Char(string="Naid Certification Date",,
+    help="NAID certification date")
 
-    # Action methods
+        # Action methods
     def action_grant_records_access(self):
         """Grant enhanced records access to employee"""
 
@@ -51,8 +53,8 @@ class HrEmployee(models.Model):
 
         self.ensure_one()
         self.records_access_level = "read"
-        """_summary_
-        """
+        """_summary_"
+
     @api.depends('naid_certification_date')
     def _compute_certification_status(self):
         """Compute NAID certification status"""
@@ -71,10 +73,13 @@ class HrEmployee(models.Model):
     def _compute_access_description(self):
         """Compute access level description"""
         for record in self:
-            access_levels = {
+            access_levels = {}
                 'basic': 'Basic access to public records',
                 'standard': 'Standard access to most records',
                 'elevated': 'Elevated access including confidential records',
                 'admin': 'Full administrative access to all records'
-            }
+            
             record.access_description = access_levels.get(record.records_access_level, 'No access defined')
+
+
+    """")

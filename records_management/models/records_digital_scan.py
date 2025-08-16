@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
+
 Digital Scan of Document
-"""
+
 
 from datetime import datetime
 
@@ -12,122 +12,132 @@ from odoo.exceptions import UserError, ValidationError
 
 
 class RecordsDigitalScan(models.Model):
-    """
-    Digital Scan of Document
-    """
+
+        Digital Scan of Document
+
 
     _name = "records.digital.scan"
     _description = "Digital Scan of Document"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Name", required=True, tracking=True, index=True
-    )
+    
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
+    
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    )
-    active = fields.Boolean(string="Active", default=True)
+    
+    active = fields.Boolean(string="Active",,
+    default=True)
 
-    # ============================================================================
+        # ============================================================================
     # STATE MANAGEMENT
-    # ============================================================================
+        # ============================================================================
     state = fields.Selection(
-        [("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Done")],
-        string="State",
+        [("draft", "Draft"), ("confirmed", "Confirmed"), ("done", "Done")), string="State",
         default="draft",
         tracking=True,
         index=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # DOCUMENT RELATIONSHIP
-    # ============================================================================
+        # ============================================================================
     document_id = fields.Many2one(
         "records.document", string="Document", required=True, tracking=True
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # DIGITAL SCAN FIELDS
-    # ============================================================================
-    description = fields.Text(string="Description")
-    notes = fields.Text(string="Notes")
+        # ============================================================================
+    ,
+    description = fields.Text(string="Description"),
+    notes = fields.Text(string="Notes"),
     record_date = fields.Date(
         string="Record Date",
-        default=lambda self: fields.Date.context_today(self),
+        ,
+    default=lambda self: fields.Date.context_today(self),
         tracking=True,
-    )
+    
     scan_date = fields.Datetime(
         string="Scan Date",
-        default=lambda self: fields.Datetime.context_timestamp(self, datetime.now()),
+        ,
+    default=lambda self: fields.Datetime.context_timestamp(self, datetime.now()),
         tracking=True,
-    )
+    
 
     file_format = fields.Selection(
-        [
+        [)
             ("pdf", "PDF"),
             ("jpeg", "JPEG"),
             ("png", "PNG"),
             ("tiff", "TIFF"),
             ("bmp", "BMP"),
-        ],
+        
         string="File Format",
         default="pdf",
         tracking=True,
-    )
+    
 
     resolution = fields.Integer(string="Resolution (DPI)", default=300)
     file_size = fields.Float(string="File Size (MB)")
 
     scan_quality = fields.Selection(
-        [
+        [)
             ("draft", "Draft"),
             ("normal", "Normal"),
             ("high", "High Quality"),
             ("archive", "Archive Quality"),
-        ],
+        
         string="Scan Quality",
         default="normal",
         tracking=True,
-    )
+    
 
     scanner_id = fields.Char(
         string="Scanner ID",
-        help="Identifier of the scanner device used for this digital scan.",
-    )
+        help="Identifier of the scanner device used for this digital scan.",:
+            pass
+    
     scanned_by_id = fields.Many2one(
         "res.users",
         string="Scanned By",
         default=lambda self: self.env.user,
         tracking=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # OPERATIONAL FIELDS
-    # ============================================================================
-    sequence = fields.Integer(string="Sequence", default=10)
-    created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
-    updated_date = fields.Datetime(string="Updated Date", default=fields.Datetime.now)
-    confirmed = fields.Boolean(string="Confirmed", default=False, tracking=True)
+        # ============================================================================
+    sequence = fields.Integer(string="Sequence",,
+    default=10),
+    created_date = fields.Datetime(string="Created Date",,
+    default=fields.Datetime.now),
+    updated_date = fields.Datetime(string="Updated Date",,
+    default=fields.Datetime.now),
+    confirmed = fields.Boolean(string="Confirmed", default=False,,
+    tracking=True)
 
-    # ============================================================================
+        # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS (REQUIRED)
-    # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+        # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id",,
+    string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    
+    message_ids = fields.One2many("mail.message", "res_id",,
+    string="Messages")
 
-    # ============================================================================
+        # ============================================================================
     # ACTION METHODS
-    # ============================================================================
+        # ============================================================================
     def action_confirm(self):
         """Confirm the digital scan record"""
 
@@ -135,95 +145,98 @@ class RecordsDigitalScan(models.Model):
         if self.state != "draft":
             raise UserError(_("Can only confirm draft scans"))
 
-        self.write(
-            {
+        self.write()
+            {}
                 "state": "confirmed",
                 "confirmed": True,
                 "updated_date": fields.Datetime.now(),
-            }
-        )
+            
+        
 
         # Log activity
-        self.message_post(
+        self.message_post()
             body=_("Digital scan confirmed by %s", self.env.user.name),
             message_type="notification",
-        )
+        
 
     def action_done(self):
         """Mark the digital scan as completed"""
 
         self.ensure_one()
-        if self.state not in ["draft", "confirmed"]:
+        if self.state not in ["draft", "confirmed"):
             raise UserError(_("Can only complete draft or confirmed scans"))
 
         self.write({"state": "done", "updated_date": fields.Datetime.now()})
 
         # Log activity
-        self.message_post(
+        self.message_post()
             body=_("Digital scan completed by %s", self.env.user.name),
             message_type="notification",
-        )
+        
 
     def action_reset_to_draft(self):
         """Reset to draft state"""
 
         self.ensure_one()
-        self.write(
-            {
+        self.write()
+            {}
                 "state": "draft",
                 "confirmed": False,
                 "updated_date": fields.Datetime.now(),
-            }
-        )
+            
+        
 
         # Log activity
-        self.message_post(
+        self.message_post()
             body=_("Digital scan reset to draft by %s", self.env.user.name),
             message_type="notification",
-        )
+        
 
     # ============================================================================
-    # COMPUTE METHODS
+        # COMPUTE METHODS
     # ============================================================================
-    scanned_by = fields.Many2one('hr.employee', string='Scanned By', help='Employee who performed the scan')
+    scanned_by = fields.Many2one('hr.employee', string='Scanned By',,
+    help='Employee who performed the scan')
 
     @api.depends("file_size", "resolution")
     def _compute_scan_info(self):
         """Compute scan information display"""
         for record in self:
-            info_parts = []
+            info_parts = [)
             if record.resolution:
                 info_parts.append(_("%s DPI", record.resolution))
             if record.file_size:
                 info_parts.append(_("%.2f MB", record.file_size))
-            record.scan_info = (
-                " - ".join(info_parts) if info_parts else _("No scan info")
-            )
+            record.scan_info = ()
+                " - ".join(info_parts) if info_parts else _("No scan info"):
+            
 
     scan_info = fields.Char(
         string="Scan Info",
         compute="_compute_scan_info",
         store=True,
         readonly=True,
-        help="Displays a summary of the scan's resolution and file size.",
-    )
-    action_confirm = fields.Char(string='Action Confirm')
-    action_done = fields.Char(string='Action Done')
-    done = fields.Char(string='Done')
-    draft = fields.Char(string='Draft')
-    group_document = fields.Char(string='Group Document')
-    group_format = fields.Char(string='Group Format')
-    group_scanned_by = fields.Char(string='Group Scanned By')
-    group_state = fields.Selection([], string='Group State')  # TODO: Define selection options
-    help = fields.Char(string='Help')
-    my_scans = fields.Char(string='My Scans')
-    res_model = fields.Char(string='Res Model')
-    search_view_id = fields.Many2one('search.view', string='Search View Id')
+        help="Displays a summary of the scan's resolution and file size.",'
+    
+    ,
+    action_confirm = fields.Char(string='Action Confirm'),
+    action_done = fields.Char(string='Action Done'),
+    done = fields.Char(string='Done'),
+    draft = fields.Char(string='Draft'),
+    group_document = fields.Char(string='Group Document'),
+    group_format = fields.Char(string='Group Format'),
+    group_scanned_by = fields.Char(string='Group Scanned By'),
+    group_state = fields.Selection([), string='Group State')  # TODO: Define selection options
+    help = fields.Char(string='Help'),
+    my_scans = fields.Char(string='My Scans'),
+    res_model = fields.Char(string='Res Model'),
+    search_view_id = fields.Many2one('search.view',,
+    string='Search View Id'),
     view_mode = fields.Char(string='View Mode')
 
-    # ============================================================================
+        # ============================================================================
     # VALIDATION METHODS
-    # ============================================================================
+        # ============================================================================
     @api.constrains("file_size")
     def _check_file_size(self):
         for record in self:
@@ -239,3 +252,4 @@ class RecordsDigitalScan(models.Model):
                 raise ValidationError(_("Resolution must be at least 50 DPI"))
             if record.resolution and record.resolution > 10000:
                 raise ValidationError(_("Resolution cannot exceed 10000 DPI"))
+)))))))

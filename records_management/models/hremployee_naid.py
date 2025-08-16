@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""
+
 HR Employee NAID Compliance Extension Module
 
-This module extends HR Employee functionality with NAID (National Association for
-Information Destruction) compliance features, security clearance tracking, and
-records management access controls for the Records Management System.
-"""
+This module extends HR Employee functionality with NAID (National Association for)
+Information Destruction
+    pass
+records management access controls for the Records Management System.:
+
 
 import datetime
 
@@ -17,12 +18,12 @@ from odoo.exceptions import ValidationError
 
 
 class HREmployeeNAID(models.Model):
-    """
-    HR Employee NAID Compliance Extension
+
+        HR Employee NAID Compliance Extension
 
     Extends hr.employee with NAID security clearance levels, records management
-    access permissions, and compliance tracking for document destruction services.
-    """
+        access permissions, and compliance tracking for document destruction services.:
+
 
     _name = "hr.employee.naid"
     _description = "HR Employee NAID Compliance Extension"
@@ -30,37 +31,37 @@ class HREmployeeNAID(models.Model):
     _order = "name"
     _rec_name = "name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
 
     name = fields.Char(
         string="Employee NAID Profile",
         required=True,
         tracking=True,
-        help="NAID compliance profile name for this employee"
-    )
+        help="NAID compliance profile name for this employee":
+    
     company_id = fields.Many2one(
         'res.company',
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    )
+    
     user_id = fields.Many2one(
         'res.users',
         string="User",
         default=lambda self: self.env.user,
         tracking=True
-    )
+    
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Uncheck to archive this NAID profile"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # EMPLOYEE RELATIONSHIP
-    # ============================================================================
+        # ============================================================================
 
     employee_id = fields.Many2one(
         'hr.employee',
@@ -69,135 +70,137 @@ class HREmployeeNAID(models.Model):
         ondelete='cascade',
         tracking=True,
         help="Related HR employee record"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # NAID COMPLIANCE FIELDS
-    # ============================================================================
+        # ============================================================================
 
-    naid_security_clearance = fields.Selection([
+    ,
+    naid_security_clearance = fields.Selection([))
         ('none', 'No Clearance'),
         ('basic', 'Basic Security'),
         ('advanced', 'Advanced Security'),
         ('certified', 'NAID Certified'),
         ('aaa_certified', 'NAID AAA Certified')
-    ], string="NAID Security Clearance",
-       default='none',
-       tracking=True,
-       help="Current NAID security clearance level")
+    
+        default='none',
+        tracking=True,
+        help="Current NAID security clearance level"
 
     clearance_date = fields.Date(
         string="Clearance Date",
         tracking=True,
         help="Date when security clearance was granted"
-    )
+    
     clearance_expiry = fields.Date(
         string="Clearance Expiry",
         tracking=True,
         help="Date when security clearance expires"
-    )
+    
     background_check_completed = fields.Boolean(
         string="Background Check Completed",
         default=False,
         tracking=True,
-        help="Background screening completed for NAID compliance"
-    )
+        help="Background screening completed for NAID compliance":
+    
     training_completed = fields.Boolean(
         string="NAID Training Completed",
         default=False,
         tracking=True,
         help="Required NAID training completed"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RECORDS ACCESS MANAGEMENT
-    # ============================================================================
+        # ============================================================================
 
-    records_access_level = fields.Selection([
+    ,
+    records_access_level = fields.Selection([))
         ('none', 'No Access'),
         ('read', 'Read Only'),
         ('write', 'Read/Write'),
         ('admin', 'Administrator'),
         ('compliance', 'Compliance Officer')
-    ], string="Records Access Level",
-       default='none',
-       tracking=True,
-       help="Access level for records management system")
-
+    
+        default='none',
+        tracking=True,
+        help="Access level for records management system"
     records_department_ids = fields.Many2many(
         'records.department',
         string="Authorized Departments",
         help="Departments this employee can access"
-    )
+    
     can_witness_destruction = fields.Boolean(
         string="Can Witness Destruction",
         default=False,
         tracking=True,
         help="Authorized to witness document destruction"
-    )
+    
     can_transport_documents = fields.Boolean(
         string="Can Transport Documents",
         default=False,
         tracking=True,
         help="Authorized to transport secure documents"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # STATE MANAGEMENT
-    # ============================================================================
+        # ============================================================================
 
-    state = fields.Selection([
+    ,
+    state = fields.Selection([))
         ('draft', 'Draft'),
         ('pending_approval', 'Pending Approval'),
         ('active', 'Active'),
         ('suspended', 'Suspended'),
         ('expired', 'Expired')
-    ], string='Status',
-       default='draft',
-       tracking=True,
-       help="Current status of NAID compliance profile")
+    
+        default='draft',
+        tracking=True,
+        help="Current status of NAID compliance profile"
 
     # ============================================================================
-    # DOCUMENTATION FIELDS
+        # DOCUMENTATION FIELDS
     # ============================================================================
 
     description = fields.Text(
         string="Description",
-        help="Additional details about employee's NAID profile"
-    )
+        help="Additional details about employee's NAID profile"'
+    
     notes = fields.Text(
         string="Internal Notes",
         help="Internal notes and observations"
-    )
+    
     compliance_notes = fields.Text(
         string="Compliance Notes",
         help="Notes related to NAID compliance and certifications"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # DATES & TRACKING
-    # ============================================================================
+        # ============================================================================
 
     profile_date = fields.Date(
         string="Profile Date",
         default=fields.Date.today,
         required=True,
         help="Date when NAID profile was created"
-    )
+    
     last_review_date = fields.Date(
         string="Last Review Date",
         tracking=True,
         help="Date of last compliance review"
-    )
+    
     next_review_date = fields.Date(
         string="Next Review Date",
         tracking=True,
         help="Date when next compliance review is due"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
+        # ============================================================================
 
     activity_ids = fields.One2many(
         "mail.activity",
@@ -205,50 +208,49 @@ class HREmployeeNAID(models.Model):
         string="Activities",
         auto_join=True,
         groups="base.group_user"
-    )
+    
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         groups="base.group_user"
-    )
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-        groups="base.group_user"
-    )
+        ,
+    groups="base.group_user"
+    
 
-    # ============================================================================
+        # ============================================================================
     # ACTION METHODS
-    # ============================================================================
+        # ============================================================================
 
     def action_submit_for_approval(self):
-        """Submit NAID profile for approval"""
-
+        """Submit NAID profile for approval""":
         self.ensure_one()
         if self.state != 'draft':
             return
         self.write({'state': 'pending_approval'})
-        self.message_post(body="NAID profile submitted for approval")
-
+        self.message_post(body="NAID profile submitted for approval"):
     def action_approve_profile(self):
         """Approve NAID compliance profile"""
 
         self.ensure_one()
         if self.state != 'pending_approval':
             return
-        self.write({
+        self.write({)}
             'state': 'active',
             'last_review_date': fields.Date.today()
-        })
+        
         self.message_post(body="NAID profile approved and activated")
 
     def action_suspend_profile(self):
         """Suspend NAID compliance profile"""
 
         self.ensure_one()
-        if self.state not in ['active', 'pending_approval']:
+        if self.state not in ['active', 'pending_approval'):
             return
         self.write({'state': 'suspended'})
         self.message_post(body="NAID profile suspended - access revoked")
@@ -275,21 +277,21 @@ class HREmployeeNAID(models.Model):
         self.ensure_one()
 
         # Calculate next review date (typically annual)
-        next_review = fields.Date.today() + datetime.timedelta(days=365)
+    next_review = fields.Date.today() + datetime.timedelta(days=365)
 
         self.write({'next_review_date': next_review})
 
-        # Create activity for review
-        self.activity_schedule(
+        # Create activity for review:
+        self.activity_schedule()
             'mail.mail_activity_data_todo',
             summary=_("NAID Compliance Review - %s", self.name),
-            note=_("Annual NAID compliance review for %s", self.employee_id.name),
+            note=_("Annual NAID compliance review for %s", self.employee_id.name),:
             user_id=self.user_id.id,
             date_deadline=next_review
-        )
+        
 
     # ============================================================================
-    # COMPUTED METHODS
+        # COMPUTED METHODS
     # ============================================================================
 
     @api.depends('employee_id.name', 'name')
@@ -304,12 +306,13 @@ class HREmployeeNAID(models.Model):
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
-        store=True
-    )
+        ,
+    store=True
+    
 
-    # ============================================================================
+        # ============================================================================
     # VALIDATION METHODS
-    # ============================================================================
+        # ============================================================================
 
     @api.constrains('clearance_date', 'clearance_expiry')
     def _check_clearance_dates(self):
@@ -317,12 +320,12 @@ class HREmployeeNAID(models.Model):
         for record in self:
             if record.clearance_date and record.clearance_expiry:
                 if record.clearance_date >= record.clearance_expiry:
-                    raise ValidationError(
+                    raise ValidationError()
                         _("Clearance date must be before expiry date")
-                    )
+                    
 
     # ============================================================================
-    # LIFECYCLE METHODS
+        # LIFECYCLE METHODS
     # ============================================================================
 
     @api.model_create_multi
@@ -330,23 +333,23 @@ class HREmployeeNAID(models.Model):
         records = super().create(vals_list)
 
         for record in records:
-            # Create initial activity for profile setup
-            today_date = fields.Date.to_date(fields.Date.today())
+            # Create initial activity for profile setup:
+    today_date = fields.Date.to_date(fields.Date.today())
             deadline_date = today_date + datetime.timedelta(days=7)
-            record.activity_schedule(
+            record.activity_schedule()
                 'mail.mail_activity_data_todo',
                 summary=_("Complete NAID Profile Setup - %s", record.name),
                 note=_("Complete NAID compliance profile setup and documentation"),
                 user_id=record.user_id.id,
                 date_deadline=deadline_date
-            )
+            
 
-            record.message_post(
-                body=_(
-                    "NAID compliance profile created for %s",
-                    record.employee_id.name if record.employee_id else 'employee'
-                )
-            )
+            record.message_post()
+                body=_()
+                    "NAID compliance profile created for %s",:
+                    record.employee_id.name if record.employee_id else 'employee':
+                
+            
 
         return records
 
@@ -356,11 +359,11 @@ class HREmployeeNAID(models.Model):
         if 'naid_security_clearance' in vals:
             for record in self:
                 old_level = record.naid_security_clearance
-                new_level = vals['naid_security_clearance']
+                new_level = vals['naid_security_clearance')
                 if old_level != new_level:
-                    record.message_post(
+                    record.message_post()
                         body=_("NAID security clearance changed from %s to %s", old_level, new_level)
-                    )
+                    
 
         # Track access level changes
         if 'records_access_level' in vals:
@@ -368,8 +371,9 @@ class HREmployeeNAID(models.Model):
                 old_access = record.records_access_level
                 new_access = vals['records_access_level']
                 if old_access != new_access:
-                    record.message_post(
+                    record.message_post()
                         body=_("Records access level changed from %s to %s", old_access, new_access)
-                    )
+                    
 
         return super().write(vals)
+)))))))))))))))))

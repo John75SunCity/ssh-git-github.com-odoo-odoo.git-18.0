@@ -13,84 +13,103 @@ class Billing(models.Model):
     _order = "invoice_date desc"
     _rec_name = "name"
 
-    # ==========================================
+        # ==========================================
     # CORE FIELDS
-    # ==========================================
+        # ==========================================
     name = fields.Char(
         string="Billing Reference", required=True, tracking=True, default="New"
-    )
-    company_id = fields.Many2one('res.company', string='Company',
-                                default=lambda self: self.env.company, required=True)
-    user_id = fields.Many2one('res.users', string='Billing Manager',
+    
+    company_id = fields.Many2one('res.company',,
+    string='Company'),
+                                default=lambda self: self.env.company, required=True
+    user_id = fields.Many2one('res.users',,
+    string='Billing Manager'),
                             default=lambda self: self.env.user, tracking=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True,,
+    tracking=True)
 
-    # ==========================================
+        # ==========================================
     # CUSTOMER INFORMATION
-    # ==========================================
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    department_id = fields.Many2one('records.department', string='Department', tracking=True)
+        # ==========================================
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True,,
+    tracking=True),
+    department_id = fields.Many2one('records.department', string='Department',,
+    tracking=True)
 
-    # ==========================================
+        # ==========================================
     # BILLING DETAILS
-    # ==========================================
-    invoice_date = fields.Date(string='Invoice Date', default=fields.Date.today, required=True, tracking=True)
-    due_date = fields.Date(string='Due Date', tracking=True)
-    period_start = fields.Date(string='Billing Period Start', tracking=True)
-    period_end = fields.Date(string='Billing Period End', tracking=True)
+        # ==========================================
+    invoice_date = fields.Date(string='Invoice Date', default=fields.Date.today, required=True,,
+    tracking=True),
+    due_date = fields.Date(string='Due Date',,
+    tracking=True),
+    period_start = fields.Date(string='Billing Period Start',,
+    tracking=True),
+    period_end = fields.Date(string='Billing Period End',,
+    tracking=True)
 
-    # ==========================================
+        # ==========================================
     # AMOUNTS
-    # ==========================================
-    subtotal = fields.Float(string='Subtotal', tracking=True)
-    tax_amount = fields.Float(string='Tax Amount', tracking=True)
-    total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True, tracking=True)
-    paid_amount = fields.Float(string='Paid Amount', tracking=True)
-    balance_due = fields.Float(string='Balance Due', compute='_compute_balance_due', store=True)
+        # ==========================================
+    subtotal = fields.Float(string='Subtotal',,
+    tracking=True),
+    tax_amount = fields.Float(string='Tax Amount',,
+    tracking=True),
+    total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True,,
+    tracking=True),
+    paid_amount = fields.Float(string='Paid Amount',,
+    tracking=True),
+    balance_due = fields.Float(string='Balance Due', compute='_compute_balance_due',,
+    store=True)
 
-    # ==========================================
+        # ==========================================
     # STATUS AND WORKFLOW
-    # ==========================================
-    state = fields.Selection([
+        # ==========================================
+    state = fields.Selection([))
         ('draft', 'Draft'),
         ('sent', 'Sent'),
         ('partial', 'Partially Paid'),
         ('paid', 'Paid'),
         ('overdue', 'Overdue'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', required=True, tracking=True)
+    
 
-    billing_type = fields.Selection([
+    billing_type = fields.Selection([))
         ('monthly', 'Monthly Storage'),
         ('service', 'Service Billing'),
         ('destruction', 'Destruction Service'),
         ('pickup', 'Pickup Service'),
         ('other', 'Other')
-    ], string='Billing Type', default='monthly', required=True, tracking=True)
+    
 
-    # ==========================================
+        # ==========================================
     # RELATIONSHIPS
-    # ==========================================
-    invoice_id = fields.Many2one('account.move', string='Related Invoice', tracking=True)
-    service_ids = fields.One2many('records.billing.service', 'billing_id', string='Billing Services')
+        # ==========================================
+    invoice_id = fields.Many2one('account.move', string='Related Invoice',,
+    tracking=True),
+    service_ids = fields.One2many('records.billing.service', 'billing_id',,
+    string='Billing Services')
 
-    # ==========================================
+        # ==========================================
     # NOTES
-    # ==========================================
-    notes = fields.Text(string='Notes', tracking=True)
-    internal_notes = fields.Text(string='Internal Notes')
-    discount_amount = fields.Float(string="Discount Amount", default=0.0, help="Discount amount")
-    payment_status = fields.Char(string="Payment Status", help="Payment status")
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection([], string='Type')  # TODO: Define selection options
+        # ==========================================
+    notes = fields.Text(string='Notes',,
+    tracking=True),
+    internal_notes = fields.Text(string='Internal Notes'),
+    discount_amount = fields.Float(string="Discount Amount", default=0.0,,
+    help="Discount amount"),
+    payment_status = fields.Char(string="Payment Status",,
+    help="Payment status"),
+    context = fields.Char(string='Context'),
+    domain = fields.Char(string='Domain'),
+    help = fields.Char(string='Help'),
+    res_model = fields.Char(string='Res Model'),
+    type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
 
-    # ==========================================
+        # ==========================================
     # COMPUTED FIELDS
-    # ==========================================
+        # ==========================================
     @api.depends('subtotal', 'tax_amount')
     def _compute_total_amount(self):
         """Calculate total amount including tax"""
@@ -104,31 +123,31 @@ class Billing(models.Model):
             record.balance_due = record.total_amount - record.paid_amount
 
     # ==========================================
-    # ONCHANGE METHODS
+        # ONCHANGE METHODS
     # ==========================================
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
         """Update department domain when customer changes"""
         if self.partner_id:
-            return {
-                'domain': {
-                    'department_id': [('customer_id', '=', self.partner_id.id)]
-                }
-            }
+            return {}
+                'domain': {}
+                    'department_id': [('customer_id', '=', self.partner_id.id))
+                
+            
 
     @api.onchange('period_start', 'period_end')
     def _onchange_billing_period(self):
         """Validate billing period dates"""
         if self.period_start and self.period_end and self.period_start > self.period_end:
-            return {
-                'warning': {
+            return {}
+                'warning': {}
                     'title': _('Invalid Period'),
                     'message': _('Period start date cannot be after period end date.')
-                }
-            }
+                
+            
 
     # ==========================================
-    # WORKFLOW ACTIONS
+        # WORKFLOW ACTIONS
     # ==========================================
     def action_send_invoice(self):
         """Send invoice to customer"""
@@ -145,10 +164,10 @@ class Billing(models.Model):
         self.ensure_one()
         if self.state not in ['sent', 'partial', 'overdue']:
             raise ValidationError(_('Cannot mark this invoice as paid'))
-        self.write({
+        self.write({)}
             'state': 'paid',
             'paid_amount': self.total_amount
-        })
+        
         self.message_post(body=_('Invoice marked as paid'))
 
     def action_cancel(self):
@@ -161,7 +180,7 @@ class Billing(models.Model):
         self.message_post(body=_('Billing record cancelled'))
 
     # ==========================================
-    # CREATE/WRITE METHODS
+        # CREATE/WRITE METHODS
     # ==========================================
     @api.model_create_multi
     def create(self, vals_list):
@@ -172,7 +191,7 @@ class Billing(models.Model):
         return super().create(vals_list)
 
     # ==========================================
-    # VALIDATION
+        # VALIDATION
     # ==========================================
     @api.constrains('subtotal', 'tax_amount', 'total_amount')
     def _check_amounts(self):

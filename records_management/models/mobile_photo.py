@@ -1,163 +1,170 @@
 # -*- coding: utf-8 -*-
-"""
+
 Mobile Photo Model
 
-Photo attachments for mobile bin key operations and field service work.
-"""
+Photo attachments for mobile bin key operations and field service work.:
+    pass
+
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 
 class MobilePhoto(models.Model):
-    """Photo attachment for mobile operations"""
-
+    """Photo attachment for mobile operations""":
     _name = "mobile.photo"
     _description = "Mobile Photo"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "create_date desc"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Photo Name",
         required=True,
         tracking=True,
         index=True,
         help="Name or description of the photo"
-    )
+    
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    )
+    
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this photo"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # ============================================================================
     wizard_id = fields.Many2one(
         "mobile.bin.key.wizard",
         string="Bin Key Wizard",
         help="Associated mobile bin key wizard"
-    )
+    
 
     mobile_bin_key_wizard_id = fields.Many2one(
         "mobile.bin.key.wizard",
         string="Mobile Bin Key Wizard",
-        help="Associated mobile bin key wizard (alternative field name)"
-    )
+        ,
+    help="Associated mobile bin key wizard (alternative field name)"
+    
 
-    # ============================================================================
+        # ============================================================================
     # PHOTO FIELDS
-    # ============================================================================
+        # ============================================================================
     photo_data = fields.Binary(
         string="Photo",
         required=True,
         help="Photo image data"
-    )
+    
 
     photo_filename = fields.Char(
         string="Filename",
         help="Original photo filename"
-    )
+    
 
     photo_date = fields.Datetime(
         string="Photo Date",
         default=fields.Datetime.now,
         required=True,
         help="Date and time when photo was taken"
-    )
+    
 
     gps_latitude = fields.Float(
         string="GPS Latitude",
         help="GPS latitude where photo was taken"
-    )
+    
 
     gps_longitude = fields.Float(
         string="GPS Longitude",
         help="GPS longitude where photo was taken"
-    )
+    
 
-    photo_type = fields.Selection([
+    ,
+    photo_type = fields.Selection([))
         ('before', 'Before'),
         ('during', 'During Work'),
         ('after', 'After'),
         ('evidence', 'Evidence'),
         ('damage', 'Damage Documentation'),
         ('other', 'Other')
-    ], string='Photo Type', default='other', required=True)
+    
 
-    # ============================================================================
+        # ============================================================================
     # METADATA FIELDS
-    # ============================================================================
+        # ============================================================================
     device_info = fields.Char(
         string="Device Info",
         help="Information about the device used to take the photo"
-    )
+    
 
     file_size = fields.Integer(
-        string="File Size (bytes)",
+        ,
+    string="File Size (bytes)",
         help="Size of the photo file"
-    )
+    
 
     resolution = fields.Char(
         string="Resolution",
-        help="Photo resolution (e.g., '1920x1080')"
-    )
+        ,
+    help="Photo resolution (e.g., '1920x1080')"
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTED FIELDS
-    # ============================================================================
+        # ============================================================================
     has_gps = fields.Boolean(
         string="Has GPS",
         compute='_compute_has_gps',
         help="Whether photo has GPS coordinates"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
+        # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)]
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name))
+    
 
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)]
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name))
+    
 
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-        domain=lambda self: [("model", "=", self._name)]
-    )
+        ,
+    domain=lambda self: [("model", "=", self._name))
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends('gps_latitude', 'gps_longitude')
     def _compute_has_gps(self):
-        """Check if photo has GPS coordinates"""
+        """Check if photo has GPS coordinates""":
         for record in self:
             record.has_gps = bool(record.gps_latitude and record.gps_longitude)
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains('gps_latitude')
     def _check_gps_latitude(self):
@@ -183,19 +190,19 @@ class MobilePhoto(models.Model):
                 raise ValidationError(_('Photo file size cannot be negative'))
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_view_photo(self):
         """Open photo in full view"""
         self.ensure_one()
-        return {
+        return {}
             'type': 'ir.actions.act_window',
             'name': _('Photo: %s', self.name),
             'res_model': 'mobile.photo',
             'res_id': self.id,
             'view_mode': 'form',
             'target': 'new',
-        }
+        
 
     def action_download_photo(self):
         """Download photo file"""
@@ -203,16 +210,16 @@ class MobilePhoto(models.Model):
         if not self.photo_data:
             raise ValidationError(_('No photo data available to download'))
 
-        return {
+        return {}
             'type': 'ir.actions.act_url',
-            'url': '/web/content/mobile.photo/%s/photo_data/%s?download=true' % (
+            'url': '/web/content/mobile.photo/%s/photo_data/%s?download=true' % ()
                 self.id, self.photo_filename or 'photo.jpg'
-            ),
+            
             'target': 'self',
-        }
+        
 
     # ============================================================================
-    # BUSINESS METHODS
+        # BUSINESS METHODS
     # ============================================================================
     def get_gps_coordinates_string(self):
         """Get formatted GPS coordinates string"""
@@ -224,7 +231,7 @@ class MobilePhoto(models.Model):
     @api.model
     def create_from_mobile_data(self, mobile_data):
         """Create photo from mobile device data"""
-        vals = {
+        vals = {}
             'name': mobile_data.get('name', _('Mobile Photo')),
             'photo_data': mobile_data.get('photo_data'),
             'photo_filename': mobile_data.get('filename'),
@@ -234,9 +241,9 @@ class MobilePhoto(models.Model):
             'device_info': mobile_data.get('device_info'),
             'file_size': mobile_data.get('file_size'),
             'resolution': mobile_data.get('resolution'),
-        }
+        
 
-        # Associate with wizard if provided
+        # Associate with wizard if provided:
         if mobile_data.get('wizard_id'):
             vals['wizard_id'] = mobile_data['wizard_id']
             vals['mobile_bin_key_wizard_id'] = mobile_data['wizard_id']
@@ -244,7 +251,7 @@ class MobilePhoto(models.Model):
         return self.create(vals)
 
     # ============================================================================
-    # UTILITY METHODS
+        # UTILITY METHODS
     # ============================================================================
     def name_get(self):
         """Custom display name"""
@@ -253,9 +260,9 @@ class MobilePhoto(models.Model):
             name_parts = [record.name]
             
             if record.photo_type:
-                type_label = dict(record._fields['photo_type'].selection).get(
+                type_label = dict(record._fields['photo_type'].selection).get()
                     record.photo_type, record.photo_type
-                )
+                
                 name_parts.append(_("(%s)", type_label))
             
             if record.photo_date:
@@ -266,18 +273,18 @@ class MobilePhoto(models.Model):
 
     @api.model
     def get_photos_for_wizard(self, wizard_id):
-        """Get all photos for a specific wizard"""
-        domain = [
+        """Get all photos for a specific wizard""":
+        domain = []
             '|',
             ('wizard_id', '=', wizard_id),
             ('mobile_bin_key_wizard_id', '=', wizard_id)
-        ]
+        
         return self.search(domain, order='photo_date desc')
 
     def get_photo_metadata(self):
         """Get comprehensive photo metadata"""
         self.ensure_one()
-        return {
+        return {}
             'name': self.name,
             'type': self.photo_type,
             'date': self.photo_date,
@@ -287,4 +294,5 @@ class MobilePhoto(models.Model):
             'file_size': self.file_size,
             'resolution': self.resolution,
             'filename': self.photo_filename,
-        }
+        
+)))))))))))))

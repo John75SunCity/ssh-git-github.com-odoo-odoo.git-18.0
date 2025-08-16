@@ -12,25 +12,27 @@ class StockLotAttributeOption(models.Model):
     _order = "sequence, name"
     _rec_name = "name"
 
-    name = fields.Char(
-        string="Option Name", required=True, help="Name of the selection option"
-    )
-    attribute_id = fields.Many2one(
+    name = fields.Char()(string="Option Name", required=True, help="Name of the selection option")
+    
+    attribute_id = fields.Many2one()
         "stock.lot.attribute",
         string="Attribute",
         required=True,
         ondelete="cascade",
         help="Parent attribute",
-    )
-    sequence = fields.Integer(string="Sequence", default=10, help="Display order")
-    description = fields.Text(string="Description", help="Option description")
-    active = fields.Boolean(string="Active", default=True, help="Active status")
+    
+    sequence = fields.Integer(string="Sequence", default=10,,
+    help="Display order"),
+    description = fields.Text(string="Description",,
+    help="Option description"),
+    active = fields.Boolean(string="Active", default=True,,
+    help="Active status")
 
-    # Workflow state management
-    state = fields.Selection([
+        # Workflow state management
+    state = fields.Selection([))
         ('draft', 'Draft'),
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    ], string='Status', default='draft', tracking=True, required=True, index=True,
-       help='Current status of the record')
+    
+        help='Current status of the record'

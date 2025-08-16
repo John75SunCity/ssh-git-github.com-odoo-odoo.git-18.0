@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-"""
+
 Payment Split Management Module
 
-This module provides comprehensive payment splitting functionality for the Records
+This module provides comprehensive payment splitting functionality for the Records:
+    pass
 Management System. It enables complex payment scenarios including percentage-based
 splits, fixed amount splits, and custom split configurations with full audit trails.
 
-Key Features:
+Key Features
 - Multiple split types (percentage, fixed, equal, custom)
 - Payment method tracking and validation
 - Real-time amount calculations with currency support
@@ -16,7 +17,7 @@ Key Features:
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
-"""
+
 
 from odoo import models, fields, api, _
 
@@ -32,36 +33,36 @@ class PaymentSplit(models.Model):
     _order = "split_date desc"
     _rec_name = "name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Split Reference",
         required=True,
         tracking=True,
         index=True,
-        help="Unique identifier for payment split",
-    )
+        help="Unique identifier for payment split",:
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
-        help="User responsible for this payment split",
-    )
+        help="User responsible for this payment split",:
+    
     active = fields.Boolean(
         string="Active", default=True, help="Active status of payment split"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # TIMING AND SCHEDULING
-    # ============================================================================
+        # ============================================================================
     split_date = fields.Datetime(
         string="Split Date",
         default=fields.Datetime.now,
@@ -69,92 +70,95 @@ class PaymentSplit(models.Model):
         index=True,
         tracking=True,
         help="Date and time when split was created",
-    )
+    
     processing_date = fields.Datetime(
         string="Processing Date", help="Date when split was processed"
-    )
-    due_date = fields.Date(string="Due Date", help="Due date for payment processing")
-
-    # ============================================================================
+    
+    due_date = fields.Date(string="Due Date",,
+    help="Due date for payment processing"):
+        # ============================================================================
     # FINANCIAL INFORMATION
-    # ============================================================================
+        # ============================================================================
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    )
+    
     original_amount = fields.Monetary(
         string="Original Amount",
         required=True,
         tracking=True,
         currency_field="currency_id",
         help="Original total amount before split",
-    )
+    
     split_amount = fields.Monetary(
         string="Split Amount",
         required=True,
         tracking=True,
         currency_field="currency_id",
         help="Amount being split from original",
-    )
+    
     remaining_amount = fields.Monetary(
         string="Remaining Amount",
         compute="_compute_remaining_amount",
         store=True,
         currency_field="currency_id",
         help="Amount remaining after split",
-    )
+    
     processed_amount = fields.Monetary(
         string="Processed Amount",
         currency_field="currency_id",
         help="Amount that has been processed",
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # SPLIT CONFIGURATION
-    # ============================================================================
+        # ============================================================================
+    ,
     split_type = fields.Selection(
-        [
+        [)
             ("percentage", "Percentage Split"),
             ("fixed", "Fixed Amount Split"),
             ("equal", "Equal Split"),
             ("custom", "Custom Split"),
             ("proportional", "Proportional Split"),
-        ],
+        
         string="Split Type",
         default="fixed",
         required=True,
         tracking=True,
         help="Method used to calculate split amount",
-    )
+    
     split_percentage = fields.Float(
         string="Split Percentage",
-        digits=(5, 2),
+        ,
+    digits=(5, 2),
         help="Percentage of original amount to split",
-    )
+    
     split_count = fields.Integer(
         string="Number of Splits",
         default=2,
-        help="Number of equal splits (for equal split type)",
-    )
+        ,
+    help="Number of equal splits (for equal split type)",:
+    
     split_priority = fields.Selection(
-        [
+        [)
             ("low", "Low Priority"),
             ("normal", "Normal Priority"),
             ("high", "High Priority"),
             ("urgent", "Urgent"),
-        ],
+        
         string="Priority",
         default="normal",
-        help="Processing priority for this split",
-    )
+        help="Processing priority for this split",:
+    
 
-    # ============================================================================
+        # ============================================================================
     # PAYMENT DETAILS
-    # ============================================================================
+        # ============================================================================
     payment_method = fields.Selection(
-        [
+        [)
             ("cash", "Cash Payment"),
             ("credit_card", "Credit Card"),
             ("debit_card", "Debit Card"),
@@ -164,53 +168,55 @@ class PaymentSplit(models.Model):
             ("cryptocurrency", "Cryptocurrency"),
             ("money_order", "Money Order"),
             ("other", "Other Method"),
-        ],
+        
         string="Payment Method",
         default="cash",
         tracking=True,
-        help="Method used for payment processing",
-    )
+        help="Method used for payment processing",:
+    
     payment_reference = fields.Char(
         string="Payment Reference", help="External payment reference number"
-    )
+    
     transaction_id = fields.Char(
         string="Transaction ID", help="Unique transaction identifier"
-    )
+    
     authorization_code = fields.Char(
         string="Authorization Code", help="Payment authorization code"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # BUSINESS RELATIONSHIPS
-    # ============================================================================
+        # ============================================================================
     partner_id = fields.Many2one(
         "res.partner",
         string="Customer",
         tracking=True,
         help="Customer associated with this payment split",
-    )
+    
     invoice_id = fields.Many2one(
         "account.move",
         string="Related Invoice",
-        domain=[("move_type", "in", ["out_invoice", "out_refund"])],
+        ,
+    domain=[("move_type", "in", ["out_invoice", "out_refund"))),
         help="Invoice associated with payment split",
-    )
+    
     order_id = fields.Many2one(
         "sale.order",
         string="Related Order",
         help="Sales order associated with payment split",
-    )
+    
     pos_order_id = fields.Many2one(
         "pos.order",
         string="POS Order",
         help="Point of sale order associated with split",
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # STATUS AND WORKFLOW
-    # ============================================================================
+        # ============================================================================
+    ,
     state = fields.Selection(
-        [
+        [)
             ("draft", "Draft"),
             ("pending", "Pending Approval"),
             ("approved", "Approved"),
@@ -218,161 +224,173 @@ class PaymentSplit(models.Model):
             ("completed", "Completed"),
             ("failed", "Failed"),
             ("cancelled", "Cancelled"),
-        ],
+        
         string="Status",
         default="draft",
         tracking=True,
         help="Current status of payment split",
-    )
+    
     approval_required = fields.Boolean(
         string="Approval Required",
         default=False,
         help="Whether this split requires approval",
-    )
+    
     approved_by_id = fields.Many2one(
         "res.users", string="Approved By", help="User who approved the split"
-    )
+    
     approval_date = fields.Datetime(
         string="Approval Date", help="Date when split was approved"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # DOCUMENTATION AND NOTES
-    # ============================================================================
+        # ============================================================================
     split_reason = fields.Text(
-        string="Split Reason", tracking=True, help="Reason for creating payment split"
-    )
-    notes = fields.Text(string="Internal Notes", help="Internal processing notes")
+        string="Split Reason", tracking=True, help="Reason for creating payment split":
+    
+    notes = fields.Text(string="Internal Notes",,
+    help="Internal processing notes"),
     customer_notes = fields.Text(
         string="Customer Notes", help="Notes visible to customer"
-    )
+    
     processing_notes = fields.Text(
         string="Processing Notes", help="Notes from payment processing"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # AUDIT AND COMPLIANCE
-    # ============================================================================
+        # ============================================================================
+    ,
     created_from = fields.Selection(
-        [
+        [)
             ("manual", "Manual Entry"),
             ("pos", "Point of Sale"),
             ("portal", "Customer Portal"),
             ("api", "API Integration"),
             ("import", "Data Import"),
-        ],
+        
         string="Created From",
         default="manual",
         help="Source of payment split creation",
-    )
+    
     audit_trail = fields.Text(
         string="Audit Trail", help="Audit trail of changes and processing"
-    )
+    
     compliance_flags = fields.Char(
         string="Compliance Flags", help="Compliance and regulatory flags"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # ============================================================================
     split_line_ids = fields.One2many(
         "payment.split.line",
         "split_id",
         string="Split Lines",
         help="Individual split line items",
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
+        # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name)),
+    
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name)),
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-        domain=lambda self: [("model", "=", self._name)],
-    )
+        ,
+    domain=lambda self: [("model", "=", self._name)),
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTED FIELDS
-    # ============================================================================
+        # ============================================================================
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    )
+    
     split_count_total = fields.Integer(
         string="Total Split Lines",
         compute="_compute_split_totals",
         store=True,
         help="Total number of split lines",
-    )
+    
     total_split_amount = fields.Monetary(
         string="Total Split Amount",
         compute="_compute_split_totals",
         store=True,
         currency_field="currency_id",
         help="Sum of all split line amounts",
-    )
-activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities', auto_join=True)
-    allocated_amount = fields.Float(string='Allocated Amount', digits=(12, 2))
-    allocation_order = fields.Char(string='Allocation Order')
-    allocation_percentage = fields.Char(string='Allocation Percentage')
-    billing_period = fields.Char(string='Billing Period')
-    context = fields.Char(string='Context')
-    filter_current_period = fields.Char(string='Filter Current Period')
-    filter_high_allocation = fields.Char(string='Filter High Allocation')
-    group_billing_period = fields.Char(string='Group Billing Period')
-    group_payment = fields.Char(string='Group Payment')
-    group_service_type = fields.Selection([], string='Group Service Type')  # TODO: Define selection options
-    help = fields.Char(string='Help')
-    invoice_id = fields.Many2one('invoice', string='Invoice Id')
-message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers', auto_join=True)
-message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_join=True)
-    payment_id = fields.Many2one('payment', string='Payment Id')
-    res_model = fields.Char(string='Res Model')
-    service_id = fields.Many2one('service', string='Service Id')
-    service_type = fields.Selection([], string='Service Type')  # TODO: Define selection options
-    view_mode = fields.Char(string='View Mode')
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',,
+    auto_join=True),
+    allocated_amount = fields.Float(string='Allocated Amount',,
+    digits=(12, 2))
+    allocation_order = fields.Char(string='Allocation Order'),
+    allocation_percentage = fields.Char(string='Allocation Percentage'),
+    billing_period = fields.Char(string='Billing Period'),
+    context = fields.Char(string='Context'),
+    filter_current_period = fields.Char(string='Filter Current Period'),
+    filter_high_allocation = fields.Char(string='Filter High Allocation'),
+    group_billing_period = fields.Char(string='Group Billing Period'),
+    group_payment = fields.Char(string='Group Payment'),
+    group_service_type = fields.Selection([), string='Group Service Type')  # TODO: Define selection options
+    help = fields.Char(string='Help'),
+    invoice_id = fields.Many2one('invoice',,
+    string='Invoice Id'),
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',,
+    auto_join=True),
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',,
+    auto_join=True),
+    payment_id = fields.Many2one('payment',,
+    string='Payment Id'),
+    res_model = fields.Char(string='Res Model'),
+    service_id = fields.Many2one('service',,
+    string='Service Id'),
+    service_type = fields.Selection([), string='Service Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode'),
+    context = fields.Char(string='Context'),
+    domain = fields.Char(string='Domain'),
+    help = fields.Char(string='Help'),
+    res_model = fields.Char(string='Res Model'),
+    type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends("original_amount", "split_amount")
     def _compute_remaining_amount(self):
         """Calculate remaining amount after split"""
         for record in self:
-            record.remaining_amount = (record.original_amount or 0) - (
+            record.remaining_amount = (record.original_amount or 0) - ()
                 record.split_amount or 0
-            )
+            
 
     @api.depends("name", "split_amount", "currency_id", "partner_id")
     def _compute_display_name(self):
         """Compute display name with amount and customer info"""
         for record in self:
-            parts = []
+            parts = [)
             if record.name:
                 parts.append(record.name)
 
             if record.split_amount:
-                currency_symbol = (
+                currency_symbol = ()
                     record.currency_id.symbol or record.currency_id.name or ""
-                )
+                
                 parts.append(f"{currency_symbol}{record.split_amount:,.2f}")
 
             if record.partner_id:
@@ -388,21 +406,21 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
             record.total_split_amount = sum(record.split_line_ids.mapped("amount"))
 
     # ============================================================================
-    # ORM OVERRIDES
+        # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to set sequence and audit trail"""
         for vals in vals_list:
             if not vals.get("name") or vals.get("name") == "/":
-                vals["name"] = (
+                vals["name"] = ()
                     self.env["ir.sequence"].next_by_code("payment.split") or "SPLIT-NEW"
-                )
+                
 
             # Set audit trail
-            vals["audit_trail"] = (
+            vals["audit_trail"] = ()
                 f"Created by {self.env.user.name} at {fields.Datetime.now()}"
-            )
+            
 
         return super().create(vals_list)
 
@@ -410,20 +428,20 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
         """Override write to update audit trail"""
         result = super().write(vals)
 
-        # Update audit trail for significant changes
+        # Update audit trail for significant changes:
         significant_fields = ["state", "split_amount", "payment_method"]
         if any(field in vals for field in significant_fields):
             for record in self:
                 current_trail = record.audit_trail or ""
-                new_entry = (
+                new_entry = ()
                     f"\nUpdated by {self.env.user.name} at {fields.Datetime.now()}"
-                )
+                
                 record.audit_trail = current_trail + new_entry
 
         return result
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains("split_amount", "original_amount")
     def _check_split_amount(self):
@@ -431,12 +449,12 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
         for record in self:
             if record.split_amount and record.original_amount:
                 if record.split_amount > record.original_amount:
-                    raise ValidationError(
-                        _(
+                    raise ValidationError()
+                        _()
                             "Split amount (%s) cannot be greater than original amount (%s)"
-                        )
+                        
                         % (record.split_amount, record.original_amount)
-                    )
+                    
                 if record.split_amount <= 0:
                     raise ValidationError(_("Split amount must be greater than zero"))
 
@@ -446,13 +464,13 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
         for record in self:
             if record.split_type == "percentage" and record.split_percentage:
                 if not (0 < record.split_percentage <= 100):
-                    raise ValidationError(
+                    raise ValidationError()
                         _("Split percentage must be between 0 and 100, got %s", record.split_percentage)
-                    )
+                    
 
     @api.constrains("split_count")
     def _check_split_count(self):
-        """Validate split count for equal splits"""
+        """Validate split count for equal splits""":
         for record in self:
             if record.split_type == "equal" and record.split_count:
                 if record.split_count < 2:
@@ -469,18 +487,15 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
                     raise ValidationError(_("Due date cannot be before split date"))
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_submit_for_approval(self):
-        """Submit payment split for approval"""
-
+        """Submit payment split for approval""":
         self.ensure_one()
         if self.state != "draft":
-            raise ValidationError(_("Only draft splits can be submitted for approval"))
-
+            raise ValidationError(_("Only draft splits can be submitted for approval")):
         self.write({"state": "pending"})
-        self.message_post(body=_("Payment split submitted for approval"))
-
+        self.message_post(body=_("Payment split submitted for approval")):
     def action_approve(self):
         """Approve payment split"""
 
@@ -488,13 +503,13 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
         if self.state != "pending":
             raise ValidationError(_("Only pending splits can be approved"))
 
-        self.write(
-            {
+        self.write()
+            {}
                 "state": "approved",
                 "approved_by": self.env.user.id,
                 "approval_date": fields.Datetime.now(),
-            }
-        )
+            
+        
         self.message_post(body=_("Payment split approved by %s", self.env.user.name))
 
     def action_reject(self):
@@ -514,12 +529,12 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
         if self.state not in ["approved", "draft"]:
             raise ValidationError(_("Only approved or draft splits can be processed"))
 
-        self.write(
-            {
+        self.write()
+            {}
                 "state": "processing",
                 "processing_date": fields.Datetime.now(),
-            }
-        )
+            
+        
         self.message_post(body=_("Payment split processing started"))
 
     def action_complete(self):
@@ -529,12 +544,12 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
         if self.state != "processing":
             raise ValidationError(_("Only processing splits can be completed"))
 
-        self.write(
-            {
+        self.write()
+            {}
                 "state": "completed",
                 "processed_amount": self.split_amount,
-            }
-        )
+            
+        
         self.message_post(body=_("Payment split completed successfully"))
 
     def action_fail(self):
@@ -564,14 +579,14 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
         if self.state in ["completed"]:
             raise ValidationError(_("Completed splits cannot be reset to draft"))
 
-        self.write(
-            {
+        self.write()
+            {}
                 "state": "draft",
                 "approved_by": False,
                 "approval_date": False,
                 "processing_date": False,
-            }
-        )
+            
+        
         self.message_post(body=_("Payment split reset to draft"))
 
     def action_create_split_lines(self):
@@ -586,56 +601,56 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
             # Create equal split lines
             amount_per_split = self.original_amount / self.split_count
             for i in range(self.split_count):
-                self.env["payment.split.line"].create(
-                    {
+                self.env["payment.split.line"].create()
+                    {}
                         "split_id": self.id,
                         "sequence": i + 1,
                         "amount": amount_per_split,
                         "name": f"Split {i + 1} of {self.split_count}",
-                    }
-                )
+                    
+                
 
         elif self.split_type == "percentage":
             # Create percentage-based split
             split_amount = self.original_amount * (self.split_percentage / 100)
             remaining_amount = self.original_amount - split_amount
 
-            self.env["payment.split.line"].create(
-                [
-                    {
+            self.env["payment.split.line"].create()
+                []
+                    {}
                         "split_id": self.id,
                         "sequence": 1,
                         "amount": split_amount,
                         "name": f"Split ({self.split_percentage}%)",
-                    },
-                    {
+                    
+                    {}
                         "split_id": self.id,
                         "sequence": 2,
                         "amount": remaining_amount,
                         "name": f"Remaining ({100 - self.split_percentage}%)",
-                    },
-                ]
-            )
+                    
+                
+            
 
-        self.message_post(
+        self.message_post()
             body=_("Split lines created based on %s configuration", self.split_type)
-        )
+        
 
     def action_view_split_lines(self):
         """View split lines"""
 
         self.ensure_one()
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Split Lines"),
             "res_model": "payment.split.line",
             "view_mode": "tree,form",
             "domain": [("split_id", "=", self.id)],
             "context": {"default_split_id": self.id},
-        }
+        
 
     # ============================================================================
-    # BUSINESS METHODS
+        # BUSINESS METHODS
     # ============================================================================
     def calculate_split_amount(self):
         """Calculate split amount based on type and configuration"""
@@ -654,22 +669,22 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
     def get_payment_info(self):
         """Get payment information summary"""
         self.ensure_one()
-        return {
+        return {}
             "reference": self.name,
             "amount": self.split_amount,
             "currency": self.currency_id.name,
             "method": self.payment_method,
             "status": self.state,
-            "customer": self.partner_id.name if self.partner_id else None,
+            "customer": self.partner_id.name if self.partner_id else None,:
             "transaction_id": self.transaction_id,
-        }
+        
 
     # ============================================================================
-    # REPORTING METHODS
+        # REPORTING METHODS
     # ============================================================================
     @api.model
     def get_split_summary(self, date_from=None, date_to=None):
-        """Get payment split summary for reporting"""
+        """Get payment split summary for reporting""":
         domain = []
 
         if date_from:
@@ -679,43 +694,43 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
 
         splits = self.search(domain)
 
-        summary = {
+        summary = {}
             "total_splits": len(splits),
             "total_original_amount": sum(splits.mapped("original_amount")),
             "total_split_amount": sum(splits.mapped("split_amount")),
             "by_status": {},
             "by_payment_method": {},
             "by_split_type": {},
-        }
+        
 
         # Group by status
         for state in splits.mapped("state"):
             splits_in_state = splits.filtered(lambda s: s.state == state)
-            summary["by_status"][state] = {
+            summary["by_status"][state] = {}
                 "count": len(splits_in_state),
                 "amount": sum(splits_in_state.mapped("split_amount")),
-            }
+            
 
         # Group by payment method
         for method in splits.mapped("payment_method"):
             splits_with_method = splits.filtered(lambda s: s.payment_method == method)
-            summary["by_payment_method"][method] = {
+            summary["by_payment_method"][method] = {}
                 "count": len(splits_with_method),
                 "amount": sum(splits_with_method.mapped("split_amount")),
-            }
+            
 
         # Group by split type
         for split_type in splits.mapped("split_type"):
             splits_of_type = splits.filtered(lambda s: s.split_type == split_type)
-            summary["by_split_type"][split_type] = {
+            summary["by_split_type"][split_type] = {}
                 "count": len(splits_of_type),
                 "amount": sum(splits_of_type.mapped("split_amount")),
-            }
+            
 
         return summary
 
     # ============================================================================
-    # UTILITY METHODS
+        # UTILITY METHODS
     # ============================================================================
     def name_get(self):
         """Custom name display"""
@@ -734,14 +749,14 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
         return result
 
     @api.model
-    def _search_name(
+    def _search_name(:)
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
+    
         """Enhanced search by name, reference, or customer"""
         args = args or []
         domain = []
         if name:
-            domain = [
+            domain = []
                 "|",
                 "|",
                 "|",
@@ -749,7 +764,7 @@ message_ids = fields.One2many('mail.message', 'res_id', string='Messages', auto_
                 ("payment_reference", operator, name),
                 ("transaction_id", operator, name),
                 ("partner_id.name", operator, name),
-            ]
+            
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
 
@@ -762,32 +777,35 @@ class PaymentSplitLine(models.Model):
 
     split_id = fields.Many2one(
         "payment.split", string="Payment Split", required=True, ondelete="cascade"
-    )
-    sequence = fields.Integer(string="Sequence", default=10)
-    name = fields.Char(string="Description", required=True)
+    
+    sequence = fields.Integer(string="Sequence",,
+    default=10),
+    name = fields.Char(string="Description",,
+    required=True),
     amount = fields.Monetary(
         string="Amount", required=True, currency_field="currency_id"
-    )
+    
     currency_id = fields.Many2one(
         string="Currency", related="split_id.currency_id", store=True
-    )
+    
     partner_id = fields.Many2one(
         "res.partner", string="Recipient", help="Partner receiving this split portion"
-    )
+    
     payment_method = fields.Selection(
         string="Payment Method", related="split_id.payment_method"
-    )
+    
     payment_reference = fields.Char(
-        string="Payment Reference", help="Reference for this split line payment"
-    )
+        string="Payment Reference", help="Reference for this split line payment":
+    
     processed = fields.Boolean(
         string="Processed",
         default=False,
         help="Whether this split line has been processed",
-    )
+    
     processing_date = fields.Datetime(
         string="Processing Date", help="Date when this line was processed"
-    )
+    
+    ,
     notes = fields.Text(string="Notes")
 
     @api.constrains("amount")
@@ -801,20 +819,21 @@ class PaymentSplitLine(models.Model):
         """Mark split line as processed"""
 
         self.ensure_one()
-        self.write(
-            {
+        self.write()
+            {}
                 "processed": True,
                 "processing_date": fields.Datetime.now(),
-            }
-        )
+            
+        
 
     def action_unmark_processed(self):
         """Unmark split line as processed"""
 
         self.ensure_one()
-        self.write(
-            {
+        self.write()
+            {}
                 "processed": False,
                 "processing_date": False,
-            }
-        )
+            
+        
+))))))))))))))))))))))))))))))))))

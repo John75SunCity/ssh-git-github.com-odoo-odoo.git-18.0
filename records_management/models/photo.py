@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
+
 Photo Attachment Management Module
 
-This module provides comprehensive photo attachment management for the Records
+This module provides comprehensive photo attachment management for the Records:
+    pass
 Management System with integration to mobile workflows and partner relationships.
-"""
+
 
 import logging
 
@@ -24,12 +25,12 @@ _logger = logging.getLogger(__name__)
 
 
 class Photo(models.Model):
-    """
-    Photo Attachment Management
+
+        Photo Attachment Management
 
     Manages photo attachments with metadata, relationships, and mobile integration
-    for comprehensive document and workflow support.
-    """
+        for comprehensive document and workflow support.:
+
 
     _name = "photo"
     _description = "Photo Attachment"
@@ -37,169 +38,173 @@ class Photo(models.Model):
     _order = "date desc, name"
     _rec_name = "name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Photo Name",
         required=True,
         tracking=True,
         index=True,
         default="New Photo",
-    )
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="User",
         default=lambda self: self.env.user,
         tracking=True
-    )
+    
     active = fields.Boolean(
         string="Active",
         default=True,
         tracking=True
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # PHOTO CONTENT FIELDS
-    # ============================================================================
+        # ============================================================================
     description = fields.Text(
         string="Description",
         tracking=True
-    )
+    
 
-    # File attachment fields
+        # File attachment fields
     image = fields.Binary(
         string="Image",
         attachment=True,
         help="The photo image file"
-    )
+    
     image_filename = fields.Char(
         string="Image Filename",
         help="Original filename of the uploaded image"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # METADATA FIELDS
-    # ============================================================================
+        # ============================================================================
     date = fields.Datetime(
         string="Date Taken",
         default=fields.Datetime.now,
         required=True,
         tracking=True
-    )
+    
     location = fields.Char(
         string="Location",
         help="Where the photo was taken"
-    )
+    
     tags = fields.Char(
         string="Tags",
-        help="Comma-separated tags for categorization"
-    )
+        help="Comma-separated tags for categorization":
+    
 
-    # ============================================================================
+        # ============================================================================
     # TECHNICAL METADATA FIELDS
-    # ============================================================================
+        # ============================================================================
     file_size = fields.Integer(
-        string="File Size (bytes)",
+        ,
+    string="File Size (bytes)",
         readonly=True,
         compute="_compute_file_info",
         store=True,
-    )
+    
     file_type = fields.Char(
         string="File Type",
         readonly=True,
         help="MIME type of the image file",
         compute="_compute_file_info",
         store=True,
-    )
+    
     resolution = fields.Char(
         string="Resolution",
         readonly=True,
-        help="Image resolution (width x height)",
+        ,
+    help="Image resolution (width x height)",
         compute="_compute_resolution",
         store=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # ============================================================================
     mobile_bin_key_wizard_id = fields.Many2one(
         "mobile.bin.key.wizard",
         string="Mobile Bin Key Wizard",
         help="Related mobile workflow wizard",
-    )
+    
     partner_id = fields.Many2one(
         "res.partner",
         string="Related Partner",
         tracking=True,
         help="Customer or partner associated with this photo",
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # WORKFLOW FIELDS
-    # ============================================================================
+        # ============================================================================
+    ,
     state = fields.Selection(
-        [
+        [)
             ("draft", "Draft"),
             ("validated", "Validated"),
             ("archived", "Archived")
-        ],
+        
         string="Status",
         default="draft",
         tracking=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # CATEGORIZATION FIELDS
-    # ============================================================================
+        # ============================================================================
     category = fields.Selection(
-        [
+        [)
             ("document", "Document Photo"),
             ("location", "Location Photo"),
             ("equipment", "Equipment Photo"),
             ("damage", "Damage Photo"),
             ("verification", "Verification Photo"),
             ("general", "General Photo"),
-        ],
+        
         string="Category",
         default="general",
         tracking=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
+        # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
         string="Activities",
-    )
+    
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-    )
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-    )
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    
+    ,
+    context = fields.Char(string='Context'),
+    domain = fields.Char(string='Domain'),
+    help = fields.Char(string='Help'),
+    res_model = fields.Char(string='Res Model'),
+    type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends("image", "image_filename")
     def _compute_file_info(self):
         """Compute file size and type from binary data"""
@@ -207,15 +212,15 @@ class Photo(models.Model):
             if record.image:
                 record.file_size = len(record.image)
                 if record.image_filename:
-                    file_extension = record.image_filename.split(".")[-1].lower()
-                    mime_types = {
+                    file_extension = record.image_filename.split(".")[-1).lower()
+                    mime_types = {}
                         "jpg": "image/jpeg",
                         "jpeg": "image/jpeg",
                         "png": "image/png",
                         "gif": "image/gif",
                         "bmp": "image/bmp",
                         "webp": "image/webp",
-                    }
+                    
                     record.file_type = mime_types.get(file_extension, "unknown")
                 else:
                     record.file_type = "unknown"
@@ -240,12 +245,12 @@ class Photo(models.Model):
                 image_data = io.BytesIO(record.image)
                 img = Image.open(image_data)
                 record.resolution = f"{img.width}x{img.height}"
-            except Exception as e:
+            except Exception as e
                 _logger.warning("Failed to compute resolution for photo %s: %s", record.name, e)
                 record.resolution = "Error"
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_validate_photo(self):
         """Validate the photo and move to validated state"""
@@ -287,76 +292,76 @@ class Photo(models.Model):
             raise UserError(_("There is no image to download."))
 
         filename = self.image_filename or _("photo_%s.jpg", self.id)
-        return {
+        return {}
             "type": "ir.actions.act_url",
             "url": f"/web/content/photo/{self.id}/image?download=true&filename={filename}",
             "target": "new",
-        }
+        
 
     def action_view_metadata(self):
         """View detailed photo metadata"""
 
         self.ensure_one()
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Photo Metadata"),
             "res_model": "photo",
             "res_id": self.id,
             "view_mode": "form",
             "target": "new",
-        }
+        
 
     def action_set_category(self):
         """Open wizard to set photo category"""
 
         self.ensure_one()
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Set Photo Category"),
             "res_model": "photo.category.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_photo_id": self.id, "default_category": self.category},
-        }
+        
 
     def action_bulk_tag_photos(self):
         """Bulk tag multiple photos"""
 
         self.ensure_one()
-        # This action operates on a recordset, but the wizard is launched for one context
-        return {
+        # This action operates on a recordset, but the wizard is launched for one context:
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Bulk Tag Photos"),
             "res_model": "photo.bulk.tag.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_photo_ids": [(6, 0, self.ids)]},
-        }
+        
 
     # ============================================================================
-    # BUSINESS METHODS
+        # BUSINESS METHODS
     # ============================================================================
     def get_photo_metadata(self):
-        """Get comprehensive photo metadata for reporting or API use."""
+        """Get comprehensive photo metadata for reporting or API use.""":
         self.ensure_one()
-        return {
+        return {}
             "name": self.name,
             "category": self.category,
             "date": self.date,
             "location": self.location,
-            "tags": self.tags.split(",") if self.tags else [],
+            "tags": self.tags.split(",") if self.tags else [],:
             "file_size": self.file_size,
             "file_type": self.file_type,
             "resolution": self.resolution,
-            "partner": self.partner_id.name if self.partner_id else None,
-        }
+            "partner": self.partner_id.name if self.partner_id else None,:
+        
 
     def duplicate_photo(self):
         """Create a duplicate of this photo, including its image."""
         self.ensure_one()
-        new_photo = self.copy({
+        new_photo = self.copy({)}
             "name": _("%s (Copy)", self.name),
-        })
+        
         new_photo.message_post(body=_("Duplicated from photo %s", self.name))
         return new_photo
 
@@ -373,21 +378,21 @@ class Photo(models.Model):
         try:
             image_data = io.BytesIO(self.image)
             img = Image.open(image_data)
-            # Use thumbnail for resizing while keeping aspect ratio
+            # Use thumbnail for resizing while keeping aspect ratio:
             img.thumbnail(size, Image.Resampling.LANCZOS)
             output = io.BytesIO()
             img.save(output, format='JPEG')
             return output.getvalue()
-        except Exception as e:
+        except Exception as e
             _logger.warning("Failed to generate thumbnail for photo %s: %s", self.name, e)
             return False
 
     # ============================================================================
-    # ORM OVERRIDES
+        # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create for automatic photo numbering and audit trail."""
+        """Override create for automatic photo numbering and audit trail.""":
         for vals in vals_list:
             if vals.get("name", "New Photo") == "New Photo":
                 vals["name"] = self.env["ir.sequence"].next_by_code("photo") or _("New Photo")
@@ -397,54 +402,53 @@ class Photo(models.Model):
         return photos
 
     def write(self, vals):
-        """Override write for file info updates and detailed audit trail."""
+        """Override write for file info updates and detailed audit trail.""":
         # Get labels before the write operation changes the state
         state_label_map = dict(self._fields['state'].selection)
         category_label_map = dict(self._fields['category'].selection)
 
-        old_values = {rec.id: {'state': rec.state, 'category': rec.category} for rec in self}
-
+        old_values = {rec.id: {'state': rec.state, 'category': rec.category} for rec in self}:
         super().write(vals)
 
         for record in self:
             if 'state' in vals and old_values[record.id]['state'] != record.state:
                 old_state_label = state_label_map.get(old_values[record.id]['state'], _('N/A'))
                 new_state_label = state_label_map.get(record.state, _('N/A'))
-                record.message_post(
-                    body=_(
+                record.message_post()
+                    body=_()
                         "State changed from %s to %s.",
                         old_state_label,
                         new_state_label,
-                    )
-                )
+                    
+                
 
             if 'category' in vals and old_values[record.id]['category'] != record.category:
                 old_cat_label = category_label_map.get(old_values[record.id]['category'], _('N/A'))
                 new_cat_label = category_label_map.get(record.category, _('N/A'))
-                record.message_post(
-                    body=_(
+                record.message_post()
+                    body=_()
                         "Category changed from %s to %s.",
                         old_cat_label,
                         new_cat_label,
-                    )
-                )
+                    
+                
         return True
 
     def unlink(self):
         """Override unlink to prevent deletion of validated or archived photos."""
         for photo in self:
             if photo.state in ["validated", "archived"]:
-                raise UserError(
-                    _(
+                raise UserError()
+                    _()
                         "Cannot delete photo '%s' because it is in the '%s' state. Please reset it to draft first.",
                         photo.name,
                         photo.state,
-                    )
-                )
+                    
+                
         return super().unlink()
 
     def name_get(self):
-        """Custom name display with category and date for better context."""
+        """Custom name display with category and date for better context.""":
         result = []
         category_map = dict(self.fields_get(['category'])['category']['selection'])
         for record in self:
@@ -459,7 +463,7 @@ class Photo(models.Model):
         return result
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains("image", "image_filename")
     def _check_image_requirements(self):
@@ -500,15 +504,15 @@ class Photo(models.Model):
             if record.image_filename:
                 file_extension = record.image_filename.split(".")[-1].lower()
                 if file_extension not in allowed_extensions:
-                    raise ValidationError(
-                        _(
+                    raise ValidationError()
+                        _()
                             "The image file must be one of the following types: %s.",
                             ", ".join(allowed_extensions),
-                        )
-                    )
+                        
+                    
 
     # ============================================================================
-    # UTILITY & SEARCH METHODS
+        # UTILITY & SEARCH METHODS
     # ============================================================================
     @api.model
     def get_photos_by_category(self, category):
@@ -527,30 +531,32 @@ class Photo(models.Model):
 
     @api.model
     def _search_tags(self, operator, value):
-        """Allow searching for photos by tags."""
+        """Allow searching for photos by tags.""":
         if operator not in ('ilike', 'like', '=', '!=') or not isinstance(value, str):
             return [('id', '=', 0)]
         return [('tags', operator, value)]
 
     @api.model
     def get_photo_statistics(self):
-        """Get statistics about photos for reporting dashboards."""
-        read_group_category = self.read_group(
+        """Get statistics about photos for reporting dashboards.""":
+        read_group_category = self.read_group()
             [('active', '=', True)],
             ['category'], ['category']
-        )
-        read_group_state = self.read_group(
+        
+        read_group_state = self.read_group()
             [('active', '=', True)],
             ['state'], ['state']
-        )
-        stats = {
+        
+        stats = {}
             "total_photos": self.search_count([('active', '=', True)]),
-            "by_category": {res['category'][1]: res['category_count'] for res in read_group_category if res['category']},
-            "by_state": {res['state'][1]: res['state_count'] for res in read_group_state if res['state']},
+            "by_category": {res['category'][1]: res['category_count'] for res in read_group_category if res['category']},:
+            "by_state": {res['state'][1]: res['state_count'] for res in read_group_state if res['state']},:
             "total_file_size": sum(self.search([('active', '=', True)]).mapped('file_size')),
-        }
+        
         if stats["total_photos"] > 0:
             stats["average_file_size"] = stats["total_file_size"] / stats["total_photos"]
         else:
             stats["average_file_size"] = 0
         return stats
+
+))))))))))))))))

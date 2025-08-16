@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
-"""
+
 FSM Notification Record
 
-Individual notification records for FSM routes and tasks.
-Separated from the manager for better organization and following Odoo standards.
-
+Individual notification records for FSM routes and tasks.:
+    pass
+Separated from the manager for better organization and following Odoo standards.""":"
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
-"""
+
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 
 class FsmNotification(models.Model):
-    """
-    FSM Notification
 
-    Individual notification records for FSM routes and tasks.
-    Managed by fsm.notification.manager for operations.
-    """
+        FSM Notification
+
+    Individual notification records for FSM routes and tasks.""":"
+        Managed by fsm.notification.manager for operations.:
+
 
     _name = "fsm.notification"
     _description = "FSM Notification"
@@ -28,62 +28,63 @@ class FsmNotification(models.Model):
     _order = 'create_date desc'
     _rec_name = 'name'
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Notification Name",
         required=True,
         tracking=True,
         index=True,
         help="Name of the notification"
-    )
+    
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # ============================================================================
     route_management_id = fields.Many2one(
         "fsm.route.management",
         string="Route Management",
         help="Related route management record"
-    )
+    
 
     task_id = fields.Many2one(
         "project.task",
         string="FSM Task",
         help="Related FSM task"
-    )
+    
 
     pickup_request_id = fields.Many2one(
         "pickup.request",
         string="Pickup Request",
         help="Related pickup request"
-    )
+    
 
     route_id = fields.Many2one(
         "fsm.route",
         string="FSM Route",
         help="Related FSM route"
-    )
+    
 
     partner_id = fields.Many2one(
         "res.partner",
         string="Recipient",
         required=True,
         help="Recipient of the notification"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # NOTIFICATION CONTENT FIELDS
-    # ============================================================================
-    notification_type = fields.Selection([
+        # ============================================================================
+    ,
+    notification_type = fields.Selection([))
         ('day_of_service', 'Day of Service'),
         ('driver_proximity', 'Driver Proximity'),
         ('task_status', 'Task Status Update'),
@@ -91,164 +92,168 @@ class FsmNotification(models.Model):
         ('completion', 'Service Completion'),
         ('delay', 'Service Delay'),
         ('cancellation', 'Service Cancellation'),
-    ], string='Notification Type', required=True, default='day_of_service')
+    
 
     subject = fields.Char(
         string="Subject",
         required=True,
         help="Notification subject line"
-    )
+    
 
     message = fields.Html(
         string="Message Content",
         required=True,
         help="HTML formatted notification message"
-    )
+    
 
-    delivery_method = fields.Selection([
+    ,
+    delivery_method = fields.Selection([))
         ('email', 'Email'),
         ('sms', 'SMS'),
         ('portal', 'Portal Notification'),
         ('push', 'Push Notification'),
-    ], string='Delivery Method', required=True, default='email')
+    
 
-    # ============================================================================
+        # ============================================================================
     # STATUS AND SCHEDULING FIELDS
-    # ============================================================================
-    state = fields.Selection([
+        # ============================================================================
+    state = fields.Selection([))
         ('draft', 'Draft'),
         ('scheduled', 'Scheduled'),
         ('sent', 'Sent'),
         ('delivered', 'Delivered'),
         ('failed', 'Failed'),
         ('cancelled', 'Cancelled'),
-    ], string='Status', default='draft', tracking=True, required=True)
+    
 
-    priority = fields.Selection([
+    priority = fields.Selection([))
         ('0', 'Low'),
         ('1', 'Normal'),
         ('2', 'High'),
         ('3', 'Urgent'),
-    ], string='Priority', default='1')
+    
 
     scheduled_datetime = fields.Datetime(
         string="Scheduled Send Time",
         help="When the notification should be sent"
-    )
+    
 
     sent_datetime = fields.Datetime(
         string="Sent Date/Time",
         readonly=True,
         help="When the notification was actually sent"
-    )
+    
 
     delivered_datetime = fields.Datetime(
         string="Delivered Date/Time",
         readonly=True,
         help="When delivery was confirmed"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # TRACKING FIELDS
-    # ============================================================================
+        # ============================================================================
     attempts = fields.Integer(
         string="Send Attempts",
         default=0,
         readonly=True,
         help="Number of send attempts"
-    )
+    
 
     max_attempts = fields.Integer(
         string="Max Attempts",
         default=3,
         help="Maximum number of send attempts"
-    )
+    
 
     error_message = fields.Text(
         string="Error Message",
         readonly=True,
-        help="Last error message if send failed"
-    )
+        help="Last error message if send failed":
+    
 
-    # ============================================================================
+        # ============================================================================
     # TEMPLATE AND CUSTOMIZATION
-    # ============================================================================
+        # ============================================================================
     template_id = fields.Many2one(
         "mail.template",
         string="Email Template",
-        help="Email template used for this notification"
-    )
+        help="Email template used for this notification":
+    
 
     custom_data = fields.Json(
         string="Custom Data",
-        help="Additional data for template rendering"
-    )
+        help="Additional data for template rendering":
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTED FIELDS
-    # ============================================================================
+        # ============================================================================
     can_retry = fields.Boolean(
         string="Can Retry",
         compute="_compute_can_retry",
         help="Whether this notification can be retried"
-    )
+    
 
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
+        # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)]
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name))
+    
 
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)]
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name))
+    
 
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-        domain=lambda self: [("model", "=", self._name)]
-    )
+        ,
+    domain=lambda self: [("model", "=", self._name))
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends('attempts', 'max_attempts', 'state')
     def _compute_can_retry(self):
-        """Check if notification can be retried"""
+        """Check if notification can be retried""":
         for record in self:
-            record.can_retry = (
+            record.can_retry = ()
                 record.state == 'failed' and
                 record.attempts < record.max_attempts
-            )
+            
 
     @api.depends('name', 'notification_type', 'partner_id')
     def _compute_display_name(self):
         """Compute display name"""
         for record in self:
             if record.partner_id and record.notification_type:
-                type_label = dict(record._fields['notification_type'].selection).get(
+                type_label = dict(record._fields['notification_type'].selection).get()
                     record.notification_type, record.notification_type
-                )
+                
                 record.display_name = _("%s - %s (%s)", record.name, type_label, record.partner_id.name)
             else:
                 record.display_name = record.name or _("New Notification")
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_send_now(self):
         """Send notification immediately"""
@@ -258,26 +263,26 @@ class FsmNotification(models.Model):
             raise UserError(_("Cannot send notification in %s state", self.state))
 
         # Update to scheduled and let the manager handle sending
-        self.write({
+        self.write({)}
             'state': 'scheduled',
             'scheduled_datetime': fields.Datetime.now()
-        })
+        
 
         # Call the manager to process this notification
         manager = self.env['fsm.notification.manager']
         return manager._send_notification(self)
 
     def action_schedule(self, datetime_scheduled):
-        """Schedule notification for later sending"""
+        """Schedule notification for later sending""":
         self.ensure_one()
 
         if self.state not in ['draft', 'failed']:
             raise UserError(_("Cannot schedule notification in %s state", self.state))
 
-        self.write({
+        self.write({)}
             'state': 'scheduled',
             'scheduled_datetime': datetime_scheduled
-        })
+        
 
         return True
 
@@ -298,49 +303,49 @@ class FsmNotification(models.Model):
         if not self.can_retry:
             raise UserError(_("Cannot retry this notification"))
 
-        self.write({
+        self.write({)}
             'state': 'scheduled',
             'scheduled_datetime': fields.Datetime.now(),
             'error_message': False
-        })
+        
 
         return True
 
     # ============================================================================
-    # BUSINESS METHODS
+        # BUSINESS METHODS
     # ============================================================================
     def mark_as_sent(self):
         """Mark notification as sent"""
-        self.write({
+        self.write({)}
             'state': 'sent',
             'sent_datetime': fields.Datetime.now(),
             'attempts': self.attempts + 1
-        })
+        
 
     def mark_as_delivered(self):
         """Mark notification as delivered"""
-        self.write({
+        self.write({)}
             'state': 'delivered',
             'delivered_datetime': fields.Datetime.now()
-        })
+        
 
     def mark_as_failed(self, error_message=None):
         """Mark notification as failed"""
-        self.write({
+        self.write({)}
             'state': 'failed',
             'attempts': self.attempts + 1,
             'error_message': error_message or _("Unknown error")
-        })
+        
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains('scheduled_datetime')
     def _check_scheduled_datetime(self):
         """Validate scheduled datetime"""
         for record in self:
             if record.scheduled_datetime and record.scheduled_datetime < fields.Datetime.now():
-                if record.state == 'draft':  # Allow past dates for already scheduled items
+                if record.state == 'draft':  # Allow past dates for already scheduled items:
                     raise ValidationError(_("Scheduled date/time must be in the future"))
 
     @api.constrains('attempts', 'max_attempts')
@@ -353,7 +358,7 @@ class FsmNotification(models.Model):
                 raise ValidationError(_("Attempts cannot be negative"))
 
     # ============================================================================
-    # ORM METHODS
+        # ORM METHODS
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
@@ -365,58 +370,58 @@ class FsmNotification(models.Model):
         return super().create(vals_list)
 
     # ============================================================================
-    # UTILITY METHODS
+        # UTILITY METHODS
     # ============================================================================
     def name_get(self):
         """Override name_get to show meaningful display names"""
         result = []
         for record in self:
             if record.route_id and record.route_id.name:
-                name = _("FSM Notification for Route %s", record.route_id.name)
+                name = _("FSM Notification for Route %s", record.route_id.name):
             elif record.task_id and record.task_id.name:
-                name = _("FSM Notification for Task %s", record.task_id.name)
+                name = _("FSM Notification for Task %s", record.task_id.name):
             elif record.pickup_request_id and record.pickup_request_id.name:
-                name = _("FSM Notification for Pickup %s", record.pickup_request_id.name)
+                name = _("FSM Notification for Pickup %s", record.pickup_request_id.name):
             else:
                 name = record.name or _("FSM Notification")
             result.append((record.id, name))
         return result
 
     def get_notification_context(self):
-        """Get context data for template rendering"""
+        """Get context data for template rendering""":
         self.ensure_one()
-        return {
+        return {}
             'notification': self,
             'partner': self.partner_id,
             'task': self.task_id,
             'route': self.route_id,
             'pickup_request': self.pickup_request_id,
             'company': self.company_id,
-        }
+        
 
     @api.model
     def get_notifications_for_processing(self):
-        """Get notifications ready for processing"""
-        return self.search([
+        """Get notifications ready for processing""":
+        return self.search([)]
             ('state', '=', 'scheduled'),
             ('scheduled_datetime', '<=', fields.Datetime.now()),
-        ], order='priority desc, scheduled_datetime')
+        
 
     def get_delivery_status_display(self):
         """Get user-friendly delivery status"""
         self.ensure_one()
-        status_map = {
+        status_map = {}
             'draft': _('Not Sent'),
             'scheduled': _('Scheduled'),
             'sent': _('Sent'),
             'delivered': _('Delivered'),
             'failed': _('Failed'),
             'cancelled': _('Cancelled'),
-        }
+        
         return status_map.get(self.state, self.state)
 
     # ============================================================================
-    # CRON/AUTOMATION METHODS
+        # CRON/AUTOMATION METHODS
     # ============================================================================
     @api.model
     def process_scheduled_notifications(self):
@@ -433,34 +438,34 @@ class FsmNotification(models.Model):
                     processed_count += 1
                 else:
                     failed_count += 1
-            except Exception as e:
+            except Exception as e
                 notification.mark_as_failed(str(e))
                 failed_count += 1
 
-        return {
+        return {}
             'processed': processed_count,
             'failed': failed_count,
             'total': len(notifications)
-        }
+        
 
     @api.model
     def cleanup_old_notifications(self, days=30):
         """Cleanup old sent notifications"""
-        cutoff_date = fields.Datetime.now() - fields.timedelta(days=days)
-        old_notifications = self.search([
+    cutoff_date = fields.Datetime.now() - fields.timedelta(days=days)
+        old_notifications = self.search([)]
             ('state', 'in', ['sent', 'delivered', 'failed']),
             ('sent_datetime', '<', cutoff_date),
-        ])
+        
 
         count = len(old_notifications)
         old_notifications.unlink()
         return count
 
     # ============================================================================
-    # INTEGRATION METHODS
+        # INTEGRATION METHODS
     # ============================================================================
     def create_activity_reminder(self, summary=None, note=None, days_ahead=1):
-        """Create follow-up activity for failed notifications"""
+        """Create follow-up activity for failed notifications""":
         self.ensure_one()
 
         if not summary:
@@ -469,12 +474,14 @@ class FsmNotification(models.Model):
         if not note:
             note = _("Notification failed with error: %s", self.error_message or _("Unknown error"))
 
-        self.activity_schedule(
+        self.activity_schedule()
             'mail.mail_activity_data_todo',
             summary=summary,
             note=note,
             date_deadline=fields.Date.today() + fields.timedelta(days=days_ahead),
             user_id=self.env.user.id
-        )
+        
 
         return True
+
+)))))))))))))))

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-# Supporting Models for Records Billing Configuration System
+# Supporting Models for Records Billing Configuration System:
+"""
+    pass
+"""
 
 from odoo import fields, models, api
 
@@ -12,4 +15,4 @@ from odoo import fields, models, api
 # - RecordsPromotionalDiscount -> records_promotional_discount.py
 # - CustomerCategory -> Already exists in customer_category.py
 
-# This file is kept for any shared utilities or constants if needed in the future
+# This file is kept for any shared utilities or constants if needed in the future:

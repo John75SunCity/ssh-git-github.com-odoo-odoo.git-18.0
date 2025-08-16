@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
+
 Records Billing Config Line Model
 
-Individual line items for billing configuration rates and services.
-"""
+Individual line items for billing configuration rates and services.:
+    pass
+
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
@@ -18,44 +19,44 @@ class RecordsBillingConfigLine(models.Model):
     _order = "config_id, sequence, service_type"
     _rec_name = "display_name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Line Description",
         compute='_compute_name',
         store=True,
         help="Computed name based on service and rate"
-    )
+    
 
     display_name = fields.Char(
         string="Display Name",
         compute='_compute_display_name',
-        help="Display name for the billing line"
-    )
+        help="Display name for the billing line":
+    
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    )
+    
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this billing line"
-    )
+    
 
     sequence = fields.Integer(
         string="Sequence",
         default=10,
-        help="Sequence for line ordering"
-    )
+        help="Sequence for line ordering":
+    
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # ============================================================================
     config_id = fields.Many2one(
         "records.billing.config",
         string="Billing Configuration",
@@ -63,18 +64,19 @@ class RecordsBillingConfigLine(models.Model):
         ondelete="cascade",
         index=True,
         help="Parent billing configuration"
-    )
+    
 
     product_id = fields.Many2one(
         "product.product",
         string="Product",
         help="Product associated with this billing line"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # SERVICE CONFIGURATION
-    # ============================================================================
-    service_type = fields.Selection([
+        # ============================================================================
+    ,
+    service_type = fields.Selection([))
         ('storage', 'Document Storage'),
         ('retrieval', 'Document Retrieval'),
         ('destruction', 'Document Destruction'),
@@ -86,9 +88,9 @@ class RecordsBillingConfigLine(models.Model):
         ('setup', 'Setup Fee'),
         ('monthly', 'Monthly Fee'),
         ('other', 'Other Service')
-    ], string='Service Type', required=True, tracking=True)
+    
 
-    billing_method = fields.Selection([
+    billing_method = fields.Selection([))
         ('per_container', 'Per Container'),
         ('per_cubic_foot', 'Per Cubic Foot'),
         ('per_document', 'Per Document'),
@@ -97,17 +99,17 @@ class RecordsBillingConfigLine(models.Model):
         ('per_pickup', 'Per Pickup'),
         ('percentage', 'Percentage Based'),
         ('tiered', 'Tiered Pricing')
-    ], string='Billing Method', required=True, tracking=True)
+    
 
-    # ============================================================================
+        # ============================================================================
     # PRICING FIELDS
-    # ============================================================================
+        # ============================================================================
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         related="company_id.currency_id",
         readonly=True
-    )
+    
 
     unit_rate = fields.Monetary(
         string="Unit Rate",
@@ -115,126 +117,136 @@ class RecordsBillingConfigLine(models.Model):
         required=True,
         tracking=True,
         help="Base rate per unit"
-    )
+    
 
     minimum_charge = fields.Monetary(
         string="Minimum Charge",
         currency_field="currency_id",
         default=0.0,
-        help="Minimum charge for this service"
-    )
+        help="Minimum charge for this service":
+    
 
     maximum_charge = fields.Monetary(
         string="Maximum Charge",
         currency_field="currency_id",
-        help="Maximum charge cap for this service"
-    )
+        help="Maximum charge cap for this service":
+    
 
-    # ============================================================================
+        # ============================================================================
     # QUANTITY PARAMETERS
-    # ============================================================================
+        # ============================================================================
     minimum_quantity = fields.Float(
         string="Minimum Quantity",
         default=1.0,
         help="Minimum billable quantity"
-    )
+    
 
     quantity_increment = fields.Float(
         string="Quantity Increment",
         default=1.0,
-        help="Billing quantity increment (e.g., 0.5 for half-hour increments)"
-    )
+        ,
+    help="Billing quantity increment (e.g., 0.5 for half-hour increments)":
+    
 
-    # ============================================================================
+        # ============================================================================
     # CONTAINER TYPE SPECIFICATIONS
-    # ============================================================================
-    container_type = fields.Selection([
-        ('type_01', 'TYPE 01 - Standard Box (1.2 CF)'),
-        ('type_02', 'TYPE 02 - Legal/Banker Box (2.4 CF)'),
-        ('type_03', 'TYPE 03 - Map Box (0.875 CF)'),
-        ('type_04', 'TYPE 04 - Odd Size/Temp Box (5.0 CF)'),
-        ('type_06', 'TYPE 06 - Pathology Box (0.042 CF)'),
+        # ============================================================================
+    container_type = fields.Selection([))
+        ('type_01', 'TYPE 1 - Standard Box (1.2 CF)'),
+        ('type_02', 'TYPE 2 - Legal/Banker Box (2.4 CF)'),
+        ('type_03', 'TYPE 3 - Map Box (0.875 CF)'),
+        ('type_04', 'TYPE 4 - Odd Size/Temp Box (5.0 CF)'),
+        ('type_06', 'TYPE 6 - Pathology Box (0.42 CF)'),
         ('all_types', 'All Container Types')
-    ], string='Container Type', default='all_types')
+    
 
-    # ============================================================================
+        # ============================================================================
     # TIME-BASED PRICING
-    # ============================================================================
+        # ============================================================================
     effective_date = fields.Date(
         string="Effective Date",
         default=fields.Date.today,
         required=True,
         help="Date when this rate becomes effective"
-    )
+    
 
     expiry_date = fields.Date(
         string="Expiry Date",
         help="Date when this rate expires"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # DISCOUNT AND MARKUP
-    # ============================================================================
+        # ============================================================================
     discount_percentage = fields.Float(
         string="Discount %",
         default=0.0,
         help="Discount percentage to apply"
-    )
+    
 
     markup_percentage = fields.Float(
         string="Markup %",
         default=0.0,
         help="Markup percentage to apply"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # BILLING TERMS
-    # ============================================================================
-    billing_frequency = fields.Selection([
+        # ============================================================================
+    ,
+    billing_frequency = fields.Selection([))
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('semi_annual', 'Semi-Annual'),
         ('annual', 'Annual'),
         ('on_demand', 'On Demand')
-    ], string='Billing Frequency', default='monthly')
+    
 
     proration_allowed = fields.Boolean(
         string="Proration Allowed",
         default=True,
         help="Whether partial periods can be prorated"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # CALCULATION RESULTS
-    # ============================================================================
+        # ============================================================================
     effective_rate = fields.Monetary(
         string="Effective Rate",
         currency_field="currency_id",
         compute='_compute_effective_rate',
         store=True,
-        help="Final rate after discounts/markups"
-    )
+        ,
+    help="Final rate after discounts/markups"
+    
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    applies_to_count = fields.Integer(string='Applies To Count', compute='_compute_applies_to_count', store=True)
-    applies_to_volume = fields.Char(string='Applies To Volume')
-    applies_to_weight = fields.Float(string='Applies To Weight', digits=(12, 2))
-    billing_config_id = fields.Many2one('billing.config', string='Billing Config Id')
-    context = fields.Char(string='Context')
-    filter_active = fields.Boolean(string='Filter Active', default=False)
-    filter_default = fields.Char(string='Filter Default')
-    filter_discounted = fields.Char(string='Filter Discounted')
-    group_billing_method = fields.Char(string='Group Billing Method')
-    group_container_type = fields.Selection([], string='Group Container Type')  # TODO: Define selection options
-    group_service_type = fields.Selection([], string='Group Service Type')  # TODO: Define selection options
-    help = fields.Char(string='Help')
-    is_default = fields.Char(string='Is Default')
-    notes = fields.Char(string='Notes')
-    quantity_parameter = fields.Char(string='Quantity Parameter')
-    res_model = fields.Char(string='Res Model')
+        # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
+    activity_ids = fields.One2many("mail.activity", "res_id",,
+    string="Activities"),
+    message_follower_ids = fields.One2many("mail.followers", "res_id",,
+    string="Followers"),
+    message_ids = fields.One2many("mail.message", "res_id",,
+    string="Messages"),
+    applies_to_count = fields.Integer(string='Applies To Count', compute='_compute_applies_to_count',,
+    store=True),
+    applies_to_volume = fields.Char(string='Applies To Volume'),
+    applies_to_weight = fields.Float(string='Applies To Weight',,
+    digits=(12, 2))
+    billing_config_id = fields.Many2one('billing.config',,
+    string='Billing Config Id'),
+    context = fields.Char(string='Context'),
+    filter_active = fields.Boolean(string='Filter Active',,
+    default=False),
+    filter_default = fields.Char(string='Filter Default'),
+    filter_discounted = fields.Char(string='Filter Discounted'),
+    group_billing_method = fields.Char(string='Group Billing Method'),
+    group_container_type = fields.Selection([), string='Group Container Type')  # TODO: Define selection options
+    group_service_type = fields.Selection([), string='Group Service Type')  # TODO: Define selection options
+    help = fields.Char(string='Help'),
+    is_default = fields.Char(string='Is Default'),
+    notes = fields.Char(string='Notes'),
+    quantity_parameter = fields.Char(string='Quantity Parameter'),
+    res_model = fields.Char(string='Res Model'),
     view_mode = fields.Char(string='View Mode')
 
     @api.depends('applies_to_ids')
@@ -243,13 +255,13 @@ class RecordsBillingConfigLine(models.Model):
             record.applies_to_count = len(record.applies_to_ids)
 
     # ============================================================================
-    # COMPUTE METHODS
+        # COMPUTE METHODS
     # ============================================================================
     @api.depends('service_type', 'billing_method', 'unit_rate')
     def _compute_name(self):
         """Compute line description"""
         for record in self:
-            parts = []
+            parts = [)
             if record.service_type:
                 service_dict = dict(record._fields['service_type'].selection)
                 parts.append(service_dict.get(record.service_type, record.service_type))
@@ -258,8 +270,7 @@ class RecordsBillingConfigLine(models.Model):
                 method_dict = dict(record._fields['billing_method'].selection)
                 parts.append(f"({method_dict.get(record.billing_method, record.billing_method)})")
             
-            record.name = " ".join(parts) if parts else "New Billing Line"
-
+            record.name = " ".join(parts) if parts else "New Billing Line":
     @api.depends('name', 'effective_rate')
     def _compute_display_name(self):
         """Compute display name"""
@@ -286,10 +297,10 @@ class RecordsBillingConfigLine(models.Model):
             record.effective_rate = rate
 
     # ============================================================================
-    # BUSINESS METHODS
+        # BUSINESS METHODS
     # ============================================================================
     def calculate_charge(self, quantity, container_type=None):
-        """Calculate charge for given quantity"""
+        """Calculate charge for given quantity""":
         self.ensure_one()
         
         # Apply minimum quantity
@@ -314,7 +325,7 @@ class RecordsBillingConfigLine(models.Model):
         return charge
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains('unit_rate', 'minimum_charge', 'maximum_charge')
     def _check_rates(self):
@@ -358,3 +369,4 @@ class RecordsBillingConfigLine(models.Model):
         for record in self:
             if record.expiry_date and record.effective_date > record.expiry_date:
                 raise ValidationError(_('Effective date cannot be after expiry date'))
+))))))))))))

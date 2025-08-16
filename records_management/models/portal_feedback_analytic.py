@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
+
 Portal Feedback Analytics Model
 
-Advanced analytics and reporting for customer feedback with AI-ready insights,
-sentiment analysis, and business intelligence for Records Management system.
-"""
+Advanced analytics and reporting for customer feedback with AI-ready insights,:
+    pass
+sentiment analysis, and business intelligence for Records Management system.:
+
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
@@ -20,205 +21,222 @@ class PortalFeedbackAnalytic(models.Model):
     _order = "period_start desc"
     _rec_name = "name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Analytics Period", 
         required=True, 
         tracking=True, 
         index=True
-    )
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users", 
         string="User", 
         default=lambda self: self.env.user, 
         tracking=True
-    )
-    active = fields.Boolean(string="Active", default=True, tracking=True)
+    
+    active = fields.Boolean(string="Active", default=True,,
+    tracking=True)
 
-    # ============================================================================
+        # ============================================================================
     # PERIOD DEFINITION
-    # ============================================================================
+        # ============================================================================
     period_start = fields.Date(
         string="Period Start", 
         required=True, 
         tracking=True
-    )
+    
     period_end = fields.Date(
         string="Period End", 
         required=True, 
         tracking=True
-    )
-    period_type = fields.Selection([
+    
+    ,
+    period_type = fields.Selection([))
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('yearly', 'Yearly'),
         ('custom', 'Custom Range'),
-    ], string="Period Type", default='monthly', required=True)
+    
 
-    # ============================================================================
+        # ============================================================================
     # VOLUME METRICS
-    # ============================================================================
+        # ============================================================================
     total_feedback_count = fields.Integer(
         string="Total Feedback", 
         compute="_compute_analytics", 
         store=True
-    )
+    
     positive_feedback_count = fields.Integer(
         string="Positive Feedback", 
         compute="_compute_analytics", 
         store=True
-    )
+    
     neutral_feedback_count = fields.Integer(
         string="Neutral Feedback", 
         compute="_compute_analytics", 
         store=True
-    )
+    
     negative_feedback_count = fields.Integer(
         string="Negative Feedback", 
         compute="_compute_analytics", 
         store=True
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RATING AND SATISFACTION METRICS
-    # ============================================================================
+        # ============================================================================
     average_rating = fields.Float(
         string="Average Rating", 
-        digits=(3, 2), 
+        ,
+    digits=(3, 2), 
         compute="_compute_analytics", 
         store=True
-    )
+    
     customer_satisfaction_index = fields.Float(
-        string="Customer Satisfaction Index (%)",
+        ,
+    string="Customer Satisfaction Index (%)",
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
         help="Overall satisfaction percentage based on ratings and sentiment"
-    )
+    
     nps_score = fields.Float(
         string="Net Promoter Score",
-        digits=(5, 2),
+        ,
+    digits=(5, 2),
         compute="_compute_analytics",
         store=True,
         help="Net Promoter Score based on rating distribution"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RESPONSE AND RESOLUTION METRICS
-    # ============================================================================
+        # ============================================================================
     average_response_time = fields.Float(
-        string="Avg Response Time (Hours)",
+        ,
+    string="Avg Response Time (Hours)",
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    
     average_resolution_time = fields.Float(
-        string="Avg Resolution Time (Hours)",
+        ,
+    string="Avg Resolution Time (Hours)",
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    
     fastest_response_time = fields.Float(
-        string="Fastest Response (Hours)",
+        ,
+    string="Fastest Response (Hours)",
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    
     slowest_response_time = fields.Float(
-        string="Slowest Response (Hours)",
+        ,
+    string="Slowest Response (Hours)",
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # SLA AND PERFORMANCE METRICS
-    # ============================================================================
+        # ============================================================================
     sla_compliance_rate = fields.Float(
-        string="SLA Compliance Rate (%)",
+        ,
+    string="SLA Compliance Rate (%)",
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    
     escalation_rate = fields.Float(
-        string="Escalation Rate (%)",
+        ,
+    string="Escalation Rate (%)",
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    
     first_contact_resolution_rate = fields.Float(
-        string="First Contact Resolution Rate (%)",
+        ,
+    string="First Contact Resolution Rate (%)",
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # TREND AND PATTERN METRICS
-    # ============================================================================
+        # ============================================================================
     repeat_feedback_rate = fields.Float(
-        string="Repeat Feedback Rate (%)",
+        ,
+    string="Repeat Feedback Rate (%)",
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    )
-    improvement_trend = fields.Selection([
+    
+    improvement_trend = fields.Selection([))
         ('improving', 'Improving'),
         ('stable', 'Stable'),
         ('declining', 'Declining'),
         ('insufficient_data', 'Insufficient Data'),
-    ], string="Improvement Trend", compute="_compute_trend_analysis", store=True)
+    
     
     trend_percentage = fields.Float(
-        string="Trend Change (%)",
+        ,
+    string="Trend Change (%)",
         digits=(5, 2),
         compute="_compute_trend_analysis",
         store=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # WORKFLOW STATE MANAGEMENT
-    # ============================================================================
-    state = fields.Selection([
+        # ============================================================================
+    state = fields.Selection([))
         ('draft', 'Draft'),
         ('active', 'Active'),
         ('archived', 'Archived'),
-    ], string='Status', default='draft', tracking=True, required=True, index=True)
+    
 
-    # ============================================================================
+        # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+        # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id",,
+    string="Activities"),
+    message_follower_ids = fields.One2many("mail.followers", "res_id",,
+    string="Followers"),
+    message_ids = fields.One2many("mail.message", "res_id",,
+    string="Messages")
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends("period_start", "period_end")
     def _compute_analytics(self):
-        """Compute comprehensive analytics for the specified period"""
+        """Compute comprehensive analytics for the specified period""":
         for record in self:
             if not record.period_start or not record.period_end:
                 record._reset_analytics()
                 continue
 
-            # Get feedback records for the period
-            domain = [
+            # Get feedback records for the period:
+            domain = [)
                 ("create_date", ">=", record.period_start),
                 ("create_date", "<=", record.period_end),
                 ("company_id", "=", record.company_id.id),
-            ]
+            
             
             feedback_records = self.env["portal.feedback"].search(domain)
 
@@ -228,27 +246,26 @@ class PortalFeedbackAnalytic(models.Model):
 
             # Volume metrics
             record.total_feedback_count = len(feedback_records)
-            record.positive_feedback_count = len(
+            record.positive_feedback_count = len()
                 feedback_records.filtered(lambda f: f.sentiment_category == "positive")
-            )
-            record.neutral_feedback_count = len(
+            
+            record.neutral_feedback_count = len()
                 feedback_records.filtered(lambda f: f.sentiment_category == "neutral")
-            )
-            record.negative_feedback_count = len(
+            
+            record.negative_feedback_count = len()
                 feedback_records.filtered(lambda f: f.sentiment_category == "negative")
-            )
+            
 
             # Rating metrics
             rated_feedback = feedback_records.filtered(lambda f: f.rating and f.rating != '0')
             if rated_feedback:
-                ratings = [int(f.rating) for f in rated_feedback if f.rating.isdigit()]
-                record.average_rating = sum(ratings) / len(ratings) if ratings else 0.0
-                
+                ratings = [int(f.rating) for f in rated_feedback if f.rating.isdigit()]:
+                record.average_rating = sum(ratings) / len(ratings) if ratings else 0.0:
                 # Calculate NPS (ratings 9-10 promoters, 7-8 neutral, 0-6 detractors)
-                promoters = len([r for r in ratings if r >= 9])
-                detractors = len([r for r in ratings if r <= 6])
+                promoters = len([r for r in ratings if r >= 9]):
+                detractors = len([r for r in ratings if r <= 6]):
                 total_ratings = len(ratings)
-                record.nps_score = ((promoters - detractors) / total_ratings * 100) if total_ratings else 0.0
+                record.nps_score = ((promoters - detractors) / total_ratings * 100) if total_ratings else 0.0:
             else:
                 record.average_rating = 0.0
                 record.nps_score = 0.0
@@ -322,22 +339,19 @@ class PortalFeedbackAnalytic(models.Model):
         total_count = len(feedback_records)
 
         # SLA compliance (assuming 24 hour response SLA)
-        sla_compliant = feedback_records.filtered(
+        sla_compliant = feedback_records.filtered()
             lambda f: f.first_response_date and 
             (f.first_response_date - f.create_date).total_seconds() <= 86400  # 24 hours
-        )
-        self.sla_compliance_rate = (len(sla_compliant) / total_count * 100) if total_count else 0.0
-
+        
+        self.sla_compliance_rate = (len(sla_compliant) / total_count * 100) if total_count else 0.0:
         # Escalation rate
         escalated = feedback_records.filtered(lambda f: f.priority in ['high', 'urgent'])
-        self.escalation_rate = (len(escalated) / total_count * 100) if total_count else 0.0
-
+        self.escalation_rate = (len(escalated) / total_count * 100) if total_count else 0.0:
         # First contact resolution rate
-        first_contact_resolved = feedback_records.filtered(
+        first_contact_resolved = feedback_records.filtered()
             lambda f: f.state == 'resolved' and f.interaction_count <= 1
-        )
-        self.first_contact_resolution_rate = (len(first_contact_resolved) / total_count * 100) if total_count else 0.0
-
+        
+        self.first_contact_resolution_rate = (len(first_contact_resolved) / total_count * 100) if total_count else 0.0:
         # Repeat feedback rate (customers providing multiple feedback in period)
         unique_customers = feedback_records.mapped('partner_id')
         if unique_customers:
@@ -346,7 +360,7 @@ class PortalFeedbackAnalytic(models.Model):
                 customer_feedback = feedback_records.filtered(lambda f: f.partner_id == customer)
                 if len(customer_feedback) > 1:
                     customers_with_multiple += 1
-            self.repeat_feedback_rate = (customers_with_multiple / len(unique_customers) * 100) if unique_customers else 0.0
+            self.repeat_feedback_rate = (customers_with_multiple / len(unique_customers) * 100) if unique_customers else 0.0:
         else:
             self.repeat_feedback_rate = 0.0
 
@@ -365,11 +379,11 @@ class PortalFeedbackAnalytic(models.Model):
             previous_end = record.period_start - timedelta(days=1)
 
             # Find previous period analytics
-            previous_analytics = self.search([
+            previous_analytics = self.search([)]
                 ('period_start', '=', previous_start),
                 ('period_end', '=', previous_end),
                 ('company_id', '=', record.company_id.id),
-            ], limit=1)
+            
 
             if previous_analytics and previous_analytics.customer_satisfaction_index > 0:
                 current_csi = record.customer_satisfaction_index
@@ -390,7 +404,7 @@ class PortalFeedbackAnalytic(models.Model):
 
     def _reset_analytics(self):
         """Reset all analytics metrics to zero"""
-        self.write({
+        self.write({)}
             "total_feedback_count": 0,
             "positive_feedback_count": 0,
             "neutral_feedback_count": 0,
@@ -408,45 +422,45 @@ class PortalFeedbackAnalytic(models.Model):
             "repeat_feedback_rate": 0.0,
             "improvement_trend": 'insufficient_data',
             "trend_percentage": 0.0,
-        })
+        
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_refresh_analytics(self):
         """Manually refresh analytics data"""
         self.ensure_one()
         self._compute_analytics()
         self.message_post(body=_("Analytics refreshed by %s", self.env.user.name))
-        return {
+        return {}
             "type": "ir.actions.client",
             "tag": "display_notification",
-            "params": {
+            "params": {}
                 "message": _("Analytics refreshed successfully"),
                 "type": "success",
                 "sticky": False,
-            },
-        }
+            
+        
 
     def action_view_period_feedback(self):
-        """View feedback records for this analytics period"""
+        """View feedback records for this analytics period""":
         self.ensure_one()
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Period Feedback - %s", self.name),
             "res_model": "portal.feedback",
             "view_mode": "tree,form",
-            "domain": [
+            "domain": []
                 ("create_date", ">=", self.period_start),
                 ("create_date", "<=", self.period_end),
                 ("company_id", "=", self.company_id.id),
-            ],
-            "context": {
+            
+            "context": {}
                 "search_default_group_by_sentiment": 1,
                 "search_default_group_by_priority": 1,
-            },
+            
             "target": "current",
-        }
+        
 
     def action_generate_report(self):
         """Generate comprehensive analytics report"""
@@ -466,7 +480,7 @@ class PortalFeedbackAnalytic(models.Model):
             record.message_post(body=_("Analytics period archived by %s", self.env.user.name))
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains("period_start", "period_end")
     def _check_period_dates(self):
@@ -478,10 +492,10 @@ class PortalFeedbackAnalytic(models.Model):
 
     @api.constrains("period_start", "period_end", "company_id")
     def _check_period_overlap(self):
-        """Prevent overlapping periods for same company"""
+        """Prevent overlapping periods for same company""":
         for record in self:
             if record.period_start and record.period_end:
-                overlapping = self.search([
+                overlapping = self.search([)]
                     ('id', '!=', record.id),
                     ('company_id', '=', record.company_id.id),
                     ('state', '!=', 'archived'),
@@ -489,12 +503,12 @@ class PortalFeedbackAnalytic(models.Model):
                     ('period_start', '<=', record.period_start, '<=', 'period_end'),
                     ('period_start', '<=', record.period_end, '<=', 'period_end'),
                     '&', ('period_start', '>=', record.period_start), ('period_end', '<=', record.period_end),
-                ])
+                
                 if overlapping:
                     raise ValidationError(_("Analytics period overlaps with existing period: %s", overlapping[0].name))
 
     # ============================================================================
-    # UTILITY METHODS
+        # UTILITY METHODS
     # ============================================================================
     @api.model
     def create_monthly_analytics(self, year, month, company_id=None):
@@ -510,41 +524,41 @@ class PortalFeedbackAnalytic(models.Model):
         
         name = _("Analytics %s/%s", calendar.month_name[month], year)
         
-        return self.create({
+        return self.create({)}
             'name': name,
             'period_start': start_date,
             'period_end': end_date,
             'period_type': 'monthly',
             'company_id': company_id,
             'state': 'active',
-        })
+        
 
     @api.model
     def get_dashboard_data(self, company_id=None):
-        """Get dashboard data for current period"""
+        """Get dashboard data for current period""":
         if not company_id:
             company_id = self.env.company.id
 
-        current_period = self.search([
+        current_period = self.search([)]
             ('company_id', '=', company_id),
             ('state', '=', 'active'),
             ('period_start', '<=', fields.Date.today()),
             ('period_end', '>=', fields.Date.today()),
-        ], limit=1)
+        
 
         if not current_period:
-            return {
+            return {}
                 'total_feedback': 0,
                 'satisfaction_index': 0.0,
                 'nps_score': 0.0,
                 'average_rating': 0.0,
-            }
+            
 
-        return {
+        return {}
             'total_feedback': current_period.total_feedback_count,
             'satisfaction_index': current_period.customer_satisfaction_index,
             'nps_score': current_period.nps_score,
             'average_rating': current_period.average_rating,
             'trend': current_period.improvement_trend,
             'trend_percentage': current_period.trend_percentage,
-        }
+        )))))))))))))))))

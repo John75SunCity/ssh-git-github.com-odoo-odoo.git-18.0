@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
+
 Revenue Forecast Line Model
 
-Individual line items for revenue forecasting with customer and service breakdowns.
-"""
+Individual line items for revenue forecasting with customer and service breakdowns.:
+    pass
+
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
@@ -18,38 +19,38 @@ class RevenueForecastLine(models.Model):
     _order = "forecast_id, customer_id, service_type"
     _rec_name = "display_name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Line Description",
         compute='_compute_name',
         store=True,
         help="Computed name based on customer and service"
-    )
+    
 
     display_name = fields.Char(
         string="Display Name",
         compute='_compute_display_name',
-        help="Display name for the forecast line"
-    )
+        help="Display name for the forecast line":
+    
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    )
+    
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this forecast line"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # ============================================================================
     forecast_id = fields.Many2one(
         "revenue.forecaster",
         string="Revenue Forecast",
@@ -57,20 +58,21 @@ class RevenueForecastLine(models.Model):
         ondelete="cascade",
         index=True,
         help="Parent revenue forecast"
-    )
+    
 
     customer_id = fields.Many2one(
         "res.partner",
         string="Customer",
         required=True,
-        domain="[('is_company', '=', True)]",
-        help="Customer for this forecast line"
-    )
+        ,
+    domain="[('is_company', '=', True))",
+        help="Customer for this forecast line":
+    
 
-    # ============================================================================
+        # ============================================================================
     # FORECAST DETAILS
-    # ============================================================================
-    service_type = fields.Selection([
+        # ============================================================================
+    service_type = fields.Selection([))
         ('storage', 'Document Storage'),
         ('retrieval', 'Document Retrieval'),
         ('destruction', 'Document Destruction'),
@@ -78,24 +80,24 @@ class RevenueForecastLine(models.Model):
         ('delivery', 'Delivery Services'),
         ('consulting', 'Consulting Services'),
         ('other', 'Other Services')
-    ], string='Service Type', required=True, tracking=True)
+    
 
-    period_type = fields.Selection([
+    period_type = fields.Selection([))
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('semi_annual', 'Semi-Annual'),
         ('annual', 'Annual')
-    ], string='Period Type', default='monthly', required=True)
+    
 
-    # ============================================================================
+        # ============================================================================
     # FINANCIAL FIELDS
-    # ============================================================================
+        # ============================================================================
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         related="company_id.currency_id",
         readonly=True
-    )
+    
 
     forecasted_amount = fields.Monetary(
         string="Forecasted Amount",
@@ -103,14 +105,14 @@ class RevenueForecastLine(models.Model):
         required=True,
         tracking=True,
         help="Predicted revenue amount"
-    )
+    
 
     actual_amount = fields.Monetary(
         string="Actual Amount",
         currency_field="currency_id",
         tracking=True,
         help="Actual revenue amount achieved"
-    )
+    
 
     variance_amount = fields.Monetary(
         string="Variance Amount",
@@ -118,108 +120,117 @@ class RevenueForecastLine(models.Model):
         compute='_compute_variance',
         store=True,
         help="Difference between forecasted and actual"
-    )
+    
 
     variance_percentage = fields.Float(
         string="Variance %",
         compute='_compute_variance',
         store=True,
         help="Variance as percentage"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # VOLUME METRICS
-    # ============================================================================
+        # ============================================================================
     forecasted_volume = fields.Float(
-        string="Forecasted Volume (CF)",
+        ,
+    string="Forecasted Volume (CF)",
         help="Predicted volume in cubic feet"
-    )
+    
 
     actual_volume = fields.Float(
-        string="Actual Volume (CF)",
+        ,
+    string="Actual Volume (CF)",
         help="Actual volume achieved"
-    )
+    
 
     forecasted_containers = fields.Integer(
         string="Forecasted Containers",
         help="Predicted number of containers"
-    )
+    
 
     actual_containers = fields.Integer(
         string="Actual Containers",
         help="Actual number of containers"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # PROBABILITY AND CONFIDENCE
-    # ============================================================================
-    confidence_level = fields.Selection([
+        # ============================================================================
+    ,
+    confidence_level = fields.Selection([))
         ('low', 'Low (0-30%)'),
         ('medium', 'Medium (30-70%)'),
         ('high', 'High (70-90%)'),
         ('very_high', 'Very High (90-100%)')
-    ], string='Confidence Level', default='medium', required=True)
+    
 
     probability_percentage = fields.Float(
         string="Probability %",
         default=50.0,
         help="Probability of achieving this forecast"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # STATUS AND NOTES
-    # ============================================================================
-    status = fields.Selection([
+        # ============================================================================
+    ,
+    status = fields.Selection([))
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('in_progress', 'In Progress'),
         ('achieved', 'Achieved'),
         ('missed', 'Missed'),
         ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', required=True, tracking=True)
+    
 
     notes = fields.Text(
         string="Notes",
-        help="Additional notes and assumptions"
-    )
+        ,
+    help="Additional notes and assumptions"
+    
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
-    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    achieved = fields.Char(string='Achieved')
-    action_confirm_forecast = fields.Char(string='Action Confirm Forecast')
-    action_mark_achieved = fields.Char(string='Action Mark Achieved')
-    action_mark_missed = fields.Char(string='Action Mark Missed')
-    action_start_tracking = fields.Char(string='Action Start Tracking')
-    confidence = fields.Char(string='Confidence')
-    confirmed = fields.Boolean(string='Confirmed', default=False)
-    context = fields.Char(string='Context')
-    destruction = fields.Char(string='Destruction')
-    draft = fields.Char(string='Draft')
-    financial = fields.Char(string='Financial')
-    group_confidence = fields.Char(string='Group Confidence')
-    group_customer = fields.Char(string='Group Customer')
-    group_service = fields.Char(string='Group Service')
-    group_status = fields.Selection([], string='Group Status')  # TODO: Define selection options
-    help = fields.Char(string='Help')
-    high_confidence = fields.Char(string='High Confidence')
-    in_progress = fields.Char(string='In Progress')
-    main_info = fields.Char(string='Main Info')
-    missed = fields.Char(string='Missed')
-    res_model = fields.Char(string='Res Model')
-    storage = fields.Char(string='Storage')
-    view_mode = fields.Char(string='View Mode')
+        # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
+    activity_ids = fields.One2many("mail.activity", "res_id",,
+    string="Activities"),
+    message_follower_ids = fields.One2many("mail.followers", "res_id",,
+    string="Followers"),
+    message_ids = fields.One2many("mail.message", "res_id",,
+    string="Messages"),
+    achieved = fields.Char(string='Achieved'),
+    action_confirm_forecast = fields.Char(string='Action Confirm Forecast'),
+    action_mark_achieved = fields.Char(string='Action Mark Achieved'),
+    action_mark_missed = fields.Char(string='Action Mark Missed'),
+    action_start_tracking = fields.Char(string='Action Start Tracking'),
+    confidence = fields.Char(string='Confidence'),
+    confirmed = fields.Boolean(string='Confirmed',,
+    default=False),
+    context = fields.Char(string='Context'),
+    destruction = fields.Char(string='Destruction'),
+    draft = fields.Char(string='Draft'),
+    financial = fields.Char(string='Financial'),
+    group_confidence = fields.Char(string='Group Confidence'),
+    group_customer = fields.Char(string='Group Customer'),
+    group_service = fields.Char(string='Group Service'),
+    group_status = fields.Selection([), string='Group Status')  # TODO: Define selection options
+    help = fields.Char(string='Help'),
+    high_confidence = fields.Char(string='High Confidence'),
+    in_progress = fields.Char(string='In Progress'),
+    main_info = fields.Char(string='Main Info'),
+    missed = fields.Char(string='Missed'),
+    res_model = fields.Char(string='Res Model'),
+    storage = fields.Char(string='Storage'),
+    view_mode = fields.Char(string='View Mode'),
     volume_metrics = fields.Char(string='Volume Metrics')
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends('customer_id', 'service_type', 'period_type')
     def _compute_name(self):
         """Compute line description"""
         for record in self:
-            parts = []
+            parts = [)
             if record.customer_id:
                 parts.append(record.customer_id.name)
             if record.service_type:
@@ -229,8 +240,7 @@ class RevenueForecastLine(models.Model):
                 period_dict = dict(record._fields['period_type'].selection)
                 parts.append(period_dict.get(record.period_type, record.period_type))
             
-            record.name = " - ".join(parts) if parts else "New Forecast Line"
-
+            record.name = " - ".join(parts) if parts else "New Forecast Line":
     @api.depends('name', 'forecasted_amount')
     def _compute_display_name(self):
         """Compute display name"""
@@ -252,7 +262,7 @@ class RevenueForecastLine(models.Model):
                 record.variance_percentage = 0.0
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_confirm_forecast(self):
         """Confirm the forecast line"""
@@ -291,7 +301,7 @@ class RevenueForecastLine(models.Model):
         self.message_post(body=_('Forecast missed'))
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains('forecasted_amount', 'actual_amount')
     def _check_amounts(self):
@@ -326,3 +336,4 @@ class RevenueForecastLine(models.Model):
                 raise ValidationError(_('Forecasted containers cannot be negative'))
             if record.actual_containers < 0:
                 raise ValidationError(_('Actual containers cannot be negative'))
+))))))))))

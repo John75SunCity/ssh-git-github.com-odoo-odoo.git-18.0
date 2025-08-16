@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
-"""
+
 Temporary Inventory Movement Tracking Module
 
-This module handles movement tracking for temporary inventory items in the Records
+This module handles movement tracking for temporary inventory items in the Records:
+    pass
 Management System. It provides comprehensive tracking of item movements with 
 complete audit trails and integration with the main inventory system.
 
-Key Features:
+Key Features
 - Movement type classification (in, out, transfer, adjustment)
 - Document and container association
-- User tracking for accountability
-- Complete audit trails for compliance
+- User tracking for accountability:
+- Complete audit trails for compliance:
 - Integration with mail.thread framework
 
-Business Process:
+Business Process
 1. Item Reception: Track items coming into temporary storage
 2. Item Removal: Track items leaving temporary storage
 3. Transfer Operations: Track movements between locations
@@ -22,7 +23,7 @@ Business Process:
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
-"""
+
 
 from odoo import models, fields, api, _
 
@@ -40,100 +41,105 @@ class TempInventoryMovement(models.Model):
     _order = "date desc"
     _rec_name = "display_name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE FIELDS
-    # ============================================================================
+        # ============================================================================
     inventory_id = fields.Many2one(
         "temp.inventory",
         string="Inventory",
         required=True,
         ondelete="cascade",
         help="Associated temporary inventory",
-    )
+    
+    ,
     movement_type = fields.Selection(
-        [
+        [)
             ("in", "Items In"),
             ("out", "Items Out"),
             ("transfer", "Transfer"),
             ("adjustment", "Adjustment"),
-        ],
+        
         string="Movement Type",
         required=True,
         default="in",
         help="Type of inventory movement",
-    )
+    
     date = fields.Datetime(
         string="Movement Date",
         required=True,
         default=fields.Datetime.now,
         help="When movement occurred",
-    )
+    
     quantity = fields.Integer(
         string="Quantity", required=True, default=1, help="Number of items moved"
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Performed By",
         required=True,
         default=lambda self: self.env.user,
         help="User who performed the movement",
-    )
-    notes = fields.Text(string="Notes", help="Additional notes about the movement")
+    
+    notes = fields.Text(string="Notes",,
+    help="Additional notes about the movement")
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # ============================================================================
     document_id = fields.Many2one(
         "records.document",
         string="Related Document",
         help="Document involved in this movement",
-    )
+    
     container_id = fields.Many2one(
         "records.container",
         string="Related Container",
         help="Container involved in this movement",
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTED FIELDS
-    # ============================================================================
+        # ============================================================================
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
-        help="Display name for movement",
-    )
+        help="Display name for movement",:
+    
 
-    # ============================================================================
+        # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
+        # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)]
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name))
+    
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)]
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name))
+    
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages",
-        domain=lambda self: [("model", "=", self._name)]
-    )
+        ,
+    domain=lambda self: [("model", "=", self._name))
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends("movement_type", "quantity", "date")
     def _compute_display_name(self):
         """Compute display name"""
         for record in self:
-            movement_label = dict(record._fields["movement_type"].selection)[
+            movement_label = dict(record._fields["movement_type"].selection)[]
                 record.movement_type
-            ]
+            
             record.display_name = _("%s: %s items", movement_label, record.quantity)
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_confirm_movement(self):
         """Confirm the movement and update related inventory"""
@@ -149,24 +155,24 @@ class TempInventoryMovement(models.Model):
         self.message_post(body=_("Movement confirmed: %s", self.display_name))
 
     # ============================================================================
-    # BUSINESS METHODS
+        # BUSINESS METHODS
     # ============================================================================
     def get_movement_summary(self):
-        """Get movement summary for reporting"""
+        """Get movement summary for reporting""":
         self.ensure_one()
-        return {
+        return {}
             "movement_type": self.movement_type,
             "quantity": self.quantity,
             "date": self.date,
             "user": self.user_id.name,
             "inventory": self.inventory_id.name,
-            "document": self.document_id.name if self.document_id else None,
-            "container": self.container_id.name if self.container_id else None,
+            "document": self.document_id.name if self.document_id else None,:
+            "container": self.container_id.name if self.container_id else None,:
             "notes": self.notes,
-        }
+        
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains("quantity")
     def _check_quantity(self):
@@ -176,7 +182,7 @@ class TempInventoryMovement(models.Model):
                 raise ValidationError(_("Quantity must be greater than zero"))
 
     # ============================================================================
-    # ORM OVERRIDES
+        # ORM OVERRIDES
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
@@ -191,3 +197,4 @@ class TempInventoryMovement(models.Model):
                 movement.inventory_id._compute_utilization_percent()
         
         return movements
+)))))))

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
+""""
 Records Management Models Import Order
 
 Import order follows Odoo 18.0 best practices:
@@ -11,7 +11,7 @@ Import order follows Odoo 18.0 best practices:
 6. Wizards and utilities last
 
 This ensures proper ORM setup and prevents KeyError exceptions during module loading.
-"""
+""""
 
 # =============================================================================
 # STANDARD LIBRARY IMPORTS
@@ -197,7 +197,7 @@ from . import records_access_log
 
 # Core billing system
 from . import billing
-from . import billing_automation
+from . import records_billing_service
 from . import department_billing
 
 # Advanced billing features
@@ -330,10 +330,10 @@ try:
     from . import fsm_notification  # Individual notification records
     _logger.info("Additional FSM modules loaded successfully")
 except (ImportError, AttributeError) as e:
-    _logger.warning(
+    _logger.warning()
         "FSM extensions not available, skipping: %s",
         str(e),
-    )
+    
 
 # =============================================================================
 # CONDITIONAL IMPORTS FOR EXTENSION MODELS

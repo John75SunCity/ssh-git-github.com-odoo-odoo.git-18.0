@@ -5,55 +5,58 @@ from odoo import models, fields, api, _
 
 
 class PosConfig(models.Model):
-    """
-    Extension of POS Configuration for records management integration.
 
-    Includes additional fields for description, sequence, user management, timestamp tracking,
-    control fields, and utility/action methods.
+        Extension of POS Configuration for records management integration.:
+            pass
+    Includes additional fields for description, sequence, user management, timestamp tracking,:
+        control fields, and utility/action methods.
 
-    Computed field:
-        - display_name: Computed display name for the POS configuration.
-    """
+    Computed field
+        - display_name: Computed display name for the POS configuration.:
+
 
     _inherit = "pos.config"
     _description = "Point of Sale Configuration Extension"
 
-    # ============================================================================
+        # ============================================================================
     # ADDITIONAL FIELDS FOR RECORDS MANAGEMENT INTEGRATION
-    # ============================================================================
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
+        # ============================================================================
+    description = fields.Text(string="Description"),
+    sequence = fields.Integer(string="Sequence",,
+    default=10)
 
-    # ============================================================================
+        # ============================================================================
     # COMPANY AND USER MANAGEMENT
-    # ============================================================================
+        # ============================================================================
     # Note: company_id already exists in pos.config, we extend with additional functionality
     user_id = fields.Many2one(
         "res.users", string="Responsible User", default=lambda self: self.env.user
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # TIMESTAMP TRACKING
-    # ============================================================================
-    date_created = fields.Datetime(string="Created Date", default=fields.Datetime.now)
+        # ============================================================================
+    date_created = fields.Datetime(string="Created Date",,
+    default=fields.Datetime.now),
     date_modified = fields.Datetime(string="Modified Date")
 
-    # ============================================================================
+        # ============================================================================
     # CONTROL FIELDS
-    # ============================================================================
+        # ============================================================================
     # Note: active field already exists in pos.config
     notes = fields.Text(string="Internal Notes")
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTED FIELDS
-    # ============================================================================
+        # ============================================================================
     display_name = fields.Char(
-        string="Display Name", compute="_compute_display_name", store=True
-    )
+        string="Display Name", compute="_compute_display_name",,
+    store=True
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends("name")
     def _compute_display_name(self):
         """Compute display name."""
@@ -61,15 +64,15 @@ class PosConfig(models.Model):
             record.display_name = record.name or _("New")
 
     # ============================================================================
-    # LIFECYCLE METHODS
+        # LIFECYCLE METHODS
     # ============================================================================
     def write(self, vals):
         """Override write to update modification date."""
-        vals["date_modified"] = fields.Datetime.now()
+    vals["date_modified") = fields.Datetime.now()
         return super(PosConfig, self).write(vals)
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_activate(self):
         """Activate the POS configuration."""
@@ -92,36 +95,36 @@ class PosConfig(models.Model):
 
         # Update notes with session closure
         current_notes = self.notes or ""
-        closure_note = _("\nSession closed on %s", fields.Datetime.now()).strftime(
+        closure_note = _("\nSession closed on %s", fields.Datetime.now()).strftime()
             "%Y-%m-%d %H:%M:%S"
-        )
+        
 
         self.write({"notes": current_notes + closure_note})
 
         # Create session closure activity
-        self.activity_schedule(
+        self.activity_schedule()
             "mail.mail_activity_data_done",
             summary=_("POS session closed: %s", self.name),
             note=_("POS session has been properly closed with balance reconciliation."),
             user_id=self.user_id.id,
-        )
+        
 
-        self.message_post(
+        self.message_post()
             body=_("POS session closed: %s", self.name), message_type="notification"
-        )
+        
 
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Close Session"),
             "res_model": "pos.session",
             "view_mode": "tree,form",
             "target": "current",
             "domain": [("config_id", "=", self.id), ("state", "=", "opened")],
-            "context": {
+            "context": {}
                 "default_config_id": self.id,
                 "search_default_config_id": self.id,
-            },
-        }
+            
+        
 
     def action_force_close_session(self):
         """Force close POS session with administrative override."""
@@ -130,41 +133,41 @@ class PosConfig(models.Model):
 
         # Update notes with forced closure
         current_notes = self.notes or ""
-        closure_note = _(
+        closure_note = _()
             "\nSession force closed on %s"
-        ) % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        ) % fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"
 
         self.write({"notes": current_notes + closure_note})
 
-        # Create urgent activity for force closure
-        self.activity_schedule(
+        # Create urgent activity for force closure:
+        self.activity_schedule()
             "mail.mail_activity_data_todo",
             summary=_("POS session force closed: %s", self.name),
-            note=_(
+            note=_()
                 "POS session was force closed - requires review and balance verification."
-            ),
+            
             user_id=self.user_id.id,
             date_deadline=fields.Date.today(),
-        )
+        
 
-        self.message_post(
+        self.message_post()
             body=_("POS session force closed - requires balance review: %s", self.name),
             message_type="notification",
-        )
+        
 
-        return {
+        return {}
             "type": "ir.actions.client",
             "tag": "display_notification",
-            "params": {
+            "params": {}
                 "title": _("Session Force Closed"),
-                "message": _(
+                "message": _()
                     "POS session %s has been force closed. Please review balance discrepancies."
-                )
+                
                 % self.name,
                 "type": "warning",
                 "sticky": True,
-            },
-        }
+            
+        
 
     def action_open_session(self):
         """Open new POS session."""
@@ -173,195 +176,194 @@ class PosConfig(models.Model):
 
         # Update notes with session opening
         current_notes = self.notes or ""
-        opening_note = _("\nNew session opened on %s", fields.Datetime.now()).strftime(
+        opening_note = _("\nNew session opened on %s", fields.Datetime.now()).strftime()
             "%Y-%m-%d %H:%M:%S"
-        )
+        
 
         self.write({"notes": current_notes + opening_note})
 
         # Create session opening activity
-        self.activity_schedule(
+        self.activity_schedule()
             "mail.mail_activity_data_todo",
             summary=_("POS session opened: %s", self.name),
-            note=_("New POS session has been opened and is ready for transactions."),
+            note=_("New POS session has been opened and is ready for transactions."),:
             user_id=self.user_id.id,
-        )
+        
 
-        self.message_post(
+        self.message_post()
             body=_("New POS session opened: %s", self.name),
             message_type="notification",
-        )
+        
 
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Open Session"),
             "res_model": "pos.session",
             "view_mode": "form",
             "target": "new",
-            "context": {
+            "context": {}
                 "default_config_id": self.id,
                 "default_user_id": self.user_id.id,
-            },
-        }
+            
+        
 
     def action_view_orders(self):
-        """View all orders for this POS configuration."""
-
+        """View all orders for this POS configuration.""":
         self.ensure_one()
 
         # Create activity to track order viewing
-        self.activity_schedule(
+        self.activity_schedule()
             "mail.mail_activity_data_todo",
             summary=_("POS orders reviewed: %s", self.name),
             note=_("POS orders and transaction history has been reviewed."),
             user_id=self.user_id.id,
-        )
+        
 
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("POS Orders for: %s", self.name),
             "res_model": "pos.order",
             "view_mode": "tree,form",
             "target": "current",
             "domain": [("config_id", "=", self.id)],
-            "context": {
+            "context": {}
                 "default_config_id": self.id,
                 "search_default_config_id": self.id,
                 "search_default_today": True,
-            },
-        }
+            
+        
 
     def action_view_sales_report(self):
-        """View sales report for this POS configuration."""
-
+        """View sales report for this POS configuration.""":
         self.ensure_one()
 
-        # Create activity for sales report review
-        self.activity_schedule(
+        # Create activity for sales report review:
+        self.activity_schedule()
             "mail.mail_activity_data_done",
             summary=_("Sales report generated: %s", self.name),
-            note=_("Sales report has been generated and reviewed for analysis."),
+            note=_("Sales report has been generated and reviewed for analysis."),:
             user_id=self.user_id.id,
-        )
+        
 
-        self.message_post(
+        self.message_post()
             body=_("Sales report accessed for: %s", self.name),
             message_type="notification",
-        )
+        
 
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Sales Report for: %s", self.name),
             "res_model": "report.pos.order",
             "view_mode": "graph,pivot,tree",
             "target": "current",
             "domain": [("config_id", "=", self.id)],
-            "context": {
+            "context": {}
                 "default_config_id": self.id,
                 "search_default_config_id": self.id,
                 "search_default_today": True,
                 "group_by": ["date_order"],
-            },
-        }
+            
+        
 
     def action_view_sessions(self):
-        """View all sessions for this POS configuration."""
-
+        """View all sessions for this POS configuration.""":
         self.ensure_one()
 
         # Create activity to track session viewing
-        self.activity_schedule(
+        self.activity_schedule()
             "mail.mail_activity_data_todo",
             summary=_("POS sessions reviewed: %s", self.name),
             note=_("POS sessions and daily operations have been reviewed."),
             user_id=self.user_id.id,
-        )
+        
 
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("POS Sessions for: %s", self.name),
             "res_model": "pos.session",
             "view_mode": "tree,form",
             "target": "current",
             "domain": [("config_id", "=", self.id)],
-            "context": {
+            "context": {}
                 "default_config_id": self.id,
                 "search_default_config_id": self.id,
                 "search_default_recent": True,
-            },
-        }
+            
+        
 
     # ============================================================================
-    # UTILITY METHODS
+        # UTILITY METHODS
     # ============================================================================
     def get_session_status(self):
-        """Get current session status for this configuration."""
+        """Get current session status for this configuration.""":
         self.ensure_one()
-        current_session = self.env["pos.session"].search(
+        current_session = self.env["pos.session"].search()
             [("config_id", "=", self.id), ("state", "=", "opened")], limit=1
-        )
+        
 
         if current_session:
-            return {
+            return {}
                 "status": "opened",
                 "session_id": current_session.id,
                 "session_name": current_session.name,
                 "start_at": current_session.start_at,
-            }
+            
         else:
-            return {
+            return {}
                 "status": "closed",
                 "session_id": False,
                 "session_name": False,
                 "start_at": False,
-            }
+            
 
     def get_daily_sales_summary(self):
-        """Get daily sales summary for this configuration."""
+        """Get daily sales summary for this configuration.""":
         self.ensure_one()
-        today = fields.Date.today()
+    today = fields.Date.today()
 
-        orders = self.env["pos.order"].search(
-            [
+        orders = self.env["pos.order"].search()
+            []
                 ("config_id", "=", self.id),
                 ("date_order", ">=", today),
                 ("date_order", "<", today + fields.timedelta(days=1)),
                 ("state", "in", ["paid", "done", "invoiced"]),
-            ]
-        )
+            
+        
 
         total_amount = sum(orders.mapped("amount_total"))
         order_count = len(orders)
 
-        return {
+        return {}
             "total_amount": total_amount,
             "order_count": order_count,
-            "average_ticket": (
-                round(total_amount / order_count, 2) if order_count > 0 else 0
-            ),
+            "average_ticket": ()
+                round(total_amount / order_count, 2) if order_count > 0 else 0:
+            
             "date": today,
-        }
+        
 
     def validate_session_closure(self):
-        """Validate if session can be closed properly."""
+        """Validate if session can be closed properly.""":
         self.ensure_one()
 
-        current_session = self.env["pos.session"].search(
+        current_session = self.env["pos.session"].search()
             [("config_id", "=", self.id), ("state", "=", "opened")], limit=1
-        )
+        
 
         if not current_session:
             return {"valid": False, "message": _("No open session found")}
 
-        # Check for pending orders
-        pending_orders = self.env["pos.order"].search(
+        # Check for pending orders:
+        pending_orders = self.env["pos.order"].search()
             [("session_id", "=", current_session.id), ("state", "=", "draft")]
-        )
+        
 
         if pending_orders:
-            return {
+            return {}
                 "valid": False,
                 "message": _("There are %d pending orders that must be processed first", len(pending_orders)),
-            }
+            
 
         return {"valid": True, "message": _("Session can be closed safely")}
+
+)

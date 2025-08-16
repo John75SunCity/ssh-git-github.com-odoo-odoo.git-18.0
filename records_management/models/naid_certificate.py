@@ -1,46 +1,43 @@
 # -*- coding: utf-8 -*-
-"""
+
 NAID Certificate Management Module
 
-This module provides comprehensive management of NAID (National Association for Information
-Destruction) certificates within the Records Management System. It implements certificate
-generation, validation, and tracking for secure document destruction and compliance verification.
-
-Key Features:
+This module provides comprehensive management of NAID (National Association for Information:)
+    pass
+Destruction
+generation, validation, and tracking for secure document destruction and compliance verification.:
+Key Features
 - Complete NAID certificate lifecycle management from generation to archival
-- Automated certificate generation for destruction and compliance events
+- Automated certificate generation for destruction and compliance events:
 - Digital signature integration with tamper-proof certificate validation
 - Certificate template management with customizable formats and branding
 - Compliance verification with NAID AAA standards and requirements
 - Integration with destruction services and chain of custody tracking
 - Certificate distribution and customer portal access management
 
-Business Processes:
-1. Certificate Generation: Automated creation of certificates for destruction events
+Business Processes
+1. Certificate Generation: Automated creation of certificates for destruction events:
 2. Validation and Verification: Digital signature application and tamper detection
 3. Distribution Management: Secure certificate delivery to customers and stakeholders
 4. Archive Management: Long-term certificate storage and retrieval systems
 5. Compliance Tracking: NAID AAA compliance verification and audit trail maintenance
 6. Template Management: Certificate format customization and branding control
-7. Audit and Reporting: Certificate tracking and compliance reporting for regulatory requirements
-
-Certificate Types:
-- Destruction Certificates: Certificates of secure destruction for document disposal
+7. Audit and Reporting: Certificate tracking and compliance reporting for regulatory requirements:
+Certificate Types
+- Destruction Certificates: Certificates of secure destruction for document disposal:
 - Compliance Certificates: NAID AAA compliance verification certificates
 - Chain of Custody Certificates: Complete custody trail documentation certificates
 - Service Completion Certificates: Service delivery and completion verification
 - Annual Compliance Certificates: Periodic compliance and certification renewals
-- Special Handling Certificates: Certificates for high-security or sensitive materials
-
-NAID AAA Integration:
+- Special Handling Certificates: Certificates for high-security or sensitive materials:
+NAID AAA Integration
 - Full compliance with NAID AAA (Audit, Authorization, and Audit) standards
 - Integration with NAID member verification and authorization systems
 - Automated compliance checking and violation detection with real-time alerts
 - Certificate generation following NAID specifications and formatting requirements
 - Integration with NAID reporting systems and compliance databases
-- Support for NAID audits and certification renewal processes
-
-Security and Validation:
+- Support for NAID audits and certification renewal processes:
+Security and Validation
 - Digital signature integration with certificate authorities and encryption
 - Tamper-proof certificate storage with cryptographic verification
 - Certificate authenticity validation and fraud detection systems
@@ -48,25 +45,23 @@ Security and Validation:
 - Integration with PKI systems and digital certificate management
 - Automated certificate expiration monitoring and renewal workflows
 
-Customer Portal Integration:
+Customer Portal Integration
 - Self-service certificate access through customer portal interface
 - Real-time certificate status tracking and delivery notifications
 - Historical certificate archive with search and retrieval capabilities
 - Certificate download and printing with security watermarks
 - Integration with customer communication preferences and notifications
-- Mobile-responsive design for certificate access from any device
-
-Technical Implementation:
+- Mobile-responsive design for certificate access from any device:
+Technical Implementation
 - Modern Odoo 18.0 architecture with comprehensive security frameworks
 - Digital signature and cryptographic validation systems
 - Performance optimized certificate generation and storage systems
 - Integration with external NAID systems and compliance verification services
-- Mail thread integration for notifications and activity tracking
-
+- Mail thread integration for notifications and activity tracking""":"
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
-"""
+
 
 import base64
 import hashlib
@@ -81,12 +76,12 @@ _logger = logging.getLogger(__name__)
 
 
 class NaidCertificate(models.Model):
-    """
-    NAID Certificate Management
 
-    Manages NAID certificates for document destruction and compliance verification
-    with comprehensive lifecycle tracking and digital signature integration.
-    """
+        NAID Certificate Management
+
+    Manages NAID certificates for document destruction and compliance verification""":"
+        with comprehensive lifecycle tracking and digital signature integration.
+
 
     _name = "naid.certificate"
     _description = "NAID Certificate"
@@ -94,234 +89,259 @@ class NaidCertificate(models.Model):
     _order = "name desc"
     _rec_name = "name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Certificate Number",
         required=True,
         tracking=True,
         index=True,
         copy=False,
-    )
-    description = fields.Text(string="Description")
-    sequence = fields.Integer(string="Sequence", default=10)
+    
+    ,
+    description = fields.Text(string="Description"),
+    sequence = fields.Integer(string="Sequence",,
+    default=10)
 
-    # ============================================================================
+        # ============================================================================
     # STATE MANAGEMENT
-    # ============================================================================
+        # ============================================================================
     state = fields.Selection(
-        [
+        [)
             ("draft", "Draft"),
             ("generated", "Generated"),
             ("issued", "Issued"),
             ("delivered", "Delivered"),
             ("archived", "Archived"),
-        ],
+        
         string="Status",
         default="draft",
         tracking=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPANY AND USER FIELDS
-    # ============================================================================
+        # ============================================================================
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # CERTIFICATE INFORMATION
-    # ============================================================================
+        # ============================================================================
+    ,
     certificate_type = fields.Selection(
-        [
+        [)
             ("destruction", "Destruction Certificate"),
             ("compliance", "Compliance Certificate"),
             ("chain_custody", "Chain of Custody Certificate"),
             ("service_completion", "Service Completion Certificate"),
             ("annual_compliance", "Annual Compliance Certificate"),
             ("special_handling", "Special Handling Certificate"),
-        ],
+        
         string="Certificate Type",
         required=True,
         tracking=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    )
+    
     destruction_service_id = fields.Many2one(
         "shredding.service", string="Related Destruction Service"
-    )
+    
     naid_compliance_id = fields.Many2one(
         "naid.compliance", string="Related NAID Compliance"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # TIMESTAMP FIELDS
-    # ============================================================================
+        # ============================================================================
     date_created = fields.Datetime(
         string="Created Date", default=fields.Datetime.now, required=True
-    )
-    date_modified = fields.Datetime(string="Modified Date")
-    date_issued = fields.Datetime(string="Issue Date", tracking=True)
-    date_delivered = fields.Datetime(string="Delivery Date", tracking=True)
-    expiration_date = fields.Date(string="Expiration Date", tracking=True)
+    
+    ,
+    date_modified = fields.Datetime(string="Modified Date"),
+    date_issued = fields.Datetime(string="Issue Date",,
+    tracking=True),
+    date_delivered = fields.Datetime(string="Delivery Date",,
+    tracking=True),
+    expiration_date = fields.Date(string="Expiration Date",,
+    tracking=True)
 
-    # ============================================================================
+        # ============================================================================
     # CERTIFICATE CONTENT FIELDS
-    # ============================================================================
-    certificate_data = fields.Binary(string="Certificate Document", attachment=True)
-    certificate_filename = fields.Char(string="Certificate Filename")
+        # ============================================================================
+    certificate_data = fields.Binary(string="Certificate Document",,
+    attachment=True),
+    certificate_filename = fields.Char(string="Certificate Filename"),
     template_id = fields.Many2one(
         "naid.certificate.template", string="Certificate Template"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # DIGITAL SIGNATURE FIELDS
-    # ============================================================================
-    is_digitally_signed = fields.Boolean(string="Digitally Signed", default=False)
-    signature_data = fields.Binary(string="Digital Signature", attachment=True)
-    signature_hash = fields.Char(string="Signature Hash", readonly=True)
-    signature_date = fields.Datetime(string="Signature Date", readonly=True)
+        # ============================================================================
+    is_digitally_signed = fields.Boolean(string="Digitally Signed",,
+    default=False),
+    signature_data = fields.Binary(string="Digital Signature",,
+    attachment=True),
+    signature_hash = fields.Char(string="Signature Hash",,
+    readonly=True),
+    signature_date = fields.Datetime(string="Signature Date",,
+    readonly=True)
 
-    # ============================================================================
+        # ============================================================================
     # COMPLIANCE FIELDS
-    # ============================================================================
-    naid_member_id = fields.Char(string="NAID Member ID")
+        # ============================================================================
+    naid_member_id = fields.Char(string="NAID Member ID"),
     compliance_level = fields.Selection(
-        [
+        [)
             ("aaa", "NAID AAA Certified"),
             ("standard", "NAID Standard"),
             ("basic", "Basic Compliance"),
-        ],
+        
         string="Compliance Level",
         default="aaa",
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # DISTRIBUTION FIELDS
-    # ============================================================================
+        # ============================================================================
     delivery_method = fields.Selection(
-        [
+        [)
             ("email", "Email"),
             ("portal", "Customer Portal"),
             ("mail", "Physical Mail"),
             ("pickup", "Customer Pickup"),
-        ],
+        
         string="Delivery Method",
         default="portal",
-    )
+    
 
     delivery_status = fields.Selection(
-        [
+        [)
             ("pending", "Pending"),
             ("sent", "Sent"),
             ("delivered", "Delivered"),
             ("failed", "Failed"),
-        ],
+        
         string="Delivery Status",
         default="pending",
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # CONTROL FIELDS
-    # ============================================================================
-    active = fields.Boolean(string="Active", default=True)
+        # ============================================================================
+    active = fields.Boolean(string="Active",,
+    default=True),
     priority = fields.Selection(
-        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")],
-        string="Priority",
+        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")), string="Priority",
         default="normal",
-    )
+    
     notes = fields.Text(string="Internal Notes")
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTED FIELDS
-    # ============================================================================
+        # ============================================================================
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    )
-    is_expired = fields.Boolean(string="Is Expired", compute="_compute_is_expired")
+    
+    is_expired = fields.Boolean(string="Is Expired",,
+    compute="_compute_is_expired"),
     days_until_expiration = fields.Integer(
-        string="Days Until Expiration", compute="_compute_days_until_expiration"
-    )
+        string="Days Until Expiration",,
+    compute="_compute_days_until_expiration"
+    
 
-    # NAID Destruction Records (inverse relationship)
+        # NAID Destruction Records (inverse relationship)
     destruction_record_ids = fields.One2many(
         "naid.destruction.record", "certificate_id",
         string="Associated Destruction Records",
-        help="Destruction records that reference this certificate"
-    )
+        ,
+    help="Destruction records that reference this certificate"
+    
 
-    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+        # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
+    activity_ids = fields.One2many("mail.activity", "res_id",,
+    string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    
+    message_ids = fields.One2many("mail.message", "res_id",,
+    string="Messages")
 
-    # Added by Safe Business Fields Fixer
-    chain_of_custody_id = fields.Many2one("naid.chain.custody", string="Chain of Custody")
+        # Added by Safe Business Fields Fixer
+    chain_of_custody_id = fields.Many2one("naid.chain.custody",,
+    string="Chain of Custody")
 
-    # Added by Safe Business Fields Fixer
+        # Added by Safe Business Fields Fixer
     custodian_name = fields.Char(string="Custodian Name")
 
-    # Added by Safe Business Fields Fixer
+        # Added by Safe Business Fields Fixer
     witness_name = fields.Char(string="Witness Name")
 
-    # Added by Safe Business Fields Fixer
-    environmental_compliance = fields.Boolean(string="Environmental Compliance", default=True)
+        # Added by Safe Business Fields Fixer
+    environmental_compliance = fields.Boolean(string="Environmental Compliance",,
+    default=True)
 
-    # Added by Safe Business Fields Fixer
-    carbon_neutral_destruction = fields.Boolean(string="Carbon Neutral Destruction", default=False)
+        # Added by Safe Business Fields Fixer
+    carbon_neutral_destruction = fields.Boolean(string="Carbon Neutral Destruction",,
+    default=False)
 
-    # Added by Safe Business Fields Fixer
-    recycling_percentage = fields.Float(string="Recycling Percentage", digits=(5,2)
-    action_cancel = fields.Char(string='Action Cancel')
-    action_draft = fields.Char(string='Action Draft')
-    action_issue = fields.Char(string='Action Issue')
-    action_send = fields.Char(string='Action Send')
-    action_view_destruction_service = fields.Char(string='Action View Destruction Service')
-    button_box = fields.Char(string='Button Box')
-    compliance_details = fields.Char(string='Compliance Details')
-    context = fields.Char(string='Context')
-    destroyed_materials = fields.Char(string='Destroyed Materials')
-    domain = fields.Char(string='Domain')
-    group_by_issue_date = fields.Date(string='Group By Issue Date')
-    group_by_partner = fields.Char(string='Group By Partner')
-    group_by_state = fields.Selection([], string='Group By State')  # TODO: Define selection options
-    help = fields.Char(string='Help')
-    my_certificates = fields.Char(string='My Certificates')
-    product_id = fields.Many2one('product', string='Product Id')
-    res_model = fields.Char(string='Res Model')
-    search_view_id = fields.Many2one('search.view', string='Search View Id')
-    state_draft = fields.Char(string='State Draft')
-    state_issued = fields.Char(string='State Issued')
-    total_weight = fields.Float(string='Total Weight', digits=(12, 2))
-    type = fields.Selection([], string='Type')  # TODO: Define selection options
-    uom_id = fields.Many2one('uom', string='Uom Id')
-    view_mode = fields.Char(string='View Mode')
+        # Added by Safe Business Fields Fixer
+    recycling_percentage = fields.Float(string="Recycling Percentage",,
+    digits=(5,2))
+    action_cancel = fields.Char(string='Action Cancel'),
+    action_draft = fields.Char(string='Action Draft'),
+    action_issue = fields.Char(string='Action Issue'),
+    action_send = fields.Char(string='Action Send'),
+    action_view_destruction_service = fields.Char(string='Action View Destruction Service'),
+    button_box = fields.Char(string='Button Box'),
+    compliance_details = fields.Char(string='Compliance Details'),
+    context = fields.Char(string='Context'),
+    destroyed_materials = fields.Char(string='Destroyed Materials'),
+    domain = fields.Char(string='Domain'),
+    group_by_issue_date = fields.Date(string='Group By Issue Date'),
+    group_by_partner = fields.Char(string='Group By Partner'),
+    group_by_state = fields.Selection([), string='Group By State')  # TODO: Define selection options
+    help = fields.Char(string='Help'),
+    my_certificates = fields.Char(string='My Certificates'),
+    product_id = fields.Many2one('product',,
+    string='Product Id'),
+    res_model = fields.Char(string='Res Model'),
+    search_view_id = fields.Many2one('search.view',,
+    string='Search View Id'),
+    state_draft = fields.Char(string='State Draft'),
+    state_issued = fields.Char(string='State Issued'),
+    total_weight = fields.Float(string='Total Weight',,
+    digits=(12, 2))
+    type = fields.Selection([), string='Type')  # TODO: Define selection options
+    uom_id = fields.Many2one('uom',,
+    string='Uom Id'),
+    view_mode = fields.Char(string='View Mode'),
     weight = fields.Char(string='Weight')
 
     @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
     def _compute_total_weight(self):
         for record in self:
-            record.total_weight = sum(record.line_ids.mapped('amount')))
+            record.total_weight = sum(record.line_ids.mapped('amount'))
 
     # ============================================================================
-    # COMPUTE METHODS
+        # COMPUTE METHODS
     # ============================================================================
     @api.depends("name", "certificate_type", "partner_id.name")
     def _compute_display_name(self):
@@ -329,7 +349,7 @@ class NaidCertificate(models.Model):
         for record in self:
             name = record.name or _("New Certificate")
             if record.certificate_type:
-                type_dict = dict(record._fields["certificate_type"].selection)
+                type_dict = dict(record._fields["certificate_type").selection)
                 name += _(" - %s", type_dict.get(record.certificate_type))
             if record.partner_id:
                 name += _(" (%s)", record.partner_id.name)
@@ -337,17 +357,17 @@ class NaidCertificate(models.Model):
 
     @api.depends("expiration_date")
     def _compute_is_expired(self):
-        """Check if certificate is expired"""
-        today = fields.Date.today()
+        """Check if certificate is expired""":
+    today = fields.Date.today()
         for record in self:
-            record.is_expired = (
+            record.is_expired = ()
                 record.expiration_date and record.expiration_date < today
-            )
+            
 
     @api.depends("expiration_date")
     def _compute_days_until_expiration(self):
         """Calculate days until expiration"""
-        today = fields.Date.today()
+    today = fields.Date.today()
         for record in self:
             if record.expiration_date:
                 delta = record.expiration_date - today
@@ -356,7 +376,7 @@ class NaidCertificate(models.Model):
                 record.days_until_expiration = 0
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_generate_certificate(self):
         """Generate certificate document"""
@@ -376,13 +396,13 @@ class NaidCertificate(models.Model):
         if self.state != "generated":
             raise UserError(_("Only generated certificates can be issued"))
 
-        self.write(
-            {
+        self.write()
+            {}
                 "state": "issued",
                 "date_issued": fields.Datetime.now(),
                 "date_modified": fields.Datetime.now(),
-            }
-        )
+            
+        
         self.message_post(body=_("Certificate issued"))
 
     def action_deliver_certificate(self):
@@ -392,27 +412,27 @@ class NaidCertificate(models.Model):
         if self.state != "issued":
             raise UserError(_("Only issued certificates can be delivered"))
 
-        self.write(
-            {
+        self.write()
+            {}
                 "state": "delivered",
                 "date_delivered": fields.Datetime.now(),
                 "delivery_status": "delivered",
                 "date_modified": fields.Datetime.now(),
-            }
-        )
+            
+        
         self.message_post(body=_("Certificate delivered"))
 
     def action_archive_certificate(self):
         """Archive the certificate"""
 
         self.ensure_one()
-        self.write(
-            {
+        self.write()
+            {}
                 "state": "archived",
                 "active": False,
                 "date_modified": fields.Datetime.now(),
-            }
-        )
+            
+        
         self.message_post(body=_("Certificate archived"))
 
     def action_apply_digital_signature(self):
@@ -426,14 +446,14 @@ class NaidCertificate(models.Model):
         decoded_data = base64.b64decode(self.certificate_data)
         signature_hash = hashlib.sha256(decoded_data).hexdigest()
 
-        self.write(
-            {
+        self.write()
+            {}
                 "is_digitally_signed": True,
                 "signature_hash": signature_hash,
                 "signature_date": fields.Datetime.now(),
                 "date_modified": fields.Datetime.now(),
-            }
-        )
+            
+        
         self.message_post(body=_("Digital signature applied"))
 
     def action_validate_signature(self):
@@ -448,9 +468,9 @@ class NaidCertificate(models.Model):
         current_hash = hashlib.sha256(decoded_data).hexdigest()
 
         if current_hash != self.signature_hash:
-            raise ValidationError(
+            raise ValidationError()
                 _("Certificate has been tampered with - signature invalid")
-            )
+            
 
         self.message_post(body=_("Digital signature validated successfully"))
 
@@ -472,9 +492,9 @@ class NaidCertificate(models.Model):
 
     def _send_certificate_email(self):
         """Send certificate via email"""
-        template = self.env.ref(
+        template = self.env.ref()
             "records_management.email_template_naid_certificate", False
-        )
+        
         if template:
             template.send_mail(self.id, force_send=True)
 
@@ -482,23 +502,23 @@ class NaidCertificate(models.Model):
         """Make certificate available in customer portal"""
         # Portal integration logic would be implemented here
         # For now, just log the action
-        _logger.info(
-            "Certificate %s made available in customer portal for %s",
+        _logger.info()
+            "Certificate %s made available in customer portal for %s",:
             self.name,
             self.partner_id.name,
-        )
+        
 
     # ============================================================================
-    # OVERRIDE METHODS
+        # OVERRIDE METHODS
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to set default values and generate certificate number"""
         for vals in vals_list:
             if not vals.get("name"):
-                vals["name"] = self.env["ir.sequence"].next_by_code(
+                vals["name"] = self.env["ir.sequence").next_by_code(]
                     "naid.certificate"
-                ) or _("New Certificate")
+                ) or _("New Certificate"
 
             # Set expiration date based on certificate type
             if not vals.get("expiration_date") and vals.get("certificate_type"):
@@ -510,8 +530,8 @@ class NaidCertificate(models.Model):
         return super().create(vals_list)
 
     def write(self, vals):
-        """Override write to update modification date for relevant changes"""
-        relevant_fields = {
+        """Override write to update modification date for relevant changes""":
+        relevant_fields = {}
             "state",
             "certificate_data",
             "is_digitally_signed",
@@ -520,9 +540,9 @@ class NaidCertificate(models.Model):
             "signature_date",
             "delivery_status",
             "expiration_date",
-        }
+        
         if any(field in vals for field in relevant_fields):
-            vals["date_modified"] = fields.Datetime.now()
+    vals["date_modified"] = fields.Datetime.now()
         return super().write(vals)
 
     def name_get(self):
@@ -540,100 +560,100 @@ class NaidCertificate(models.Model):
 
     def _get_expiration_days(self, certificate_type):
         """Get expiration days based on certificate type"""
-        expiration_map = {
+        expiration_map = {}
             "destruction": 2555,  # 7 years
             "compliance": 365,  # 1 year
             "chain_custody": 2555,  # 7 years
             "service_completion": 365,  # 1 year
             "annual_compliance": 365,  # 1 year
             "special_handling": 2555,  # 7 years
-        }
+        
         return expiration_map.get(certificate_type, 365)
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains("expiration_date")
     def _check_expiration_date(self):
         """Validate expiration date is in the future"""
         for record in self:
-            if record.expiration_date and record.expiration_date <= fields.Date.today():
+    if record.expiration_date and record.expiration_date <= fields.Date.today():
                 raise ValidationError(_("Expiration date must be in the future"))
 
     @api.constrains("certificate_type", "partner_id")
     def _check_certificate_uniqueness(self):
-        """Validate certificate uniqueness for certain types"""
+        """Validate certificate uniqueness for certain types""":
         for record in self:
             if record.certificate_type in ["annual_compliance", "compliance"]:
-                existing = self.search(
-                    [
+                existing = self.search()
+                    []
                         ("certificate_type", "=", record.certificate_type),
                         ("partner_id", "=", record.partner_id.id),
                         ("state", "in", ["issued", "delivered"]),
                         ("expiration_date", ">", fields.Date.today()),
                         ("id", "!=", record.id),
-                    ]
-                )
+                    
+                
                 if existing:
-                    type_name = dict(record._fields["certificate_type"].selection).get(
+                    type_name = dict(record._fields["certificate_type").selection).get(]
                         record.certificate_type
-                    )
-                    raise ValidationError(
-                        _("An active %s certificate already exists for this customer", type_name)
-                    )
+                    
+                    raise ValidationError()
+                        _("An active %s certificate already exists for this customer", type_name):
+                    
 
     @api.constrains("naid_member_id")
     def _check_naid_member_id(self):
         """Validate NAID member ID format (alphanumeric and dashes allowed)"""
         for record in self:
-            if record.naid_member_id and not re.match(
+            if record.naid_member_id and not re.match(:)
                 r"^[A-Za-z0-9\-]+$", record.naid_member_id
-            ):
-                raise ValidationError(
-                    _(
+            
+                raise ValidationError()
+                    _()
                         "NAID Member ID must contain only alphanumeric characters and dashes"
-                    )
-                )
+                    
+                
 
     # ============================================================================
-    # SCHEDULED ACTIONS
+        # SCHEDULED ACTIONS
     # ============================================================================
     @api.model
     def _check_certificate_expiration(self):
-        """Scheduled action to check for expiring certificates"""
-        today = fields.Date.today()
-        # Check for certificates expiring in 30 days
+        """Scheduled action to check for expiring certificates""":
+    today = fields.Date.today()
+        # Check for certificates expiring in 30 days:
         warning_date = today + timedelta(days=30)
-        expiring_certificates = self.search(
-            [
+        expiring_certificates = self.search()
+            []
                 ("expiration_date", "<=", warning_date),
                 ("expiration_date", ">", today),
                 ("state", "in", ["issued", "delivered"]),
-            ]
-        )
+            
+        
 
         for cert in expiring_certificates:
-            cert.message_post(
+            cert.message_post()
                 body=_("Certificate expires in %d days", cert.days_until_expiration),
                 subject=_("Certificate Expiration Warning"),
-            )
+            
 
         # Archive expired certificates
-        expired_certificates = self.search(
-            [
+        expired_certificates = self.search()
+            []
                 ("expiration_date", "<", today),
                 ("state", "in", ["issued", "delivered"]),
-            ]
-        )
+            
+        
 
         for cert in expired_certificates:
             cert.action_archive_certificate()
-        expired_certificates = self.search(
-            [
+        expired_certificates = self.search()
+            []
                 ("expiration_date", "<", today),
                 ("state", "in", ["issued", "delivered"]),
-            ]
-        )
+            
+        
 
         for cert in expired_certificates:
             cert.action_archive_certificate()
@@ -646,81 +666,84 @@ class NAIDCertificate(models.Model):
     _order = "certificate_number desc"
     _rec_name = "certificate_number"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     certificate_number = fields.Char(
         string="Certificate Number", required=True, tracking=True, copy=False
-    )
+    
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    )
-    active = fields.Boolean(string="Active", default=True)
+    
+    active = fields.Boolean(string="Active",,
+    default=True)
 
-    # ============================================================================
+        # ============================================================================
     # BUSINESS FIELDS
-    # ============================================================================
+        # ============================================================================
     partner_id = fields.Many2one(
         "res.partner",
         string="Customer",
         required=True,
-        help="Customer for whom destruction was performed",
-    )
+        help="Customer for whom destruction was performed",:
+    
 
     destruction_date = fields.Datetime(
         string="Destruction Date", required=True, tracking=True
-    )
+    
 
     issue_date = fields.Datetime(
         string="Issue Date", default=fields.Datetime.now, required=True
-    )
+    
 
+    ,
     naid_compliance_level = fields.Selection(
-        [
+        [)
             ("aaa", "AAA - Highest Security"),
             ("aa", "AA - High Security"),
             ("a", "A - Standard Security"),
-        ],
+        
         string="NAID Compliance Level",
         default="aaa",
         required=True,
-    )
+    
 
     destruction_method = fields.Selection(
-        [
+        [)
             ("shred", "Cross-Cut Shredding"),
             ("pulverize", "Pulverization"),
             ("incinerate", "Incineration"),
             ("degauss", "Degaussing"),
             ("wipe", "Data Wiping"),
-        ],
+        
         string="Destruction Method",
         required=True,
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIP FIELDS
-    # ============================================================================
+        # ============================================================================
     destruction_item_ids = fields.One2many(
         "destruction.item", "naid_certificate_id", string="Destruction Items"
-    )
+    
 
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Shredding Service"
-    )
+    
 
-    # Mail Thread Framework Fields
+        # Mail Thread Framework Fields
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    )
+    
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    
+    message_ids = fields.One2many("mail.message", "res_id",,
+    string="Messages")
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends("destruction_item_ids")
     def _compute_total_items(self):
         """Compute total number of items destroyed"""
@@ -728,15 +751,18 @@ class NAIDCertificate(models.Model):
             record.total_items = len(record.destruction_item_ids)
 
     total_items = fields.Integer(
-        string="Total Items", compute="_compute_total_items", store=True
-    )
+        string="Total Items", compute="_compute_total_items",,
+    store=True
+    
 
     @api.model_create_multi
     def create(self, vals_list):
         """Generate certificate number on creation"""
         for vals in vals_list:
             if not vals.get("certificate_number"):
-                vals["certificate_number"] = self.env[
+                vals["certificate_number") = self.env[]
                     "ir.sequence"
-                ].next_by_code("naid.certificate") or _("New")
+                
         return super().create(vals_list)
+
+))))))))))))))))))

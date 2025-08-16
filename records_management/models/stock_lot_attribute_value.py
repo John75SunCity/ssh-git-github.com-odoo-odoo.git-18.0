@@ -14,57 +14,63 @@ class StockLotAttributeValue(models.Model):
     _description = "Stock Lot Attribute Value"
     _rec_name = "display_name"
 
-    display_name = fields.Char(string="Display Name", compute="_compute_display_name", store=True)
+    display_name = fields.Char(string="Display Name", compute="_compute_display_name",,
+    store=True),
     lot_id = fields.Many2one(
         "stock.lot",
         string="Stock Lot",
         required=True,
         ondelete="cascade",
         help="Associated stock lot",
-    )
+    
     attribute_id = fields.Many2one(
         "stock.lot.attribute",
         string="Attribute",
         required=True,
         ondelete="cascade",
         help="Attribute definition",
-    )
+    
 
-    # Value fields for different types
-    value_text = fields.Char(string="Text Value", help="Text attribute value")
-    value_number = fields.Float(string="Number Value", help="Numeric attribute value")
-    value_date = fields.Date(string="Date Value", help="Date attribute value")
+        # Value fields for different types:
+            pass
+    value_text = fields.Char(string="Text Value",,
+    help="Text attribute value"),
+    value_number = fields.Float(string="Number Value",,
+    help="Numeric attribute value"),
+    value_date = fields.Date(string="Date Value",,
+    help="Date attribute value"),
     value_boolean = fields.Boolean(
         string="Boolean Value", help="Boolean attribute value"
-    )
+    
     value_selection = fields.Char(
         string="Selection Value", help="Selected option value"
-    )
+    
 
-    # Workflow state management
-    state = fields.Selection([
+        # Workflow state management
+    ,
+    state = fields.Selection([))
         ('draft', 'Draft')
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    name = fields.Char(string='Name')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    context = fields.Char(string='Context'),
+    domain = fields.Char(string='Domain'),
+    help = fields.Char(string='Help'),
+    name = fields.Char(string='Name'),
+    res_model = fields.Char(string='Res Model'),
+    type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode'),
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    ], string='Status', default='draft', tracking=True, required=True, index=True,
-       help='Current status of the record'),
+    
+        help='Current status of the record'
 
-    @api.depends(
+    @api.depends()
         "attribute_id",
         "value_text",
         "value_number",
         "value_date",
         "value_boolean",
         "value_selection",
-    )
+    
     def _compute_display_name(self):
         """Compute display name based on attribute type and value"""
         for record in self:
@@ -79,13 +85,13 @@ class StockLotAttributeValue(models.Model):
                 value = record.value_text or "Empty"
                 record.display_name = _("%s: %s", attr_name, value)
             elif attr_type == "number":
-                value = record.value_number if record.value_number is not None else 0
+                value = record.value_number if record.value_number is not None else 0:
                 record.display_name = _("%s: %s", attr_name, value)
             elif attr_type == "date":
                 value = record.value_date or "No Date"
                 record.display_name = _("%s: %s", attr_name, value)
             elif attr_type == "boolean":
-                value = "Yes" if record.value_boolean else "No"
+                value = "Yes" if record.value_boolean else "No":
                 record.display_name = _("%s: %s", attr_name, value)
             elif attr_type == "selection":
                 value = record.value_selection or "Not Selected"
@@ -97,14 +103,13 @@ class StockLotAttributeValue(models.Model):
     def _check_unique_attribute_per_lot(self):
         """Ensure each attribute is only assigned once per lot"""
         for record in self:
-            existing = self.search([
+            existing = self.search([))
                 ('lot_id', '=', record.lot_id.id),
                 ('attribute_id', '=', record.attribute_id.id),
                 ('id', '!=', record.id)
-            ])
+            
             if existing:
-                raise ValidationError(_("Attribute %s is already defined for this stock lot", record.attribute_id.name))
-
+                raise ValidationError(_("Attribute %s is already defined for this stock lot", record.attribute_id.name)):
     def get_effective_value(self):
         """Get the effective value based on attribute type"""
         self.ensure_one()
@@ -141,7 +146,7 @@ class StockLotAttributeValue(models.Model):
         return result
 
     def _validate_value_type(self):
-        """Validate that the correct value field is used for the attribute type"""
+        """Validate that the correct value field is used for the attribute type""":
         if not self.attribute_id:
             return
 
@@ -155,17 +160,18 @@ class StockLotAttributeValue(models.Model):
         # Check that only the correct value field is set
         for field in value_fields:
             if field != expected_field and getattr(self, field):
-                raise ValidationError(_(
+                raise ValidationError(_())
                     "Attribute %s expects %s type, but %s value is provided",
                     self.attribute_id.name,
                     attr_type,
                     field.replace('value_', '')
-                    ))
+                    
 
         # Check that the correct field has a value
         if not getattr(self, expected_field) and attr_type != 'boolean':
-            raise ValidationError(_(
-                "Please provide a value for %s attribute %s",
+            raise ValidationError(_())
+                "Please provide a value for %s attribute %s",:
                 attr_type,
                 self.attribute_id.name
-            ))
+            
+)

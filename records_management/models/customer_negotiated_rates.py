@@ -14,193 +14,217 @@ class CustomerNegotiatedRate(models.Model):
     _order = "partner_id, effective_date desc"
     _rec_name = "display_name"
 
-    # Core fields
-    name = fields.Char(string="Agreement Name", required=True, tracking=True)
+        # Core fields
+    name = fields.Char(string="Agreement Name", required=True,,
+    tracking=True),
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    )
+    
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user
-    )
-    active = fields.Boolean(string="Active", default=True)
+    
+    active = fields.Boolean(string="Active",,
+    default=True),
     state = fields.Selection(
-        [
+        [)
             ("draft", "Draft"),
             ("negotiating", "Under Negotiation"),
             ("approved", "Approved"),
             ("active", "Active"),
             ("expired", "Expired"),
             ("cancelled", "Cancelled"),
-        ],
+        
         string="State",
         default="draft",
         tracking=True,
-    )
+    
 
-    # Customer Information
+        # Customer Information
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    )
-    contract_reference = fields.Char(string="Contract Reference", tracking=True)
+    
+    contract_reference = fields.Char(string="Contract Reference",,
+    tracking=True)
 
-    # Base Rate Reference
+        # Base Rate Reference
     base_rate_id = fields.Many2one(
         "base.rate",
         string="Base Rate Set",
         required=True,
         tracking=True,
         help="Base rate set that these negotiated rates override",
-    )
+    
 
-    # Date Management
-    effective_date = fields.Date(string="Effective Date", required=True, tracking=True)
-    expiry_date = fields.Date(string="Expiry Date", tracking=True)
+        # Date Management
+    effective_date = fields.Date(string="Effective Date", required=True,,
+    tracking=True),
+    expiry_date = fields.Date(string="Expiry Date",,
+    tracking=True),
     negotiation_date = fields.Date(
-        string="Negotiation Date", default=lambda self: fields.Date.today()
-    )
-    approval_date = fields.Date(string="Approval Date", tracking=True)
+        string="Negotiation Date",,
+    default=lambda self: fields.Date.today()
+    
+    approval_date = fields.Date(string="Approval Date",,
+    tracking=True)
 
-    # Negotiated Service Rates (override base rates)
+        # Negotiated Service Rates (override base rates)
     external_per_bin_rate = fields.Float(
         string="Negotiated External Per Bin Rate",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
-        help="Customer-specific rate per bin for external shredding services",
-    )
+        help="Customer-specific rate per bin for external shredding services",:
+            pass
+    
     external_service_call_rate = fields.Float(
         string="Negotiated External Service Call Rate",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
-        help="Customer-specific service call fee for external shredding",
-    )
+        help="Customer-specific service call fee for external shredding",:
+    
 
     managed_permanent_removal_rate = fields.Float(
         string="Negotiated Managed Permanent Removal Rate",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
-        help="Customer-specific rate for permanent removal of managed records",
-    )
+        help="Customer-specific rate for permanent removal of managed records",:
+    
     managed_retrieval_rate = fields.Float(
         string="Negotiated Managed Retrieval Rate",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
-        help="Customer-specific rate for retrieving managed documents",
-    )
+        help="Customer-specific rate for retrieving managed documents",:
+    
     managed_service_call_rate = fields.Float(
         string="Negotiated Managed Service Call Rate",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
-        help="Customer-specific service call fee for managed services",
-    )
+        help="Customer-specific service call fee for managed services",:
+    
     managed_shredding_rate = fields.Float(
         string="Negotiated Managed Shredding Rate",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
-        help="Customer-specific rate for shredding managed documents",
-    )
+        help="Customer-specific rate for shredding managed documents",:
+    
 
     pickup_rate = fields.Float(
         string="Negotiated Pickup Rate",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
-        help="Customer-specific rate for document pickup services",
-    )
+        help="Customer-specific rate for document pickup services",:
+    
     storage_rate_monthly = fields.Float(
         string="Negotiated Monthly Storage Rate",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
-        help="Customer-specific monthly rate for document storage",
-    )
+        help="Customer-specific monthly rate for document storage",:
+    
 
-    # Discount Management
+        # Discount Management
     global_discount_percent = fields.Float(
         string="Global Discount %",
-        digits=(5, 2),
+        ,
+    digits=(5, 2),
         tracking=True,
         help="Overall discount percentage applied to all services",
-    )
+    
     volume_discount_threshold = fields.Integer(
         string="Volume Discount Threshold",
         tracking=True,
-        help="Minimum volume required for volume discounts",
-    )
+        help="Minimum volume required for volume discounts",:
+    
     volume_discount_percent = fields.Float(
         string="Volume Discount %",
-        digits=(5, 2),
+        ,
+    digits=(5, 2),
         tracking=True,
-        help="Discount percentage for volume orders",
-    )
+        help="Discount percentage for volume orders",:
+    
 
-    # Override Controls (which rates are customer-specific)
+        # Override Controls (which rates are customer-specific)
     override_external_rates = fields.Boolean(
         string="Override External Rates", default=False
-    )
+    
     override_managed_rates = fields.Boolean(
         string="Override Managed Rates", default=False
-    )
+    
     override_pickup_rates = fields.Boolean(
         string="Override Pickup Rates", default=False
-    )
+    
     override_storage_rates = fields.Boolean(
         string="Override Storage Rates", default=False
-    )
+    
 
-    # Documentation
-    description = fields.Text(string="Description")
-    negotiation_notes = fields.Text(string="Negotiation Notes")
-    approval_notes = fields.Text(string="Approval Notes")
+        # Documentation
+    ,
+    description = fields.Text(string="Description"),
+    negotiation_notes = fields.Text(string="Negotiation Notes"),
+    approval_notes = fields.Text(string="Approval Notes"),
     terms_conditions = fields.Text(string="Special Terms & Conditions")
 
-    # Container Type Integration (CRITICAL BUSINESS SPECIFICATIONS)
+        # Container Type Integration (CRITICAL BUSINESS SPECIFICATIONS)
     container_type = fields.Selection(
-        [
-            ("type_01", 'Type 01 - Standard Box (1.2 CF, 35 lbs, 12"x15"x10")'),
-            ("type_02", 'Type 02 - Legal/Banker Box (2.4 CF, 65 lbs, 24"x15"x10")'),
-            ("type_03", 'Type 03 - Map Box (0.875 CF, 35 lbs, 42"x6"x6")'),
-            (
+        [)
+            ("type_01", 'Type 1 - Standard Box (1.2 CF, 35 lbs, 12"x15"x10")'),"
+            ("type_02", 'Type 2 - Legal/Banker Box (2.4 CF, 65 lbs, 24"x15"x10")'),"
+            ("type_03", 'Type 3 - Map Box (0.875 CF, 35 lbs, 42"x6"x6")'),"
+            ()
                 "type_04",
-                "Type 04 - Odd Size/Temp Box (5.0 CF, 75 lbs, dimensions unknown)",
-            ),
-            ("type_06", 'Type 06 - Pathology Box (0.042 CF, 40 lbs, 12"x6"x10")'),
+                "Type 4 - Odd Size/Temp Box (5.0 CF, 75 lbs, dimensions unknown)",
+            
+            ("type_06", 'Type 6 - Pathology Box (0.42 CF, 40 lbs, 12"x6"x10")'),"
             ("all_types", "All Container Types"),
-        ],
+        
         string="Container Type",
         help="Container type this negotiated rate applies to",
-    )
+    
     container_type_code = fields.Char(
         string="Container Type Code",
-        help="Code reference for container type (e.g., TYPE01, TYPE02, etc.)",
-    )
+        ,
+    help="Code reference for container type (e.g., TYPE01, TYPE02, etc.)",:
+    
 
-    # Container-specific negotiated rates
+        # Container-specific negotiated rates
     container_monthly_rate = fields.Float(
         string="Container Monthly Rate",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
         help="Negotiated monthly storage rate per container type",
-    )
+    
     container_setup_fee = fields.Float(
         string="Container Setup Fee",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
         help="Negotiated setup fee per container type",
-    )
+    
     container_handling_fee = fields.Float(
         string="Container Handling Fee",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
         help="Negotiated handling fee per container type",
-    )
+    
     container_destruction_fee = fields.Float(
         string="Container Destruction Fee",
-        digits=(12, 2),
+        ,
+    digits=(12, 2),
         tracking=True,
         help="Negotiated destruction fee per container type",
-    )
+    
 
-    # Rate Type Classification
+        # Rate Type Classification
     rate_type = fields.Selection(
-        [
+        [)
             ("storage", "Storage Rate"),
             ("retrieval", "Retrieval Rate"),
             ("delivery", "Delivery Rate"),
@@ -212,36 +236,38 @@ class CustomerNegotiatedRate(models.Model):
             ("setup", "Setup Fee"),
             ("discount", "Volume Discount"),
             ("other", "Other Rate"),
-        ],
+        
         string="Rate Type",
         required=True,
         default="storage",
-    )
+    
 
-    # Computed fields
+        # Computed fields
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    )
+    
     is_expired = fields.Boolean(
         string="Is Expired", compute="_compute_is_expired", store=True
-    )
+    
     days_until_expiry = fields.Integer(
         string="Days Until Expiry", compute="_compute_days_until_expiry", store=True
-    )
+    
     total_discount_percent = fields.Float(
         string="Total Discount %", compute="_compute_total_discount", store=True
-    )
+    
 
-    # Mail Thread Framework Fields
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+        # Mail Thread Framework Fields
+    activity_ids = fields.One2many("mail.activity", "res_id",,
+    string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+    
+    message_ids = fields.One2many("mail.message", "res_id",,
+    string="Messages")
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends("partner_id", "name", "effective_date")
     def _compute_display_name(self):
         """Compute display_name based on partner_id, name, and effective_date"""
@@ -255,19 +281,19 @@ class CustomerNegotiatedRate(models.Model):
 
     @api.depends("expiry_date")
     def _compute_is_expired(self):
-        """Check if negotiated rates have expired"""
-        today = fields.Date.today()
+        """Check if negotiated rates have expired""":
+    today = fields.Date.today()
         for record in self:
             record.is_expired = record.expiry_date and record.expiry_date < today
 
     @api.depends("expiry_date")
     def _compute_days_until_expiry(self):
         """Calculate days until expiry"""
-        today = fields.Date.today()
+    today = fields.Date.today()
         for record in self:
             if record.expiry_date:
-                expiry_date_obj = fields.Date.from_string(record.expiry_date)
-                today_obj = fields.Date.from_string(today)
+    expiry_date_obj = fields.Date.from_string(record.expiry_date)
+    today_obj = fields.Date.from_string(today)
                 delta = expiry_date_obj - today_obj
                 record.days_until_expiry = delta.days
             else:
@@ -277,22 +303,22 @@ class CustomerNegotiatedRate(models.Model):
     def _compute_total_discount(self):
         """Calculate total potential discount"""
         for record in self:
-            record.total_discount_percent = (
+            record.total_discount_percent = ()
                 record.global_discount_percent + record.volume_discount_percent
-            )
+            
 
     # ============================================================================
-    # CONSTRAINTS AND VALIDATION
+        # CONSTRAINTS AND VALIDATION
     # ============================================================================
     @api.constrains("effective_date", "expiry_date")
     def _check_date_logic(self):
         """Ensure expiry date is after effective date"""
         for record in self:
-            if (
+            if (:)
                 record.expiry_date
                 and record.effective_date
                 and record.expiry_date <= record.effective_date
-            ):
+            
                 raise ValidationError(_("Expiry date must be after effective date"))
 
     @api.constrains("partner_id", "effective_date")
@@ -300,47 +326,45 @@ class CustomerNegotiatedRate(models.Model):
         """Ensure only one active rate set per customer at any time"""
         for record in self:
             if record.state == "active":
-                existing = self.search(
-                    [
+                existing = self.search()
+                    [)
                         ("partner_id", "=", record.partner_id.id),
                         ("state", "=", "active"),
                         ("id", "!=", record.id),
-                    ]
-                )
+                    
+                
                 if existing:
-                    raise ValidationError(
-                        _(
+                    raise ValidationError()
+                        _()
                             "Customer %s already has active negotiated rates. "
                             "Please expire existing rates before activating new ones.",
                             record.partner_id.name
-                        )
-                    )
+                        
+                    
 
     @api.constrains("global_discount_percent", "volume_discount_percent")
     def _check_discount_limits(self):
         """Validate discount percentages are within reasonable limits"""
         for record in self:
             if record.global_discount_percent < 0 or record.global_discount_percent >= 100:
-                raise ValidationError(
+                raise ValidationError()
                     _("Global discount percentage must be between 0 and 99.99")
-                )
+                
             if record.volume_discount_percent < 0 or record.volume_discount_percent >= 100:
-                raise ValidationError(
+                raise ValidationError()
                     _("Volume discount percentage must be between 0 and 99.99")
-                )
+                
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_submit_for_negotiation(self):
-        """Submit rates for negotiation"""
-
+        """Submit rates for negotiation""":
         self.ensure_one()
         if self.state != "draft":
-            raise UserError(_("Can only submit draft rates for negotiation"))
+            raise UserError(_("Can only submit draft rates for negotiation")):
         self.write({"state": "negotiating"})
-        self.message_post(body=_("Rates submitted for negotiation"))
-
+        self.message_post(body=_("Rates submitted for negotiation")):
     def action_approve_rates(self):
         """Approve negotiated rates"""
 
@@ -357,10 +381,10 @@ class CustomerNegotiatedRate(models.Model):
         if self.state != "approved":
             raise UserError(_("Can only activate approved rates"))
 
-        # Deactivate any existing active rates for this customer
-        existing_active = self.search(
+        # Deactivate any existing active rates for this customer:
+        existing_active = self.search()
             [("partner_id", "=", self.partner_id.id), ("state", "=", "active")]
-        )
+        
         existing_active.write({"state": "expired"})
 
         self.write({"state": "active"})
@@ -391,50 +415,50 @@ class CustomerNegotiatedRate(models.Model):
         """Create new version of negotiated rates"""
 
         self.ensure_one()
-        new_rate = self.copy(
-            {
+        new_rate = self.copy()
+            {}
                 "name": _("%s (Copy)", self.name),
                 "state": "draft",
                 "effective_date": fields.Date.today(),
                 "approval_date": False,
-            }
-        )
-        return {
+            
+        
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Duplicated Negotiated Rates"),
             "res_model": "customer.negotiated.rate",
             "res_id": new_rate.id,
             "view_mode": "form",
             "target": "current",
-        }
+        
 
     # ============================================================================
-    # BUSINESS METHODS
+        # BUSINESS METHODS
     # ============================================================================
     @api.model
     def get_customer_rates(self, partner_id, service_date=None):
-        """Get active negotiated rates for customer"""
+        """Get active negotiated rates for customer""":
         if not service_date:
-            service_date = fields.Date.today()
+    service_date = fields.Date.today()
 
-        return self.search(
-            [
+        return self.search()
+            []
                 ("partner_id", "=", partner_id),
                 ("state", "=", "active"),
                 ("effective_date", "<=", service_date),
                 "|",
                 ("expiry_date", "=", False),
                 ("expiry_date", ">", service_date),
-            ],
+            
             limit=1,
-        )
+        
 
     def get_effective_rate(self, rate_type, fallback_base_rate=None):
         """Get effective rate with fallback to base rates"""
         self.ensure_one()
 
-        # Check if this rate type is overridden
-        override_field_map = {
+        # Check if this rate type is overridden:
+        override_field_map = {}
             "external_per_bin_rate": "override_external_rates",
             "external_service_call_rate": "override_external_rates",
             "managed_permanent_removal_rate": "override_managed_rates",
@@ -443,7 +467,7 @@ class CustomerNegotiatedRate(models.Model):
             "managed_shredding_rate": "override_managed_rates",
             "pickup_rate": "override_pickup_rates",
             "storage_rate_monthly": "override_storage_rates",
-        }
+        
 
         override_field = override_field_map.get(rate_type)
         if override_field and getattr(self, override_field, False):
@@ -452,40 +476,40 @@ class CustomerNegotiatedRate(models.Model):
                 # Apply global discount
                 if self.global_discount_percent > 0:
                     if self.global_discount_percent >= 100:
-                        raise ValidationError(
-                            _(
+                        raise ValidationError()
+                            _()
                                 "Global discount percent cannot be 100 or more, "
                                 "as it would result in zero or negative rates."
-                            )
-                        )
+                            
+                        
                     negotiated_rate *= 1 - self.global_discount_percent / 100
                 return negotiated_rate
 
         # Fallback to base rate
         base_rate = fallback_base_rate or self.base_rate_id
-        if (
+        if (:)
             base_rate
             and hasattr(base_rate, "get_rate")
             and callable(getattr(base_rate, "get_rate", None))
-        ):
+        
             return base_rate.get_rate(rate_type)
 
         return 0.0
 
     def get_container_specific_rate(self, container_type, rate_field):
-        """Get negotiated rate for specific container type"""
+        """Get negotiated rate for specific container type""":
         self.ensure_one()
         
         # If this negotiated rate applies to all container types or specific type
         if self.container_type in ['all_types', container_type]:
             return getattr(self, rate_field, 0.0)
         
-        # Look for specific rate for this container type
-        specific_rate = self.search([
+        # Look for specific rate for this container type:
+        specific_rate = self.search([)]
             ('partner_id', '=', self.partner_id.id),
             ('container_type', '=', container_type),
             ('state', '=', 'active'),
-        ], limit=1)
+        
         
         if specific_rate:
             return getattr(specific_rate, rate_field, 0.0)
@@ -494,32 +518,32 @@ class CustomerNegotiatedRate(models.Model):
 
     @api.model
     def get_dashboard_stats(self):
-        """Get dashboard statistics for negotiated rates"""
-        total_agreements = self.search_count([])
+        """Get dashboard statistics for negotiated rates""":
+        total_agreements = self.search_count([
         active_agreements = self.search_count([('state', '=', 'active')])
-        expiring_soon = self.search_count([
+        expiring_soon = self.search_count([)]
             ('state', '=', 'active'),
             ('expiry_date', '<=', fields.Date.add(fields.Date.today(), days=30)),
             ('expiry_date', '>', fields.Date.today())
-        ])
         
-        return {
+        
+        return {}
             'total_agreements': total_agreements,
             'active_agreements': active_agreements,
             'expiring_soon': expiring_soon,
             'draft_agreements': self.search_count([('state', '=', 'draft')]),
-        }
+        
 
     # ============================================================================
-    # CRON AND AUTOMATION METHODS
+        # CRON AND AUTOMATION METHODS
     # ============================================================================
     @api.model
     def cron_expire_rates(self):
         """Cron job to automatically expire rates past their expiry date"""
-        expired_rates = self.search([
+        expired_rates = self.search([)]
             ('state', '=', 'active'),
             ('expiry_date', '<', fields.Date.today())
-        ])
+        
         
         for rate in expired_rates:
             rate.write({'state': 'expired'})
@@ -530,35 +554,35 @@ class CustomerNegotiatedRate(models.Model):
     @api.model
     def notify_expiring_rates(self):
         """Notify managers about rates expiring soon"""
-        expiring_rates = self.search([
+        expiring_rates = self.search([)]
             ('state', '=', 'active'),
             ('expiry_date', '<=', fields.Date.add(fields.Date.today(), days=30)),
             ('expiry_date', '>', fields.Date.today())
-        ])
+        
         
         if expiring_rates:
-            # Create activities for managers
+            # Create activities for managers:
             managers = self.env.ref('records_management.group_records_manager').users
             for manager in managers:
                 for rate in expiring_rates:
-                    self.env['mail.activity'].create({
+                    self.env['mail.activity'].create({)}
                         'activity_type_id': self.env.ref('mail.mail_activity_data_todo').id,
                         'summary': _('Negotiated Rate Expiring Soon'),
-                        'note': _(
-                            'Negotiated rate for %s expires on %s. '
-                            'Please review and renew if necessary.',
+                        'note': _()
+                            'Negotiated rate for %s expires on %s. ':
+                            'Please review and renew if necessary.',:
                             rate.partner_id.name,
                             rate.expiry_date
-                        ),
+                        
                         'user_id': manager.id,
                         'res_model_id': self.env['ir.model']._get('customer.negotiated.rate').id,
                         'res_id': rate.id,
-                    })
+                    
         
         return len(expiring_rates)
 
     # ============================================================================
-    # INTEGRATION METHODS
+        # INTEGRATION METHODS
     # ============================================================================
     def apply_rate_to_invoice_line(self, invoice_line):
         """Apply negotiated rate to invoice line"""
@@ -580,20 +604,21 @@ class CustomerNegotiatedRate(models.Model):
                 invoice_line.name = note
 
     def create_rate_change_history(self, old_values):
-        """Create audit trail for rate changes"""
+        """Create audit trail for rate changes""":
         self.ensure_one()
         
         changes = []
         for field, old_value in old_values.items():
             new_value = getattr(self, field)
             if old_value != new_value:
-                changes.append(_("%(field)s: %(old)s → %(new)s", 
-                             field=self._fields[field].string,
-                             old=old_value,
-                             new=new_value))
+                changes.append(_("%(field)s: %(old)s # -> %(new)s", 
+                                field=self._fields[field].string,
+                                old=old_value,
+                                new=new_value
         
         if changes:
-            self.message_post(
+            self.message_post()
                 body=_("Rate changes: %s", "; ".join(changes)),
                 subtype_xmlid="mail.mt_note"
-            )
+            
+))))))))))))))))))))))))))))))))

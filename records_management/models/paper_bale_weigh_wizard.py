@@ -7,23 +7,27 @@ class PaperBaleWeighWizard(models.TransientModel):
     _name = "paper.bale.weigh.wizard"
     _description = "Paper Bale Weighing Wizard"
 
-    bale_id = fields.Many2one("paper.bale", string="Paper Bale", required=True)
+    bale_id = fields.Many2one("paper.bale", string="Paper Bale",,
+    required=True),
     measured_weight = fields.Float(
-        string="Measured Weight (kg)", required=True
-    )
+        ,
+    string="Measured Weight (kg)", required=True
+    
     weighing_date = fields.Datetime(
         string="Weighing Date", required=True, default=fields.Datetime.now
-    )
+    
+    ,
     scale_used = fields.Char(string="Scale Used")
 
     def action_record_weight(self):
         self.ensure_one()
         if self.measured_weight <= 0:
             raise UserError(_("Measured weight must be positive."))
-        self.bale_id.write(
-            {
+        self.bale_id.write()
+            {}
                 "weight": self.measured_weight,
                 "last_weighed_date": self.weighing_date,
-            }
-        )
+            
+        
         return {"type": "ir.actions.act_window_close"}
+))

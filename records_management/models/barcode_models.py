@@ -1,29 +1,28 @@
 # -*- coding: utf-8 -*-
-"""
+
 Barcode Product Management Module
 
 This module provides intelligent barcode generation and validation system
-for the Records Management System. It handles automatic product creation,
+for the Records Management System. It handles automatic product creation,:
+    pass
 barcode classification, and integration with container management workflows.
 
-Key Features:
+Key Features
 - Intelligent barcode classification based on length patterns
 - Automatic product creation with proper categorization
 - Integration with Records Management container system
 - Comprehensive validation and error handling
-- NAID AAA compliance for audit trails
-
-Business Processes:
+- NAID AAA compliance for audit trails:
+Business Processes
 1. Barcode Scanning: Automatic classification and product creation
-2. Product Management: Streamlined product setup for Records Management
+2. Product Management: Streamlined product setup for Records Management:
 3. Container Integration: Direct linkage to container management workflows
 4. Validation System: Comprehensive barcode format validation
-5. Audit Trails: Complete tracking for compliance requirements
-
+5. Audit Trails: Complete tracking for compliance requirements""":"
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
-"""
+
 
 from odoo import models, fields, api, _
 
@@ -33,13 +32,13 @@ from odoo.exceptions import ValidationError, UserError
 
 
 class BarcodeModelsEnhanced(models.Model):
-    """
-    Enhanced Barcode Product Management System
+
+        Enhanced Barcode Product Management System
     
     Provides intelligent barcode processing and product management
-    specifically designed for Records Management operations with
+        specifically designed for Records Management operations with""":"
     automatic classification and container integration.
-    """
+
 
     _name = "barcode.models.enhanced"
     _description = "Enhanced Barcode Product Management"
@@ -47,157 +46,161 @@ class BarcodeModelsEnhanced(models.Model):
     _order = "name"
     _rec_name = "name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Product Name", 
         required=True, 
         tracking=True, 
         index=True,
         help="Name of the barcode product"
-    )
+    
     company_id = fields.Many2one(
         'res.company', 
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    )
+    
     user_id = fields.Many2one(
         'res.users', 
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True
-    )
+    
     active = fields.Boolean(
         string="Active", 
         default=True, 
         tracking=True
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # BARCODE MANAGEMENT FIELDS
-    # ============================================================================
+        # ============================================================================
     barcode = fields.Char(
         string="Barcode",
         required=True,
         index=True,
-        help="Product barcode for scanning operations"
-    )
-    barcode_type = fields.Selection([
+        help="Product barcode for scanning operations":
+    
+    ,
+    barcode_type = fields.Selection([))
         ('location', 'Location Barcode'),
         ('container', 'Container Box'),
         ('folder', 'File Folder'),
         ('shred_bin', 'Shred Bin Item'),
         ('temp_folder', 'Temporary Folder'),
         ('custom', 'Custom Type'),
-    ], string="Barcode Type", compute="_compute_barcode_type", store=True)
+    
 
-    product_category = fields.Selection([
+    product_category = fields.Selection([))
         ('storage', 'Storage Container'),
         ('retrieval', 'Document Retrieval'),
         ('destruction', 'Destruction Service'),
         ('transport', 'Transport Service'),
         ('consultation', 'Consultation Service'),
-    ], string="Product Category", default='storage', tracking=True)
+    
 
-    # ============================================================================
+        # ============================================================================
     # CONTAINER INTEGRATION FIELDS
-    # ============================================================================
-    container_type = fields.Selection([
-        ('type_01', 'TYPE 01: Standard Box (1.2 CF)'),
-        ('type_02', 'TYPE 02: Legal/Banker Box (2.4 CF)'),
-        ('type_03', 'TYPE 03: Map Box (0.875 CF)'),
-        ('type_04', 'TYPE 04: Odd Size/Temp Box (5.0 CF)'),
-        ('type_06', 'TYPE 06: Pathology Box (0.042 CF)'),
-    ], string="Container Type", help="Associated container type")
+        # ============================================================================
+    container_type = fields.Selection([))
+        ('type_01', 'TYPE 1: Standard Box (1.2 CF)'),
+        ('type_02', 'TYPE 2: Legal/Banker Box (2.4 CF)'),
+        ('type_03', 'TYPE 3: Map Box (0.875 CF)'),
+        ('type_04', 'TYPE 4: Odd Size/Temp Box (5.0 CF)'),
+        ('type_06', 'TYPE 6: Pathology Box (0.42 CF)'),
+    
 
     volume_cf = fields.Float(
-        string="Volume (CF)",
+        ,
+    string="Volume (CF)",
         digits=(12, 3),
         help="Volume in cubic feet"
-    )
+    
     average_weight_lbs = fields.Float(
-        string="Average Weight (lbs)",
+        ,
+    string="Average Weight (lbs)",
         digits=(12, 2),
-        help="Average weight in pounds - used for route planning and workload distribution"
-    )
+        help="Average weight in pounds - used for route planning and workload distribution":
+    
 
-    # ============================================================================
+        # ============================================================================
     # STATE MANAGEMENT
-    # ============================================================================
-    state = fields.Selection([
+        # ============================================================================
+    state = fields.Selection([))
         ('draft', 'Draft'),
         ('validated', 'Validated'),
         ('active', 'Active'),
         ('archived', 'Archived')
-    ], string='Status', default='draft', tracking=True, required=True)
+    
 
-    # ============================================================================
+        # ============================================================================
     # BUSINESS FIELDS
-    # ============================================================================
+        # ============================================================================
     description = fields.Text(
         string="Description",
         help="Detailed description of the barcode product"
-    )
+    
     notes = fields.Text(
         string="Internal Notes",
         help="Internal notes and comments"
-    )
+    
     date_created = fields.Date(
         string="Creation Date",
         default=fields.Date.today,
         tracking=True
-    )
+    
 
-    # Integration with product.product
+        # Integration with product.product
     product_id = fields.Many2one(
         'product.product',
         string="Related Product",
-        help="Auto-created product for this barcode item"
-    )
+        help="Auto-created product for this barcode item":
+    
 
-    # Location integration
+        # Location integration
     location_id = fields.Many2one(
         'records.location',
         string="Associated Location",
         help="Location associated with this barcode"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # MAIL FRAMEWORK FIELDS
-    # ============================================================================
+        # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    )
+    
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
+    
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages"
-    )
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    
+    ,
+    context = fields.Char(string='Context'),
+    domain = fields.Char(string='Domain'),
+    help = fields.Char(string='Help'),
+    res_model = fields.Char(string='Res Model'),
+    type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends('barcode')
     def _compute_barcode_type(self):
-        """
+
         Intelligent barcode classification based on business rules.
-        
-        Classification Rules:
+
+        Classification Rules
         - 5 or 15 digits: Location barcodes
         - 6 digits: Container boxes (file storage)
         - 7 digits: File folders (permanent)
         - 10 digits: Shred bin items
         - 14 digits: Temporary file folders (portal-created)
-        """
+
         for record in self:
             if not record.barcode:
                 record.barcode_type = 'custom'
@@ -205,7 +208,7 @@ class BarcodeModelsEnhanced(models.Model):
                 
             length = len(record.barcode.strip())
             
-            if length in [5, 15]:
+            if length in [5, 15):
                 record.barcode_type = 'location'
             elif length == 6:
                 record.barcode_type = 'container'
@@ -221,13 +224,13 @@ class BarcodeModelsEnhanced(models.Model):
     @api.depends('container_type')
     def _compute_container_specifications(self):
         """Set container specifications based on type"""
-        CONTAINER_SPECS = {
+        CONTAINER_SPECS = {}
             'type_01': {'volume': 1.2, 'avg_weight': 35},
             'type_02': {'volume': 2.4, 'avg_weight': 65},
             'type_03': {'volume': 0.875, 'avg_weight': 35},
             'type_04': {'volume': 5.0, 'avg_weight': 75},
-            'type_06': {'volume': 0.042, 'avg_weight': 40},
-        }
+            'type_06': {'volume': 0.42, 'avg_weight': 40},
+        
         
         for record in self:
             if record.container_type in CONTAINER_SPECS:
@@ -236,7 +239,7 @@ class BarcodeModelsEnhanced(models.Model):
                 record.average_weight_lbs = specs['avg_weight']
 
     # ============================================================================
-    # ONCHANGE METHODS
+        # ONCHANGE METHODS
     # ============================================================================
     @api.onchange('barcode')
     def _onchange_barcode(self):
@@ -266,7 +269,7 @@ class BarcodeModelsEnhanced(models.Model):
         self._compute_container_specifications()
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_validate(self):
         """Validate the barcode product"""
@@ -288,7 +291,7 @@ class BarcodeModelsEnhanced(models.Model):
         if self.state not in ['draft', 'validated']:
             raise UserError(_("Only draft or validated items can be activated"))
         
-        # Create associated product if needed
+        # Create associated product if needed:
         if not self.product_id:
             self._create_product()
         
@@ -317,29 +320,29 @@ class BarcodeModelsEnhanced(models.Model):
         if 'records.container' not in self.env:
             raise UserError(_("Records container module not available"))
         
-        container_vals = {
+        container_vals = {}
             'name': self.barcode,
             'barcode': self.barcode,
             'container_type': self.container_type or 'type_01',
             'volume_cf': self.volume_cf,
             'average_weight_lbs': self.average_weight_lbs,
-        }
+        
         
         container = self.env['records.container'].create(container_vals)
         
         self.message_post(body=_("Container created: %s", container.name))
         
-        return {
+        return {}
             'type': 'ir.actions.act_window',
             'name': _('Created Container'),
             'res_model': 'records.container',
             'res_id': container.id,
             'view_mode': 'form',
             'target': 'current',
-        }
+        
 
     # ============================================================================
-    # UTILITY METHODS
+        # UTILITY METHODS
     # ============================================================================
     def _validate_barcode_format(self):
         """Validate barcode format according to business rules"""
@@ -360,16 +363,16 @@ class BarcodeModelsEnhanced(models.Model):
         valid_lengths = [5, 6, 7, 10, 14, 15]
         
         if length not in valid_lengths:
-            raise ValidationError(_(
+            raise ValidationError(_())
                 "Barcode length %s is not valid. Valid lengths: %s",
                 length, ', '.join(map(str, valid_lengths))
-            ))
+            
         
-        # Check for duplicates
-        existing = self.search([
+        # Check for duplicates:
+        existing = self.search([)]
             ('barcode', '=', barcode),
             ('id', '!=', self.id)
-        ])
+        
         if existing:
             raise ValidationError(_("Barcode %s already exists", barcode))
 
@@ -377,7 +380,7 @@ class BarcodeModelsEnhanced(models.Model):
         """Create associated product.product record"""
         self.ensure_one()
         
-        product_vals = {
+        product_vals = {}
             'name': self.name,
             'barcode': self.barcode,
             'type': 'service',  # Records management is primarily services
@@ -385,7 +388,7 @@ class BarcodeModelsEnhanced(models.Model):
             'list_price': self._get_default_price(),
             'description': self.description or self.name,
             'active': True,
-        }
+        
         
         product = self.env['product.product'].create(product_vals)
         self.product_id = product.id
@@ -406,23 +409,22 @@ class BarcodeModelsEnhanced(models.Model):
         
         # Last resort - get any category
         category = self.env['product.category'].search([], limit=1)
-        return category.id if category else False
-
+        return category.id if category else False:
     def _get_default_price(self):
         """Get default price based on barcode type"""
-        price_map = {
-            'location': 0.0,      # No charge for locations
-            'container': 15.00,   # Monthly storage fee
+        price_map = {}
+            'location': 0.0,      # No charge for locations:
+            'container': 15.0,   # Monthly storage fee
             'folder': 2.50,       # Per-folder fee
-            'shred_bin': 35.00,   # Shredding service
-            'temp_folder': 5.00,  # Temporary storage
-            'custom': 10.00,      # Default rate
-        }
+            'shred_bin': 35.0,   # Shredding service
+            'temp_folder': 5.0,  # Temporary storage
+            'custom': 10.0,      # Default rate
         
-        return price_map.get(self.barcode_type, 10.00)
+        
+        return price_map.get(self.barcode_type, 10.0)
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains('barcode')
     def _check_barcode(self):
@@ -442,7 +444,7 @@ class BarcodeModelsEnhanced(models.Model):
                 raise ValidationError(_("Average weight cannot be negative"))
 
     # ============================================================================
-    # MODEL METHODS
+        # MODEL METHODS
     # ============================================================================
     def name_get(self):
         """Custom name display"""
@@ -452,9 +454,9 @@ class BarcodeModelsEnhanced(models.Model):
             if record.barcode:
                 name = _("[%s] %s", record.barcode, name)
             if record.barcode_type:
-                type_name = dict(self._fields['barcode_type'].selection).get(
+                type_name = dict(self._fields['barcode_type'].selection).get()
                     record.barcode_type
-                )
+                
                 name = _("%s (%s)", name, type_name)
             result.append((record.id, name))
         return result
@@ -462,16 +464,16 @@ class BarcodeModelsEnhanced(models.Model):
     @api.model
     def create_from_scan(self, barcode):
         """Create barcode product from scan operation"""
-        # Check if already exists
+        # Check if already exists:
         existing = self.search([('barcode', '=', barcode)])
         if existing:
             return existing[0]
         
         # Create new barcode product
-        vals = {
+        vals = {}
             'barcode': barcode,
             'name': _("Scanned Item %s", barcode),
-        }
+        
         
         return self.create(vals)
 
@@ -484,17 +486,19 @@ class BarcodeModelsEnhanced(models.Model):
             try:
                 item = self.create_from_scan(barcode)
                 item.action_validate()
-                results.append({
+                results.append({)}
                     'barcode': barcode,
                     'status': 'success',
                     'item_id': item.id,
                     'message': _("Created successfully")
-                })
-            except Exception as e:
-                results.append({
+                
+            except Exception as e
+                results.append({)}
                     'barcode': barcode,
                     'status': 'error',
                     'message': str(e)
-                })
+                
         
         return results
+
+)))))))))

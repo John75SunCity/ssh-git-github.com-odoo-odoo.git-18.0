@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-"""
+
 Barcode Storage Container Module
 
 This module manages barcode storage containers (referred to as "boxes" in UI)
-for the Records Management System. Handles container capacity, tracking,
+for the Records Management System. Handles container capacity, tracking,:
+    pass
 and integration with barcode products.
 
-Important Terminology:
+Important Terminology
 - Code: "container" (precise technical term)
 - UI: "box" (user-friendly term)
 - Business: Both terms are interchangeable in user-facing contexts
@@ -14,7 +15,7 @@ Important Terminology:
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
-"""
+
 
 from odoo import models, fields, api, _
 
@@ -30,136 +31,150 @@ class BarcodeStorageBox(models.Model):
     _order = "name"
     _rec_name = "name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string="Container Name",
         required=True,
         tracking=True,
         index=True,
-        help="Container name (displayed as 'Box Name' to users)"
-    )
+        ,
+    help="Container name (displayed as 'Box Name' to users)"
+    
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    )
+    
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True
-    )
-    active = fields.Boolean(string="Active", default=True)
+    
+    active = fields.Boolean(string="Active",,
+    default=True),
     state = fields.Selection(
-        [
+        [)
             ("draft", "Draft"),
             ("active", "Active"),
             ("full", "Full"),
             ("archived", "Archived"),
-        ],
+        
         string="Status",
         default="draft",
         tracking=True,
         required=True
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # BARCODE MANAGEMENT
-    # ============================================================================
-    barcode = fields.Char(string="Box Barcode", required=True, index=True)
+        # ============================================================================
+    barcode = fields.Char(string="Box Barcode", required=True,,
+    index=True),
     barcode_product_ids = fields.One2many(
         "barcode.product", "storage_box_id", string="Barcode Products"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # PHYSICAL SPECIFICATIONS
-    # ============================================================================
-    location_id = fields.Many2one("records.location", string="Storage Location")
+        # ============================================================================
+    location_id = fields.Many2one("records.location",,
+    string="Storage Location"),
     box_type = fields.Selection(
-        [
+        [)
             ("standard", "Standard Box"),
             ("large", "Large Box"),
             ("small", "Small Box"),
             ("custom", "Custom Size"),
-        ],
+        
         string="Box Type",
         default="standard",
-    )
+    
 
-    capacity = fields.Integer(string="Storage Capacity", default=100)
+    capacity = fields.Integer(string="Storage Capacity",,
+    default=100),
     current_count = fields.Integer(
         string="Current Count", compute="_compute_current_count", store=True
-    )
+    
     available_space = fields.Integer(
         string="Available Space", compute="_compute_available_space", store=True
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # PHYSICAL DIMENSIONS
-    # ============================================================================
+        # ============================================================================
+    ,
     length = fields.Float(string="Length (cm)", default=30.0)
     width = fields.Float(string="Width (cm)", default=20.0)
     height = fields.Float(string="Height (cm)", default=15.0)
     weight_empty = fields.Float(string="Empty Weight (kg)", default=0.5)
     weight_current = fields.Float(
-        string="Current Weight (kg)", compute="_compute_current_weight", store=True
-    )
+        ,
+    string="Current Weight (kg)", compute="_compute_current_weight", store=True
+    
     volume_cubic_cm = fields.Float(
-        string="Volume (cm³)",
+        ,
+    string="Volume (cm)",
         compute="_compute_volume",
         store=True,
         help="Calculated volume in cubic centimeters"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # STATUS & TRACKING
-    # ============================================================================
-    is_full = fields.Boolean(string="Is Full", compute="_compute_is_full", store=True)
-    last_accessed = fields.Datetime(string="Last Accessed")
-    created_date = fields.Date(string="Created Date", default=fields.Date.today)
+        # ============================================================================
+    is_full = fields.Boolean(string="Is Full", compute="_compute_is_full",,
+    store=True),
+    last_accessed = fields.Datetime(string="Last Accessed"),
+    created_date = fields.Date(string="Created Date",,
+    default=fields.Date.today)
 
-    # ============================================================================
+        # ============================================================================
     # RELATIONSHIPS
-    # ============================================================================
-    partner_id = fields.Many2one("res.partner", string="Customer")
-    department_id = fields.Many2one("records.department", string="Department")
+        # ============================================================================
+    partner_id = fields.Many2one("res.partner",,
+    string="Customer"),
+    department_id = fields.Many2one("records.department",,
+    string="Department")
 
-    # Container type integration with Records Management specifications
-    container_type = fields.Selection([
-        ('type_01', 'TYPE 01: Standard Box (1.2 CF)'),
-        ('type_02', 'TYPE 02: Legal/Banker Box (2.4 CF)'),
-        ('type_03', 'TYPE 03: Map Box (0.875 CF)'),
-        ('type_04', 'TYPE 04: Odd Size/Temp Box (5.0 CF)'),
-        ('type_06', 'TYPE 06: Pathology Box (0.042 CF)'),
-    ], string="Container Type", help="Records Management container classification")
+        # Container type integration with Records Management specifications
+    container_type = fields.Selection([))
+        ('type_01', 'TYPE 1: Standard Box (1.2 CF)'),
+        ('type_02', 'TYPE 2: Legal/Banker Box (2.4 CF)'),
+        ('type_03', 'TYPE 3: Map Box (0.875 CF)'),
+        ('type_04', 'TYPE 4: Odd Size/Temp Box (5.0 CF)'),
+        ('type_06', 'TYPE 6: Pathology Box (0.42 CF)'),
+    
 
-    # ============================================================================
+        # ============================================================================
     # NOTES & DOCUMENTATION
-    # ============================================================================
-    description = fields.Text(string="Description")
+        # ============================================================================
+    description = fields.Text(string="Description"),
     notes = fields.Text(string="Internal Notes")
 
-    # ============================================================================
+        # ============================================================================
     # MAIL FRAMEWORK FIELDS
-    # ============================================================================
-    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+        # ============================================================================
+    activity_ids = fields.One2many("mail.activity", "res_id",,
+    string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    )
-    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection([], string='Type')  # TODO: Define selection options
+    
+    message_ids = fields.One2many("mail.message", "res_id",,
+    string="Messages"),
+    context = fields.Char(string='Context'),
+    domain = fields.Char(string='Domain'),
+    help = fields.Char(string='Help'),
+    res_model = fields.Char(string='Res Model'),
+    type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTE METHODS
-    # ============================================================================
+        # ============================================================================
     @api.depends("barcode_product_ids")
     def _compute_current_count(self):
         for box in self:
@@ -178,7 +193,7 @@ class BarcodeStorageBox(models.Model):
     @api.depends("barcode_product_ids", "barcode_product_ids.weight", "weight_empty")
     def _compute_current_weight(self):
         for box in self:
-            product_weight = sum(box.barcode_product_ids.mapped("weight") or [0.0])
+            product_weight = sum(box.barcode_product_ids.mapped("weight") or [0.0))
             box.weight_current = box.weight_empty + product_weight
 
     @api.depends("length", "width", "height")
@@ -187,7 +202,7 @@ class BarcodeStorageBox(models.Model):
             box.volume_cubic_cm = box.length * box.width * box.height
 
     # ============================================================================
-    # ONCHANGE METHODS
+        # ONCHANGE METHODS
     # ============================================================================
     @api.onchange('container_type')
     def _onchange_container_type(self):
@@ -198,7 +213,7 @@ class BarcodeStorageBox(models.Model):
             if spec:
                 # Update capacity based on container type
                 self.capacity = spec.get('capacity', 100)
-                # Update dimensions if available
+                # Update dimensions if available:
                 if 'length' in spec:
                     self.length = spec['length']
                 if 'width' in spec:
@@ -207,7 +222,7 @@ class BarcodeStorageBox(models.Model):
                     self.height = spec['height']
 
     # ============================================================================
-    # ACTION METHODS
+        # ACTION METHODS
     # ============================================================================
     def action_mark_full(self):
         """Mark storage container as full"""
@@ -228,10 +243,10 @@ class BarcodeStorageBox(models.Model):
         if self.state == "archived":
             raise UserError(_("Container is already archived"))
 
-        self.write({
+        self.write({)}
             "state": "archived",
             "active": False
-        })
+        
         self.message_post(body=_("Container archived"))
 
     def action_activate(self):
@@ -244,8 +259,7 @@ class BarcodeStorageBox(models.Model):
 
         self._validate_container_setup()
         self.write({"state": "active"})
-        self.message_post(body=_("Container activated and ready for use"))
-
+        self.message_post(body=_("Container activated and ready for use")):
     def action_add_barcode_product(self):
         """Open wizard to add barcode product to this container"""
 
@@ -257,31 +271,31 @@ class BarcodeStorageBox(models.Model):
         if self.is_full:
             raise UserError(_("Container is at full capacity"))
 
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Add Barcode Product"),
             "res_model": "barcode.product",
             "view_mode": "form",
             "target": "new",
-            "context": {
+            "context": {}
                 "default_storage_box_id": self.id,
                 "default_container_name": self.name,
-            },
-        }
+            
+        
 
     def action_view_products(self):
         """View all barcode products in this container"""
 
         self.ensure_one()
 
-        return {
+        return {}
             "type": "ir.actions.act_window",
             "name": _("Products in Container: %s", self.name),
             "res_model": "barcode.product",
             "view_mode": "tree,form",
             "domain": [("storage_box_id", "=", self.id)],
             "context": {"default_storage_box_id": self.id},
-        }
+        
 
     def action_update_capacity_status(self):
         """Check and update container capacity status"""
@@ -297,34 +311,33 @@ class BarcodeStorageBox(models.Model):
             self.action_mark_full()
 
         message = _("Capacity check completed. Current: %s/%s items",
-                   self.current_count, self.capacity)
+                    self.current_count, self.capacity
         self.message_post(body=message)
 
-        return {
+        return {}
             'type': 'ir.actions.client',
             'tag': 'display_notification',
-            'params': {
+            'params': {}
                 'title': _('Capacity Status Updated'),
                 'message': message,
                 'type': 'success',
-            }
-        }
+            
+        
 
     def action_generate_barcode_label(self):
-        """Generate printable barcode label for container"""
-
+        """Generate printable barcode label for container""":
         self.ensure_one()
 
-        return {
+        return {}
             'type': 'ir.actions.report',
             'report_name': 'records_management.container_barcode_label',
             'report_type': 'qweb-pdf',
             'data': {'ids': [self.id]},
             'context': self.env.context,
-        }
+        
 
     # ============================================================================
-    # BUSINESS METHODS
+        # BUSINESS METHODS
     # ============================================================================
     def _validate_container_setup(self):
         """Validate container setup before activation"""
@@ -337,12 +350,12 @@ class BarcodeStorageBox(models.Model):
         if self.capacity <= 0:
             raise ValidationError(_("Storage capacity must be greater than zero"))
 
-        # Check for duplicate barcodes
-        duplicate = self.search([
+        # Check for duplicate barcodes:
+        duplicate = self.search([)]
             ("barcode", "=", self.barcode),
             ("id", "!=", self.id),
             ("active", "=", True)
-        ])
+        
         if duplicate:
             raise ValidationError(_("Container barcode %s already exists", self.barcode))
 
@@ -356,7 +369,7 @@ class BarcodeStorageBox(models.Model):
         return (self.current_count / self.capacity) * 100
 
     def can_add_products(self, quantity=1):
-        """Check if container can accommodate additional products"""
+        """Check if container can accommodate additional products""":
         self.ensure_one()
 
         if self.state not in ["active", "draft"]:
@@ -366,43 +379,43 @@ class BarcodeStorageBox(models.Model):
 
     def _get_container_specifications(self):
         """Get container specifications based on business requirements"""
-        return {
-            'type_01': {
+        return {}
+            'type_01': {}
                 'capacity': 150,
                 'length': 30.5,
                 'width': 38.1,
                 'height': 25.4,
                 'description': 'Standard Box (1.2 CF)'
-            },
-            'type_02': {
+            
+            'type_02': {}
                 'capacity': 150,
                 'length': 60.9,
                 'width': 38.1,
                 'height': 25.4,
                 'description': 'Legal/Banker Box (2.4 CF)'
-            },
-            'type_03': {
+            
+            'type_03': {}
                 'capacity': 50,
                 'length': 106.7,
                 'width': 15.2,
                 'height': 15.2,
                 'description': 'Map Box (0.875 CF)'
-            },
-            'type_04': {
+            
+            'type_04': {}
                 'capacity': 500,
                 'description': 'Odd Size/Temp Box (5.0 CF)'
-            },
-            'type_06': {
+            
+            'type_06': {}
                 'capacity': 25,
                 'length': 30.5,
                 'width': 15.2,
                 'height': 25.4,
-                'description': 'Pathology Box (0.042 CF)'
-            },
-        }
+                'description': 'Pathology Box (0.42 CF)'
+            
+        
 
     # ============================================================================
-    # VALIDATION METHODS
+        # VALIDATION METHODS
     # ============================================================================
     @api.constrains("capacity")
     def _check_capacity(self):
@@ -423,12 +436,12 @@ class BarcodeStorageBox(models.Model):
         """Validate barcode uniqueness"""
         for container in self:
             if container.barcode:
-                # Check for duplicates
-                duplicate = self.search([
+                # Check for duplicates:
+                duplicate = self.search([)]
                     ("barcode", "=", container.barcode),
                     ("id", "!=", container.id),
                     ("active", "=", True)
-                ])
+                
                 if duplicate:
                     raise ValidationError(_("Container barcode %s already exists", container.barcode))
 
@@ -437,14 +450,14 @@ class BarcodeStorageBox(models.Model):
         """Validate capacity limits are not exceeded"""
         for container in self:
             if container.current_count > container.capacity:
-                raise ValidationError(_(
+                raise ValidationError(_())
                     "Current count (%s) cannot exceed container capacity (%s)",
                     container.current_count,
                     container.capacity
-                ))
+                
 
     # ============================================================================
-    # ORM METHODS
+        # ORM METHODS
     # ============================================================================
     def name_get(self):
         """Custom name display with capacity information"""
@@ -463,12 +476,12 @@ class BarcodeStorageBox(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to set default barcode if needed"""
+        """Override create to set default barcode if needed""":
         for vals in vals_list:
             if vals.get("name", "New") == "New":
                 vals["name"] = self.env["ir.sequence"].next_by_code("barcode.storage.box")
             
-            # Auto-generate barcode if not provided
+            # Auto-generate barcode if not provided:
             if not vals.get("barcode"):
                 vals["barcode"] = self.env["ir.sequence"].next_by_code("barcode.storage.box.barcode")
         
@@ -487,10 +500,10 @@ class BarcodeStorageBox(models.Model):
     @api.model
     def get_containers_near_capacity(self, threshold_percentage=90):
         """Get containers that are near capacity"""
-        containers = self.search([
+        containers = self.search([)]
             ('state', '=', 'active'),
             ('capacity', '>', 0)
-        ])
+        
         
         near_capacity = []
         for container in containers:
@@ -501,14 +514,14 @@ class BarcodeStorageBox(models.Model):
 
     @api.model
     def get_dashboard_data(self):
-        """Get dashboard statistics for containers"""
+        """Get dashboard statistics for containers""":
         total_containers = self.search_count([('active', '=', True)])
         active_containers = self.search_count([('state', '=', 'active')])
         full_containers = self.search_count([('state', '=', 'full')])
         
-        return {
+        return {}
             'total_containers': total_containers,
             'active_containers': active_containers,
             'full_containers': full_containers,
-            'utilization_rate': (full_containers / total_containers * 100) if total_containers else 0,
-        }
+            'utilization_rate': (full_containers / total_containers * 100) if total_containers else 0,:
+        )))))))

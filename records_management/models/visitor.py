@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-"""
+
 Visitor Management Module
 
-This module provides comprehensive visitor management for the Records Management
+This module provides comprehensive visitor management for the Records Management:
+    pass
 System. It handles visitor registration, check-in/check-out processes, security
 compliance, and audit trails with complete integration to facility access controls.
 
-Key Features:
+Key Features
 - Complete visitor lifecycle management
 - Security clearance and badge tracking
 - NAID compliance audit trails
@@ -14,17 +15,16 @@ Key Features:
 - Escort and access control management
 - Real-time status tracking
 
-Business Processes:
+Business Processes
 1. Visitor Registration: Schedule visits with proper authorization
 2. Check-in Process: Identity verification and badge assignment
 3. Facility Access: Controlled access with escort management
 4. Check-out Process: Badge return and exit confirmation
-5. Compliance Tracking: Complete audit trails for security compliance
-
+5. Compliance Tracking: Complete audit trails for security compliance""":"
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
-"""
+
 
 import logging
 
@@ -38,11 +38,11 @@ _logger = logging.getLogger(__name__)
 
 
 class Visitor(models.Model):
-    """
-    Visitor Management
+
+        Visitor Management
     Track visitors to the records management facility with complete
-    security compliance and audit trail capabilities.
-    """
+        security compliance and audit trail capabilities.
+
 
     _name = 'visitor'
     _description = 'Visitor Management'
@@ -50,83 +50,84 @@ class Visitor(models.Model):
     _order = 'visit_date desc, name'
     _rec_name = "name"
 
-    # ============================================================================
+        # ============================================================================
     # CORE IDENTIFICATION FIELDS
-    # ============================================================================
+        # ============================================================================
     name = fields.Char(
         string='Visitor Name',
         required=True,
         tracking=True,
         index=True,
         help="Full name of the visitor"
-    )
+    
     description = fields.Text(
         string='Visit Details',
         tracking=True,
         help="Detailed description of the visit purpose"
-    )
+    
     active = fields.Boolean(
         string='Active',
         default=True,
         tracking=True,
         help="Active status of visitor record"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # FRAMEWORK FIELDS
-    # ============================================================================
+        # ============================================================================
     company_id = fields.Many2one(
         'res.company',
         string='Company',
         default=lambda self: self.env.company,
         required=True,
         help="Company where visit is taking place"
-    )
+    
     user_id = fields.Many2one(
         'res.users',
         string='Host/Responsible User',
         default=lambda self: self.env.user,
         tracking=True,
-        help="User responsible for this visitor"
-    )
+        help="User responsible for this visitor":
+    
 
-    # ============================================================================
+        # ============================================================================
     # VISITOR INFORMATION
-    # ============================================================================
+        # ============================================================================
     visitor_company = fields.Char(
         string='Visitor Company',
         tracking=True,
         help="Company or organization the visitor represents"
-    )
+    
     phone = fields.Char(
         string='Phone Number',
         tracking=True,
         help="Contact phone number"
-    )
+    
     email = fields.Char(
         string='Email',
         tracking=True,
         help="Contact email address"
-    )
+    
 
-    # Identification
-    id_type = fields.Selection([
-        ('drivers_license', "Driver's License"),
+        # Identification
+    ,
+    id_type = fields.Selection([))
+        ('drivers_license', "Driver's License"),'
         ('passport', 'Passport'),
         ('state_id', 'State ID'),
         ('company_id', 'Company ID'),
         ('other', 'Other')
-    ], string='ID Type', tracking=True, help="Type of identification provided")
+    
 
     id_number = fields.Char(
         string='ID Number',
         tracking=True,
         help="Identification number or reference"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # VISIT DETAILS
-    # ============================================================================
+        # ============================================================================
     visit_date = fields.Date(
         string='Visit Date',
         default=fields.Date.today,
@@ -134,19 +135,20 @@ class Visitor(models.Model):
         tracking=True,
         index=True,
         help="Scheduled date of visit"
-    )
+    
     check_in_time = fields.Datetime(
         string='Check-in Time',
         tracking=True,
         help="Actual check-in time"
-    )
+    
     check_out_time = fields.Datetime(
         string='Check-out Time',
         tracking=True,
         help="Actual check-out time"
-    )
+    
 
-    visit_purpose = fields.Selection([
+    ,
+    visit_purpose = fields.Selection([))
         ('customer_visit', 'Customer Visit'),
         ('audit', 'Audit'),
         ('inspection', 'Inspection'),
@@ -157,158 +159,165 @@ class Visitor(models.Model):
         ('naid_inspection', 'NAID Inspection'),
         ('compliance_review', 'Compliance Review'),
         ('other', 'Other')
-    ], string='Visit Purpose', required=True, tracking=True,
-       help="Primary purpose of the visit")
+    
+        help="Primary purpose of the visit"
 
     # ============================================================================
-    # LOCATION ACCESS
+        # LOCATION ACCESS
     # ============================================================================
     areas_accessed = fields.Text(
         string='Areas Accessed',
         tracking=True,
         help="List of facility areas visited"
-    )
+    
     escort_required = fields.Boolean(
         string='Escort Required',
         default=True,
         tracking=True,
         help="Whether visitor requires an escort"
-    )
+    
     escort_assigned_id = fields.Many2one(
         'res.users',
         string='Assigned Escort',
         tracking=True,
         help="Staff member assigned to escort visitor"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # STATUS MANAGEMENT
-    # ============================================================================
-    status = fields.Selection([
+        # ============================================================================
+    ,
+    status = fields.Selection([))
         ('scheduled', 'Scheduled'),
         ('checked_in', 'Checked In'),
         ('in_facility', 'In Facility'),
         ('checked_out', 'Checked Out'),
         ('no_show', 'No Show')
-    ], string='Status', default='scheduled', tracking=True, required=True,
-       help="Current status of the visit")
+    
+        help="Current status of the visit"
 
     # ============================================================================
-    # RELATIONSHIP FIELDS
+        # RELATIONSHIP FIELDS
     # ============================================================================
     partner_id = fields.Many2one(
         "res.partner",
         string="Related Customer",
-        domain=[("is_company", "=", True)],
+        ,
+    domain=[("is_company", "=", True))
         tracking=True,
         help="Customer or partner associated with this visit"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # SECURITY AND COMPLIANCE
-    # ============================================================================
+        # ============================================================================
     background_check = fields.Boolean(
         string='Background Check Required',
         tracking=True,
         help="Whether background check is required"
-    )
+    
     background_check_passed = fields.Boolean(
         string='Background Check Passed',
         tracking=True,
         help="Whether background check was successfully completed"
-    )
+    
     safety_briefing = fields.Boolean(
         string='Safety Briefing Given',
         tracking=True,
         help="Whether safety briefing was provided"
-    )
+    
 
-    # Badge information
+        # Badge information
     badge_number = fields.Char(
         string='Visitor Badge Number',
         tracking=True,
         help="Number of visitor badge assigned"
-    )
+    
     badge_returned = fields.Boolean(
         string='Badge Returned',
         tracking=True,
         help="Whether visitor badge was returned"
-    )
+    
 
-    # NAID Compliance
+        # NAID Compliance
     naid_compliance_verified = fields.Boolean(
         string='NAID Compliance Verified',
         tracking=True,
         help="Whether NAID compliance requirements were verified"
-    )
-    access_level = fields.Selection([
+    
+    ,
+    access_level = fields.Selection([))
         ('public', 'Public Areas Only'),
         ('restricted', 'Restricted Areas'),
         ('secure', 'Secure Areas'),
         ('vault', 'Vault Access')
-    ], string='Access Level', default='public', tracking=True,
-       help="Level of facility access granted")
+    
+        help="Level of facility access granted"
 
     # ============================================================================
-    # DOCUMENTATION
+        # DOCUMENTATION
     # ============================================================================
     notes = fields.Text(
         string='Visit Notes',
         tracking=True,
         help="General notes about the visit"
-    )
+    
     security_notes = fields.Text(
         string='Security Notes',
         tracking=True,
         help="Security-related observations and notes"
-    )
+    
 
-    # ============================================================================
+        # ============================================================================
     # COMPUTED FIELDS
-    # ============================================================================
+        # ============================================================================
     visit_duration = fields.Float(
-        string='Visit Duration (Hours)',
+        ,
+    string='Visit Duration (Hours)',
         compute='_compute_visit_duration',
         store=True,
         help="Duration of visit in hours"
-    )
+    
     display_name = fields.Char(
         string='Display Name',
         compute='_compute_display_name',
         store=True,
-        help="Display name for visitor record"
-    )
+        help="Display name for visitor record":
+    
 
-    # ============================================================================
+        # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
-    # ============================================================================
+        # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity",
         "res_id",
         string="Activities",
-        domain=lambda self: [("res_model", "=", self._name)],
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name)),
+    
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
-        domain=lambda self: [("res_model", "=", self._name)],
-    )
+        ,
+    domain=lambda self: [("res_model", "=", self._name)),
+    
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
-        domain=lambda self: [("model", "=", self._name)
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection([], string='Type')  # TODO: Define selection options
-    view_mode = fields.Char(string='View Mode')],
-    )
+        ,
+    domain=lambda self: [("model", "=", self._name))
+    context = fields.Char(string='Context'),
+    domain = fields.Char(string='Domain'),
+    help = fields.Char(string='Help'),
+    res_model = fields.Char(string='Res Model'),
+    type = fields.Selection([), string='Type')  # TODO: Define selection options
+    view_mode = fields.Char(string='View Mode')
+        
 
     # ============================================================================
-    # COMPUTE METHODS
+        # COMPUTE METHODS
     # ============================================================================
     @api.depends('check_in_time', 'check_out_time')
     def _compute_visit_duration(self):
@@ -324,7 +333,7 @@ class Visitor(models.Model):
     def _compute_display_name(self):
         """Compute display name"""
         for record in self:
-            parts = [record.name or _('New Visitor')]
+            parts = [record.name or _('New Visitor'))
             if record.visitor_company:
                 parts.append(_('(%s)', record.visitor_company))
             if record.visit_date:
@@ -332,7 +341,7 @@ class Visitor(models.Model):
             record.display_name = ' '.join(parts)
 
     # ============================================================================
-    # ACTION METHODS (These are NOT constraint methods)
+        # ACTION METHODS (These are NOT constraint methods)
     # ============================================================================
     def action_check_in(self):
         """Check in visitor"""
@@ -345,10 +354,10 @@ class Visitor(models.Model):
         if self.background_check and not self.background_check_passed:
             raise ValidationError(_('Background check must pass before check-in'))
 
-        self.write({
+        self.write({)}
             'status': 'checked_in',
             'check_in_time': fields.Datetime.now()
-        })
+        
         self.message_post(body=_('Visitor checked in at %s', self.check_in_time))
         self._create_audit_log('visitor_checked_in')
 
@@ -360,8 +369,7 @@ class Visitor(models.Model):
             raise ValidationError(_('Only checked-in visitors can enter facility'))
 
         if self.escort_required and not self.escort_assigned_id:
-            raise ValidationError(_('Escort must be assigned for this visitor'))
-
+            raise ValidationError(_('Escort must be assigned for this visitor')):
         if not self.safety_briefing:
             raise ValidationError(_('Safety briefing must be completed before facility entry'))
 
@@ -376,14 +384,14 @@ class Visitor(models.Model):
         if self.status not in ['checked_in', 'in_facility']:
             raise ValidationError(_('Only checked-in or in-facility visitors can check out'))
 
-        # Validate badge return if assigned
+        # Validate badge return if assigned:
         if self.badge_number and not self.badge_returned:
             raise ValidationError(_('Visitor badge must be returned before check-out'))
 
-        self.write({
+        self.write({)}
             'status': 'checked_out',
             'check_out_time': fields.Datetime.now()
-        })
+        
         self.message_post(body=_('Visitor checked out at %s', self.check_out_time))
         self._create_audit_log('visitor_checked_out')
 
@@ -424,7 +432,7 @@ class Visitor(models.Model):
         self.message_post(body=_('Badge %s returned', self.badge_number))
 
     # ============================================================================
-    # BUSINESS METHODS
+        # BUSINESS METHODS
     # ============================================================================
     def _generate_badge_number(self):
         """Generate unique visitor badge number"""
@@ -432,33 +440,33 @@ class Visitor(models.Model):
         return sequence or f"VB{self.id:06d}"
 
     def _create_audit_log(self, event_type):
-        """Create audit log entry for visitor activity"""
+        """Create audit log entry for visitor activity""":
         if self.env.get('naid.audit.log'):
-            self.env['naid.audit.log'].create({
+            self.env['naid.audit.log').create({]}
                 'event_type': event_type,
                 'model_name': self._name,
                 'record_id': self.id,
                 'description': f"Visitor {self.name} - {event_type}",
                 'user_id': self.env.user.id,
                 'timestamp': fields.Datetime.now(),
-            })
+            
 
     def get_visit_summary(self):
-        """Get visit summary for reporting"""
+        """Get visit summary for reporting""":
         self.ensure_one()
-        return {
+        return {}
             'name': self.name,
             'company': self.visitor_company,
             'purpose': self.visit_purpose,
             'status': self.status,
             'visit_date': self.visit_date,
             'duration': self.visit_duration,
-            'escort': self.escort_assigned_id.name if self.escort_assigned_id else None,
+            'escort': self.escort_assigned_id.name if self.escort_assigned_id else None,:
             'access_level': self.access_level,
-        }
+        
 
     # ============================================================================
-    # CONSTRAINT METHODS (Proper naming for validation constraints)
+        # CONSTRAINT METHODS (Proper naming for validation constraints):
     # ============================================================================
     @api.constrains('check_in_time', 'check_out_time')
     def _check_visit_times(self):
@@ -473,44 +481,46 @@ class Visitor(models.Model):
         """Validate background check requirements"""
         for record in self:
             if record.background_check and record.status in ['in_facility'] and not record.background_check_passed:
-                raise ValidationError(_('Background check must pass for facility access'))
-
+                raise ValidationError(_('Background check must pass for facility access')):
     @api.constrains('badge_number')
     def _check_badge_uniqueness(self):
         """Ensure badge numbers are unique"""
         for record in self:
             if record.badge_number:
-                existing = self.search([
+                existing = self.search([)]
                     ('badge_number', '=', record.badge_number),
                     ('id', '!=', record.id),
                     ('badge_returned', '=', False)
-                ])
+                
                 if existing:
                     raise ValidationError(_('Badge number %s is already in use', record.badge_number))
 
     # ============================================================================
-    # UTILITY METHODS
+        # UTILITY METHODS
     # ============================================================================
     @api.model
     def get_active_visitors(self):
         """Get currently active visitors in facility"""
-        return self.search([
+        return self.search([)]
             ('status', 'in', ['checked_in', 'in_facility']),
             ('visit_date', '=', fields.Date.today())
-        ])
+        
 
     @api.model
     def get_overdue_visitors(self):
-        """Get visitors who haven't checked out"""
-        yesterday = fields.Date.today() - fields.timedelta(days=1)
-        return self.search([
+        """Get visitors who haven't checked out"""'
+    yesterday = fields.Date.today() - fields.timedelta(days=1)
+        return self.search([)]
             ('visit_date', '<=', yesterday),
             ('status', 'in', ['checked_in', 'in_facility'])
-        ])
+        
 
     def send_checkout_reminder(self):
-        """Send checkout reminder for overdue visitors"""
+        """Send checkout reminder for overdue visitors""":
         template = self.env.ref('records_management.visitor_checkout_reminder_template', False)
         if template:
             for visitor in self:
                 template.send_mail(visitor.id, force_send=True)
+
+
+    """")))))))))))))))))))
