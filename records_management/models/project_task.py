@@ -7,7 +7,7 @@ container management, and records management operations with full NAID complianc
 
 Key Features:
 - Work order coordination and tracking
-- Container and document retrieval workflows  
+- Container and document retrieval workflows
 - FSM integration for field service operations
 - NAID compliance audit trail integration
 - Legacy records management compatibility
@@ -44,7 +44,7 @@ class ProjectTask(models.Model):
         tracking=True,
         help="Work order coordinator managing this task"
     )
-    
+
     work_order_type = fields.Selection([
         ('container_retrieval', 'Container Retrieval'),
         ('file_retrieval', 'File Retrieval'),
@@ -53,7 +53,7 @@ class ProjectTask(models.Model):
         ('container_access', 'Container Access'),
         ('pickup_delivery', 'Pickup & Delivery'),
         ('audit_inspection', 'Audit Inspection'),
-    ], string='Work Order Type', 
+    ], string='Work Order Type',
        tracking=True,
        help="Type of work order related to this task")
 
@@ -65,13 +65,13 @@ class ProjectTask(models.Model):
             ('scan.retrieval.work.order', 'Scan Retrieval'),
             ('container.destruction.work.order', 'Container Destruction'),
             ('container.access.work.order', 'Container Access'),
-            ('document.retrieval.work.order', 'Document Retrieval'),
+            ('file.retrieval.work.order', 'Document Retrieval'),
         ],
         string='Related Work Order',
         tracking=True,
         help="Direct reference to the related work order"
     )
-    
+
     work_order_priority = fields.Selection([
         ('low', 'Low'),
         ('normal', 'Normal'),
@@ -91,7 +91,7 @@ class ProjectTask(models.Model):
         tracking=True,
         help="Container associated with this task"
     )
-    
+
     container_ids = fields.Many2many(
         "records.container",
         "project_task_container_rel",
@@ -100,14 +100,14 @@ class ProjectTask(models.Model):
         string="Multiple Containers",
         help="Multiple containers associated with this task"
     )
-    
+
     pickup_request_id = fields.Many2one(
         "pickup.request",
         string="Pickup Request",
         tracking=True,
         help="The pickup request that generated this task"
     )
-    
+
     task_type = fields.Selection([
         ("pickup", "Pickup"),
         ("delivery", "Delivery"),
@@ -130,28 +130,28 @@ class ProjectTask(models.Model):
         string="Scheduled Start Time",
         help="Planned start time for the task"
     )
-    
+
     scheduled_end_time = fields.Datetime(
         string="Scheduled End Time",
         help="Planned completion time for the task"
     )
-    
+
     actual_start_time = fields.Datetime(
         string="Actual Start Time",
         help="Actual time the task was started"
     )
-    
+
     actual_end_time = fields.Datetime(
         string="Actual End Time",
         help="Actual time the task was completed"
     )
-    
+
     route_id = fields.Many2one(
         "pickup.route",
         string="Pickup Route",
         help="Route associated with this task"
     )
-    
+
     vehicle_id = fields.Many2one(
         "records.vehicle",
         string="Assigned Vehicle",
@@ -166,14 +166,14 @@ class ProjectTask(models.Model):
         default=True,
         help="Whether this task requires NAID compliance"
     )
-    
+
     audit_trail_ids = fields.One2many(
         "naid.audit.log",
         "task_id",
         string="Audit Trail",
         help="NAID audit trail entries for this task"
     )
-    
+
     certificate_required = fields.Boolean(
         string="Certificate Required",
         compute="_compute_certificate_required",
@@ -195,12 +195,12 @@ class ProjectTask(models.Model):
        default='pending',
        tracking=True,
        help="Current status of the work order")
-    
+
     completion_notes = fields.Text(
         string="Completion Notes",
         help="Notes about task completion and any issues encountered"
     )
-    
+
     quality_check_passed = fields.Boolean(
         string="Quality Check Passed",
         help="Whether the completed task passed quality checks"
@@ -234,15 +234,15 @@ class ProjectTask(models.Model):
                 'container.destruction.work.order': 'container_destruction',
                 'container.access.work.order': 'container_access',
             }
-            
+
             model_name = self.work_order_reference._name
             if model_name in model_type_mapping:
                 self.work_order_type = model_type_mapping[model_name]
-            
+
             # Copy relevant fields from work order
             if hasattr(self.work_order_reference, 'container_id'):
                 self.container_id = self.work_order_reference.container_id
-            
+
             if hasattr(self.work_order_reference, 'priority'):
                 self.work_order_priority = self.work_order_reference.priority
 
@@ -252,7 +252,7 @@ class ProjectTask(models.Model):
         if self.container_id:
             if not self.name or self.name == "New":
                 self.name = _("Task for Container %s", self.container_id.name)
-            
+
             if self.container_id.partner_id and not self.partner_id:
                 self.partner_id = self.container_id.partner_id
 
@@ -264,7 +264,7 @@ class ProjectTask(models.Model):
         self.ensure_one()
         if not self.container_id:
             raise UserError(_("No container is associated with this task."))
-        
+
         return {
             "type": "ir.actions.act_window",
             "res_model": "records.container",
@@ -279,7 +279,7 @@ class ProjectTask(models.Model):
         self.ensure_one()
         if not self.work_order_reference:
             raise UserError(_("No work order is associated with this task."))
-        
+
         return {
             "type": "ir.actions.act_window",
             "res_model": self.work_order_reference._name,
@@ -294,7 +294,7 @@ class ProjectTask(models.Model):
         self.ensure_one()
         if not self.work_order_reference:
             raise UserError(_("No work order to sync with."))
-        
+
         # Update work order based on task status
         if self.stage_id.is_closed:
             if hasattr(self.work_order_reference, 'state'):
@@ -306,7 +306,7 @@ class ProjectTask(models.Model):
                     self.message_post(
                         body=_("Work order synchronized and marked as completed")
                     )
-        
+
         return True
 
     def action_start_task(self):
@@ -314,15 +314,15 @@ class ProjectTask(models.Model):
         self.ensure_one()
         if self.work_order_status != 'assigned':
             raise UserError(_("Task must be assigned before it can be started."))
-        
+
         self.write({
             'work_order_status': 'in_progress',
             'actual_start_time': fields.Datetime.now()
         })
-        
+
         # Create audit log entry
         self._create_audit_log('task_started')
-        
+
         self.message_post(body=_("Task started by %s", self.env.user.name))
         return True
 
@@ -331,56 +331,56 @@ class ProjectTask(models.Model):
         self.ensure_one()
         if self.work_order_status != 'in_progress':
             raise UserError(_("Task must be in progress to be completed."))
-        
+
         self.write({
             'work_order_status': 'completed',
             'actual_end_time': fields.Datetime.now()
         })
-        
+
         # Sync with work order if exists
         if self.work_order_reference:
             self.action_sync_with_work_order()
-        
+
         # Create audit log entry
         self._create_audit_log('task_completed')
-        
+
         self.message_post(body=_("Task completed by %s", self.env.user.name))
-        
+
         # Generate certificate if required
         if self.certificate_required:
             self._generate_completion_certificate()
-        
+
         return True
 
     def action_cancel_task(self):
         """Cancel the task"""
         self.ensure_one()
-        
+
         self.write({
             'work_order_status': 'cancelled',
             'actual_end_time': fields.Datetime.now()
         })
-        
+
         # Create audit log entry
         self._create_audit_log('task_cancelled')
-        
+
         self.message_post(body=_("Task cancelled by %s", self.env.user.name))
         return True
 
     def action_assign_to_route(self):
         """Assign task to pickup route"""
         self.ensure_one()
-        
+
         # Find available routes
         domain = [
             ('state', '=', 'draft'),
             ('date', '>=', fields.Date.today())
         ]
-        
+
         routes = self.env['pickup.route'].search(domain)
         if not routes:
             raise UserError(_("No available routes found for assignment."))
-        
+
         # Open wizard to select route
         return {
             'type': 'ir.actions.act_window',
@@ -401,7 +401,7 @@ class ProjectTask(models.Model):
         """Create NAID audit log entry"""
         if not self.naid_compliant:
             return
-        
+
         self.env['naid.audit.log'].create({
             'event_type': event_type,
             'description': _("Task %s: %s", self.name, event_type.replace('_', ' ').title()),
@@ -420,14 +420,14 @@ class ProjectTask(models.Model):
             'technician_id': self.user_id.id,
             'notes': self.completion_notes or '',
         }
-        
+
         certificate = self.env['task.completion.certificate'].create(certificate_vals)
-        
+
         self.message_post(
             body=_("Completion certificate generated: %s", certificate.name),
             attachments=[certificate._generate_pdf_attachment()]
         )
-        
+
         return certificate
 
     def get_task_summary(self):
@@ -471,28 +471,28 @@ class ProjectTask(models.Model):
     def create(self, vals_list):
         """Override create to set up task relationships"""
         tasks = super().create(vals_list)
-        
+
         for task in tasks:
             # Create initial audit log if NAID compliant
             if task.naid_compliant:
                 task._create_audit_log('task_created')
-            
+
             # Update work order reference if needed
             if task.work_order_reference and hasattr(task.work_order_reference, 'task_id'):
                 task.work_order_reference.task_id = task.id
-        
+
         return tasks
 
     def write(self, vals):
         """Override write to track important changes"""
         result = super().write(vals)
-        
+
         # Track status changes
         if 'work_order_status' in vals:
             for record in self:
                 if record.naid_compliant:
                     record._create_audit_log(f'status_changed_to_{vals["work_order_status"]}')
-        
+
         return result
 
     def unlink(self):
@@ -500,10 +500,10 @@ class ProjectTask(models.Model):
         for task in self:
             if task.work_order_status == 'in_progress':
                 raise UserError(_("Cannot delete tasks that are in progress."))
-            
+
             if task.naid_compliant and task.audit_trail_ids:
                 raise UserError(_("Cannot delete tasks with audit trail entries."))
-        
+
         return super().unlink()
 
     # ============================================================================
@@ -525,7 +525,7 @@ class ProjectTask(models.Model):
     def get_task_statistics(self):
         """Get task statistics for dashboard"""
         domain_base = [('project_id.is_fsm', '=', True)]
-        
+
         return {
             'total_tasks': self.search_count(domain_base),
             'pending_tasks': self.search_count(domain_base + [('work_order_status', '=', 'pending')]),

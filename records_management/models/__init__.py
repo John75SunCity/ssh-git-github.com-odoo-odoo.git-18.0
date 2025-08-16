@@ -119,7 +119,7 @@ from . import document_retrieval_item
 from . import document_retrieval_team
 from . import document_retrieval_pricing
 from . import document_retrieval_equipment
-from . import document_retrieval_metric
+from . import file_retrieval_metric
 from . import document_retrieval_support_models
 
 from . import document_search_attempt
@@ -388,7 +388,7 @@ from . import feedback_improvement_area
 # Digital asset models
 from . import scan_digital_asset
 
-# Mobile and photo models  
+# Mobile and photo models
 from . import mobile_photo
 
 # FSM route planning
@@ -427,8 +427,8 @@ from . import records_billing_config_line
 # FSM service line sub-models
 from . import fsmtask_service_line
 
-# Document retrieval metrics sub-models
-from . import document_retrieval_metric
+# File retrieval metrics sub-models
+from . import file_retrieval_metric
 
 # Payment processing sub-models
 from . import payment_split_line

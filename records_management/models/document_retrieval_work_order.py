@@ -566,10 +566,10 @@ class DocumentRetrievalEquipment(models.Model):
 
 
 class DocumentRetrievalMetrics(models.Model):
-    """Performance metrics for document retrieval operations"""
+    """Performance metrics for file retrieval operations"""
 
-    _name = "document.retrieval.metrics"
-    _description = "Document Retrieval Metrics"
+    _name = "file.retrieval.metrics.summary"
+    _description = "File Retrieval Metrics Summary"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "date desc"
     _rec_name = "name"

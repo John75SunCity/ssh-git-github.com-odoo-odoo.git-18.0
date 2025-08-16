@@ -117,7 +117,7 @@ class DocumentRetrievalTeam(models.Model):
 
     # Document Retrieval Metrics (inverse relationship)
     retrieval_metrics_ids = fields.One2many(
-        "document.retrieval.metrics", "team_id",
+        "file.retrieval.metrics.summary", "team_id",
         string="Team Performance Metrics",
         help="Performance metrics for this retrieval team"
     )

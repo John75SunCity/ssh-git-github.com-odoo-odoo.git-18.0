@@ -18,7 +18,7 @@ from odoo.exceptions import UserError, ValidationError
 class DocumentSearchAttempt(models.Model):
     """
     Document Search Attempt Management
-    
+
     Tracks individual search attempts during document retrieval operations,
     providing detailed audit trails, success metrics, and operational insights
     for Records Management compliance and efficiency optimization.
@@ -85,7 +85,7 @@ class DocumentSearchAttempt(models.Model):
     )
 
     work_order_id = fields.Many2one(
-        "document.retrieval.work.order",
+        "file.retrieval.work.order",
         string="Work Order",
         related="retrieval_item_id.work_order_id",
         readonly=True,
@@ -356,7 +356,7 @@ class DocumentSearchAttempt(models.Model):
                 parts.append(attempt.requested_file_name)
             if attempt.container_id:
                 parts.append(_("in %s", attempt.container_id.name))
-            
+
             status = _("Found") if attempt.found else _("Not Found")
             parts.append(_("[%s]", status))
 
@@ -367,11 +367,11 @@ class DocumentSearchAttempt(models.Model):
         """Calculate search effectiveness score"""
         for attempt in self:
             score = 0.0
-            
+
             # Base score for finding the document
             if attempt.found:
                 score += 50.0
-            
+
             # Time efficiency bonus/penalty
             if attempt.search_duration_minutes:
                 if attempt.search_duration_minutes <= 5:
@@ -380,7 +380,7 @@ class DocumentSearchAttempt(models.Model):
                     score += 10.0  # Fast
                 elif attempt.search_duration_minutes > 30:
                     score -= 10.0  # Slow
-            
+
             # Thoroughness factor
             thoroughness_scores = {
                 'quick': 5.0,
@@ -389,11 +389,11 @@ class DocumentSearchAttempt(models.Model):
                 'complete': 35.0
             }
             score += thoroughness_scores.get(attempt.search_thoroughness, 15.0)
-            
+
             # Accuracy rating
             if attempt.accuracy_rating:
                 score += int(attempt.accuracy_rating) * 2
-            
+
             attempt.search_score = min(score, 100.0)  # Cap at 100
 
     # ============================================================================
@@ -421,11 +421,11 @@ class DocumentSearchAttempt(models.Model):
         if self.container_id:
             # Auto-populate location
             self.location_id = self.container_id.location_id
-            
+
             # Set default name if not set
             if not self.name and self.requested_file_name:
-                self.name = _("Search %s in %s", 
-                             self.requested_file_name, 
+                self.name = _("Search %s in %s",
+                             self.requested_file_name,
                              self.container_id.name)
 
     # ============================================================================
@@ -441,7 +441,7 @@ class DocumentSearchAttempt(models.Model):
             'state': 'in_progress',
             'search_date': fields.Datetime.now()
         })
-        
+
         self._create_audit_log('search_started')
         self.message_post(body=_("Search started by %s", self.searched_by_id.name))
 
@@ -462,7 +462,7 @@ class DocumentSearchAttempt(models.Model):
 
         self._create_audit_log('search_completed')
         self.message_post(body=_(
-            "Search completed. Document %s", 
+            "Search completed. Document %s",
             _("found") if self.found else _("not found")
         ))
 
@@ -529,7 +529,7 @@ class DocumentSearchAttempt(models.Model):
     def _create_audit_log(self, action_type):
         """Create NAID compliance audit log"""
         self.ensure_one()
-        
+
         if 'naid.audit.log' in self.env:
             audit_vals = {
                 'action_type': action_type,
@@ -545,14 +545,14 @@ class DocumentSearchAttempt(models.Model):
     def get_search_efficiency_metrics(self):
         """Calculate search efficiency metrics"""
         self.ensure_one()
-        
+
         metrics = {
             'search_score': self.search_score,
             'time_efficiency': 'fast' if self.search_duration_minutes and self.search_duration_minutes <= 10 else 'standard',
             'success_rate': 100.0 if self.found else 0.0,
             'accuracy_score': int(self.accuracy_rating) * 20 if self.accuracy_rating else 60,
         }
-        
+
         # Calculate overall efficiency
         total_score = (
             metrics['search_score'] * 0.4 +
@@ -560,7 +560,7 @@ class DocumentSearchAttempt(models.Model):
             metrics['accuracy_score'] * 0.3
         )
         metrics['overall_efficiency'] = round(total_score, 2)
-        
+
         return metrics
 
     def get_history_summary(self):
@@ -590,7 +590,7 @@ class DocumentSearchAttempt(models.Model):
             domain = []
 
         attempts = self.search(domain)
-        
+
         if not attempts:
             return {
                 'total_attempts': 0,
@@ -637,9 +637,9 @@ class DocumentSearchAttempt(models.Model):
     def generate_search_report(self):
         """Generate detailed search attempt report"""
         self.ensure_one()
-        
+
         metrics = self.get_search_efficiency_metrics()
-        
+
         return {
             'type': 'ir.actions.report',
             'report_name': 'records_management.document_search_attempt_report',
@@ -673,12 +673,12 @@ class DocumentSearchAttempt(models.Model):
     def write(self, vals):
         """Override write for status tracking"""
         result = super().write(vals)
-        
+
         if 'state' in vals:
             for attempt in self:
                 state_label = dict(attempt._fields['state'].selection)[attempt.state]
                 attempt.message_post(body=_("Status changed to %s", state_label))
-        
+
         return result
 
     def name_get(self):
@@ -719,7 +719,7 @@ class DocumentSearchAttempt(models.Model):
     def action_create_follow_up_search(self):
         """Create a follow-up search attempt"""
         self.ensure_one()
-        
+
         follow_up_vals = {
             'name': _("Follow-up: %s", self.name),
             'retrieval_item_id': self.retrieval_item_id.id,
@@ -728,9 +728,9 @@ class DocumentSearchAttempt(models.Model):
             'priority': 'high',
             'search_notes': _("Follow-up search based on attempt %s", self.name),
         }
-        
+
         follow_up = self.create(follow_up_vals)
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('Follow-up Search'),

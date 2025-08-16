@@ -52,7 +52,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     # WORK ORDER AND BIN FIELDS
     # ============================================================================
     work_order_ids = fields.Many2many(
-        'document.retrieval.work.order',
+        'file.retrieval.work.order',
         string='Work Orders',
         required=True,
         help='Work orders to assign bins to'
@@ -201,7 +201,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
             raise UserError(_('Please select at least one bin for manual assignment'))
 
         # Check for conflicting assignments
-        existing_assignments = self.env['document.retrieval.work.order'].search([
+        existing_assignments = self.env['file.retrieval.work.order'].search([
             ('assigned_bin_ids', 'in', self.selected_bin_ids.ids),
             ('state', 'in', ['confirmed', 'in_progress']),
             ('id', 'not in', self.work_order_ids.ids)
@@ -366,7 +366,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
             'container_ids': [(6, 0, assigned_bins.ids)],
             'performed_by': self.env.user.id,
             'activity_date': fields.Datetime.now(),
-            'description': _('Assigned %d bins to work order %s via wizard', 
+            'description': _('Assigned %d bins to work order %s via wizard',
                            len(assigned_bins), work_order.name),
             'compliance_level': 'standard'
         })
@@ -384,7 +384,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
 
     def _show_success_message(self, assignment_count):
         """Show success message after assignment"""
-        message = _('Successfully assigned %d bins to %d work orders', 
+        message = _('Successfully assigned %d bins to %d work orders',
                    assignment_count, len(self.work_order_ids))
 
         return {
