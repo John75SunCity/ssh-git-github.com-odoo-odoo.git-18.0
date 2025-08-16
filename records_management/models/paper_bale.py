@@ -337,6 +337,336 @@ class PaperBale(models.Model):
     )
 
     # ============================================================================
+    # EXTENDED TRACKING AND PROCESSING FIELDS
+    # ============================================================================
+    action_date = fields.Date(
+        string="Action Date",
+        help="Date of specific action or milestone"
+    )
+
+    action_type = fields.Selection([
+        ('creation', 'Creation'),
+        ('inspection', 'Inspection'),
+        ('movement', 'Movement'),
+        ('loading', 'Loading'),
+        ('shipment', 'Shipment'),
+        ('destruction', 'Destruction')
+    ], string="Action Type", help="Type of action being tracked")
+
+    bale_number = fields.Char(
+        string="Bale Number",
+        required=True,
+        tracking=True,
+        help="Unique identification number for the bale"
+    )
+
+    bale_status = fields.Selection([
+        ('created', 'Created'),
+        ('pending_inspection', 'Pending Inspection'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('shipped', 'Shipped'),
+        ('processed', 'Processed')
+    ], string="Bale Status", default='created', tracking=True)
+
+    contamination_found = fields.Boolean(
+        string="Contamination Found",
+        default=False,
+        help="Whether contamination was found during inspection"
+    )
+
+    contamination_percentage = fields.Float(
+        string="Contamination Percentage",
+        digits=(5, 2),
+        help="Percentage of contamination found"
+    )
+
+    customer_name = fields.Char(
+        string="Customer Name",
+        help="Name of customer whose documents are in this bale"
+    )
+
+    destruction_date = fields.Date(
+        string="Destruction Date",
+        help="Date when original documents were destroyed"
+    )
+
+    document_name = fields.Char(
+        string="Document Name",
+        help="Name or description of source documents"
+    )
+
+    document_type = fields.Char(
+        string="Document Type",
+        help="Type of documents in this bale"
+    )
+
+    estimated_value = fields.Monetary(
+        string="Estimated Value",
+        currency_field="currency_id",
+        help="Estimated monetary value of the bale"
+    )
+
+    grade_assigned = fields.Char(
+        string="Grade Assigned",
+        help="Quality grade assigned to the bale"
+    )
+
+    inspection_date = fields.Date(
+        string="Inspection Date",
+        help="Date when quality inspection was performed"
+    )
+
+    inspection_type = fields.Selection([
+        ('visual', 'Visual Inspection'),
+        ('sampling', 'Sample Testing'),
+        ('comprehensive', 'Comprehensive Analysis'),
+        ('random', 'Random Check')
+    ], string="Inspection Type", help="Type of quality inspection performed")
+
+    inspector = fields.Char(
+        string="Inspector",
+        help="Name of person who performed inspection"
+    )
+
+    loaded_by = fields.Char(
+        string="Loaded By",
+        help="Person who loaded the bale onto transport"
+    )
+
+    loaded_on_trailer = fields.Boolean(
+        string="Loaded on Trailer",
+        default=False,
+        help="Whether bale has been loaded onto trailer"
+    )
+
+    loading_date = fields.Date(
+        string="Loading Date",
+        help="Date when bale was loaded for transport"
+    )
+
+    loading_notes = fields.Text(
+        string="Loading Notes",
+        help="Notes from the loading process"
+    )
+
+    loading_order = fields.Integer(
+        string="Loading Order",
+        help="Order in which bale was loaded"
+    )
+
+    loading_position = fields.Char(
+        string="Loading Position",
+        help="Position of bale on transport vehicle"
+    )
+
+    market_price_per_lb = fields.Float(
+        string="Market Price per Lb",
+        digits=(8, 4),
+        help="Current market price per pound"
+    )
+
+    measured_by = fields.Char(
+        string="Measured By",
+        help="Person who performed measurements"
+    )
+
+    measurement_date = fields.Date(
+        string="Measurement Date",
+        help="Date when measurements were taken"
+    )
+
+    measurement_type = fields.Selection([
+        ('initial', 'Initial Measurement'),
+        ('pre_loading', 'Pre-Loading'),
+        ('final', 'Final Measurement'),
+        ('verification', 'Verification')
+    ], string="Measurement Type", help="Type of measurement taken")
+
+    moisture_reading = fields.Float(
+        string="Moisture Reading",
+        digits=(5, 2),
+        help="Actual moisture content reading"
+    )
+
+    naid_compliance_verified = fields.Boolean(
+        string="NAID Compliance Verified",
+        default=False,
+        help="Whether NAID compliance has been verified"
+    )
+
+    passed_inspection = fields.Boolean(
+        string="Passed Inspection",
+        default=False,
+        help="Whether bale passed quality inspection"
+    )
+
+    performed_by = fields.Char(
+        string="Performed By",
+        help="Person who performed the action"
+    )
+
+    processing_time = fields.Float(
+        string="Processing Time (hours)",
+        digits=(8, 2),
+        help="Time required for processing"
+    )
+
+    quality_grade = fields.Selection([
+        ('grade_a', 'Grade A - Premium'),
+        ('grade_b', 'Grade B - Standard'),
+        ('grade_c', 'Grade C - Lower Grade'),
+        ('reject', 'Reject')
+    ], string="Quality Grade", help="Assigned quality grade")
+
+    quality_score = fields.Float(
+        string="Quality Score",
+        digits=(5, 2),
+        help="Numerical quality score (0-100)"
+    )
+
+    revenue_potential = fields.Monetary(
+        string="Revenue Potential",
+        currency_field="currency_id",
+        help="Potential revenue from sale"
+    )
+
+    scale_used = fields.Char(
+        string="Scale Used",
+        help="Identification of scale used for weighing"
+    )
+
+    source_facility = fields.Char(
+        string="Source Facility",
+        help="Facility where bale was created"
+    )
+
+    special_handling = fields.Boolean(
+        string="Special Handling Required",
+        default=False,
+        help="Whether special handling procedures are required"
+    )
+
+    trailer_info = fields.Char(
+        string="Trailer Information",
+        help="Information about transport trailer"
+    )
+
+    trailer_load_count = fields.Integer(
+        string="Trailer Load Count",
+        help="Number of bales on this trailer load"
+    )
+
+    variance_from_previous = fields.Float(
+        string="Variance from Previous (%)",
+        digits=(5, 2),
+        help="Percentage variance from previous measurements"
+    )
+
+    weighed_by = fields.Char(
+        string="Weighed By",
+        help="Person who performed weighing"
+    )
+
+    weight_contributed = fields.Float(
+        string="Weight Contributed (lbs)",
+        digits=(8, 2),
+        help="Weight contributed to total load"
+    )
+
+    weight_efficiency = fields.Float(
+        string="Weight Efficiency (%)",
+        digits=(5, 2),
+        help="Efficiency rating based on weight metrics"
+    )
+
+    weight_recorded = fields.Float(
+        string="Weight Recorded (lbs)",
+        digits=(8, 2),
+        help="Officially recorded weight"
+    )
+
+    # ============================================================================
+    # ENVIRONMENTAL IMPACT EXTENDED FIELDS
+    # ============================================================================
+    carbon_footprint_saved = fields.Float(
+        string="Carbon Footprint Saved (kg CO2)",
+        compute='_compute_environmental_impact_extended',
+        store=True,
+        help="Calculated carbon footprint savings"
+    )
+
+    carbon_neutral = fields.Boolean(
+        string="Carbon Neutral Process",
+        default=False,
+        help="Whether the process was carbon neutral"
+    )
+
+    energy_saved = fields.Float(
+        string="Energy Saved (kWh)",
+        compute='_compute_environmental_impact_extended',
+        store=True,
+        help="Estimated energy savings"
+    )
+
+    environmental_certification = fields.Selection([
+        ('fsc', 'FSC Certified'),
+        ('pefc', 'PEFC Certified'),
+        ('sfi', 'SFI Certified'),
+        ('none', 'No Certification')
+    ], string="Environmental Certification", default='none')
+
+    sustainable_source = fields.Boolean(
+        string="Sustainable Source",
+        default=True,
+        help="Whether source material is sustainably sourced"
+    )
+
+    trees_saved_equivalent = fields.Float(
+        string="Trees Saved Equivalent",
+        compute='_compute_environmental_impact_extended',
+        store=True,
+        help="Equivalent number of trees saved"
+    )
+
+    water_saved = fields.Float(
+        string="Water Saved (gallons)",
+        compute='_compute_environmental_impact_extended',
+        store=True,
+        help="Estimated water savings"
+    )
+
+    # ============================================================================
+    # HISTORY AND AUDIT FIELDS
+    # ============================================================================
+    loading_history_ids = fields.One2many(
+        'paper.bale.loading.history',
+        'bale_id',
+        string="Loading History",
+        help="History of loading events"
+    )
+
+    quality_inspection_ids = fields.One2many(
+        'paper.bale.quality.inspection',
+        'bale_id',
+        string="Quality Inspections",
+        help="Quality inspection records"
+    )
+
+    weight_history_count = fields.Integer(
+        string="Weight History Count",
+        compute='_compute_weight_history_count',
+        help="Number of weight measurements recorded"
+    )
+
+    weight_measurement_ids = fields.One2many(
+        'paper.bale.weight.measurement',
+        'bale_id',
+        string="Weight Measurements",
+        help="History of weight measurements"
+    )
+
+    # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
     total_volume = fields.Float(

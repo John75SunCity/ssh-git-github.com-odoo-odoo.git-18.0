@@ -216,6 +216,146 @@ class RecordsDocumentType(models.Model):
     )
 
     # ============================================================================
+    # ENHANCED COMPLIANCE AND AUDIT FIELDS
+    # ============================================================================
+    approval_date = fields.Date(
+        string="Approval Date",
+        tracking=True,
+        help="Date when document type was approved for use"
+    )
+
+    approved_by_id = fields.Many2one(
+        "res.users",
+        string="Approved By",
+        tracking=True,
+        help="User who approved this document type"
+    )
+
+    audit_readiness_level = fields.Selection([
+        ('basic', 'Basic'),
+        ('standard', 'Standard'),
+        ('enhanced', 'Enhanced'),
+        ('comprehensive', 'Comprehensive')
+    ], string="Audit Readiness Level", default='standard',
+       help="Level of audit preparation and documentation")
+
+    audit_required = fields.Boolean(
+        string="Audit Required",
+        default=False,
+        help="Requires periodic compliance auditing"
+    )
+
+    auto_classification_potential = fields.Float(
+        string="Auto Classification Potential",
+        digits=(5, 2),
+        default=0.0,
+        help="Potential for automated document classification (0-100%)"
+    )
+
+    classification_accuracy_score = fields.Float(
+        string="Classification Accuracy Score",
+        digits=(5, 2),
+        compute='_compute_classification_accuracy',
+        store=True,
+        help="Historical accuracy of document classification"
+    )
+
+    compliance_notes = fields.Text(
+        string="Compliance Notes",
+        help="Additional notes regarding compliance requirements"
+    )
+
+    compliance_risk_assessment = fields.Selection([
+        ('low', 'Low Risk'),
+        ('medium', 'Medium Risk'),
+        ('high', 'High Risk'),
+        ('critical', 'Critical Risk')
+    ], string="Compliance Risk Assessment", default='medium',
+       help="Risk assessment for compliance violations")
+
+    compliance_status = fields.Selection([
+        ('compliant', 'Compliant'),
+        ('pending', 'Pending Review'),
+        ('non_compliant', 'Non-Compliant'),
+        ('exempted', 'Exempted')
+    ], string="Compliance Status", default='pending',
+       tracking=True, help="Current compliance status")
+
+    regulatory_compliance_score = fields.Float(
+        string="Regulatory Compliance Score",
+        digits=(5, 2),
+        compute='_compute_regulatory_compliance',
+        store=True,
+        help="Overall regulatory compliance score (0-100)"
+    )
+
+    regulatory_requirement = fields.Text(
+        string="Regulatory Requirement Details",
+        help="Detailed regulatory requirements and citations"
+    )
+
+    retention_compliance = fields.Selection([
+        ('fully_compliant', 'Fully Compliant'),
+        ('mostly_compliant', 'Mostly Compliant'),
+        ('partially_compliant', 'Partially Compliant'),
+        ('non_compliant', 'Non-Compliant')
+    ], string="Retention Compliance", default='fully_compliant',
+       help="Compliance with retention policy requirements")
+
+    risk_level = fields.Selection([
+        ('minimal', 'Minimal'),
+        ('low', 'Low'),
+        ('moderate', 'Moderate'),
+        ('high', 'High'),
+        ('severe', 'Severe')
+    ], string="Risk Level", default='low',
+       help="Overall risk level for this document type")
+
+    security_classification = fields.Selection([
+        ('unclassified', 'Unclassified'),
+        ('controlled', 'Controlled'),
+        ('confidential', 'Confidential'),
+        ('secret', 'Secret'),
+        ('top_secret', 'Top Secret')
+    ], string="Security Classification", default='unclassified',
+       tracking=True, help="Government/military style security classification")
+
+    # ============================================================================
+    # ANALYTICS AND REPORTING FIELDS
+    # ============================================================================
+    document_type_utilization = fields.Float(
+        string="Document Type Utilization (%)",
+        digits=(5, 2),
+        compute='_compute_utilization_metrics',
+        store=True,
+        help="Percentage of total documents using this type"
+    )
+
+    growth_trend_indicator = fields.Selection([
+        ('declining', 'Declining'),
+        ('stable', 'Stable'),
+        ('growing', 'Growing'),
+        ('rapid_growth', 'Rapid Growth')
+    ], string="Growth Trend", compute='_compute_growth_trend',
+       store=True, help="Document volume growth trend")
+
+    seasonal_pattern_score = fields.Float(
+        string="Seasonal Pattern Score",
+        digits=(5, 2),
+        compute='_compute_seasonal_patterns',
+        store=True,
+        help="Score indicating seasonal usage patterns (0-100)"
+    )
+
+    type_complexity_rating = fields.Selection([
+        ('simple', 'Simple'),
+        ('moderate', 'Moderate'),
+        ('complex', 'Complex'),
+        ('highly_complex', 'Highly Complex')
+    ], string="Type Complexity Rating", default='moderate',
+       help="Complexity rating for handling this document type")
+
+    # ============================================================================
     # PHYSICAL HANDLING
     # ============================================================================
     max_box_weight = fields.Float(
@@ -408,6 +548,130 @@ class RecordsDocumentType(models.Model):
             if record.document_count:
                 status_parts.append(_("%d docs", record.document_count))
             record.status_display = " | ".join(status_parts)
+
+    @api.depends('document_ids', 'document_ids.state')
+    def _compute_classification_accuracy(self):
+        """Compute classification accuracy based on document history"""
+        for record in self:
+            if record.document_ids:
+                total_docs = len(record.document_ids)
+                correctly_classified = len(record.document_ids.filtered(
+                    lambda d: d.state != 'error'
+                ))
+                record.classification_accuracy_score = (
+                    correctly_classified / total_docs * 100 if total_docs else 0.0
+                )
+            else:
+                record.classification_accuracy_score = 0.0
+
+    @api.depends('naid_compliance', 'hipaa_protected', 'sox_compliance',
+                 'gdpr_applicable', 'compliance_status')
+    def _compute_regulatory_compliance(self):
+        """Compute overall regulatory compliance score"""
+        for record in self:
+            score = 0.0
+            total_factors = 0
+
+            # Base compliance factors
+            compliance_factors = [
+                record.naid_compliance,
+                record.hipaa_protected,
+                record.sox_compliance,
+                record.gdpr_applicable
+            ]
+
+            for factor in compliance_factors:
+                total_factors += 1
+                if factor:
+                    score += 25.0  # Each factor worth 25 points
+
+            # Adjust based on compliance status
+            status_multipliers = {
+                'compliant': 1.0,
+                'pending': 0.75,
+                'non_compliant': 0.25,
+                'exempted': 0.9
+            }
+
+            multiplier = status_multipliers.get(record.compliance_status, 0.5)
+            record.regulatory_compliance_score = score * multiplier
+
+    @api.depends('document_ids')
+    def _compute_utilization_metrics(self):
+        """Compute document type utilization percentage"""
+        for record in self:
+            total_docs_in_system = self.env['records.document'].search_count([])
+            record_docs = len(record.document_ids)
+
+            if total_docs_in_system > 0:
+                record.document_type_utilization = (
+                    record_docs / total_docs_in_system * 100
+                )
+            else:
+                record.document_type_utilization = 0.0
+
+    @api.depends('document_ids.create_date')
+    def _compute_growth_trend(self):
+        """Compute growth trend based on recent document creation"""
+        for record in self:
+            if not record.document_ids:
+                record.growth_trend_indicator = 'stable'
+                continue
+
+            # Compare last 30 days vs previous 30 days
+            from datetime import datetime, timedelta
+            today = datetime.now().date()
+            last_30_days = today - timedelta(days=30)
+            previous_30_days = today - timedelta(days=60)
+
+            recent_count = len(record.document_ids.filtered(
+                lambda d: d.create_date and d.create_date.date() >= last_30_days
+            ))
+            previous_count = len(record.document_ids.filtered(
+                lambda d: d.create_date and
+                previous_30_days <= d.create_date.date() < last_30_days
+            ))
+
+            if previous_count == 0:
+                if recent_count > 0:
+                    record.growth_trend_indicator = 'growing'
+                else:
+                    record.growth_trend_indicator = 'stable'
+            else:
+                growth_rate = (recent_count - previous_count) / previous_count
+                if growth_rate > 0.5:
+                    record.growth_trend_indicator = 'rapid_growth'
+                elif growth_rate > 0.1:
+                    record.growth_trend_indicator = 'growing'
+                elif growth_rate < -0.1:
+                    record.growth_trend_indicator = 'declining'
+                else:
+                    record.growth_trend_indicator = 'stable'
+
+    @api.depends('document_ids.create_date')
+    def _compute_seasonal_patterns(self):
+        """Compute seasonal usage patterns"""
+        for record in self:
+            if len(record.document_ids) < 12:  # Need sufficient data
+                record.seasonal_pattern_score = 0.0
+                continue
+
+            # Group documents by month and calculate variance
+            monthly_counts = {}
+            for doc in record.document_ids:
+                if doc.create_date:
+                    month = doc.create_date.month
+                    monthly_counts[month] = monthly_counts.get(month, 0) + 1
+
+            if len(monthly_counts) > 1:
+                counts = list(monthly_counts.values())
+                avg_count = sum(counts) / len(counts)
+                variance = sum((x - avg_count) ** 2 for x in counts) / len(counts)
+
+                # Higher variance indicates more seasonal patterns
+                record.seasonal_pattern_score = min(variance / avg_count * 100, 100) if avg_count > 0 else 0.0
+            else:
+                record.seasonal_pattern_score = 0.0
 
     # ============================================================================
     # ENHANCED CRUD OPERATIONS
