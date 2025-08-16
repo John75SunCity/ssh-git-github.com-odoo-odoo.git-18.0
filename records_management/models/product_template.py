@@ -40,6 +40,16 @@ class ProductTemplate(models.Model):
         tracking=True,
     )
     active = fields.Boolean(string="Active", default=True)
+    # ============================================================================
+    # CURRENCY FIELD (AUTO-ADDED)
+    # ============================================================================
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+        required=True,
+        help="Currency for monetary fields"
+    )
 
     # ============================================================================
     # CONTAINER SPECIFICATIONS

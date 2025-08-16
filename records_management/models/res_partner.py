@@ -62,6 +62,16 @@ class ResPartner(models.Model):
         string="Containers",
         help="Containers associated with this partner.",
     )
+    # ============================================================================
+    # CURRENCY FIELD (AUTO-ADDED)
+    # ============================================================================
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+        required=True,
+        help="Currency for monetary fields"
+    )
 
     # ============================================================================
     # CUSTOMER PORTAL INTEGRATION

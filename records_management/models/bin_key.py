@@ -109,6 +109,16 @@ class BinKey(models.Model):
         default="draft",
         tracking=True,
     )
+    # ============================================================================
+    # CURRENCY FIELD (AUTO-ADDED)
+    # ============================================================================
+    currency_id = fields.Many2one(
+        "res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id,
+        required=True,
+        help="Currency for monetary fields"
+    )
 
     # ============================================================================
     # KEY SPECIFICATIONS
