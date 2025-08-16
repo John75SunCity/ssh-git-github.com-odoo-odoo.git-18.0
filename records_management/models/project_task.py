@@ -65,7 +65,6 @@ class ProjectTask(models.Model):
             ('scan.retrieval.work.order', 'Scan Retrieval'),
             ('container.destruction.work.order', 'Container Destruction'),
             ('container.access.work.order', 'Container Access'),
-            ('file.retrieval.work.order', 'Document Retrieval'),
         ],
         string='Related Work Order',
         tracking=True,

@@ -18,7 +18,7 @@ from odoo.exceptions import ValidationError
 class FileRetrievalMetric(models.Model):
     """
     File Retrieval Performance Metrics
-
+    
     Tracks and analyzes performance metrics for file retrieval operations
     including search times, accuracy rates, and team performance measurements
     for continuous improvement and NAID compliance reporting.
@@ -26,20 +26,6 @@ class FileRetrievalMetric(models.Model):
 
     _name = "file.retrieval.metric"
     _description = "File Retrieval Performance Metric"
-from odoo.exceptions import ValidationError
-
-
-class DocumentRetrievalMetric(models.Model):
-    """
-    Document Retrieval Performance Metrics
-
-    Tracks and analyzes performance metrics for document retrieval operations
-    including search times, accuracy rates, and team efficiency measurements
-    for continuous improvement and NAID compliance reporting.
-    """
-
-    _name = "file.retrieval.metric"
-    _description = "Document Retrieval Performance Metric"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "retrieval_date desc, metric_type"
     _rec_name = "display_name"
@@ -403,7 +389,7 @@ class DocumentRetrievalMetric(models.Model):
                 continue
 
             # For time-based metrics, lower is better
-            if record.metric_type in ['file_search_time', 'file_retrieval_time', 'file_scanning_time',
+            if record.metric_type in ['file_search_time', 'file_retrieval_time', 'file_scanning_time', 
                                     'container_access_time', 'container_retrieval_time', 'container_movement_time',
                                     'scan_processing_time', 'scan_quality_check_time', 'travel_time', 'processing_time']:
                 ratio = record.target_value / record.metric_value if record.metric_value != 0 else 0
@@ -438,10 +424,10 @@ class DocumentRetrievalMetric(models.Model):
             }
 
             multiplier = rating_multiplier.get(record.performance_rating, 1.0)
-
+            
             # Factor in error count
             error_penalty = record.error_count * 2  # 2 points per error
-
+            
             quality_score = (base_score * multiplier) - error_penalty
             record.quality_score = max(min(quality_score, 100.0), 0.0)
 
@@ -533,23 +519,23 @@ class DocumentRetrievalMetric(models.Model):
     def _generate_insights(self):
         """Generate performance insights"""
         self.ensure_one()
-
+        
         insights = []
-
+        
         # Performance analysis
         if self.performance_rating == 'excellent':
             insights.append(_('Exceptional performance - consider using as benchmark'))
         elif self.performance_rating == 'unacceptable':
             insights.append(_('Performance needs immediate attention'))
-
+        
         # Quality analysis
         if self.quality_score < 70:
             insights.append(_('Quality score below acceptable threshold'))
-
+        
         # Time efficiency analysis
         if self.metric_type.endswith('_time') and self.variance_percentage > 20:
             insights.append(_('Time variance significantly above target'))
-
+        
         if insights:
             current_suggestions = self.improvement_suggestions or ''
             new_suggestions = '\n'.join(insights)
@@ -565,7 +551,7 @@ class DocumentRetrievalMetric(models.Model):
             domain.append(('retrieval_date', '<=', date_to))
 
         metrics = self.search(domain)
-
+        
         # Calculate averages by metric type
         dashboard_data = {}
         for metric_type in ['file_search_time', 'file_retrieval_time', 'file_accuracy_rate', 'container_access_time']:
@@ -577,21 +563,21 @@ class DocumentRetrievalMetric(models.Model):
                     'best': min(type_metrics.mapped('metric_value')),
                     'worst': max(type_metrics.mapped('metric_value'))
                 }
-
+        
         return dashboard_data
 
     def get_trend_data(self, days=30):
         """Get trend data for this metric type"""
         self.ensure_one()
-
+        
         from_date = fields.Date.subtract(fields.Date.today(), days=days)
-
+        
         similar_metrics = self.search([
             ('metric_type', '=', self.metric_type),
             ('retrieval_date', '>=', from_date),
             ('state', '!=', 'draft')
         ], order='retrieval_date')
-
+        
         trend_data = []
         for metric in similar_metrics:
             trend_data.append({
@@ -599,7 +585,7 @@ class DocumentRetrievalMetric(models.Model):
                 'value': metric.metric_value,
                 'quality_score': metric.quality_score
             })
-
+        
         return trend_data
 
     # ============================================================================
@@ -618,12 +604,12 @@ class DocumentRetrievalMetric(models.Model):
     def write(self, vals):
         """Override write for modification tracking"""
         result = super().write(vals)
-
+        
         if 'state' in vals:
             for record in self:
                 state_label = dict(record._fields['state'].selection)[record.state]
                 record.message_post(body=_('State changed to %s', state_label))
-
+        
         return result
 
     def name_get(self):
@@ -644,7 +630,7 @@ class DocumentRetrievalMetric(models.Model):
     def get_metric_summary(self, metric_type=None, team_id=None, date_from=None, date_to=None):
         """Get metric summary for reporting"""
         domain = [('state', '!=', 'draft')]
-
+        
         if metric_type:
             domain.append(('metric_type', '=', metric_type))
         if team_id:
@@ -653,21 +639,21 @@ class DocumentRetrievalMetric(models.Model):
             domain.append(('retrieval_date', '>=', date_from))
         if date_to:
             domain.append(('retrieval_date', '<=', date_to))
-
+        
         metrics = self.search(domain)
-
+        
         summary = {
             'total_metrics': len(metrics),
             'average_quality_score': sum(metrics.mapped('quality_score')) / len(metrics) if metrics else 0,
             'performance_distribution': {},
             'metric_type_breakdown': {}
         }
-
+        
         # Performance rating distribution
         for rating in ['excellent', 'good', 'acceptable', 'poor', 'unacceptable']:
             rating_count = len(metrics.filtered(lambda m: m.performance_rating == rating))
             summary['performance_distribution'][rating] = rating_count
-
+        
         # Metric type breakdown
         for metric in metrics:
             if metric.metric_type not in summary['metric_type_breakdown']:
@@ -676,10 +662,10 @@ class DocumentRetrievalMetric(models.Model):
                     'average_value': 0,
                     'total_value': 0
                 }
-
+            
             breakdown = summary['metric_type_breakdown'][metric.metric_type]
             breakdown['count'] += 1
             breakdown['total_value'] += metric.metric_value
             breakdown['average_value'] = breakdown['total_value'] / breakdown['count']
-
+        
         return summary

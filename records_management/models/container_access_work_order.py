@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Containeclass ContainerAccessWorkOrder(models.Model):
-    _name = "container.access.work.order"
-    _description = "Container Access Work Order"
-    _inherit = ['mail.thread', 'mail.activity.mixin', 'work.order.integration.mixin']
-    _order = "priority desc, scheduled_date asc, name"
-    _rec_name = "display_name"ss Work Order Module
+Container Access Work Order Module
 
 This module manages work orders for temporary on-site access to records containers.
 Supports various access scenarios including audits, inspections, relabeling, and
@@ -207,7 +202,7 @@ class ContainerAccessWorkOrder(models.Model):
         store=True,
         help="Calculated end time based on start time and duration"
     )
-    
+
     # Actual timing
     actual_start_time = fields.Datetime(
         string="Actual Start Time",
@@ -252,7 +247,7 @@ class ContainerAccessWorkOrder(models.Model):
         string="Required Keys",
         help="Physical keys needed for container access"
     )
-    
+
     # Visitor management
     visitor_ids = fields.One2many(
         "container.access.visitor",
@@ -287,7 +282,7 @@ class ContainerAccessWorkOrder(models.Model):
         store=True,
         help="Number of items that were modified or remarked"
     )
-    
+
     # Documentation requirements
     photo_documentation = fields.Boolean(
         string="Photo Documentation Required",
@@ -372,7 +367,7 @@ class ContainerAccessWorkOrder(models.Model):
         for record in self:
             if record.partner_id and record.container_count:
                 access_type_display = dict(record._fields['access_type'].selection).get(record.access_type, record.access_type)
-                record.display_name = _("%s - %s (%s containers - %s)", 
+                record.display_name = _("%s - %s (%s containers - %s)",
                     record.name, record.partner_id.name, record.container_count, access_type_display)
             elif record.partner_id:
                 record.display_name = _("%s - %s", record.name, record.partner_id.name)
@@ -425,7 +420,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft requests can be submitted"))
-        
+
         self.write({'state': 'submitted'})
         self.message_post(
             body=_("Container access request submitted for approval"),
@@ -438,7 +433,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'submitted':
             raise UserError(_("Only submitted requests can be approved"))
-        
+
         self.write({'state': 'approved'})
         self.message_post(
             body=_("Container access request approved"),
@@ -451,7 +446,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'approved':
             raise UserError(_("Only approved requests can be scheduled"))
-        
+
         self.write({'state': 'scheduled'})
         self.message_post(
             body=_("Access session scheduled for %s", self.scheduled_access_date.strftime('%Y-%m-%d %H:%M')),
@@ -464,14 +459,14 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'scheduled':
             raise UserError(_("Only scheduled sessions can be started"))
-        
+
         # Verify security requirements
         if self.requires_escort and not self.escort_employee_id:
             raise UserError(_("Security escort is required but not assigned"))
-        
+
         if self.requires_key_access and not self.bin_key_ids:
             raise UserError(_("Key access is required but no keys are assigned"))
-        
+
         self.write({
             'state': 'in_progress',
             'actual_start_time': fields.Datetime.now()
@@ -487,7 +482,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'in_progress':
             raise UserError(_("Only active sessions can be suspended"))
-        
+
         self.write({'state': 'suspended'})
         self.message_post(
             body=_("Access session suspended"),
@@ -500,7 +495,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'suspended':
             raise UserError(_("Only suspended sessions can be resumed"))
-        
+
         self.write({'state': 'in_progress'})
         self.message_post(
             body=_("Access session resumed"),
@@ -513,7 +508,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         if self.state not in ['in_progress', 'suspended']:
             raise UserError(_("Only active or suspended sessions can be completed"))
-        
+
         self.write({
             'state': 'completed',
             'actual_end_time': fields.Datetime.now()
@@ -529,10 +524,10 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'completed':
             raise UserError(_("Only completed sessions can be documented"))
-        
+
         if not self.session_summary:
             raise UserError(_("Session summary is required before documentation"))
-        
+
         self.write({'state': 'documented'})
         self.message_post(
             body=_("Access session documentation completed"),
@@ -545,7 +540,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'documented':
             raise UserError(_("Only documented sessions can be closed"))
-        
+
         self.write({'state': 'closed'})
         self.message_post(
             body=_("Container access work order closed successfully"),
@@ -586,6 +581,6 @@ class ContainerAccessWorkOrder(models.Model):
             if record.scheduled_access_date and record.scheduled_duration_hours:
                 if record.scheduled_duration_hours <= 0:
                     raise ValidationError(_("Scheduled duration must be positive"))
-                
+
                 if record.scheduled_duration_hours > 24:
                     raise ValidationError(_("Access sessions cannot exceed 24 hours"))
