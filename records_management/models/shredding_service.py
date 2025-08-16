@@ -89,20 +89,23 @@ class ShreddingService(models.Model):
         tracking=True,
         help="Primary service technician"
     )
-    
+
     # ============================================================================
     # TEAM & RESOURCE ASSIGNMENT
     # ============================================================================
-    
+
     assigned_technician_id = fields.Many2one(
         'hr.employee',
         string='Assigned Technician',
         tracking=True,
         help="Primary technician assigned to this shredding service",
     )
-    
+
     assigned_team_ids = fields.Many2many(
         'hr.employee',
+        'shredding_service_team_rel',  # Unique relation table
+        'service_id',
+        'employee_id',
         string='Assigned Team',
         help="Team members assigned to this shredding service",
     )
@@ -177,11 +180,11 @@ class ShreddingService(models.Model):
         required=True,
         help="Type of material to be shredded"
     )
-    
+
     # ============================================================================
     # DESTRUCTION & COMPLIANCE CONFIGURATION
     # ============================================================================
-    
+
     destruction_method = fields.Selection([
         ('cross_cut', 'Cross Cut Shredding'),
         ('strip_cut', 'Strip Cut Shredding'),
@@ -196,24 +199,24 @@ class ShreddingService(models.Model):
         tracking=True,
         help="Method used for material destruction",
     )
-    
+
     certificate_required = fields.Boolean(
         string='Certificate Required',
         default=True,
         tracking=True,
         help="Whether a destruction certificate is required for this service",
     )
-    
+
     naid_compliance_required = fields.Boolean(
         string='NAID Compliance Required',
         default=True,
         help="Whether NAID AAA compliance is required",
     )
-    
+
     # ============================================================================
     # CONTAINER & VOLUME TRACKING
     # ============================================================================
-    
+
     container_type = fields.Selection(
         related="container_type_id.standard_type",
         readonly=True,
@@ -221,19 +224,19 @@ class ShreddingService(models.Model):
         string='Container Type',
         help="Standard container type classification",
     )
-    
+
     destruction_item_count = fields.Integer(
         string='Items Count',
         compute='_compute_destruction_items',
         store=True,
         help="Number of items to be destroyed",
     )
-    
+
     estimated_volume = fields.Float(
         string='Estimated Volume (cubic feet)',
         help="Estimated volume of materials to be destroyed",
     )
-    
+
     actual_volume = fields.Float(
         string='Actual Volume (cubic feet)',
         help="Actual volume of materials destroyed",
@@ -279,6 +282,9 @@ class ShreddingService(models.Model):
     )
     technician_ids = fields.Many2many(
         "hr.employee",
+        "shredding_service_technician_rel",  # Different relation table
+        "service_id",
+        "employee_id",
         string="Technicians",
         help="Individual technicians assigned"
     )
@@ -495,17 +501,17 @@ class ShreddingService(models.Model):
         string="Activities",
         domain=lambda self: [("res_model", "=", self._name)]
     )
-    
+
     message_follower_ids = fields.One2many(
-        "mail.followers", 
+        "mail.followers",
         "res_id",
         string="Followers",
         domain=lambda self: [("res_model", "=", self._name)]
     )
-    
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         domain=lambda self: [("model", "=", self._name)]
     )
@@ -828,7 +834,13 @@ class ShreddingServicePhoto(models.Model):
         help="When the photo was taken"
     )
     destruction_item_ids = fields.One2many('destruction.item', 'shredding_service_id', string='Items for Destruction')
-    witness_ids = fields.Many2many('res.users', string='Witnesses')
+    witness_ids = fields.Many2many(
+        'res.users',
+        'shredding_service_witness_rel',
+        'service_id',
+        'user_id',
+        string='Witnesses'
+    )
     hourly_rate = fields.Float(string='Hourly Rate', default=75.0)
     photo_type = fields.Selection([
         ("before", "Before Service"),

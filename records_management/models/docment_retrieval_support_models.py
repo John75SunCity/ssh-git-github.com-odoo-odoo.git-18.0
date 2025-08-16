@@ -167,7 +167,13 @@ class DocumentRetrievalTeam(models.Model):
     # TEAM STRUCTURE FIELDS
     # ============================================================================
     team_lead_id = fields.Many2one("hr.employee", string="Team Lead")
-    member_ids = fields.Many2many("hr.employee", string="Team Members")
+    member_ids = fields.Many2many(
+        "hr.employee",
+        "document_retrieval_team_member_rel",
+        "team_id",
+        "employee_id",
+        string="Team Members"
+    )
 
     # ============================================================================
     # SPECIALIZATION FIELDS
