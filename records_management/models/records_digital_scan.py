@@ -185,6 +185,8 @@ class RecordsDigitalScan(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    scanned_by = fields.Many2one('hr.employee', string='Scanned By', help='Employee who performed the scan')
+
     @api.depends("file_size", "resolution")
     def _compute_scan_info(self):
         """Compute scan information display"""

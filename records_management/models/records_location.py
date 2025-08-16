@@ -372,6 +372,12 @@ class RecordsLocation(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    # ============================================================================
+    # SPECIALIZED CONFIGURATION FIELDS
+    # ============================================================================
+    access_instructions = fields.Text(string='Access Instructions', help='Special instructions for accessing this location')
+    storage_start_date = fields.Date(string='Storage Start Date', help='When storage began at this location')
+
     @api.depends("street", "street2", "city", "state_id", "zip", "country_id")
     def _compute_full_address(self):
         """Compute full formatted address"""

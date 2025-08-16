@@ -34,6 +34,12 @@ class RecordsBillingConfigAudit(models.Model):
         help="Display name for the audit entry"
     )
 
+    code = fields.Char(
+        string='Configuration Code', 
+        help='Unique code for this configuration',
+        index=True
+    )
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
@@ -67,6 +73,24 @@ class RecordsBillingConfigAudit(models.Model):
         help="User who made the change"
     )
 
+    model_id = fields.Many2one(
+        'ir.model', 
+        string='Model', 
+        help='Target model for configuration'
+    )
+
+    binding_model_id = fields.Many2one(
+        'ir.model', 
+        string='Target Model',
+        help='Target model for binding operations'
+    )
+
+    groups_id = fields.Many2many(
+        'res.groups', 
+        string='User Groups', 
+        help='Groups that can access this configuration'
+    )
+
     # ============================================================================
     # AUDIT DETAILS
     # ============================================================================
@@ -95,6 +119,11 @@ class RecordsBillingConfigAudit(models.Model):
         help="Name of the field that was changed"
     )
 
+    field_changed = fields.Char(
+        string='Field Changed Alt', 
+        help='Alternative field name reference'
+    )
+
     old_value = fields.Text(
         string="Old Value",
         help="Previous value before change"
@@ -108,6 +137,11 @@ class RecordsBillingConfigAudit(models.Model):
     change_reason = fields.Text(
         string="Change Reason",
         help="Reason for the change"
+    )
+
+    binding_view_types = fields.Char(
+        string='View Types', 
+        help='Comma-separated list of view types'
     )
 
     # ============================================================================
@@ -137,6 +171,11 @@ class RecordsBillingConfigAudit(models.Model):
         help="Whether this change requires managerial approval"
     )
 
+    approval_required = fields.Boolean(
+        string='Approval Required Alt', 
+        help='Alternative approval requirement field'
+    )
+
     approved = fields.Boolean(
         string="Approved",
         default=False,
@@ -150,10 +189,22 @@ class RecordsBillingConfigAudit(models.Model):
         help="Manager who approved the change"
     )
 
+    approved_by = fields.Many2one(
+        'res.users', 
+        string='Approved By Alt', 
+        help='Alternative approved by reference'
+    )
+
     approval_date = fields.Datetime(
         string="Approval Date",
         help="Date when change was approved"
     )
+
+    approval_status = fields.Selection([
+        ('pending', 'Pending'), 
+        ('approved', 'Approved'), 
+        ('rejected', 'Rejected')
+    ], string='Approval Status', default='pending')
 
     # ============================================================================
     # IMPACT ASSESSMENT
@@ -164,6 +215,11 @@ class RecordsBillingConfigAudit(models.Model):
         ('high', 'High Impact'),
         ('critical', 'Critical Impact')
     ], string='Impact Level', default='low', required=True)
+
+    impact_assessment = fields.Text(
+        string='Impact Assessment', 
+        help='Assessment of change impact'
+    )
 
     affected_customers = fields.Integer(
         string="Affected Customers",
@@ -216,7 +272,7 @@ class RecordsBillingConfigAudit(models.Model):
                 parts.append(action_dict.get(record.action_type, record.action_type))
             
             if record.field_name:
-                parts.append(f"({record.field_name})")
+                parts.append("(%s)" % record.field_name)
             
             if record.audit_date:
                 parts.append(record.audit_date.strftime('%Y-%m-%d %H:%M'))
@@ -228,7 +284,7 @@ class RecordsBillingConfigAudit(models.Model):
         """Compute display name"""
         for record in self:
             if record.user_id:
-                record.display_name = f"{record.name} by {record.user_id.name}"
+                record.display_name = _("%(name)s by %(user)s", name=record.name, user=record.user_id.name)
             else:
                 record.display_name = record.name or "New Audit Entry"
 
@@ -247,20 +303,24 @@ class RecordsBillingConfigAudit(models.Model):
         self.write({
             'approved': True,
             'approved_by_id': self.env.user.id,
-            'approval_date': fields.Datetime.now()
+            'approval_date': fields.Datetime.now(),
+            'approval_status': 'approved'
         })
         self.message_post(body=_('Change approved'))
 
     def action_flag_for_review(self):
         """Flag entry for management review"""
         self.ensure_one()
-        self.write({'requires_approval': True})
+        self.write({
+            'requires_approval': True,
+            'approval_status': 'pending'
+        })
         
         # Create activity for manager
         self.activity_schedule(
             'mail.mail_activity_data_todo',
             summary=_('Review billing configuration change'),
-            note=_('Please review this billing configuration change: %s') % self.name,
+            note=_('Please review this billing configuration change: %s', self.name),
             user_id=self.config_id.create_uid.id
         )
         
@@ -284,12 +344,21 @@ class RecordsBillingConfigAudit(models.Model):
         
         # Determine impact level based on field changed
         if field_name in ['base_rate', 'storage_rate', 'retrieval_rate']:
-            audit_vals['impact_level'] = 'high'
-            audit_vals['requires_approval'] = True
+            audit_vals.update({
+                'impact_level': 'high',
+                'requires_approval': True,
+                'approval_status': 'pending'
+            })
         elif field_name in ['active', 'customer_ids']:
-            audit_vals['impact_level'] = 'medium'
+            audit_vals.update({
+                'impact_level': 'medium',
+                'approval_status': 'pending'
+            })
         else:
-            audit_vals['impact_level'] = 'low'
+            audit_vals.update({
+                'impact_level': 'low',
+                'approval_status': 'approved'
+            })
         
         return self.create(audit_vals)
 

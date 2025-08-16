@@ -271,6 +271,11 @@ class PaperBaleRecycling(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    # ============================================================================
+    # SPECIALIZED CONFIGURATION FIELDS
+    # ============================================================================
+    status = fields.Selection([('weighed', 'Weighed'), ('inspected', 'Inspected'), ('loaded', 'Loaded'), ('shipped', 'Shipped'), ('sold', 'Sold')], string='Status')
+
     @api.depends("bale_weight", "market_price_per_ton")
     def _compute_total_revenue(self):
         for record in self:

@@ -308,6 +308,35 @@ class FsmTask(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    partner_id = fields.Many2one('res.partner', string='Customer', help='Customer for this task')
+    location_id = fields.Many2one('records.location', string='Task Location', help='Location where task is performed')
+    container_count = fields.Integer(string='Container Count', help='Number of containers involved')
+    container_type = fields.Selection([('type_01', 'Standard Box'), ('type_02', 'Legal Box'), ('type_03', 'Map Box'), ('type_04', 'Odd Size'), ('type_06', 'Pathology')], string='Container Type')
+    access_instructions = fields.Text(string='Access Instructions', help='Special access instructions for location')
+    actual_start_time = fields.Datetime(string='Actual Start Time', help='When work actually started')
+    actual_end_time = fields.Datetime(string='Actual End Time', help='When work actually ended')
+    assigned_date = fields.Date(string='Assigned Date', help='Date task was assigned')
+    assigned_technician = fields.Many2one('hr.employee', string='Assigned Technician', help='Technician assigned to task')
+    completion_date = fields.Datetime(string='Completion Date', help='When task was completed')
+    estimated_duration = fields.Float(string='Estimated Duration (Hours)', digits=(6, 2), help='Estimated time to complete')
+    event_description = fields.Text(string='Event Description', help='Description of what happened')
+    event_timestamp = fields.Datetime(string='Event Timestamp', help='When event occurred')
+    event_type = fields.Selection([('pickup', 'Pickup'), ('delivery', 'Delivery'), ('shredding', 'Shredding'), ('retrieval', 'Retrieval')], string='Event Type')
+    follow_up_required = fields.Boolean(string='Follow-up Required', help='Whether follow-up is needed')
+    location_address = fields.Text(string='Location Address', help='Full address of location')
+    naid_audit_log_ids = fields.One2many('naid.audit.log', 'fsm_task_id', string='NAID Audit Logs')
+    photos = fields.Many2many('ir.attachment', string='Photos', help='Photos taken during task')
+    required_skills = fields.Text(string='Required Skills', help='Skills required for this task')
+    required_tools = fields.Text(string='Required Tools', help='Tools required for this task')
+    service_location = fields.Char(string='Service Location', help='Location description')
+    special_requirements = fields.Text(string='Special Requirements', help='Any special requirements')
+    task_status = fields.Selection([('new', 'New'), ('assigned', 'Assigned'), ('in_progress', 'In Progress'), ('completed', 'Completed'), ('cancelled', 'Cancelled')], string='Task Status')
+    volume_cf = fields.Float(string='Volume (CF)', digits=(12, 3), help='Volume in cubic feet')
+    weight_lbs = fields.Float(string='Weight (lbs)', digits=(12, 2), help='Weight in pounds')
+    work_order_count = fields.Integer(string='Work Orders Count', compute='_compute_work_order_count')
+    work_order_ids = fields.One2many('file.retrieval.work.order', 'fsm_task_id', string='Work Orders')
+    work_order_type = fields.Selection([('retrieval', 'Document Retrieval'), ('destruction', 'Destruction'), ('container_access', 'Container Access')], string='Work Order Type')
+
     @api.depends("start_date", "end_date")
     def _compute_duration(self):
         """Calculate task duration in hours"""

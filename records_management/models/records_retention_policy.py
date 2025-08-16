@@ -342,6 +342,23 @@ class RecordsRetentionPolicy(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    # ============================================================================
+    # SPECIALIZED CONFIGURATION FIELDS
+    # ============================================================================
+    changed_by = fields.Many2one('res.users', string='Changed By', help='User who made changes')
+    destruction_efficiency_rate = fields.Float(string='Destruction Efficiency (%)', digits=(5, 2), help='Rate of successful destructions')
+    exception_count = fields.Integer(string='Exceptions Count', compute='_compute_exception_count')
+    is_current_version = fields.Boolean(string='Current Version', help='Whether this is the active version')
+    next_mandatory_review = fields.Date(string='Next Mandatory Review', help='Next required review date')
+    policy_effectiveness_score = fields.Float(string='Effectiveness Score', digits=(5, 2), compute='_compute_policy_effectiveness_score')
+    policy_risk_score = fields.Float(string='Risk Score', digits=(5, 2), help='Calculated risk score')
+    policy_status = fields.Selection([('active', 'Active'), ('inactive', 'Inactive'), ('superseded', 'Superseded'), ('under_review', 'Under Review')], string='Policy Status')
+    review_cycle_months = fields.Integer(string='Review Cycle (Months)', help='How often policy should be reviewed')
+    review_date = fields.Date(string='Last Review Date', help='When policy was last reviewed')
+    version_date = fields.Date(string='Version Date', help='Date this version was created')
+    version_history_ids = fields.One2many('records.policy.version', 'policy_id', string='Version History')
+    version_number = fields.Integer(string='Version Number', help='Sequential version number')
+
     @api.depends("last_review_date", "review_frequency")
     def _compute_next_review_date(self):
         """Calculate next review date based on frequency"""
