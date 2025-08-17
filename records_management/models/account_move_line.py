@@ -725,7 +725,6 @@ class AccountMoveLine(models.Model):
     def generate_billing_report_data(self):
         """Generate data for billing reports."""
         self.ensure_one()
-
         return {
             'invoice_line_id': self.id,
             'invoice_number': self.move_id.name if self.move_id else '',

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""""
+"""
 Records Management Models Import Order
 
 Import order follows Odoo 18.0 best practices:
@@ -330,10 +330,11 @@ try:
     from . import fsm_notification  # Individual notification records
     _logger.info("Additional FSM modules loaded successfully")
 except (ImportError, AttributeError) as e:
-    _logger.warning()
+    _logger.warning(
         "FSM extensions not available, skipping: %s",
-        str(e),
-    
+        str(e)
+    )
+
 
 # =============================================================================
 # CONDITIONAL IMPORTS FOR EXTENSION MODELS
