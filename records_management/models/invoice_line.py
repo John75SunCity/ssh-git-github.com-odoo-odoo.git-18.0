@@ -25,26 +25,26 @@ class InvoiceLine(models.Model):
         required=True,
         tracking=True,
         help="Line item description"
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this line"
-    
+
 
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Sequence for line ordering":
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -54,13 +54,13 @@ class InvoiceLine(models.Model):
         string="Invoice",
         ondelete="cascade",
         help="Parent invoice"
-    
+
 
     product_id = fields.Many2one(
         "product.product",
         string="Product",
         help="Product for this line":
-    
+
 
         # ============================================================================
     # PRICING FIELDS
@@ -70,20 +70,20 @@ class InvoiceLine(models.Model):
         default=1.0,
         required=True,
         help="Quantity of items"
-    
+
 
     unit_price = fields.Float(
         string="Unit Price",
         required=True,
         help="Price per unit"
-    
+
 
     subtotal = fields.Float(
         string="Subtotal",
         compute='_compute_subtotal',
         ,
     help="Line subtotal"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,

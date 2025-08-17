@@ -65,27 +65,27 @@ class ContainerDestructionWorkOrder(models.Model):
         ,
     default=lambda self: _("New"),
         help="Unique container destruction work order number"
-    
+
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
         help="Formatted display name for the work order":
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
         index=True
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
         help="Primary user responsible for this work order":
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -105,7 +105,7 @@ class ContainerDestructionWorkOrder(models.Model):
         ('certificate_generated', 'Certificate Generated'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
-    
+
         help="Current status of the container destruction work order"
 
     priority = fields.Selection([))
@@ -114,7 +114,7 @@ class ContainerDestructionWorkOrder(models.Model):
         ('2', 'High'),
         ('3', 'Urgent'),
         ('4', 'Legal Hold Release'),
-    
+
         help="Work order priority level for processing"
     # ============================================================================
         # CUSTOMER AND AUTHORIZATION
@@ -127,37 +127,37 @@ class ContainerDestructionWorkOrder(models.Model):
         ,
     domain="[('is_company', '=', True))",
         help="Customer requesting container destruction"
-    
+
     portal_request_id = fields.Many2one(
         "portal.request",
         string="Portal Request",
         help="Originating portal request if applicable":
-    
+
     destruction_reason = fields.Text(
         string="Destruction Reason",
         required=True,
         help="Business reason for requesting destruction":
-    
+
 
         # Customer authorization
     customer_authorized = fields.Boolean(
         string="Customer Authorized",
         tracking=True,
         help="Customer has provided written authorization for destruction":
-    
+
     customer_authorization_date = fields.Datetime(
         string="Authorization Date",
         tracking=True,
         help="Date customer provided destruction authorization"
-    
+
     authorized_by = fields.Char(
         string="Authorized By",
         help="Name and title of person authorizing destruction"
-    
+
     authorization_document = fields.Binary(
         string="Authorization Document",
         help="Scanned copy of signed authorization"
-    
+
 
         # ============================================================================
     # CONTAINERS AND INVENTORY
@@ -170,41 +170,41 @@ class ContainerDestructionWorkOrder(models.Model):
         string="Containers for Destruction",:
         required=True,
         help="Containers scheduled for destruction":
-    
+
     container_count = fields.Integer(
         string="Container Count",
         compute="_compute_container_metrics",
         store=True,
         help="Number of containers to be destroyed"
-    
+
     total_cubic_feet = fields.Float(
         string="Total Cubic Feet",
         compute="_compute_container_metrics",
         store=True,
         help="Total volume of containers for destruction":
-    
+
     estimated_weight_lbs = fields.Float(
         ,
     string="Estimated Weight (lbs)",
         compute="_compute_container_metrics",
         store=True,
         help="Estimated total weight of containers and contents"
-    
+
 
         # Pre-destruction inventory
     inventory_completed = fields.Boolean(
         string="Inventory Completed",
         help="Pre-destruction inventory has been completed"
-    
+
     inventory_date = fields.Datetime(
         string="Inventory Date",
         help="Date pre-destruction inventory was completed"
-    
+
     inventory_user_id = fields.Many2one(
         "res.users",
         string="Inventory By",
         help="User who completed the inventory"
-    
+
 
         # ============================================================================
     # SCHEDULING AND TIMING
@@ -214,23 +214,23 @@ class ContainerDestructionWorkOrder(models.Model):
         required=True,
         tracking=True,
         help="Planned date for destruction":
-    
+
     pickup_date = fields.Datetime(
         string="Pickup Date",
         help="Date containers were picked up from storage"
-    
+
     actual_destruction_date = fields.Datetime(
         string="Actual Destruction Date",
         tracking=True,
         help="Actual date destruction was completed"
-    
+
     estimated_duration_hours = fields.Float(
         ,
     string="Estimated Duration (Hours)",
         compute="_compute_estimated_duration",
         store=True,
         help="Estimated time to complete destruction"
-    
+
 
         # ============================================================================
     # DESTRUCTION FACILITY AND EQUIPMENT
@@ -240,19 +240,19 @@ class ContainerDestructionWorkOrder(models.Model):
         string="Destruction Facility",
         required=True,
         help="Facility where destruction will take place"
-    
+
     shredding_equipment_id = fields.Many2one(
         "maintenance.equipment",
         string="Shredding Equipment",
         help="Specific equipment used for destruction",:
-    
+
     ,
     destruction_method = fields.Selection([))
         ('shredding', 'Paper Shredding'),
         ('pulping', 'Pulping'),
         ('incineration', 'Incineration'),
         ('disintegration', 'Disintegration'),
-    
+
         help="Method used for secure destruction"
     # ============================================================================
         # NAID COMPLIANCE AND WITNESSES
@@ -261,25 +261,25 @@ class ContainerDestructionWorkOrder(models.Model):
         string="NAID Compliant Destruction",
         default=True,
         help="Destruction must meet NAID AAA standards"
-    
+
     witness_required = fields.Boolean(
         string="Customer Witness Required",
         help="Customer representative must witness destruction"
-    
+
     customer_witness_name = fields.Char(
         string="Customer Witness Name",
         help="Name of customer representative witnessing destruction"
-    
+
     internal_witness_id = fields.Many2one(
         "hr.employee",
         string="Internal Witness",
         help="Company employee witnessing destruction"
-    
+
     independent_witness_name = fields.Char(
         string="Independent Witness",
         ,
     help="Name of independent third-party witness (if required)":
-    
+
 
         # ============================================================================
     # CHAIN OF CUSTODY
@@ -289,13 +289,13 @@ class ContainerDestructionWorkOrder(models.Model):
         "work_order_id",
         string="Custody Transfers",
         help="Chain of custody transfer events"
-    
+
     custody_complete = fields.Boolean(
         string="Chain of Custody Complete",
         compute="_compute_custody_complete",
         store=True,
         help="All required custody transfers documented"
-    
+
 
         # ============================================================================
     # TRANSPORTATION
@@ -304,20 +304,20 @@ class ContainerDestructionWorkOrder(models.Model):
         "fleet.vehicle",
         string="Transport Vehicle",
         help="Vehicle used to transport containers"
-    
+
     driver_id = fields.Many2one(
         "hr.employee",
         string="Driver",
         help="Employee responsible for transportation":
-    
+
     transport_departure_time = fields.Datetime(
         string="Departure Time",
         help="Time containers departed from storage location"
-    
+
     transport_arrival_time = fields.Datetime(
         string="Arrival Time",
         help="Time containers arrived at destruction facility"
-    
+
 
         # ============================================================================
     # DESTRUCTION RESULTS AND METRICS
@@ -326,22 +326,22 @@ class ContainerDestructionWorkOrder(models.Model):
         ,
     string="Actual Weight Destroyed (lbs)",
         help="Actual weight of materials destroyed"
-    
+
     destruction_start_time = fields.Datetime(
         string="Destruction Start Time",
         help="Time destruction process began"
-    
+
     destruction_end_time = fields.Datetime(
         string="Destruction End Time",
         help="Time destruction process completed"
-    
+
     destruction_duration_minutes = fields.Integer(
         ,
     string="Destruction Duration (Minutes)",
         compute="_compute_destruction_duration",
         store=True,
         help="Total time spent on destruction process"
-    
+
 
         # ============================================================================
     # CERTIFICATE OF DESTRUCTION
@@ -349,19 +349,19 @@ class ContainerDestructionWorkOrder(models.Model):
     certificate_number = fields.Char(
         string="Certificate Number",
         help="Unique certificate of destruction number"
-    
+
     certificate_generated = fields.Boolean(
         string="Certificate Generated",
         help="Certificate of destruction has been generated"
-    
+
     certificate_date = fields.Date(
         string="Certificate Date",
         help="Date certificate was generated"
-    
+
     certificate_file = fields.Binary(
         string="Certificate File",
         help="PDF certificate of destruction"
-    
+
     ,
     certificate_filename = fields.Char(string="Certificate Filename")
 
@@ -371,15 +371,15 @@ class ContainerDestructionWorkOrder(models.Model):
     destruction_verified = fields.Boolean(
         string="Destruction Verified",
         help="Destruction has been independently verified"
-    
+
     verification_date = fields.Datetime(
         string="Verification Date",
         help="Date destruction verification was completed"
-    
+
     verification_notes = fields.Text(
         string="Verification Notes",
         help="Notes from destruction verification process"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -411,7 +411,7 @@ class ContainerDestructionWorkOrder(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.partner_id and record.container_count:
-                record.display_name = _("%s - %s (%s containers)", 
+                record.display_name = _("%s - %s (%s containers)",
                     record.name, record.partner_id.name, record.container_count
             elif record.partner_id:
                 record.display_name = _("%s - %s", record.name, record.partner_id.name)
@@ -435,7 +435,7 @@ class ContainerDestructionWorkOrder(models.Model):
                     'pulping': 20,        # 20 minutes per container
                     'incineration': 30,   # 30 minutes per container
                     'disintegration': 25, # 25 minutes per container
-                
+
 
                 total_minutes = record.container_count * base_minutes
                 # Add setup and documentation time
@@ -475,7 +475,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.message_post()
             body=_("Container destruction work order confirmed"),
             message_type='notification'
-        
+
         return True
 
     def action_authorize(self):
@@ -488,11 +488,11 @@ class ContainerDestructionWorkOrder(models.Model):
             'state': 'authorized',
             'customer_authorized': True,
             'customer_authorization_date': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Customer authorization received for destruction"),:
             message_type='notification'
-        
+
         return True
 
     def action_schedule(self):
@@ -505,7 +505,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.message_post()
             body=_("Destruction scheduled for %s", self.scheduled_destruction_date.strftime('%Y-%m-%d %H:%M')),
             message_type='notification'
-        
+
         return True
 
     def action_pickup_complete(self):
@@ -517,11 +517,11 @@ class ContainerDestructionWorkOrder(models.Model):
         self.write({)}
             'state': 'picked_up',
             'pickup_date': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Containers picked up for destruction"),:
             message_type='notification'
-        
+
         return True
 
     def action_arrive_facility(self):
@@ -533,11 +533,11 @@ class ContainerDestructionWorkOrder(models.Model):
         self.write({)}
             'state': 'in_facility',
             'transport_arrival_time': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Containers arrived at destruction facility"),
             message_type='notification'
-        
+
         return True
 
     def action_start_destruction(self):
@@ -552,11 +552,11 @@ class ContainerDestructionWorkOrder(models.Model):
         self.write({)}
             'state': 'destroying',
             'destruction_start_time': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Destruction process started"),
             message_type='notification'
-        
+
         return True
 
     def action_complete_destruction(self):
@@ -569,11 +569,11 @@ class ContainerDestructionWorkOrder(models.Model):
             'state': 'destroyed',
             'destruction_end_time': fields.Datetime.now(),
             'actual_destruction_date': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Destruction process completed"),
             message_type='notification'
-        
+
         return True
 
     def action_generate_certificate(self):
@@ -591,7 +591,7 @@ class ContainerDestructionWorkOrder(models.Model):
             'state': 'certificate_generated',
             'certificate_generated': True,
             'certificate_date': fields.Date.today()
-        
+
 
         # Generate PDF certificate (implementation would go here)
         self._generate_certificate_pdf()
@@ -599,7 +599,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.message_post()
             body=_("Certificate of destruction generated: %s", self.certificate_number),
             message_type='notification'
-        
+
         return True
 
     def action_complete(self):
@@ -612,7 +612,7 @@ class ContainerDestructionWorkOrder(models.Model):
         self.message_post()
             body=_("Container destruction work order completed successfully"),
             message_type='notification'
-        
+
         return True
 
     # ============================================================================
@@ -633,7 +633,7 @@ class ContainerDestructionWorkOrder(models.Model):
             'event_date': fields.Datetime.now(),
             'user_id': self.env.user.id,
             'notes': notes or '',
-        
+
 
     def generate_destruction_report(self):
         """Generate destruction completion report"""
@@ -644,5 +644,5 @@ class ContainerDestructionWorkOrder(models.Model):
             'report_type': 'qweb-pdf',
             'res_id': self.id,
             'target': 'new',
-        
+
 ))))))))))))))))))))))))))))))))))))))))

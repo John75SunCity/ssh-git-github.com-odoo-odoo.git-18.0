@@ -27,26 +27,26 @@ class FSMRoute(models.Model):
         index=True,
         help="Name or code for this route":
             pass
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this route"
-    
+
 
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Sequence for route ordering":
-    
+
 
         # ============================================================================
     # ROUTE DETAILS
@@ -57,31 +57,31 @@ class FSMRoute(models.Model):
         default=fields.Date.today,
         tracking=True,
         help="Date for this route execution":
-    
+
 
     driver_id = fields.Many2one(
         "hr.employee",
         string="Driver",
         tracking=True,
         help="Driver assigned to this route"
-    
+
 
     vehicle_id = fields.Many2one(
         "fleet.vehicle",
         string="Vehicle",
         tracking=True,
         help="Vehicle assigned to this route"
-    
+
 
     start_location = fields.Char(
         string="Start Location",
         help="Starting location for the route":
-    
+
 
     end_location = fields.Char(
         string="End Location",
         help="Ending location for the route":
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -93,7 +93,7 @@ class FSMRoute(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
-    
+
 
         # ============================================================================
     # ROUTE METRICS
@@ -102,25 +102,25 @@ class FSMRoute(models.Model):
         ,
     string="Estimated Distance (km)",
         help="Estimated total distance for the route":
-    
+
 
     actual_distance = fields.Float(
         ,
     string="Actual Distance (km)",
         help="Actual distance traveled"
-    
+
 
     estimated_duration = fields.Float(
         ,
     string="Estimated Duration (hours)",
         help="Estimated time to complete the route"
-    
+
 
     actual_duration = fields.Float(
         ,
     string="Actual Duration (hours)",
         help="Actual time taken to complete the route"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -130,7 +130,7 @@ class FSMRoute(models.Model):
         "fsm_route_id",
         string="Pickup Requests",
         help="Pickup requests assigned to this route"
-    
+
 
     notification_ids = fields.One2many(
         "fsm.notification",
@@ -138,7 +138,7 @@ class FSMRoute(models.Model):
         string="Notifications",
         ,
     help="Notifications sent for this route":
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
@@ -162,7 +162,7 @@ class FSMRoute(models.Model):
         compute='_compute_pickup_count',
         ,
     help="Number of pickups in this route"
-    
+
 
     @api.depends('actual_distance', 'estimated_distance')
     def _compute_distance_variance(self):
@@ -179,7 +179,7 @@ class FSMRoute(models.Model):
     string="Distance Variance (%)",
         compute='_compute_distance_variance',
         help="Percentage variance between estimated and actual distance"
-    
+
 
         # ============================================================================
     # ACTION METHODS
@@ -189,7 +189,7 @@ class FSMRoute(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_('Can only plan routes in draft state'))
-        
+
         self.write({'state': 'planned'})
         self.message_post(body=_('Route planned'))
 
@@ -198,7 +198,7 @@ class FSMRoute(models.Model):
         self.ensure_one()
         if self.state != 'planned':
             raise UserError(_('Can only start planned routes'))
-        
+
         self.write({'state': 'in_progress'})
         self.message_post(body=_('Route started'))
 
@@ -207,7 +207,7 @@ class FSMRoute(models.Model):
         self.ensure_one()
         if self.state != 'in_progress':
             raise UserError(_('Can only complete routes in progress'))
-        
+
         self.write({'state': 'completed'})
         self.message_post(body=_('Route completed'))
 
@@ -216,7 +216,7 @@ class FSMRoute(models.Model):
         self.ensure_one()
         if self.state in ('completed', 'cancelled'):
             raise UserError(_('Cannot cancel completed or already cancelled routes'))
-        
+
         self.write({'state': 'cancelled'})
         self.message_post(body=_('Route cancelled'))
 

@@ -12,10 +12,10 @@ class PaperBaleWeighWizard(models.TransientModel):
     measured_weight = fields.Float(
         ,
     string="Measured Weight (kg)", required=True
-    
+
     weighing_date = fields.Datetime(
         string="Weighing Date", required=True, default=fields.Datetime.now
-    
+
     ,
     scale_used = fields.Char(string="Scale Used")
 
@@ -27,7 +27,7 @@ class PaperBaleWeighWizard(models.TransientModel):
             {}
                 "weight": self.measured_weight,
                 "last_weighed_date": self.weighing_date,
-            
-        
+
+
         return {"type": "ir.actions.act_window_close"}
 ))

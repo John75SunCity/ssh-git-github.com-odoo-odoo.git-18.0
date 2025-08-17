@@ -40,21 +40,21 @@ class ShreddingPicklistItem(models.Model):
         tracking=True,
         index=True,
         help="Description of the shredding item"
-    
+
 
     display_name = fields.Char(
         string="Display Name",
         compute='_compute_display_name',
         store=True,
         help="Formatted display name for the item":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     user_id = fields.Many2one(
         "res.users",
@@ -62,19 +62,19 @@ class ShreddingPicklistItem(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
         help="User who created this item"
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this item"
-    
+
 
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Order sequence for item display":
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -86,13 +86,13 @@ class ShreddingPicklistItem(models.Model):
         ondelete="cascade",
         index=True,
         help="Parent shredding picklist"
-    
+
 
     batch_id = fields.Many2one(
         "shredding.inventory.batch",
         string="Inventory Batch",
         help="Batch this item belongs to"
-    
+
 
     container_id = fields.Many2one(
         "records.container",
@@ -100,7 +100,7 @@ class ShreddingPicklistItem(models.Model):
         required=True,
         index=True,
         help="Container to be shredded"
-    
+
 
     partner_id = fields.Many2one(
         "res.partner",
@@ -109,7 +109,7 @@ class ShreddingPicklistItem(models.Model):
         readonly=True,
         store=True,
         help="Container owner"
-    
+
 
     location_id = fields.Many2one(
         "records.location",
@@ -118,7 +118,7 @@ class ShreddingPicklistItem(models.Model):
         readonly=True,
         store=True,
         help="Current container location"
-    
+
 
         # ============================================================================
     # CONTAINER SPECIFICATIONS
@@ -129,7 +129,7 @@ class ShreddingPicklistItem(models.Model):
         store=True,
         string="Container Type",
         help="Type of container being shredded"
-    
+
 
     container_barcode = fields.Char(
         string="Container Barcode",
@@ -137,7 +137,7 @@ class ShreddingPicklistItem(models.Model):
         readonly=True,
         store=True,
         help="Container barcode identifier"
-    
+
 
     container_volume_cf = fields.Float(
         ,
@@ -147,7 +147,7 @@ class ShreddingPicklistItem(models.Model):
         store=True,
         digits=(8, 3),
         help="Container volume in cubic feet"
-    
+
 
         # ============================================================================
     # ITEM DETAILS
@@ -158,14 +158,14 @@ class ShreddingPicklistItem(models.Model):
         required=True,
         digits='Product Unit of Measure',
         help="Quantity of items to be shredded"
-    
+
 
     weight_kg = fields.Float(
         ,
     string="Weight (kg)",
         digits=(8, 2),
         help="Weight in kilograms"
-    
+
 
     weight_lbs = fields.Float(
         ,
@@ -174,14 +174,14 @@ class ShreddingPicklistItem(models.Model):
         store=True,
         digits=(8, 2),
         help="Weight in pounds (converted from kg)"
-    
+
 
     estimated_shred_time = fields.Float(
         ,
     string="Estimated Shred Time (min)",
         digits=(6, 2),
         help="Estimated time to shred this item in minutes"
-    
+
 
         # ============================================================================
     # STATUS TRACKING
@@ -194,28 +194,28 @@ class ShreddingPicklistItem(models.Model):
         ('shredded', 'Shredded'),
         ('certified', 'Certified'),
         ('exception', 'Exception')
-    
+
 
     collection_date = fields.Datetime(
         string="Collection Date",
         tracking=True,
         help="When the item was collected for shredding":
-    
+
 
     shred_start_time = fields.Datetime(
         string="Shred Start Time",
         help="When shredding of this item started"
-    
+
 
     shred_completion_time = fields.Datetime(
         string="Shred Completion Time",
         help="When shredding of this item was completed"
-    
+
 
     certification_date = fields.Datetime(
         string="Certification Date",
         help="When destruction certificate was issued"
-    
+
 
         # ============================================================================
     # PERSONNEL TRACKING
@@ -224,19 +224,19 @@ class ShreddingPicklistItem(models.Model):
         "hr.employee",
         string="Collected By",
         help="Employee who collected the item"
-    
+
 
     shredded_by = fields.Many2one(
         "hr.employee",
         string="Shredded By",
         help="Employee who performed the shredding"
-    
+
 
     witness_employee_id = fields.Many2one(
         "hr.employee",
         string="Witness",
         help="Employee who witnessed the destruction"
-    
+
 
         # ============================================================================
     # EQUIPMENT AND PROCESS
@@ -245,7 +245,7 @@ class ShreddingPicklistItem(models.Model):
         "shredding.equipment",
         string="Shredding Equipment",
         help="Equipment used for shredding":
-    
+
 
     ,
     shred_method = fields.Selection([))
@@ -254,13 +254,13 @@ class ShreddingPicklistItem(models.Model):
         ('micro_cut', 'Micro Cut'),
         ('pulverize', 'Pulverize'),
         ('incinerate', 'Incinerate')
-    
+
     security_level = fields.Selection([))
         ('standard', 'Standard'),
         ('confidential', 'Confidential'),
         ('secret', 'Secret'),
         ('top_secret', 'Top Secret')
-    
+
 
         # ============================================================================
     # COMPLIANCE AND CERTIFICATION
@@ -270,13 +270,13 @@ class ShreddingPicklistItem(models.Model):
         string="Destruction Certificate",
         readonly=True,
         help="Generated destruction certificate"
-    
+
 
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
         default=True,
         help="Whether destruction meets NAID AAA standards"
-    
+
 
     audit_trail_ids = fields.One2many(
         "naid.audit.log",
@@ -284,13 +284,13 @@ class ShreddingPicklistItem(models.Model):
         string="Audit Trail",
         readonly=True,
         help="NAID compliance audit trail"
-    
+
 
     chain_of_custody_id = fields.Many2one(
         "records.chain.of.custody",
         string="Chain of Custody",
         help="Chain of custody record for this item":
-    
+
 
         # ============================================================================
     # EXCEPTION HANDLING
@@ -298,19 +298,19 @@ class ShreddingPicklistItem(models.Model):
     exception_reason = fields.Text(
         string="Exception Reason",
         help="Reason for exception status":
-    
+
 
     resolution_notes = fields.Text(
         string="Resolution Notes",
         help="Notes on how exception was resolved"
-    
+
 
     exception_resolved = fields.Boolean(
         string="Exception Resolved",
         default=False,
         tracking=True,
         help="Whether exception has been resolved"
-    
+
 
         # ============================================================================
     # NOTES AND OBSERVATIONS
@@ -318,17 +318,17 @@ class ShreddingPicklistItem(models.Model):
     collection_notes = fields.Text(
         string="Collection Notes",
         help="Notes from collection process"
-    
+
 
     shredding_notes = fields.Text(
         string="Shredding Notes",
         help="Notes from shredding process"
-    
+
 
     quality_notes = fields.Text(
         string="Quality Notes",
         help="Quality control observations"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -339,7 +339,7 @@ class ShreddingPicklistItem(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -347,7 +347,7 @@ class ShreddingPicklistItem(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -355,7 +355,7 @@ class ShreddingPicklistItem(models.Model):
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -426,7 +426,7 @@ class ShreddingPicklistItem(models.Model):
             'status': 'collected',
             'collection_date': fields.Datetime.now(),
             'collected_by': self.env.user.employee_id.id if self.env.user.employee_id else False:
-        
+
 
         self._create_audit_log('item_collected')
         self.message_post(body=_("Item collected for shredding")):
@@ -440,7 +440,7 @@ class ShreddingPicklistItem(models.Model):
             'status': 'shredding',
             'shred_start_time': fields.Datetime.now(),
             'shredded_by': self.env.user.employee_id.id if self.env.user.employee_id else False:
-        
+
 
         self._create_audit_log('shredding_started')
         self.message_post(body=_("Shredding process started"))
@@ -461,7 +461,7 @@ class ShreddingPicklistItem(models.Model):
         self.write({)}
             'status': 'shredded',
             'shred_completion_time': fields.Datetime.now()
-        
+
 
         self._create_audit_log('shredding_completed')
         self._update_container_status()
@@ -480,7 +480,7 @@ class ShreddingPicklistItem(models.Model):
         self.write({)}
             'status': 'certified',
             'certification_date': fields.Datetime.now()
-        
+
 
         self._create_audit_log('destruction_certified')
         self.message_post(body=_("Destruction certified"))
@@ -507,7 +507,7 @@ class ShreddingPicklistItem(models.Model):
         self.write({)}
             'status': 'collected',  # Return to collected status
             'exception_resolved': True
-        
+
 
         self._create_audit_log('exception_resolved')
         self.message_post(body=_("Exception resolved: %s", self.resolution_notes))
@@ -562,7 +562,7 @@ class ShreddingPicklistItem(models.Model):
             'shred_item_id': self.id,
             'description': _("Shred item %s: %s", self.display_name, action_type),
             'naid_compliant': self.naid_compliant,
-        
+
 
         return self.env['naid.audit.log'].create(audit_vals)
 
@@ -573,7 +573,7 @@ class ShreddingPicklistItem(models.Model):
             self.container_id.write({)}
                 'status': 'destroyed',
                 'destruction_date': fields.Date.today()
-            
+
 
     def _generate_destruction_certificate(self):
         """Generate destruction certificate for this item""":
@@ -587,7 +587,7 @@ class ShreddingPicklistItem(models.Model):
             'equipment_id': self.shredding_equipment_id.id if self.shredding_equipment_id else False,:
             'witness_id': self.witness_employee_id.id if self.witness_employee_id else False,:
             'naid_compliant': self.naid_compliant,
-        
+
 
         certificate = self.env['naid.certificate'].create(certificate_vals)
         self.destruction_certificate_id = certificate.id
@@ -633,7 +633,7 @@ class ShreddingPicklistItem(models.Model):
             'by_status': {},
             'by_container_type': {},
             'by_security_level': {},
-        
+
 
         # Status distribution
         for status in ['pending', 'collected', 'shredded', 'certified', 'exception']:
@@ -641,7 +641,7 @@ class ShreddingPicklistItem(models.Model):
             stats['by_status'][status] = {}
                 'count': len(status_items),
                 'weight_kg': sum(status_items.mapped('weight_kg'))
-            
+
 
         # Container type distribution
         for item in items:
@@ -650,7 +650,7 @@ class ShreddingPicklistItem(models.Model):
                 stats['by_container_type'][container_type] = {}
                     'count': 0,
                     'weight_kg': 0.0
-                
+
             stats['by_container_type'][container_type]['count'] += 1
             stats['by_container_type'][container_type]['weight_kg'] += item.weight_kg or 0
 
@@ -661,7 +661,7 @@ class ShreddingPicklistItem(models.Model):
                 stats['by_security_level'][security_level] = {}
                     'count': 0,
                     'weight_kg': 0.0
-                
+
             stats['by_security_level'][security_level]['count'] += 1
             stats['by_security_level'][security_level]['weight_kg'] += item.weight_kg or 0
 
@@ -719,7 +719,7 @@ class ShreddingPicklistItem(models.Model):
             'res_id': self.container_id.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
     def action_view_destruction_certificate(self):
         """View destruction certificate"""
@@ -734,7 +734,7 @@ class ShreddingPicklistItem(models.Model):
             'res_id': self.destruction_certificate_id.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
     def action_print_label(self):
         """Print item label for tracking""":

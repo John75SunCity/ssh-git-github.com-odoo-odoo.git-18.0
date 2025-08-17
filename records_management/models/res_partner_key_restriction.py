@@ -1,18 +1,135 @@
 # -*- coding: utf-8 -*-
 
-Partner Key Restriction Management Module
-
-This module provides key access restrictions for partners in the Records Management System.:
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    Partner Key Restriction Management Module
+    This module provides key access restrictions for partners in the Records Management System.:
     pass
 It manages partner-specific key issuance permissions and access controls with full audit trails.
-
-
-from odoo import models, fields, api, _
+    from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-
-
-class ResPartnerKeyRestriction(models.Model):
-    _name = 'res.partner.key.restriction'
+    class ResPartnerKeyRestriction(models.Model):
+    _name = "res.partner.key.restriction"
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "res.partner.key.restriction"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = 'Partner Key Access Restriction'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
@@ -90,65 +207,81 @@ class ResPartnerKeyRestriction(models.Model):
     message_follower_ids = fields.One2many('mail.followers', 'res_id',,
     string='Followers'),
     message_ids = fields.One2many('mail.message', 'res_id',,
-    string='Messages'),
-    context = fields.Char(string='Context'),
-    domain = fields.Char(string='Domain'),
-    help = fields.Char(string='Help'),
-    res_model = fields.Char(string='Res Model'),
-    type = fields.Selection([), string='Type')  # TODO: Define selection options
-    view_mode = fields.Char(string='View Mode')
-
-        # ============================================================================
-    # COMPUTE METHODS
-        # ============================================================================
-    @api.depends('name')
-    def _compute_display_name(self):
-        for record in self:
-            record.display_name = record.name or _('New')
-
-    # ============================================================================
-        # ACTION METHODS
-    # ============================================================================
-    def action_confirm(self):
+    string='Messages'),"
+    context = fields.Char(string='Context'),""
+    domain = fields.Char(string='Domain'),""
+    help = fields.Char(string='Help'),""
+    res_model = fields.Char(string='Res Model'),""
+    type = fields.Selection([), string='Type')  # TODO: Define selection options""
+    view_mode = fields.Char(string='View Mode')""
+""
+        # ============================================================================""
+    # COMPUTE METHODS""
+        # ============================================================================""
+    @api.depends('name')""
+    def _compute_display_name(self):""
+        for record in self:""
+            record.display_name = record.name or _('New')""
+""
+    # ============================================================================""
+        # ACTION METHODS""
+    # ============================================================================""
+    def action_confirm(self):""
         """Confirm the key restriction"""
-        self.ensure_one()
-        if self.state != 'draft':
-            raise ValidationError(_('Can only confirm draft restrictions'))
-        self.write({'state': 'confirmed'})
-        self.message_post(body=_('Key restriction confirmed'))
-
-    def action_complete(self):
+"""
+""""
+    """
         """Mark restriction as complete"""
-        self.ensure_one()
-        if self.state != 'confirmed':
-            raise ValidationError(_('Can only complete confirmed restrictions'))
-        self.write({'state': 'done'})
-        self.message_post(body=_('Key restriction completed'))
-
-    def action_cancel(self):
+""""
+"""
+    """    def action_cancel(self):"
         """Cancel the key restriction"""
-        self.ensure_one()
-        if self.state == 'done':
-            raise ValidationError(_('Cannot cancel completed restrictions'))
-        self.write({'state': 'cancelled'})
-        self.message_post(body=_('Key restriction cancelled'))
-
-    def action_reset_to_draft(self):
+"""
+""""
+    """
         """Reset restriction to draft state"""
-        self.ensure_one()
-        self.write({'state': 'draft'})
-        self.message_post(body=_('Key restriction reset to draft'))
-
-    # ============================================================================
-        # VALIDATION METHODS
-    # ============================================================================
-    @api.constrains('effective_date', 'expiry_date')
-    def _check_dates(self):
+""""
+"""
+"""    def _check_dates(self):"
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
         """Validate date consistency"""
-        for record in self:
-            if record.effective_date and record.expiry_date:
-                if record.effective_date > record.expiry_date:
-                    raise ValidationError(_())
-                        'Effective date cannot be later than expiry date'
-                    
-)))
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+"""
+"""

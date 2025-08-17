@@ -26,13 +26,13 @@ class RecordsDigitalScan(models.Model):
         # ============================================================================
     name = fields.Char(
         string="Name", required=True, tracking=True, index=True
-    
+
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    
+
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    
+
     active = fields.Boolean(string="Active",,
     default=True)
 
@@ -44,14 +44,14 @@ class RecordsDigitalScan(models.Model):
         default="draft",
         tracking=True,
         index=True,
-    
+
 
         # ============================================================================
     # DOCUMENT RELATIONSHIP
         # ============================================================================
     document_id = fields.Many2one(
         "records.document", string="Document", required=True, tracking=True
-    
+
 
         # ============================================================================
     # DIGITAL SCAN FIELDS
@@ -64,13 +64,13 @@ class RecordsDigitalScan(models.Model):
         ,
     default=lambda self: fields.Date.context_today(self),
         tracking=True,
-    
+
     scan_date = fields.Datetime(
         string="Scan Date",
         ,
     default=lambda self: fields.Datetime.context_timestamp(self, datetime.now()),
         tracking=True,
-    
+
 
     file_format = fields.Selection(
         [)
@@ -79,11 +79,11 @@ class RecordsDigitalScan(models.Model):
             ("png", "PNG"),
             ("tiff", "TIFF"),
             ("bmp", "BMP"),
-        
+
         string="File Format",
         default="pdf",
         tracking=True,
-    
+
 
     resolution = fields.Integer(string="Resolution (DPI)", default=300)
     file_size = fields.Float(string="File Size (MB)")
@@ -94,23 +94,23 @@ class RecordsDigitalScan(models.Model):
             ("normal", "Normal"),
             ("high", "High Quality"),
             ("archive", "Archive Quality"),
-        
+
         string="Scan Quality",
         default="normal",
         tracking=True,
-    
+
 
     scanner_id = fields.Char(
         string="Scanner ID",
         help="Identifier of the scanner device used for this digital scan.",:
             pass
-    
+
     scanned_by_id = fields.Many2one(
         "res.users",
         string="Scanned By",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
 
         # ============================================================================
     # OPERATIONAL FIELDS
@@ -131,7 +131,7 @@ class RecordsDigitalScan(models.Model):
     string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -150,14 +150,14 @@ class RecordsDigitalScan(models.Model):
                 "state": "confirmed",
                 "confirmed": True,
                 "updated_date": fields.Datetime.now(),
-            
-        
+
+
 
         # Log activity
         self.message_post()
             body=_("Digital scan confirmed by %s", self.env.user.name),
             message_type="notification",
-        
+
 
     def action_done(self):
         """Mark the digital scan as completed"""
@@ -172,7 +172,7 @@ class RecordsDigitalScan(models.Model):
         self.message_post()
             body=_("Digital scan completed by %s", self.env.user.name),
             message_type="notification",
-        
+
 
     def action_reset_to_draft(self):
         """Reset to draft state"""
@@ -183,14 +183,14 @@ class RecordsDigitalScan(models.Model):
                 "state": "draft",
                 "confirmed": False,
                 "updated_date": fields.Datetime.now(),
-            
-        
+
+
 
         # Log activity
         self.message_post()
             body=_("Digital scan reset to draft by %s", self.env.user.name),
             message_type="notification",
-        
+
 
     # ============================================================================
         # COMPUTE METHODS
@@ -209,7 +209,7 @@ class RecordsDigitalScan(models.Model):
                 info_parts.append(_("%.2f MB", record.file_size))
             record.scan_info = ()
                 " - ".join(info_parts) if info_parts else _("No scan info"):
-            
+
 
     scan_info = fields.Char(
         string="Scan Info",
@@ -217,7 +217,7 @@ class RecordsDigitalScan(models.Model):
         store=True,
         readonly=True,
         help="Displays a summary of the scan's resolution and file size.",'
-    
+
     ,
     action_confirm = fields.Char(string='Action Confirm'),
     action_done = fields.Char(string='Action Done'),

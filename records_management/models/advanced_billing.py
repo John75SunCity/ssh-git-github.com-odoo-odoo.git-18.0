@@ -38,13 +38,13 @@ class AdvancedBilling(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="User",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
     active = fields.Boolean(string="Active",,
     default=True)
 
@@ -53,21 +53,21 @@ class AdvancedBilling(models.Model):
         # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    
+
     billing_period_id = fields.Many2one(
         "records.advanced.billing.period",
         string="Billing Period",
         tracking=True,
-    
+
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    
+
     invoice_id = fields.Many2one(
         "account.move", string="Invoice", tracking=True
-    
+
     ,
     payment_terms = fields.Selection(
         [)
@@ -77,11 +77,11 @@ class AdvancedBilling(models.Model):
             ("net_45", "Net 45 Days"),
             ("net_60", "Net 60 Days"),
             ("custom", "Custom Terms"),
-        
+
         string="Payment Terms",
         default="net_30",
         tracking=True,
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -93,18 +93,18 @@ class AdvancedBilling(models.Model):
             ("invoiced", "Invoiced"),
             ("done", "Done"),
             ("cancelled", "Cancelled"),
-        
+
         string="State",
         default="draft",
         tracking=True,
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
         # ============================================================================
     line_ids = fields.One2many(
         "records.billing.line", "billing_id", string="Billing Lines"
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -114,20 +114,20 @@ class AdvancedBilling(models.Model):
         compute="_compute_total_amount",
         store=True,
         currency_field="currency_id",
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS
         # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    
+
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages"
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     billing_line_ids = fields.Char(string="Billing Line Ids",,
     help="Billing line items"),
     billing_ids = fields.Char(string="Billing Ids",,
@@ -234,14 +234,14 @@ class AdvancedBilling(models.Model):
                 'name': line.name,
                 'quantity': line.quantity,
                 'price_unit': line.price_unit,
-            
-        
+
+
 
         invoice = self.env['account.move'].create(invoice_vals)
         self.write({)}
             "state": "invoiced",
             "invoice_id": invoice.id,
-        
+
 
         self.message_post(body=_("Invoice generated: %s") % invoice.name)
 
@@ -252,7 +252,7 @@ class AdvancedBilling(models.Model):
             'res_id': invoice.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
     def action_done(self):
         """Mark billing as done"""

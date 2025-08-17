@@ -8,7 +8,7 @@ class TempInventoryRejectWizard(models.TransientModel):
 
     inventory_id = fields.Many2one(
         "temp.inventory", string="Inventory", required=True
-    
+
     rejection_reason = fields.Text(string="Rejection Reason",,
     required=True)
 
@@ -18,10 +18,10 @@ class TempInventoryRejectWizard(models.TransientModel):
             {}
                 "state": "cancelled",
                 "rejection_reason": self.rejection_reason,
-            
-        
+
+
         self.inventory_id.message_post()
             body=_("Inventory rejected. Reason: %s", self.rejection_reason)
-        
+
         return {"type": "ir.actions.act_window_close"}
 )

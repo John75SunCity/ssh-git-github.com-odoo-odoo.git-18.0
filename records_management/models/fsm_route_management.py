@@ -5,7 +5,7 @@
 This module serves as the central orchestrator for all Field Service Management:
 operations in the Records Management system. It integrates with existing FSM tools
 - fsm_reschedule_wizard: Handles route rescheduling
-- fsm_notification: Manages driver and customer notifications  
+- fsm_notification: Manages driver and customer notifications
 - route optimizer: Optimizes pickup and delivery routes
 - pickup_request: Customer pickup requests
 - records_vehicle: Vehicle and driver management""""
@@ -45,22 +45,22 @@ class FsmRouteManagement(models.Model):
         tracking=True,
         index=True,
         help="Name or identifier for this route":
-    
+
     sequence = fields.Integer(string="Sequence",,
     default=10),
     company_id = fields.Many2one(
         "res.company",
-        string="Company", 
+        string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Route Manager",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for managing this route":
-    
+
     active = fields.Boolean(string="Active",,
     default=True)
 
@@ -73,35 +73,35 @@ class FsmRouteManagement(models.Model):
         default=fields.Date.today,
         tracking=True,
         help="Date when route is scheduled to run"
-    
+
     start_time = fields.Float(
         string="Start Time",
         default=8.0,
         ,
     help="Route start time (24-hour format)"
-    
+
     end_time = fields.Float(
-        string="End Time", 
+        string="End Time",
         default=17.0,
         help="Expected route completion time"
-    
+
     estimated_duration = fields.Float(
         ,
     string="Estimated Duration (hours)",
         compute="_compute_estimated_duration",
         store=True,
         help="Total estimated duration for route completion":
-    
+
     actual_start_time = fields.Datetime(
         string="Actual Start",
         tracking=True,
         help="When the route actually started"
-    
+
     actual_end_time = fields.Datetime(
         string="Actual End",
         tracking=True,
         help="When the route was completed"
-    
+
 
         # ============================================================================
     # DRIVER & VEHICLE ASSIGNMENT
@@ -113,18 +113,18 @@ class FsmRouteManagement(models.Model):
     domain=[("groups_id", "in", [))),  # Will be configured for drivers group:
         tracking=True,
         help="Driver assigned to this route"
-    
+
     vehicle_id = fields.Many2one(
-        "records.vehicle", 
+        "records.vehicle",
         string="Vehicle",
         tracking=True,
         help="Vehicle assigned to this route"
-    
+
     backup_driver_id = fields.Many2one(
         "res.users",
         string="Backup Driver",
         help="Backup driver in case primary driver unavailable"
-    
+
 
         # ============================================================================
     # ROUTE DETAILS & OPTIMIZATION
@@ -132,40 +132,40 @@ class FsmRouteManagement(models.Model):
     ,
     route_type = fields.Selection([))
         ("pickup", "Pickup Route"),
-        ("delivery", "Delivery Route"), 
+        ("delivery", "Delivery Route"),
         ("mixed", "Mixed Route"),
         ("emergency", "Emergency Route"),
         ("maintenance", "Maintenance Route")
-    
+
 
     priority = fields.Selection([))
         ("0", "Very Low"),
         ("1", "Low"),
-        ("2", "Normal"), 
+        ("2", "Normal"),
         ("3", "High"),
         ("4", "Very High"),
         ("5", "Critical")
-    
+
 
     total_stops = fields.Integer(
         string="Total Stops",
         compute="_compute_route_stats",
         store=True,
         help="Total number of stops on this route"
-    
+
     total_distance = fields.Float(
         ,
     string="Total Distance (miles)",
-        compute="_compute_route_stats", 
+        compute="_compute_route_stats",
         store=True,
         help="Total route distance in miles"
-    
+
     total_containers = fields.Integer(
         string="Total Containers",
         compute="_compute_route_stats",
         store=True,
         help="Total containers to pickup/deliver"
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -180,7 +180,7 @@ class FsmRouteManagement(models.Model):
         ("completed", "Completed"),
         ("cancelled", "Cancelled"),
         ("rescheduled", "Rescheduled")
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS - Integration with existing FSM models
@@ -190,7 +190,7 @@ class FsmRouteManagement(models.Model):
         "fsm_route_id",
         string="Pickup Requests",
         help="Customer pickup requests assigned to this route",
-    
+
 
         # Integration with existing FSM tools
     optimization_result_ids = fields.One2many(
@@ -198,21 +198,21 @@ class FsmRouteManagement(models.Model):
         "route_management_id",
         string="Route Optimizations",
         help="Route optimization results"
-    
+
 
     reschedule_history_ids = fields.One2many(
         "fsm.reschedule.wizard",
-        "route_management_id", 
+        "route_management_id",
         string="Reschedule History",
         help="History of route reschedules"
-    
+
 
     notification_ids = fields.One2many(
         "fsm.notification",
         "route_management_id",
-        string="Notifications", 
+        string="Notifications",
         help="Notifications sent for this route":
-    
+
 
         # ============================================================================
     # ROUTE CONFIGURATION & CONSTRAINTS
@@ -221,27 +221,27 @@ class FsmRouteManagement(models.Model):
         string="Max Stops",
         default=25,
         help="Maximum stops allowed per route"
-    
+
     max_driving_hours = fields.Float(
-        string="Max Driving Hours", 
+        string="Max Driving Hours",
         default=8.0,
         help="Maximum driving hours per route"
-    
+
     service_area_ids = fields.Many2many(
         "records.location",
         string="Service Areas",
         help="Geographic areas covered by this route"
-    
+
 
         # Route notes and special instructions
     route_notes = fields.Text(
         string="Route Notes",
         help="Special instructions or notes for the driver":
-    
+
     customer_instructions = fields.Text(
         string="Customer Instructions",
         help="Special customer instructions for stops":
-    
+
 
         # ============================================================================
     # PERFORMANCE TRACKING
@@ -251,23 +251,23 @@ class FsmRouteManagement(models.Model):
         compute="_compute_performance_metrics",
         store=True,
         help="Percentage of stops completed successfully"
-    
+
     on_time_rate = fields.Float(
-        string="On-Time Rate %", 
+        string="On-Time Rate %",
         compute="_compute_performance_metrics",
         store=True,
         help="Percentage of stops completed on time"
-    
+
     fuel_cost = fields.Monetary(
         string="Estimated Fuel Cost",
         currency_field="currency_id",
         help="Estimated fuel cost for this route":
-    
+
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS
@@ -315,7 +315,7 @@ class FsmRouteManagement(models.Model):
     # ============================================================================
         # ORM OVERRIDES
     # ============================================================================
-    @api.model_create_multi  
+    @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get("name", "New") == "New":
@@ -327,11 +327,11 @@ class FsmRouteManagement(models.Model):
         if "state" in vals:
             for record in self:
                 if vals["state"] != record.state:
-                    old_state = dict(record._fields["state"].selection)[record.state] 
+                    old_state = dict(record._fields["state"].selection)[record.state]
                     new_state = dict(record._fields["state"].selection)[vals["state"]]
                     record.message_post()
                         body=_("Route status changed from %s to %s", old_state, new_state)
-                    
+
         return super().write(vals)
 
     # ============================================================================
@@ -348,7 +348,7 @@ class FsmRouteManagement(models.Model):
                 "route_management_id": self.id,
                 "optimization_date": fields.Datetime.now(),
                 "pickup_request_ids": [(6, 0, self.pickup_request_ids.ids)]
-            
+
             return optimizer.action_optimize()
         else:
             # Fallback optimization logic
@@ -369,8 +369,8 @@ class FsmRouteManagement(models.Model):
                 "default_route_management_id": self.id,
                 "default_current_date": self.scheduled_date,
                 "default_pickup_request_ids": [(6, 0, self.pickup_request_ids.ids)]
-            
-        
+
+
 
     def action_send_notifications(self):
         """Send route notifications - integrates with existing fsm.notification model"""
@@ -385,13 +385,13 @@ class FsmRouteManagement(models.Model):
             notification_vals.append({)}
                 "route_management_id": self.id,
                 "recipient_id": self.driver_id.partner_id.id,
-                "notification_type": "driver_assignment", 
+                "notification_type": "driver_assignment",
                 "subject": _("Route Assignment: %s", self.name),
                 "message": _("You have been assigned to route %s scheduled for %s",:)
                             self.name, self.scheduled_date
                 "send_sms": True,
                 "send_email": True
-            
+
 
         # Customer notifications for each pickup:
         for pickup in self.pickup_request_ids:
@@ -403,7 +403,7 @@ class FsmRouteManagement(models.Model):
                     "subject": _("Pickup Scheduled: %s", pickup.name),
                     "message": _("Your pickup has been scheduled for %s", self.scheduled_date),:
                     "send_email": True
-                
+
 
         # Create notifications using existing model
         if notification_vals and "fsm.notification" in self.env:
@@ -411,9 +411,9 @@ class FsmRouteManagement(models.Model):
             notifications.action_send_all()
 
         self.message_post()
-            body=_("Route notifications sent to driver and customers (%d notifications)", 
+            body=_("Route notifications sent to driver and customers (%d notifications)",
                     len(notification_vals)
-        
+
 
     def action_assign_driver(self):
         """Smart driver assignment based on availability and location"""
@@ -424,7 +424,7 @@ class FsmRouteManagement(models.Model):
         available_drivers = self.env["res.users"].search([)]
             ("groups_id", "in", []),  # Driver group - to be configured
             # Add availability constraints
-        
+
 
         if available_drivers:
             # Simple assignment - can be enhanced with AI/ML
@@ -432,7 +432,7 @@ class FsmRouteManagement(models.Model):
             self.state = "assigned"
             self.message_post()
                 body=_("Driver %s automatically assigned to route", self.driver_id.name)
-            
+
         else:
             raise UserError(_("No available drivers found for route assignment")):
     def action_start_route(self):
@@ -449,15 +449,15 @@ class FsmRouteManagement(models.Model):
         self.write({)}
             "state": "in_progress",
             "actual_start_time": fields.Datetime.now()
-        
+
 
         # Update pickup requests to in_progress
         self.pickup_request_ids.write({"state": "in_progress"})
 
         self.message_post()
-            body=_("Route started by driver %s at %s", 
+            body=_("Route started by driver %s at %s",
                     self.driver_id.name, fields.Datetime.now()
-        
+
 
     def action_complete_route(self):
         """Complete the route and update all related records"""
@@ -465,9 +465,9 @@ class FsmRouteManagement(models.Model):
         self.ensure_one()
 
         self.write({)}
-            "state": "completed", 
+            "state": "completed",
             "actual_end_time": fields.Datetime.now()
-        
+
 
         # Update pickup requests based on completion
         completed_pickups = self.pickup_request_ids.filtered(lambda r: r.state == "completed")
@@ -478,9 +478,9 @@ class FsmRouteManagement(models.Model):
             self._auto_reschedule_remaining(remaining_pickups)
 
         self.message_post()
-            body=_("Route completed. %d/%d pickups successful", 
+            body=_("Route completed. %d/%d pickups successful",
                     len(completed_pickups), len(self.pickup_request_ids)
-        
+
 
     def action_view_route_dashboard(self):
         """Open unified route dashboard view"""
@@ -496,7 +496,7 @@ class FsmRouteManagement(models.Model):
             "view_id": False,  # Will use the main form view with dashboard layout
             "target": "current",
             "context": {"dashboard_mode": True}
-        
+
 
     # ============================================================================
         # HELPER METHODS
@@ -523,7 +523,7 @@ class FsmRouteManagement(models.Model):
             "scheduled_date": next_date,
             "state": "scheduled",
             "pickup_request_ids": [(6, 0, remaining_pickups.ids)]
-        
+
 
         # Clear pickup requests from current route
         remaining_pickups.write({"route_id": new_route.id})
@@ -559,7 +559,7 @@ class FsmRouteManagement(models.Model):
                 raise ValidationError()
                     _("Route exceeds maximum stops limit (%d/%d)",
                     len(record.pickup_request_ids), record.max_stops_per_route
-                
+
 
     # ============================================================================
         # SEARCH METHODS
@@ -574,10 +574,10 @@ class FsmRouteManagement(models.Model):
             domain = []
                 "|", "|", "|",
                 ("name", operator, name),
-                ("driver_id.name", operator, name), 
+                ("driver_id.name", operator, name),
                 ("route_type", operator, name),
                 ("scheduled_date", operator, name)
-            
+
 
         return self._search(domain + args, limit=limit)
 
@@ -601,6 +601,6 @@ class FsmRouteManagement(models.Model):
             "average_completion_rate": sum(routes.mapped("completion_rate")) / len(routes) if routes else 0,:
             "total_containers": sum(routes.mapped("total_containers")),
             "total_distance": sum(routes.mapped("total_distance")),
-        
+
 
     """"))))))))))))))))))))))))))

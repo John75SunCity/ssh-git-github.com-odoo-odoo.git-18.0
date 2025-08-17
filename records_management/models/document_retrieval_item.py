@@ -33,13 +33,13 @@ class DocumentRetrievalItem(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -51,7 +51,7 @@ class DocumentRetrievalItem(models.Model):
         string="Work Order",
         required=True,
         ondelete="cascade",
-    
+
     sequence = fields.Integer(string="Sequence",,
     default=10),
     priority = fields.Selection([))
@@ -59,7 +59,7 @@ class DocumentRetrievalItem(models.Model):
         ('1', 'Normal'),
         ('2', 'High'),
         ('3', 'Very High'),
-    
+
 
         # ============================================================================
     # DOCUMENT REFERENCE FIELDS
@@ -77,11 +77,11 @@ class DocumentRetrievalItem(models.Model):
             ("folder", "Document Folder"),
             ("container", "Full Container"),
             ("box", "Storage Box"),
-        
+
         string="Item Type",
         required=True,
         default="document",
-    
+
 
     description = fields.Text(string="Item Description"),
     barcode = fields.Char(string="Barcode/ID",,
@@ -101,11 +101,11 @@ class DocumentRetrievalItem(models.Model):
             ("delivered", "Delivered"),
             ("returned", "Returned"),
             ("not_found", "Not Found"),
-        
+
         string="Status",
         default="pending",
         tracking=True,
-    
+
 
         # ============================================================================
     # LOCATION AND SEARCH FIELDS
@@ -120,19 +120,19 @@ class DocumentRetrievalItem(models.Model):
         "item_id",
         "container_id",
         string="Searched Containers",
-    
+
 
     containers_accessed_count = fields.Integer(
         string="Containers Accessed",
         compute="_compute_containers_accessed_count",
         store=True,
-    
+
 
     containers_not_found_count = fields.Integer(
         string="Containers Not Found",
         compute="_compute_containers_not_found_count",
         store=True,
-    
+
 
     ,
     requested_file_name = fields.Char(string="Requested File Name")
@@ -148,10 +148,10 @@ class DocumentRetrievalItem(models.Model):
             ("medium", "Medium"),
             ("hard", "Hard"),
             ("very_hard", "Very Hard"),
-        
+
         string="Difficulty",
         default="medium",
-    
+
 
         # ============================================================================
     # PROCESSING DETAILS FIELDS
@@ -182,13 +182,13 @@ class DocumentRetrievalItem(models.Model):
         string="Search Attempts",
         help="History of all search attempts for this file",:
             pass
-    
+
 
     total_search_attempts = fields.Integer(
         string="Total Search Attempts",
         compute="_compute_total_search_attempts",
         store=True,
-    
+
 
         # ============================================================================
     # NOT FOUND TRACKING
@@ -202,15 +202,15 @@ class DocumentRetrievalItem(models.Model):
             ("misfiled", "File filed in wrong location"),
             ("customer_error", "Customer provided incorrect information"),
             ("other", "Other reason"),
-        
+
         string="Not Found Reason",
         help="Reason why file was not found",
-    
+
 
     not_found_notes = fields.Text(
         string="Not Found Notes",
         help="Detailed notes about the search process and why file wasn't found",'
-    
+
 
         # ============================================================================
     # FILE DISCOVERY AND BARCODING
@@ -219,18 +219,18 @@ class DocumentRetrievalItem(models.Model):
         string="File Discovered During Search",
         default=False,
         help="File was found and barcoded during the search process",
-    
+
 
     discovery_date = fields.Datetime(
         string="Discovery Date",
         help="Date when file was discovered and barcoded",
-    
+
 
     discovery_container_id = fields.Many2one(
         "records.container",
         string="Discovery Container",
         help="Container where file was actually found",
-    
+
 
     ,
     retrieval_notes = fields.Text(string="Retrieval Notes")
@@ -244,7 +244,7 @@ class DocumentRetrievalItem(models.Model):
         related="work_order_id.partner_id",
         store=True,
         readonly=True,
-    
+
 
         # ============================================================================
     # HANDLING AND PHYSICAL ATTRIBUTES
@@ -266,10 +266,10 @@ class DocumentRetrievalItem(models.Model):
             ("confidential", "Confidential"),
             ("restricted", "Restricted"),
             ("classified", "Classified"),
-        
+
         string="Security Level",
         default="standard",
-    
+
     access_authorized_by_id = fields.Many2one("res.users",,
     string="Access Authorized By"),
     authorization_date = fields.Datetime(string="Authorization Date")
@@ -284,10 +284,10 @@ class DocumentRetrievalItem(models.Model):
             ("fair", "Fair"),
             ("poor", "Poor"),
             ("damaged", "Damaged"),
-        
+
         string="Condition Before",
         default="good",
-    
+
     condition_after = fields.Selection(
         [)
             ("excellent", "Excellent"),
@@ -295,9 +295,9 @@ class DocumentRetrievalItem(models.Model):
             ("fair", "Fair"),
             ("poor", "Poor"),
             ("damaged", "Damaged"),
-        
+
         string="Condition After",
-    
+
 
         # ============================================================================
     # DIGITAL PROCESSING
@@ -309,17 +309,17 @@ class DocumentRetrievalItem(models.Model):
     digital_format = fields.Selection(
         [("pdf", "PDF"), ("jpg", "JPEG"), ("tiff", "TIFF"), ("png", "PNG")), string="Digital Format",
         default="pdf",
-    
+
     scan_quality = fields.Selection(
         [)
             ("draft", "Draft (150 DPI)"),
             ("standard", "Standard (300 DPI)"),
             ("high", "High (600 DPI)"),
             ("archive", "Archive (1200 DPI)"),
-        
+
         string="Scan Quality",
         default="standard",
-    
+
 
         # ============================================================================
     # RETURN INFORMATION
@@ -341,28 +341,28 @@ class DocumentRetrievalItem(models.Model):
         store=True,
         ,
     help="Cost to retrieve this specific item (dynamic based on customer rates)",
-    
+
     container_access_cost = fields.Monetary(
         string="Container Access Cost",
         currency_field="currency_id",
         compute="_compute_container_access_cost",
         store=True,
         help="Cost for accessing containers where file was NOT found",:
-    
+
     total_cost = fields.Monetary(
         string="Total Cost",
         currency_field="currency_id",
         compute="_compute_total_cost",
         store=True,
         help="Total cost: retrieval fee + container access fees + delivery + not found fee",
-    
+
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         compute="_compute_currency_id",
         store=True,
         required=True,
-    
+
 
         # ============================================================================
     # TRACKING AND AUDIT
@@ -388,14 +388,14 @@ class DocumentRetrievalItem(models.Model):
             ('active', 'Active'),
             ('inactive', 'Inactive'),
             ('archived', 'Archived'),
-        
+
         string='Status',
         default='draft',
         tracking=True,
         required=True,
         index=True,
         help='Current status of the record'
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance):
@@ -406,23 +406,23 @@ class DocumentRetrievalItem(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_follower_ids = fields.One2many(
-        "mail.followers", 
+        "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
     effective_priority = fields.Selection([("0", "Low"), ("1", "Normal"), ("2", "High")), ("3", "Very High")], string="Effective Priority", compute="_compute_effective_priority")
         # ============================================================================
     # COMPUTE METHODS
@@ -459,7 +459,7 @@ class DocumentRetrievalItem(models.Model):
                 negotiated_rate = self.env["customer.negotiated.rates"].search([)]
                     ("partner_id", "=", item.partner_id.id),
                     ("active", "=", True),
-                
+
                 if negotiated_rate:
                     retrieval_rate = negotiated_rate.get_effective_rate("managed_retrieval_rate")
 
@@ -471,7 +471,7 @@ class DocumentRetrievalItem(models.Model):
                     "|",
                     ("expiry_date", "=", False),
                     ("expiry_date", ">=", fields.Date.today()),
-                
+
                 if base_rate:
                     retrieval_rate = base_rate.managed_retrieval_rate or 3.50
 
@@ -494,7 +494,7 @@ class DocumentRetrievalItem(models.Model):
                     "|",
                     ("expiry_date", "=", False),
                     ("expiry_date", ">=", fields.Date.today()),
-                
+
                 if negotiated_rate:
                     access_rate = negotiated_rate.get_effective_rate("container_access_rate")
 
@@ -506,7 +506,7 @@ class DocumentRetrievalItem(models.Model):
                     "|",
                     ("expiry_date", "=", False),
                     ("expiry_date", ">=", fields.Date.today()),
-                
+
                 if base_rate:
                     access_rate = base_rate.external_per_bin_rate or 3.50
 
@@ -529,7 +529,7 @@ class DocumentRetrievalItem(models.Model):
                     "|",
                     ("expiry_date", "=", False),
                     ("expiry_date", ">=", fields.Date.today()),
-                
+
                 if negotiated_delivery:
                     delivery_fee = negotiated_delivery.get_effective_rate("pickup_rate")
                 else:
@@ -540,7 +540,7 @@ class DocumentRetrievalItem(models.Model):
                         "|",
                         ("expiry_date", "=", False),
                         ("expiry_date", ">=", fields.Date.today()),
-                    
+
                     if base_delivery:
                         delivery_fee = base_delivery.pickup_rate
                 total += delivery_fee or 25.0
@@ -552,7 +552,7 @@ class DocumentRetrievalItem(models.Model):
                     ("rate_type", "=", "not_found_search"),
                     ("state", "=", "active"),
                     ("active", "=", True),
-                
+
                 if negotiated_not_found:
                     not_found_fee = negotiated_not_found.get_effective_rate("managed_retrieval_rate")
                 else:
@@ -560,7 +560,7 @@ class DocumentRetrievalItem(models.Model):
                         ("service_type", "=", "not_found_search"),
                         ("state", "=", "confirmed"),
                         ("active", "=", True),
-                    
+
                     if base_not_found:
                         not_found_fee = base_not_found.managed_retrieval_rate
                 total += not_found_fee or 3.50
@@ -617,9 +617,9 @@ class DocumentRetrievalItem(models.Model):
             priority_sequence_map = {}
                 '0': 100,  # Low priority - higher sequence number
                 '1': 50,   # Normal priority
-                '2': 20,   # High priority - lower sequence number  
+                '2': 20,   # High priority - lower sequence number
                 '3': 10,   # Very High priority - lowest sequence number
-            
+
             self.sequence = priority_sequence_map.get(self.priority, 50)
 
     # ============================================================================
@@ -641,7 +641,7 @@ class DocumentRetrievalItem(models.Model):
                 "located",
                 _("Item located by %s", self.env.user.name),
                 {"retrieval_date": fields.Datetime.now(), "retrieved_by_id": self.env.user.id}
-            
+
 
     def action_retrieve_item(self):
         for item in self:
@@ -651,7 +651,7 @@ class DocumentRetrievalItem(models.Model):
                 "retrieved",
                 _("Item retrieved by %s", self.env.user.name),
                 {"retrieval_date": fields.Datetime.now(), "retrieved_by_id": self.env.user.id}
-            
+
 
     def action_package_item(self):
         for item in self:
@@ -673,7 +673,7 @@ class DocumentRetrievalItem(models.Model):
                 "returned",
                 _("Item returned by %s", self.env.user.name),
                 {"return_date": fields.Date.today()}
-            
+
 
     # ============================================================================
         # SEARCH WORKFLOW ACTION METHODS
@@ -685,7 +685,7 @@ class DocumentRetrievalItem(models.Model):
             item._update_status()
                 "searching",
                 _("Search started by %s for file: %s", self.env.user.name, item.requested_file_name or item.name)
-            
+
 
     def action_record_container_search(self, container_id, found=False, notes=""):
         self.ensure_one()
@@ -699,7 +699,7 @@ class DocumentRetrievalItem(models.Model):
             "search_date": fields.Datetime.now(),
             "found": found,
             "notes": notes,
-        
+
 
         if found:
             self.write({)}
@@ -708,7 +708,7 @@ class DocumentRetrievalItem(models.Model):
                 "discovery_date": fields.Datetime.now(),
                 "discovery_container_id": container_id,
                 "container_id": container_id,
-            
+
         return True
 
     def action_mark_not_found(self, reason="not_in_container", notes=""):
@@ -720,12 +720,12 @@ class DocumentRetrievalItem(models.Model):
                 item.containers_accessed_count,
                 item.containers_not_found_count,
                 reason_display
-            
+
             item._update_status()
                 "not_found",
                 message,
                 {"not_found_reason": reason, "not_found_notes": notes or _("File not found after search.")}
-            
+
 
     def action_barcode_discovered_file(self, barcode, document_vals=None):
         self.ensure_one()
@@ -740,14 +740,14 @@ class DocumentRetrievalItem(models.Model):
                 "barcode": barcode,
                 "container_id": self.discovery_container_id.id,
                 "partner_id": self.partner_id.id if self.partner_id else False,:
-            
+
             document = self.env["records.document"].create(document_vals)
             self.document_id = document.id
 
         self.message_post()
             body=_("File barcoded by %s with barcode: %s", self.env.user.name, barcode),
             message_type="notification",
-        
+
         return True
 
     # ============================================================================
@@ -758,7 +758,7 @@ class DocumentRetrievalItem(models.Model):
         """Search retrieval items by status"""
         if not status_list:
             status_list = ['pending', 'searching', 'located']
-        
+
         domain = [('status', 'in', status_list)]
         return self.search(domain, order='priority desc, create_date desc')
 
@@ -775,7 +775,7 @@ class DocumentRetrievalItem(models.Model):
             return self.env['records.container'].search([)]
                 ('partner_id', '=', self.partner_id.id),
                 ('state', '=', 'active')
-            
+
         return self.env['records.container']
 
     @api.model

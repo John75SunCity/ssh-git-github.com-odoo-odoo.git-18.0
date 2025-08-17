@@ -16,8 +16,8 @@ class WorkOrderRetrieval(models.Model):
         ('in_progress', 'In Progress'),
         ('done', 'Done'),
         ('cancelled', 'Cancelled'),
-    
-    
+
+
         # Relationships
     partner_id = fields.Many2one('res.partner', string='Customer',,
     required=True),

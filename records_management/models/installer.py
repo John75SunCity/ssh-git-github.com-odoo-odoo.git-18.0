@@ -15,10 +15,10 @@ class RecordsInstaller(models.Model):
     tracking=True),
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    
+
     user_id = fields.Many2one(
         "res.users", string="Assigned User", default=lambda self: self.env.user
-    
+
     active = fields.Boolean(string="Active",,
     default=True),
     state = fields.Selection(
@@ -27,18 +27,18 @@ class RecordsInstaller(models.Model):
             ("confirmed", "Confirmed"),
             ("done", "Done"),
             ("cancelled", "Cancelled"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
-    
+
     notes = fields.Text(string="Notes"),
     installer_display_name = fields.Char(
         string="Installer Display Name",
         compute="_compute_installer_display_name",
         ,
     store=True,
-    
+
 
     @api.depends("name")
     def _compute_installer_display_name(self):
@@ -57,7 +57,7 @@ class RecordsInstaller(models.Model):
         ,
     help="Associated partner for this record":
             pass
-    
+
 
     def action_cancel(self):
         """Set the record's state to 'cancelled'."""'

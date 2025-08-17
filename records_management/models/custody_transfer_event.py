@@ -16,7 +16,7 @@ class CustodyTransferEvent(models.Model):
     """Custody Transfer Event"""
 
     _name = "custody.transfer.event"
-    _description = "Custody Transfer Event" 
+    _description = "Custody Transfer Event"
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "transfer_date desc, transfer_time desc"
 
@@ -29,23 +29,23 @@ class CustodyTransferEvent(models.Model):
         tracking=True,
         index=True,
         help="Unique identifier for this transfer event":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this transfer event"
-    
+
 
         # ============================================================================
-    # RELATIONSHIP FIELDS  
+    # RELATIONSHIP FIELDS
         # ============================================================================
     custody_record_id = fields.Many2one(
         "records.chain.of.custody",
@@ -53,13 +53,13 @@ class CustodyTransferEvent(models.Model):
         required=True,
         ondelete="cascade",
         help="Parent chain of custody record"
-    
+
 
     work_order_id = fields.Many2one(
         "container.destruction.work.order",
         string="Destruction Work Order",
         help="Related container destruction work order"
-    
+
 
         # ============================================================================
     # TRANSFER DETAILS
@@ -70,7 +70,7 @@ class CustodyTransferEvent(models.Model):
         default=fields.Date.today,
         tracking=True,
         help="Date of custody transfer"
-    
+
 
     transfer_time = fields.Datetime(
         string="Transfer Time",
@@ -78,7 +78,7 @@ class CustodyTransferEvent(models.Model):
         required=True,
         tracking=True,
         help="Exact time of custody transfer"
-    
+
 
     ,
     transfer_type = fields.Selection([))
@@ -89,7 +89,7 @@ class CustodyTransferEvent(models.Model):
         ('return', 'Return to Customer'),
         ('archive', 'Transfer to Archive'),
         ('other', 'Other Transfer')
-    
+
 
         # ============================================================================
     # CUSTODY PARTIES
@@ -100,21 +100,21 @@ class CustodyTransferEvent(models.Model):
         required=True,
         tracking=True,
         help="User/employee transferring custody"
-    
+
 
     transferred_to_id = fields.Many2one(
-        "res.users", 
+        "res.users",
         string="Transferred To",
         required=True,
         tracking=True,
         help="User/employee receiving custody"
-    
+
 
     witness_id = fields.Many2one(
         "res.users",
         string="Witness",
         help="Witness to the custody transfer"
-    
+
 
         # ============================================================================
     # LOCATION INFORMATION
@@ -123,23 +123,23 @@ class CustodyTransferEvent(models.Model):
         string="From Location",
         required=True,
         help="Location where items are transferred from"
-    
+
 
     to_location = fields.Char(
-        string="To Location", 
+        string="To Location",
         required=True,
         help="Location where items are transferred to"
-    
+
 
     gps_latitude = fields.Float(
         string="GPS Latitude",
         help="GPS latitude of transfer location"
-    
+
 
     gps_longitude = fields.Float(
         string="GPS Longitude",
         help="GPS longitude of transfer location"
-    
+
 
         # ============================================================================
     # ITEMS TRANSFERRED
@@ -148,29 +148,29 @@ class CustodyTransferEvent(models.Model):
         string="Items Description",
         required=True,
         help="Description of items being transferred"
-    
+
 
     item_count = fields.Integer(
         string="Item Count",
         help="Number of items transferred"
-    
+
 
     total_weight = fields.Float(
         ,
     string="Total Weight (lbs)",
         help="Total weight of transferred items"
-    
+
 
     total_volume = fields.Float(
         ,
     string="Total Volume (CF)",
         help="Total volume of transferred items"
-    
+
 
     container_numbers = fields.Text(
         string="Container Numbers",
         help="List of container numbers involved"
-    
+
 
         # ============================================================================
     # VERIFICATION AND SECURITY
@@ -183,24 +183,24 @@ class CustodyTransferEvent(models.Model):
         ('signature', 'Signature Verification'),
         ('biometric', 'Biometric Verification'),
         ('photo', 'Photographic Evidence')
-    
+
 
     security_seal_number = fields.Char(
         string="Security Seal Number",
         help="Security seal number if applicable":
-    
+
 
     transfer_authorized = fields.Boolean(
         string="Transfer Authorized",
         default=True,
         tracking=True,
         help="Whether transfer was properly authorized"
-    
+
 
     authorization_code = fields.Char(
         string="Authorization Code",
         help="Authorization code for transfer":
-    
+
 
         # ============================================================================
     # DOCUMENTATION
@@ -208,22 +208,22 @@ class CustodyTransferEvent(models.Model):
     transfer_document = fields.Binary(
         string="Transfer Document",
         help="Scanned transfer document"
-    
+
 
     transfer_document_filename = fields.Char(
         string="Document Filename"
-    
+
 
     photos_taken = fields.Boolean(
         string="Photos Taken",
         default=False,
         help="Whether photos were taken during transfer"
-    
+
 
     notes = fields.Text(
         string="Transfer Notes",
         help="Additional notes about the transfer"
-    
+
 
         # ============================================================================
     # SIGNATURES
@@ -231,17 +231,17 @@ class CustodyTransferEvent(models.Model):
     transferred_from_signature = fields.Binary(
         string="Transferor Signature",
         help="Digital signature of person transferring"
-    
+
 
     transferred_to_signature = fields.Binary(
-        string="Receiver Signature", 
+        string="Receiver Signature",
         help="Digital signature of person receiving"
-    
+
 
     witness_signature = fields.Binary(
         string="Witness Signature",
         help="Digital signature of witness"
-    
+
 
         # ============================================================================
     # STATUS AND COMPLIANCE
@@ -254,19 +254,19 @@ class CustodyTransferEvent(models.Model):
         ('verified', 'Verified'),
         ('disputed', 'Disputed'),
         ('cancelled', 'Cancelled')
-    
+
 
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
         compute='_compute_naid_compliant',
         help="Whether transfer meets NAID requirements"
-    
+
 
     compliance_issues = fields.Text(
         string="Compliance Issues",
         ,
     help="Any compliance issues identified"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
@@ -284,11 +284,11 @@ class CustodyTransferEvent(models.Model):
         """Check NAID compliance requirements"""
         for record in self:
             record.naid_compliant = bool()
-                record.transferred_from_signature and 
+                record.transferred_from_signature and
                 record.transferred_to_signature and
                 record.transfer_authorized and
                 record.verification_method
-            
+
 
     # ============================================================================
         # ACTION METHODS
@@ -298,7 +298,7 @@ class CustodyTransferEvent(models.Model):
         self.ensure_one()
         if self.status != 'pending':
             raise UserError(_('Can only start pending transfers'))
-        
+
         self.write({'status': 'in_progress'})
         self.message_post(body=_('Custody transfer started'))
 
@@ -307,15 +307,15 @@ class CustodyTransferEvent(models.Model):
         self.ensure_one()
         if self.status != 'in_progress':
             raise UserError(_('Can only complete transfers in progress'))
-        
+
         # Validate required signatures
         if not self.transferred_from_signature or not self.transferred_to_signature:
             raise UserError(_('Both transferor and receiver signatures are required'))
-        
+
         self.write({)}
             'status': 'completed',
             'transfer_time': fields.Datetime.now()
-        
+
         self.message_post(body=_('Custody transfer completed'))
 
     def action_verify_transfer(self):
@@ -323,7 +323,7 @@ class CustodyTransferEvent(models.Model):
         self.ensure_one()
         if self.status != 'completed':
             raise UserError(_('Can only verify completed transfers'))
-        
+
         self.write({'status': 'verified'})
         self.message_post(body=_('Custody transfer verified'))
 
@@ -332,7 +332,7 @@ class CustodyTransferEvent(models.Model):
         self.ensure_one()
         if self.status in ('cancelled', 'disputed'):
             raise UserError(_('Cannot dispute cancelled or already disputed transfers'))
-        
+
         self.write({'status': 'disputed'})
         self.message_post(body=_('Custody transfer disputed'))
 
@@ -341,7 +341,7 @@ class CustodyTransferEvent(models.Model):
         self.ensure_one()
         if self.status in ('completed', 'verified', 'cancelled'):
             raise UserError(_('Cannot cancel completed, verified, or already cancelled transfers'))
-        
+
         self.write({'status': 'cancelled'})
         self.message_post(body=_('Custody transfer cancelled'))
 

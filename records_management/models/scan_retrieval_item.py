@@ -26,24 +26,24 @@ class ScanRetrievalItem(models.Model):
     # CORE FIELDS
         # ============================================================================
     name = fields.Char(
-        string="Item Reference", 
-        required=True, 
-        tracking=True, 
+        string="Item Reference",
+        required=True,
+        tracking=True,
         index=True,
         help="Unique reference for this scan item":
             pass
-    
+
     description = fields.Text(
-        string="Item Description", 
+        string="Item Description",
         required=True,
         help="Detailed description of what needs to be scanned"
-    
+
     sequence = fields.Integer(
-        string="Sequence", 
+        string="Sequence",
         default=10,
         help="Order in which items should be processed"
-    
-    
+
+
         # ============================================================================
     # WORK ORDER RELATIONSHIP
         # ============================================================================
@@ -53,33 +53,33 @@ class ScanRetrievalItem(models.Model):
         required=True,
         ondelete='cascade',
         help="Parent scan retrieval work order"
-    
-    
+
+
         # ============================================================================
     # SOURCE INFORMATION
         # ============================================================================
     container_id = fields.Many2one(
-        "records.container", 
+        "records.container",
         string="Source Container",
         help="Container holding the documents to scan"
-    
+
     document_id = fields.Many2one(
-        "records.document", 
+        "records.document",
         string="Source Document/File",
         help="Specific document/file containing pages to scan"
-    
+
     page_range = fields.Char(
         string="Page Range",
         ,
     help="Specific pages to scan (e.g., '1-5, 8, 10-12')"
-    
+
     page_count = fields.Integer(
-        string="Page Count", 
+        string="Page Count",
         default=1,
         ,
     help="Number of pages to be scanned for this item":
-    
-    
+
+
         # ============================================================================
     # SCANNING SPECIFICATIONS (Override work order defaults)
         # ============================================================================
@@ -88,13 +88,13 @@ class ScanRetrievalItem(models.Model):
         ('300', '300 DPI'),
         ('600', '600 DPI'),
         ('1200', '1200 DPI'),
-    
+
         help="Override default resolution for this specific item"
     custom_color_mode = fields.Selection([))
         ('bw', 'Black & White'),
         ('grayscale', 'Grayscale'),
         ('color', 'Full Color'),
-    
+
         help="Override default color mode for this specific item"
     # ============================================================================
         # STATUS AND QUALITY TRACKING
@@ -108,43 +108,43 @@ class ScanRetrievalItem(models.Model):
         ('quality_review', 'Quality Review'),
         ('approved', 'Approved'),
         ('rescan_needed', 'Rescan Needed'),
-    
+
         help="Current processing status of this scan item"
-    
+
     quality_rating = fields.Float(
-        string="Quality Rating", 
+        string="Quality Rating",
         help="Quality rating on a 1-10 scale"
-    
+
     quality_notes = fields.Text(
         string="Quality Notes",
         help="Notes about scan quality or issues encountered"
-    
-    
+
+
         # ============================================================================
     # OUTPUT FILE INFORMATION
         # ============================================================================
     scanned_file_path = fields.Char(
         string="Scanned File Path",
         help="File system path to the scanned output file"
-    
+
     file_size_mb = fields.Float(
         ,
     string="File Size (MB)",
         help="Size of the scanned file in megabytes"
-    
-    
+
+
         # ============================================================================
     # PROCESSING TIMESTAMPS
         # ============================================================================
     scan_start_time = fields.Datetime(
         string="Scan Start Time",
         help="When scanning of this item began"
-    
+
     scan_completion_time = fields.Datetime(
         string="Scan Completion Time",
         help="When scanning of this item was completed"
-    
-    
+
+
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
         # ============================================================================
@@ -231,7 +231,7 @@ class ScanRetrievalItem(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    
+
         help='Current status of the record'
 
     # ============================================================================
@@ -242,55 +242,55 @@ class ScanRetrievalItem(models.Model):
         self.ensure_one()
         if self.status not in ['pending', 'located'):
             raise UserError(_("Can only start scanning from pending or located status"))
-        
+
         self.write({)}
             'status': 'scanning',
             'scan_start_time': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Started scanning item: %s", self.description),
             message_type='notification'
-        
+
 
     def action_complete_scanning(self):
         """Mark this item as scanned"""
         self.ensure_one()
         if self.status != 'scanning':
             raise UserError(_("Can only complete scanning from scanning status"))
-        
+
         self.write({)}
             'status': 'scanned',
             'scan_completion_time': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Completed scanning item: %s", self.description),
             message_type='notification'
-        
+
 
     def action_approve_quality(self):
         """Approve the quality of this scanned item"""
         self.ensure_one()
         if self.status != 'quality_review':
             raise UserError(_("Can only approve quality from quality review status"))
-        
+
         self.write({'status': 'approved'})
         self.message_post()
             body=_("Quality approved for item: %s", self.description),
             message_type='notification'
-        
+
 
     def action_request_rescan(self):
         """Request that this item be rescanned due to quality issues"""
         self.ensure_one()
         if self.status not in ['scanned', 'quality_review']:
             raise UserError(_("Can only request rescan from scanned or quality review status"))
-        
+
         self.write({)}
             'status': 'rescan_needed',
             'scan_start_time': False,
             'scan_completion_time': False
-        
+
         self.message_post()
             body=_("Rescan requested for item: %s", self.description),
             message_type='notification'
-        
+

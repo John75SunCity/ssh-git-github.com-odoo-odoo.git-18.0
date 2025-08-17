@@ -25,19 +25,19 @@ class RecordsTag(models.Model):
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("archived", "Archived"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
-    
+
 
         # Company and User
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company
-    
+
     user_id = fields.Many2one(
         "res.users", string="Responsible User", default=lambda self: self.env.user
-    
+
 
         # Timestamps
     date_created = fields.Datetime(string="Created Date",,
@@ -56,13 +56,13 @@ class RecordsTag(models.Model):
             ("legal", "Legal"),
             ("financial", "Financial"),
             ("hr", "HR"),
-        
+
         string="Category",
-    
+
     priority = fields.Selection(
         [("low", "Low"), ("normal", "Normal"), ("high", "High")), string="Priority",
         default="normal",
-    
+
     auto_assign = fields.Boolean("Auto Assign",,
     default=False),
     icon = fields.Char("Icon")
@@ -72,7 +72,7 @@ class RecordsTag(models.Model):
     string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -98,7 +98,7 @@ class RecordsTag(models.Model):
         string="Partner",
         help="Associated partner for this record":
             pass
-    
+
     ,
     help = fields.Char(string='Help'),
     res_model = fields.Char(string='Res Model'),
@@ -136,48 +136,48 @@ class RecordsTag(models.Model):
 
 class RecordsTagReport(models.TransientModel):
     """Records Tag Analysis Report"""
-    
+
     _name = 'records.tag.report'
     _description = 'Records Tag Analysis Report'
 
         # Report date range
     date_from = fields.Date(
-        string='Date From', 
-        required=True, 
+        string='Date From',
+        required=True,
         default=fields.Date.today
-    
+
     date_to = fields.Date(
-        string='Date To', 
-        required=True, 
+        string='Date To',
+        required=True,
         default=fields.Date.today
-    
-    
+
+
         # Tag filters
     tag_ids = fields.Many2many(
-        'records.tag', 
+        'records.tag',
         string='Tags'
-    
-    
+
+
         # Report results
     tag_usage_count = fields.Integer(
-        string='Usage Count', 
+        string='Usage Count',
         compute='_compute_tag_metrics'
-    
+
     most_used_tags = fields.Text(
-        string='Most Used Tags', 
+        string='Most Used Tags',
         ,
     compute='_compute_tag_metrics'
-    
-    
+
+
     @api.depends('date_from', 'date_to', 'tag_ids')
     def _compute_tag_metrics(self):
         """Compute tag usage analytics"""
         for record in self:
             # Sample computation - adjust based on actual tag usage in your models
             domain = [)
-                ('create_date', '>=', record.date_from), 
+                ('create_date', '>=', record.date_from),
                 ('create_date', '<=', record.date_to)
-            
+
             if record.tag_ids:
                 # This would need to be adjusted based on which models actually use tags
                 record.tag_usage_count = len(record.tag_ids)
@@ -185,7 +185,7 @@ class RecordsTagReport(models.TransientModel):
             else:
                 record.tag_usage_count = 0
                 record.most_used_tags = ''
-    
+
     def generate_report(self):
         """Generate the tag analysis report"""
         return {}
@@ -194,5 +194,5 @@ class RecordsTagReport(models.TransientModel):
             'report_type': 'qweb-pdf',
             'data': {'form_data': self.read()[0]},
             'context': self.env.context,
-        
+
 ))))))

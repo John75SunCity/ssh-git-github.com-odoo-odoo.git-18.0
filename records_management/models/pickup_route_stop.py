@@ -41,10 +41,10 @@ class PickupRouteStop(models.Model):
         # ============================================================================
     display_name = fields.Char(
         string="Stop Name", compute="_compute_display_name", store=True
-    
+
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    
+
     active = fields.Boolean(string="Active",,
     default=True)
 
@@ -57,18 +57,18 @@ class PickupRouteStop(models.Model):
         required=True,
         ondelete="cascade",
         index=True,
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Customer",
         required=True,
         help="Customer location for this stop",:
-    
+
     pickup_request_id = fields.Many2one(
         "pickup.request",
         string="Pickup Request",
         help="Associated pickup request for this stop",:
-    
+
 
         # ============================================================================
     # SEQUENCE AND PLANNING
@@ -77,25 +77,25 @@ class PickupRouteStop(models.Model):
         string="Stop Sequence",
         default=10,
         help="Order of this stop in the route",
-    
+
     planned_arrival = fields.Datetime(
         string="Planned Arrival", help="When we plan to arrive at this stop"
-    
+
     planned_departure = fields.Datetime(
         string="Planned Departure", help="When we plan to leave this stop"
-    
+
     actual_arrival = fields.Datetime(string="Actual Arrival",,
     tracking=True),
     actual_departure = fields.Datetime(
         string="Actual Departure", tracking=True
-    
+
 
         # ============================================================================
     # LOCATION AND ADDRESS
         # ============================================================================
     address = fields.Text(
         string="Stop Address", help="Full address for this stop":
-    
+
     gps_latitude = fields.Float(string="GPS Latitude",,
     digits=(10, 7))
     gps_longitude = fields.Float(string="GPS Longitude",,
@@ -103,7 +103,7 @@ class PickupRouteStop(models.Model):
     distance = fields.Float(
         ,
     string="Distance to Stop (km)", help="Distance from previous stop"
-    
+
 
         # ============================================================================
     # STATUS AND COMPLETION
@@ -115,11 +115,11 @@ class PickupRouteStop(models.Model):
             ("arrived", "Arrived"),
             ("completed", "Completed"),
             ("skipped", "Skipped"),
-        
+
         string="Status",
         default="planned",
         tracking=True,
-    
+
 
     completion_status = fields.Selection(
         [)
@@ -127,9 +127,9 @@ class PickupRouteStop(models.Model):
             ("partial", "Partial"),
             ("failed", "Failed"),
             ("rescheduled", "Rescheduled"),
-        
+
         string="Completion Status",
-    
+
 
         # ============================================================================
     # PERFORMANCE METRICS
@@ -138,21 +138,21 @@ class PickupRouteStop(models.Model):
         ,
     string="Planned Duration (minutes)",
         help="Expected time to spend at this stop",
-    
+
     actual_duration = fields.Float(
         ,
     string="Actual Duration (minutes)",
         compute="_compute_actual_duration",
         store=True,
         help="Actual time spent at this stop",
-    
+
     delay_minutes = fields.Float(
         ,
     string="Delay (minutes)",
         compute="_compute_delay",
         store=True,
         help="Minutes behind schedule",
-    
+
 
         # ============================================================================
     # NOTES AND DETAILS
@@ -161,19 +161,19 @@ class PickupRouteStop(models.Model):
     completion_notes = fields.Text(
         string="Completion Notes",
         help="Notes about what was completed at this stop",
-    
+
     special_instructions = fields.Text(
         string="Special Instructions",
         help="Special handling instructions for this stop",:
-    
+
 
         # Mail framework fields
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -277,11 +277,11 @@ class PickupRouteStop(models.Model):
                     stop.sequence,
                     stop.partner_id.name,
                     stop.pickup_request_id.name,
-                
+
             else:
                 stop.display_name = _()
                     "Stop %s: %s", stop.sequence, stop.partner_id.name
-                
+
 
     @api.depends("actual_arrival", "actual_departure")
     def _compute_actual_duration(self):
@@ -290,7 +290,7 @@ class PickupRouteStop(models.Model):
                 delta = stop.actual_departure - stop.actual_arrival
                 stop.actual_duration = ()
                     delta.total_seconds() / 60.0
-                
+
             else:
                 stop.actual_duration = 0.0
 
@@ -301,7 +301,7 @@ class PickupRouteStop(models.Model):
                 delta = stop.actual_arrival - stop.planned_arrival
                 stop.delay_minutes = ()
                     delta.total_seconds() / 60.0
-                
+
             else:
                 stop.delay_minutes = 0.0
 
@@ -325,7 +325,7 @@ class PickupRouteStop(models.Model):
 
         self.write()
             {"state": "arrived", "actual_arrival": fields.Datetime.now()}
-        
+
         self.message_post(body=_("Arrived at stop"))
 
     def action_complete_stop(self):
@@ -339,8 +339,8 @@ class PickupRouteStop(models.Model):
                 "state": "completed",
                 "actual_departure": fields.Datetime.now(),
                 "completion_status": "successful",
-            
-        
+
+
 
         # Update associated pickup request
         if self.pickup_request_id:
@@ -373,7 +373,7 @@ class PickupRouteStop(models.Model):
                 if stop.planned_arrival >= stop.planned_departure:
                     raise ValidationError()
                         _("Planned departure must be after arrival")
-                    
+
 
     @api.constrains("actual_arrival", "actual_departure")
     def _check_actual_times(self):
@@ -382,7 +382,7 @@ class PickupRouteStop(models.Model):
                 if stop.actual_arrival >= stop.actual_departure:
                     raise ValidationError()
                         _("Actual departure must be after arrival")
-                    
+
 
     @api.constrains("gps_latitude")
     def _check_gps_latitude(self):
@@ -390,7 +390,7 @@ class PickupRouteStop(models.Model):
             if stop.gps_latitude and not (-90 <= stop.gps_latitude <= 90):
                 raise ValidationError()
                     _("GPS latitude must be between -90 and 90 degrees")
-                
+
 
     @api.constrains("gps_longitude")
     def _check_gps_longitude(self):
@@ -398,7 +398,7 @@ class PickupRouteStop(models.Model):
             if stop.gps_longitude and not (-180 <= stop.gps_longitude <= 180):
                 raise ValidationError()
                     _("GPS longitude must be between -180 and 180 degrees")
-                
+
 
     # ============================================================================
         # OVERRIDE METHODS

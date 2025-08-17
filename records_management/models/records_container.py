@@ -37,7 +37,7 @@ class RecordsContainer(models.Model):
 
     name = fields.Char(
         string="Container Number", required=True, tracking=True, index=True
-    
+
     code = fields.Char(string="Container Code", index=True,,
     tracking=True),
     description = fields.Text(string="Description"),
@@ -54,7 +54,7 @@ class RecordsContainer(models.Model):
         default=lambda self: self.env.company.currency_id,
         required=True,
         help="Currency for monetary fields":
-    
+
 
         # ============================================================================
     # FRAMEWORK FIELDS
@@ -65,13 +65,13 @@ class RecordsContainer(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Container Manager",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -86,11 +86,11 @@ class RecordsContainer(models.Model):
             ("stored", "Stored"),
             ("pending_destruction", "Pending Destruction"),
             ("destroyed", "Destroyed"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
-    
+
 
         # ============================================================================
     # CUSTOMER & LOCATION RELATIONSHIPS
@@ -98,28 +98,28 @@ class RecordsContainer(models.Model):
 
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    
+
     department_id = fields.Many2one("records.department",,
     string="Department"),
     location_id = fields.Many2one(
         "records.location", string="Storage Location", tracking=True
-    
+
     temp_inventory_id = fields.Many2one(
         "temp.inventory",
         string="Temporary Inventory",
         help="Temporary inventory location for this container",:
-    
+
     customer_inventory_id = fields.Many2one(
         "customer.inventory",
         string="Customer Inventory",
         ,
     help="Customer inventory record for this container",:
-    
+
 
         # Barcode Product Relationship (for barcoded containers):
     barcode_product_id = fields.Many2one(
         "barcode.product", string="Barcode Product", tracking=True
-    
+
 
         # ============================================================================
     # CONTAINER SPECIFICATIONS
@@ -127,12 +127,12 @@ class RecordsContainer(models.Model):
 
     container_type_id = fields.Many2one(
         "records.container.type", string="Container Type", required=True
-    
+
     document_type_id = fields.Many2one(
-        "records.document.type", 
+        "records.document.type",
         string="Primary Document Type",
         help="Primary document type for containers with uniform content":
-    
+
     barcode = fields.Char(string="Barcode", index=True,,
     tracking=True),
     dimensions = fields.Char(string="Dimensions"),
@@ -146,10 +146,10 @@ class RecordsContainer(models.Model):
 
     document_ids = fields.One2many(
         "records.document", "container_id", string="Documents"
-    
+
     document_count = fields.Integer(
         string="Document Count", compute="_compute_document_count", store=True
-    
+
     ,
     content_description = fields.Text(string="Content Description"),
     is_full = fields.Boolean(string="Container Full",,
@@ -166,38 +166,38 @@ class RecordsContainer(models.Model):
         index=True,  # Indexed for fast alphabetical searching:
         ,
     help="Starting letter/sequence for files in this container (e.g., 'A', 'Adams')",:
-    
+
     alpha_range_end = fields.Char(
         string="Alphabetical End",
         size=5,
         index=True,  # Indexed for fast alphabetical searching:
         ,
     help="Ending letter/sequence for files in this container (e.g., 'G', 'Green')",:
-    
+
     alpha_range_display = fields.Char(
         string="Alpha Range",
         compute="_compute_alpha_range_display",
         store=True,
         help="Display format: A-G or Adams-Green",
-    
+
 
         # Date ranges for content organization:
     content_date_from = fields.Date(
         string="Content Date From",
         index=True,  # Indexed for fast date range searches:
         help="Earliest date of documents/services in this container",
-    
+
     content_date_to = fields.Date(
         string="Content Date To",
         index=True,  # Indexed for fast date range searches:
         help="Latest date of documents/services in this container",
-    
+
     content_date_range_display = fields.Char(
         string="Date Range",
         compute="_compute_date_range_display",
         store=True,
         help="Display format: 7/1/2024 - 9/23/2024",
-    
+
 
         # Content type and categorization
     ,
@@ -213,30 +213,30 @@ class RecordsContainer(models.Model):
             ("insurance", "Insurance Records"),
             ("mixed", "Mixed Content"),
             ("other", "Other"),
-        
+
         string="Primary Content Type",
         index=True,  # Indexed for content type filtering:
         help="Main type of content in this container",
-    
+
 
         # Search keywords and tags for content:
     search_keywords = fields.Text(
         string="Search Keywords",
         ,
     help="Keywords that help identify content in this container (names, topics, etc.)",
-    
+
 
         # Customer-specific organization fields
     customer_sequence_start = fields.Char(
         string="Customer Sequence Start",
         index=True,  # Indexed for customer sequence searches:
         help="Starting sequence for customer-specific numbering/organization",:
-    
+
     customer_sequence_end = fields.Char(
         string="Customer Sequence End",
         index=True,  # Indexed for customer sequence searches:
         help="Ending sequence for customer-specific numbering/organization",:
-    
+
 
         # ============================================================================
     # DATE TRACKING
@@ -244,17 +244,17 @@ class RecordsContainer(models.Model):
 
     received_date = fields.Date(
         string="Received Date", default=fields.Date.today, tracking=True
-    
+
     collection_date = fields.Date(
-        string="Collection Date", 
+        string="Collection Date",
         tracking=True,
         help="Date when container was collected from customer"
-    
+
     service_date = fields.Date(
         string="Service Date",
         tracking=True,
         help="Date of last service performed on this container"
-    
+
     ,
     storage_start_date = fields.Date(string="Storage Start Date"),
     stored_date = fields.Date(string="Stored Date",,
@@ -265,24 +265,24 @@ class RecordsContainer(models.Model):
         # ============================================================================
     # MOVEMENT TRACKING FIELDS
         # ============================================================================
-    
+
     from_location_id = fields.Many2one(
         'records.location',
         string='From Location',
         help="Location where container was moved from during last movement",
         tracking=True,
-    
+
     to_location_id = fields.Many2one(
-        'records.location', 
+        'records.location',
         string='To Location',
         help="Location where container was moved to during last movement",
         tracking=True,
-    
+
     movement_date = fields.Datetime(
         string='Movement Date',
         help="Date and time of last container movement",
         tracking=True,
-    
+
     ,
     movement_type = fields.Selection(
         [)
@@ -291,84 +291,84 @@ class RecordsContainer(models.Model):
             ('transfer', 'Transfer'),
             ('pickup', 'Customer Pickup'),
             ('delivery', 'Customer Delivery'),
-        
+
         string='Movement Type',
         help="Type of the last movement performed",
         tracking=True,
-    
+
 
         # ============================================================================
     # SERVICE & BUSINESS CLASSIFICATION
         # ============================================================================
-    
+
     service_type = fields.Selection(
         [)
             ('pickup', 'Pickup Service'),
             ('delivery', 'Delivery Service'),
-            ('destruction', 'Destruction Service'), 
+            ('destruction', 'Destruction Service'),
             ('storage', 'Storage Service'),
             ('retrieval', 'Retrieval Service'),
             ('scanning', 'Document Scanning'),
             ('other', 'Other Service'),
-        
+
         string='Service Type',
         help="Primary service type for this container",:
         index=True,
         tracking=True,
-    
-    
+
+
     access_level = fields.Selection(
         [)
             ('public', 'Public Access'),
             ('restricted', 'Restricted Access'),
             ('confidential', 'Confidential'),
             ('top_secret', 'Top Secret'),
-        
+
         string='Access Level',
         default='public',
         help="Security access level for container contents",:
         tracking=True,
-    
-    
+
+
         # ============================================================================
     # ADVANCED CATEGORIZATION & METADATA
         # ============================================================================
-    
+
     compliance_category = fields.Char(
         string='Compliance Category',
         ,
     help="Regulatory compliance category (HIPAA, SOX, PCI, etc.)",
         index=True,
-    
-    
+
+
     industry_category = fields.Selection(
         [)
             ('healthcare', 'Healthcare'),
             ('financial', 'Financial Services'),
-            ('legal', 'Legal Services'), 
+            ('legal', 'Legal Services'),
             ('education', 'Education'),
             ('government', 'Government'),
             ('manufacturing', 'Manufacturing'),
             ('retail', 'Retail'),
             ('other', 'Other'),
-        
+
         string='Industry Category',
         help="Industry classification for specialized handling",:
         index=True,
-    
-    
+
+
     department_code = fields.Char(
         string='Department Code',
         help="Internal department code for organization",:
         index=True,
-    
-    
+
+
     project_number = fields.Char(
         string='Project Number',
         help="Associated project or job number",
         index=True,
-    
-    
+
+
     ,
     priority_level = fields.Selection(
         [)
@@ -376,17 +376,17 @@ class RecordsContainer(models.Model):
             ('normal', 'Normal Priority'),
             ('high', 'High Priority'),
             ('urgent', 'Urgent'),
-        
+
         string='Priority Level',
         default='normal',
         help="Priority level for handling and processing",:
         tracking=True,
-    
-    
+
+
         # ============================================================================
     # ADDITIONAL METADATA & TRACKING
         # ============================================================================
-    
+
     media_type = fields.Selection(
         [)
             ('paper', 'Paper Documents'),
@@ -395,45 +395,45 @@ class RecordsContainer(models.Model):
             ('magnetic', 'Magnetic Media'),
             ('optical', 'Optical Media'),
             ('mixed', 'Mixed Media'),
-        
+
         string='Media Type',
         default='paper',
         help="Primary media type stored in container",
-    
-    
+
+
     language_codes = fields.Char(
         string='Language Codes',
         ,
     help="Language codes for multilingual content (e.g., en,es,fr)",:
-    
-    
+
+
     retention_category = fields.Char(
         string='Retention Category',
         help="Categorization for retention policy application",:
         index=True,
-    
-    
+
+
     special_dates = fields.Text(
         string='Special Dates',
         help="JSON or text field for storing special dates and milestones",:
-    
-    
+
+
     bale_weight = fields.Float(
         string='Bale Weight',
         digits='Stock Weight',
         help="Weight when container is prepared for baling/recycling",:
-    
-    
+
+
         # Key-value metadata fields for flexible data storage:
     key = fields.Char(
         string='Metadata Key',
         help="Key for key-value metadata pairs",:
-    
-    
+
+
     value = fields.Text(
         string='Metadata Value',
         help="Value for key-value metadata pairs",:
-    
+
 
         # ============================================================================
     # RETENTION MANAGEMENT
@@ -441,14 +441,14 @@ class RecordsContainer(models.Model):
 
     retention_policy_id = fields.Many2one(
         "records.retention.policy", string="Retention Policy"
-    
+
     retention_years = fields.Integer(string="Retention Years",,
     default=7),
     destruction_due_date = fields.Date(
         string="Destruction Due Date",
         compute="_compute_destruction_due_date",
         store=True,
-    
+
     permanent_retention = fields.Boolean(string="Permanent Retention",,
     default=False)
 
@@ -458,7 +458,7 @@ class RecordsContainer(models.Model):
 
     billing_rate = fields.Float(
         string="Monthly Billing Rate", digits="Product Price", default=0.0
-    
+
     ,
     service_level = fields.Selection(
         [)
@@ -466,10 +466,10 @@ class RecordsContainer(models.Model):
             ("premium", "Premium"),
             ("climate_controlled", "Climate Controlled"),
             ("high_security", "High Security"),
-        
+
         string="Service Level",
         default="standard",
-    
+
 
         # ============================================================================
     # SECURITY & ACCESS
@@ -481,10 +481,10 @@ class RecordsContainer(models.Model):
             ("confidential", "Confidential"),
             ("restricted", "Restricted"),
             ("top_secret", "Top Secret"),
-        
+
         string="Security Level",
         default="confidential",
-    
+
     access_restriction = fields.Text(string="Access Restrictions"),
     authorized_user_ids = fields.Many2many("res.users",,
     string="Authorized Users")
@@ -500,10 +500,10 @@ class RecordsContainer(models.Model):
             ("fair", "Fair"),
             ("poor", "Poor"),
             ("damaged", "Damaged"),
-        
+
         string="Condition",
         default="good",
-    
+
     maintenance_notes = fields.Text(string="Maintenance Notes"),
     last_inspection_date = fields.Date(string="Last Inspection Date")
 
@@ -513,26 +513,26 @@ class RecordsContainer(models.Model):
 
     movement_ids = fields.One2many(
         "records.container.movement", "container_id", string="Movement History"
-    
+
     current_movement_id = fields.Many2one(
         "records.container.movement", string="Current Movement"
-    
+
 
         # Add conversion tracking fields
     conversion_date = fields.Datetime(
         string="Conversion Date",
         help="Date when container type was last converted",
         tracking=True,
-    
+
     conversion_reason = fields.Text(
         string="Conversion Reason", help="Reason for container type conversion":
-    
+
     converter_id = fields.Many2one(
         "records.container.type.converter",
         string="Type Converter",
         ,
     help="Reference to the conversion operation that modified this container",
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance):
@@ -543,23 +543,23 @@ class RecordsContainer(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_follower_ids = fields.One2many(
-        "mail.followers", 
+        "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
         # Added by Safe Business Fields Fixer
     security_seal_number = fields.Char(string="Security Seal Number",,
     tracking=True)
@@ -605,8 +605,8 @@ class RecordsContainer(models.Model):
             {}
                 "state": "active",
                 "storage_start_date": fields.Date.today(),
-            
-        
+
+
         self.message_post(body=_("Container activated for storage")):
     def action_mark_full(self):
         """Mark container as full"""
@@ -621,7 +621,7 @@ class RecordsContainer(models.Model):
         if self.permanent_retention:
             raise UserError()
                 _("Cannot schedule permanent retention containers for destruction"):
-            
+
 
         self.write({"state": "pending_destruction"})
         self.message_post(body=_("Container scheduled for destruction")):
@@ -635,8 +635,8 @@ class RecordsContainer(models.Model):
         self.write()
             {}
                 "destruction_date": fields.Date.today(),
-            
-        
+
+
         self.message_post(body=_("Container destroyed"))
 
     def action_view_documents(self):
@@ -649,7 +649,7 @@ class RecordsContainer(models.Model):
             "res_model": "records.document",
             "view_mode": "tree,form",
             "domain": [("container_id", "=", self.id)),
-        
+
 
     def action_generate_barcode(self):
 
@@ -663,7 +663,7 @@ class RecordsContainer(models.Model):
             self.barcode = (""")"
                 self.env["ir.sequence"].next_by_code("records.container.barcode")
                 or self.name
-            
+
         # Return a report action to print the barcode
         return self.env.ref("records_management.report_container_barcode").report_action(self)
 
@@ -690,7 +690,7 @@ class RecordsContainer(models.Model):
         self.write(vals)
         self.message_post()
             body=_("Container stored at location %s", self.location_id.name)
-        
+
 
     def action_retrieve_container(self):
         """Retrieve container from storage"""
@@ -719,11 +719,11 @@ class RecordsContainer(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_container_ids": [(6, 0, self.ids)]},
-        
+
 
     def create_movement_record(:)
         self, from_location_id, to_location_id, movement_type="transfer"
-    
+
         """Create movement record for container""":
         self.ensure_one()
         movement_vals = {}
@@ -732,7 +732,7 @@ class RecordsContainer(models.Model):
             "to_location_id": to_location_id,
             "movement_type": movement_type,
             "container_id": self.id,
-        
+
 
         movement = self.env["records.container.movement"].create(movement_vals)
         self.current_movement_id = movement.id
@@ -756,13 +756,13 @@ class RecordsContainer(models.Model):
                 container.destruction_due_date = ()
                     container.storage_start_date
                     + relativedelta(years=container.retention_years)
-                
+
 
     is_due_for_destruction = fields.Boolean(
         string="Due for Destruction",:
         compute="_compute_is_due_for_destruction",
         search="_search_due_for_destruction",
-    
+
     ,
     action_bulk_convert_container_type = fields.Selection([), string='Action Bulk Convert Container Type')  # TODO: Define selection options
     action_destroy_container = fields.Char(string='Action Destroy Container'),
@@ -805,7 +805,7 @@ class RecordsContainer(models.Model):
                 container.destruction_due_date
                 and container.destruction_due_date <= today
                 and not container.permanent_retention
-            
+
 
     @api.depends("alpha_range_start", "alpha_range_end")
     def _compute_alpha_range_display(self):
@@ -814,7 +814,7 @@ class RecordsContainer(models.Model):
             if container.alpha_range_start and container.alpha_range_end:
                 container.alpha_range_display = ()
                     f"{container.alpha_range_start}-{container.alpha_range_end}"
-                
+
             elif container.alpha_range_start:
                 container.alpha_range_display = f"{container.alpha_range_start}+"
             else:
@@ -845,7 +845,7 @@ class RecordsContainer(models.Model):
                 ("destruction_due_date", "<=", today),
                 ("permanent_retention", "=", False),
                 ("state", "!=", "destroyed"),
-            
+
         elif operator == "=" and not value:
             # Not due for destruction: due date is in future or permanent retention or destroyed
             return []
@@ -854,7 +854,7 @@ class RecordsContainer(models.Model):
                 "|",
                 ("permanent_retention", "=", True),
                 ("state", "=", "destroyed"),
-            
+
         elif operator == "!=" and value:
             # Not due for destruction:
             return []
@@ -863,14 +863,14 @@ class RecordsContainer(models.Model):
                 "|",
                 ("permanent_retention", "=", True),
                 ("state", "=", "destroyed"),
-            
+
         elif operator == "!=" and not value:
             # Due for destruction:
             return []
                 ("destruction_due_date", "<=", today),
                 ("permanent_retention", "=", False),
                 ("state", "!=", "destroyed"),
-            
+
         else:
             return []
 
@@ -884,7 +884,7 @@ class RecordsContainer(models.Model):
             if record.weight < 0 or record.cubic_feet < 0:
                 raise ValidationError()
                     _("Weight and cubic feet must be positive values")
-                
+
 
     @api.constrains("retention_years")
     def _check_retention_years(self):
@@ -899,10 +899,10 @@ class RecordsContainer(models.Model):
                 record.received_date
                 and record.storage_start_date
                 and record.received_date > record.storage_start_date
-            
+
                 raise ValidationError()
                     _("Storage start date cannot be before received date")
-                
+
 
     # ============================================================================
         # ORM OVERRIDES
@@ -914,7 +914,7 @@ class RecordsContainer(models.Model):
             if not vals.get("name") or vals["name"] == "/":
                 vals["name"] = ()
                     self.env["ir.sequence"].next_by_code("records.container") or "NEW"
-                
+
         return super().create(vals_list)
 
     def write(self, vals):
@@ -940,7 +940,7 @@ class RecordsContainer(models.Model):
             "premium": 6,
             "climate_controlled": 4,
             "high_security": 3,
-        
+
         interval = inspection_intervals.get(self.service_level, 12)
         base_date = self.last_inspection_date or fields.Date.today()
         return base_date + relativedelta(months=interval)

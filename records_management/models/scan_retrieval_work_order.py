@@ -51,27 +51,27 @@ class ScanRetrievalWorkOrder(models.Model):
         ,
     default=lambda self: _("New"),
         help="Unique scan retrieval work order number"
-    
+
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
         help="Formatted display name for the work order":
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
         index=True
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
         help="Primary user responsible for this work order":
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -90,7 +90,7 @@ class ScanRetrievalWorkOrder(models.Model):
         ('delivered', 'Delivered'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
-    
+
         help="Current status of the scan retrieval work order"
 
     priority = fields.Selection([))
@@ -98,7 +98,7 @@ class ScanRetrievalWorkOrder(models.Model):
         ('1', 'Normal'),
         ('2', 'High'),
         ('3', 'Urgent'),
-    
+
         help="Work order priority level for processing"
     # ============================================================================
         # CUSTOMER AND REQUEST INFORMATION
@@ -111,17 +111,17 @@ class ScanRetrievalWorkOrder(models.Model):
         ,
     domain="[('is_company', '=', True))",
         help="Customer requesting document scanning"
-    
+
     portal_request_id = fields.Many2one(
         "portal.request",
         string="Portal Request",
         help="Originating portal request if applicable":
-    
+
     scan_request_description = fields.Text(
         string="Scan Request Description",
         required=True,
         help="Detailed description of documents/pages to be scanned"
-    
+
 
         # ============================================================================
     # SCAN SPECIFICATION AND REQUIREMENTS
@@ -131,20 +131,20 @@ class ScanRetrievalWorkOrder(models.Model):
         "work_order_id",
         string="Scan Items",
         help="Specific documents/pages to be scanned"
-    
+
     item_count = fields.Integer(
         string="Item Count",
         compute="_compute_scan_metrics",
         store=True,
         help="Number of scan items"
-    
+
     total_pages_to_scan = fields.Integer(
         string="Total Pages to Scan",
         compute="_compute_scan_metrics",
         store=True,
         help="Total number of pages to be scanned"
-    
-    
+
+
         # Scanning specifications
     ,
     scan_resolution = fields.Selection([))
@@ -152,20 +152,20 @@ class ScanRetrievalWorkOrder(models.Model):
         ('300', '300 DPI - Standard'),
         ('600', '600 DPI - High Quality'),
         ('1200', '1200 DPI - Archive Quality'),
-    
+
         help="Resolution for document scanning"
     color_mode = fields.Selection([))
         ('bw', 'Black & White'),
         ('grayscale', 'Grayscale'),
         ('color', 'Full Color'),
-    
+
         help="Color mode for scanning"
     output_format = fields.Selection([))
         ('pdf', 'PDF'),
         ('tiff', 'TIFF'),
         ('jpeg', 'JPEG'),
         ('png', 'PNG'),
-    
+
         help="File format for scanned documents"
     # ============================================================================
         # SOURCE TRACKING
@@ -177,7 +177,7 @@ class ScanRetrievalWorkOrder(models.Model):
         "container_id",
         string="Source Containers",
         help="Containers containing documents to be scanned"
-    
+
     file_ids = fields.Many2many(
         "records.document",
         "scan_retrieval_document_rel",
@@ -185,7 +185,7 @@ class ScanRetrievalWorkOrder(models.Model):
         "document_id",
         string="Source Files",
         help="Specific files containing pages to scan"
-    
+
     location_ids = fields.Many2many(
         "records.location",
         "scan_retrieval_location_rel",
@@ -193,7 +193,7 @@ class ScanRetrievalWorkOrder(models.Model):
         "location_id",
         string="Source Locations",
         help="Locations where source materials are stored"
-    
+
 
         # ============================================================================
     # SCHEDULING AND TIMING
@@ -203,23 +203,23 @@ class ScanRetrievalWorkOrder(models.Model):
         required=True,
         tracking=True,
         help="Planned date to start scanning process"
-    
+
     estimated_completion_date = fields.Datetime(
         string="Estimated Completion",
         compute="_compute_estimated_completion",
         store=True,
         help="Estimated completion date based on scanning workload"
-    
+
     actual_start_date = fields.Datetime(
         string="Actual Start Date",
         tracking=True,
         help="Actual date when scanning started"
-    
+
     actual_completion_date = fields.Datetime(
         string="Actual Completion Date",
         tracking=True,
         help="Actual date when all scanning was completed"
-    
+
 
         # ============================================================================
     # EQUIPMENT AND PROCESSING OPTIONS
@@ -228,32 +228,32 @@ class ScanRetrievalWorkOrder(models.Model):
         "scan.equipment",
         string="Assigned Scanner",
         help="Scanner equipment assigned for this work order":
-    
+
     scanning_station = fields.Char(
         string="Scanning Station",
         help="Physical location/station where scanning will be performed"
-    
-    
+
+
         # Processing options
     ocr_required = fields.Boolean(
         string="OCR Processing Required",
         help="Whether OCR text recognition is needed"
-    
+
     image_enhancement = fields.Boolean(
         string="Image Enhancement",
         ,
     help="Apply image enhancement (noise reduction, contrast adjustment)"
-    
+
     auto_crop = fields.Boolean(
         string="Auto Crop",
         default=True,
         help="Automatically crop pages to remove borders"
-    
+
     deskew = fields.Boolean(
         string="Deskew Images",
         default=True,
         help="Automatically straighten skewed pages"
-    
+
 
         # ============================================================================
     # DELIVERY SPECIFICATIONS
@@ -266,25 +266,25 @@ class ScanRetrievalWorkOrder(models.Model):
         ('secure_link', 'Secure Download Link'),
         ('usb_drive', 'USB Drive'),
         ('cd_dvd', 'CD/DVD'),
-    
+
         help="Method for delivering scanned files"
     email_delivery_address = fields.Char(
         string="Email Delivery Address",
         ,
     help="Email address for delivery (if different from customer contact)":
-    
+
     file_naming_convention = fields.Selection([))
         ('sequential', 'Sequential (1, 2, 3...)'),
         ('descriptive', 'Descriptive (based on content)'),
         ('date_based', 'Date-based (YYYYMMDD_001)'),
         ('custom', 'Custom Pattern'),
-    
+
         help="Convention for naming scanned files"
     custom_naming_pattern = fields.Char(
         string="Custom Naming Pattern",
         ,
     help="Custom pattern for file naming (use {seq}, {date}, {desc) placeholders)":
-    
+
 
         # ============================================================================
     # PROGRESS TRACKING AND QUALITY
@@ -293,30 +293,30 @@ class ScanRetrievalWorkOrder(models.Model):
         string="Progress %",
         compute="_compute_progress",
         help="Overall progress percentage of the scanning work order"
-    
+
     pages_scanned_count = fields.Integer(
         string="Pages Scanned",
         help="Number of pages successfully scanned"
-    
+
     pages_processed_count = fields.Integer(
         string="Pages Processed",
         help="Number of pages that completed image processing"
-    
+
     pages_quality_approved_count = fields.Integer(
         string="Pages Quality Approved",
         help="Number of pages that passed quality review"
-    
-    
+
+
         # Quality metrics
     average_scan_quality = fields.Float(
         string="Average Scan Quality",
         ,
     help="Average quality rating for scanned pages (1-10 scale)":
-    
+
     rescan_required_count = fields.Integer(
         string="Rescans Required",
         help="Number of pages requiring rescanning due to quality issues"
-    
+
 
         # ============================================================================
     # DIGITAL ASSET MANAGEMENT
@@ -327,19 +327,19 @@ class ScanRetrievalWorkOrder(models.Model):
         compute="_compute_file_metrics",
         store=True,
         help="Total size of all scanned files in megabytes"
-    
+
     file_count = fields.Integer(
         string="File Count",
         compute="_compute_file_metrics",
         store=True,
         help="Number of output files created"
-    
+
     digital_asset_ids = fields.One2many(
         "scan.digital.asset",
         "work_order_id",
         string="Digital Assets",
         help="Created digital assets from scanning process"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -377,7 +377,7 @@ class ScanRetrievalWorkOrder(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.partner_id and record.total_pages_to_scan:
-                record.display_name = _("%s - %s (%s pages)", 
+                record.display_name = _("%s - %s (%s pages)",
                     record.name, record.partner_id.name, record.total_pages_to_scan
             elif record.partner_id:
                 record.display_name = _("%s - %s", record.name, record.partner_id.name)
@@ -400,18 +400,18 @@ class ScanRetrievalWorkOrder(models.Model):
                     '300': 2,    # 2 minutes per page at 300 DPI
                     '600': 4,    # 4 minutes per page at 600 DPI
                     '1200': 8,   # 8 minutes per page at 1200 DPI
-                
-                
+
+
                 # Add processing time if OCR or enhancement is enabled:
                 if record.ocr_required:
                     base_minutes_per_page += 2
                 if record.image_enhancement:
                     base_minutes_per_page += 1
-                
+
                 total_minutes = record.total_pages_to_scan * base_minutes_per_page
                 # Add 2 hours for setup and quality review:
                 total_minutes += 120
-                
+
                 record.estimated_completion_date = record.scheduled_date + timedelta(minutes=total_minutes)
             else:
                 record.estimated_completion_date = False
@@ -438,12 +438,12 @@ class ScanRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft work orders can be confirmed"))
-        
+
         self.write({'state': 'confirmed'})
         self.message_post()
             body=_("Scan retrieval work order confirmed for %s", self.partner_id.name),:
             message_type='notification'
-        
+
         return True
 
     def action_start_scanning(self):
@@ -451,15 +451,15 @@ class ScanRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state not in ['confirmed', 'locating', 'accessing']:
             raise UserError(_("Can only start scanning from confirmed, locating, or accessing state"))
-        
+
         self.write({)}
             'state': 'scanning',
             'actual_start_date': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Started scanning process"),
             message_type='notification'
-        
+
         return True
 
     def action_complete_scanning(self):
@@ -467,12 +467,12 @@ class ScanRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'scanning':
             raise UserError(_("Can only complete scanning from scanning state"))
-        
+
         self.write({'state': 'processing'})
         self.message_post()
             body=_("Scanning completed, starting image processing"),
             message_type='notification'
-        
+
         return True
 
     def action_quality_review(self):
@@ -480,12 +480,12 @@ class ScanRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'processing':
             raise UserError(_("Can only start quality review after processing"))
-        
+
         self.write({'state': 'quality_review'})
         self.message_post()
             body=_("Started quality review process"),
             message_type='notification'
-        
+
         return True
 
     def action_prepare_delivery(self):
@@ -493,12 +493,12 @@ class ScanRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'quality_review':
             raise UserError(_("Can only prepare delivery after quality review"))
-        
+
         self.write({'state': 'preparing'})
         self.message_post()
             body=_("Preparing scanned files for delivery"),:
             message_type='notification'
-        
+
         return True
 
     def action_deliver(self):
@@ -506,7 +506,7 @@ class ScanRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'preparing':
             raise UserError(_("Can only deliver from preparing state"))
-        
+
         # Implement delivery logic based on delivery_method
         if self.delivery_method == 'email':
             self._send_email_delivery()
@@ -514,14 +514,14 @@ class ScanRetrievalWorkOrder(models.Model):
             self._upload_to_portal()
         elif self.delivery_method == 'secure_link':
             self._create_secure_link()
-        
+
         self.write({'state': 'delivered'})
         self.message_post()
-            body=_("Scanned files delivered to %s via %s", 
-                    self.partner_id.name, 
+            body=_("Scanned files delivered to %s via %s",
+                    self.partner_id.name,
                     dict(self._fields['delivery_method'].selection)[self.delivery_method]
             message_type='notification'
-        
+
         return True
 
     def action_complete(self):
@@ -529,15 +529,15 @@ class ScanRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'delivered':
             raise UserError(_("Only delivered work orders can be completed"))
-        
+
         self.write({)}
             'state': 'completed',
             'actual_completion_date': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Scan retrieval work order completed successfully"),
             message_type='notification'
-        
+
         return True
 
     # ============================================================================
@@ -568,7 +568,7 @@ class ScanRetrievalWorkOrder(models.Model):
         self.message_post()
             body=_("%s pages scanned out of %s", pages_scanned, self.total_pages_to_scan),
             message_type='comment'
-        
+
 
     def generate_scan_report(self):
         """Generate scanning completion report"""
@@ -579,6 +579,6 @@ class ScanRetrievalWorkOrder(models.Model):
             'report_type': 'qweb-pdf',
             'res_id': self.id,
             'target': 'new',
-        
+
 
     """")))))))))))))))))))))))))

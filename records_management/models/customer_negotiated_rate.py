@@ -25,7 +25,7 @@ class CustomerNegotiatedRate(models.Model):
         tracking=True,
         help='Name for this negotiated rate':
             pass
-    
+
     partner_id = fields.Many2one(
         'res.partner',
         string='Customer',
@@ -34,26 +34,26 @@ class CustomerNegotiatedRate(models.Model):
     domain=[('is_company', '=', True)),
         tracking=True,
         help='Customer this negotiated rate applies to'
-    
+
     company_id = fields.Many2one(
         'res.company',
         string='Company',
         default=lambda self: self.env.company,
         required=True
-    
+
     user_id = fields.Many2one(
         'res.users',
         string='Account Manager',
         default=lambda self: self.env.user,
         tracking=True,
         help='Account manager who negotiated this rate'
-    
+
     active = fields.Boolean(
         string='Active',
         default=True,
         tracking=True,
         help='Whether this negotiated rate is active'
-    
+
 
         # ============================================================================
     # RATE CLASSIFICATION FIELDS
@@ -64,7 +64,7 @@ class CustomerNegotiatedRate(models.Model):
         ('service', 'Service Rate'),
         ('volume_discount', 'Volume Discount'),
         ('custom', 'Custom Rate')
-    
+
 
     container_type = fields.Selection([))
         ('type_01', 'TYPE 1 - Standard Box (1.2 CF)'),
@@ -73,7 +73,7 @@ class CustomerNegotiatedRate(models.Model):
         ('type_04', 'TYPE 4 - Odd Size/Temp Box (5.0 CF)'),
         ('type_06', 'TYPE 6 - Pathology Box (0.42 CF)'),
         ('all', 'All Container Types')
-    
+
 
     service_type = fields.Selection([))
         ('pickup', 'Pickup Service'),
@@ -84,7 +84,7 @@ class CustomerNegotiatedRate(models.Model):
         ('indexing', 'Document Indexing'),
         ('storage_move', 'Storage Location Move'),
         ('inventory_audit', 'Inventory Audit')
-    
+
 
         # ============================================================================
     # RATE VALIDITY FIELDS
@@ -95,19 +95,19 @@ class CustomerNegotiatedRate(models.Model):
         required=True,
         tracking=True,
         help='Date this rate becomes effective'
-    
+
     expiration_date = fields.Date(
         string='Expiration Date',
         tracking=True,
         ,
     help='Date this rate expires (leave blank for no expiration)':
-    
+
     is_current = fields.Boolean(
         string='Currently Active',
         compute='_compute_is_current',
         store=True,
         help='Whether this rate is currently active'
-    
+
 
         # ============================================================================
     # PRICING FIELDS
@@ -117,56 +117,56 @@ class CustomerNegotiatedRate(models.Model):
         string='Currency',
         default=lambda self: self.env.company.currency_id,
         required=True
-    
-    
+
+
         # Storage rates
     monthly_rate = fields.Monetary(
         string='Monthly Rate',
         currency_field='currency_id',
         help='Monthly storage rate per container'
-    
+
     annual_rate = fields.Monetary(
         string='Annual Rate',
         currency_field='currency_id',
         help='Annual storage rate per container'
-    
+
     setup_fee = fields.Monetary(
         string='Setup Fee',
         currency_field='currency_id',
         help='One-time setup fee for new containers':
-    
+
 
         # Service rates
     per_service_rate = fields.Monetary(
         string='Per Service Rate',
         currency_field='currency_id',
         help='Rate per service request'
-    
+
     per_hour_rate = fields.Monetary(
         string='Per Hour Rate',
         currency_field='currency_id',
         help='Hourly rate for time-based services':
-    
+
     per_document_rate = fields.Monetary(
         string='Per Document Rate',
         currency_field='currency_id',
         help='Rate per document for document services':
-    
+
 
         # Volume-based pricing
     minimum_volume = fields.Integer(
         string='Minimum Volume',
         default=1,
         help='Minimum volume required for this rate':
-    
+
     maximum_volume = fields.Integer(
         string='Maximum Volume',
         help='Maximum volume this rate applies to'
-    
+
     discount_percentage = fields.Float(
         string='Discount Percentage',
         help='Percentage discount from base rate'
-    
+
 
         # ============================================================================
     # CONTRACT FIELDS
@@ -174,23 +174,23 @@ class CustomerNegotiatedRate(models.Model):
     contract_reference = fields.Char(
         string='Contract Reference',
         help='Reference to the contract where this rate was negotiated'
-    
+
     approval_required = fields.Boolean(
         string='Requires Approval',
         default=True,
         help='Whether this rate requires management approval'
-    
+
     approved_by_id = fields.Many2one(
         'res.users',
         string='Approved By',
         tracking=True,
         help='User who approved this rate'
-    
+
     approval_date = fields.Datetime(
         string='Approval Date',
         tracking=True,
         help='Date this rate was approved'
-    
+
     ,
     state = fields.Selection([))
         ('draft', 'Draft'),
@@ -199,7 +199,7 @@ class CustomerNegotiatedRate(models.Model):
         ('active', 'Active'),
         ('expired', 'Expired'),
         ('cancelled', 'Cancelled')
-    
+
 
         # ============================================================================
     # BILLING INTEGRATION FIELDS
@@ -210,18 +210,18 @@ class CustomerNegotiatedRate(models.Model):
         ,
     domain="[('partner_id', '=', partner_id))",
         help='Billing profile this rate is associated with'
-    
+
     auto_apply = fields.Boolean(
         string='Auto Apply',
         default=True,
         help='Automatically apply this rate when conditions are met'
-    
+
     priority = fields.Integer(
         string='Priority',
         default=10,
         ,
     help='Priority order when multiple rates could apply (lower = higher priority)'
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -231,32 +231,32 @@ class CustomerNegotiatedRate(models.Model):
         compute='_compute_rate_comparison',
         currency_field='currency_id',
         help='Corresponding base rate for comparison':
-    
+
     savings_amount = fields.Monetary(
         string='Monthly Savings',
         compute='_compute_rate_comparison',
         currency_field='currency_id',
         help='Monthly savings compared to base rate'
-    
+
     savings_percentage = fields.Float(
         string='Savings %',
         compute='_compute_rate_comparison',
         help='Percentage savings compared to base rate'
-    
+
 
         # Statistics
     containers_using_rate = fields.Integer(
         string='Containers Using Rate',
         compute='_compute_usage_stats',
         help='Number of containers currently using this rate'
-    
+
     monthly_revenue_impact = fields.Monetary(
         string='Monthly Revenue Impact',
         compute='_compute_usage_stats',
         currency_field='currency_id',
         ,
     help='Monthly revenue impact of this rate'
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance):
@@ -267,23 +267,23 @@ class CustomerNegotiatedRate(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_follower_ids = fields.One2many(
-        "mail.followers", 
+        "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
         # ============================================================================
     # COMPUTE METHODS
         # ============================================================================
@@ -313,7 +313,7 @@ class CustomerNegotiatedRate(models.Model):
             base_rates = self.env['base.rate'].search([)]
                 ('company_id', '=', rate.company_id.id),
                 ('active', '=', True)
-            
+
 
             if not base_rates:
                 rate.base_rate_comparison = 0.0
@@ -337,7 +337,7 @@ class CustomerNegotiatedRate(models.Model):
 
             rate.base_rate_comparison = base_rate
             rate.savings_amount = base_rate - rate.monthly_rate
-            
+
             if base_rate > 0:
                 rate.savings_percentage = ((base_rate - rate.monthly_rate) / base_rate) * 100
             else:
@@ -402,12 +402,12 @@ class CustomerNegotiatedRate(models.Model):
             # Set default name
             if not self.name or self.name == 'New':
                 self.name = _('%s - Negotiated Rate', self.partner_id.name)
-            
+
             # Look for existing billing profile:
             billing_profile = self.env['customer.billing.profile'].search([)]
                 ('partner_id', '=', self.partner_id.id),
                 ('active', '=', True)
-            
+
             if billing_profile:
                 self.billing_profile_id = billing_profile.id
 
@@ -449,91 +449,91 @@ class CustomerNegotiatedRate(models.Model):
         if self.state != 'draft':
             raise ValidationError(_('Only draft rates can be submitted for approval')):
         self.write({'state': 'submitted'})
-        
+
         # Create activity for approver:
         self.activity_schedule()
             'mail.mail_activity_data_todo',
             summary=_('Rate Approval Required'),
             note=_('Negotiated rate for %s requires approval', self.partner_id.name),:
             user_id=self.env.user.id  # Could be dynamic based on approval workflow
-        
-        
+
+
         return {}
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {}
                 'message': _('Rate submitted for approval'),:
                 'type': 'success'
-            
-        
+
+
 
     def action_approve_rate(self):
         """Approve the negotiated rate"""
         self.ensure_one()
         if self.state != 'submitted':
             raise ValidationError(_('Only submitted rates can be approved'))
-        
+
         self.write({)}
             'state': 'approved',
             'approved_by_id': self.env.user.id,
             'approval_date': fields.Datetime.now()
-        
-        
+
+
         # Activate if effective date has passed:
     if self.effective_date <= fields.Date.today():
             self.state = 'active'
-        
+
         return {}
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {}
                 'message': _('Rate approved successfully'),
                 'type': 'success'
-            
-        
+
+
 
     def action_activate_rate(self):
         """Activate the rate (if approved and effective date reached)""":
         self.ensure_one()
         if self.state != 'approved':
             raise ValidationError(_('Rate must be approved before activation'))
-        
+
         if self.effective_date > fields.Date.today():
             raise ValidationError(_('Cannot activate rate before effective date'))
-        
+
         self.write({'state': 'active'})
-        
+
         return {}
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {}
                 'message': _('Rate activated successfully'),
                 'type': 'success'
-            
-        
+
+
 
     def action_expire_rate(self):
         """Expire the rate"""
         self.ensure_one()
         self.write({'state': 'expired'})
-        
+
         return {}
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {}
                 'message': _('Rate expired'),
                 'type': 'info'
-            
-        
+
+
 
     def action_view_containers(self):
         """View containers that use this rate"""
         self.ensure_one()
-        
+
         domain = [('partner_id', '=', self.partner_id.id)]
         if self.container_type != 'all':
             domain.append(('container_type', '=', self.container_type))
-        
+
         return {}
             'type': 'ir.actions.act_window',
             'name': _('Containers Using This Rate'),
@@ -541,20 +541,20 @@ class CustomerNegotiatedRate(models.Model):
             'view_mode': 'tree,form',
             'domain': domain,
             'context': {'default_partner_id': self.partner_id.id}
-        
+
 
     def action_duplicate_rate(self):
         """Duplicate this rate for modification""":
         self.ensure_one()
-        
+
         new_rate = self.copy({)}
             'name': _('%s (Copy)', self.name),
             'state': 'draft',
             'approved_by_id': False,
             'approval_date': False,
             'effective_date': fields.Date.today()
-        
-        
+
+
         return {}
             'type': 'ir.actions.act_window',
             'name': _('Negotiated Rate'),
@@ -562,7 +562,7 @@ class CustomerNegotiatedRate(models.Model):
             'res_id': new_rate.id,
             'view_mode': 'form',
             'target': 'current'
-        
+
 
     # ============================================================================
         # CRON AND SCHEDULED METHODS
@@ -573,11 +573,11 @@ class CustomerNegotiatedRate(models.Model):
         rates_to_activate = self.search([)]
             ('state', '=', 'approved'),
             ('effective_date', '<=', fields.Date.today())
-        
-        
+
+
         for rate in rates_to_activate:
             rate.state = 'active'
-        
+
         return True
 
     @api.model
@@ -586,11 +586,11 @@ class CustomerNegotiatedRate(models.Model):
         rates_to_expire = self.search([)]
             ('state', 'in', ['active', 'approved']),
             ('expiration_date', '<', fields.Date.today())
-        
-        
+
+
         for rate in rates_to_expire:
             rate.state = 'expired'
-        
+
         return True
 
     """"))))))))))))))))))))))))

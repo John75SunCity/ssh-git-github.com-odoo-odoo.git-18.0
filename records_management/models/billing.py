@@ -1,22 +1,140 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-
-from odoo.exceptions import ValidationError
-
-
-
-class Billing(models.Model):
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+    from odoo.exceptions import ValidationError
+    class Billing(models.Model):
     _name = "records.billing"
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "General Billing Model"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "invoice_date desc"
     _rec_name = "name"
-
-        # ==========================================
-    # CORE FIELDS
-        # ==========================================
-    name = fields.Char(
+""
+        # ==========================================""
+    # CORE FIELDS""
+        # ==========================================""
+    name = fields.Char(""
         string="Billing Reference", required=True, tracking=True, default="New"
     
     company_id = fields.Many2one('res.company',,
@@ -76,138 +194,156 @@ class Billing(models.Model):
 
     billing_type = fields.Selection([))
         ('monthly', 'Monthly Storage'),
-        ('service', 'Service Billing'),
-        ('destruction', 'Destruction Service'),
-        ('pickup', 'Pickup Service'),
-        ('other', 'Other')
-    
-
-        # ==========================================
-    # RELATIONSHIPS
-        # ==========================================
-    invoice_id = fields.Many2one('account.move', string='Related Invoice',,
-    tracking=True),
-    service_ids = fields.One2many('records.billing.service', 'billing_id',,
-    string='Billing Services')
-
-        # ==========================================
-    # NOTES
-        # ==========================================
-    notes = fields.Text(string='Notes',,
-    tracking=True),
-    internal_notes = fields.Text(string='Internal Notes'),
+        ('service', 'Service Billing'),"
+        ('destruction', 'Destruction Service'),""
+        ('pickup', 'Pickup Service'),""
+        ('other', 'Other')""
+    ""
+""
+        # ==========================================""
+    # RELATIONSHIPS""
+        # ==========================================""
+    invoice_id = fields.Many2one('account.move', string='Related Invoice',,""
+    tracking=True),""
+    service_ids = fields.One2many('records.billing.service', 'billing_id',,""
+    string='Billing Services')""
+""
+        # ==========================================""
+    # NOTES""
+        # ==========================================""
+    notes = fields.Text(string='Notes',,""
+    tracking=True),""
+    internal_notes = fields.Text(string='Internal Notes'),""
     discount_amount = fields.Float(string="Discount Amount", default=0.0,,
     help="Discount amount"),
     payment_status = fields.Char(string="Payment Status",,
     help="Payment status"),
-    context = fields.Char(string='Context'),
-    domain = fields.Char(string='Domain'),
-    help = fields.Char(string='Help'),
-    res_model = fields.Char(string='Res Model'),
-    type = fields.Selection([), string='Type')  # TODO: Define selection options
-    view_mode = fields.Char(string='View Mode')
-
-        # ==========================================
-    # COMPUTED FIELDS
-        # ==========================================
-    @api.depends('subtotal', 'tax_amount')
-    def _compute_total_amount(self):
+    context = fields.Char(string='Context'),""
+    domain = fields.Char(string='Domain'),""
+    help = fields.Char(string='Help'),""
+    res_model = fields.Char(string='Res Model'),""
+    type = fields.Selection([), string='Type')  # TODO: Define selection options""
+    view_mode = fields.Char(string='View Mode')""
+""
+        # ==========================================""
+    # COMPUTED FIELDS""
+        # ==========================================""
+    @api.depends('subtotal', 'tax_amount')""
+    def _compute_total_amount(self):""
         """Calculate total amount including tax"""
-        for record in self:
-            record.total_amount = record.subtotal + record.tax_amount
-
-    @api.depends('total_amount', 'paid_amount')
-    def _compute_balance_due(self):
+    """
+""""
+"""
         """Calculate outstanding balance"""
-        for record in self:
-            record.balance_due = record.total_amount - record.paid_amount
-
-    # ==========================================
-        # ONCHANGE METHODS
-    # ==========================================
-    @api.onchange('partner_id')
-    def _onchange_partner_id(self):
+""""
+"""
+"""    def _onchange_partner_id(self):"
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
         """Update department domain when customer changes"""
-        if self.partner_id:
-            return {}
-                'domain': {}
-                    'department_id': [('customer_id', '=', self.partner_id.id))
-                
-            
-
-    @api.onchange('period_start', 'period_end')
-    def _onchange_billing_period(self):
+"""                    'department_id': [('customer_id', '= """
+""""
+    """    @api.onchange('"""period_start', 'period_end')""
+""""
         """Validate billing period dates"""
-        if self.period_start and self.period_end and self.period_start > self.period_end:
-            return {}
-                'warning': {}
-                    'title': _('Invalid Period'),
-                    'message': _('Period start date cannot be after period end date.')
-                
-            
-
-    # ==========================================
-        # WORKFLOW ACTIONS
-    # ==========================================
-    def action_send_invoice(self):
+""""
+""""
+"""    def action_send_invoice(self):"
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
         """Send invoice to customer"""
-
-        self.ensure_one()
-        if self.state != 'draft':
-            raise ValidationError(_('Only draft invoices can be sent'))
-        self.write({'state': 'sent'})
-        self.message_post(body=_('Invoice sent to customer'))
-
-    def action_mark_paid(self):
+""""
+"""
+    """"
         """Mark invoice as paid"""
-
-        self.ensure_one()
-        if self.state not in ['sent', 'partial', 'overdue']:
-            raise ValidationError(_('Cannot mark this invoice as paid'))
-        self.write({)}
-            'state': 'paid',
-            'paid_amount': self.total_amount
-        
-        self.message_post(body=_('Invoice marked as paid'))
-
-    def action_cancel(self):
+"""
+""""
+    """    def action_cancel(self):"
         """Cancel the billing record"""
-
-        self.ensure_one()
-        if self.state == 'paid':
-            raise ValidationError(_('Cannot cancel paid invoices'))
-        self.write({'state': 'cancelled'})
-        self.message_post(body=_('Billing record cancelled'))
-
-    # ==========================================
-        # CREATE/WRITE METHODS
-    # ==========================================
-    @api.model_create_multi
-    def create(self, vals_list):
+""""
+"""
+""""
         """Override create to generate sequence number"""
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('records.billing') or _('New')
-        return super().create(vals_list)
-
-    # ==========================================
-        # VALIDATION
-    # ==========================================
-    @api.constrains('subtotal', 'tax_amount', 'total_amount')
-    def _check_amounts(self):
+"""
+""""
+"""    def _check_amounts(self):"
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
         """Validate monetary amounts"""
-        for record in self:
-            if record.subtotal < 0:
-                raise ValidationError(_('Subtotal cannot be negative'))
-            if record.tax_amount < 0:
-                raise ValidationError(_('Tax amount cannot be negative'))
-            if record.total_amount < 0:
-                raise ValidationError(_('Total amount cannot be negative'))
-
-    @api.constrains('period_start', 'period_end')
-    def _check_billing_period(self):
+    """"
+""""
+""""
         """Validate billing period"""
-        for record in self:
-            if record.period_start and record.period_end:
-                if record.period_start > record.period_end:
-                    raise ValidationError(_('Billing period start cannot be after period end'))
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+"""
+"""

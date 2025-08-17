@@ -70,14 +70,14 @@ class RecordsBillingContact(models.Model):
         tracking=True,
         index=True,
         help="Name of the billing contact",
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
 
     user_id = fields.Many2one(
         "res.users",
@@ -85,17 +85,17 @@ class RecordsBillingContact(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this contact",:
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Whether this contact is active"
-    
+
 
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order of contact in listings"
-    
+
 
         # ============================================================================
     # CONTACT INFORMATION
@@ -105,7 +105,7 @@ class RecordsBillingContact(models.Model):
         required=True,
         tracking=True,
         help="Primary email address for billing communications",:
-    
+
 
     phone = fields.Char(string="Phone", tracking=True,,
     help="Primary phone number"),
@@ -126,7 +126,7 @@ class RecordsBillingContact(models.Model):
         tracking=True,
         ondelete="cascade",
         help="Associated billing profile",
-    
+
 
     customer_billing_profile_id = fields.Many2one(
         "records.customer.billing.profile",
@@ -134,7 +134,7 @@ class RecordsBillingContact(models.Model):
         tracking=True,
         ondelete="cascade",
         help="Associated customer billing profile from records_customer_billing_profile",
-    
+
 
     partner_id = fields.Many2one(
         "res.partner",
@@ -142,7 +142,7 @@ class RecordsBillingContact(models.Model):
         related="billing_profile_id.partner_id",
         store=True,
         help="Customer associated with this contact",
-    
+
 
         # ============================================================================
     # BILLING SERVICE RELATIONSHIPS
@@ -154,7 +154,7 @@ class RecordsBillingContact(models.Model):
         "service_id",
         string="Associated Billing Services",
         help="Billing services this contact should receive invoices for",
-    
+
 
         # ============================================================================
     # COMMUNICATION PREFERENCES
@@ -163,37 +163,37 @@ class RecordsBillingContact(models.Model):
         string="Receive Storage Invoices",
         default=True,
         help="Contact will receive storage billing invoices",
-    
+
 
     receive_service_invoices = fields.Boolean(
         string="Receive Service Invoices",
         default=True,
         help="Contact will receive service billing invoices",
-    
+
 
     receive_statements = fields.Boolean(
         string="Receive Statements",
         default=True,
         help="Contact will receive account statements",
-    
+
 
     receive_overdue_notices = fields.Boolean(
         string="Receive Overdue Notices",
         default=True,
         help="Contact will receive overdue payment notices",
-    
+
 
     receive_promotional = fields.Boolean(
         string="Receive Promotional Materials",
         default=False,
         help="Contact will receive promotional communications",
-    
+
 
     receive_service_updates = fields.Boolean(
         string="Receive Service Updates",
         default=True,
         help="Contact will receive service notifications and updates",
-    
+
 
         # ============================================================================
     # CONTACT HIERARCHY
@@ -202,11 +202,11 @@ class RecordsBillingContact(models.Model):
         string="Primary Contact",
         default=False,
         help="This is the primary billing contact",
-    
+
 
     backup_contact = fields.Boolean(
         string="Backup Contact", default=False, help="This is a backup billing contact"
-    
+
 
     ,
     contact_type = fields.Selection(
@@ -217,11 +217,11 @@ class RecordsBillingContact(models.Model):
             ("service", "Service Contact"),
             ("technical", "Technical Contact"),
             ("executive", "Executive Contact"),
-        
+
         string="Contact Type",
         default="primary",
         help="Type of billing contact",
-    
+
 
         # ============================================================================
     # COMMUNICATION METHOD
@@ -233,11 +233,11 @@ class RecordsBillingContact(models.Model):
             ("mail", "Postal Mail"),
             ("portal", "Customer Portal"),
             ("fax", "Fax"),
-        
+
         string="Preferred Communication Method",
         default="email",
         help="Preferred method for billing communications",:
-    
+
 
     secondary_method = fields.Selection(
         [)
@@ -246,10 +246,10 @@ class RecordsBillingContact(models.Model):
             ("mail", "Postal Mail"),
             ("portal", "Customer Portal"),
             ("fax", "Fax"),
-        
+
         string="Secondary Communication Method",
         help="Secondary method for billing communications",:
-    
+
 
         # ============================================================================
     # DELIVERY PREFERENCES
@@ -259,11 +259,11 @@ class RecordsBillingContact(models.Model):
             ("pdf", "PDF Attachment"),
             ("html", "HTML Email"),
             ("both", "Both PDF and HTML"),
-        
+
         string="Email Format",
         default="pdf",
         help="Preferred email format for invoices",:
-    
+
 
     delivery_schedule = fields.Selection(
         [)
@@ -271,11 +271,11 @@ class RecordsBillingContact(models.Model):
             ("daily", "Daily Summary"),
             ("weekly", "Weekly Summary"),
             ("monthly", "Monthly Summary"),
-        
+
         string="Delivery Schedule",
         default="immediate",
         help="Schedule for invoice delivery",:
-    
+
 
     invoice_delivery_method = fields.Selection(
         [)
@@ -283,28 +283,28 @@ class RecordsBillingContact(models.Model):
             ("mail", "Postal Mail"),
             ("portal", "Customer Portal"),
             ("fax", "Fax"),
-        
+
         string="Invoice Delivery Method",
         default="email",
         help="Method for delivering invoices to this contact",:
-    
+
 
     invoice_format = fields.Selection(
         [)
             ("pdf", "PDF"),
             ("html", "HTML"),
             ("both", "Both"),
-        
+
         string="Invoice Format",
         default="pdf",
         help="Format for invoice delivery",:
-    
+
 
     consolidated_invoicing = fields.Boolean(
         string="Consolidated Invoicing",
         default=False,
         help="Consolidate multiple invoices into single delivery",
-    
+
 
         # ============================================================================
     # COMMUNICATION NOTIFICATION SETTINGS
@@ -313,7 +313,7 @@ class RecordsBillingContact(models.Model):
         string="Email Notifications",
         default=True,
         help="Receive email notifications for billing events",:
-    
+
 
     ,
     notification_frequency = fields.Selection(
@@ -322,23 +322,23 @@ class RecordsBillingContact(models.Model):
             ("hourly", "Hourly"),
             ("daily", "Daily"),
             ("weekly", "Weekly"),
-        
+
         string="Notification Frequency",
         default="immediate",
         help="Frequency of notification delivery",
-    
+
 
     sms_notifications = fields.Boolean(
         string="SMS Notifications",
         default=False,
         help="Receive SMS notifications for urgent billing matters",:
-    
+
 
     urgent_notifications_only = fields.Boolean(
         string="Urgent Notifications Only",
         default=False,
         help="Only receive notifications for urgent matters",:
-    
+
 
         # ============================================================================
     # CONTACT DETAILS
@@ -348,13 +348,13 @@ class RecordsBillingContact(models.Model):
         string="Language",
         default="en_US",
         help="Preferred language for communications",:
-    
+
 
     timezone = fields.Selection(
         selection="_get_timezones",
         string="Timezone",
         help="Contact's timezone for scheduling",:'
-    
+
 
     notes = fields.Text(string="Notes",,
     help="Internal notes about this contact")
@@ -364,18 +364,18 @@ class RecordsBillingContact(models.Model):
         # ============================================================================
     last_contact_date = fields.Datetime(
         string="Last Contact Date", help="Date of last communication with this contact"
-    
+
 
     last_invoice_sent = fields.Datetime(
         string="Last Invoice Sent",
         help="Date when last invoice was sent to this contact",
-    
+
 
     communication_count = fields.Integer(
         string="Communication Count",
         default=0,
         help="Number of communications sent to this contact",
-    
+
 
         # ============================================================================
     # CURRENCY FIELDS
@@ -386,7 +386,7 @@ class RecordsBillingContact(models.Model):
         related="company_id.currency_id",
         store=True,
         help="Company currency for billing",:
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -397,7 +397,7 @@ class RecordsBillingContact(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -405,7 +405,7 @@ class RecordsBillingContact(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -413,7 +413,7 @@ class RecordsBillingContact(models.Model):
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name)),
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -434,7 +434,7 @@ class RecordsBillingContact(models.Model):
 
     @api.depends()
         "receive_storage_invoices", "receive_service_invoices", "receive_statements"
-    
+
     def _compute_invoice_types(self):
         """Compute which invoice types this contact receives"""
         for record in self:
@@ -452,7 +452,7 @@ class RecordsBillingContact(models.Model):
         store=True,
         ,
     help="Types of invoices this contact receives",
-    
+
 
     @api.depends("primary_contact", "backup_contact", "contact_type")
     def _compute_contact_priority(self):
@@ -475,7 +475,7 @@ class RecordsBillingContact(models.Model):
         store=True,
         ,
     help="Priority level for contact sorting",:
-    
+
 
     @api.depends("billing_service_ids")
     def _compute_service_count(self):
@@ -488,7 +488,7 @@ class RecordsBillingContact(models.Model):
         compute="_compute_service_count",
         store=True,
         help="Number of associated billing services",
-    
+
 
         # Workflow state management
     ,
@@ -499,7 +499,7 @@ class RecordsBillingContact(models.Model):
         ('paid', 'Paid'),
         ('overdue', 'Overdue'),
         ('cancelled', 'Cancelled'),
-    
+
         help='Current status of the record'
 
     # ============================================================================
@@ -548,7 +548,7 @@ class RecordsBillingContact(models.Model):
         domain = [)
             ("billing_profile_id", "=", billing_profile_id),
             ("primary_contact", "=", True),
-        
+
         if exclude_id:
             domain.append(("id", "!=", exclude_id))
 
@@ -571,7 +571,7 @@ class RecordsBillingContact(models.Model):
         if not self.email and self.preferred_method == "email":
             raise ValidationError()
                 _("No email address specified for email communication."):
-            
+
 
         # Update activity tracking
         # pylint: disable=no-member
@@ -579,8 +579,8 @@ class RecordsBillingContact(models.Model):
             {}
                 "last_contact_date": fields.Datetime.now(),
                 "communication_count": self.communication_count + 1,
-            
-        
+
+
 
         # Log the test communication
         self.message_post()
@@ -588,8 +588,8 @@ class RecordsBillingContact(models.Model):
                 "Test communication sent to %s via %s",
                 self.name,
                 dict(self._fields["preferred_method"].selection)[self.preferred_method],
-            
-        
+
+
 
         return True
 
@@ -602,8 +602,8 @@ class RecordsBillingContact(models.Model):
             {}
                 "last_invoice_sent": fields.Datetime.now(),
                 "communication_count": self.communication_count + 1,
-            
-        
+
+
 
     # ============================================================================
         # ACTION METHODS
@@ -618,8 +618,8 @@ class RecordsBillingContact(models.Model):
             []
                 ("billing_profile_id", "=", self.billing_profile_id.id),
                 ("id", "!=", self.id),
-            
-        
+
+
 
         # pylint: disable=no-member
         other_contacts.write({"primary_contact": False})
@@ -630,8 +630,8 @@ class RecordsBillingContact(models.Model):
             {}
                 "primary_contact": True,
                 "contact_type": "primary",
-            
-        
+
+
 
         self.message_post(body=_("Contact set as primary billing contact"))
 
@@ -642,8 +642,8 @@ class RecordsBillingContact(models.Model):
                 "title": _("Primary Contact Updated"),
                 "message": _("%s is now the primary billing contact.", self.name),
                 "type": "success",
-            
-        
+
+
 
     def action_test_email(self):
         """Send test email to verify contact information"""
@@ -661,8 +661,8 @@ class RecordsBillingContact(models.Model):
                 "title": _("Test Email Sent"),
                 "message": _("Test email sent to %s", self.email),
                 "type": "success",
-            
-        
+
+
 
     def action_view_communications(self):
         """View all communications sent to this contact"""
@@ -676,9 +676,9 @@ class RecordsBillingContact(models.Model):
             "domain": []
                 ("model", "=", self._name),
                 ("res_id", "=", self.id),
-            
+
             "context": {"default_model": self._name, "default_res_id": self.id},
-        
+
 
     def action_view_billing_services(self):
         """View associated billing services"""
@@ -693,8 +693,8 @@ class RecordsBillingContact(models.Model):
             "context": {}
                 "default_contact_id": self.id,
                 "search_default_group_by_service_type": 1,
-            
-        
+
+
 
     def action_update_preferences(self):
         """Open wizard to update communication preferences"""
@@ -710,8 +710,8 @@ class RecordsBillingContact(models.Model):
             "context": {}
                 "default_id": self.id,
                 "focus_preferences": True,
-            
-        
+
+
 
     def action_deactivate_contact(self):
         """Deactivate billing contact"""
@@ -726,9 +726,9 @@ class RecordsBillingContact(models.Model):
                     ("backup_contact", "=", True),
                     ("active", "=", True),
                     ("id", "!=", self.id),
-                
+
                 limit=1,
-            
+
 
             if backup_contacts:
                 # pylint: disable=no-member
@@ -737,12 +737,12 @@ class RecordsBillingContact(models.Model):
                         "primary_contact": True,
                         "backup_contact": False,
                         "contact_type": "primary",
-                    
-                
+
+
 
                 self.message_post()
                     body=_("Primary contact role transferred to %s", backup_contacts[0].name)
-                
+
 
         # pylint: disable=no-member
         self.write({"active": False})
@@ -754,8 +754,8 @@ class RecordsBillingContact(models.Model):
                 "title": _("Contact Deactivated"),
                 "message": _("Billing contact has been deactivated"),
                 "type": "warning",
-            
-        
+
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -771,8 +771,8 @@ class RecordsBillingContact(models.Model):
                         ("billing_profile_id", "=", record.billing_profile_id.id),
                         ("primary_contact", "=", True),
                         ("id", "!=", record.id),  # pylint: disable=no-member
-                    
-                
+
+
 
                 if existing:
                     raise ValidationError()
@@ -780,8 +780,8 @@ class RecordsBillingContact(models.Model):
                             "Only one primary contact is allowed per billing profile. "
                             "Please uncheck the primary contact flag for %s first.",:
                             existing[0].name,
-                        
-                    
+
+
 
     @api.constrains("email")
     def _check_email_format(self):
@@ -800,17 +800,17 @@ class RecordsBillingContact(models.Model):
                 raise ValidationError()
                     _()
                         "Email address is required when email is the preferred communication method"
-                    
-                
+
+
 
             if record.preferred_method == "phone" and not (:)
                 record.phone or record.mobile
-            
+
                 raise ValidationError()
                     _()
                         "Phone number is required when phone is the preferred communication method"
-                    
-                
+
+
 
     # ============================================================================
         # UTILITY METHODS
@@ -836,7 +836,7 @@ class RecordsBillingContact(models.Model):
     @api.model
     def _search_name():
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    
+
         """Enhanced search by name, email, or job title"""
         args = args or []
         domain = []
@@ -849,7 +849,7 @@ class RecordsBillingContact(models.Model):
                 ("email", operator, name),
                 ("job_title", operator, name),
                 ("department", operator, name),
-            
+
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.model
@@ -861,9 +861,9 @@ class RecordsBillingContact(models.Model):
                 ("billing_profile_id", "=", billing_profile_id),
                 ("primary_contact", "=", True),
                 ("active", "=", True),
-            
+
             limit=1,
-        
+
 
     @api.model
     def get_contacts_for_invoice_type(self, billing_profile_id, invoice_type="storage"):
@@ -871,7 +871,7 @@ class RecordsBillingContact(models.Model):
         domain = []
             ("billing_profile_id", "=", billing_profile_id),
             ("active", "=", True),
-        
+
 
         if invoice_type == "storage":
             domain.append(("receive_storage_invoices", "=", True))
@@ -892,6 +892,6 @@ class RecordsBillingContact(models.Model):
             []
                 ("billing_service_ids", "in", [service_id]),
                 ("active", "=", True),
-            
+
             order="contact_priority, sequence, name",
         )))))))))))))))))))))))))

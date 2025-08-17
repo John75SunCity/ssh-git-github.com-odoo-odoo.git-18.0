@@ -10,7 +10,7 @@ class CustomerInventory(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
     _rec_name = 'name'
-    
+
         # Core fields
     name = fields.Char(string='Name', required=True,,
     tracking=True),
@@ -22,11 +22,11 @@ class CustomerInventory(models.Model):
     default=True),
     state = fields.Selection([))
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'), 
+        ('confirmed', 'Confirmed'),
         ('done', 'Done'),
         ('cancelled', 'Cancelled')
-    
-    
+
+
         # Standard message/activity fields
     message_ids = fields.One2many('mail.message', 'res_id', string='Messages',,
     auto_join=True),
@@ -54,6 +54,6 @@ class CustomerInventory(models.Model):
     def _compute_total_documents(self):
         for record in self:
             record.total_documents = sum(record.line_ids.mapped('amount'))
-    
+
     # TODO: Add specific fields for this model:
         pass

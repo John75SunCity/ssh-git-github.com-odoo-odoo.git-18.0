@@ -24,13 +24,13 @@ class RecordsUsageTracking(models.Model):
         ,
     default=lambda self: _('New'),
         help='Unique identifier for this record':
-    
+
     active = fields.Boolean(
         string='Active',
         default=True,
         tracking=True,
         help='Set to false to hide this record'
-    
+
     company_id = fields.Many2one(
         'res.company',
         string='Company',
@@ -38,14 +38,14 @@ class RecordsUsageTracking(models.Model):
         required=True,
         index=True,
         help='Company this record belongs to'
-    
+
     ,
     state = fields.Selection([))
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('done', 'Done'),
         ('cancelled', 'Cancelled'),
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance):
@@ -56,23 +56,23 @@ class RecordsUsageTracking(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_follower_ids = fields.One2many(
-        "mail.followers", 
+        "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
         # ============================================================================
     # ORM METHODS
         # ============================================================================
@@ -94,7 +94,7 @@ class RecordsUsageTracking(models.Model):
         string="Billing Config",
         required=True,
         ondelete="cascade",
-    
+
     date = fields.Date(string="Usage Date", required=True,,
     default=fields.Date.today),
     service_type = fields.Selection(
@@ -105,10 +105,10 @@ class RecordsUsageTracking(models.Model):
             ("scanning", "Scanning"),
             ("pickup", "Pickup"),
             ("delivery", "Delivery"),
-        
+
         string="Service Type",
         required=True,
-    
+
     quantity = fields.Float(string="Quantity",,
     digits=(10, 2), required=True)
     unit = fields.Char(string="Unit of Measure",,
@@ -119,7 +119,7 @@ class RecordsUsageTracking(models.Model):
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    
+
     ,
     notes = fields.Text(string="Notes"),
     context = fields.Char(string='Context'),

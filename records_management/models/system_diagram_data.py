@@ -57,11 +57,11 @@ class SystemDiagramData(models.TransientModel):
         string="Diagram Name",
         default="Records Management System Architecture",
         required=True,
-    
+
     search_query = fields.Char(
         string="Search Query",
         help="Search for users, companies, or models",:
-    
+
     ,
     search_type = fields.Selection(
         [)
@@ -69,16 +69,16 @@ class SystemDiagramData(models.TransientModel):
             ("company", "Company Search"),
             ("model", "Model Search"),
             ("access", "Access Rights"),
-        
+
         string="Search Type",
         default="user",
-    
+
     show_access_only = fields.Boolean(
         string="Show Access Only",
         default=False,
         help="Show only access-related connections",
-    
-    
+
+
         # ============================================================================
     # FRAMEWORK FIELDS FOR MAIL THREAD COMPATIBILITY
         # ============================================================================
@@ -89,15 +89,15 @@ class SystemDiagramData(models.TransientModel):
         ,
     domain=lambda self: [('res_model', '=', self._name)),
         auto_join=True,
-    
+
     message_follower_ids = fields.One2many(
-        'mail.followers', 
-        'res_id', 
+        'mail.followers',
+        'res_id',
         string='Followers',
         ,
     domain=lambda self: [('res_model', '=', self._name)),
         help="List of partners following the record.",
-    
+
     message_ids = fields.One2many(
         'mail.message',
         'res_id',
@@ -105,8 +105,8 @@ class SystemDiagramData(models.TransientModel):
         ,
     domain=lambda self: [('res_model', '=', self._name)),
         auto_join=True,
-    
-    
+
+
     generation_time = fields.Float(string="Generation Time (seconds)", digits=(6,2))
     node_spacing = fields.Integer(string="Node Spacing",,
     default=100),
@@ -129,33 +129,33 @@ class SystemDiagramData(models.TransientModel):
         string='Diagram HTML',
         readonly=True,
         help="Generated HTML for the interactive diagram",:
-    
+
     cache_timestamp = fields.Datetime(
         string='Cache Timestamp',
         readonly=True,
         help="Last time the diagram data was cached",
-    
+
     cache_size = fields.Integer(
         string='Cache Size',
         readonly=True,
         help="Size of cached diagram data in bytes",
-    
+
     edge_count = fields.Integer(
         string='Edge Count',
         readonly=True,
         help="Number of relationships in the diagram",
-    
+
     node_count = fields.Integer(
-        string='Node Count', 
+        string='Node Count',
         readonly=True,
         help="Number of entities in the diagram",
-    
+
     company_id = fields.Many2one(
         'res.company',
         string='Company',
         default=lambda self: self.env.company,
         help="Company scope for diagram data",:
-    
+
 
         # ============================================================================
     # DIAGRAM DATA FIELDS
@@ -165,20 +165,20 @@ class SystemDiagramData(models.TransientModel):
         compute="_compute_diagram_data",
         store=False,
         help="JSON data for diagram nodes",:
-    
+
     edges_data = fields.Text(
         string="Edges Data",
         compute="_compute_diagram_data",
         store=False,
         help="JSON data for diagram edges",:
-    
+
     diagram_config = fields.Text(
-        string="Diagram Configuration", 
+        string="Diagram Configuration",
         compute="_compute_diagram_config",
         store=False,
         ,
     help="Configuration options for the diagram",:
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -235,28 +235,28 @@ class SystemDiagramData(models.TransientModel):
                         "sortMethod": "directed",
                         "levelSeparation": 150,
                         "nodeSpacing": 200,
-                    
-                
+
+
                 "physics": {}
                     "enabled": True,
                     "stabilization": {"iterations": 100},
-                
+
                 "interaction": {}
                     "hover": True,
                     "multiselect": True,
                     "selectConnectedEdges": False,
-                
+
                 "nodes": {}
                     "font": {"size": 14, "color": "#0000"},
                     "borderWidth": 2,
                     "shadow": True,
-                
+
                 "edges": {}
                     "arrows": {"to": {"enabled": True, "scaleFactor": 0.5}},
                     "font": {"size": 12},
                     "smooth": {"type": "dynamic"},
-                
-            
+
+
             record.diagram_config = json.dumps(config)
 
     # ============================================================================
@@ -273,7 +273,7 @@ class SystemDiagramData(models.TransientModel):
                 "shape": "box",
                 "font": {"color": "white", "size": 16},
                 "level": 0,
-            
+
             {}
                 "id": "backend",
                 "label": "Backend\n(Internal Users)",
@@ -281,7 +281,7 @@ class SystemDiagramData(models.TransientModel):
                 "color": {"background": "#A23B72", "border": "#6B1E47"},
                 "shape": "ellipse",
                 "level": 1,
-            
+
             {}
                 "id": "portal",
                 "label": "Customer Portal\n(External Users)",
@@ -289,7 +289,7 @@ class SystemDiagramData(models.TransientModel):
                 "color": {"background": "#F18F01", "border": "#B8630F"},
                 "shape": "ellipse",
                 "level": 1,
-            
+
             {}
                 "id": "naid_compliance",
                 "label": "NAID AAA\nCompliance",
@@ -297,8 +297,8 @@ class SystemDiagramData(models.TransientModel):
                 "color": {"background": "#C73E1D", "border": "#8B2817"},
                 "shape": "diamond",
                 "level": 2,
-            
-        
+
+
         return nodes
 
     def _get_model_relationships(self):
@@ -316,7 +316,7 @@ class SystemDiagramData(models.TransientModel):
             ("portal.request", "Portal Request", "#607D8B"),
             ("customer.feedback", "Customer Feedback", "#795548"),
             ("naid.compliance", "NAID Compliance", "#E91E63"),
-        
+
 
         # Add model nodes
         for model_name, display_name, color in core_models:
@@ -330,11 +330,11 @@ class SystemDiagramData(models.TransientModel):
                         "color": {}
                             "background": color,
                             "border": self._darken_color(color),
-                        
+
                         "shape": "box",
                         "level": 3,
-                    
-                
+
+
 
                 # Add edge to core system
                 edges.append()
@@ -343,8 +343,8 @@ class SystemDiagramData(models.TransientModel):
                         "to": node_id,
                         "color": {"color": "#666666"},
                         "arrows": {"to": {"enabled": True}},
-                    
-                
+
+
 
         # Add relationship edges between models
         relationships = self._get_model_field_relationships()
@@ -364,8 +364,8 @@ class SystemDiagramData(models.TransientModel):
                     ("name", "ilike", "records"),
                     ("name", "ilike", "shredding"),
                     ("name", "ilike", "warehouse"),
-                
-            
+
+
 
             # Add group nodes
             for group in groups:
@@ -378,8 +378,8 @@ class SystemDiagramData(models.TransientModel):
                         "color": {"background": "#8BC34A", "border": "#4CAF50"},
                         "shape": "ellipse",
                         "level": 4,
-                    
-                
+
+
 
                 # Connect to backend
                 edges.append()
@@ -389,17 +389,17 @@ class SystemDiagramData(models.TransientModel):
                         "color": {"color": "#4CAF50"},
                         "arrows": {"to": {"enabled": True}},
                         "label": "Access",
-                    
-                
+
+
 
             # Get users (limit for performance):
             users = self.env["res.users"].search()
                 []
                     ("active", "=", True),
                     ("share", "=", False),  # Internal users only
-                
+
                 limit=20,
-            
+
 
             for user in users:
                 user_id = f"user_{user.id}"
@@ -415,11 +415,11 @@ class SystemDiagramData(models.TransientModel):
                         "color": {}
                             "background": user_color,
                             "border": self._darken_color(user_color),
-                        
+
                         "shape": "circle",
                         "level": 5,
-                    
-                
+
+
 
                 # Connect user to their groups
                 for group in user.groups_id:
@@ -431,17 +431,17 @@ class SystemDiagramData(models.TransientModel):
                                 "color": {"color": user_color},
                                 "arrows": {"to": {"enabled": True}},
                                 "label": "Member",
-                            
-                        
+
+
 
             # Portal users
             portal_users = self.env["res.users"].search()
                 []
                     ("active", "=", True),
                     ("share", "=", True),  # Portal users
-                
+
                 limit=10,
-            
+
 
             for user in portal_users:
                 user_id = f"portal_user_{user.id}"
@@ -453,8 +453,8 @@ class SystemDiagramData(models.TransientModel):
                         "color": {"background": "#FF9800", "border": "#F57C00"},
                         "shape": "circle",
                         "level": 5,
-                    
-                
+
+
 
                 # Connect to portal
                 edges.append()
@@ -464,8 +464,8 @@ class SystemDiagramData(models.TransientModel):
                         "color": {"color": "#FF9800"},
                         "arrows": {"to": {"enabled": True}},
                         "label": "Access",
-                    
-                
+
+
 
         except Exception as e
             _logger.warning("Error getting user access data: %s", str(e))
@@ -490,8 +490,8 @@ class SystemDiagramData(models.TransientModel):
                         "color": {"background": "#3F51B5", "border": "#1A237E"},
                         "shape": "box",
                         "level": 6,
-                    
-                
+
+
 
                 # Connect to core system
                 edges.append()
@@ -501,8 +501,8 @@ class SystemDiagramData(models.TransientModel):
                         "color": {"color": "#3F51B5"},
                         "arrows": {"to": {"enabled": True}},
                         "label": "Company",
-                    
-                
+
+
 
             # Departments (if records.department exists):
             if self._model_exists("records.department"):
@@ -517,8 +517,8 @@ class SystemDiagramData(models.TransientModel):
                             "color": {"background": "#673AB7", "border": "#4527A0"},
                             "shape": "ellipse",
                             "level": 7,
-                        
-                    
+
+
 
                     # Connect to company
                     if hasattr(dept, "company_id") and dept.company_id:
@@ -529,8 +529,8 @@ class SystemDiagramData(models.TransientModel):
                                 "color": {"color": "#673AB7"},
                                 "arrows": {"to": {"enabled": True}},
                                 "label": "Department",
-                            
-                        
+
+
 
         except Exception as e
             _logger.warning("Error getting company structure: %s", str(e))
@@ -550,7 +550,7 @@ class SystemDiagramData(models.TransientModel):
                 ("shredding.service", "records.container", "Shred Items"),
                 ("portal.request", "res.partner", "Customer"),
                 ("naid.compliance", "records.document", "Compliance"),
-            
+
 
             for from_model, to_model, label in key_relationships:
                 if self._model_exists(from_model) and self._model_exists(to_model):
@@ -565,8 +565,8 @@ class SystemDiagramData(models.TransientModel):
                             "arrows": {"to": {"enabled": True}},
                             "label": label,
                             "dashes": True,
-                        
-                    
+
+
 
         except Exception as e
             _logger.warning("Error getting model relationships: %s", str(e))
@@ -595,8 +595,8 @@ class SystemDiagramData(models.TransientModel):
             records_groups = self.env["res.groups"].search()
                 []
                     ("name", "ilike", "records"),
-                
-            
+
+
 
             for group in records_groups:
                 if group in user.groups_id:
@@ -654,7 +654,7 @@ class SystemDiagramData(models.TransientModel):
         return {}
             "type": "ir.actions.client",
             "tag": "reload",
-        
+
 
     def action_export_diagram_data(self):
         """Export diagram data for external use""":
@@ -666,7 +666,7 @@ class SystemDiagramData(models.TransientModel):
             "edges": json.loads(self.edges_data or "[]"),
             "config": json.loads(self.diagram_config or "{}"),
             "timestamp": fields.Datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        
+
 
         import base64
 
@@ -676,5 +676,5 @@ class SystemDiagramData(models.TransientModel):
             "type": "ir.actions.act_url",
             "url": f"data:application/json;base64,{b64_data}",
             "target": "self",
-        
+
 ))))))))))))))

@@ -55,26 +55,26 @@ class RecordsChainOfCustody(models.Model):
         tracking=True,
         index=True,
         help="Unique identifier for this custody record",:
-    
+
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order sequence for custody events":
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this custody record",:
-    
+
     active = fields.Boolean(
         string="Active", default=True, help="Whether this custody record is active"
-    
+
 
         # ============================================================================
     # DOCUMENT AND CUSTOMER RELATIONSHIPS
@@ -85,31 +85,31 @@ class RecordsChainOfCustody(models.Model):
         required=True,
         tracking=True,
         help="Customer who owns the documents",
-    
+
     partner_id = fields.Many2one(
         "res.partner",
-        string="Partner", 
+        string="Partner",
         related="customer_id",
         store=True,
         help="Related partner field for One2many relationships compatibility":
-    
+
     document_id = fields.Many2one(
         "records.document",
         string="Document",
         ondelete="cascade",
         help="Specific document under custody",
-    
+
     container_id = fields.Many2one(
         "records.container",
         string="Container",
         ondelete="cascade",
         help="Container holding the documents",
-    
+
     related_work_order_id = fields.Many2one(
         "file.retrieval.work.order",
         string="Work Order",
         help="Associated work order if applicable",:
-    
+
 
         # ============================================================================
     # CUSTODY EVENT DETAILS
@@ -125,22 +125,22 @@ class RecordsChainOfCustody(models.Model):
             ("destroyed", "Documents Destroyed"),
             ("verified", "Custody Verified"),
             ("audit", "Audit Event"),
-        
+
         string="Custody Event Type",
         required=True,
         tracking=True,
         help="Type of custody event being recorded",
-    
+
     custody_date = fields.Datetime(
         string="Custody Date",
         required=True,
         default=fields.Datetime.now,
         tracking=True,
         help="Date and time when custody event occurred",
-    
+
     description = fields.Text(
         string="Event Description", help="Detailed description of the custody event"
-    
+
 
         # ============================================================================
     # CUSTODY TRANSFER INFORMATION
@@ -150,13 +150,13 @@ class RecordsChainOfCustody(models.Model):
         string="Custody From",
         ,
     help="User transferring custody (previous custodian)",
-    
+
     custody_to_id = fields.Many2one(
-        "res.users", 
+        "res.users",
         string="Custody To",
         ,
     help="User receiving custody (new custodian)"
-    
+
     transfer_reason = fields.Selection(
         [)
             ("routine", "Routine Transfer"),
@@ -165,20 +165,20 @@ class RecordsChainOfCustody(models.Model):
             ("audit", "Audit Requirement"),
             ("maintenance", "System Maintenance"),
             ("emergency", "Emergency Transfer"),
-        
+
         string="Transfer Reason",
         help="Reason for custody transfer",:
-    
+
     supervisor_approval = fields.Boolean(
         string="Supervisor Approval",
         default=False,
         help="Whether supervisor approval was obtained",
-    
+
     supervisor_id = fields.Many2one(
         "res.users",
         string="Approving Supervisor",
         help="Supervisor who approved the custody transfer",
-    
+
 
         # ============================================================================
     # PRIORITY AND REQUEST MANAGEMENT
@@ -191,12 +191,12 @@ class RecordsChainOfCustody(models.Model):
             ("high", "High Priority"),
             ("urgent", "Urgent"),
             ("critical", "Critical"),
-        
+
         string="Priority Level",
         default="medium",
         tracking=True,
         help="Priority level of this custody event",
-    
+
     request_type = fields.Selection(
         [)
             ("pickup", "Document Pickup"),
@@ -205,27 +205,27 @@ class RecordsChainOfCustody(models.Model):
             ("destruction", "Document Destruction"),
             ("retrieval", "Document Retrieval"),
             ("verification", "Custody Verification"),
-        
+
         string="Request Type",
         help="Type of request associated with custody event",
-    
+
 
         # ============================================================================
     # NAID AAA COMPLIANCE FIELDS
         # ============================================================================
     custody_signature = fields.Binary(
         string="Custody Signature", help="Digital signature for custody transfer":
-    
+
     signature_date = fields.Datetime(
         string="Signature Date", help="Date and time when signature was captured"
-    
+
     witness_id = fields.Many2one(
         "res.users", string="Witness", help="Witness to the custody transfer"
-    
+
     verification_code = fields.Char(
         string="Verification Code",
         help="Unique verification code for this custody event",:
-    
+
     ,
     chain_integrity = fields.Selection(
         [)
@@ -233,12 +233,12 @@ class RecordsChainOfCustody(models.Model):
             ("broken", "Chain Broken"),
             ("suspicious", "Suspicious Activity"),
             ("verified", "Independently Verified"),
-        
+
         string="Chain Integrity Status",
         default="intact",
         tracking=True,
         help="Status of chain of custody integrity",
-    
+
 
         # ============================================================================
     # LOCATION AND PHYSICAL TRACKING
@@ -247,12 +247,12 @@ class RecordsChainOfCustody(models.Model):
         "records.location",
         string="Origin Location",
         help="Location where documents originated",
-    
+
     location_to_id = fields.Many2one(
         "records.location",
         string="Destination Location",
         help="Location where documents are being transferred",
-    
+
     ,
     physical_condition = fields.Selection(
         [)
@@ -261,13 +261,13 @@ class RecordsChainOfCustody(models.Model):
             ("fair", "Fair"),
             ("poor", "Poor"),
             ("damaged", "Damaged"),
-        
+
         string="Physical Condition",
         help="Physical condition of documents during transfer",
-    
+
     container_seal = fields.Char(
         string="Container Seal Number", help="Security seal number if applicable":
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -282,12 +282,12 @@ class RecordsChainOfCustody(models.Model):
             ("completed", "Completed"),
             ("verified", "Verified"),
             ("cancelled", "Cancelled"),
-        
+
         string="Custody Status",
         default="draft",
         tracking=True,
         help="Current status of the custody record",
-    
+
 
         # ============================================================================
     # METADATA AND TRACKING
@@ -296,12 +296,12 @@ class RecordsChainOfCustody(models.Model):
     help="Key for additional metadata storage"):
     value = fields.Char(
         string="Metadata Value", help="Value for additional metadata storage":
-    
+
     notes = fields.Text(string="Internal Notes",,
     help="Internal notes and observations"),
     external_reference = fields.Char(
         string="External Reference", help="External system reference number"
-    
+
 
         # ============================================================================
     # ADDITIONAL FIELDS
@@ -336,7 +336,7 @@ class RecordsChainOfCustody(models.Model):
             if record.custody_event:
                 event_label = dict(record._fields["custody_event"].selection).get()
                     record.custody_event, record.custody_event
-                
+
                 parts.append(_("(%s)", event_label))
             if record.custody_date:
                 parts.append(record.custody_date.strftime("%Y-%m-%d %H:%M"))
@@ -347,21 +347,21 @@ class RecordsChainOfCustody(models.Model):
         store=True,
         ,
     help="Formatted display name with event details",
-    
+
 
     @api.depends("custody_from_id", "custody_to_id", "custody_event")
     def _compute_transfer_summary(self):
         """Compute custody transfer summary"""
         for record in self:
             if record.custody_from_id and record.custody_to_id:
-                record.transfer_summary = _("%s # -> %s", 
-                    record.custody_from_id.name, 
+                record.transfer_summary = _("%s # -> %s",
+                    record.custody_from_id.name,
                     record.custody_to_id.name
-                
+
             elif record.custody_event:
                 event_label = dict(record._fields["custody_event").selection).get()
                     record.custody_event, record.custody_event
-                
+
                 record.transfer_summary = event_label
             else:
                 record.transfer_summary = "No Transfer"
@@ -372,7 +372,7 @@ class RecordsChainOfCustody(models.Model):
         store=True,
         ,
     help="Summary of custody transfer",
-    
+
 
     @api.depends("custody_date", "state")
     def _compute_days_since_event(self):
@@ -381,10 +381,10 @@ class RecordsChainOfCustody(models.Model):
             if record.custody_date:
     now_dt = fields.Datetime.context_timestamp()
                     record, fields.Datetime.now()
-                
+
     event_dt = fields.Datetime.context_timestamp()
                     record, record.custody_date
-                
+
                 # Ensure both are datetime objects
     now_dt = fields.Datetime.to_datetime(now_dt)
     event_dt = fields.Datetime.to_datetime(event_dt)
@@ -398,7 +398,7 @@ class RecordsChainOfCustody(models.Model):
         compute="_compute_days_since_event",
         ,
     help="Number of days since custody event occurred",
-    
+
 
         # ============================================================================
     # ORM OVERRIDES
@@ -411,7 +411,7 @@ class RecordsChainOfCustody(models.Model):
                 vals["verification_code") = ()
                     self.env["ir.sequence"].next_by_code("records.chain.custody")
                     or "NEW"
-                
+
 
             # Set custody date if not provided:
             if not vals.get("custody_date"):
@@ -427,15 +427,15 @@ class RecordsChainOfCustody(models.Model):
                 if vals["state"] != record.state:
                     old_state_label = dict(record._fields["state"].selection).get()
                         record.state, record.state
-                    
+
                     new_state_label = dict(record._fields["state"].selection).get()
                         vals["state"], vals["state"]
-                    
+
                     record.message_post()
-                        body=_("Custody status changed from %s to %s", 
-                                old_state_label, 
+                        body=_("Custody status changed from %s to %s",
+                                old_state_label,
                                 new_state_label
-                    
+
 
         return super(RecordsChainOfCustody, self).write(vals)
 
@@ -447,14 +447,14 @@ class RecordsChainOfCustody(models.Model):
         self.ensure_one()
 
         # Create hash based on record data and timestamp
-        data_string = _("%s_%s_%s_%s", 
-                        self.id, 
-                        self.custody_date, 
-                        time.time(), 
+        data_string = _("%s_%s_%s_%s",
+                        self.id,
+                        self.custody_date,
+                        time.time(),
                         self.customer_id.id
         verification_hash = ()
             hashlib.sha256(data_string.encode()).hexdigest()[:12].upper()
-        
+
 
         self.verification_code = _("COC-%s", verification_hash)
 
@@ -469,17 +469,17 @@ class RecordsChainOfCustody(models.Model):
             []
                 ("document_id", "=", self.document_id.id),
                 ("custody_date", "<", self.custody_date),
-            
+
             order="custody_date desc",
             limit=1,
-        
+
 
         if previous_records and previous_records.custody_to_id != self.custody_from_id:
             self.chain_integrity = "broken"
             self.message_post()
                 body=_("Chain of custody integrity broken: Previous custodian mismatch"),
                 message_type="comment",
-            
+
             return False
 
         self.chain_integrity = "verified"
@@ -501,14 +501,14 @@ class RecordsChainOfCustody(models.Model):
             "custody_record_id": self.id,
             "verification_code": self.verification_code,
             "issue_date": fields.Date.today(),
-        
+
 
         certificate = self.env["naid.certificate"].create(certificate_vals)
 
         self.message_post()
             body=_("Custody certificate generated: %s", certificate.name),
             message_type="notification",
-        
+
 
         return certificate
 
@@ -527,8 +527,8 @@ class RecordsChainOfCustody(models.Model):
             {}
                 "state": "confirmed",
                 "signature_date": fields.Datetime.now(),
-            
-        
+
+
 
         # Verify custody integrity
         self.verify_custody_integrity()
@@ -536,7 +536,7 @@ class RecordsChainOfCustody(models.Model):
         self.message_post()
             body=_("Custody event confirmed by %s", self.env.user.name),
             message_type="notification",
-        
+
 
     def action_complete_custody(self):
         """Complete custody transfer"""
@@ -546,7 +546,7 @@ class RecordsChainOfCustody(models.Model):
         if self.state not in ["confirmed", "in_progress"]:
             raise ValidationError()
                 _("Only confirmed or in-progress custody records can be completed")
-            
+
 
         self.write({"state": "completed"})
 
@@ -555,9 +555,9 @@ class RecordsChainOfCustody(models.Model):
             self.create_custody_certificate()
 
         self.message_post()
-            body=_("Custody transfer completed"), 
+            body=_("Custody transfer completed"),
             message_type="notification"
-        
+
 
     def action_verify_custody(self):
         """Verify custody record by supervisor"""
@@ -567,20 +567,20 @@ class RecordsChainOfCustody(models.Model):
         if self.state != "completed":
             raise ValidationError()
                 _("Only completed custody records can be verified")
-            
+
 
         self.write()
             {}
                 "state": "verified",
                 "supervisor_id": self.env.user.id,
                 "supervisor_approval": True,
-            
-        
+
+
 
         self.message_post()
             body=_("Custody record verified by supervisor: %s", self.env.user.name),
             message_type="notification",
-        
+
 
     def action_cancel_custody(self):
         """Cancel custody record"""
@@ -590,14 +590,14 @@ class RecordsChainOfCustody(models.Model):
         if self.state in ["completed", "verified"]:
             raise ValidationError()
                 _("Cannot cancel completed or verified custody records")
-            
+
 
         self.write({"state": "cancelled"})
 
         self.message_post()
             body=_("Custody record cancelled by %s", self.env.user.name),
             message_type="comment",
-        
+
 
     def action_reset_to_draft(self):
         """Reset custody record to draft"""
@@ -607,14 +607,14 @@ class RecordsChainOfCustody(models.Model):
         if self.state == "verified":
             raise ValidationError()
                 _("Cannot reset verified custody records to draft")
-            
+
 
         self.write({"state": "draft"})
 
         self.message_post()
-            body=_("Custody record reset to draft"), 
+            body=_("Custody record reset to draft"),
             message_type="comment"
-        
+
 
     def action_view_custody_history(self):
         """View complete custody history for document""":
@@ -635,7 +635,7 @@ class RecordsChainOfCustody(models.Model):
             "view_mode": "tree,form",
             "domain": domain,
             "context": {"default_customer_id": self.customer_id.id},
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -648,7 +648,7 @@ class RecordsChainOfCustody(models.Model):
                 if record.custody_from_id == record.custody_to_id:
                     raise ValidationError()
                         _("Cannot transfer custody from and to the same user")
-                    
+
 
     @api.constrains("custody_date")
     def _check_custody_date(self):
@@ -665,10 +665,10 @@ class RecordsChainOfCustody(models.Model):
                 "high",
                 "urgent",
                 "critical",
-            
+
                 raise ValidationError()
                     _("Destruction events must have high, urgent, or critical priority")
-                
+
 
     # ============================================================================
         # UTILITY METHODS
@@ -682,7 +682,7 @@ class RecordsChainOfCustody(models.Model):
             if record.custody_event:
                 event_label = dict(record._fields["custody_event"].selection).get()
                     record.custody_event, record.custody_event or "Unknown Event"
-                
+
                 name_parts.append(_("(%s)", event_label))
 
             if record.customer_id:
@@ -695,7 +695,7 @@ class RecordsChainOfCustody(models.Model):
     @api.model
     def _search_name_verification_customer(:)
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    
+
         """Enhanced search by name, customer, or verification code"""
         args = args or []
         domain = []
@@ -708,7 +708,7 @@ class RecordsChainOfCustody(models.Model):
                 ("customer_id.name", operator, name),
                 ("verification_code", operator, name),
                 ("external_reference", operator, name),
-            
+
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.model
@@ -728,7 +728,7 @@ class RecordsChainOfCustody(models.Model):
     @api.model
     def create_automatic_custody_event(:)
         self, document_id, event_type, user_from=None, user_to=None, description=None
-    
+
         """Create automatic custody event for system workflows""":
         document = self.env["records.document"].browse(document_id)
         if not document.exists():
@@ -744,7 +744,7 @@ class RecordsChainOfCustody(models.Model):
             "custody_from_id": user_from.id if user_from else False,:
             "custody_to_id": user_to.id if user_to else False,:
             "state": "confirmed",
-        
+
 
         custody_record = self.create(vals)
         custody_record.verify_custody_integrity()

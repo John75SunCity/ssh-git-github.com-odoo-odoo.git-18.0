@@ -48,20 +48,20 @@ class WorkOrderCoordinator(models.Model):
         ,
     default=lambda self: _("New"),
         help="Unique coordination reference number"
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Customer",
         required=True,
         tracking=True,
         help="Customer for coordinated work orders":
-    
+
 
         # ============================================================================
     # WORK ORDER RELATIONSHIPS
@@ -70,27 +70,27 @@ class WorkOrderCoordinator(models.Model):
         "container.retrieval.work.order",
         "coordinator_id",
         string="Container Retrievals"
-    
+
     file_retrieval_ids = fields.One2many(
         "file.retrieval.work.order",
         "coordinator_id",
         string="File Retrievals"
-    
+
     scan_retrieval_ids = fields.One2many(
         "scan.retrieval.work.order",
         "coordinator_id",
         string="Scan Retrievals"
-    
+
     destruction_ids = fields.One2many(
         "container.destruction.work.order",
         "coordinator_id",
         string="Destructions"
-    
+
     access_ids = fields.One2many(
         "container.access.work.order",
         "coordinator_id",
         string="Access Sessions"
-    
+
 
         # ============================================================================
     # COORDINATION METRICS
@@ -99,17 +99,17 @@ class WorkOrderCoordinator(models.Model):
         string="Total Work Orders",
         compute="_compute_coordination_metrics",
         store=True
-    
+
     completed_work_orders = fields.Integer(
         string="Completed",
         compute="_compute_coordination_metrics",
         store=True
-    
+
     coordination_progress = fields.Float(
         string="Progress %",
         compute="_compute_coordination_metrics",
         store=True
-    
+
 
         # ============================================================================
     # SCHEDULING AND RESOURCE COORDINATION
@@ -118,7 +118,7 @@ class WorkOrderCoordinator(models.Model):
         string="Coordinated Start Date",
         required=True,
         tracking=True
-    
+
     ,
     priority = fields.Selection([))
         ('0', 'Low'),
@@ -126,13 +126,13 @@ class WorkOrderCoordinator(models.Model):
         ('2', 'High'),
         ('3', 'Urgent'),
         ('4', 'Emergency'),
-    
+
 
     coordination_type = fields.Selection([))
         ('sequential', 'Sequential (One after another)'),
         ('parallel', 'Parallel (Simultaneous)'),
         ('mixed', 'Mixed (Some parallel, some sequential)'),
-    
+
 
         # ============================================================================
     # SHARED RESOURCES
@@ -141,12 +141,12 @@ class WorkOrderCoordinator(models.Model):
         "fleet.vehicle",
         string="Shared Vehicles",
         help="Vehicles available for all work orders":
-    
+
     employee_ids = fields.Many2many(
         "hr.employee",
         string="Assigned Team",
         help="Staff members assigned to coordinated work orders"
-    
+
 
         # ============================================================================
     # FSM INTEGRATION
@@ -155,12 +155,12 @@ class WorkOrderCoordinator(models.Model):
         "project.project",
         string="FSM Project",
         help="Field service project for coordinated work orders":
-    
+
     fsm_task_ids = fields.One2many(
         "fsm.task",
         "work_order_coordinator_id",
         string="FSM Tasks"
-    
+
 
         # ============================================================================
     # PORTAL AND CUSTOMER INTERFACE
@@ -169,12 +169,12 @@ class WorkOrderCoordinator(models.Model):
         "portal.request",
         string="Originating Portal Request",
         help="Portal request that initiated coordination"
-    
+
     customer_visible = fields.Boolean(
         string="Visible in Customer Portal",
         default=True,
         help="Customer can view coordination status in portal"
-    
+
 
         # ============================================================================
     # BILLING COORDINATION
@@ -183,12 +183,12 @@ class WorkOrderCoordinator(models.Model):
         string="Consolidated Billing",
         default=True,
         help="Create single invoice for all work orders":
-    
+
     invoice_id = fields.Many2one(
         "account.move",
         string="Consolidated Invoice",
         help="Single invoice for all coordinated work orders":
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK
@@ -199,21 +199,21 @@ class WorkOrderCoordinator(models.Model):
         string="Activities",
         ,
     domain=lambda self: [('res_model', '=', self._name))
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [('res_model', '=', self._name))
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         ,
     domain=lambda self: [('res_model', '=', self._name))
-    
+
     active_work_orders = fields.Integer(string='Active Work Orders',,
     compute='_compute_active_work_orders'),
     assigned_equipment_ids = fields.Many2many('maintenance.equipment',,
@@ -392,7 +392,7 @@ class WorkOrderCoordinator(models.Model):
 
         self.message_post()
             body=_("Coordination started for %s work orders", len(all_orders)):
-        
+
 
     def action_create_fsm_tasks(self):
         """Create FSM tasks for all work orders""":
@@ -405,7 +405,7 @@ class WorkOrderCoordinator(models.Model):
                 'is_fsm': True,
                 'partner_id': self.partner_id.id,
                 'allow_timesheets': True,
-            
+
             self.fsm_project_id = self.env['project.project'].create(project_vals)
 
         # Create FSM tasks for each work order type:
@@ -417,7 +417,7 @@ class WorkOrderCoordinator(models.Model):
 
         self.message_post()
             body=_("Created %s FSM tasks for coordinated work orders", task_count):
-        
+
 
     def action_consolidate_billing(self):
         """Create consolidated invoice for all work orders""":
@@ -435,7 +435,7 @@ class WorkOrderCoordinator(models.Model):
             'move_type': 'out_invoice',
             'invoice_date': fields.Date.today(),
             'ref': self.name,
-        
+
         invoice = self.env['account.move'].create(invoice_vals)
 
         # Add invoice lines from all work orders
@@ -448,7 +448,7 @@ class WorkOrderCoordinator(models.Model):
         self.invoice_id = invoice.id
         self.message_post()
             body=_("Consolidated invoice created with %s lines", line_count)
-        
+
 
         return {}
             'type': 'ir.actions.act_window',
@@ -456,7 +456,7 @@ class WorkOrderCoordinator(models.Model):
             'res_id': invoice.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
     # ============================================================================
         # UTILITY METHODS
@@ -516,7 +516,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
         string="Coordinator",
         ,
     help="Work order coordination manager"
-    
+
 
         # Related work orders (for dependencies):
     prerequisite_work_order_ids = fields.Many2many(
@@ -526,28 +526,28 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
         "prerequisite_id",
         string="Prerequisite Work Orders",
         help="Work orders that must complete before this one"
-    
+
 
         # FSM Integration
     fsm_task_id = fields.Many2one(
         "fsm.task",
         string="FSM Task",
         help="Related field service management task"
-    
+
 
         # Portal integration
     portal_visible = fields.Boolean(
         string="Visible in Portal",
         default=True,
         help="Customer can view this work order in portal"
-    
+
 
         # Billing integration
     invoice_line_ids = fields.One2many(
         "account.move.line",
         "work_order_coordinator_id",
         string="Invoice Lines"
-    
+
 
         # ============================================================================
     # INTEGRATION METHODS
@@ -567,7 +567,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
                 'name': _("Records Management - %s", self.partner_id.name),
                 'is_fsm': True,
                 'partner_id': self.partner_id.id,
-            
+
             project_id = project.id
 
         task_vals = {}
@@ -576,7 +576,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
             'partner_id': self.partner_id.id,
             'planned_date_begin': self.scheduled_date or fields.Datetime.now(),
             'description': getattr(self, 'description', ''),
-        
+
 
         task = self.env['fsm.task'].create(task_vals)
         self.fsm_task_id = task.id
@@ -594,7 +594,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
                 line_vals.update({)}
                     'move_id': invoice_id,
                     'work_order_id': self.id,
-                
+
                 line = self.env['account.move.line'].create(line_vals)
                 lines.append(line)
 
@@ -607,7 +607,7 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
                 raise UserError()
                     _("Cannot start %s until prerequisite work order %s is completed",
                         self.display_name, prereq.name
-                
+
 
     def notify_customer_update(self):
         """Send customer notification about work order update"""
@@ -618,5 +618,5 @@ class WorkOrderIntegrationMixin(models.AbstractModel):
                 subject=_("Update: %s", self.display_name),
                 body=_('Your work order %s has been updated. Status: %s',
                         self.display_name, self.state
-            
+
 )))))))))))

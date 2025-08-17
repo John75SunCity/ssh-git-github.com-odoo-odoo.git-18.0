@@ -19,17 +19,17 @@ class BinKeyHistory(models.Model):
     tracking=True),
     active = fields.Boolean(string="Active",,
     default=True)
-    
+
     # ============================================================================
     # BUSINESS SPECIFIC FIELDS
     # ============================================================================
     partner_bin_key_id = fields.Many2one(
-        "partner.bin.key", 
-        string="Partner Bin Key", 
+        "partner.bin.key",
+        string="Partner Bin Key",
         required=True,
         tracking=True
-    
-    
+
+
     ,
     action_type = fields.Selection([))
         ("created", "Created"),
@@ -38,23 +38,23 @@ class BinKeyHistory(models.Model):
         ("lost", "Lost"),
         ("replaced", "Replaced"),
         ("deactivated", "Deactivated"),
-    
-    
+
+
     date = fields.Datetime(string="Date", default=fields.Datetime.now, required=True,,
     tracking=True),
     notes = fields.Text(string="Notes")
-    
+
     # Location tracking
     location_id = fields.Many2one("records.location", string="Location",,
     tracking=True)
-    
+
     # Partner relationship
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record"
-    
-    
+
+
     # Workflow state management
     ,
     state = fields.Selection([))
@@ -62,9 +62,9 @@ class BinKeyHistory(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    
+
         help='Current status of the record'
-    
+
     # ============================================================================
     # ADDITIONAL TRACKING FIELDS
     # ============================================================================
@@ -76,7 +76,7 @@ class BinKeyHistory(models.Model):
     authorization_reason = fields.Char(string='Authorization Reason'),
     authorized_by = fields.Char(string='Authorized By'),
     additional_notes = fields.Text(string='Additional Notes')
-    
+
     # Deposit and return tracking
     deposit_amount = fields.Float(string='Deposit Amount',,
     digits=(12, 2))
@@ -85,20 +85,20 @@ class BinKeyHistory(models.Model):
     return_location = fields.Char(string='Return Location'),
     security_deposit_taken = fields.Boolean(string='Security Deposit Taken',,
     default=False)
-    
+
     # Duration and timing
     duration_hours = fields.Float(string='Duration Hours',,
     digits=(8, 2))
-    
+
     # Emergency and special handling
     emergency = fields.Boolean(string='Emergency',,
     default=False),
     witness_signature = fields.Char(string='Witness Signature')
-    
+
     # Key reference
     key_id = fields.Many2one('bin.key',,
     string='Key')
-    
+
     # ============================================================================
     # RELATIONSHIP FIELDS
     # ============================================================================
@@ -119,19 +119,19 @@ class BinKeyHistory(models.Model):
             if vals.get("name", "New") == "New":
                 vals["name") = ()
                     self.env["ir.sequence"].next_by_code("bin.key.history") or "New"
-                
+
         return super().create(vals_list)
-    
+
     def action_activate(self):
         """Activate the history record"""
         self.ensure_one()
         self.write({'state': 'active'})
-    
+
     def action_deactivate(self):
         """Deactivate the history record"""
         self.ensure_one()
         self.write({'state': 'inactive'})
-    
+
     def action_archive(self):
         """Archive the history record"""
         self.ensure_one()

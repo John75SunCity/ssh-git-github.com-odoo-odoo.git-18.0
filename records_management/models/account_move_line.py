@@ -39,26 +39,26 @@ class AccountMoveLine(models.Model):
             ('container.access.work.order', 'Container Access'),
             ('pickup.request', 'Pickup Request'),
             ('shredding.service', 'Shredding Service'),
-        
+
         string='Related Work Order',
         help="Work order that generated this invoice line"
-    
+
 
     work_order_coordinator_id = fields.Many2one(
         "work.order.coordinator",
         string="Work Order Coordinator",
         help="Coordinator for consolidated billing and work order management":
-    
+
 
     work_order_reference = fields.Char(
         string="Work Order Reference",
         help="Reference number of the related work order"
-    
+
 
     work_order_date = fields.Date(
         string="Work Order Date",
         help="Date when the work order was created"
-    
+
 
         # ============================================================================
     # RECORDS MANAGEMENT SERVICE INTEGRATION
@@ -67,7 +67,7 @@ class AccountMoveLine(models.Model):
         string="Records Related",
         default=False,
         help="Indicates if this invoice line is related to records management services":
-    
+
 
     ,
     records_service_type = fields.Selection([))
@@ -79,7 +79,7 @@ class AccountMoveLine(models.Model):
         ("consultation", "Consultation Services"),
         ("equipment", "Equipment Rental"),
         ("compliance", "Compliance Services")
-    
+
 
     service_category = fields.Selection([))
         ("onsite", "On-Site Service"),
@@ -87,7 +87,7 @@ class AccountMoveLine(models.Model):
         ("portal", "Portal Service"),
         ("emergency", "Emergency Service"),
         ("routine", "Routine Service")
-    
+
 
         # ============================================================================
     # CONTAINER AND DOCUMENT TRACKING
@@ -95,7 +95,7 @@ class AccountMoveLine(models.Model):
     container_count = fields.Integer(
         string="Container Count",
         help="Number of containers involved in this service"
-    
+
 
     container_ids = fields.Many2many(
         "records.container",
@@ -104,7 +104,7 @@ class AccountMoveLine(models.Model):
         "container_id",
         string="Related Containers",
         help="Containers related to this billing line"
-    
+
 
     container_types = fields.Char(
         string="Container Types",
@@ -112,17 +112,17 @@ class AccountMoveLine(models.Model):
         store=True,
         ,
     help="Types of containers involved (TYPE 1, TYPE 2, etc.)"
-    
+
 
     document_count = fields.Integer(
         string="Document Count",
         help="Number of documents processed"
-    
+
 
     file_count = fields.Integer(
         string="File Count",
         help="Number of individual files processed"
-    
+
 
         # ============================================================================
     # DESTRUCTION AND SHREDDING SERVICES
@@ -131,14 +131,14 @@ class AccountMoveLine(models.Model):
         "shredding.service",
         string="Destruction Service",
         help="Related destruction service"
-    
+
 
     shredding_weight_lbs = fields.Float(
         ,
     string="Shredding Weight (lbs)",
         digits=(8, 2),
         help="Weight of materials shredded in pounds"
-    
+
 
     shredding_weight_kg = fields.Float(
         ,
@@ -147,7 +147,7 @@ class AccountMoveLine(models.Model):
         store=True,
         digits=(8, 2),
         help="Weight of materials shredded in kilograms"
-    
+
 
     destruction_method = fields.Selection([))
         ('cross_cut', 'Cross Cut Shredding'),
@@ -155,12 +155,12 @@ class AccountMoveLine(models.Model):
         ('micro_cut', 'Micro Cut Shredding'),
         ('pulverize', 'Pulverization'),
         ('incinerate', 'Incineration')
-    
+
     certificate_of_destruction_id = fields.Many2one(
         "naid.certificate",
         string="Certificate of Destruction",
         help="Generated certificate of destruction"
-    
+
 
         # ============================================================================
     # PICKUP AND LOGISTICS
@@ -169,35 +169,35 @@ class AccountMoveLine(models.Model):
         "pickup.request",
         string="Pickup Request",
         help="Related pickup request"
-    
+
 
     pickup_date = fields.Date(
         string="Pickup Date",
         help="Date when pickup was performed"
-    
+
 
     delivery_date = fields.Date(
         string="Delivery Date",
         help="Date when delivery was completed"
-    
+
 
     route_id = fields.Many2one(
         "pickup.route",
         string="Pickup Route",
         help="Route used for pickup/delivery":
-    
+
 
     driver_id = fields.Many2one(
         "hr.employee",
         string="Driver",
         help="Employee who performed the pickup/delivery"
-    
+
 
     vehicle_id = fields.Many2one(
         "records.vehicle",
         string="Vehicle",
         help="Vehicle used for pickup/delivery":
-    
+
 
         # ============================================================================
     # LOCATION AND STORAGE TRACKING
@@ -206,35 +206,35 @@ class AccountMoveLine(models.Model):
         "records.location",
         string="Storage Location",
         help="Primary storage location for records":
-    
+
 
     origin_location_id = fields.Many2one(
         "records.location",
         string="Origin Location",
         help="Location where items were picked up from"
-    
+
 
     destination_location_id = fields.Many2one(
         "records.location",
         string="Destination Location",
         help="Location where items were delivered to"
-    
+
 
     storage_period_months = fields.Integer(
         ,
     string="Storage Period (Months)",
         help="Number of months for storage billing":
-    
+
 
     storage_start_date = fields.Date(
         string="Storage Start Date",
         help="Date when storage period began"
-    
+
 
     storage_end_date = fields.Date(
         string="Storage End Date",
         help="Date when storage period ended"
-    
+
 
         # ============================================================================
     # BILLING CONFIGURATION AND RATES
@@ -243,19 +243,19 @@ class AccountMoveLine(models.Model):
         "records.billing.config",
         string="Billing Configuration",
         help="Billing configuration used for this line":
-    
+
 
     base_rate_id = fields.Many2one(
         "base.rate",
         string="Base Rate",
         help="Base rate applied to this service"
-    
+
 
     customer_rate_id = fields.Many2one(
         "customer.negotiated.rate",
         string="Customer Rate",
         help="Customer-specific negotiated rate"
-    
+
 
     ,
     rate_type = fields.Selection([))
@@ -264,13 +264,13 @@ class AccountMoveLine(models.Model):
         ('emergency', 'Emergency Rate'),
         ('volume', 'Volume Discount'),
         ('contract', 'Contract Rate')
-    
+
 
     unit_rate = fields.Float(
         string="Unit Rate",
         digits='Product Price',
         help="Rate per unit for this service":
-    
+
 
     ,
     rate_unit = fields.Selection([))
@@ -281,7 +281,7 @@ class AccountMoveLine(models.Model):
         ('hour', 'Per Hour'),
         ('month', 'Per Month'),
         ('trip', 'Per Trip')
-    
+
         # ============================================================================
     # COMPLIANCE AND AUDIT
         # ============================================================================
@@ -289,30 +289,30 @@ class AccountMoveLine(models.Model):
         string="NAID Audit Required",
         default=False,
         help="Indicates if NAID audit trail is required":
-    
+
 
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
         default=True,
         help="Whether this service meets NAID AAA standards"
-    
+
 
     audit_trail_created = fields.Boolean(
         string="Audit Trail Created",
         default=False,
         help="Whether audit trail has been created for this line":
-    
+
 
     compliance_notes = fields.Text(
         string="Compliance Notes",
         help="Notes regarding compliance requirements and fulfillment"
-    
+
 
     chain_of_custody_id = fields.Many2one(
         "records.chain.of.custody",
         string="Chain of Custody",
         help="Chain of custody record for this service":
-    
+
 
         # ============================================================================
     # CUSTOMER AND DEPARTMENT TRACKING
@@ -321,24 +321,24 @@ class AccountMoveLine(models.Model):
         "records.department",
         string="Records Department",
         help="Customer department for records management":
-    
+
 
     customer_contact_id = fields.Many2one(
         "res.partner",
         string="Customer Contact",
         help="Primary customer contact for this service":
-    
+
 
     customer_reference = fields.Char(
         string="Customer Reference",
         help="Customer's internal reference for this service":'
-    
+
 
     portal_request_id = fields.Many2one(
         "portal.request",
         string="Portal Request",
         help="Portal request that initiated this service"
-    
+
 
         # ============================================================================
     # SERVICE METRICS AND ANALYTICS
@@ -348,21 +348,21 @@ class AccountMoveLine(models.Model):
     string="Service Duration (Hours)",
         digits=(6, 2),
         help="Total time spent on this service"
-    
+
 
     travel_time_hours = fields.Float(
         ,
     string="Travel Time (Hours)",
         digits=(6, 2),
         help="Time spent traveling to/from customer location"
-    
+
 
     service_efficiency_score = fields.Float(
         string="Service Efficiency Score",
         ,
     digits=(5, 2),
         help="Calculated efficiency score for this service":
-    
+
 
     customer_satisfaction_rating = fields.Selection([))
         ('1', 'Poor'),
@@ -370,7 +370,7 @@ class AccountMoveLine(models.Model):
         ('3', 'Good'),
         ('4', 'Very Good'),
         ('5', 'Excellent')
-    
+
 
         # ============================================================================
     # NOTES AND OBSERVATIONS
@@ -378,17 +378,17 @@ class AccountMoveLine(models.Model):
     service_notes = fields.Text(
         string="Service Notes",
         help="Detailed notes about the service performed"
-    
+
 
     internal_notes = fields.Text(
         string="Internal Notes",
         help="Internal notes not visible to customer"
-    
+
 
     special_instructions = fields.Text(
         string="Special Instructions",
         help="Special handling or service instructions"
-    
+
 
         # ============================================================================
     # LEGACY COMPATIBILITY
@@ -398,7 +398,7 @@ class AccountMoveLine(models.Model):
         string='Inherited Line',
         ,
     help='Parent accounting line for inheritance tracking':
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -496,7 +496,7 @@ class AccountMoveLine(models.Model):
             'invoice_line_id': self.id,
             'amount': self.price_total,
             'naid_compliant': self.naid_compliant,
-        
+
 
         if 'naid.audit.log' in self.env:
             self.env['naid.audit.log'].create(audit_vals)
@@ -517,7 +517,7 @@ class AccountMoveLine(models.Model):
             'res_id': self.work_order_id.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
     def action_view_containers(self):
         """View related containers"""
@@ -533,7 +533,7 @@ class AccountMoveLine(models.Model):
             'view_mode': 'tree,form',
             'domain': [('id', 'in', self.container_ids.ids)],
             'context': {'default_partner_id': self.partner_id.id if self.partner_id else False},:
-        
+
 
     def action_view_destruction_certificate(self):
         """View destruction certificate"""
@@ -549,7 +549,7 @@ class AccountMoveLine(models.Model):
             'res_id': self.certificate_of_destruction_id.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -576,7 +576,7 @@ class AccountMoveLine(models.Model):
                 line.storage_start_date > line.storage_end_date
                 raise ValidationError(_())
                     "Storage start date cannot be after storage end date"
-                
+
 
     @api.constrains('pickup_date', 'delivery_date')
     def _check_pickup_delivery_dates(self):
@@ -586,7 +586,7 @@ class AccountMoveLine(models.Model):
                 line.pickup_date > line.delivery_date
                 raise ValidationError(_())
                     "Pickup date cannot be after delivery date"
-                
+
 
     # ============================================================================
         # BUSINESS LOGIC METHODS
@@ -605,7 +605,7 @@ class AccountMoveLine(models.Model):
             'naid_compliant': self.naid_compliant,
             'audit_trail_created': self.audit_trail_created,
             'customer_satisfaction': self.customer_satisfaction_rating,
-        
+
 
     def calculate_efficiency_metrics(self):
         """Calculate service efficiency metrics"""
@@ -651,8 +651,8 @@ class AccountMoveLine(models.Model):
             'compliance_stats': {}
                 'naid_compliant_lines': len(lines.filtered('naid_compliant')),
                 'audit_trails_created': len(lines.filtered('audit_trail_created')),
-            
-        
+
+
 
         # Service type breakdown
         for service_type in lines.mapped('records_service_type'):
@@ -662,7 +662,7 @@ class AccountMoveLine(models.Model):
                     'line_count': len(service_lines),
                     'revenue': sum(service_lines.mapped('price_total')),
                     'container_count': sum(service_lines.mapped('container_count')),
-                
+
 
         return summary
 
@@ -693,7 +693,7 @@ class AccountMoveLine(models.Model):
         audit_trigger_fields = []
             'records_service_type', 'container_count', 'shredding_weight_lbs',
             'destruction_method', 'naid_compliant'
-        
+
 
         if any(field in vals for field in audit_trigger_fields):
             for line in self.filtered('records_related'):
@@ -762,5 +762,5 @@ class AccountMoveLine(models.Model):
             'naid_compliant': self.naid_compliant,
             'audit_trail_created': self.audit_trail_created,
             'customer_satisfaction': self.customer_satisfaction_rating,
-        
+
 )))))))))))))))))))))))))))))))))))))))

@@ -98,7 +98,7 @@ class NaidCertificate(models.Model):
         tracking=True,
         index=True,
         copy=False,
-    
+
     ,
     description = fields.Text(string="Description"),
     sequence = fields.Integer(string="Sequence",,
@@ -114,11 +114,11 @@ class NaidCertificate(models.Model):
             ("issued", "Issued"),
             ("delivered", "Delivered"),
             ("archived", "Archived"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
-    
+
 
         # ============================================================================
     # COMPANY AND USER FIELDS
@@ -128,13 +128,13 @@ class NaidCertificate(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
 
         # ============================================================================
     # CERTIFICATE INFORMATION
@@ -148,31 +148,31 @@ class NaidCertificate(models.Model):
             ("service_completion", "Service Completion Certificate"),
             ("annual_compliance", "Annual Compliance Certificate"),
             ("special_handling", "Special Handling Certificate"),
-        
+
         string="Certificate Type",
         required=True,
         tracking=True,
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
         # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    
+
     destruction_service_id = fields.Many2one(
         "shredding.service", string="Related Destruction Service"
-    
+
     naid_compliance_id = fields.Many2one(
         "naid.compliance", string="Related NAID Compliance"
-    
+
 
         # ============================================================================
     # TIMESTAMP FIELDS
         # ============================================================================
     date_created = fields.Datetime(
         string="Created Date", default=fields.Datetime.now, required=True
-    
+
     ,
     date_modified = fields.Datetime(string="Modified Date"),
     date_issued = fields.Datetime(string="Issue Date",,
@@ -190,7 +190,7 @@ class NaidCertificate(models.Model):
     certificate_filename = fields.Char(string="Certificate Filename"),
     template_id = fields.Many2one(
         "naid.certificate.template", string="Certificate Template"
-    
+
 
         # ============================================================================
     # DIGITAL SIGNATURE FIELDS
@@ -213,10 +213,10 @@ class NaidCertificate(models.Model):
             ("aaa", "NAID AAA Certified"),
             ("standard", "NAID Standard"),
             ("basic", "Basic Compliance"),
-        
+
         string="Compliance Level",
         default="aaa",
-    
+
 
         # ============================================================================
     # DISTRIBUTION FIELDS
@@ -227,10 +227,10 @@ class NaidCertificate(models.Model):
             ("portal", "Customer Portal"),
             ("mail", "Physical Mail"),
             ("pickup", "Customer Pickup"),
-        
+
         string="Delivery Method",
         default="portal",
-    
+
 
     delivery_status = fields.Selection(
         [)
@@ -238,10 +238,10 @@ class NaidCertificate(models.Model):
             ("sent", "Sent"),
             ("delivered", "Delivered"),
             ("failed", "Failed"),
-        
+
         string="Delivery Status",
         default="pending",
-    
+
 
         # ============================================================================
     # CONTROL FIELDS
@@ -251,7 +251,7 @@ class NaidCertificate(models.Model):
     priority = fields.Selection(
         [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")), string="Priority",
         default="normal",
-    
+
     notes = fields.Text(string="Internal Notes")
 
         # ============================================================================
@@ -259,13 +259,13 @@ class NaidCertificate(models.Model):
         # ============================================================================
     display_name = fields.Char(
         string="Display Name", compute="_compute_display_name", store=True
-    
+
     is_expired = fields.Boolean(string="Is Expired",,
     compute="_compute_is_expired"),
     days_until_expiration = fields.Integer(
         string="Days Until Expiration",,
     compute="_compute_days_until_expiration"
-    
+
 
         # NAID Destruction Records (inverse relationship)
     destruction_record_ids = fields.One2many(
@@ -273,14 +273,14 @@ class NaidCertificate(models.Model):
         string="Associated Destruction Records",
         ,
     help="Destruction records that reference this certificate"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
     string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -362,7 +362,7 @@ class NaidCertificate(models.Model):
         for record in self:
             record.is_expired = ()
                 record.expiration_date and record.expiration_date < today
-            
+
 
     @api.depends("expiration_date")
     def _compute_days_until_expiration(self):
@@ -401,8 +401,8 @@ class NaidCertificate(models.Model):
                 "state": "issued",
                 "date_issued": fields.Datetime.now(),
                 "date_modified": fields.Datetime.now(),
-            
-        
+
+
         self.message_post(body=_("Certificate issued"))
 
     def action_deliver_certificate(self):
@@ -418,8 +418,8 @@ class NaidCertificate(models.Model):
                 "date_delivered": fields.Datetime.now(),
                 "delivery_status": "delivered",
                 "date_modified": fields.Datetime.now(),
-            
-        
+
+
         self.message_post(body=_("Certificate delivered"))
 
     def action_archive_certificate(self):
@@ -431,8 +431,8 @@ class NaidCertificate(models.Model):
                 "state": "archived",
                 "active": False,
                 "date_modified": fields.Datetime.now(),
-            
-        
+
+
         self.message_post(body=_("Certificate archived"))
 
     def action_apply_digital_signature(self):
@@ -452,8 +452,8 @@ class NaidCertificate(models.Model):
                 "signature_hash": signature_hash,
                 "signature_date": fields.Datetime.now(),
                 "date_modified": fields.Datetime.now(),
-            
-        
+
+
         self.message_post(body=_("Digital signature applied"))
 
     def action_validate_signature(self):
@@ -470,7 +470,7 @@ class NaidCertificate(models.Model):
         if current_hash != self.signature_hash:
             raise ValidationError()
                 _("Certificate has been tampered with - signature invalid")
-            
+
 
         self.message_post(body=_("Digital signature validated successfully"))
 
@@ -494,7 +494,7 @@ class NaidCertificate(models.Model):
         """Send certificate via email"""
         template = self.env.ref()
             "records_management.email_template_naid_certificate", False
-        
+
         if template:
             template.send_mail(self.id, force_send=True)
 
@@ -506,7 +506,7 @@ class NaidCertificate(models.Model):
             "Certificate %s made available in customer portal for %s",:
             self.name,
             self.partner_id.name,
-        
+
 
     # ============================================================================
         # OVERRIDE METHODS
@@ -540,7 +540,7 @@ class NaidCertificate(models.Model):
             "signature_date",
             "delivery_status",
             "expiration_date",
-        
+
         if any(field in vals for field in relevant_fields):
     vals["date_modified"] = fields.Datetime.now()
         return super().write(vals)
@@ -567,7 +567,7 @@ class NaidCertificate(models.Model):
             "service_completion": 365,  # 1 year
             "annual_compliance": 365,  # 1 year
             "special_handling": 2555,  # 7 years
-        
+
         return expiration_map.get(certificate_type, 365)
 
     # ============================================================================
@@ -592,15 +592,15 @@ class NaidCertificate(models.Model):
                         ("state", "in", ["issued", "delivered"]),
                         ("expiration_date", ">", fields.Date.today()),
                         ("id", "!=", record.id),
-                    
-                
+
+
                 if existing:
                     type_name = dict(record._fields["certificate_type").selection).get(]
                         record.certificate_type
-                    
+
                     raise ValidationError()
                         _("An active %s certificate already exists for this customer", type_name):
-                    
+
 
     @api.constrains("naid_member_id")
     def _check_naid_member_id(self):
@@ -608,12 +608,12 @@ class NaidCertificate(models.Model):
         for record in self:
             if record.naid_member_id and not re.match(:)
                 r"^[A-Za-z0-9\-]+$", record.naid_member_id
-            
+
                 raise ValidationError()
                     _()
                         "NAID Member ID must contain only alphanumeric characters and dashes"
-                    
-                
+
+
 
     # ============================================================================
         # SCHEDULED ACTIONS
@@ -629,22 +629,22 @@ class NaidCertificate(models.Model):
                 ("expiration_date", "<=", warning_date),
                 ("expiration_date", ">", today),
                 ("state", "in", ["issued", "delivered"]),
-            
-        
+
+
 
         for cert in expiring_certificates:
             cert.message_post()
                 body=_("Certificate expires in %d days", cert.days_until_expiration),
                 subject=_("Certificate Expiration Warning"),
-            
+
 
         # Archive expired certificates
         expired_certificates = self.search()
             []
                 ("expiration_date", "<", today),
                 ("state", "in", ["issued", "delivered"]),
-            
-        
+
+
 
         for cert in expired_certificates:
             cert.action_archive_certificate()
@@ -652,8 +652,8 @@ class NaidCertificate(models.Model):
             []
                 ("expiration_date", "<", today),
                 ("state", "in", ["issued", "delivered"]),
-            
-        
+
+
 
         for cert in expired_certificates:
             cert.action_archive_certificate()
@@ -671,10 +671,10 @@ class NAIDCertificate(models.Model):
         # ============================================================================
     certificate_number = fields.Char(
         string="Certificate Number", required=True, tracking=True, copy=False
-    
+
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    
+
     active = fields.Boolean(string="Active",,
     default=True)
 
@@ -686,15 +686,15 @@ class NAIDCertificate(models.Model):
         string="Customer",
         required=True,
         help="Customer for whom destruction was performed",:
-    
+
 
     destruction_date = fields.Datetime(
         string="Destruction Date", required=True, tracking=True
-    
+
 
     issue_date = fields.Datetime(
         string="Issue Date", default=fields.Datetime.now, required=True
-    
+
 
     ,
     naid_compliance_level = fields.Selection(
@@ -702,11 +702,11 @@ class NAIDCertificate(models.Model):
             ("aaa", "AAA - Highest Security"),
             ("aa", "AA - High Security"),
             ("a", "A - Standard Security"),
-        
+
         string="NAID Compliance Level",
         default="aaa",
         required=True,
-    
+
 
     destruction_method = fields.Selection(
         [)
@@ -715,29 +715,29 @@ class NAIDCertificate(models.Model):
             ("incinerate", "Incineration"),
             ("degauss", "Degaussing"),
             ("wipe", "Data Wiping"),
-        
+
         string="Destruction Method",
         required=True,
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
         # ============================================================================
     destruction_item_ids = fields.One2many(
         "destruction.item", "naid_certificate_id", string="Destruction Items"
-    
+
 
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Shredding Service"
-    
+
 
         # Mail Thread Framework Fields
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -753,7 +753,7 @@ class NAIDCertificate(models.Model):
     total_items = fields.Integer(
         string="Total Items", compute="_compute_total_items",,
     store=True
-    
+
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -762,7 +762,7 @@ class NAIDCertificate(models.Model):
             if not vals.get("certificate_number"):
                 vals["certificate_number") = self.env[]
                     "ir.sequence"
-                
+
         return super().create(vals_list)
 
 ))))))))))))))))))

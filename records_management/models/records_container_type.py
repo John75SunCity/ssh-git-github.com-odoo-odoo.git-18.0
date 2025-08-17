@@ -63,13 +63,13 @@ class RecordsContainerType(models.Model):
         tracking=True,
         index=True,
         help="Name of the container type",
-    
+
     code = fields.Char(
         string="Container Code",
         required=True,
         index=True,
         help="Unique code for the container type",:
-    
+
 
         # Standard container types based on actual business specifications
     ,
@@ -81,86 +81,86 @@ class RecordsContainerType(models.Model):
             ("type_04", "Type 4 - Odd Size/Temp Box (5.0 CF, 75 lbs, dimensions unknown)"),
             ("type_06", 'Type 6 - Pathology Box (0.42 CF, 40 lbs, 12"x6"x10")'),"
             ("custom", "Custom Size"),
-        
+
         string="Standard Container Type",
         default="type_01",
         tracking=True,
         help="Business standard container type classification with actual specifications",
-    
+
 
         # Integration with existing barcode system
     barcode_product_id = fields.Many2one(
         "barcode.product",
         string="Barcode Product Template",
         help="Link to existing barcode product configuration",
-    
+
     barcode_prefix = fields.Char(
         string="Barcode Prefix",
         help="Prefix used for generating container barcodes of this type",:
-    
+
     auto_generate_barcode = fields.Boolean(
         string="Auto Generate Barcode",
         default=True,
         help="Automatically generate barcodes for new containers of this type",:
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
         default=lambda self: self.env.user,
         tracking=True,
         help="User who created this container type",
-    
+
     active = fields.Boolean(
         string="Active", default=True, help="Whether this container type is active"
-    
+
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order sequence for sorting container types":
-    
+
 
         # ============================================================================
     # CONTAINER SPECIFICATIONS
         # ============================================================================
     description = fields.Text(
         string="Description", help="Detailed description of container type"
-    
+
     dimensions = fields.Char(
         string="Standard Dimensions",
         ,
     help="Standard dimensions of the container (LxWxH)",
-    
+
     length = fields.Float(
         ,
     string="Length (inches)", digits=(10, 2), help="Container length in inches"
-    
+
     width = fields.Float(
         ,
     string="Width (inches)", digits=(10, 2), help="Container width in inches"
-    
+
     height = fields.Float(
         ,
     string="Height (inches)", digits=(10, 2), help="Container height in inches"
-    
+
     weight_capacity = fields.Float(
         ,
     string="Weight Capacity (lbs)",
         digits=(10, 2),
         default=0.0,
         help="Maximum weight capacity in pounds",
-    
+
     volume_capacity = fields.Float(
         ,
     string="Volume Capacity (cubic feet)",
         digits=(10, 2),
         default=0.0,
         help="Maximum volume capacity in cubic feet",
-    
+
 
         # ============================================================================
     # CLASSIFICATION AND CATEGORY
@@ -173,12 +173,12 @@ class RecordsContainerType(models.Model):
             ("oversize_docs", "Oversize Document Storage"),
             ("map_storage", "Map and Large Format Storage"),
             ("specialty", "Specialty Box Storage"),
-        
+
         string="Container Category",
         default="standard_file",
         tracking=True,
         help="Category based on document storage type and size requirements",
-    
+
 
     storage_location_type = fields.Selection(
         [)
@@ -186,11 +186,11 @@ class RecordsContainerType(models.Model):
             ("vault_storage", "Vault Storage Area"),
             ("climate_controlled", "Climate Controlled Area"),
             ("fire_suppression", "Fire Suppression Area"),
-        
+
         string="Storage Location Type",
         default="general_warehouse",
         help="Type of storage area in the secure facility",
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -200,12 +200,12 @@ class RecordsContainerType(models.Model):
             ("draft", "Draft"),
             ("active", "Active"),
             ("archived", "Archived"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
         help="Current state of the container type",
-    
+
 
         # ============================================================================
     # BILLING INTEGRATION WITH EXISTING MODELS
@@ -214,10 +214,10 @@ class RecordsContainerType(models.Model):
         "records.billing.config",
         string="Billing Configuration",
         help="Link to existing billing configuration for this container type",:
-    
+
     base_rate_id = fields.Many2one(
         "base.rate", string="Base Rate", help="Link to existing base rates model"
-    
+
 
         # Remove redundant pricing fields and compute from existing billing models
     standard_rate = fields.Monetary(
@@ -226,67 +226,67 @@ class RecordsContainerType(models.Model):
         compute="_compute_rates_from_billing",
         store=True,
         help="Standard monthly storage rate from billing configuration",
-    
+
     setup_fee = fields.Monetary(
         string="Setup Fee",
         currency_field="currency_id",
         compute="_compute_rates_from_billing",
         store=True,
         help="One-time setup fee from billing configuration",
-    
+
     handling_fee = fields.Monetary(
         string="Handling Fee",
         currency_field="currency_id",
         compute="_compute_rates_from_billing",
         store=True,
         help="Fee for handling operations from billing configuration",:
-    
+
     destruction_fee = fields.Monetary(
         string="Destruction Fee",
         currency_field="currency_id",
         compute="_compute_rates_from_billing",
         store=True,
         help="Fee for container destruction service from billing configuration",:
-    
+
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
-    
+
 
         # ============================================================================
     # OPERATIONAL SETTINGS
         # ============================================================================
     stackable = fields.Boolean(
         string="Stackable", default=True, help="Whether containers can be stacked"
-    
+
     max_stack_height = fields.Integer(
         string="Max Stack Height",
         default=5,
         help="Maximum number of containers that can be stacked",
-    
+
     requires_special_handling = fields.Boolean(
         string="Requires Special Handling",
         default=False,
         help="Whether container type requires special handling procedures",
-    
+
     vault_eligible = fields.Boolean(
         string="Vault Storage Eligible",
         default=False,
         help="Whether this container type can be stored in vault area",
-    
+
 
     climate_controlled = fields.Boolean(
         string="Climate Controlled Required",
         default=False,
         help="Whether container requires climate controlled storage",
-    
+
     fireproof = fields.Boolean(
         string="Fireproof", default=False, help="Whether container is fireproof"
-    
+
     waterproof = fields.Boolean(
         string="Waterproof", default=False, help="Whether container is waterproof"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS - INTEGRATE WITH EXISTING MODELS
@@ -296,28 +296,28 @@ class RecordsContainerType(models.Model):
         "container_type_id",
         string="Containers",
         help="Containers of this type",
-    
+
         # Link to existing shredding services
     shredding_service_ids = fields.One2many(
         "shredding.service",
         "container_type_id",
         string="Shredding Services",
         help="Shredding services for this container type",:
-    
+
         # TODO: Implement barcode.sequence model for barcode management:
     # barcode_sequence_ids = fields.One2many(
         #     "barcode.sequence",
     #     "container_type_id",
         #     string="Barcode Sequences",
     #     help="Barcode sequences for this container type",:
-        # 
+        #
 
     container_count = fields.Integer(
         string="Container Count",
         compute="_compute_container_metrics",
         store=True,
         help="Total number of containers of this type",
-    
+
 
         # Add missing computed fields referenced in methods
     utilization_percentage = fields.Float(
@@ -325,33 +325,33 @@ class RecordsContainerType(models.Model):
         compute="_compute_container_metrics",
         store=True,
         help="Percentage of container capacity utilization",
-    
+
     total_revenue = fields.Monetary(
         string="Total Revenue",
         currency_field="currency_id",
         compute="_compute_total_revenue_metrics",
         store=True,
         help="Total monthly revenue from containers of this type",
-    
+
     volume_calculated = fields.Float(
         string="Calculated Volume",
         compute="_compute_volume_calculated",
         store=True,
         help="Volume calculated from dimensions",
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
         # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many(
         "mail.message", "res_id", string="Messages"
-    
+
     ,
     context = fields.Char(string='Context'),
     domain = fields.Char(string='Domain'),
@@ -371,7 +371,7 @@ class RecordsContainerType(models.Model):
                 # Get rates from existing billing configuration
                 record.standard_rate = ()
                     record.billing_config_id.default_monthly_rate or 0.0
-                
+
                 record.setup_fee = record.billing_config_id.setup_fee or 0.0
                 record.handling_fee = record.billing_config_id.handling_fee or 0.0
                 record.destruction_fee = record.billing_config_id.destruction_fee or 0.0
@@ -408,11 +408,11 @@ class RecordsContainerType(models.Model):
                         lambda c: c.state in ["active", "stored")
                     ).mapped("current_weight"
                     or [0]
-                
+
                 total_capacity = record.weight_capacity * len(containers)
                 record.utilization_percentage = ()
                     (total_weight / total_capacity) * 100 if total_capacity > 0 else 0.0:
-                
+
             else:
                 record.utilization_percentage = 0.0
 
@@ -423,7 +423,7 @@ class RecordsContainerType(models.Model):
             # Get active containers that are being billed
             billable_containers = record.container_ids.filtered()
                 lambda c: c.state in ["active", "stored"] and not c.billing_suspended
-            
+
             record.total_revenue = len(billable_containers) * record.standard_rate
 
     @api.depends("length", "width", "height")
@@ -433,7 +433,7 @@ class RecordsContainerType(models.Model):
             if record.length and record.width and record.height:
                 record.volume_calculated = ()
                     record.length * record.width * record.height
-                
+
             else:
                 record.volume_calculated = 0.0
 
@@ -466,32 +466,32 @@ class RecordsContainerType(models.Model):
                 "avg_weight": 35,
                 "dimensions": "12x15x10",
                 "description": "Standard Box - General file storage",
-            
+
             "type_02": {  # Legal/Banker Box}
                 "volume_cf": 2.4,  # Corrected volume
                 "avg_weight": 65,
                 "dimensions": "24x15x10",
                 "description": "Legal/Banker Box - Large capacity file storage",
-            
+
             "type_03": {  # Map Box}
                 "volume_cf": 0.875,
                 "avg_weight": 35,
                 "dimensions": "42x6x6",
                 "description": "Map Box - Maps, blueprints, and long documents",
-            
+
             "type_04": {  # Odd Size/Temp Box}
                 "volume_cf": 5.0,
                 "avg_weight": 75,
                 "dimensions": "unknown",
                 "description": "Odd Size/Temp Box - Variable size temporary storage",
-            
+
             "type_06": {  # Pathology Box}
                 "volume_cf": 0.42,
                 "avg_weight": 40,
                 "dimensions": "12x6x10",
                 "description": "Pathology Box - Medical specimens and pathology documents",
-            
-        
+
+
         return specs_mapping.get(self.standard_type, {})
 
     # ============================================================================
@@ -502,23 +502,23 @@ class RecordsContainerType(models.Model):
             "code_company_unique",
             "unique(code, company_id)",
             "Container type code must be unique per company!",
-        
+
         ()
             "name_company_unique",
             "unique(name, company_id)",
             "Container type name must be unique per company!",
-        
+
         ()
             "positive_weight_capacity",
             "check(weight_capacity >= 0)",
             "Weight capacity must be positive!",
-        
+
         ()
             "positive_volume_capacity",
             "check(volume_capacity >= 0)",
             "Volume capacity must be positive!",
-        
-    
+
+
 
     @api.constrains("length", "width", "height")
     def _check_dimensions(self):
@@ -574,14 +574,14 @@ class RecordsContainerType(models.Model):
         # Check for active containers:
         active_containers = self.container_ids.filtered()
             lambda c: c.state == "active"
-        
+
         if active_containers:
             raise UserError()
                 _()
                     "Cannot archive container type with active containers. "
                     "Please archive or reassign all containers first."
-                
-            
+
+
 
         self.write({"state": "archived", "active": False})
         self.message_post(body=_("Container type archived"))
@@ -597,7 +597,7 @@ class RecordsContainerType(models.Model):
             "view_mode": "tree,form",
             "domain": [("container_type_id", "=", self.id)],
             "context": {"default_container_type_id": self.id},
-        
+
 
     def action_create_container(self):
         """Create a new container of this type"""
@@ -613,8 +613,8 @@ class RecordsContainerType(models.Model):
                 "default_container_type_id": self.id,
                 "default_weight_capacity": self.weight_capacity,
                 "default_volume_capacity": self.volume_capacity,
-            
-        
+
+
 
     # ============================================================================
         # BUSINESS METHODS
@@ -629,7 +629,7 @@ class RecordsContainerType(models.Model):
             "destruction_fee": self.destruction_fee,
             "currency": self.currency_id.name,
             "total_monthly_revenue": self.total_revenue,
-        
+
 
     def calculate_storage_cost(self, months=1, include_setup=False):
         """Calculate storage cost for specified period""":
@@ -660,7 +660,7 @@ class RecordsContainerType(models.Model):
             "standard_rate": self.standard_rate,
             "utilization_percentage": self.utilization_percentage,
             "total_revenue": self.total_revenue,
-        
+
 
     # ============================================================================
         # UTILITY METHODS
@@ -688,7 +688,7 @@ class RecordsContainerType(models.Model):
                 ("name", operator, name),
                 ("code", operator, name),
                 ("description", operator, name),
-            
+
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.model
@@ -696,7 +696,7 @@ class RecordsContainerType(models.Model):
         """Get container types by category"""
         return self.search()
             [("container_category", "=", category), ("state", "=", "active")]
-        
+
 
     def copy(self, default=None):
         """Override copy to ensure unique codes"""
@@ -726,8 +726,8 @@ class RecordsContainerType(models.Model):
             {}
                 "name": _("%(name)s (Copy)", name=self.name),
                 "code": final_code,
-            
-        
+
+
         return super().copy(default)
 
     # ============================================================================
@@ -744,7 +744,7 @@ class RecordsContainerType(models.Model):
                 "setup_fee": self.billing_config_id.setup_fee or 0.0,
                 "handling_fee": self.billing_config_id.handling_fee or 0.0,
                 "destruction_fee": self.billing_config_id.destruction_fee or 0.0,
-            
+
 
         # Second priority: Direct base rate link
         if self.base_rate_id:
@@ -753,12 +753,12 @@ class RecordsContainerType(models.Model):
                 "setup_fee": self.base_rate_id.setup_fee or 0.0,
                 "handling_fee": self.base_rate_id.handling_fee or 0.0,
                 "destruction_fee": self.base_rate_id.destruction_fee or 0.0,
-            
+
 
         # Third priority: Search base rates by container type code
         base_rates = self.env["base.rate"].search()
             [("container_type_code", "=", self.code)], limit=1
-        
+
 
         if base_rates:
             return {}
@@ -766,13 +766,13 @@ class RecordsContainerType(models.Model):
                 "setup_fee": base_rates.setup_fee or 0.0,
                 "handling_fee": base_rates.handling_fee or 0.0,
                 "destruction_fee": base_rates.destruction_fee or 0.0,
-            
+
 
         # Fourth priority: Search base rates by standard type
         if self.standard_type and self.standard_type != "custom":
             base_rates = self.env["base.rate"].search()
                 [("container_type", "=", self.standard_type)], limit=1
-            
+
 
             if base_rates:
                 return {}
@@ -780,7 +780,7 @@ class RecordsContainerType(models.Model):
                     "setup_fee": base_rates.setup_fee or 0.0,
                     "handling_fee": base_rates.handling_fee or 0.0,
                     "destruction_fee": base_rates.destruction_fee or 0.0,
-                
+
 
         # Fifth priority: Hardcoded standard rates for actual business container types:
         rate_mapping = {}
@@ -792,7 +792,7 @@ class RecordsContainerType(models.Model):
                 "volume_cf": 1.2,
                 "avg_weight": 35,
                 "dimensions": "12x15x10",
-            
+
             "type_02": {  # Legal/Banker Box - 2.4 CF, 65 lbs avg, 24x15x10}
                 "monthly_rate": 7.50,
                 "setup_fee": 20.0,
@@ -801,7 +801,7 @@ class RecordsContainerType(models.Model):
                 "volume_cf": 2.4,  # Corrected volume
                 "avg_weight": 65,
                 "dimensions": "24x15x10",
-            
+
             "type_03": {  # Map Box - 0.875 CF, 35 lbs avg, 42x6x6}
                 "monthly_rate": 8.0,
                 "setup_fee": 25.0,
@@ -810,7 +810,7 @@ class RecordsContainerType(models.Model):
                 "volume_cf": 0.875,
                 "avg_weight": 35,
                 "dimensions": "42x6x6",
-            
+
             "type_04": {  # Odd Size/Temp Box - 5.0 CF, 75 lbs avg, unknown dimensions}
                 "monthly_rate": 15.0,
                 "setup_fee": 40.0,
@@ -819,7 +819,7 @@ class RecordsContainerType(models.Model):
                 "volume_cf": 5.0,
                 "avg_weight": 75,
                 "dimensions": "unknown",
-            
+
             "type_06": {  # Pathology Box - 0.42 CF, 40 lbs avg, 12x6x10}
                 "monthly_rate": 4.50,
                 "setup_fee": 12.0,
@@ -828,8 +828,8 @@ class RecordsContainerType(models.Model):
                 "volume_cf": 0.42,
                 "avg_weight": 40,
                 "dimensions": "12x6x10",
-            
-        
+
+
 
         # Return rates for the specific container type or zeros if not found:
         return rate_mapping.get()
@@ -842,8 +842,8 @@ class RecordsContainerType(models.Model):
                 "volume_cf": 0.0,
                 "avg_weight": 0.0,
                 "dimensions": "unknown",
-            
-        
+
+
 
     def generate_container_barcode(self):
         """Generate barcode using existing barcode system"""
@@ -851,7 +851,7 @@ class RecordsContainerType(models.Model):
         if not self.barcode_product_id:
             raise UserError()
                 _("No barcode product template configured for this container type"):
-            
+
 
         # Use existing barcode generation system
         barcode_service = self.env["barcode.product"]
@@ -866,7 +866,7 @@ class RecordsContainerType(models.Model):
             # Find or create billing config for standard type:
             billing_config = self.env["records.billing.config"].search()
                 [("container_type", "=", self.standard_type)], limit=1
-            
+
             if billing_config:
                 self.billing_config_id = billing_config.id
                 return billing_config
@@ -883,7 +883,7 @@ class RecordsContainerType(models.Model):
             "weight_capacity": self.weight_capacity,
             "volume_capacity": self.volume_capacity,
             "state": "draft",
-        
+
 
         for barcode in barcode_list:
             container_vals = dict(base_container_vals)
@@ -891,8 +891,8 @@ class RecordsContainerType(models.Model):
                 {}
                     "name": f"Container {barcode}",
                     "barcode": barcode,
-                
-            
+
+
             container = container_model.create(container_vals)
             created_containers |= container
 

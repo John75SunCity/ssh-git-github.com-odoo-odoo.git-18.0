@@ -21,13 +21,13 @@ class PaperBaleMovement(models.Model):
     default=lambda self: _('New'),
         help="Unique identifier for this movement":
             pass
-    
+
     active = fields.Boolean(
         string="Active",
         default=True,
         tracking=True,
         help="Set to false to hide this record"
-    
+
     company_id = fields.Many2one(
         'res.company',
         string='Company',
@@ -35,28 +35,28 @@ class PaperBaleMovement(models.Model):
         required=True,
         index=True,
         help="Company this movement belongs to"
-    
-    
+
+
         # ============================================================================
-    # BUSINESS SPECIFIC FIELDS  
+    # BUSINESS SPECIFIC FIELDS
         # ============================================================================
     bale_id = fields.Many2one(
         "paper.bale", string="Paper Bale", required=True, ondelete="cascade"
-    
+
     source_location_id = fields.Many2one(
         "stock.location", string="Source Location", required=True
-    
+
     destination_location_id = fields.Many2one(
         "stock.location", string="Destination Location", required=True
-    
+
     movement_date = fields.Datetime(
         string="Movement Date", required=True, default=fields.Datetime.now
-    
+
     responsible_user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
-    
+
     ,
     state = fields.Selection(
         [)
@@ -64,11 +64,11 @@ class PaperBaleMovement(models.Model):
             ("in_transit", "In Transit"),
             ("completed", "Completed"),
             ("cancelled", "Cancelled"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
-    
+
     notes = fields.Text(string="Movement Notes")
 
     @api.constrains("source_location_id", "destination_location_id")
@@ -77,7 +77,7 @@ class PaperBaleMovement(models.Model):
             if movement.source_location_id == movement.destination_location_id:
                 raise ValidationError()
                     _("Source and destination locations cannot be the same.")
-                
+
 
     def action_start_transit(self):
         self.ensure_one()
@@ -92,7 +92,7 @@ class PaperBaleMovement(models.Model):
     def action_cancel_movement(self):
         self.ensure_one()
         self.write({"state": "cancelled"})
-    
+
     # ============================================================================
         # ORM METHODS
     # ============================================================================
@@ -103,7 +103,7 @@ class PaperBaleMovement(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name') = self.env['ir.sequence'].next_by_code('paper.bale.movement') or _('New')
         return super().create(vals_list)
-    
+
     # ============================================================================
         # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================

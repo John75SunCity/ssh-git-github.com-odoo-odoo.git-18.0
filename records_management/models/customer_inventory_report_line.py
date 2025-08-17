@@ -39,21 +39,21 @@ class CustomerInventoryReportLine(models.Model):
         tracking=True,
         index=True,
         help="Description of this inventory line item"
-    
+
 
     display_name = fields.Char(
         string="Display Name",
         compute='_compute_display_name',
         store=True,
         help="Formatted display name for the line":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     user_id = fields.Many2one(
         "res.users",
@@ -61,19 +61,19 @@ class CustomerInventoryReportLine(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
         help="User who created this line item"
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this line"
-    
+
 
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Order sequence for line display":
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -85,7 +85,7 @@ class CustomerInventoryReportLine(models.Model):
         ondelete="cascade",
         index=True,
         help="Parent inventory report"
-    
+
 
     container_id = fields.Many2one(
         "records.container",
@@ -93,7 +93,7 @@ class CustomerInventoryReportLine(models.Model):
         required=True,
         index=True,
         help="Container being reported on"
-    
+
 
     partner_id = fields.Many2one(
         "res.partner",
@@ -102,7 +102,7 @@ class CustomerInventoryReportLine(models.Model):
         readonly=True,
         store=True,
         help="Customer for this inventory line":
-    
+
 
     location_id = fields.Many2one(
         "records.location",
@@ -111,7 +111,7 @@ class CustomerInventoryReportLine(models.Model):
         readonly=True,
         store=True,
         help="Current storage location"
-    
+
 
         # ============================================================================
     # CONTAINER SPECIFICATIONS
@@ -123,7 +123,7 @@ class CustomerInventoryReportLine(models.Model):
         string="Container Type",
         ,
     help="Type of container (TYPE_01, TYPE_02, etc.)"
-    
+
 
     container_barcode = fields.Char(
         string="Container Barcode",
@@ -131,7 +131,7 @@ class CustomerInventoryReportLine(models.Model):
         readonly=True,
         store=True,
         help="Container barcode identifier"
-    
+
 
     container_volume_cf = fields.Float(
         ,
@@ -141,7 +141,7 @@ class CustomerInventoryReportLine(models.Model):
         store=True,
         digits=(8, 3),
         help="Container volume in cubic feet"
-    
+
 
     container_weight_lbs = fields.Float(
         ,
@@ -151,7 +151,7 @@ class CustomerInventoryReportLine(models.Model):
         store=True,
         digits=(8, 2),
         help="Container weight in pounds"
-    
+
 
         # ============================================================================
     # DOCUMENT TRACKING
@@ -159,37 +159,37 @@ class CustomerInventoryReportLine(models.Model):
     document_type = fields.Char(
         string="Document Type",
         help="Type of documents in container"
-    
+
 
     document_type_id = fields.Many2one(
         "records.document.type",
         string="Document Type Record",
         help="Linked document type record"
-    
+
 
     document_count = fields.Integer(
         string="Document Count",
         default=0,
         help="Number of documents in container"
-    
+
 
     document_count_verified = fields.Boolean(
         string="Count Verified",
         default=False,
         tracking=True,
         help="Whether document count has been verified"
-    
+
 
     verification_date = fields.Date(
         string="Verification Date",
         help="Date when document count was verified"
-    
+
 
     verified_by = fields.Many2one(
         "res.users",
         string="Verified By",
         help="User who verified the count"
-    
+
 
         # ============================================================================
     # DATE TRACKING
@@ -197,17 +197,17 @@ class CustomerInventoryReportLine(models.Model):
     storage_date = fields.Date(
         string="Storage Date",
         help="Date documents were initially stored"
-    
+
 
     last_access_date = fields.Date(
         string="Last Access Date",
         help="Date container was last accessed"
-    
+
 
     retention_date = fields.Date(
         string="Retention Date",
         help="Date when documents become eligible for destruction":
-    
+
 
     report_date = fields.Date(
         string="Report Date",
@@ -215,7 +215,7 @@ class CustomerInventoryReportLine(models.Model):
         readonly=True,
         store=True,
         help="Date this report was generated"
-    
+
 
         # ============================================================================
     # LOCATION AND ACCESS
@@ -226,12 +226,12 @@ class CustomerInventoryReportLine(models.Model):
         readonly=True,
         store=True,
         help="Storage location identifier"
-    
+
 
     bin_location = fields.Char(
         string="Bin Location",
         help="Specific bin or shelf location"
-    
+
 
     ,
     access_level = fields.Selection([))
@@ -239,7 +239,7 @@ class CustomerInventoryReportLine(models.Model):
         ('restricted', 'Restricted Access'),
         ('confidential', 'Confidential'),
         ('secure', 'Secure Vault')
-    
+
 
         # ============================================================================
     # FINANCIAL TRACKING
@@ -249,13 +249,13 @@ class CustomerInventoryReportLine(models.Model):
         string="Currency",
         related="company_id.currency_id",
         readonly=True
-    
+
 
     monthly_storage_cost = fields.Monetary(
         string="Monthly Storage Cost",
         currency_field="currency_id",
         help="Monthly storage cost for this container":
-    
+
 
     total_storage_cost = fields.Monetary(
         string="Total Storage Cost",
@@ -263,14 +263,14 @@ class CustomerInventoryReportLine(models.Model):
         compute='_compute_total_storage_cost',
         store=True,
         help="Total storage cost to date"
-    
+
 
     storage_months = fields.Integer(
         string="Storage Months",
         compute='_compute_storage_months',
         store=True,
         help="Number of months in storage"
-    
+
 
         # ============================================================================
     # STATUS AND WORKFLOW
@@ -282,14 +282,14 @@ class CustomerInventoryReportLine(models.Model):
         ('retrieved', 'Retrieved'),
         ('destroyed', 'Destroyed'),
         ('transferred', 'Transferred')
-    
+
 
     billing_status = fields.Selection([))
         ('unbilled', 'Unbilled'),
         ('billed', 'Billed'),
         ('paid', 'Paid'),
         ('disputed', 'Disputed')
-    
+
 
         # ============================================================================
     # NOTES AND DESCRIPTIONS
@@ -297,17 +297,17 @@ class CustomerInventoryReportLine(models.Model):
     description = fields.Text(
         string="Description",
         help="Detailed description of container contents"
-    
+
 
     notes = fields.Text(
         string="Notes",
         help="Additional notes or observations"
-    
+
 
     special_instructions = fields.Text(
         string="Special Instructions",
         help="Special handling or access instructions"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -318,7 +318,7 @@ class CustomerInventoryReportLine(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -326,7 +326,7 @@ class CustomerInventoryReportLine(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -334,7 +334,7 @@ class CustomerInventoryReportLine(models.Model):
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -417,7 +417,7 @@ class CustomerInventoryReportLine(models.Model):
             'document_count_verified': True,
             'verification_date': fields.Date.today(),
             'verified_by': self.env.user.id
-        
+
         self.message_post(body=_("Document count verified: %d documents", self.document_count))
 
     def action_update_from_container(self):
@@ -435,7 +435,7 @@ class CustomerInventoryReportLine(models.Model):
             self.message_post(body=_())
                 "Document count updated from %d to %d (requires verification)",
                 old_count, actual_count
-            
+
 
     def action_view_container(self):
         """View the related container"""
@@ -450,7 +450,7 @@ class CustomerInventoryReportLine(models.Model):
             'res_id': self.container_id.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
     def action_view_documents(self):
         """View documents in the container"""
@@ -465,7 +465,7 @@ class CustomerInventoryReportLine(models.Model):
             'view_mode': 'tree,form',
             'domain': [('container_id', '=', self.container_id.id)],
             'context': {'default_container_id': self.container_id.id},
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -492,7 +492,7 @@ class CustomerInventoryReportLine(models.Model):
                 if line.storage_date > line.report_date:
                     raise ValidationError(_())
                         "Storage date cannot be after report date"
-                    
+
 
     # ============================================================================
         # BUSINESS LOGIC METHODS
@@ -511,7 +511,7 @@ class CustomerInventoryReportLine(models.Model):
             'type_03': {'volume': 0.875, 'max_weight': 35},
             'type_04': {'volume': 5.0, 'max_weight': 75},
             'type_06': {'volume': 0.42, 'max_weight': 40},
-        
+
 
         container_type = self.container_type or 'type_01'
         spec = container_specs.get(container_type, container_specs['type_01'])
@@ -530,7 +530,7 @@ class CustomerInventoryReportLine(models.Model):
             'weight_utilization': min(weight_utilization, 100),
             'container_spec': spec,
             'is_overutilized': volume_utilization > 100 or weight_utilization > 100
-        
+
 
     @api.model
     def get_summary_by_document_type(self, domain=None):
@@ -550,7 +550,7 @@ class CustomerInventoryReportLine(models.Model):
                     'document_count': 0,
                     'total_cost': 0.0,
                     'container_ids': set()
-                
+
 
             summary[doc_type]['line_count'] += 1
             summary[doc_type]['document_count'] += line.document_count
@@ -585,7 +585,7 @@ class CustomerInventoryReportLine(models.Model):
             'verification_status': 'Verified' if self.document_count_verified else 'Unverified',:
             'utilization': utilization_data,
             'special_notes': bool(self.special_instructions or self.notes)
-        
+
 
     # ============================================================================
         # ORM METHODS
@@ -610,7 +610,7 @@ class CustomerInventoryReportLine(models.Model):
                     line.message_post(body=_())
                         "Document count changed to %d (verification required)",
                         line.document_count
-                    
+
 
         return result
 
@@ -638,7 +638,7 @@ class CustomerInventoryReportLine(models.Model):
             'security_compliance': 0.2,  # Security and compliance
             'customer_service': 0.1,    # Customer service overhead
             'facility_maintenance': 0.1  # Facility costs
-        
+
 
         # Adjust allocation based on access level
         if self.access_level in ['confidential', 'secure']:

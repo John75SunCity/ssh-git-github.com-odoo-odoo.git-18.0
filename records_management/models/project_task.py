@@ -43,7 +43,7 @@ class ProjectTask(models.Model):
         string="Work Order Coordinator",
         tracking=True,
         help="Work order coordinator managing this task"
-    
+
 
     ,
     work_order_type = fields.Selection([))
@@ -54,7 +54,7 @@ class ProjectTask(models.Model):
         ('container_access', 'Container Access'),
         ('pickup_delivery', 'Pickup & Delivery'),
         ('audit_inspection', 'Audit Inspection'),
-    
+
         tracking=True,
         help="Type of work order related to this task"
 
@@ -67,18 +67,18 @@ class ProjectTask(models.Model):
             ('scan.retrieval.work.order', 'Scan Retrieval'),
             ('container.destruction.work.order', 'Container Destruction'),
             ('container.access.work.order', 'Container Access'),
-        
+
         string='Related Work Order',
         tracking=True,
         help="Direct reference to the related work order"
-    
+
 
     work_order_priority = fields.Selection([))
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent'),
-    
+
         default='normal',
         tracking=True,
         help="Priority level for work order execution"
@@ -90,7 +90,7 @@ class ProjectTask(models.Model):
         string="Related Container",
         tracking=True,
         help="Container associated with this task"
-    
+
 
     container_ids = fields.Many2many(
         "records.container",
@@ -99,14 +99,14 @@ class ProjectTask(models.Model):
         "container_id",
         string="Multiple Containers",
         help="Multiple containers associated with this task"
-    
+
 
     pickup_request_id = fields.Many2one(
         "pickup.request",
         string="Pickup Request",
         tracking=True,
         help="The pickup request that generated this task"
-    
+
 
     ,
     task_type = fields.Selection([))
@@ -120,7 +120,7 @@ class ProjectTask(models.Model):
         ("scanning", "Document Scanning"),
         ("indexing", "Document Indexing"),
         ("inspection", "Container Inspection"),
-    
+
         tracking=True,
         help="Specific type of records management task"
 
@@ -130,34 +130,34 @@ class ProjectTask(models.Model):
     scheduled_start_time = fields.Datetime(
         string="Scheduled Start Time",
         help="Planned start time for the task":
-    
+
 
     scheduled_end_time = fields.Datetime(
         string="Scheduled End Time",
         help="Planned completion time for the task":
-    
+
 
     actual_start_time = fields.Datetime(
         string="Actual Start Time",
         help="Actual time the task was started"
-    
+
 
     actual_end_time = fields.Datetime(
         string="Actual End Time",
         help="Actual time the task was completed"
-    
+
 
     route_id = fields.Many2one(
         "pickup.route",
         string="Pickup Route",
         help="Route associated with this task"
-    
+
 
     vehicle_id = fields.Many2one(
         "records.vehicle",
         string="Assigned Vehicle",
         help="Vehicle assigned for this task":
-    
+
 
         # ============================================================================
     # COMPLIANCE AND AUDIT FIELDS
@@ -166,21 +166,21 @@ class ProjectTask(models.Model):
         string="NAID Compliant",
         default=True,
         help="Whether this task requires NAID compliance"
-    
+
 
     audit_trail_ids = fields.One2many(
         "naid.audit.log",
         "task_id",
         string="Audit Trail",
         help="NAID audit trail entries for this task":
-    
+
 
     certificate_required = fields.Boolean(
         string="Certificate Required",
         compute="_compute_certificate_required",
         store=True,
         help="Whether completion certificate is required"
-    
+
 
         # ============================================================================
     # STATUS AND PROGRESS FIELDS
@@ -193,7 +193,7 @@ class ProjectTask(models.Model):
         ('completed', 'Completed'),
         ('on_hold', 'On Hold'),
         ('cancelled', 'Cancelled'),
-    
+
         default='pending',
         tracking=True,
         help="Current status of the work order"
@@ -201,13 +201,13 @@ class ProjectTask(models.Model):
     completion_notes = fields.Text(
         string="Completion Notes",
         help="Notes about task completion and any issues encountered"
-    
+
 
     quality_check_passed = fields.Boolean(
         string="Quality Check Passed",
         ,
     help="Whether the completed task passed quality checks"
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -220,7 +220,7 @@ class ProjectTask(models.Model):
             record.certificate_required = ()
                 record.task_type in ['destruction', 'audit'] or
                 record.work_order_type in certificate_types
-            
+
 
     # ============================================================================
         # ONCHANGE METHODS
@@ -236,7 +236,7 @@ class ProjectTask(models.Model):
                 'scan.retrieval.work.order': 'scan_retrieval',
                 'container.destruction.work.order': 'container_destruction',
                 'container.access.work.order': 'container_access',
-            
+
 
             model_name = self.work_order_reference._name
             if model_name in model_type_mapping:
@@ -274,7 +274,7 @@ class ProjectTask(models.Model):
             "res_id": self.container_id.id,
             "target": "current",
             "context": {"default_task_id": self.id}
-        
+
 
     def action_view_work_order(self):
         """Action to open the related work order's form view"""'
@@ -289,7 +289,7 @@ class ProjectTask(models.Model):
             "res_id": self.work_order_reference.id,
             "target": "current",
             "context": {"default_task_id": self.id}
-        
+
 
     def action_sync_with_work_order(self):
         """Sync task status with related work order"""
@@ -304,10 +304,10 @@ class ProjectTask(models.Model):
                     self.work_order_reference.write({)}
                         'state': 'completed',
                         'completion_date': fields.Datetime.now()
-                    
+
                     self.message_post()
                         body=_("Work order synchronized and marked as completed")
-                    
+
 
         return True
 
@@ -320,7 +320,7 @@ class ProjectTask(models.Model):
         self.write({)}
             'work_order_status': 'in_progress',
             'actual_start_time': fields.Datetime.now()
-        
+
 
         # Create audit log entry
         self._create_audit_log('task_started')
@@ -337,7 +337,7 @@ class ProjectTask(models.Model):
         self.write({)}
             'work_order_status': 'completed',
             'actual_end_time': fields.Datetime.now()
-        
+
 
         # Sync with work order if exists:
         if self.work_order_reference:
@@ -361,7 +361,7 @@ class ProjectTask(models.Model):
         self.write({)}
             'work_order_status': 'cancelled',
             'actual_end_time': fields.Datetime.now()
-        
+
 
         # Create audit log entry
         self._create_audit_log('task_cancelled')
@@ -377,7 +377,7 @@ class ProjectTask(models.Model):
         domain = []
             ('state', '=', 'draft'),
             ('date', '>=', fields.Date.today())
-        
+
 
         routes = self.env['pickup.route'].search(domain)
         if not routes:
@@ -392,8 +392,8 @@ class ProjectTask(models.Model):
             'context': {}
                 'default_task_id': self.id,
                 'default_available_route_ids': routes.ids
-            
-        
+
+
 
     # ============================================================================
         # BUSINESS METHODS
@@ -409,7 +409,7 @@ class ProjectTask(models.Model):
             'user_id': self.env.user.id,
             'task_id': self.id,
             'container_id': self.container_id.id if self.container_id else False,:
-        
+
 
     def _generate_completion_certificate(self):
         """Generate completion certificate for the task""":
@@ -420,14 +420,14 @@ class ProjectTask(models.Model):
             'completion_date': self.actual_end_time or fields.Datetime.now(),
             'technician_id': self.user_id.id,
             'notes': self.completion_notes or '',
-        
+
 
         certificate = self.env['task.completion.certificate'].create(certificate_vals)
 
         self.message_post()
             body=_("Completion certificate generated: %s", certificate.name),
             attachments=[certificate._generate_pdf_attachment()]
-        
+
 
         return certificate
 
@@ -444,7 +444,7 @@ class ProjectTask(models.Model):
             'partner': self.partner_id.name if self.partner_id else '',:
             'scheduled_date': self.date_deadline,
             'completion_date': self.actual_end_time,
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -534,11 +534,11 @@ class ProjectTask(models.Model):
             'completed_today': self.search_count(domain_base + [)]
                 ('work_order_status', '=', 'completed'),
                 ('actual_end_time', '>=', fields.Date.today())
-            
+
             'overdue_tasks': self.search_count(domain_base + [)]
                 ('date_deadline', '<', fields.Date.today()),
                 ('work_order_status', 'not in', ['completed', 'cancelled'])
-            
-        
+
+
 
 ))))))))))

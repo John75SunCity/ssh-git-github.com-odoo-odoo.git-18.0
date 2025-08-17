@@ -62,10 +62,10 @@ class WorkOrderShredding(models.Model):
         help="Manager responsible for this work order",:
     active = fields.Boolean(
         string="Active", default=True, help="Whether this work order is active"
-    
+
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order sequence for sorting work orders":
-    
+
 
         # ============================================================================
     # CUSTOMER AND SERVICE RELATIONSHIP
@@ -105,7 +105,7 @@ class WorkOrderShredding(models.Model):
     help="Actual start date and time"),
     completion_date = fields.Datetime(
         string="Completion Date", help="Actual completion date and time"
-    
+
     estimated_duration = fields.Float(
         ,
     string="Estimated Duration (hours)",
@@ -143,7 +143,7 @@ class WorkOrderShredding(models.Model):
         help="Type of shredding work order",
     urgency_reason = fields.Text(
         string="Urgency Reason", help="Reason for urgent priority if applicable":
-    
+
 
         # ============================================================================
     # TEAM AND RESOURCE ASSIGNMENT
@@ -197,10 +197,10 @@ class WorkOrderShredding(models.Model):
         help="Actual weight of materials processed",
     container_count = fields.Integer(
         string="Container Count", help="Number of containers to process"
-    
+
     special_instructions = fields.Text(
         string="Special Instructions", help="Special handling instructions"
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -229,26 +229,26 @@ class WorkOrderShredding(models.Model):
         help="Location where service will be performed",
     customer_address = fields.Text(
         string="Customer Address", help="Specific address for service delivery":
-    
+
     access_instructions = fields.Text(
         string="Access Instructions",
         help="Instructions for accessing the service location",:
     contact_person = fields.Char(
         string="Contact Person", help="Primary contact person at service location"
-    
+
     contact_phone = fields.Char(
         string="Contact Phone", help="Phone number for service location contact":
-    
+
 
         # ============================================================================
     # COMPLETION AND VERIFICATION
         # ============================================================================
     completion_notes = fields.Text(
         string="Completion Notes", help="Notes about work order completion"
-    
+
     customer_signature = fields.Binary(
         string="Customer Signature", help="Customer signature for service completion":
-    
+
     ,
     customer_satisfaction = fields.Selection(
         [)
@@ -294,7 +294,7 @@ class WorkOrderShredding(models.Model):
         help="Whether witnessed destruction is required",
     witness_id = fields.Many2one(
         "res.users", string="Witness", help="Person who witnessed the destruction"
-    
+
 
         # ============================================================================
     # FINANCIAL AND BILLING
@@ -494,7 +494,7 @@ class WorkOrderShredding(models.Model):
                 delta = order.completion_date - order.start_date
                 order.actual_duration = ()
                     delta.total_seconds() / 3600.0
-                
+
             else:
                 order.actual_duration = 0.0
 
@@ -519,7 +519,7 @@ class WorkOrderShredding(models.Model):
                 vals["name") = (]
                     self.env["ir.sequence"].next_by_code("work.order.shredding")
                     or "New"
-                
+
         return super().create(vals_list)
 
     def write(self, vals):
@@ -570,7 +570,7 @@ class WorkOrderShredding(models.Model):
             if order.state not in ["confirmed"]:
                 raise UserError()
                     _("Work order must be confirmed before team assignment")
-                
+
 
             if not order.assigned_team_id:
                 raise UserError(_("Please select a team before assignment"))
@@ -601,7 +601,7 @@ class WorkOrderShredding(models.Model):
 
             order.write()
                 {"state": "completed", "completion_date": fields.Datetime.now()}
-            
+
 
             # Generate certificate if required:
             if order.certificate_required and not order.certificate_id:
@@ -661,7 +661,7 @@ class WorkOrderShredding(models.Model):
             "res_id": self.certificate_id.id,
             "view_mode": "form",
             "target": "current",
-        
+
 
     # ============================================================================
         # BUSINESS METHODS
@@ -683,7 +683,7 @@ class WorkOrderShredding(models.Model):
             "material_type": self.material_type,
             "compliance_level": self.compliance_level,
             "witness_id": self.witness_id.id if self.witness_id else None,:
-        
+
 
         certificate = self.env["naid.certificate"].create(certificate_vals)
         self.certificate_id = certificate
@@ -704,7 +704,7 @@ class WorkOrderShredding(models.Model):
                 ("scheduled_date", "=", self.scheduled_date),
                 ("state", "in", ["assigned", "in_progress"]),
                 ("id", "!=", self.id),
-        
+
 
         return len(conflicting_orders) == 0
 
@@ -723,7 +723,7 @@ class WorkOrderShredding(models.Model):
             "actual_weight": self.actual_weight,
             "duration": self.actual_duration,
             "satisfaction": self.customer_satisfaction,
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -780,7 +780,7 @@ class WorkOrderShredding(models.Model):
     @api.model
     def _search_name():
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    
+
         """Enhanced search by name or customer, returns name_get results for consistency""":
         args = args or []
         domain = []

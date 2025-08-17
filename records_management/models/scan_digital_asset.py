@@ -26,20 +26,20 @@ class ScanDigitalAsset(models.Model):
         tracking=True,
         index=True,
         help="Name of the digital asset"
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this asset"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -48,7 +48,7 @@ class ScanDigitalAsset(models.Model):
         "scan.retrieval.work.order",
         string="Scan Work Order",
         help="Associated scan retrieval work order"
-    
+
 
         # ============================================================================
     # DIGITAL ASSET FIELDS
@@ -57,37 +57,37 @@ class ScanDigitalAsset(models.Model):
         string="File Name",
         required=True,
         help="Original file name of the digital asset"
-    
+
 
     file_size = fields.Integer(
         ,
     string="File Size (bytes)",
         help="Size of the digital asset file"
-    
+
 
     mime_type = fields.Char(
         string="MIME Type",
         help="MIME type of the digital asset"
-    
+
 
     resolution = fields.Char(
         string="Resolution",
         ,
     help="Image resolution (e.g., '300 DPI')"
-    
+
 
     page_count = fields.Integer(
         string="Page Count",
         default=1,
         help="Number of pages in the asset"
-    
+
 
     scan_date = fields.Datetime(
         string="Scan Date",
         default=fields.Datetime.now,
         required=True,
         help="Date and time when asset was scanned"
-    
+
 
         # ============================================================================
     # STATUS FIELDS
@@ -99,7 +99,7 @@ class ScanDigitalAsset(models.Model):
         ('ready', 'Ready'),
         ('delivered', 'Delivered'),
         ('error', 'Error')
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
             pass
@@ -132,7 +132,7 @@ class ScanDigitalAsset(models.Model):
         compute='_compute_file_size_readable',
         ,
     help="Human readable file size"
-    
+
 
         # ============================================================================
     # ACTION METHODS

@@ -31,21 +31,21 @@ class RecordsSurveyUserInput(models.Model):
         ,
     default=lambda self: _("New Survey Response"),
         tracking=True,
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
 
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
 
     active = fields.Boolean(string="Active",,
     default=True)
@@ -57,11 +57,11 @@ class RecordsSurveyUserInput(models.Model):
             ("reviewed", "Reviewed"),
             ("processed", "Processed"),
             ("archived", "Archived"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
-    
+
 
         # ============================================================================
     # SURVEY INTEGRATION FIELDS (Optional - if survey module exists):
@@ -71,11 +71,11 @@ class RecordsSurveyUserInput(models.Model):
         "survey.survey",
         string="Related Survey",
         help="Optional: Link to Odoo survey if module is available",:
-    
+
 
     response_date = fields.Datetime(
         string="Response Date", default=fields.Datetime.now, tracking=True
-    
+
 
         # ============================================================================
     # RECORDS MANAGEMENT INTEGRATION FIELDS
@@ -85,7 +85,7 @@ class RecordsSurveyUserInput(models.Model):
         "res.partner",
         string="Records Customer",
         help="Customer associated with this survey response",
-    
+
 
     ,
     records_service_type = fields.Selection(
@@ -96,28 +96,28 @@ class RecordsSurveyUserInput(models.Model):
             ("retrieval", "Document Retrieval"),
             ("consultation", "Consultation"),
             ("general", "General Service"),
-        
+
         string="Service Type",
         help="Type of Records Management service being evaluated",
-    
+
 
     related_container_id = fields.Many2one(
         "records.container",
         string="Related Container",
         help="Container associated with this feedback",
-    
+
 
     related_pickup_request_id = fields.Many2one(
         "pickup.request",
         string="Related Pickup Request",
         help="Pickup request being evaluated",
-    
+
 
     related_destruction_id = fields.Many2one(
         "records.destruction",
         string="Related Destruction Service",
         help="Destruction service being evaluated",
-    
+
 
         # ============================================================================
     # SENTIMENT ANALYSIS & FEEDBACK FIELDS
@@ -129,7 +129,7 @@ class RecordsSurveyUserInput(models.Model):
         store=True,
         ,
     help="AI-computed sentiment score (-1 to 1, negative to positive)",
-    
+
 
     sentiment_category = fields.Selection(
         [)
@@ -138,11 +138,11 @@ class RecordsSurveyUserInput(models.Model):
             ("neutral", "Neutral"),
             ("positive", "Positive"),
             ("very_positive", "Very Positive"),
-        
+
         string="Sentiment Category",
         compute="_compute_sentiment_analysis",
         store=True,
-    
+
 
     feedback_priority = fields.Selection(
         [)
@@ -150,24 +150,24 @@ class RecordsSurveyUserInput(models.Model):
             ("medium", "Medium"),
             ("high", "High"),
             ("urgent", "Urgent"),
-        
+
         string="Feedback Priority",
         compute="_compute_feedback_priority",
         store=True,
-    
+
 
     requires_followup = fields.Boolean(
         string="Requires Follow-up",
         compute="_compute_requires_followup",
         store=True,
         help="Automatically determined based on sentiment and rating",
-    
+
 
     followup_assigned_to_id = fields.Many2one(
         "res.users",
         string="Follow-up Assigned To",
         help="User responsible for following up on this feedback",:
-    
+
 
     ,
     followup_status = fields.Selection(
@@ -176,10 +176,10 @@ class RecordsSurveyUserInput(models.Model):
             ("in_progress", "In Progress"),
             ("resolved", "Resolved"),
             ("escalated", "Escalated"),
-        
+
         string="Follow-up Status",
         default="pending",
-    
+
 
         # ============================================================================
     # CUSTOMER FEEDBACK SUMMARY FIELDS
@@ -190,31 +190,31 @@ class RecordsSurveyUserInput(models.Model):
         compute="_compute_satisfaction_metrics",
         store=True,
         help="Computed overall satisfaction score from survey answers",
-    
+
 
     service_quality_rating = fields.Float(
         string="Service Quality Rating",
         compute="_compute_satisfaction_metrics",
         store=True,
-    
+
 
     timeliness_rating = fields.Float(
         string="Timeliness Rating",
         compute="_compute_satisfaction_metrics",
         store=True,
-    
+
 
     communication_rating = fields.Float(
         string="Communication Rating",
         compute="_compute_satisfaction_metrics",
         store=True,
-    
+
 
     nps_score = fields.Integer(
         string="NPS Score",
         ,
     help="Net Promoter Score (0-10) if captured in survey",:
-    
+
 
         # ============================================================================
     # NAID COMPLIANCE & AUDIT FIELDS
@@ -223,18 +223,18 @@ class RecordsSurveyUserInput(models.Model):
     compliance_feedback = fields.Text(
         string="Compliance Feedback",
         help="Feedback specifically related to NAID compliance and procedures",
-    
+
 
     security_concerns = fields.Boolean(
         string="Security Concerns Raised",
         help="Customer raised security or compliance concerns",
-    
+
 
     audit_trail_complete = fields.Boolean(
         string="Audit Trail Complete",
         default=True,
         help="Survey response properly logged for compliance audit",:
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -246,7 +246,7 @@ class RecordsSurveyUserInput(models.Model):
         ,
     domain="[('res_model', '=', 'survey.user.input'))",
         string="Activities",
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -254,7 +254,7 @@ class RecordsSurveyUserInput(models.Model):
         ,
     domain="[('res_model', '=', 'survey.user.input'))",
         string="Followers",
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -262,7 +262,7 @@ class RecordsSurveyUserInput(models.Model):
         ,
     domain="[('res_model', '=', 'survey.user.input'))",
         string="Messages",
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -272,7 +272,7 @@ class RecordsSurveyUserInput(models.Model):
         "user_input_line_ids",
         "user_input_line_ids.suggested_answer_id",
         "user_input_line_ids.value_text",
-    
+
     def _compute_sentiment_analysis(self):
 
         Compute sentiment analysis from survey responses
@@ -303,7 +303,7 @@ class RecordsSurveyUserInput(models.Model):
                 "helpful",
                 "timely",
                 "secure",
-            
+
             negative_keywords = []
                 "poor",
                 "bad",
@@ -316,7 +316,7 @@ class RecordsSurveyUserInput(models.Model):
                 "late",
                 "insecure",
                 "damaged",
-            
+
 
             positive_count = 0
             negative_count = 0
@@ -326,10 +326,10 @@ class RecordsSurveyUserInput(models.Model):
                     text_lower = text.lower()
                     positive_count += sum()
                         1 for word in positive_keywords if word in text_lower:
-                    
+
                     negative_count += sum()
                         1 for word in negative_keywords if word in text_lower:
-                    
+
 
             # Consider numerical ratings (assuming 1-5 scale)
             numerical_ratings = self._extract_numerical_ratings(record)
@@ -337,15 +337,15 @@ class RecordsSurveyUserInput(models.Model):
             # Calculate sentiment score
             rating_sentiment = self._calculate_rating_sentiment()
                 numerical_ratings
-            
+
             keyword_sentiment = self._calculate_keyword_sentiment()
                 positive_count, negative_count
-            
+
 
             # Weighted combination
             sentiment_score = (rating_sentiment * 0.7) + ()
                 keyword_sentiment * 0.3
-            
+
 
             # Categorize sentiment
             sentiment_category = self._categorize_sentiment(sentiment_score)
@@ -360,7 +360,7 @@ class RecordsSurveyUserInput(models.Model):
             if line.question_id.question_type in [:]
                 "simple_choice",
                 "multiple_choice",
-            
+
                 if line.suggested_answer_id and line.suggested_answer_id.value:
                     try:
                         rating = float(line.suggested_answer_id.value)
@@ -383,7 +383,7 @@ class RecordsSurveyUserInput(models.Model):
         if positive_count + negative_count > 0:
             return (positive_count - negative_count) / ()
                 positive_count + negative_count
-            
+
         return 0
 
     def _categorize_sentiment(self, sentiment_score):
@@ -400,7 +400,7 @@ class RecordsSurveyUserInput(models.Model):
 
     @api.depends()
         "sentiment_score", "sentiment_category", "overall_satisfaction"
-    
+
     def _compute_feedback_priority(self):
 
         Compute feedback priority based on sentiment and satisfaction metrics
@@ -414,13 +414,13 @@ class RecordsSurveyUserInput(models.Model):
                     "high"
                     if record.sentiment_category == "negative":
                     else "urgent"
-                
+
 
             # Medium priority for neutral with low satisfaction:
             if (:)
                 record.sentiment_category == "neutral"
                 and record.overall_satisfaction < 3.0
-            
+
                 priority = "medium"
 
             # Consider security concerns
@@ -431,7 +431,7 @@ class RecordsSurveyUserInput(models.Model):
 
     @api.depends()
         "sentiment_category", "feedback_priority", "security_concerns"
-    
+
     def _compute_requires_followup(self):
 
         Determine if feedback requires follow-up based on various factors:
@@ -455,7 +455,7 @@ class RecordsSurveyUserInput(models.Model):
 
     @api.depends()
         "user_input_line_ids", "user_input_line_ids.suggested_answer_id"
-    
+
     def _compute_satisfaction_metrics(self):
 
         Compute satisfaction metrics: overall satisfaction, service quality, timeliness, and communication ratings from survey responses.
@@ -463,10 +463,10 @@ class RecordsSurveyUserInput(models.Model):
         for record in self:
             record.overall_satisfaction = self._calculate_overall_satisfaction()
                 record
-            
+
             record.service_quality_rating = self._calculate_service_quality()
                 record
-            
+
             record.timeliness_rating = self._calculate_timeliness(record)
             record.communication_rating = self._calculate_communication(record)
 
@@ -480,7 +480,7 @@ class RecordsSurveyUserInput(models.Model):
             if line.question_id.question_type in [:]
                 "simple_choice",
                 "multiple_choice",
-            
+
                 if line.suggested_answer_id and line.suggested_answer_id.value:
                     try:
                         rating = float(line.suggested_answer_id.value)
@@ -489,7 +489,7 @@ class RecordsSurveyUserInput(models.Model):
                             if (:)
                                 "overall" in question_title
                                 or "satisfaction" in question_title
-                            
+
                                 return rating
                             ratings.append(rating)
                     except (ValueError, TypeError)
@@ -502,7 +502,7 @@ class RecordsSurveyUserInput(models.Model):
             if line.question_id.question_type in [:]
                 "simple_choice",
                 "multiple_choice",
-            
+
                 if line.suggested_answer_id and line.suggested_answer_id.value:
                     try:
                         rating = float(line.suggested_answer_id.value)
@@ -511,7 +511,7 @@ class RecordsSurveyUserInput(models.Model):
                             if (:)
                                 "quality" in question_title
                                 or "service" in question_title
-                            
+
                                 return rating
                     except (ValueError, TypeError)
                         pass
@@ -523,7 +523,7 @@ class RecordsSurveyUserInput(models.Model):
             if line.question_id.question_type in [:]
                 "simple_choice",
                 "multiple_choice",
-            
+
                 if line.suggested_answer_id and line.suggested_answer_id.value:
                     try:
                         rating = float(line.suggested_answer_id.value)
@@ -533,7 +533,7 @@ class RecordsSurveyUserInput(models.Model):
                                 "time" in question_title
                                 or "prompt" in question_title
                                 or "schedule" in question_title
-                            
+
                                 return rating
                     except (ValueError, TypeError)
                         pass
@@ -545,7 +545,7 @@ class RecordsSurveyUserInput(models.Model):
             if line.question_id.question_type in [:]
                 "simple_choice",
                 "multiple_choice",
-            
+
                 if line.suggested_answer_id and line.suggested_answer_id.value:
                     try:
                         rating = float(line.suggested_answer_id.value)
@@ -555,7 +555,7 @@ class RecordsSurveyUserInput(models.Model):
                                 "communication" in question_title
                                 or "staff" in question_title
                                 or "support" in question_title
-                            
+
                                 return rating
                     except (ValueError, TypeError)
                         pass
@@ -581,10 +581,10 @@ class RecordsSurveyUserInput(models.Model):
             {}
                 "followup_assigned_to_id": ()
                     assigned_user.id if assigned_user else False:
-                
+
                 "followup_status": "in_progress",
-            
-        
+
+
 
         # Create activity for follow-up:
         if assigned_user:
@@ -597,16 +597,16 @@ class RecordsSurveyUserInput(models.Model):
                     self.feedback_priority,
                     self.sentiment_category,
                     self.records_service_type or "General",
-                
-            
+
+
 
         self.message_post()
             body=_()
                 "Follow-up assigned to %s",
                 assigned_user.name if assigned_user else "Unassigned",:
-            
+
             message_type="notification",
-        
+
 
     def action_resolve_followup(self):
 
@@ -618,7 +618,7 @@ class RecordsSurveyUserInput(models.Model):
         self.message_post()
             body=_("Customer feedback follow-up resolved"),
             message_type="notification",
-        
+
 
     def action_escalate_followup(self):
 
@@ -629,16 +629,16 @@ class RecordsSurveyUserInput(models.Model):
         # Find manager to escalate to
         manager = self.env.ref()
             "records_management.group_records_manager"
-        
+
 
         self.write()
             {}
                 "followup_status": "escalated",
                 "followup_assigned_to_id": ()
                     manager.id if manager else self.followup_assigned_to_id.id:
-                
-            
-        
+
+
+
 
         if manager:
             self.activity_schedule()
@@ -650,8 +650,8 @@ class RecordsSurveyUserInput(models.Model):
                     self.followup_assigned_to_id.name or "Unassigned",
                     self.feedback_priority,
                     self.sentiment_category,
-                
-            
+
+
 
     def action_create_customer_feedback_record(self):
 
@@ -662,13 +662,13 @@ class RecordsSurveyUserInput(models.Model):
         if not self.records_partner_id:
             raise UserError()
                 _("Customer must be specified to create feedback record")
-            
+
 
         # Create customer feedback record
         feedback_vals = {}
             "name": _()
                 "Survey Feedback: %s", self.survey_id.title or "Unknown Survey"
-            
+
             "partner_id": self.records_partner_id.id,
             "feedback_type": "survey",
             "service_type": self.records_service_type or "general",
@@ -676,7 +676,7 @@ class RecordsSurveyUserInput(models.Model):
                 str(int(self.overall_satisfaction))
                 if self.overall_satisfaction:
                 else "3"
-            
+
             "comments": self._extract_text_responses(),
             "sentiment_category": self.sentiment_category,
             "sentiment_score": self.sentiment_score,
@@ -686,13 +686,13 @@ class RecordsSurveyUserInput(models.Model):
                 self.related_container_id.id
                 if self.related_container_id:
                 else False
-            
+
             "related_pickup_request_id": ()
                 self.related_pickup_request_id.id
                 if self.related_pickup_request_id:
                 else False
-            
-        
+
+
 
         feedback = self.env["customer.feedback"].create(feedback_vals)
 
@@ -701,9 +701,9 @@ class RecordsSurveyUserInput(models.Model):
                 "Customer feedback record created: <a href='#' data-oe-model='customer.feedback' data-oe-id='%s'>%s</a>",
                 feedback.id,
                 feedback.name,
-            
+
             message_type="notification",
-        
+
 
         return {}
             "type": "ir.actions.act_window",
@@ -712,7 +712,7 @@ class RecordsSurveyUserInput(models.Model):
             "res_id": feedback.id,
             "view_mode": "form",
             "target": "current",
-        
+
 
     # ============================================================================
         # HELPER METHODS
@@ -727,12 +727,12 @@ class RecordsSurveyUserInput(models.Model):
             # Assign to destruction specialist
             return self.env.ref()
                 "records_management.group_records_destruction_user"
-            
+
         if self.records_service_type == "pickup":
             # Assign to field service manager
             return self.env.ref()
                 "records_management.group_records_fsm_user"
-            
+
         # Assign to customer service
         return self.env.ref("records_management.group_records_user").users[:1]
 
@@ -756,7 +756,7 @@ class RecordsSurveyUserInput(models.Model):
 
         if self.env["ir.module.module"].search(:)
             [("name", "=", "records_management"), ("state", "=", "installed")]
-        
+
             self.env["naid.audit.log"].create()
                 {}
                     "event_type": event_type,
@@ -766,15 +766,15 @@ class RecordsSurveyUserInput(models.Model):
                         self.records_partner_id.id
                         if self.records_partner_id:
                         else False
-                    
+
                     "description": _()
                         "Survey response: %s",
                         self.survey_id.title or "Unknown",
-                    
+
                     "user_id": self.env.user.id,
                     "timestamp": fields.Datetime.now(),
-                
-            
+
+
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -799,8 +799,8 @@ class RecordsSurveyUserInput(models.Model):
                 "sentiment_category",
                 "followup_status",
                 "requires_followup",
-            
-        
+
+
             for record in self:
                 record._create_naid_audit_log("survey_response_updated")
 

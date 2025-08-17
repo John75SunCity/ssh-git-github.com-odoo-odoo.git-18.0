@@ -22,14 +22,14 @@ class StockLotAttributeValue(models.Model):
         required=True,
         ondelete="cascade",
         help="Associated stock lot",
-    
+
     attribute_id = fields.Many2one(
         "stock.lot.attribute",
         string="Attribute",
         required=True,
         ondelete="cascade",
         help="Attribute definition",
-    
+
 
         # Value fields for different types:
             pass
@@ -41,10 +41,10 @@ class StockLotAttributeValue(models.Model):
     help="Date attribute value"),
     value_boolean = fields.Boolean(
         string="Boolean Value", help="Boolean attribute value"
-    
+
     value_selection = fields.Char(
         string="Selection Value", help="Selected option value"
-    
+
 
         # Workflow state management
     ,
@@ -60,7 +60,7 @@ class StockLotAttributeValue(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    
+
         help='Current status of the record'
 
     @api.depends()
@@ -70,7 +70,7 @@ class StockLotAttributeValue(models.Model):
         "value_date",
         "value_boolean",
         "value_selection",
-    
+
     def _compute_display_name(self):
         """Compute display name based on attribute type and value"""
         for record in self:
@@ -107,7 +107,7 @@ class StockLotAttributeValue(models.Model):
                 ('lot_id', '=', record.lot_id.id),
                 ('attribute_id', '=', record.attribute_id.id),
                 ('id', '!=', record.id)
-            
+
             if existing:
                 raise ValidationError(_("Attribute %s is already defined for this stock lot", record.attribute_id.name)):
     def get_effective_value(self):
@@ -165,7 +165,7 @@ class StockLotAttributeValue(models.Model):
                     self.attribute_id.name,
                     attr_type,
                     field.replace('value_', '')
-                    
+
 
         # Check that the correct field has a value
         if not getattr(self, expected_field) and attr_type != 'boolean':
@@ -173,5 +173,5 @@ class StockLotAttributeValue(models.Model):
                 "Please provide a value for %s attribute %s",:
                 attr_type,
                 self.attribute_id.name
-            
+
 )

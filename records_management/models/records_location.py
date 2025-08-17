@@ -7,7 +7,7 @@ from odoo.exceptions import UserError, ValidationError
 
 class RecordsLocation(models.Model):
     """Records Storage Location Management"""
-    
+
         Comprehensive location management system with capacity tracking,
     security controls, and operational status monitoring for Records Management operations.:
 
@@ -25,51 +25,51 @@ class RecordsLocation(models.Model):
         required=True,
         tracking=True,
         index=True
-    
-    
+
+
     code = fields.Char(
         string="Location Code",
         required=True,
         index=True,
         tracking=True
-    
-    
+
+
     description = fields.Text(
         string="Description"
-    
-    
+
+
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         tracking=True
-    
-    
+
+
     active = fields.Boolean(
         string="Active",
         default=True,
         tracking=True
-    
-    
+
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
-    
+
+
     user_id = fields.Many2one(
         "res.users",
         string="Location Manager",
         default=lambda self: self.env.user,
         tracking=True
-    
-    
+
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record":
             pass
-    
+
 
         # ============================================================================
     # PHYSICAL LOCATION DETAILS
@@ -77,71 +77,71 @@ class RecordsLocation(models.Model):
     building = fields.Char(
         string="Building",
         tracking=True
-    
-    
+
+
     floor = fields.Char(
         string="Floor",
         tracking=True
-    
-    
+
+
     zone = fields.Char(
         string="Zone",
         tracking=True
-    
-    
+
+
     aisle = fields.Char(
         string="Aisle",
         tracking=True
-    
-    
+
+
     rack = fields.Char(
         string="Rack",
         tracking=True
-    
-    
+
+
     shelf = fields.Char(
         string="Shelf",
         tracking=True
-    
-    
+
+
     position = fields.Char(
         string="Position",
         tracking=True
-    
+
 
         # Address Information
     street = fields.Char(
         string="Street"
-    
-    
+
+
     street2 = fields.Char(
         string="Street 2"
-    
-    
+
+
     city = fields.Char(
         string="City"
-    
-    
+
+
     state_id = fields.Many2one(
         "res.country.state",
         string="State/Province"
-    
-    
+
+
     zip = fields.Char(
         string="ZIP Code"
-    
-    
+
+
     country_id = fields.Many2one(
         "res.country",
         string="Country"
-    
-    
+
+
     full_address = fields.Text(
         string="Full Address",
         compute="_compute_full_address",
         store=True,
         help="Complete formatted address"
-    
+
 
         # ============================================================================
     # CAPACITY & SPECIFICATIONS
@@ -157,74 +157,74 @@ class RecordsLocation(models.Model):
         required=True,
         default="warehouse",
         tracking=True
-    
+
     storage_capacity = fields.Integer(
         ,
     string="Storage Capacity (boxes)",
         default=1000
-    
-    
+
+
     max_capacity = fields.Integer(
         string="Maximum Capacity",
         default=1000
-    
-    
+
+
     current_utilization = fields.Integer(
         string="Current Utilization",
         compute="_compute_current_utilization"
-    
-    
+
+
     available_spaces = fields.Integer(
         string="Available Spaces",
         compute="_compute_available_spaces"
-    
-    
+
+
     available_space = fields.Integer(
         string="Available Space",
         compute="_compute_available_space"
-    
-    
+
+
     utilization_percentage = fields.Float(
         string="Utilization %",
         compute="_compute_utilization_percentage",
         ,
     digits=(5, 2)
-    
-    
+
+
     box_count = fields.Integer(
         string="Box Count",
         compute="_compute_box_count",
         help="Number of boxes at this location"
-    
+
 
         # Physical constraints
     max_weight_capacity = fields.Float(
         ,
     string="Max Weight Capacity (lbs)",
         digits=(12, 2)
-    
-    
+
+
     temperature_controlled = fields.Boolean(
         string="Temperature Controlled",
         default=False
-    
-    
+
+
     humidity_controlled = fields.Boolean(
         string="Humidity Controlled",
         default=False
-    
-    
+
+
     fire_suppression = fields.Boolean(
         string="Fire Suppression",
         default=False
-    
-    
+
+
     ,
     security_level = fields.Selection([))
         ("standard", "Standard"),
         ("high", "High"),
         ("maximum", "Maximum")
-    
+
         default="standard",
         tracking=True
 
@@ -233,27 +233,27 @@ class RecordsLocation(models.Model):
     # ============================================================================
     access_restrictions = fields.Text(
         string="Access Restrictions"
-    
-    
+
+
     authorized_user_ids = fields.Many2many(
         "res.users",
         string="Authorized Users"
-    
-    
+
+
     requires_escort = fields.Boolean(
         string="Requires Escort",
         default=False
-    
-    
+
+
     security_camera = fields.Boolean(
         string="Security Camera",
         default=False
-    
-    
+
+
     access_card_required = fields.Boolean(
         string="Access Card Required",
         default=False
-    
+
 
         # ============================================================================
     # OPERATIONAL STATUS
@@ -266,18 +266,18 @@ class RecordsLocation(models.Model):
         ("full", "At Capacity"),
         default="active",
         tracking=True
-    
+
     availability_schedule = fields.Text(
         string="Availability Schedule"
-    
-    
+
+
     last_inspection_date = fields.Date(
         string="Last Inspection Date"
-    
-    
+
+
     next_inspection_date = fields.Date(
         string="Next Inspection Date"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -286,24 +286,24 @@ class RecordsLocation(models.Model):
         "records.container",
         "location_id",
         string="Records Containers"
-    
-    
+
+
     box_ids = fields.One2many(
         "records.container",
         "location_id",
         string="Stored Boxes"
-    
-    
+
+
     parent_location_id = fields.Many2one(
         "records.location",
         string="Parent Location"
-    
-    
+
+
     child_location_ids = fields.One2many(
         "records.location",
         "parent_location_id",
         string="Child Locations"
-    
+
 
         # ============================================================================
     # WORKFLOW STATE MANAGEMENT
@@ -326,12 +326,12 @@ class RecordsLocation(models.Model):
     child_count = fields.Integer(
         compute="_compute_child_count",
         string="Child Count"
-    
-    
+
+
     is_available = fields.Boolean(
         compute="_compute_is_available",
         string="Available for Storage":
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -342,21 +342,21 @@ class RecordsLocation(models.Model):
         string="Activities",
         ,
     domain=[("res_model", "=", "records.location"))
-    
-    
+
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers"
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         ,
     domain=[("model", "=", "records.location"))
-    
+
 
         # Added by Safe Business Fields Fixer
     climate_controlled = fields.Boolean(string="Climate Controlled",,
@@ -452,7 +452,7 @@ class RecordsLocation(models.Model):
             if record.storage_capacity > 0:
                 record.available_spaces = max()
                     0, record.storage_capacity - record.current_utilization
-                
+
             else:
                 record.available_spaces = 0
 
@@ -463,7 +463,7 @@ class RecordsLocation(models.Model):
             if record.storage_capacity > 0:
                 record.utilization_percentage = ()
                     record.current_utilization / record.storage_capacity * 100.0
-                
+
             else:
                 record.utilization_percentage = 0.0
 
@@ -480,7 +480,7 @@ class RecordsLocation(models.Model):
             record.is_available = ()
                 record.operational_status == "active"
                 and record.current_utilization < record.storage_capacity
-            
+
 
     # ============================================================================
         # CRUD METHODS
@@ -490,7 +490,7 @@ class RecordsLocation(models.Model):
         """Create locations with auto-generated codes if needed""":
         if not vals_list:
             return self.env[self._name]
-            
+
         for vals in vals_list:
             if not vals.get("code"):
                 seq_code = self.env["ir.sequence"].next_by_code("records.location")
@@ -498,7 +498,7 @@ class RecordsLocation(models.Model):
                     vals["code"] = seq_code
                 else:
                     vals["code"] = "LOC/%s" % uuid.uuid4().hex[:8]
-        
+
         return super().create(vals_list)
 
     # ============================================================================
@@ -514,7 +514,7 @@ class RecordsLocation(models.Model):
             "view_mode": "tree,form",
             "domain": [("location_id", "=", self.id)],
             "context": {"default_location_id": self.id},
-        
+
 
     def action_location_report(self):
         """Generate location utilization and capacity report"""
@@ -525,7 +525,7 @@ class RecordsLocation(models.Model):
             "report_type": "qweb-pdf",
             "data": {"ids": [self.id]},
             "context": self.env.context,
-        
+
 
     def action_maintenance_mode(self):
         """Set location to maintenance mode"""
@@ -541,7 +541,7 @@ class RecordsLocation(models.Model):
             record.write({)}
                 "state": "active",
                 "operational_status": "active"
-            
+
             record.message_post(body=_("Location activated"))
 
     def action_deactivate_location(self):
@@ -549,11 +549,11 @@ class RecordsLocation(models.Model):
         for record in self:
             if record.current_utilization > 0:
                 raise UserError(_("Cannot deactivate location with stored containers"))
-            
+
             record.write({)}
                 "state": "inactive",
                 "operational_status": "inactive"
-            
+
             record.message_post(body=_("Location deactivated"))
 
     def action_reserve_space(self):
@@ -568,7 +568,7 @@ class RecordsLocation(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_location_id": self.id},
-        
+
 
     def action_schedule_inspection(self):
         """Schedule location inspection"""
@@ -580,7 +580,7 @@ class RecordsLocation(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_location_id": self.id},
-        
+
 
     # ============================================================================
         # UTILITY METHODS
@@ -604,7 +604,7 @@ class RecordsLocation(models.Model):
         """Get detailed location coordinates"""
         self.ensure_one()
         coordinates = []
-        
+
         if self.building:
             coordinates.append(_("Building: %s", self.building))
         if self.floor:
@@ -619,16 +619,16 @@ class RecordsLocation(models.Model):
             coordinates.append(_("Shelf: %s", self.shelf))
         if self.position:
             coordinates.append(_("Position: %s", self.position))
-        
+
         return ", ".join(coordinates)
 
     def get_security_info(self):
         """Get comprehensive security information"""
         self.ensure_one()
         security_features = []
-        
+
         security_features.append(_("Security Level: %s", dict(self._fields['security_level'].selection)[self.security_level]))
-        
+
         if self.security_camera:
             security_features.append(_("Security Camera: Yes"))
         if self.access_card_required:
@@ -641,7 +641,7 @@ class RecordsLocation(models.Model):
             security_features.append(_("Temperature Controlled: Yes"))
         if self.humidity_controlled:
             security_features.append(_("Humidity Controlled: Yes"))
-        
+
         return security_features
 
     def check_capacity_availability(self, required_spaces):
@@ -657,14 +657,14 @@ class RecordsLocation(models.Model):
             ('is_available', '=', True),
             ('available_spaces', '>=', required_capacity),
             ('operational_status', '=', 'active')
-        
-        
+
+
         if location_type:
             domain.append(('location_type', '=', location_type))
-        
+
         if security_level:
             domain.append(('security_level', '=', security_level))
-        
+
         return self.search(domain, order='utilization_percentage asc')
 
     # ============================================================================
@@ -688,7 +688,7 @@ class RecordsLocation(models.Model):
             if record.parent_location_id:
                 if record.parent_location_id == record:
                     raise ValidationError(_("A location cannot be its own parent"))
-                
+
                 # Check for circular reference:
                 current = record.parent_location_id
                 visited = {record.id}
@@ -696,7 +696,7 @@ class RecordsLocation(models.Model):
                     if current.id in visited:
                         raise ValidationError()
                             _("Circular reference detected in location hierarchy")
-                        
+
                     visited.add(current.id)
                     current = current.parent_location_id
 
@@ -708,7 +708,7 @@ class RecordsLocation(models.Model):
                 existing = self.search([)]
                     ("code", "=", record.code),
                     ("id", "!=", record.id)
-                
+
                 if existing:
                     raise ValidationError(_("Location code must be unique"))
 
@@ -737,61 +737,61 @@ class RecordsLocation(models.Model):
             elif record.utilization_percentage >= 95:
                 # Near capacity warning
                 record.message_post()
-                    body=_("Location %s is near capacity (%s%%)", 
+                    body=_("Location %s is near capacity (%s%%)",
                             record.name, record.utilization_percentage
                     message_type="notification"
-                
+
 
     def schedule_maintenance(self, maintenance_date, description=None):
         """Schedule maintenance for this location""":
         self.ensure_one()
-        
+
         if self.current_utilization > 0:
             # Create notification for containers that need relocation:
             self.message_post()
                 body=_("Maintenance scheduled for %s. %s containers need relocation.",:)
                         maintenance_date, self.current_utilization
                 message_type="notification"
-            
-        
+
+
         self.write({)}
             'operational_status': 'maintenance',
             'next_inspection_date': maintenance_date
-        
-        
+
+
         if description:
             self.message_post(body=_("Maintenance scheduled: %s", description))
 
     def get_capacity_forecast(self, days_ahead=30):
         """Forecast capacity utilization for planning purposes""":
         self.ensure_one()
-        
+
         # Simple capacity forecasting based on recent trends
         # This could be enhanced with more sophisticated algorithms
         current_utilization = self.current_utilization
         capacity = self.storage_capacity
-        
+
         if capacity == 0:
             return {'error': _('No storage capacity defined')}
-        
+
         # Calculate trend based on recent container additions
         recent_additions = self.env['records.container').search_count([]]
             ('location_id', '=', self.id),
             ('create_date', '>=', fields.Datetime.now() - )
                 fields.Datetime.timedelta(days=30)
-        
-        
+
+
         daily_growth_rate = recent_additions / 30 if recent_additions else 0:
         projected_utilization = current_utilization + (daily_growth_rate * days_ahead)
         projected_percentage = (projected_utilization / capacity) * 100
-        
+
         return {}
             'current_utilization': current_utilization,
             'projected_utilization': min(projected_utilization, capacity),
             'projected_percentage': min(projected_percentage, 100),
             'days_to_capacity': (capacity - current_utilization) / daily_growth_rate if daily_growth_rate > 0 else None,:
             'recommendation': self._get_capacity_recommendation(projected_percentage)
-        
+
 
     def _get_capacity_recommendation(self, projected_percentage):
         """Get recommendation based on projected capacity"""

@@ -23,14 +23,14 @@ class PortalFeedbackAction(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
-    
+
+
     user_id = fields.Many2one(
-        "res.users", 
-        string="User", 
-        default=lambda self: self.env.user, 
+        "res.users",
+        string="User",
+        default=lambda self: self.env.user,
         tracking=True
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
@@ -38,8 +38,8 @@ class PortalFeedbackAction(models.Model):
         store=True,
         help="Associated partner for this record":
             pass
-    
-    
+
+
     active = fields.Boolean(string="Active",,
     default=True)
 
@@ -52,8 +52,8 @@ class PortalFeedbackAction(models.Model):
         required=True,
         ondelete="cascade",
         index=True
-    
-    
+
+
     ,
     description = fields.Text(string="Action Description"),
     action_type = fields.Selection([))
@@ -63,42 +63,42 @@ class PortalFeedbackAction(models.Model):
         ("policy_update", "Policy Update"),
         ("communication", "Communication"),
         ("follow_up", "Follow-up")
-    
+
         string="Action Type",
         required=True,
         tracking=True
-    
-    
+
+
     assigned_to_id = fields.Many2one(
-        "res.users", 
-        string="Assigned To", 
-        required=True, 
+        "res.users",
+        string="Assigned To",
+        required=True,
         tracking=True
-    
+
     due_date = fields.Date(string="Due Date", required=True,,
     tracking=True),
     priority = fields.Selection([))
-        ("low", "Low"), 
-        ("medium", "Medium"), 
-        ("high", "High"), 
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
         ("urgent", "Urgent")
-    
+
         string="Priority",
         default="medium",
         tracking=True
-    
-    
+
+
     status = fields.Selection([))
         ("not_started", "Not Started"),
         ("in_progress", "In Progress"),
         ("completed", "Completed"),
         ("cancelled", "Cancelled")
-    
+
         string="Status",
         default="not_started",
         tracking=True
-    
-    
+
+
     completion_date = fields.Date(string="Completion Date",,
     tracking=True),
     completion_notes = fields.Text(string="Completion Notes")
@@ -118,14 +118,14 @@ class PortalFeedbackAction(models.Model):
         string="Is Overdue",
         compute="_compute_is_overdue",
         help="True if action is past due date and not completed":
-    
-    
+
+
     days_remaining = fields.Integer(
         string="Days Remaining",
         compute="_compute_days_remaining",
         help="Days remaining until due date"
-    
-    
+
+
         # Workflow state management
     ,
     state = fields.Selection([))
@@ -133,14 +133,14 @@ class PortalFeedbackAction(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived')
-    
-        string='Status', 
-        default='draft', 
-        tracking=True, 
-        required=True, 
+
+        string='Status',
+        default='draft',
+        tracking=True,
+        required=True,
         index=True,
         help='Current status of the record'
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance):
@@ -151,19 +151,19 @@ class PortalFeedbackAction(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_follower_ids = fields.One2many(
-        "mail.followers", 
+        "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
@@ -173,7 +173,7 @@ class PortalFeedbackAction(models.Model):
     res_model = fields.Char(string='Res Model'),
     type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
-        
+
     # ============================================================================
         # COMPUTE METHODS
     # ============================================================================
@@ -186,7 +186,7 @@ class PortalFeedbackAction(models.Model):
                 record.due_date
                 and record.due_date < today
                 and record.status not in ["completed", "cancelled")
-            
+
 
     @api.depends("due_date")
     def _compute_days_remaining(self):
@@ -211,7 +211,7 @@ class PortalFeedbackAction(models.Model):
         self.write({"status": "in_progress"})
         self.message_post()
             body=_("Action has been started."), message_type="notification"
-        
+
 
     def action_complete(self):
         """Mark action as completed"""
@@ -222,7 +222,7 @@ class PortalFeedbackAction(models.Model):
         self.write({"status": "completed", "completion_date": fields.Date.today()})
         self.message_post()
             body=_("Action has been completed."), message_type="notification"
-        
+
 
     def action_cancel(self):
         """Cancel the action"""
@@ -233,7 +233,7 @@ class PortalFeedbackAction(models.Model):
         self.write({"status": "cancelled"})
         self.message_post()
             body=_("Action has been cancelled."), message_type="notification"
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -255,8 +255,8 @@ class PortalFeedbackAction(models.Model):
                 record.due_date
                 and record.due_date < fields.Date.today()
                 and record.status == "not_started"
-            
+
                 raise ValidationError()
                     _("Due date cannot be in the past for new actions."):
-                
+
 )

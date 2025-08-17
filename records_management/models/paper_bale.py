@@ -41,36 +41,36 @@ class PaperBale(models.Model):
         tracking=True,
         index=True,
         help="Unique bale identifier",
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this bale",:
-    
+
     active = fields.Boolean(
         string="Active", default=True, help="Active status of the bale record"
-    
+
     sequence = fields.Integer(
         string="Sequence", default=10, help="Sequence for ordering":
-    
+
 
         # ============================================================================
     # REFERENCE AND EXTERNAL TRACKING
         # ============================================================================
     reference_number = fields.Char(
         string="Reference Number", help="Internal reference number"
-    
+
     external_reference = fields.Char(
         string="External Reference", help="External system reference"
-    
+
     barcode = fields.Char(string="Barcode",,
     help="Barcode for tracking"):
         # ============================================================================
@@ -87,12 +87,12 @@ class PaperBale(models.Model):
             ("delivered", "Delivered"),
             ("recycled", "Recycled"),
             ("rejected", "Rejected"),
-        
+
         string="Status",
         default="created",
         tracking=True,
         help="Current status of the paper bale",
-    
+
 
         # ============================================================================
     # PAPER AND BALE SPECIFICATIONS
@@ -103,12 +103,12 @@ class PaperBale(models.Model):
     digits=(10, 2),
         tracking=True,
         help="Weight of the bale",
-    
+
     weight_unit = fields.Selection(
         [("lb", "Pounds"), ("kg", "Kilograms"), ("ton", "Tons")), string="Weight Unit",
         default="lb",
         help="Unit of measurement for weight",:
-    
+
     paper_type = fields.Selection(
         [)
             ("mixed", "Mixed Paper"),
@@ -118,41 +118,41 @@ class PaperBale(models.Model):
             ("magazine", "Magazine"),
             ("shredded", "Shredded Paper"),
             ("confidential", "Confidential Documents"),
-        
+
         string="Paper Type",
         tracking=True,
         help="Type of paper in the bale",
-    
+
     bale_type = fields.Selection(
         [)
             ("standard", "Standard Bale"),
             ("compacted", "Compacted Bale"),
             ("loose", "Loose Collection"),
-        
+
         string="Bale Type",
         default="standard",
         help="Physical type of bale",
-    
+
     paper_grade = fields.Selection(
         [)
             ("high", "High Grade"),
             ("medium", "Medium Grade"),
             ("low", "Low Grade"),
-        
+
         string="Paper Grade",
         help="Quality grade of paper",
-    
+
     contamination_level = fields.Selection(
         [)
             ("none", "No Contamination"),
             ("low", "Low Contamination"),
             ("medium", "Medium Contamination"),
             ("high", "High Contamination"),
-        
+
         string="Contamination Level",
         default="none",
         help="Level of contamination in the bale",
-    
+
 
         # ============================================================================
     # LOCATION AND LOGISTICS
@@ -161,24 +161,24 @@ class PaperBale(models.Model):
         "records.location",
         string="Pickup Location",
         help="Location where bale was picked up",
-    
+
     current_location_id = fields.Many2one(
         "records.location",
         string="Current Location",
         tracking=True,
         help="Current physical location of the bale",
-    
+
     destination_location_id = fields.Many2one(
         "records.location",
         string="Destination Location",
         help="Final destination for the bale",:
-    
+
     ,
     transportation_method = fields.Selection(
         [("truck", "Truck"), ("rail", "Rail"), ("ship", "Ship")), string="Transportation Method",
         default="truck",
         help="Method of transportation",
-    
+
 
         # ============================================================================
     # DATES AND SCHEDULING
@@ -189,22 +189,22 @@ class PaperBale(models.Model):
         required=True,
         tracking=True,
         help="Date when bale was created",
-    
+
     weigh_date = fields.Date(
         string="Weigh Date", help="Date when bale was weighed"
-    
+
     quality_check_date = fields.Date(
         string="Quality Check Date", help="Date of quality inspection"
-    
+
     pickup_date = fields.Date(
         string="Pickup Date", help="Date when bale was picked up"
-    
+
     delivery_date = fields.Date(
         string="Delivery Date", help="Date when bale was delivered"
-    
+
     recycling_date = fields.Date(
         string="Recycling Date", help="Date when bale was recycled"
-    
+
 
         # ============================================================================
     # BUSINESS RELATIONSHIPS
@@ -215,24 +215,24 @@ class PaperBale(models.Model):
         ,
     domain=[("is_company", "=", True)),
         help="Customer who provided the paper",
-    
+
     recycling_vendor_id = fields.Many2one(
         "res.partner",
         string="Recycling Vendor",
         ,
     domain=[("supplier_rank", ">", 0)),
         help="Vendor who will recycle the paper",
-    
+
     driver_id = fields.Many2one(
         "res.partner",
         string="Driver",
         help="Driver assigned for transportation",:
-    
+
     trailer_id = fields.Many2one(
         "records.trailer",
         string="Trailer",
         help="Trailer used for transportation",:
-    
+
 
         # ============================================================================
     # COMPLIANCE AND SECURITY
@@ -244,27 +244,27 @@ class PaperBale(models.Model):
             ("internal", "Internal"),
             ("confidential", "Confidential"),
             ("restricted", "Restricted"),
-        
+
         string="Confidentiality Level",
         default="internal",
         help="Security level of documents in bale",
-    
+
     certificate_of_destruction = fields.Boolean(
         string="Certificate of Destruction",
         default=False,
         help="Whether certificate of destruction is required",
-    
+
     chain_of_custody_verified = fields.Boolean(
         string="Chain of Custody Verified",
         default=False,
         tracking=True,
         help="Whether chain of custody has been verified",
-    
+
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
         default=False,
         help="Whether bale meets NAID standards",
-    
+
 
         # ============================================================================
     # FINANCIAL INFORMATION
@@ -274,29 +274,29 @@ class PaperBale(models.Model):
         string="Currency",
         related="company_id.currency_id",
         store=True,
-    
+
     sale_price = fields.Monetary(
         string="Sale Price",
         currency_field="currency_id",
         help="Price received for the bale",:
-    
+
     processing_cost = fields.Monetary(
         string="Processing Cost",
         currency_field="currency_id",
         help="Cost to process the bale",
-    
+
     transportation_cost = fields.Monetary(
         string="Transportation Cost",
         currency_field="currency_id",
         help="Cost of transportation",
-    
+
     net_value = fields.Monetary(
         string="Net Value",
         currency_field="currency_id",
         compute="_compute_net_value",
         store=True,
         help="Net value after costs",
-    
+
 
         # ============================================================================
     # ENVIRONMENTAL AND METRICS
@@ -307,42 +307,42 @@ class PaperBale(models.Model):
             ("post_consumer", "Post Consumer"),
             ("post_industrial", "Post Industrial"),
             ("mixed", "Mixed"),
-        
+
         string="Recycling Category",
         help="Environmental recycling category",
-    
+
     carbon_footprint = fields.Float(
         ,
     string="Carbon Footprint (kg CO2)",
         help="Estimated carbon footprint reduction",
-    
+
     trees_saved = fields.Float(
         string="Trees Saved",
         compute="_compute_environmental_impact",
         store=True,
         help="Estimated number of trees saved",
-    
+
 
         # ============================================================================
     # QUALITY CONTROL
         # ============================================================================
     quality_grade_qc = fields.Char(
         string="Quality Grade", help="Assigned quality grade"
-    
+
     quality_notes = fields.Text(
         string="Quality Notes", help="Notes from quality inspection"
-    
+
     moisture_content = fields.Float(
         ,
     string="Moisture Content (%)", help="Moisture content percentage"
-    
+
     density = fields.Float(
         ,
     string="Density (kg/m)",
         compute="_compute_density",
         store=True,
         help="Calculated bale density",
-    
+
 
         # ============================================================================
     # EXTENDED TRACKING AND PROCESSING FIELDS
@@ -350,7 +350,7 @@ class PaperBale(models.Model):
     action_date = fields.Date(
         string="Action Date",
         help="Date of specific action or milestone"
-    
+
 
     ,
     action_type = fields.Selection([))
@@ -360,14 +360,14 @@ class PaperBale(models.Model):
         ('loading', 'Loading'),
         ('shipment', 'Shipment'),
         ('destruction', 'Destruction')
-    
+
 
     bale_number = fields.Char(
         string="Bale Number",
         required=True,
         tracking=True,
         help="Unique identification number for the bale":
-    
+
 
     ,
     bale_status = fields.Selection([))
@@ -377,56 +377,56 @@ class PaperBale(models.Model):
         ('rejected', 'Rejected'),
         ('shipped', 'Shipped'),
         ('processed', 'Processed')
-    
+
 
     contamination_found = fields.Boolean(
         string="Contamination Found",
         default=False,
         help="Whether contamination was found during inspection"
-    
+
 
     contamination_percentage = fields.Float(
         string="Contamination Percentage",
         ,
     digits=(5, 2),
         help="Percentage of contamination found"
-    
+
 
     customer_name = fields.Char(
         string="Customer Name",
         help="Name of customer whose documents are in this bale"
-    
+
 
     destruction_date = fields.Date(
         string="Destruction Date",
         help="Date when original documents were destroyed"
-    
+
 
     document_name = fields.Char(
         string="Document Name",
         help="Name or description of source documents"
-    
+
 
     document_type = fields.Char(
         string="Document Type",
         help="Type of documents in this bale"
-    
+
 
     estimated_value = fields.Monetary(
         string="Estimated Value",
         currency_field="currency_id",
         help="Estimated monetary value of the bale"
-    
+
 
     grade_assigned = fields.Char(
         string="Grade Assigned",
         help="Quality grade assigned to the bale"
-    
+
 
     inspection_date = fields.Date(
         string="Inspection Date",
         help="Date when quality inspection was performed"
-    
+
 
     ,
     inspection_type = fields.Selection([))
@@ -434,60 +434,60 @@ class PaperBale(models.Model):
         ('sampling', 'Sample Testing'),
         ('comprehensive', 'Comprehensive Analysis'),
         ('random', 'Random Check')
-    
+
 
     inspector = fields.Char(
         string="Inspector",
         help="Name of person who performed inspection"
-    
+
 
     loaded_by = fields.Char(
         string="Loaded By",
         help="Person who loaded the bale onto transport"
-    
+
 
     loaded_on_trailer = fields.Boolean(
         string="Loaded on Trailer",
         default=False,
         help="Whether bale has been loaded onto trailer"
-    
+
 
     loading_date = fields.Date(
         string="Loading Date",
         help="Date when bale was loaded for transport":
-    
+
 
     loading_notes = fields.Text(
         string="Loading Notes",
         help="Notes from the loading process"
-    
+
 
     loading_order = fields.Integer(
         string="Loading Order",
         help="Order in which bale was loaded"
-    
+
 
     loading_position = fields.Char(
         string="Loading Position",
         help="Position of bale on transport vehicle"
-    
+
 
     market_price_per_lb = fields.Float(
         string="Market Price per Lb",
         ,
     digits=(8, 4),
         help="Current market price per pound"
-    
+
 
     measured_by = fields.Char(
         string="Measured By",
         help="Person who performed measurements"
-    
+
 
     measurement_date = fields.Date(
         string="Measurement Date",
         help="Date when measurements were taken"
-    
+
 
     ,
     measurement_type = fields.Selection([))
@@ -495,117 +495,117 @@ class PaperBale(models.Model):
         ('pre_loading', 'Pre-Loading'),
         ('final', 'Final Measurement'),
         ('verification', 'Verification')
-    
+
 
     moisture_reading = fields.Float(
         string="Moisture Reading",
         ,
     digits=(5, 2),
         help="Actual moisture content reading"
-    
+
 
     naid_compliance_verified = fields.Boolean(
         string="NAID Compliance Verified",
         default=False,
         help="Whether NAID compliance has been verified"
-    
+
 
     passed_inspection = fields.Boolean(
         string="Passed Inspection",
         default=False,
         help="Whether bale passed quality inspection"
-    
+
 
     performed_by = fields.Char(
         string="Performed By",
         help="Person who performed the action"
-    
+
 
     processing_time = fields.Float(
         ,
     string="Processing Time (hours)",
         digits=(8, 2),
         help="Time required for processing":
-    
+
 
     quality_grade = fields.Selection([))
         ('grade_a', 'Grade A - Premium'),
         ('grade_b', 'Grade B - Standard'),
         ('grade_c', 'Grade C - Lower Grade'),
         ('reject', 'Reject')
-    
+
 
     quality_score = fields.Float(
         string="Quality Score",
         ,
     digits=(5, 2),
         help="Numerical quality score (0-100)"
-    
+
 
     revenue_potential = fields.Monetary(
         string="Revenue Potential",
         currency_field="currency_id",
         help="Potential revenue from sale"
-    
+
 
     scale_used = fields.Char(
         string="Scale Used",
         help="Identification of scale used for weighing":
-    
+
 
     source_facility = fields.Char(
         string="Source Facility",
         help="Facility where bale was created"
-    
+
 
     special_handling = fields.Boolean(
         string="Special Handling Required",
         default=False,
         help="Whether special handling procedures are required"
-    
+
 
     trailer_info = fields.Char(
         string="Trailer Information",
         help="Information about transport trailer"
-    
+
 
     trailer_load_count = fields.Integer(
         string="Trailer Load Count",
         help="Number of bales on this trailer load"
-    
+
 
     variance_from_previous = fields.Float(
         ,
     string="Variance from Previous (%)",
         digits=(5, 2),
         help="Percentage variance from previous measurements"
-    
+
 
     weighed_by = fields.Char(
         string="Weighed By",
         help="Person who performed weighing"
-    
+
 
     weight_contributed = fields.Float(
         ,
     string="Weight Contributed (lbs)",
         digits=(8, 2),
         help="Weight contributed to total load"
-    
+
 
     weight_efficiency = fields.Float(
         ,
     string="Weight Efficiency (%)",
         digits=(5, 2),
         help="Efficiency rating based on weight metrics"
-    
+
 
     weight_recorded = fields.Float(
         ,
     string="Weight Recorded (lbs)",
         digits=(8, 2),
         help="Officially recorded weight"
-    
+
 
         # ============================================================================
     # ENVIRONMENTAL IMPACT EXTENDED FIELDS
@@ -616,13 +616,13 @@ class PaperBale(models.Model):
         compute='_compute_environmental_impact_extended',
         store=True,
         help="Calculated carbon footprint savings"
-    
+
 
     carbon_neutral = fields.Boolean(
         string="Carbon Neutral Process",
         default=False,
         help="Whether the process was carbon neutral"
-    
+
 
     energy_saved = fields.Float(
         ,
@@ -630,27 +630,27 @@ class PaperBale(models.Model):
         compute='_compute_environmental_impact_extended',
         store=True,
         help="Estimated energy savings"
-    
+
 
     environmental_certification = fields.Selection([))
         ('fsc', 'FSC Certified'),
         ('pefc', 'PEFC Certified'),
         ('sfi', 'SFI Certified'),
         ('none', 'No Certification')
-    
+
 
     sustainable_source = fields.Boolean(
         string="Sustainable Source",
         default=True,
         help="Whether source material is sustainably sourced"
-    
+
 
     trees_saved_equivalent = fields.Float(
         string="Trees Saved Equivalent",
         compute='_compute_environmental_impact_extended',
         store=True,
         help="Equivalent number of trees saved"
-    
+
 
     water_saved = fields.Float(
         ,
@@ -658,7 +658,7 @@ class PaperBale(models.Model):
         compute='_compute_environmental_impact_extended',
         store=True,
         help="Estimated water savings"
-    
+
 
         # ============================================================================
     # HISTORY AND AUDIT FIELDS
@@ -668,27 +668,27 @@ class PaperBale(models.Model):
         'bale_id',
         string="Loading History",
         help="History of loading events"
-    
+
 
     quality_inspection_ids = fields.One2many(
         'paper.bale.quality.inspection',
         'bale_id',
         string="Quality Inspections",
         help="Quality inspection records"
-    
+
 
     weight_history_count = fields.Integer(
         string="Weight History Count",
         compute='_compute_weight_history_count',
         help="Number of weight measurements recorded"
-    
+
 
     weight_measurement_ids = fields.One2many(
         'paper.bale.weight.measurement',
         'bale_id',
         string="Weight Measurements",
         help="History of weight measurements"
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -696,25 +696,25 @@ class PaperBale(models.Model):
     total_volume = fields.Float(
         ,
     string="Total Volume (m)", help="Estimated volume of the bale"
-    
+
     document_count = fields.Integer(
         string="Document Count",
         compute="_compute_document_count",
         help="Number of source documents",
-    
+
 
         # ============================================================================
     # DESCRIPTIVE FIELDS
         # ============================================================================
     description = fields.Text(
         string="Description", help="Detailed description of the bale"
-    
+
     notes = fields.Text(
         string="Internal Notes", help="Internal processing notes"
-    
+
     special_instructions = fields.Text(
         string="Special Instructions", help="Special handling instructions"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -724,26 +724,26 @@ class PaperBale(models.Model):
         "bale_id",
         string="Source Documents",
         help="Documents that were processed into this bale",
-    
+
     movement_ids = fields.One2many(
         "paper.bale.movement",
         "bale_id",
         string="Movements",
         help="Movement history of the bale",
-    
+
     inspection_ids = fields.One2many(
         "paper.bale.inspection",
         "bale_id",
         string="Inspections",
         help="Quality inspection records",
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         related="customer_id",
         store=True,
         help="Related partner field for One2many relationships compatibility",:
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -754,25 +754,25 @@ class PaperBale(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name)),
-    
+
 
     load_shipment_id = fields.Many2one(
         "paper.load.shipment", string="Load Shipment"
-    
+
     load_id = fields.Many2one("load",,
     string="Load"),
     action_load_trailer = fields.Char(string='Action Load Trailer'),
@@ -871,7 +871,7 @@ class PaperBale(models.Model):
             if not vals.get("name") or vals.get("name") == "/":
                 vals["name") = ()
                     self.env["ir.sequence"].next_by_code("paper.bale") or "BALE-NEW"
-                
+
         return super().create(vals_list)
 
     def write(self, vals):
@@ -884,8 +884,8 @@ class PaperBale(models.Model):
                     record.message_post()
                         body=_()
                             "State changed from %s to %s", old_state, new_state
-                        
-                    
+
+
         return super().write(vals)
 
     def unlink(self):
@@ -897,8 +897,8 @@ class PaperBale(models.Model):
                         "Cannot delete bale %s in state %s",
                         record.name,
                         record.state,
-                    
-                
+
+
         return super().unlink()
 
     # ============================================================================
@@ -914,7 +914,7 @@ class PaperBale(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_bale_id": self.id},
-        
+
 
     def action_quality_inspection(self):
         """Perform quality inspection"""
@@ -926,7 +926,7 @@ class PaperBale(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_bale_id": self.id},
-        
+
 
     def action_load_on_trailer(self):
         """Load bale on trailer"""
@@ -951,7 +951,7 @@ class PaperBale(models.Model):
             raise UserError(_("Only shipped bales can be delivered"))
         self.write()
             {"state": "delivered", "delivery_date": fields.Date.today()}
-        
+
         self.message_post(body=_("Bale delivery confirmed"))
 
     def action_mark_recycled(self):
@@ -961,7 +961,7 @@ class PaperBale(models.Model):
             raise UserError(_("Only delivered bales can be marked as recycled"))
         self.write()
             {"state": "recycled", "recycling_date": fields.Date.today()}
-        
+
         self.message_post(body=_("Bale marked as recycled"))
 
     def action_reject_bale(self):
@@ -987,7 +987,7 @@ class PaperBale(models.Model):
             "view_mode": "tree,form",
             "domain": [("bale_id", "=", self.id)],
             "context": {"default_bale_id": self.id},
-        
+
 
     def action_view_movements(self):
         """View bale movements"""
@@ -999,7 +999,7 @@ class PaperBale(models.Model):
             "view_mode": "tree,form",
             "domain": [("bale_id", "=", self.id)],
             "context": {"default_bale_id": self.id},
-        
+
 
     def action_view_inspections(self):
         """View quality inspections"""
@@ -1011,14 +1011,14 @@ class PaperBale(models.Model):
             "view_mode": "tree,form",
             "domain": [("bale_id", "=", self.id)],
             "context": {"default_bale_id": self.id},
-        
+
 
     # ============================================================================
         # BUSINESS METHODS
     # ============================================================================
     def create_movement_record(:)
         self, from_location_id, to_location_id, movement_type="transfer"
-    
+
         """Create movement record"""
         self.ensure_one()
         return self.env["paper.bale.movement"].create()
@@ -1029,8 +1029,8 @@ class PaperBale(models.Model):
                 "movement_type": movement_type,
                 "movement_date": fields.Datetime.now(),
                 "user_id": self.env.user.id,
-            
-        
+
+
 
     def get_weight_in_kg(self):
         """Get weight converted to kilograms"""
@@ -1056,7 +1056,7 @@ class PaperBale(models.Model):
             "mixed": 0.6,
             "shredded": 0.4,
             "confidential": 0.5,
-        
+
         weight_kg = self.get_weight_in_kg()
         base_rate = rates.get(self.paper_type, 0.5)
         quality_multipliers = {"high": 1.2, "medium": 1.0, "low": 0.8}
@@ -1066,10 +1066,10 @@ class PaperBale(models.Model):
             "low": 0.9,
             "medium": 0.7,
             "high": 0.5,
-        
+
         contamination_mult = contamination_multipliers.get()
             self.contamination_level, 1.0
-        
+
         return weight_kg * base_rate * quality_mult * contamination_mult
 
     # ============================================================================
@@ -1090,7 +1090,7 @@ class PaperBale(models.Model):
                 if record.pickup_date > record.delivery_date:
                     raise ValidationError()
                         _("Pickup date cannot be after delivery date")
-                    
+
 
     @api.constrains("moisture_content")
     def _check_moisture_content(self):
@@ -1098,10 +1098,10 @@ class PaperBale(models.Model):
         for record in self:
             if record.moisture_content and (:)
                 record.moisture_content < 0 or record.moisture_content > 100
-            
+
                 raise ValidationError()
                     _("Moisture content must be between 0 and 100 percent")
-                
+
 
     # ============================================================================
         # UTILITY METHODS
@@ -1122,7 +1122,7 @@ class PaperBale(models.Model):
     @api.model
     def _name_search(:)
         self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    
+
         """Enhanced search by name, reference, barcode, or paper type"""
         args = list(args or [])
 
@@ -1136,12 +1136,12 @@ class PaperBale(models.Model):
                 ("reference_number", operator, name),
                 ("barcode", operator, name),
                 ("external_reference", operator, name),
-            
+
             return self._search()
                 expression.AND([domain, args]),
                 limit=limit,
                 access_rights_uid=name_get_uid,
-            
+
 
         return super()._name_search(name, args, operator, limit, name_get_uid)
 ))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))

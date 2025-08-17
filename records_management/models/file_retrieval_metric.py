@@ -19,7 +19,7 @@ from odoo.exceptions import ValidationError
 class FileRetrievalMetric(models.Model):
 
         File Retrieval Performance Metrics
-    
+
     Tracks and analyzes performance metrics for file retrieval operations:
         including search times, accuracy rates, and team performance measurements
     for continuous improvement and NAID compliance reporting.:
@@ -40,21 +40,21 @@ class FileRetrievalMetric(models.Model):
         tracking=True,
         index=True,
         help="Name of the performance metric"
-    
+
 
     display_name = fields.Char(
         string="Display Name",
         compute='_compute_display_name',
         store=True,
         help="Display name for the metric":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     user_id = fields.Many2one(
         "res.users",
@@ -62,19 +62,19 @@ class FileRetrievalMetric(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
         help="User who recorded this metric"
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this metric"
-    
+
 
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Display sequence for ordering":
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -86,25 +86,25 @@ class FileRetrievalMetric(models.Model):
         ondelete="cascade",
         index=True,
         help="Related work order"
-    
+
 
     team_id = fields.Many2one(
         "file.retrieval.team",
         string="Retrieval Team",
         help="Team responsible for this retrieval metric":
-    
+
 
     employee_id = fields.Many2one(
         "hr.employee",
         string="Employee",
         help="Employee who performed the retrieval"
-    
+
 
     container_id = fields.Many2one(
         "records.container",
         string="Container",
         help="Container being processed"
-    
+
 
     partner_id = fields.Many2one(
         "res.partner",
@@ -113,7 +113,7 @@ class FileRetrievalMetric(models.Model):
         readonly=True,
         store=True,
         help="Customer for this retrieval operation":
-    
+
 
         # ============================================================================
     # METRIC DETAILS
@@ -137,7 +137,7 @@ class FileRetrievalMetric(models.Model):
         ('travel_time', 'Travel Time'),
         ('processing_time', 'Total Processing Time'),
         ('packaging_time', 'Packaging Time')
-    
+
 
     metric_value = fields.Float(
         string="Metric Value",
@@ -145,7 +145,7 @@ class FileRetrievalMetric(models.Model):
         ,
     digits=(12, 2),
         help="Numerical value of the metric"
-    
+
 
     metric_unit = fields.Selection([))
         ('minutes', 'Minutes'),
@@ -158,7 +158,7 @@ class FileRetrievalMetric(models.Model):
         ('pages', 'Pages'),
         ('folders', 'Folders'),
         ('items', 'Items')
-    
+
 
         # ============================================================================
     # DATE AND TIME TRACKING
@@ -169,24 +169,24 @@ class FileRetrievalMetric(models.Model):
         default=fields.Date.today,
         index=True,
         help="Date when retrieval was performed"
-    
+
 
     start_time = fields.Datetime(
         string="Start Time",
         help="When the measured activity started"
-    
+
 
     end_time = fields.Datetime(
         string="End Time",
         help="When the measured activity ended"
-    
+
 
     duration = fields.Float(
         string="Duration",
         compute='_compute_duration',
         store=True,
         help="Calculated duration in hours"
-    
+
 
         # ============================================================================
     # PERFORMANCE ANALYSIS
@@ -196,7 +196,7 @@ class FileRetrievalMetric(models.Model):
         ,
     digits=(12, 2),
         help="Target or expected value for this metric":
-    
+
 
     variance = fields.Float(
         string="Variance",
@@ -205,7 +205,7 @@ class FileRetrievalMetric(models.Model):
         ,
     digits=(12, 2),
         help="Difference from target value"
-    
+
 
     variance_percentage = fields.Float(
         string="Variance %",
@@ -214,7 +214,7 @@ class FileRetrievalMetric(models.Model):
         ,
     digits=(5, 2),
         help="Variance as percentage of target"
-    
+
 
     performance_rating = fields.Selection([))
         ('excellent', 'Excellent (>120% of target)'),
@@ -222,7 +222,7 @@ class FileRetrievalMetric(models.Model):
         ('acceptable', 'Acceptable (80-100% of target)'),
         ('poor', 'Poor (60-80% of target)'),
         ('unacceptable', 'Unacceptable (<60% of target)')
-    
+
 
         # ============================================================================
     # QUALITY METRICS
@@ -233,7 +233,7 @@ class FileRetrievalMetric(models.Model):
         ,
     digits=(5, 2),
         help="Accuracy percentage for retrieval":
-    
+
 
     quality_score = fields.Float(
         string="Quality Score",
@@ -242,20 +242,20 @@ class FileRetrievalMetric(models.Model):
         ,
     digits=(5, 2),
         help="Overall quality score"
-    
+
 
     error_count = fields.Integer(
         string="Error Count",
         default=0,
         help="Number of errors during retrieval"
-    
+
 
     rework_required = fields.Boolean(
         string="Rework Required",
         default=False,
         tracking=True,
         help="Whether rework was required"
-    
+
 
         # ============================================================================
     # CONTEXTUAL INFORMATION
@@ -264,7 +264,7 @@ class FileRetrievalMetric(models.Model):
         "records.location",
         string="Storage Location",
         help="Location where retrieval occurred"
-    
+
 
     ,
     complexity_level = fields.Selection([))
@@ -272,12 +272,12 @@ class FileRetrievalMetric(models.Model):
         ('moderate', 'Moderate'),
         ('complex', 'Complex'),
         ('very_complex', 'Very Complex')
-    
+
 
     difficulty_factors = fields.Text(
         string="Difficulty Factors",
         help="Factors that affected retrieval difficulty"
-    
+
 
         # ============================================================================
     # PROCESS STATE
@@ -288,7 +288,7 @@ class FileRetrievalMetric(models.Model):
         ('recorded', 'Recorded'),
         ('validated', 'Validated'),
         ('analyzed', 'Analyzed')
-    
+
 
         # ============================================================================
     # NOTES AND OBSERVATIONS
@@ -296,17 +296,17 @@ class FileRetrievalMetric(models.Model):
     notes = fields.Text(
         string="Performance Notes",
         help="Additional notes about the performance"
-    
+
 
     improvement_suggestions = fields.Text(
         string="Improvement Suggestions",
         help="Suggestions for performance improvement":
-    
+
 
     lessons_learned = fields.Text(
         string="Lessons Learned",
         help="Key lessons learned from this retrieval"
-    
+
 
         # ============================================================================
     # BENCHMARKING DATA
@@ -316,14 +316,14 @@ class FileRetrievalMetric(models.Model):
         ,
     digits=(12, 2),
         help="Industry or internal benchmark value"
-    
+
 
     benchmark_comparison = fields.Selection([))
         ('above', 'Above Benchmark'),
         ('at', 'At Benchmark'),
         ('below', 'Below Benchmark'),
         ('no_data', 'No Benchmark Data')
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -334,7 +334,7 @@ class FileRetrievalMetric(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -342,7 +342,7 @@ class FileRetrievalMetric(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -350,7 +350,7 @@ class FileRetrievalMetric(models.Model):
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -435,13 +435,13 @@ class FileRetrievalMetric(models.Model):
                 'acceptable': 1.0,
                 'poor': 0.9,
                 'unacceptable': 0.8
-            
+
 
             multiplier = rating_multiplier.get(record.performance_rating, 1.0)
-            
+
             # Factor in error count
             error_penalty = record.error_count * 2  # 2 points per error
-            
+
             quality_score = (base_score * multiplier) - error_penalty
             record.quality_score = max(min(quality_score, 100.0), 0.0)
 
@@ -533,23 +533,23 @@ class FileRetrievalMetric(models.Model):
     def _generate_insights(self):
         """Generate performance insights"""
         self.ensure_one()
-        
+
         insights = []
-        
+
         # Performance analysis
         if self.performance_rating == 'excellent':
             insights.append(_('Exceptional performance - consider using as benchmark'))
         elif self.performance_rating == 'unacceptable':
             insights.append(_('Performance needs immediate attention'))
-        
+
         # Quality analysis
         if self.quality_score < 70:
             insights.append(_('Quality score below acceptable threshold'))
-        
+
         # Time efficiency analysis
         if self.metric_type.endswith('_time') and self.variance_percentage > 20:
             insights.append(_('Time variance significantly above target'))
-        
+
         if insights:
             current_suggestions = self.improvement_suggestions or ''
             new_suggestions = '\n'.join(insights)
@@ -565,7 +565,7 @@ class FileRetrievalMetric(models.Model):
             domain.append(('retrieval_date', '<=', date_to))
 
         metrics = self.search(domain)
-        
+
         # Calculate averages by metric type
         dashboard_data = {}
         for metric_type in ['file_search_time', 'file_retrieval_time', 'file_accuracy_rate', 'container_access_time']:
@@ -576,30 +576,30 @@ class FileRetrievalMetric(models.Model):
                     'count': len(type_metrics),
                     'best': min(type_metrics.mapped('metric_value')),
                     'worst': max(type_metrics.mapped('metric_value'))
-                
-        
+
+
         return dashboard_data
 
     def get_trend_data(self, days=30):
         """Get trend data for this metric type""":
         self.ensure_one()
-        
+
     from_date = fields.Date.subtract(fields.Date.today(), days=days)
-        
+
         similar_metrics = self.search([)]
             ('metric_type', '=', self.metric_type),
             ('retrieval_date', '>=', from_date),
             ('state', '!=', 'draft')
-        
-        
+
+
         trend_data = []
         for metric in similar_metrics:
             trend_data.append({)}
                 'date': metric.retrieval_date,
                 'value': metric.metric_value,
                 'quality_score': metric.quality_score
-            
-        
+
+
         return trend_data
 
     # ============================================================================
@@ -618,12 +618,12 @@ class FileRetrievalMetric(models.Model):
     def write(self, vals):
         """Override write for modification tracking""":
         result = super().write(vals)
-        
+
         if 'state' in vals:
             for record in self:
                 state_label = dict(record._fields['state'].selection)[record.state]
                 record.message_post(body=_('State changed to %s', state_label))
-        
+
         return result
 
     def name_get(self):
@@ -644,7 +644,7 @@ class FileRetrievalMetric(models.Model):
     def get_metric_summary(self, metric_type=None, team_id=None, date_from=None, date_to=None):
         """Get metric summary for reporting""":
         domain = [('state', '!=', 'draft')]
-        
+
         if metric_type:
             domain.append(('metric_type', '=', metric_type))
         if team_id:
@@ -653,21 +653,21 @@ class FileRetrievalMetric(models.Model):
             domain.append(('retrieval_date', '>=', date_from))
         if date_to:
             domain.append(('retrieval_date', '<=', date_to))
-        
+
         metrics = self.search(domain)
-        
+
         summary = {}
             'total_metrics': len(metrics),
             'average_quality_score': sum(metrics.mapped('quality_score')) / len(metrics) if metrics else 0,:
             'performance_distribution': {},
             'metric_type_breakdown': {}
-        
-        
+
+
         # Performance rating distribution
         for rating_key in ['excellent', 'good', 'acceptable', 'poor', 'unacceptable']:
             rating_count = len(metrics.filtered(lambda m: m.performance_rating == rating_key))
             summary['performance_distribution'][rating_key] = rating_count
-        
+
         # Metric type breakdown
         for metric_record in metrics:
             if metric_record.metric_type not in summary['metric_type_breakdown']:
@@ -675,13 +675,13 @@ class FileRetrievalMetric(models.Model):
                     'count': 0,
                     'average_value': 0,
                     'total_value': 0
-                
-            
+
+
             breakdown = summary['metric_type_breakdown'][metric_record.metric_type]
             breakdown['count'] += 1
             breakdown['total_value'] += metric_record.metric_value
             breakdown['average_value'] = breakdown['total_value'] / breakdown['count']
-        
+
         return summary
 
 )))))))))))))))))))))))

@@ -54,19 +54,19 @@ class FsmTask(models.Model):
         tracking=True,
         index=True,
         default="New",
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True),
     description = fields.Text(string="Description",,
@@ -84,17 +84,17 @@ class FsmTask(models.Model):
             ("retrieval", "Item Retrieval"),
             ("maintenance", "Equipment Maintenance"),
             ("consultation", "Customer Consultation"),
-        
+
         string="Task Type",
         required=True,
         tracking=True,
-    
+
 
     priority = fields.Selection(
         [("0", "Low"), ("1", "Normal"), ("2", "High"), ("3", "Very High")), string="Priority",
         default="1",
         tracking=True,
-    
+
 
     status = fields.Selection(
         [)
@@ -103,18 +103,18 @@ class FsmTask(models.Model):
             ("in_progress", "In Progress"),
             ("completed", "Completed"),
             ("cancelled", "Cancelled"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
-    
+
 
         # ============================================================================
     # SCHEDULING AND ASSIGNMENT
         # ============================================================================
     scheduled_date = fields.Datetime(
         string="Scheduled Date", required=True, tracking=True
-    
+
     start_date = fields.Datetime(string="Start Date",,
     tracking=True),
     end_date = fields.Datetime(string="End Date",,
@@ -136,25 +136,25 @@ class FsmTask(models.Model):
         tracking=True,
         help="Primary customer for this service task. For multi-customer routes, ":
         "create separate tasks or extend with fsm.task.stop model.",
-    
+
     customer_location_id = fields.Many2one(
         "res.partner",
         string="Service Location",
         ,
     help="Specific service address (if different from customer's main address)",:'
-    
+
     customer_contact_id = fields.Many2one(
         "res.partner",
         string="Customer Contact",
         help="Primary contact person at the service location",
-    
+
 
     work_order_coordinator_id = fields.Many2one(
         "work.order.coordinator",
         string="Work Order Coordinator",
         help="Associated work order coordinator for this FSM task",:
         ondelete="set null"
-    
+
 
         # ============================================================================
     # SERVICE SPECIFICATIONS
@@ -166,10 +166,10 @@ class FsmTask(models.Model):
             ("emergency", "Emergency Service"),
             ("scheduled", "Scheduled Maintenance"),
             ("one_time", "One-Time Service"),
-        
+
         string="Service Type",
         default="regular",
-    
+
 
     confidentiality_level = fields.Selection(
         [)
@@ -177,10 +177,10 @@ class FsmTask(models.Model):
             ("internal", "Internal"),
             ("confidential", "Confidential"),
             ("restricted", "Restricted"),
-        
+
         string="Confidentiality Level",
         default="internal",
-    
+
 
         # ============================================================================
     # TRACKING AND PROGRESS
@@ -188,7 +188,7 @@ class FsmTask(models.Model):
     completion_percentage = fields.Float(
         string="Completion %", default=0.0,,
     digits=(5, 2)
-    
+
     estimated_hours = fields.Float(string="Estimated Hours",,
     digits=(5, 2))
     actual_hours = fields.Float(string="Actual Hours",,
@@ -203,9 +203,9 @@ class FsmTask(models.Model):
             ("3", "Neutral"),
             ("4", "Satisfied"),
             ("5", "Very Satisfied"),
-        
+
         string="Customer Satisfaction",
-    
+
 
     quality_rating = fields.Selection(
         [)
@@ -213,9 +213,9 @@ class FsmTask(models.Model):
             ("good", "Good"),
             ("average", "Average"),
             ("poor", "Poor"),
-        
+
         string="Quality Rating",
-    
+
 
         # ============================================================================
     # FINANCIAL INFORMATION
@@ -225,16 +225,16 @@ class FsmTask(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    
+
     estimated_cost = fields.Monetary(
         string="Estimated Cost", currency_field="currency_id"
-    
+
     actual_cost = fields.Monetary(string="Actual Cost",,
     currency_field="currency_id"),
     invoice_status = fields.Selection(
         [("to_invoice", "To Invoice"), ("invoiced", "Invoiced"), ("paid", "Paid")), string="Invoice Status",
         default="to_invoice",
-    
+
 
         # ============================================================================
     # COMMUNICATION AND NOTES
@@ -252,19 +252,19 @@ class FsmTask(models.Model):
         compute="_compute_duration",
         store=True,
         digits=(5, 2),
-    
+
     is_overdue = fields.Boolean(string="Is Overdue",,
     compute="_compute_overdue"),
     progress_status = fields.Char(
         string="Progress Status", compute="_compute_progress_status"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS - DYNAMIC SERVICE SUPPORT
         # ============================================================================
     related_project_task_id = fields.Many2one(
         "fsm.task", string="Related Project Task"
-    
+
     equipment_ids = fields.Many2many("maintenance.equipment",,
     string="Equipment Used")
         # DYNAMIC SERVICE LINE ITEMS - Support adding services on-site
@@ -273,20 +273,20 @@ class FsmTask(models.Model):
         "task_id",
         string="Service Line Items",
         help="Services that can be added/modified during task execution",
-    
+
 
         # DYNAMIC PRICING AND BILLING
     allow_on_site_additions = fields.Boolean(
         string="Allow On-Site Service Additions",
         default=True,
         help="Technician can add services while on-site",:
-    
+
     requires_customer_approval = fields.Boolean(
         string="Requires Customer Approval",
         default=True,
         ,
     help="Additional services need customer signature/approval",
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many(
@@ -295,21 +295,21 @@ class FsmTask(models.Model):
         string="Activities",
         ,
     domain=[("res_model", "=", "fsm.task"))
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=[("res_model", "=", "fsm.task"))
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
         string="Messages",
         ,
     domain=[("res_model", "=", "fsm.task"))
-    
+
 
     container_ids = fields.Many2many("records.container",,
     string="Containers"),
@@ -444,7 +444,7 @@ class FsmTask(models.Model):
                 record.deadline
                 and record.deadline < today
                 and record.status not in ["completed", "cancelled")
-            
+
 
     @api.depends("completion_percentage", "status")
     def _compute_progress_status(self):
@@ -480,8 +480,8 @@ class FsmTask(models.Model):
                 "status": "completed",
                 "end_date": fields.Datetime.now(),
                 "completion_percentage": 100.0,
-            
-        
+
+
         self.message_post(body=_("Task completed"))
 
     def action_cancel_task(self):
@@ -504,7 +504,7 @@ class FsmTask(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_task_id": self.id},
-        
+
 
     def action_view_work_orders(self):
         """View related work orders"""
@@ -517,7 +517,7 @@ class FsmTask(models.Model):
             "view_mode": "tree,form",
             "domain": [("task_id", "=", self.id)],
             "context": {"default_task_id": self.id},
-        
+
 
     def action_add_service_on_site(self):
         """Add service while technician is on-site""":
@@ -525,7 +525,7 @@ class FsmTask(models.Model):
         if self.status not in ["scheduled", "in_progress"]:
             raise UserError()
                 _("Can only add services to scheduled or in-progress tasks")
-            
+
 
         return {}
             "type": "ir.actions.act_window",
@@ -537,8 +537,8 @@ class FsmTask(models.Model):
                 "default_task_id": self.id,
                 "default_customer_id": self.customer_id.id,
                 "on_site_addition": True,
-            
-        
+
+
 
     def action_modify_service_scope(self):
         """Modify service scope during task execution"""
@@ -551,7 +551,7 @@ class FsmTask(models.Model):
             "view_mode": "tree,form",
             "domain": [("task_id", "=", self.id)],
             "context": {"default_task_id": self.id},
-        
+
 
     def action_customer_approval_required(self):
         """Request customer approval for additional services""":
@@ -559,7 +559,7 @@ class FsmTask(models.Model):
         # Send notification/email to customer for approval:
         template = self.env.ref()
             "records_management.email_template_service_approval", False
-        
+
         if template:
             template.send_mail(self.id)
         self.message_post(body=_("Customer approval requested for additional services")):
@@ -580,7 +580,7 @@ class FsmTask(models.Model):
             if vals.get("name", _("New")) == _("New"):
                 vals["name"] = self.env["ir.sequence").next_by_code("fsm.task") or _(]
                     "New"
-                
+
         return super().create(vals_list)
 
     def write(self, vals):
@@ -592,7 +592,7 @@ class FsmTask(models.Model):
                 if old_status != new_status:
                     record.message_post()
                         body=_("Status changed from %s to %s", old_status, new_status)
-                    
+
         return super().write(vals)
 
     def name_get(self):
@@ -611,7 +611,7 @@ class FsmTask(models.Model):
     @api.model
     def _search_name():
         self, name="", args=None, operator="ilike", limit=100, name_get_uid=None
-    
+
         """Enhanced search by name, customer, or task type"""
         args = args or []
         domain = []
@@ -624,7 +624,7 @@ class FsmTask(models.Model):
                 ("customer_id.name", operator, name),
                 ("task_type", operator, name),
                 ("description", operator, name),
-            
+
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
     # ============================================================================
@@ -645,7 +645,7 @@ class FsmTask(models.Model):
             if not (0 <= record.completion_percentage <= 100):
                 raise ValidationError()
                     _("Completion percentage must be between 0 and 100")
-                
+
 
     @api.constrains("estimated_hours", "actual_hours")
     def _check_hours(self):
@@ -681,7 +681,7 @@ class FsmTaskServiceLine(models.Model):
         # ============================================================================
     task_id = fields.Many2one(
         "fsm.task", string="FSM Task", required=True, ondelete="cascade"
-    
+
     sequence = fields.Integer(string="Sequence",,
     default=10),
     service_name = fields.Char(string="Service Name",,
@@ -696,10 +696,10 @@ class FsmTaskServiceLine(models.Model):
             ("retrieval", "Item Retrieval"),
             ("consultation", "Consultation"),
             ("additional", "Additional Service"),
-        
+
         string="Service Type",
         required=True,
-    
+
 
     description = fields.Text(string="Service Description")
         # ============================================================================
@@ -719,16 +719,16 @@ class FsmTaskServiceLine(models.Model):
             ("signature", "Electronic Signature"),
             ("email", "Email Confirmation"),
             ("sms", "SMS Confirmation"),
-        
+
         string="Approval Method",
-    
+
 
         # ============================================================================
     # PRICING FIELDS
         # ============================================================================
     currency_id = fields.Many2one(
         "res.currency", string="Currency", related="task_id.currency_id"
-    
+
     unit_price = fields.Monetary(string="Unit Price",,
     currency_field="currency_id"),
     quantity = fields.Float(string="Quantity", default=1.0,,
@@ -738,7 +738,7 @@ class FsmTaskServiceLine(models.Model):
         currency_field="currency_id",
         compute="_compute_total_price",
         store=True,
-    
+
 
         # ============================================================================
     # STATUS TRACKING
@@ -752,7 +752,7 @@ class FsmTaskServiceLine(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
-    
+
         help='Current status of the FSM task service line'
 
     # ============================================================================
@@ -777,7 +777,7 @@ class FsmTaskServiceLine(models.Model):
         self.write({"status": "pending"})
         self.task_id.message_post()
             body=_("Approval requested for additional service: %s", self.service_name)
-        
+
 
     def action_approve_service(self):
         """Approve the additional service"""
@@ -786,6 +786,6 @@ class FsmTaskServiceLine(models.Model):
         self.write({"status": "approved", "customer_approved": True})
         self.task_id.message_post()
             body=_("Additional service approved: %s", self.service_name)
-        
+
 
     """")))))))

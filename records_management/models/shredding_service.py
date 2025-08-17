@@ -52,27 +52,27 @@ class ShreddingService(models.Model):
         tracking=True,
         index=True,
         help="Unique service order number"
-    
+
     reference = fields.Char(
         string="Reference",
         index=True,
         tracking=True,
         help="External reference number"
-    
+
     description = fields.Text(
         string="Description",
         help="Service description and details"
-    
+
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Order sequence for sorting":
-    
+
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Active status of the service"
-    
+
 
         # ============================================================================
     # FRAMEWORK FIELDS
@@ -82,14 +82,14 @@ class ShreddingService(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Service Technician",
         default=lambda self: self.env.user,
         tracking=True,
         help="Primary service technician"
-    
+
 
         # ============================================================================
     # TEAM & RESOURCE ASSIGNMENT
@@ -100,7 +100,7 @@ class ShreddingService(models.Model):
         string='Assigned Technician',
         tracking=True,
         help="Primary technician assigned to this shredding service",
-    
+
 
     assigned_team_ids = fields.Many2many(
         'hr.employee',
@@ -109,7 +109,7 @@ class ShreddingService(models.Model):
         'employee_id',
         string='Assigned Team',
         help="Team members assigned to this shredding service",
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -122,12 +122,12 @@ class ShreddingService(models.Model):
         ("completed", "Completed"),
         ("invoiced", "Invoiced"),
         ("cancelled", "Cancelled"),
-    
+
         string="Status",
         default="draft",
         tracking=True,
         help="Current service status"
-    
+
 
         # ============================================================================
     # CUSTOMER & SERVICE RELATIONSHIPS
@@ -138,22 +138,22 @@ class ShreddingService(models.Model):
         required=True,
         tracking=True,
         help="Service customer"
-    
+
     contact_id = fields.Many2one(
         "res.partner",
         string="Contact Person",
         help="Primary contact for this service":
-    
+
     location_id = fields.Many2one(
         "records.location",
         string="Service Location",
         help="Location where service will be performed"
-    
+
     container_type_id = fields.Many2one(
         "records.container.type",
         string="Container Type",
         help="Associated container type for shredding service":
-    
+
 
         # ============================================================================
     # SERVICE CONFIGURATION
@@ -165,24 +165,24 @@ class ShreddingService(models.Model):
         ("mobile", "Mobile Shredding"),
         ("drop_off", "Drop-Off Service"),
         ("emergency", "Emergency Shredding"),
-    
+
         string="Service Type",
         default="onsite",
         required=True,
         tracking=True,
         help="Type of shredding service"
-    
+
     material_type = fields.Selection([))
         ("paper", "Paper Documents"),
         ("hard_drives", "Hard Drives"),
         ("media", "Electronic Media"),
         ("mixed", "Mixed Materials"),
-    
+
         string="Material Type",
         default="paper",
         required=True,
         help="Type of material to be shredded"
-    
+
 
         # ============================================================================
     # DESTRUCTION & COMPLIANCE CONFIGURATION
@@ -195,26 +195,26 @@ class ShreddingService(models.Model):
         ('incineration', 'Incineration'),
         ('degaussing', 'Degaussing (Magnetic Media)'),
         ('physical_destruction', 'Physical Destruction'),
-    
+
         string='Destruction Method',
         required=True,
         default='cross_cut',
         tracking=True,
         help="Method used for material destruction",:
-    
+
 
     certificate_required = fields.Boolean(
         string='Certificate Required',
         default=True,
         tracking=True,
         help="Whether a destruction certificate is required for this service",:
-    
+
 
     naid_compliance_required = fields.Boolean(
         string='NAID Compliance Required',
         default=True,
         help="Whether NAID AAA compliance is required",
-    
+
 
         # ============================================================================
     # CONTAINER & VOLUME TRACKING
@@ -226,26 +226,26 @@ class ShreddingService(models.Model):
         store=True,
         string='Container Type',
         help="Standard container type classification",
-    
+
 
     destruction_item_count = fields.Integer(
         string='Items Count',
         compute='_compute_destruction_items',
         store=True,
         help="Number of items to be destroyed",
-    
+
 
     estimated_volume = fields.Float(
         ,
     string='Estimated Volume (cubic feet)',
         help="Estimated volume of materials to be destroyed",
-    
+
 
     actual_volume = fields.Float(
         ,
     string='Actual Volume (cubic feet)',
         help="Actual volume of materials destroyed",
-    
+
 
         # ============================================================================
     # SCHEDULING FIELDS
@@ -255,29 +255,29 @@ class ShreddingService(models.Model):
         required=True,
         tracking=True,
         help="Scheduled service date"
-    
+
     service_time = fields.Float(
         string="Scheduled Time",
         ,
     help="Time in 24h format (e.g., 14.5 for 2:30 PM)"
-    
+
     estimated_duration = fields.Float(
         ,
     string="Estimated Duration (Hours)",
         default=2.0,
         help="Estimated service duration in hours"
-    
+
     priority = fields.Selection([))
         ("low", "Low"),
         ("normal", "Normal"),
         ("high", "High"),
         ("urgent", "Urgent"),
-    
+
         string="Priority",
         default="normal",
         tracking=True,
         help="Service priority level"
-    
+
 
         # ============================================================================
     # TEAM & RESOURCES
@@ -286,7 +286,7 @@ class ShreddingService(models.Model):
         "shredding.team",
         string="Assigned Team",
         help="Shredding team assigned to this service"
-    
+
     technician_ids = fields.Many2many(
         "hr.employee",
         "shredding_service_technician_rel",  # Different relation table
@@ -294,34 +294,34 @@ class ShreddingService(models.Model):
         "employee_id",
         string="Technicians",
         help="Individual technicians assigned"
-    
+
     vehicle_id = fields.Many2one(
         "records.vehicle",
         string="Service Vehicle",
         help="Vehicle used for this service":
-    
+
     equipment_ids = fields.Many2many(
         "maintenance.equipment",
         string="Equipment",
         help="Equipment used for shredding":
-    
+
     equipment_id = fields.Many2one(
         "maintenance.equipment",
         string="Primary Equipment",
         help="Primary shredding equipment"
-    
+
     recycling_bale_id = fields.Many2one(
         "paper.bale.recycling",
         string="Recycling Bale",
         help="Associated recycling bale"
-    
+
 
     batch_id = fields.Many2one(
         "shredding.inventory.batch",
         string="Inventory Batch",
         help="Associated shredding inventory batch",
         ondelete="set null"
-    
+
 
         # ============================================================================
     # MATERIAL DETAILS
@@ -332,38 +332,38 @@ class ShreddingService(models.Model):
         digits="Stock Weight",
         default=0.0,
         help="Estimated volume of materials"
-    
+
     estimated_weight = fields.Float(
         ,
     string="Estimated Weight (lbs)",
         digits="Stock Weight",
         default=0.0,
         help="Estimated weight of materials"
-    
+
     actual_volume = fields.Float(
         ,
     string="Actual Volume (Cubic Feet)",
         digits="Stock Weight",
         default=0.0,
         help="Actual volume processed"
-    
+
     actual_weight = fields.Float(
         ,
     string="Actual Weight (lbs)",
         digits="Stock Weight",
         default=0.0,
         help="Actual weight processed"
-    
+
 
         # Container Information
     container_ids = fields.Many2many(
         "records.container",
         string="Containers",
         help="Containers being shredded"
-    
+
     bin_ids = fields.Many2many(
         "shred.bin", string="Shredding Bins", help="Bins used for shredding":
-    
+
 
         # ============================================================================
     # PRICING & BILLING
@@ -373,21 +373,21 @@ class ShreddingService(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True
-    
+
     unit_price = fields.Float(
         string="Unit Price",
         digits="Product Price",
         default=0.0,
         ,
     help="Price per unit (volume or weight)"
-    
+
     total_amount = fields.Float(
         string="Total Amount",
         digits="Product Price",
         compute="_compute_total_amount",
         store=True,
         help="Total service amount including charges"
-    
+
 
         # Additional Charges
     travel_charge = fields.Float(
@@ -395,19 +395,19 @@ class ShreddingService(models.Model):
         digits="Product Price",
         default=0.0,
         help="Additional travel charge"
-    
+
     emergency_charge = fields.Float(
         string="Emergency Charge",
         digits="Product Price",
         default=0.0,
         help="Emergency service surcharge"
-    
+
     equipment_charge = fields.Float(
         string="Equipment Charge",
         digits="Product Price",
         default=0.0,
         help="Special equipment charge"
-    
+
 
         # ============================================================================
     # COMPLIANCE & CERTIFICATES
@@ -416,33 +416,33 @@ class ShreddingService(models.Model):
         string="Certificate Required",
         default=True,
         help="Whether destruction certificate is required"
-    
+
     ,
     certificate_type = fields.Selection([))
         ("standard", "Standard Certificate"),
         ("detailed", "Detailed Certificate"),
         ("chain_of_custody", "Chain of Custody"),
-    
+
         string="Certificate Type",
         default="standard",
         help="Type of certificate to generate"
-    
+
     certificate_id = fields.Many2one(
         "shredding.certificate",
         string="Certificate",
         help="Generated destruction certificate"
-    
+
     ,
     compliance_level = fields.Selection([))
         ("standard", "Standard"),
         ("naid_aaa", "NAID AAA"),
         ("dod_5220", "DoD 5220.22-M"),
         ("custom", "Custom"),
-    
+
         string="Compliance Level",
         default="standard",
         help="Required compliance level"
-    
+
 
         # ============================================================================
     # SPECIAL INSTRUCTIONS
@@ -450,21 +450,21 @@ class ShreddingService(models.Model):
     special_instructions = fields.Text(
         string="Special Instructions",
         help="Special instructions for the service":
-    
+
     access_requirements = fields.Text(
         string="Access Requirements",
         help="Special access requirements or procedures"
-    
+
     security_clearance = fields.Boolean(
         string="Security Clearance Required",
         default=False,
         help="Whether security clearance is required"
-    
+
     witness_required = fields.Boolean(
         string="Witness Required",
         default=False,
         help="Whether witnessing is required"
-    
+
 
         # ============================================================================
     # COMPLETION TRACKING
@@ -473,26 +473,26 @@ class ShreddingService(models.Model):
         string="Actual Start Time",
         readonly=True,
         help="When service actually started"
-    
+
     actual_end_time = fields.Datetime(
         string="Actual End Time",
         readonly=True,
         help="When service was completed"
-    
+
     completion_notes = fields.Text(
         string="Completion Notes",
         help="Notes from service completion"
-    
+
     customer_signature = fields.Binary(
         string="Customer Signature",
         help="Customer signature for service completion":
-    
+
     photo_ids = fields.One2many(
         "shredding.service.photo",
         "shredding_service_id",
         string="Photos",
         help="Photos taken during service",
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -503,7 +503,7 @@ class ShreddingService(models.Model):
         compute="_compute_duration_hours",
         store=True,
         help="Actual service duration in hours",
-    
+
 
     shred_bin_id = fields.Many2one("shred.bin",,
     string="Shred Bin")
@@ -517,7 +517,7 @@ class ShreddingService(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -525,7 +525,7 @@ class ShreddingService(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -533,7 +533,7 @@ class ShreddingService(models.Model):
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
         # Added by Safe Business Fields Fixer
     destruction_status = fields.Selection([("pending", "Pending"), ("in_progress", "In Progress")), ("completed", "Completed")], string="Destruction Status")
 
@@ -583,19 +583,19 @@ class ShreddingService(models.Model):
         "travel_charge",
         "emergency_charge",
         "equipment_charge"
-    
+
     def _compute_total_amount(self):
         """Compute total service amount"""
         for service in self:
             base_amount = service.unit_price * max()
                 service.actual_volume, service.actual_weight
-            
+
             total = ()
                 base_amount
                 + service.travel_charge
                 + service.emergency_charge
                 + service.equipment_charge
-            
+
             service.total_amount = total
 
     @api.depends("actual_start_time", "actual_end_time")
@@ -644,7 +644,7 @@ class ShreddingService(models.Model):
         self.write({)}
             "state": "in_progress",
             "actual_start_time": fields.Datetime.now(),
-        
+
         self.message_post(body=_("Service started"))
 
     def action_complete_service(self):
@@ -657,7 +657,7 @@ class ShreddingService(models.Model):
         self.write({)}
             "state": "completed",
             "actual_end_time": fields.Datetime.now(),
-        
+
 
         # Generate certificate if required:
         if self.requires_certificate:
@@ -698,7 +698,7 @@ class ShreddingService(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_service_id": self.id},
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -730,9 +730,9 @@ class ShreddingService(models.Model):
                 self.actual_end_time.date()
                 if self.actual_end_time:
                 else fields.Date.today()
-            
+
             "compliance_level": self.compliance_level,
-        
+
 
         if "shredding.certificate" in self.env:
             certificate = self.env["shredding.certificate").create(certificate_vals)
@@ -773,7 +773,7 @@ class ShreddingService(models.Model):
                 record.travel_charge,
                 record.emergency_charge,
                 record.equipment_charge
-            
+
             if any(charge < 0 for charge in charges):
                 raise ValidationError(_("All charges must be non-negative"))
 
@@ -787,7 +787,7 @@ class ShreddingService(models.Model):
             if not vals.get("name") or vals["name"] == "/":
                 vals["name") = (]
                     self.env["ir.sequence"].next_by_code("shredding.service") or "NEW"
-                
+
         return super().create(vals_list)
 
     def write(self, vals):
@@ -800,8 +800,8 @@ class ShreddingService(models.Model):
                         body=_("State changed from %s to %s",
                             dict(record._fields["state"].selection)[record.state],
                             dict(record._fields["state"].selection)[vals["state"]]
-                        
-                    
+
+
         return super().write(vals)
 
     # ============================================================================
@@ -822,7 +822,7 @@ class ShreddingService(models.Model):
             "actual_weight": self.actual_weight,
             "certificate_required": self.requires_certificate,
             "certificate_generated": bool(self.certificate_id),
-        
+
 
     def get_billing_details(self):
         """Get billing details for invoicing""":
@@ -834,7 +834,7 @@ class ShreddingService(models.Model):
             "equipment_charge": self.equipment_charge,
             "total_amount": self.total_amount,
             "currency": self.currency_id.name,
-        
+
 
     @api.model
     def get_pending_services(self):
@@ -842,7 +842,7 @@ class ShreddingService(models.Model):
         return self.search([)]
             ("state", "in", ["scheduled", "in_progress"]),
             ("service_date", "<=", fields.Date.today()),
-        
+
 
     @api.model
     def get_overdue_services(self):
@@ -850,7 +850,7 @@ class ShreddingService(models.Model):
         return self.search([)]
             ("state", "in", ["scheduled"]),
             ("service_date", "<", fields.Date.today()),
-        
+
     @api.depends('actual_start_time', 'actual_completion_time')
     def _compute_actual_duration(self):
         """Calculate actual service duration"""
@@ -889,31 +889,31 @@ class ShreddingServicePhoto(models.Model):
         required=True,
         ondelete="cascade",
         help="Associated shredding service"
-    
+
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Photo sequence order"
-    
+
     name = fields.Char(
         string="Photo Name",
         required=True,
         help="Descriptive name for the photo":
-    
+
     description = fields.Text(
         string="Description",
         help="Photo description and context"
-    
+
     photo = fields.Binary(
         string="Photo",
         required=True,
         help="Photo file"
-    
+
     taken_date = fields.Datetime(
         string="Taken Date",
         default=fields.Datetime.now,
         help="When the photo was taken"
-    
+
     destruction_item_ids = fields.One2many('destruction.item', 'shredding_service_id',,
     string='Items for Destruction'):
     witness_ids = fields.Many2many(
@@ -922,7 +922,7 @@ class ShreddingServicePhoto(models.Model):
         'service_id',
         'user_id',
         string='Witnesses'
-    
+
     hourly_rate = fields.Float(string='Hourly Rate',,
     default=75.0),
     photo_type = fields.Selection([))
@@ -930,16 +930,16 @@ class ShreddingServicePhoto(models.Model):
         ("during", "During Service"),
         ("after", "After Service"),
         ("certificate", "Certificate Documentation"),
-    
+
         string="Photo Type",
         default="during",
         help="Type of photo for categorization":
-    
+
     taken_by_id = fields.Many2one(
         "res.users",
         string="Taken By",
         default=lambda self: self.env.user,
         ,
     help="User who took the photo",
-    
+
 ))))))))))))))))))))))))))))))))))))))))))))))))

@@ -31,19 +31,19 @@ class NaidComplianceActionPlan(models.Model):
         required=True,
         tracking=True,
         index=True
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -55,7 +55,7 @@ class NaidComplianceActionPlan(models.Model):
         string="Compliance Record",
         required=True,
         ondelete="cascade"
-    
+
 
         # ============================================================================
     # ACTION DETAILS
@@ -64,7 +64,7 @@ class NaidComplianceActionPlan(models.Model):
         string="Action Description",
         required=True,
         help="Detailed description of the action to be taken"
-    
+
     ,
     action_type = fields.Selection([))
         ("corrective", "Corrective Action"),
@@ -73,7 +73,7 @@ class NaidComplianceActionPlan(models.Model):
         ("training", "Training Action"),
         ("documentation", "Documentation Update"),
         ("process_change", "Process Change"),
-    
+
 
         # ============================================================================
     # PRIORITY & SCHEDULING
@@ -83,21 +83,21 @@ class NaidComplianceActionPlan(models.Model):
         ("medium", "Medium"),
         ("high", "High"),
         ("urgent", "Urgent")
-    
+
 
     due_date = fields.Date(
         string="Due Date",
         required=True,
         tracking=True
-    
+
     start_date = fields.Date(
         string="Start Date",
         tracking=True
-    
+
     completion_date = fields.Date(
         string="Completion Date",
         tracking=True
-    
+
 
         # ============================================================================
     # RESPONSIBILITY & APPROVAL
@@ -107,21 +107,21 @@ class NaidComplianceActionPlan(models.Model):
         string="Responsible Person",
         required=True,
         tracking=True
-    
+
     approval_required = fields.Boolean(
         string="Approval Required",
         default=False,
         help="Check if this action plan requires management approval":
-    
+
     approved_by_id = fields.Many2one(
         "res.users",
         string="Approved By",
         tracking=True
-    
+
     approval_date = fields.Date(
         string="Approval Date",
         tracking=True
-    
+
 
         # ============================================================================
     # STATUS TRACKING
@@ -134,24 +134,24 @@ class NaidComplianceActionPlan(models.Model):
         ("completed", "Completed"),
         ("cancelled", "Cancelled"),
         ("overdue", "Overdue"),
-    
+
         string="Status",
         help="Business workflow state of the action plan (e.g., draft, approved, in progress, completed, etc.)",
         default="draft",
         tracking=True,
         required=True
-    
+
 
     progress_percentage = fields.Float(
         string="Progress %",
         default=0.0,
         ,
     help="Completion percentage (0-100)"
-    
+
     completion_notes = fields.Text(
         string="Completion Notes",
         help="Notes about the completion of this action"
-    
+
 
         # ============================================================================
     # IMPACT AND RISK ASSESSMENT
@@ -159,30 +159,30 @@ class NaidComplianceActionPlan(models.Model):
     impact_assessment = fields.Text(
         string="Impact Assessment",
         help="Assessment of the impact this action will have on compliance"
-    
+
     ,
     risk_level = fields.Selection([))
         ("low", "Low Risk"),
         ("medium", "Medium Risk"),
         ("high", "High Risk"),
         ("critical", "Critical Risk")
-    
+
 
     estimated_cost = fields.Monetary(
         string="Estimated Cost",
         currency_field="currency_id",
         help="Estimated cost to implement this action"
-    
+
     actual_cost = fields.Monetary(
         string="Actual Cost",
         currency_field="currency_id",
         help="Actual cost of implementing this action"
-    
+
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id
-    
+
 
         # ============================================================================
     # TRACKING AND METRICS
@@ -192,20 +192,20 @@ class NaidComplianceActionPlan(models.Model):
         compute="_compute_days_overdue",
         store=True,
         help="Number of days this action is overdue"
-    
+
     is_overdue = fields.Boolean(
         string="Is Overdue",
         compute="_compute_is_overdue",
         store=True
-    
+
     estimated_hours = fields.Float(
         string="Estimated Hours",
         help="Estimated hours to complete this action"
-    
+
     actual_hours = fields.Float(
         string="Actual Hours",
         help="Actual hours spent on this action"
-    
+
 
         # ============================================================================
     # WORKFLOW STATE MANAGEMENT
@@ -222,14 +222,14 @@ class NaidComplianceActionPlan(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    
+
         string='Record Status',
         help="Technical record lifecycle state (e.g., draft, active, inactive, archived). Not to be confused with the business workflow `status` field.",
         default='draft',
         tracking=True,
         required=True,
         index=True
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -243,21 +243,21 @@ class NaidComplianceActionPlan(models.Model):
         #     string="Activities",
     #    ,
     domain=lambda self: [("res_model", "=", self._name))
-        # 
+        #
     # message_follower_ids = fields.One2many(
         #     "mail.followers",
     #     "res_id",
         #     string="Followers",
     #    ,
     domain=lambda self: [("res_model", "=", self._name))
-        # 
+        #
     # message_ids = fields.One2many(
         #     "mail.message",
     #     "res_id",
         #     string="Messages",
     #    ,
     domain=lambda self: [("model", "=", self._name))
-        # 
+        #
 
     # ============================================================================
         # COMPUTE METHODS
@@ -283,7 +283,7 @@ class NaidComplianceActionPlan(models.Model):
             record.is_overdue = ()
                 record.days_overdue > 0 and
                 record.status not in ['completed', 'cancelled']
-            
+
 
     # ============================================================================
         # ONCHANGE METHODS
@@ -299,10 +299,10 @@ class NaidComplianceActionPlan(models.Model):
                     'major': 'high',
                     'minor': 'medium',
                     'low': 'low'
-                
+
                 self.priority = severity_priority_map.get()
                     self.compliance_id.severity, 'medium'
-                
+
 
     @api.onchange("status")
     def _onchange_status(self):
@@ -326,7 +326,7 @@ class NaidComplianceActionPlan(models.Model):
             "status": "approved",
             "approved_by_id": self.env.user.id,
             "approval_date": fields.Date.today(),
-        
+
         self.message_post(body=_("Action plan approved by %s", self.env.user.name))
 
     def action_start(self):
@@ -338,7 +338,7 @@ class NaidComplianceActionPlan(models.Model):
         self.write({)}
             "status": "in_progress",
             "start_date": fields.Date.today(),
-        
+
         self.message_post(body=_("Action plan started by %s", self.env.user.name))
 
     def action_complete(self):
@@ -351,7 +351,7 @@ class NaidComplianceActionPlan(models.Model):
             "status": "completed",
             "completion_date": fields.Date.today(),
             "progress_percentage": 100.0,
-        
+
         self.message_post(body=_("Action plan completed by %s", self.env.user.name))
 
         # Update related compliance record
@@ -374,7 +374,7 @@ class NaidComplianceActionPlan(models.Model):
             "start_date": False,
             "completion_date": False,
             "progress_percentage": 0.0,
-        
+
         self.message_post(body=_("Action plan reset to draft by %s", self.env.user.name))
 
     # ============================================================================
@@ -402,7 +402,7 @@ class NaidComplianceActionPlan(models.Model):
             template = self.env.ref()
                 'records_management.email_template_action_plan_overdue',
                 raise_if_not_found=False
-            
+
             if template:
                 template.send_mail(self.id, force_send=True)
             else:
@@ -414,7 +414,7 @@ class NaidComplianceActionPlan(models.Model):
         overdue_actions = self.search([)]
             ('is_overdue', '=', True),
             ('status', 'not in', ['completed', 'cancelled'])
-        
+
 
         for action in overdue_actions:
             action.write({'status': 'overdue'})
@@ -430,7 +430,7 @@ class NaidComplianceActionPlan(models.Model):
             if record.progress_percentage < 0 or record.progress_percentage > 100:
                 raise ValidationError()
                     _("Progress percentage must be between 0 and 100")
-                
+
 
     @api.constrains("due_date", "start_date")
     def _check_dates(self):
@@ -440,13 +440,13 @@ class NaidComplianceActionPlan(models.Model):
                 if record.start_date > record.due_date:
                     raise ValidationError()
                         _("Start date cannot be after due date")
-                    
+
 
             if record.completion_date and record.start_date:
                 if record.completion_date < record.start_date:
                     raise ValidationError()
                         _("Completion date cannot be before start date")
-                    
+
 
     @api.constrains("estimated_cost", "actual_cost")
     def _check_costs(self):
@@ -466,7 +466,7 @@ class NaidComplianceActionPlan(models.Model):
         domain = []
             ('is_overdue', '=', True),
             ('status', 'not in', ['completed', 'cancelled'])
-        
+
         return self.search(domain, limit=limit, order='days_overdue desc')
 
     @api.model
@@ -475,7 +475,7 @@ class NaidComplianceActionPlan(models.Model):
         domain = []
             ('priority', 'in', ['high', 'urgent']),
             ('status', 'not in', ['completed', 'cancelled'])
-        
+
         return self.search(domain, limit=limit, order='priority desc, due_date asc')
 
     @api.model
@@ -492,5 +492,5 @@ class NaidComplianceActionPlan(models.Model):
             'overdue_actions': self.search_count(base_domain + [('is_overdue', '=', True)]),
             'high_priority_actions': self.search_count()
                 base_domain + [('priority', 'in', ['high', 'urgent'])]
-            
+
         ))))))))))))))))

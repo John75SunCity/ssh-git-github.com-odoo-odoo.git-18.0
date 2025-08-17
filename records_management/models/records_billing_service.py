@@ -1,23 +1,183 @@
 # -*- coding: utf-8 -*-
 
-Billing Generation Service
-
-
 from odoo import models, fields, api, _
-
-
-
-class RecordsBillingService(models.Model):
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    Billing Generation Service
+    from odoo import models, fields, api, _
+    class RecordsBillingService(models.Model):
 
         Billing Generation Service
 
 
     _name = "records.billing.service"
-    _description = "Billing Generation Service"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = "name"
 
-        # Core fields
+"
+    _description = "records.billing.service"
+
+"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.billing.service"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "Billing Generation Service"
+    _inherit = ['mail.thread', 'mail.activity.mixin']""
+    _order = "name"
+""
+        # Core fields""
     name = fields.Char(string="Name", required=True,,
     tracking=True),
     company_id = fields.Many2one('res.company',,
@@ -40,7 +200,6 @@ class RecordsBillingService(models.Model):
         # Common fields
     description = fields.Text(
     notes = fields.Text(
-    ,
     date = fields.Date(default=fields.Date.today),
     action_activate_service = fields.Char(string='Action Activate Service'),
     action_archive_service = fields.Char(string='Action Archive Service'),
@@ -120,33 +279,31 @@ class RecordsBillingService(models.Model):
     view_mode = fields.Char(string='View Mode'),
     volume_based_pricing = fields.Char(string='Volume Based Pricing'),
     web_ribbon = fields.Char(string='Web Ribbon'),
-    weight_based_pricing = fields.Char(string='Weight Based Pricing'),
-    write_date = fields.Date(string='Write Date'),
-    write_uid = fields.Char(string='Write Uid')
-
-    @api.depends('billing_ids')
-    def _compute_billing_count(self):
-        for record in self:
-            record.billing_count = len(record.billing_ids)
-
-    @api.depends('service_request_ids')
-    def _compute_service_request_count(self):
-        for record in self:
-            record.service_request_count = len(record.service_request_ids)
-
-    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
-    def _compute_total_billed_amount(self):
-        for record in self:
-            record.total_billed_amount = sum(record.line_ids.mapped('amount'))
-
-    def action_confirm(self):
+    weight_based_pricing = fields.Char(string='Weight Based Pricing'),"
+    write_date = fields.Date(string='Write Date'),""
+    write_uid = fields.Char(string='Write Uid')""
+""
+    @api.depends('billing_ids')""
+    def _compute_billing_count(self):""
+        for record in self:""
+            record.billing_count = len(record.billing_ids)""
+""
+    @api.depends('service_request_ids')""
+    def _compute_service_request_count(self):""
+        for record in self:""
+            record.service_request_count = len(record.service_request_ids)""
+""
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies""
+    def _compute_total_billed_amount(self):""
+        for record in self:""
+            record.total_billed_amount = sum(record.line_ids.mapped('amount'))""
+""
+    def action_confirm(self):""
         """Confirm the record"""
-
-        self.ensure_one()
-        self.write({'state': 'confirmed'})
-
-    def action_done(self):
+"""
+""""
+    """
         """Mark as done"""
-
-        self.ensure_one()
-        self.write({'state': 'done'})
+""""
+"""
+""""

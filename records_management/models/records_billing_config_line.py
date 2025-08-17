@@ -27,32 +27,32 @@ class RecordsBillingConfigLine(models.Model):
         compute='_compute_name',
         store=True,
         help="Computed name based on service and rate"
-    
+
 
     display_name = fields.Char(
         string="Display Name",
         compute='_compute_display_name',
         help="Display name for the billing line":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this billing line"
-    
+
 
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Sequence for line ordering":
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -64,13 +64,13 @@ class RecordsBillingConfigLine(models.Model):
         ondelete="cascade",
         index=True,
         help="Parent billing configuration"
-    
+
 
     product_id = fields.Many2one(
         "product.product",
         string="Product",
         help="Product associated with this billing line"
-    
+
 
         # ============================================================================
     # SERVICE CONFIGURATION
@@ -88,7 +88,7 @@ class RecordsBillingConfigLine(models.Model):
         ('setup', 'Setup Fee'),
         ('monthly', 'Monthly Fee'),
         ('other', 'Other Service')
-    
+
 
     billing_method = fields.Selection([))
         ('per_container', 'Per Container'),
@@ -99,7 +99,7 @@ class RecordsBillingConfigLine(models.Model):
         ('per_pickup', 'Per Pickup'),
         ('percentage', 'Percentage Based'),
         ('tiered', 'Tiered Pricing')
-    
+
 
         # ============================================================================
     # PRICING FIELDS
@@ -109,7 +109,7 @@ class RecordsBillingConfigLine(models.Model):
         string="Currency",
         related="company_id.currency_id",
         readonly=True
-    
+
 
     unit_rate = fields.Monetary(
         string="Unit Rate",
@@ -117,20 +117,20 @@ class RecordsBillingConfigLine(models.Model):
         required=True,
         tracking=True,
         help="Base rate per unit"
-    
+
 
     minimum_charge = fields.Monetary(
         string="Minimum Charge",
         currency_field="currency_id",
         default=0.0,
         help="Minimum charge for this service":
-    
+
 
     maximum_charge = fields.Monetary(
         string="Maximum Charge",
         currency_field="currency_id",
         help="Maximum charge cap for this service":
-    
+
 
         # ============================================================================
     # QUANTITY PARAMETERS
@@ -139,14 +139,14 @@ class RecordsBillingConfigLine(models.Model):
         string="Minimum Quantity",
         default=1.0,
         help="Minimum billable quantity"
-    
+
 
     quantity_increment = fields.Float(
         string="Quantity Increment",
         default=1.0,
         ,
     help="Billing quantity increment (e.g., 0.5 for half-hour increments)":
-    
+
 
         # ============================================================================
     # CONTAINER TYPE SPECIFICATIONS
@@ -158,7 +158,7 @@ class RecordsBillingConfigLine(models.Model):
         ('type_04', 'TYPE 4 - Odd Size/Temp Box (5.0 CF)'),
         ('type_06', 'TYPE 6 - Pathology Box (0.42 CF)'),
         ('all_types', 'All Container Types')
-    
+
 
         # ============================================================================
     # TIME-BASED PRICING
@@ -168,12 +168,12 @@ class RecordsBillingConfigLine(models.Model):
         default=fields.Date.today,
         required=True,
         help="Date when this rate becomes effective"
-    
+
 
     expiry_date = fields.Date(
         string="Expiry Date",
         help="Date when this rate expires"
-    
+
 
         # ============================================================================
     # DISCOUNT AND MARKUP
@@ -182,13 +182,13 @@ class RecordsBillingConfigLine(models.Model):
         string="Discount %",
         default=0.0,
         help="Discount percentage to apply"
-    
+
 
     markup_percentage = fields.Float(
         string="Markup %",
         default=0.0,
         help="Markup percentage to apply"
-    
+
 
         # ============================================================================
     # BILLING TERMS
@@ -200,13 +200,13 @@ class RecordsBillingConfigLine(models.Model):
         ('semi_annual', 'Semi-Annual'),
         ('annual', 'Annual'),
         ('on_demand', 'On Demand')
-    
+
 
     proration_allowed = fields.Boolean(
         string="Proration Allowed",
         default=True,
         help="Whether partial periods can be prorated"
-    
+
 
         # ============================================================================
     # CALCULATION RESULTS
@@ -218,7 +218,7 @@ class RecordsBillingConfigLine(models.Model):
         store=True,
         ,
     help="Final rate after discounts/markups"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
@@ -265,11 +265,11 @@ class RecordsBillingConfigLine(models.Model):
             if record.service_type:
                 service_dict = dict(record._fields['service_type'].selection)
                 parts.append(service_dict.get(record.service_type, record.service_type))
-            
+
             if record.billing_method:
                 method_dict = dict(record._fields['billing_method'].selection)
                 parts.append(f"({method_dict.get(record.billing_method, record.billing_method)})")
-            
+
             record.name = " ".join(parts) if parts else "New Billing Line":
     @api.depends('name', 'effective_rate')
     def _compute_display_name(self):
@@ -285,15 +285,15 @@ class RecordsBillingConfigLine(models.Model):
         """Calculate effective rate after discounts and markups"""
         for record in self:
             rate = record.unit_rate
-            
+
             # Apply discount
             if record.discount_percentage:
                 rate = rate * (1 - record.discount_percentage / 100)
-            
+
             # Apply markup
             if record.markup_percentage:
                 rate = rate * (1 + record.markup_percentage / 100)
-            
+
             record.effective_rate = rate
 
     # ============================================================================
@@ -302,26 +302,26 @@ class RecordsBillingConfigLine(models.Model):
     def calculate_charge(self, quantity, container_type=None):
         """Calculate charge for given quantity""":
         self.ensure_one()
-        
+
         # Apply minimum quantity
         billable_quantity = max(quantity, self.minimum_quantity)
-        
+
         # Round up to nearest increment
         if self.quantity_increment:
             import math
             billable_quantity = math.ceil(billable_quantity / self.quantity_increment) * self.quantity_increment
-        
+
         # Calculate base charge
         charge = billable_quantity * self.effective_rate
-        
+
         # Apply minimum charge
         if self.minimum_charge:
             charge = max(charge, self.minimum_charge)
-        
+
         # Apply maximum charge cap
         if self.maximum_charge:
             charge = min(charge, self.maximum_charge)
-        
+
         return charge
 
     # ============================================================================
@@ -333,13 +333,13 @@ class RecordsBillingConfigLine(models.Model):
         for record in self:
             if record.unit_rate < 0:
                 raise ValidationError(_('Unit rate cannot be negative'))
-            
+
             if record.minimum_charge < 0:
                 raise ValidationError(_('Minimum charge cannot be negative'))
-            
+
             if record.maximum_charge and record.maximum_charge < 0:
                 raise ValidationError(_('Maximum charge cannot be negative'))
-            
+
             if record.maximum_charge and record.minimum_charge > record.maximum_charge:
                 raise ValidationError(_('Minimum charge cannot exceed maximum charge'))
 
@@ -349,7 +349,7 @@ class RecordsBillingConfigLine(models.Model):
         for record in self:
             if not (0 <= record.discount_percentage <= 100):
                 raise ValidationError(_('Discount percentage must be between 0 and 100'))
-            
+
             if record.markup_percentage < 0:
                 raise ValidationError(_('Markup percentage cannot be negative'))
 
@@ -359,7 +359,7 @@ class RecordsBillingConfigLine(models.Model):
         for record in self:
             if record.minimum_quantity <= 0:
                 raise ValidationError(_('Minimum quantity must be greater than 0'))
-            
+
             if record.quantity_increment <= 0:
                 raise ValidationError(_('Quantity increment must be greater than 0'))
 

@@ -38,23 +38,23 @@ class NAIDAuditLog(models.Model):
         index=True,
         ,
     default=lambda self: _("New Audit Log"),
-    
+
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
         index=True,
-    
+
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="User Who Performed Action",
         default=lambda self: self.env.user,
         required=True,
         tracking=True,
-    
+
     ,
     active = fields.Boolean(default=True)
 
@@ -96,12 +96,12 @@ class NAIDAuditLog(models.Model):
             ("configuration_change", "Configuration Change"),
             ("user_login", "User Login"),
             ("user_logout", "User Logout"),
-        
+
         string="Event Type",
         required=True,
         tracking=True,
         index=True,
-    
+
 
     timestamp = fields.Datetime(
         string="Event Timestamp",
@@ -109,7 +109,7 @@ class NAIDAuditLog(models.Model):
         required=True,
         tracking=True,
         index=True,
-    
+
 
     ,
     severity = fields.Selection(
@@ -118,12 +118,12 @@ class NAIDAuditLog(models.Model):
             ("warning", "Warning"),
             ("error", "Error"),
             ("critical", "Critical"),
-        
+
         string="Severity Level",
         default="info",
         required=True,
         tracking=True,
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS (with existing models)
@@ -134,58 +134,58 @@ class NAIDAuditLog(models.Model):
         string="Related Container",
         ondelete="set null",
         index=True,
-    
+
     document_id = fields.Many2one(
         "records.document",
         string="Related Document",
         ondelete="set null",
         index=True,
-    
+
     location_id = fields.Many2one(
         "records.location", string="Related Location", ondelete="set null"
-    
+
 
         # Compliance and service relationships
     compliance_id = fields.Many2one(
         "naid.compliance", string="NAID Compliance Record", ondelete="cascade"
-    
+
     pickup_request_id = fields.Many2one(
         "pickup.request", string="Related Pickup Request", ondelete="set null"
-    
+
     shredding_service_id = fields.Many2one(
         "shredding.service",
         string="Related Shredding Service",
         ondelete="set null",
-    
-    
+
+
         # Task relationships
     task_id = fields.Many2one(
-        "project.task", 
-        string="Related Task", 
+        "project.task",
+        string="Related Task",
         ondelete="set null",
         help="Project task associated with this audit event"
-    
+
 
         # Portal and customer relationships
     portal_request_id = fields.Many2one(
         "portal.request", string="Related Portal Request", ondelete="set null"
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Related Customer",
         ondelete="set null",
         index=True,
-    
+
 
         # Security relationships
     bin_key_id = fields.Many2one(
         "bin.key", string="Related Bin Key", ondelete="set null"
-    
+
     unlock_service_id = fields.Many2one(
         "bin.key.unlock.service",
         string="Related Unlock Service",
         ondelete="set null",
-    
+
 
         # ============================================================================
     # AUDIT DATA FIELDS
@@ -194,38 +194,38 @@ class NAIDAuditLog(models.Model):
         string="Event Description",
         required=True,
         help="Detailed description of the audit event",
-    
+
 
     before_values = fields.Text(
         ,
     string="Before Values (JSON)",
         help="JSON representation of field values before the change",
-    
+
 
     after_values = fields.Text(
         ,
     string="After Values (JSON)",
         help="JSON representation of field values after the change",
-    
+
 
     metadata = fields.Text(
         ,
     string="Additional Metadata (JSON)",
         help="Additional context data in JSON format",
-    
+
 
     ip_address = fields.Char(
         string="IP Address",
         help="IP address from which the action was performed",
-    
+
 
     user_agent = fields.Char(
         string="User Agent", help="Browser/client information"
-    
+
 
     session_id = fields.Char(
         string="Session ID", help="User session identifier"
-    
+
 
         # ============================================================================
     # NAID COMPLIANCE FIELDS
@@ -235,7 +235,7 @@ class NAIDAuditLog(models.Model):
         default=False,
         tracking=True,
         help="Indicates if chain of custody is properly maintained",:
-    
+
 
     ,
     compliance_status = fields.Selection(
@@ -244,23 +244,23 @@ class NAIDAuditLog(models.Model):
             ("non_compliant", "Non-Compliant"),
             ("under_review", "Under Review"),
             ("remediated", "Remediated"),
-        
+
         string="Compliance Status",
         default="compliant",
         tracking=True,
-    
+
 
     audit_hash = fields.Char(
         string="Audit Hash",
         help="Cryptographic hash for tamper detection",:
         readonly=True,
-    
+
 
     previous_log_hash = fields.Char(
         string="Previous Log Hash",
         help="Hash of the previous audit log entry for chain verification",:
         readonly=True,
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -272,12 +272,12 @@ class NAIDAuditLog(models.Model):
             ("validated", "Validated"),
             ("archived", "Archived"),
             ("flagged", "Flagged for Review"),:
-        
+
         string="Status",
         default="draft",
         tracking=True,
         required=True,
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -289,18 +289,18 @@ class NAIDAuditLog(models.Model):
             if record.event_type and record.timestamp:
                 event_label = dict(record._fields["event_type").selection).get()
                     record.event_type, record.event_type
-                
+
                 timestamp_str = ()
                     record.timestamp.strftime("%Y-%m-%d %H:%M")
                     if record.timestamp:
                     else "Unknown"
-                
+
                 user_name = ()
                     record.user_id.name if record.user_id else "Unknown":
-                
+
                 record.display_name = ()
                     f"{event_label} - {timestamp_str} ({user_name})"
-                
+
             else:
                 record.display_name = record.name or "Audit Log Entry"
 
@@ -322,7 +322,7 @@ class NAIDAuditLog(models.Model):
             if record.timestamp and record.timestamp > fields.Datetime.now():
                 raise ValidationError()
                     _("Audit timestamp cannot be in the future")
-                
+
 
     @api.constrains("before_values", "after_values", "metadata")
     def _check_json_fields(self):
@@ -338,8 +338,8 @@ class NAIDAuditLog(models.Model):
                             _()
                                 "Invalid JSON format in field '%s'",
                                 record._fields[field_name].string,
-                            
-                        
+
+
 
     # ============================================================================
         # ACTION METHODS
@@ -355,7 +355,7 @@ class NAIDAuditLog(models.Model):
 
         self.write()
             {"state": "validated", "name": self._generate_audit_reference()}
-        
+
 
         # Create activity for critical events:
         if self.severity in ["error", "critical"]:
@@ -364,7 +364,7 @@ class NAIDAuditLog(models.Model):
                 summary=_("Critical audit event requires review"),
                 note=self.description,
                 user_id=self.env.ref("base.user_admin").id,
-            
+
 
     def action_flag_for_review(self):
         """Flag audit log for manual review""":
@@ -374,14 +374,14 @@ class NAIDAuditLog(models.Model):
         # Notify compliance officers
         compliance_users = self.env.ref()
             "records_management.group_records_manager"
-        
+
         for user in compliance_users:
             self.activity_schedule()
                 "mail.mail_activity_data_todo",
                 summary=_("Audit log flagged for review"),:
                 note=self.description,
                 user_id=user.id,
-            
+
 
     def action_archive(self):
         """Archive audit log"""
@@ -389,7 +389,7 @@ class NAIDAuditLog(models.Model):
         if self.state not in ["validated", "flagged"]:
             raise UserError()
                 _("Only validated or flagged audit logs can be archived")
-            
+
 
         self.write({"state": "archived"})
 
@@ -405,7 +405,7 @@ class NAIDAuditLog(models.Model):
             "timestamp": fields.Datetime.now(),
             "user_id": self.env.user.id,
             "company_id": self.env.company.id,
-        
+
 
         # Add any additional fields from kwargs
         for key, value in kwargs.items():
@@ -429,7 +429,7 @@ class NAIDAuditLog(models.Model):
     timestamp = fields.Datetime.now().strftime("%Y%m%d%H%M%S")
         sequence = ()
             self.env["ir.sequence"].next_by_code("naid.audit.log") or "1"
-        
+
         return f"AUDIT-{event_type.upper()}-{timestamp}-{sequence}"
 
     def _generate_audit_hash(self):
@@ -439,7 +439,7 @@ class NAIDAuditLog(models.Model):
             [("id", "<", self.id), ("company_id", "=", self.company_id.id)],
             order="id desc",
             limit=1,
-        
+
 
         previous_hash = previous_log.audit_hash if previous_log else "GENESIS":
         # Create hash input string
@@ -450,7 +450,7 @@ class NAIDAuditLog(models.Model):
 
         self.write()
             {"audit_hash": audit_hash, "previous_log_hash": previous_hash}
-        
+
 
     @api.model
     def verify_audit_chain(self):
@@ -459,9 +459,9 @@ class NAIDAuditLog(models.Model):
             []
                 ("company_id", "=", self.env.company.id),
                 ("state", "=", "validated"),
-            
+
             order="id",
-        
+
 
         errors = []
         for i, log in enumerate(logs):
@@ -482,10 +482,10 @@ class NAIDAuditLog(models.Model):
     # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages"),
     message_ids = fields.One2many("mail.message", "res_id",,

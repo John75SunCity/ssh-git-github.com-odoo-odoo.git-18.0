@@ -76,15 +76,15 @@ class PickupRequest(models.Model):
 
     contact_person = fields.Char(
         string="Contact Person", help="Primary contact person for pickup":
-    
+
 
     contact_phone = fields.Char(
         string="Contact Phone", help="Phone number for pickup coordination":
-    
+
 
     contact_email = fields.Char(
         string="Contact Email", help="Email address for pickup notifications":
-    
+
 
         # ============================================================================
     # PICKUP LOCATION AND LOGISTICS
@@ -100,7 +100,7 @@ class PickupRequest(models.Model):
         help="Detailed pickup address if different from location",:
     pickup_instructions = fields.Text(
         string="Pickup Instructions", help="Special instructions for pickup team":
-    
+
 
     access_requirements = fields.Text(
         string="Access Requirements",
@@ -207,28 +207,28 @@ class PickupRequest(models.Model):
         help="Whether this pickup requires management approval",
 
     approved_by_id = fields.Many2one(
-            "res.users", string="Approved By", help="User who approved the pickup request" 
-    
+            "res.users", string="Approved By", help="User who approved the pickup request"
+
     approval_date = fields.Datetime(
         string="Approval Date", help="Date when pickup was approved"
-    
+
 
         # ============================================================================
     # PICKUP DETAILS AND SPECIFICATIONS
         # ============================================================================
     estimated_quantity = fields.Integer(
         string="Estimated Quantity", help="Estimated number of items for pickup":
-    
+
 
     estimated_weight = fields.Float(
         ,
     string="Estimated Weight (lbs)", help="Estimated total weight of items"
-    
+
 
     estimated_volume = fields.Float(
         ,
     string="Estimated Volume (cubic feet)", help="Estimated volume of items"
-    
+
 
     special_handling = fields.Boolean(
         string="Special Handling Required",
@@ -261,10 +261,10 @@ class PickupRequest(models.Model):
 
     vehicle_id = fields.Many2one(
             "records.vehicle", string="Assigned Vehicle", help="Vehicle assigned for pickup":
-    
+
     route_id = fields.Many2one(
             "pickup.route", string="Pickup Route", help="Route assignment for pickup":
-    
+
     fsm_route_id = fields.Many2one(
         "fsm.route.management",
         string="FSM Route",
@@ -274,19 +274,19 @@ class PickupRequest(models.Model):
     # ============================================================================
     description = fields.Text(
         string="Description", help="Detailed description of pickup requirements"
-    
+
 
     customer_notes = fields.Text(
         string="Customer Notes", help="Notes from customer regarding pickup"
-    
+
 
     internal_notes = fields.Text(
         string="Internal Notes", help="Internal notes for pickup team":
-    
+
 
     completion_notes = fields.Text(
         string="Completion Notes", help="Notes from technician upon completion"
-    
+
 
         # ============================================================================
     # BILLING AND FINANCIAL
@@ -307,8 +307,8 @@ class PickupRequest(models.Model):
         help="Actual cost of pickup service",
 
     currency_id = fields.Many2one(
-            "res.currency", string="Currency", related="company_id.currency_id", store=True 
-    
+            "res.currency", string="Currency", related="company_id.currency_id", store=True
+
         # ============================================================================
     # RELATIONSHIP FIELDS
         # ============================================================================
@@ -430,7 +430,7 @@ class PickupRequest(models.Model):
             "high": "3",
             "normal": "2",
             "low": "1",
-        
+
 
         for record in self:
             base_priority = priority_map.get(record.urgency_level, "2")
@@ -483,7 +483,7 @@ class PickupRequest(models.Model):
             if not vals.get("name") or vals.get("name") == "/":
                 vals["name") = (]
                     self.env["ir.sequence"].next_by_code("pickup.request") or "PR-NEW"
-                
+
 
         return super().create(vals_list)
 
@@ -496,7 +496,7 @@ class PickupRequest(models.Model):
                 if old_state != new_state:
                     record.message_post()
                         body=_("Pickup request status changed from %s to %s", old_state, new_state)
-                    
+
 
         return super().write(vals)
 
@@ -513,8 +513,8 @@ class PickupRequest(models.Model):
             {}
                 "state": "submitted",
                 "request_date": fields.Datetime.now(),
-            
-        
+
+
 
         self.message_post(body=_("Pickup request submitted for processing")):
     def action_confirm(self):
@@ -541,7 +541,7 @@ class PickupRequest(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_pickup_request_id": self.id},
-        
+
 
     def action_start_pickup(self):
         """Start pickup process"""
@@ -564,8 +564,8 @@ class PickupRequest(models.Model):
             {}
                 "state": "completed",
                 "completed_pickup_date": fields.Datetime.now(),
-            
-        
+
+
 
         self.message_post(body=_("Pickup completed successfully"))
 
@@ -601,7 +601,7 @@ class PickupRequest(models.Model):
             "partner_id": self.partner_id.id,
             "description": self.description,
             "date_deadline": self.preferred_pickup_date,
-        
+
         if self.assigned_technician_id:
             task_vals["user_ids"] = [(6, 0, [self.assigned_technician_id.id])]
 
@@ -616,7 +616,7 @@ class PickupRequest(models.Model):
             "res_model": "fsm.task",
             "res_id": task.id,
             "view_mode": "form",
-        
+
 
     def action_view_pickup_items(self):
         """View pickup items"""
@@ -629,7 +629,7 @@ class PickupRequest(models.Model):
             "view_mode": "tree,form",
             "domain": [("pickup_request_id", "=", self.id)],
             "context": {"default_pickup_request_id": self.id},
-        
+
 
     def action_generate_pickup_label(self):
         """Generate pickup label"""
@@ -655,7 +655,7 @@ class PickupRequest(models.Model):
             "mixed": 20.0,
             "bulk_collection": 50.0,
             "emergency_retrieval": 100.0,
-        
+
 
         base_cost = base_rates.get(self.pickup_type, 20.0)
         quantity_multiplier = max(1, self.estimated_quantity or 1)
@@ -667,7 +667,7 @@ class PickupRequest(models.Model):
             "high": 1.25,
             "normal": 1.0,
             "low": 1.0,
-        
+
         urgency_mult = urgency_multipliers.get(self.urgency_level, 1.0)
 
         estimated_cost = base_cost * quantity_multiplier * urgency_mult
@@ -696,8 +696,8 @@ class PickupRequest(models.Model):
                     "item_type": "container",
                     "description": _("Container: %s", container.name),
                     "estimated_quantity": 1,
-                
-            
+
+
 
         self.related_container_ids = [(6, 0, container_ids)]
 
@@ -713,7 +713,7 @@ class PickupRequest(models.Model):
             "scheduled_date": self.scheduled_pickup_date,
             "total_items": self.total_items,
             "estimated_cost": self.estimated_cost,
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -725,7 +725,7 @@ class PickupRequest(models.Model):
             if (:)
                 record.preferred_pickup_date
                 and record.preferred_pickup_date < fields.Date.today()
-            
+
                 raise ValidationError(_("Preferred pickup date cannot be in the past"))
 
     @api.constrains("estimated_quantity", "estimated_weight", "estimated_volume")
@@ -763,7 +763,7 @@ class PickupRequest(models.Model):
             if record.pickup_type:
                 pickup_type_label = dict(record._fields["pickup_type"].selection)[]
                     record.pickup_type
-                
+
                 name = _("%s (%s)", name, pickup_type_label)
             result.append((record.id, name))
         return result
@@ -790,8 +790,8 @@ class PickupRequestItem(models.Model):
     _order = "pickup_request_id, sequence, id"
 
     pickup_request_id = fields.Many2one(
-            "pickup.request", string="Pickup Request", required=True, ondelete="cascade" 
-    
+            "pickup.request", string="Pickup Request", required=True, ondelete="cascade"
+
     sequence = fields.Integer(string="Sequence",,
     default=10),
     item_type = fields.Selection(
@@ -807,7 +807,7 @@ class PickupRequestItem(models.Model):
 
     container_id = fields.Many2one(
             "records.container", string="Container", help="Related container if applicable":
-    
+
     description = fields.Text(string="Description",,
     required=True),
     estimated_quantity = fields.Integer(string="Estimated Quantity",,
@@ -837,30 +837,30 @@ class PickupScheduleWizard(models.TransientModel):
         "pickup.request",
         string="Pickup Request",
         required=True
-    
+
 
     scheduled_date = fields.Datetime(
         string="Scheduled Date",
         required=True,
         default=fields.Datetime.now
-    
+
 
     assigned_technician_id = fields.Many2one( "res.users", string="Assigned Technician",,
     required=True ),
     vehicle_id = fields.Many2one(
         "records.vehicle",
         string="Vehicle"
-    
+
 
     route_id = fields.Many2one(
         "pickup.route",
         string="Route"
-    
+
 
     notes = fields.Text(
         ,
     string="Scheduling Notes"
-    
+
 
     def action_schedule_pickup(self):
         """Schedule the pickup request"""
@@ -874,17 +874,17 @@ class PickupScheduleWizard(models.TransientModel):
                 "assigned_technician": self.assigned_technician.id,
                 "vehicle_id": self.vehicle_id.id,
                 "route_id": self.route_id.id,
-            
-        
+
+
 
         if self.notes:
             self.pickup_request_id.message_post()
                 body=_("Pickup scheduled: %s", self.notes)
-            
+
         else:
             self.pickup_request_id.message_post()
                 body=_("Pickup scheduled for %s", self.scheduled_date):
-            
+
 
         return {"type": "ir.actions.act_window_close"}
 

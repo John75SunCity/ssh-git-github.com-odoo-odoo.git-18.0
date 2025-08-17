@@ -30,7 +30,7 @@ from odoo.exceptions import ValidationError
 
 class RecordsBillingLine(models.Model):
     """Records Billing Line"""
-    
+
         Detailed billing line item tracking for granular financial analysis:
     and departmental attribution of billable services and products.
 
@@ -49,14 +49,14 @@ class RecordsBillingLine(models.Model):
         tracking=True,
         index=True,
         help="Unique identifier for this billing line item":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     user_id = fields.Many2one(
         "res.users",
@@ -64,14 +64,14 @@ class RecordsBillingLine(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this billing line":
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         tracking=True,
         help="Set to false to hide this record"
-    
+
 
         # ============================================================================
     # BILLING CONFIGURATION RELATIONSHIPS
@@ -83,20 +83,20 @@ class RecordsBillingLine(models.Model):
         ondelete="cascade",
         tracking=True,
         help="Billing configuration this line item belongs to"
-    
+
 
     billing_id = fields.Many2one(
         "advanced.billing",
         string="Advanced Billing",
         ondelete="cascade",
         help="Reference to advanced billing record"
-    
+
 
     contact_id = fields.Many2one(
         "records.department.billing.contact",
         string="Department Contact",
         help="Department contact associated with this billing line"
-    
+
 
         # ============================================================================
     # BILLING DETAILS
@@ -108,12 +108,12 @@ class RecordsBillingLine(models.Model):
         tracking=True,
         index=True,
         help="Date when this billing line was created"
-    
+
 
     description = fields.Text(
         string="Description",
         help="Detailed description of the billable service or product"
-    
+
 
     ,
     service_type = fields.Selection([))
@@ -124,7 +124,7 @@ class RecordsBillingLine(models.Model):
         ("delivery", "Pickup & Delivery"),
         ("consultation", "Consultation Services"),
         ("other", "Other Services"),
-    
+
         help="Type of service being billed"
 
     # ============================================================================
@@ -137,14 +137,14 @@ class RecordsBillingLine(models.Model):
         default=1.0,
         required=True,
         help="Quantity of the service or product"
-    
+
 
     unit_price = fields.Monetary(
         string="Unit Price",
         currency_field="currency_id",
         required=True,
         help="Price per unit for this service or product":
-    
+
 
     discount_percentage = fields.Float(
         string="Discount %",
@@ -152,7 +152,7 @@ class RecordsBillingLine(models.Model):
     digits=(5, 2),
         default=0.0,
         help="Discount percentage applied to this line"
-    
+
 
     discount_amount = fields.Monetary(
         string="Discount Amount",
@@ -160,7 +160,7 @@ class RecordsBillingLine(models.Model):
         compute="_compute_amounts",
         store=True,
         help="Calculated discount amount"
-    
+
 
     subtotal = fields.Monetary(
         string="Subtotal",
@@ -168,7 +168,7 @@ class RecordsBillingLine(models.Model):
         compute="_compute_amounts",
         store=True,
         help="Subtotal before discount"
-    
+
 
     amount = fields.Monetary(
         string="Total Amount",
@@ -176,14 +176,14 @@ class RecordsBillingLine(models.Model):
         compute="_compute_amounts",
         store=True,
         help="Final total amount after discount"
-    
+
 
     currency_id = fields.Many2one(
         "res.currency",
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True
-    
+
 
         # ============================================================================
     # STATUS AND FLAGS
@@ -195,7 +195,7 @@ class RecordsBillingLine(models.Model):
         ('invoiced', 'Invoiced'),
         ('paid', 'Paid'),
         ('cancelled', 'Cancelled'),
-    
+
         help='Current status of the billing line'
 
     billable = fields.Boolean(
@@ -203,13 +203,13 @@ class RecordsBillingLine(models.Model):
         default=True,
         tracking=True,
         help="Whether this line item is billable to the customer"
-    
+
 
     invoiced = fields.Boolean(
         string="Invoiced",
         default=False,
         help="Whether this line has been included in an invoice"
-    
+
 
         # ============================================================================
     # RELATED INFORMATION
@@ -219,14 +219,14 @@ class RecordsBillingLine(models.Model):
         related="config_id.partner_id",
         store=True,
         help="Customer associated with this billing line"
-    
+
 
     department_id = fields.Many2one(
         string="Department",
         related="contact_id.department_id",
         store=True,
         help="Department associated with this billing line"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -237,7 +237,7 @@ class RecordsBillingLine(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -245,7 +245,7 @@ class RecordsBillingLine(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -259,7 +259,7 @@ class RecordsBillingLine(models.Model):
     res_model = fields.Char(string='Res Model'),
     type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
-        
+
 
     # ============================================================================
         # COMPUTED FIELDS
@@ -281,20 +281,20 @@ class RecordsBillingLine(models.Model):
         for vals in vals_list:
             if not vals.get("name") or vals.get("name") == _("New"):
                 vals["name") = self.env["ir.sequence"].next_by_code("records.billing.line") or _("New")
-        
+
         return super().create(vals_list)
 
     def write(self, vals):
         """Override write to track important changes"""
         result = super().write(vals)
-        
+
         # Track status changes
         if "state" in vals:
             for record in self:
                 record.message_post()
                     body=_("Billing line status changed to %s", vals["state"])
-                
-        
+
+
         return result
 
     # ============================================================================
@@ -305,7 +305,7 @@ class RecordsBillingLine(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise ValidationError(_("Can only confirm draft billing lines"))
-        
+
         self.write({'state': 'confirmed'})
         self.message_post(body=_("Billing line confirmed"))
 
@@ -314,11 +314,11 @@ class RecordsBillingLine(models.Model):
         self.ensure_one()
         if self.state not in ['confirmed', 'invoiced']:
             raise ValidationError(_("Can only invoice confirmed billing lines"))
-        
+
         self.write({)}
             'state': 'invoiced',
             'invoiced': True
-        
+
         self.message_post(body=_("Billing line marked as invoiced"))
 
     def action_mark_paid(self):
@@ -326,7 +326,7 @@ class RecordsBillingLine(models.Model):
         self.ensure_one()
         if self.state != 'invoiced':
             raise ValidationError(_("Can only mark invoiced lines as paid"))
-        
+
         self.write({'state': 'paid'})
         self.message_post(body=_("Billing line marked as paid"))
 
@@ -335,7 +335,7 @@ class RecordsBillingLine(models.Model):
         self.ensure_one()
         if self.state == 'paid':
             raise ValidationError(_("Cannot cancel paid billing lines"))
-        
+
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Billing line cancelled"))
 
@@ -344,7 +344,7 @@ class RecordsBillingLine(models.Model):
         self.ensure_one()
         if self.state in ['paid', 'invoiced']:
             raise ValidationError(_("Cannot reset invoiced or paid lines to draft"))
-        
+
         self.write({'state': 'draft'})
         self.message_post(body=_("Billing line reset to draft"))
 
@@ -366,18 +366,18 @@ class RecordsBillingLine(models.Model):
             'department': self.department_id.name if self.department_id else '',:
             'status': self.state,
             'billable': self.billable,
-        
+
 
     def apply_discount(self, discount_percentage):
         """Apply discount to billing line"""
         self.ensure_one()
         if not (0 <= discount_percentage <= 100):
             raise ValidationError(_("Discount percentage must be between 0 and 100"))
-        
+
         self.write({'discount_percentage': discount_percentage})
         self.message_post()
             body=_("Discount of %s%% applied to billing line", discount_percentage)
-        
+
 
     @api.model
     def create_from_service(self, config_id, service_data):
@@ -389,8 +389,8 @@ class RecordsBillingLine(models.Model):
             'quantity': service_data.get('quantity', 1.0),
             'unit_price': service_data.get('unit_price', 0.0),
             'date': service_data.get('date', fields.Date.today()),
-        
-        
+
+
         return self.create(vals)
 
     # ============================================================================
@@ -428,7 +428,7 @@ class RecordsBillingLine(models.Model):
                 'name': record.name,
                 'service': record.service_type or 'Service',
                 'amount': f"{record.amount:.2f} {record.currency_id.symbol or ''}"
-            
+
             result.append((record.id, name))
         return result
 
@@ -437,7 +437,7 @@ class RecordsBillingLine(models.Model):
         """Enhanced search by name, service type, or customer"""
         args = args or []
         domain = []
-        
+
         if name:
             domain = []
                 "|", "|", "|",
@@ -445,17 +445,17 @@ class RecordsBillingLine(models.Model):
                 ("description", operator, name),
                 ("service_type", operator, name),
                 ("partner_id.name", operator, name),
-            
-        
+
+
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.model
     def get_billing_summary(self, domain=None):
         """Get billing summary statistics"""
         domain = domain or []
-        
+
         lines = self.search(domain)
-        
+
         return {}
             'total_lines': len(lines),
             'total_amount': sum(lines.mapped('amount')),
@@ -465,11 +465,11 @@ class RecordsBillingLine(models.Model):
                 status[0]: {}
                     'count': len(lines.filtered(lambda r: r.state == status[0])),
                     'amount': sum(lines.filtered(lambda r: r.state == status[0]).mapped('amount'))
-                
+
                 for status in self._fields['state'].selection:
-            
+
             'by_service_type': self._get_service_type_summary(lines),
-        
+
 
     def _get_service_type_summary(self, lines):
         """Get summary by service type"""
@@ -481,7 +481,7 @@ class RecordsBillingLine(models.Model):
                     'count': len(type_lines),
                     'amount': sum(type_lines.mapped('amount')),
                     'quantity': sum(type_lines.mapped('quantity')),
-                
+
         return summary
 
     # ============================================================================
@@ -491,16 +491,16 @@ class RecordsBillingLine(models.Model):
     def generate_billing_report(self, date_from=None, date_to=None, partner_ids=None):
         """Generate comprehensive billing line report"""
         domain = []
-        
+
         if date_from:
             domain.append(('date', '>=', date_from))
         if date_to:
             domain.append(('date', '<=', date_to))
         if partner_ids:
             domain.append(('partner_id', 'in', partner_ids))
-        
+
         lines = self.search(domain)
-        
+
         # Compile report data
         report_data = {}
             'period': {'from': date_from, 'to': date_to},
@@ -508,8 +508,8 @@ class RecordsBillingLine(models.Model):
             'lines': [line.get_line_summary() for line in lines],:
             'partners': self._get_partner_summary(lines),
             'departments': self._get_department_summary(lines),
-        
-        
+
+
         return report_data
 
     def _get_partner_summary(self, lines):
@@ -520,9 +520,9 @@ class RecordsBillingLine(models.Model):
                 'total_lines': len(lines.filtered(lambda r: r.partner_id == partner)),
                 'total_amount': sum(lines.filtered(lambda r: r.partner_id == partner).mapped('amount')),
                 'billable_amount': sum(lines.filtered(lambda r: r.partner_id == partner and r.billable).mapped('amount')),
-            
+
             for partner in partners if partner:
-        
+
 
     def _get_department_summary(self, lines):
         """Get summary by department"""
@@ -531,9 +531,9 @@ class RecordsBillingLine(models.Model):
             dept.name: {}
                 'total_lines': len(lines.filtered(lambda r: r.department_id == dept)),
                 'total_amount': sum(lines.filtered(lambda r: r.department_id == dept).mapped('amount')),
-            
+
             for dept in departments if dept:
-        
+
 
 
     """"))))))))))))))))

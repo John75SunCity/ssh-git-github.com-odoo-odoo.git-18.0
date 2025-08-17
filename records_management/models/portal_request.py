@@ -75,11 +75,11 @@ class PortalRequest(models.Model):
         required=True,
         tracking=True,
         index=True,
-    
+
     # ============================================================================
         # APPROVAL & WORKFLOW FIELDS
     # ============================================================================
-    
+
     approval_status = fields.Selection(
         [)
             ('pending', 'Pending Approval'),
@@ -90,11 +90,11 @@ class PortalRequest(models.Model):
         default='pending',
         tracking=True,
         help="Current approval status of the request",
-    
+
     # ============================================================================
         # FRAMEWORK FIELDS FOR MAIL THREAD
     # ============================================================================
-    
+
     activity_state = fields.Selection(
         [)
             ('overdue', 'Overdue'),
@@ -143,7 +143,7 @@ class PortalRequest(models.Model):
         # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True, index=True
-    
+
     contact_person = fields.Char(string="Contact Person",,
     tracking=True),
     contact_email = fields.Char(string="Contact Email",,
@@ -173,23 +173,23 @@ class PortalRequest(models.Model):
     tracking=True),
     estimated_hours = fields.Float(string="Estimated Hours"),
     actual_hours = fields.Float(string="Actual Hours")
-    
+
         # ============================================================================
     # COMPLETION & NOTES TRACKING
         # ============================================================================
-    
+
     completion_notes = fields.Text(
         string="Completion Notes",
         tracking=True,
         help="Notes about the completion of this request",
-    
+
     customer_contact_info = fields.Text(
-        string="Customer Contact Info", 
+        string="Customer Contact Info",
         help="Additional customer contact information for this request",:
     # ============================================================================
         # CHAIN OF CUSTODY & COMPLIANCE
     # ============================================================================
-    
+
     chain_of_custody_id = fields.Many2one(
         'records.chain.of.custody',
         string='Chain of Custody',
@@ -205,10 +205,10 @@ class PortalRequest(models.Model):
         default=lambda self: self.env.company.currency_id,
     estimated_cost = fields.Monetary(
         string="Estimated Cost", currency_field="currency_id", tracking=True
-    
+
     actual_cost = fields.Monetary(
         string="Actual Cost", currency_field="currency_id", tracking=True
-    
+
     ,
     billing_status = fields.Selection(
         [)
@@ -258,7 +258,7 @@ class PortalRequest(models.Model):
         # ============================================================================
     requires_naid_compliance = fields.Boolean(
         string="NAID Compliance Required", default=False
-    
+
     ,
     compliance_notes = fields.Text(string="Compliance Notes"),
     audit_trail = fields.Text(string="Audit Trail"),
@@ -271,13 +271,13 @@ class PortalRequest(models.Model):
     string="Service Item"),
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Related Shredding Service"
-    
+
     pickup_request_id = fields.Many2one(
         "pickup.request", string="Related Pickup Request"
-    
+
     work_order_id = fields.Many2one(
         "file.retrieval.work.order", string="Related Work Order"
-    
+
 
         # Parent-child request relationships
     parent_request_id = fields.Many2one("portal.request",,
@@ -285,14 +285,14 @@ class PortalRequest(models.Model):
     child_request_ids = fields.One2many(
         "portal.request", "parent_request_id",,
     string="Child Requests"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
     string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -305,7 +305,7 @@ class PortalRequest(models.Model):
         store=False,
     attachment_count = fields.Integer(
         string="Attachment Count", compute="_compute_attachment_count", store=False
-    
+
     attachment_ids = fields.Many2many(
         "ir.attachment",
         compute="_compute_attachment_ids",
@@ -313,11 +313,11 @@ class PortalRequest(models.Model):
         store=False,
     is_overdue = fields.Boolean(
         string="Is Overdue", compute="_compute_is_overdue", store=False
-    
+
     time_variance = fields.Float(
         ,
     string="Time Variance (%)", compute="_compute_time_variance", store=False
-    
+
 
         # Added by Safe Business Fields Fixer
     estimated_completion = fields.Datetime(string="Estimated Completion")
@@ -388,7 +388,7 @@ class PortalRequest(models.Model):
             if record.id:
                 record.attachment_count = self.env["ir.attachment").search_count()
                     [("res_model", "=", self._name), ("res_id", "=", record.id)]
-                
+
             else:
                 record.attachment_count = 0
 
@@ -399,11 +399,11 @@ class PortalRequest(models.Model):
             if not record.activity_ids:
                 record.activity_state = False
                 continue
-                
+
             # Get the closest activity
     today = fields.Date.today()
             closest_activity = record.activity_ids.sorted('date_deadline')[0]
-            
+
             if closest_activity.date_deadline < today:
                 record.activity_state = 'overdue'
             elif closest_activity.date_deadline == today:
@@ -435,11 +435,11 @@ class PortalRequest(models.Model):
                 record.estimated_hours
                 and record.actual_hours
                 and record.estimated_hours > 0
-            
+
                 record.time_variance = ()
                     (record.actual_hours - record.estimated_hours)
                     / record.estimated_hours
-                
+
             else:
                 record.time_variance = 0.0
 
@@ -458,9 +458,9 @@ class PortalRequest(models.Model):
                     self.env["ir.attachment"]
                     .search()
                         [("res_model", "=", self._name), ("res_id", "=", record.id)]
-                    
+
                     .ids
-                
+
             else:
                 record.attachment_ids = []
 
@@ -473,7 +473,7 @@ class PortalRequest(models.Model):
             if not vals.get("name"):
                 vals["name") = (]
                     self.env["ir.sequence"].next_by_code("portal.request") or "REQ/"
-                
+
         return super(PortalRequest, self).create(vals_list)
 
     def _default_portal_request_values(self):
@@ -483,7 +483,7 @@ class PortalRequest(models.Model):
             "priority": "1",
             "request_type": "other",
             "active": True,
-        
+
 
     # ============================================================================
         # ACTION METHODS
@@ -512,8 +512,8 @@ class PortalRequest(models.Model):
                 "state": "approved",
                 "approved_by_id": self.env.user.id,
                 "approval_date": fields.Datetime.now(),
-            
-        
+
+
         self._create_work_order()
         self._send_approval_notification()
 
@@ -563,7 +563,7 @@ class PortalRequest(models.Model):
             "view_mode": "tree,form",
             "domain": [("res_model", "=", self._name), ("res_id", "=", self.id)],
             "context": {"default_res_model": self._name, "default_res_id": self.id},
-        
+
 
     def action_start_processing(self):
         """Start Processing - State management action"""
@@ -578,7 +578,7 @@ class PortalRequest(models.Model):
                     "Cannot start processing. Request must be in 'Submitted', "
                     "'Under Review', or 'Approved' state. Current state: %s",
                     state_name,
-            
+
 
         # Validate required fields for processing:
         if not self.partner_id:
@@ -591,13 +591,13 @@ class PortalRequest(models.Model):
             {}
                 "state": "in_progress",
                 "user_id": self.env.user.id,  # Assign current user as processor
-            
-        
+
+
 
         # Create activity for tracking:
         request_type_name = dict(self._fields["request_type").selection).get(]
             self.request_type
-        
+
         self.activity_schedule()
             "mail.mail_activity_data_todo",
             summary=_("Process Request: %s", self.name),
@@ -613,7 +613,7 @@ class PortalRequest(models.Model):
         if (:)
             self.request_type in ["destruction", "retrieval", "shredding"]
             and not self.work_order_id
-        
+
             self._create_work_order()
 
         return True
@@ -629,7 +629,7 @@ class PortalRequest(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        
+
 
     # ============================================================================
         # NOTIFICATION METHODS
@@ -677,7 +677,7 @@ class PortalRequest(models.Model):
                 field_name = self._fields[field].string
                 raise UserError()
                     _("Field '%s' is required before submission.", field_name)
-                
+
 
     def _create_work_order(self):
         """Create a work order for service-type requests.""":
@@ -690,8 +690,8 @@ class PortalRequest(models.Model):
                     "request_type": self.request_type,
                     "portal_request_id": self.id,
                     "estimated_hours": self.estimated_hours,
-                
-            
+
+
             self.work_order_id = work_order.id
 
     def _finalize_billing(self):
@@ -712,7 +712,7 @@ class PortalRequest(models.Model):
                 # Get primary contact if available:
                 primary_contact = self.partner_id.child_ids.filtered()
                     lambda c: not c.is_company
-                
+
                 if primary_contact:
                     self.contact_person = primary_contact.name
                     self.contact_email = primary_contact.email or self.partner_id.email
@@ -733,7 +733,7 @@ class PortalRequest(models.Model):
             "audit": "3",  # Urgent
             "consultation": "0",  # Low
             "other": "1",  # Normal
-        
+
         self.priority = priority_mapping.get(self.request_type, "1")
 
     @api.onchange("priority")
@@ -745,9 +745,9 @@ class PortalRequest(models.Model):
                     "title": _("High Priority Request"),
                     "message": _()
                         "Please provide an urgency reason for high priority requests.":
-                    
-                
-            
+
+
+
 
     def _get_mail_template_by_state(self):
         """Get appropriate email template based on current state"""
@@ -756,7 +756,7 @@ class PortalRequest(models.Model):
             "approved": "records_management.email_template_portal_request_approved",
             "rejected": "records_management.email_template_portal_request_rejected",
             "completed": "records_management.email_template_portal_request_completed",
-        
+
         template_ref = template_mapping.get(self.state)
         if template_ref:
             return self.env.ref(template_ref, raise_if_not_found=False)
@@ -774,7 +774,7 @@ class PortalRequest(models.Model):
             "retrieval": "records_management.group_records_user",
             "pickup": "records_management.group_field_technician",
             "shredding": "records_management.group_shredding_technician",
-        
+
 
         group_ref = assignment_rules.get(self.request_type)
         if group_ref:
@@ -795,7 +795,7 @@ class PortalRequest(models.Model):
                                     "under_review",
                                     "approved",
                                     "in_progress",
-                    
+
                     workload[user.id] = active_requests
 
                 # Find user with minimum workload
@@ -813,8 +813,8 @@ class PortalRequest(models.Model):
                     "in",
                     ["submitted", "under_review", "approved", "in_progress"],
                 ("is_overdue", "=", False),  # Not already marked as overdue
-            
-        
+
+
 
         for request in overdue_requests:
             # Create escalation activity
@@ -844,10 +844,10 @@ class PortalRequest(models.Model):
                 record.deadline
                 and record.requested_date
                 and record.deadline < record.requested_date
-            
+
                 raise ValidationError()
                     _("Deadline cannot be before the requested date.")
-                
+
 
     @api.constrains("estimated_cost", "actual_cost")
     def _check_cost_values(self):

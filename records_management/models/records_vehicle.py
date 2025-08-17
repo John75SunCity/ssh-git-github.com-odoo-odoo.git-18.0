@@ -10,7 +10,7 @@ System. It handles vehicle lifecycle, route assignments, maintenance tracking, a
         string="Pickup Routes",
         ,
     help="Routes assigned to this vehicle",
-    
+
 
 Key Features
 - Complete vehicle lifecycle management from registration to retirement
@@ -56,13 +56,13 @@ class RecordsVehicle(models.Model):
         tracking=True,
         index=True,
         help="Name or identifier for this vehicle",:
-    
+
     description = fields.Text(
         string="Description", help="Detailed description of the vehicle"
-    
+
     sequence = fields.Integer(
         string="Sequence", default=10, help="Display order for vehicles":
-    
+
 
         # ============================================================================
     # FRAMEWORK FIELDS
@@ -72,19 +72,19 @@ class RecordsVehicle(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Vehicle Manager",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this vehicle",:
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record",:
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -97,37 +97,37 @@ class RecordsVehicle(models.Model):
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("archived", "Archived"),
-        
+
         string="Vehicle State",
         default="draft",
         tracking=True,
         help="Current lifecycle state of the vehicle",
-    
+
     status = fields.Selection(
         [)
             ("available", "Available"),
             ("in_service", "In Service"),
             ("maintenance", "Under Maintenance"),
-        
+
         string="Service Status",
         default="available",
         tracking=True,
         help="Current operational status of the vehicle",
-    
+
 
         # ============================================================================
     # VEHICLE IDENTIFICATION
         # ============================================================================
     vin = fields.Char(
         string="VIN", tracking=True, help="Vehicle Identification Number"
-    
+
     license_plate = fields.Char(
         string="License Plate",
         required=True,
         tracking=True,
         index=True,
         help="Vehicle license plate number",
-    
+
 
         # ============================================================================
     # VEHICLE SPECIFICATIONS
@@ -139,24 +139,24 @@ class RecordsVehicle(models.Model):
             ("van", "Van"),
             ("car", "Car"),
             ("trailer", "Trailer"),
-        
+
         string="Vehicle Type",
         default="truck",
         tracking=True,
         help="Type of vehicle for capacity planning",:
-    
+
     fuel_type = fields.Selection(
         [)
             ("gas", "Gasoline"),
             ("diesel", "Diesel"),
             ("electric", "Electric"),
             ("hybrid", "Hybrid"),
-        
+
         string="Fuel Type",
         default="diesel",
         tracking=True,
         help="Fuel type for cost tracking",:
-    
+
 
         # ============================================================================
     # CAPACITY SPECIFICATIONS
@@ -167,24 +167,24 @@ class RecordsVehicle(models.Model):
         tracking=True,
         digits=(10, 2),
         help="Total cargo volume capacity",
-    
+
     vehicle_capacity_volume = fields.Float(
         ,
     string="Volume Capacity (m)",
         tracking=True,
         digits=(10, 2),
         help="Maximum volume capacity in cubic meters",
-    
+
     vehicle_capacity_weight = fields.Float(
         ,
     string="Weight Capacity (kg)",
         tracking=True,
         digits=(10, 2),
         help="Maximum weight capacity in kilograms",
-    
+
     max_boxes = fields.Integer(
         string="Max Boxes", tracking=True, help="Maximum number of standard boxes"
-    
+
 
         # ============================================================================
     # PHYSICAL DIMENSIONS
@@ -192,15 +192,15 @@ class RecordsVehicle(models.Model):
     length = fields.Float(
         ,
     string="Length (m)", digits=(10, 2), help="Vehicle length in meters"
-    
+
     width = fields.Float(
         ,
     string="Width (m)", digits=(10, 2), help="Vehicle width in meters"
-    
+
     height = fields.Float(
         ,
     string="Height (m)", digits=(10, 2), help="Vehicle height in meters"
-    
+
 
         # ============================================================================
     # DRIVER MANAGEMENT
@@ -210,13 +210,13 @@ class RecordsVehicle(models.Model):
         string="Assigned Driver",
         tracking=True,
         help="Primary driver assigned to this vehicle",
-    
+
     driver_contact = fields.Char(
         related="driver_id.mobile_phone",
         string="Driver Contact",
         readonly=True,
         help="Driver's mobile phone number",'
-    
+
 
         # ============================================================================
     # MAINTENANCE TRACKING
@@ -225,20 +225,20 @@ class RecordsVehicle(models.Model):
         string="Last Service Date",
         tracking=True,
         help="Date of last maintenance service",
-    
+
     next_service_date = fields.Date(
         string="Next Service Date",
         tracking=True,
         help="Scheduled next maintenance date",
-    
+
     maintenance_date = fields.Date(
         string="Last Maintenance",
         tracking=True,
         help="Date of most recent maintenance",
-    
+
     service_notes = fields.Text(
         string="Service Notes", help="Notes about maintenance and service history"
-    
+
 
         # ============================================================================
     # ROUTE AND SCHEDULING
@@ -247,10 +247,10 @@ class RecordsVehicle(models.Model):
         string="Route Date",
         tracking=True,
         help="Date for current or next route assignment",:
-    
+
     start_time = fields.Datetime(
         string="Start Time", tracking=True, help="Start time for current route":
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -260,7 +260,7 @@ class RecordsVehicle(models.Model):
         "vehicle_id",
         string="Pickup Routes",
         help="Routes assigned to this vehicle",
-    
+
 
         # ============================================================================
     # AUDIT AND TRACKING
@@ -270,17 +270,17 @@ class RecordsVehicle(models.Model):
         default=fields.Datetime.now,
         readonly=True,
         help="Record creation timestamp",
-    
+
     updated_date = fields.Datetime(
         string="Updated Date", readonly=True, help="Last update timestamp"
-    
+
 
         # ============================================================================
     # DOCUMENTATION
         # ============================================================================
     notes = fields.Text(
         string="Internal Notes", help="Internal notes and comments about the vehicle"
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -290,7 +290,7 @@ class RecordsVehicle(models.Model):
         compute="_compute_display_name",
         store=True,
         help="Formatted display name with license plate",
-    
+
     capacity = fields.Float(
         string="Capacity",
         compute="_compute_capacity",
@@ -298,17 +298,17 @@ class RecordsVehicle(models.Model):
         ,
     digits=(10, 2),
         help="Primary capacity measure",
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
         # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages"),
     fuel_capacity = fields.Float(string="Fuel Capacity", default=0.0,,
@@ -346,7 +346,7 @@ class RecordsVehicle(models.Model):
             if record.license_plate:
                 record.display_name = _()
                     "%s [%s)", record.name or "Unknown", record.license_plate
-                
+
             else:
                 record.display_name = record.name or "New Vehicle"
 
@@ -356,7 +356,7 @@ class RecordsVehicle(models.Model):
         for record in self:
             record.capacity = ()
                 record.total_capacity or record.vehicle_capacity_volume or 0.0
-            
+
 
     # ============================================================================
         # ODOO FRAMEWORK METHODS
@@ -369,7 +369,7 @@ class RecordsVehicle(models.Model):
                 sequence = self.env["ir.sequence"].next_by_code("records.vehicle")
                 vals["name"] = sequence or _()
                     "Vehicle-%s", fields.Date.today().strftime("%Y%m%d")
-                
+
     vals["created_date"] = fields.Datetime.now()
         return super().create(vals_list)
 
@@ -423,20 +423,20 @@ class RecordsVehicle(models.Model):
                 "state": "active",
                 "notes": (self.notes or "")
                 + _("\nSet to available on %s", timestamp),
-            
-        
+
+
         self.activity_schedule()
             "mail.mail_activity_data_todo",
             summary=_("Vehicle Available: %s", self.name),
             note=_()
                 "Vehicle has been set to available status and is ready for service.":
-            
+
             user_id=self.user_id.id,
-        
+
         self.message_post()
             body=_("Vehicle set to available status: %s", self.name),
             message_type="notification",
-        
+
         return {}
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -445,8 +445,8 @@ class RecordsVehicle(models.Model):
                 "message": _("Vehicle %s is now available for service.", self.name),:
                 "type": "success",
                 "sticky": False,
-            
-        
+
+
 
     def action_set_in_service(self):
         """Set vehicle status to in service"""
@@ -460,20 +460,20 @@ class RecordsVehicle(models.Model):
                 "state": "active",
                 "notes": (self.notes or "")
                 + _("\nSet to in service on %s", timestamp),
-            
-        
+
+
         self.activity_schedule()
             "mail.mail_activity_data_todo",
             summary=_("Vehicle In Service: %s", self.name),
             note=_()
                 "Vehicle is currently in service and unavailable for other routes.":
-            
+
             user_id=self.user_id.id,
-        
+
         self.message_post()
             body=_("Vehicle set to in service: %s", self.name),
             message_type="notification",
-        
+
         return {}
             "type": "ir.actions.act_window",
             "name": _("Vehicle Routes"),
@@ -484,8 +484,8 @@ class RecordsVehicle(models.Model):
             "context": {}
                 "default_vehicle_id": self.id,
                 "search_default_vehicle_id": self.id,
-            
-        
+
+
 
     def action_set_maintenance(self):
         """Set vehicle status to maintenance"""
@@ -497,21 +497,21 @@ class RecordsVehicle(models.Model):
                 "state": "inactive",
                 "notes": (self.notes or "")
                 + _("\nSent for maintenance on %s", timestamp),:
-            
-        
+
+
         self.activity_schedule()
             "mail.mail_activity_data_todo",
             summary=_("Vehicle Maintenance Required: %s", self.name),
             note=_()
                 "Vehicle requires maintenance and is temporarily out of service."
-            
+
             user_id=self.user_id.id,
             date_deadline=fields.Date.today() + timedelta(days=3),
-        
+
         self.message_post()
             body=_("Vehicle sent for maintenance: %s", self.name),
             message_type="notification",
-        
+
         return {}
             "type": "ir.actions.act_window",
             "name": _("Vehicle Maintenance"),
@@ -521,8 +521,8 @@ class RecordsVehicle(models.Model):
             "target": "current",
             "context": {}
                 "form_view_initial_mode": "edit",
-            
-        
+
+
 
     def action_view_routes(self):
         """View routes assigned to this vehicle"""
@@ -537,8 +537,8 @@ class RecordsVehicle(models.Model):
             "context": {}
                 "default_vehicle_id": self.id,
                 "search_default_vehicle_id": self.id,
-            
-        
+
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -553,19 +553,19 @@ class RecordsVehicle(models.Model):
                         ("license_plate", "=", record.license_plate),
                         ("company_id", "=", record.company_id.id),
                         ("id", "!=", record.id),
-                    
-                
+
+
                 if existing:
                     raise ValidationError()
                         _("License plate must be unique within the company")
-                    
+
 
     @api.constrains()
         "total_capacity",
         "vehicle_capacity_volume",
         "vehicle_capacity_weight",
         "max_boxes",
-    
+
     def _check_capacity_values(self):
         """Validate capacity values are positive"""
         for record in self:
@@ -576,8 +576,8 @@ class RecordsVehicle(models.Model):
                     record.vehicle_capacity_volume or 0,
                     record.vehicle_capacity_weight or 0,
                     record.max_boxes or 0,
-                
-            
+
+
                 raise ValidationError(_("Capacity values must be positive"))
 
     @api.constrains("length", "width", "height")
@@ -587,7 +587,7 @@ class RecordsVehicle(models.Model):
             if any(:)
                 val < 0
                 for val in [record.length or 0, record.width or 0, record.height or 0]:
-            
+
                 raise ValidationError(_("Vehicle dimensions must be positive"))
 
     @api.constrains("next_service_date", "last_service_date")
@@ -598,10 +598,10 @@ class RecordsVehicle(models.Model):
                 record.next_service_date
                 and record.last_service_date
                 and record.next_service_date <= record.last_service_date
-            
+
                 raise ValidationError()
                     _("Next service date must be after last service date")
-                
+
 
     # ============================================================================
         # UTILITY METHODS
@@ -614,7 +614,7 @@ class RecordsVehicle(models.Model):
             "weight": self.vehicle_capacity_weight or 0,
             "boxes": self.max_boxes or 0,
             "is_available": self.status == "available" and self.state == "active",
-        
+
 
     def is_maintenance_due(self):
         """Check if vehicle is due for maintenance""":
@@ -631,18 +631,18 @@ class RecordsVehicle(models.Model):
                 ("next_service_date", "<=", fields.Date.today()),
                 ("status", "!=", "maintenance"),
                 ("state", "=", "active"),
-            
-        
+
+
         for vehicle in due_vehicles:
             vehicle.activity_schedule()
                 "mail.mail_activity_data_todo",
                 summary=_("Maintenance Due: %s", vehicle.name),
                 note=_()
                     "Vehicle maintenance is due based on the scheduled service date."
-                
+
                 user_id=vehicle.user_id.id,
                 date_deadline=fields.Date.today(),
-            
+
 
     @api.depends('vehicle_capacity_weight')
     def _compute_capacity_status(self):

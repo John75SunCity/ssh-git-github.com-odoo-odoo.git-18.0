@@ -85,13 +85,13 @@ class NAIDCustodyEvent(models.Model):
         # ============================================================================
     name = fields.Char(
         string="Event Name", required=True, tracking=True, index=True
-    
+
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    
+
     user_id = fields.Many2one(
         "res.users", default=lambda self: self.env.user, tracking=True
-    
+
     active = fields.Boolean(string="Active",,
     default=True)
 
@@ -108,12 +108,12 @@ class NAIDCustodyEvent(models.Model):
             ("exception", "Exception Event"),
             ("verification", "Verification Event"),
             ("release", "Document Release"),
-        
+
         string="Event Type",
         required=True,
         tracking=True,
         index=True,
-    
+
 
     event_datetime = fields.Datetime(
         string="Event Date & Time",
@@ -121,7 +121,7 @@ class NAIDCustodyEvent(models.Model):
         default=fields.Datetime.now,
         tracking=True,
         index=True,
-    
+
 
     ,
     custody_status = fields.Selection(
@@ -132,11 +132,11 @@ class NAIDCustodyEvent(models.Model):
             ("destroyed", "Destroyed"),
             ("released", "Released"),
             ("exception", "Exception"),
-        
+
         string="Custody Status",
         required=True,
         tracking=True,
-    
+
 
         # ============================================================================
     # PERSONNEL AND AUTHORIZATION FIELDS
@@ -147,21 +147,21 @@ class NAIDCustodyEvent(models.Model):
         required=True,
         tracking=True,
         help="Person authorized to perform this custody event",
-    
+
 
     witness_person_id = fields.Many2one(
         "res.users",
         string="Witness",
         tracking=True,
         help="Witness to the custody event",
-    
+
 
     naid_member_id = fields.Many2one(
         "naid.member",
         string="NAID Member",
         tracking=True,
         help="NAID certified member overseeing the event",
-    
+
 
         # ============================================================================
     # LOCATION AND TRACKING FIELDS
@@ -171,14 +171,14 @@ class NAIDCustodyEvent(models.Model):
         string="From Location",
         tracking=True,
         help="Source location for custody transfer",:
-    
+
 
     to_location_id = fields.Many2one(
         "records.location",
         string="To Location",
         tracking=True,
         help="Destination location for custody transfer",:
-    
+
 
     gps_latitude = fields.Float(string="GPS Latitude",,
     digits=(10, 6))
@@ -195,7 +195,7 @@ class NAIDCustodyEvent(models.Model):
         "container_id",
         string="Related Containers",
         help="Containers involved in this custody event",
-    
+
 
     document_ids = fields.Many2many(
         "records.document",
@@ -204,19 +204,19 @@ class NAIDCustodyEvent(models.Model):
         "document_id",
         string="Related Documents",
         help="Documents involved in this custody event",
-    
+
 
     hard_drive_id = fields.Many2one(
         "shredding.hard_drive",
         string="Related Hard Drive",
         help="Hard drive involved in custody event",
-    
+
 
     lot_id = fields.Many2one(
         "stock.lot",
         string="Stock Lot",
         help="Associated stock lot for custody tracking",:
-    
+
 
         # ============================================================================
     # VERIFICATION AND SIGNATURE FIELDS
@@ -225,20 +225,20 @@ class NAIDCustodyEvent(models.Model):
     digital_signature = fields.Binary(string="Digital Signature"),
     signature_verified = fields.Boolean(
         string="Signature Verified", default=False
-    
+
     signature_verification_date = fields.Datetime(
         string="Signature Verification Date"
-    
+
 
     barcode_scanned = fields.Char(
         string="Barcode Scanned", help="Scanned barcode for verification":
-    
+
     ,
     photo_documentation = fields.Binary(string="Photo Documentation")
 
     biometric_verified = fields.Boolean(
         string="Biometric Verified", default=False
-    
+
     ,
     biometric_data = fields.Binary(string="Biometric Data")
 
@@ -249,17 +249,17 @@ class NAIDCustodyEvent(models.Model):
         "naid.compliance",
         string="NAID Compliance Record",
         help="Related NAID compliance record",
-    
+
 
     audit_trail_verified = fields.Boolean(
         string="Audit Trail Verified", default=False
-    
+
     compliance_score = fields.Float(string="Compliance Score",,
     digits=(5, 2))
 
     certificate_generated = fields.Boolean(
         string="Certificate Generated", default=False
-    
+
     ,
     certificate_number = fields.Char(string="Certificate Number")
 
@@ -268,7 +268,7 @@ class NAIDCustodyEvent(models.Model):
         # ============================================================================
     exception_detected = fields.Boolean(
         string="Exception Detected", default=False
-    
+
     ,
     exception_type = fields.Selection(
         [)
@@ -278,16 +278,16 @@ class NAIDCustodyEvent(models.Model):
             ("verification_failure", "Verification Failure"),
             ("equipment_failure", "Equipment Failure"),
             ("other", "Other Exception"),
-        
+
         string="Exception Type",
-    
+
 
     exception_resolved = fields.Boolean(
         string="Exception Resolved", default=False
-    
+
     exception_resolution_date = fields.Datetime(
         string="Exception Resolution Date"
-    
+
     ,
     exception_notes = fields.Text(string="Exception Notes")
 
@@ -303,12 +303,12 @@ class NAIDCustodyEvent(models.Model):
             ("exception", "Exception"),
             ("resolved", "Resolved"),
             ("done", "Completed"),
-        
+
         string="State",
         default="draft",
         tracking=True,
         required=True,
-    
+
 
         # ============================================================================
     # BUSINESS INFORMATION FIELDS
@@ -323,10 +323,10 @@ class NAIDCustodyEvent(models.Model):
             ("normal", "Normal"),
             ("high", "High"),
             ("urgent", "Urgent"),
-        
+
         string="Priority",
         default="normal",
-    
+
 
         # ============================================================================
     # RELATED RECORDS AND COUNTS
@@ -335,32 +335,32 @@ class NAIDCustodyEvent(models.Model):
         "naid.custody.event",
         string="Previous Event",
         help="Previous event in the custody chain",
-    
+
 
     next_event_ids = fields.One2many(
         "naid.custody.event",
         "previous_event_id",
         string="Next Events",
         help="Following events in the custody chain",
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
         # ============================================================================
     container_count = fields.Integer(
         string="Container Count", compute="_compute_item_counts", store=True
-    
+
 
     document_count = fields.Integer(
         string="Document Count", compute="_compute_item_counts", store=True
-    
+
 
     chain_position = fields.Integer(
         string="Chain Position",
         compute="_compute_chain_position",
         store=True,
         help="Position in the custody chain",
-    
+
 
     duration_hours = fields.Float(
         ,
@@ -368,17 +368,17 @@ class NAIDCustodyEvent(models.Model):
         compute="_compute_duration",
         store=True,
         help="Duration since previous event",
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
         # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -410,11 +410,11 @@ class NAIDCustodyEvent(models.Model):
             if (:)
                 record.previous_event_id
                 and record.previous_event_id.event_datetime
-            
+
                 delta = ()
                     record.event_datetime
                     - record.previous_event_id.event_datetime
-                
+
                 record.duration_hours = delta.total_seconds() / 3600
             else:
                 record.duration_hours = 0.0
@@ -429,16 +429,16 @@ class NAIDCustodyEvent(models.Model):
             if (:)
                 record.previous_event_id
                 and record.previous_event_id.event_datetime
-            
+
                 if (:)
                     record.event_datetime
                     <= record.previous_event_id.event_datetime
-                
+
                     raise ValidationError()
                         _()
                             "Event datetime must be after the previous event in the custody chain"
-                        
-                    
+
+
 
     @api.constrains("from_location_id", "to_location_id", "event_type")
     def _check_location_requirements(self):
@@ -449,14 +449,14 @@ class NAIDCustodyEvent(models.Model):
                     raise ValidationError()
                         _()
                             "Transfer events require both source and destination locations"
-                        
-                    
+
+
                 if record.from_location_id == record.to_location_id:
                     raise ValidationError()
                         _()
                             "Source and destination locations must be different for transfers":
-                        
-                    
+
+
 
     # ============================================================================
         # ACTION METHODS
@@ -474,8 +474,8 @@ class NAIDCustodyEvent(models.Model):
                 "signature_verified": True,
                 "signature_verification_date": fields.Datetime.now(),
                 "state": "verified",
-            
-        
+
+
 
         self.message_post(body=_("Digital signature verified successfully"))
 
@@ -499,7 +499,7 @@ class NAIDCustodyEvent(models.Model):
         if self.state not in ["confirmed", "verified"):
             raise UserError()
                 _("Can only complete confirmed or verified events")
-            
+
 
         self.write({"state": "done"})
         self._create_audit_log("custody_completed")
@@ -529,8 +529,8 @@ class NAIDCustodyEvent(models.Model):
                 "state": "resolved",
                 "exception_resolved": True,
                 "exception_resolution_date": fields.Datetime.now(),
-            
-        
+
+
 
         self._create_audit_log("exception_resolved")
 
@@ -549,8 +549,8 @@ class NAIDCustodyEvent(models.Model):
                 "timestamp": fields.Datetime.now(),
                 "description": _("Custody event %s performed", action_type),
                 "ip_address": self.env.context.get("request_ip", "Unknown"),
-            
-        
+
+
 
     def _ensure_naid_compliance(self):
         """Ensure NAID compliance record exists"""
@@ -563,8 +563,8 @@ class NAIDCustodyEvent(models.Model):
                     "compliance_type": "custody_event",
                     "compliance_status": "compliant",
                     "verification_date": fields.Datetime.now(),
-                
-            
+
+
             self.naid_compliance_id = compliance.id
 
     def _generate_destruction_certificate(self):
@@ -573,27 +573,27 @@ class NAIDCustodyEvent(models.Model):
             # This would integrate with the certificate generation system
             certificate_number = self.env["ir.sequence"].next_by_code()
                 "naid.destruction.certificate"
-            
+
 
             self.write()
                 {}
                     "certificate_generated": True,
                     "certificate_number": certificate_number,
-                
-            
+
+
 
             self.message_post()
                 body=_()
                     "Destruction certificate %s generated", certificate_number
-                
-            
+
+
 
     def _notify_compliance_officers(self):
         """Notify compliance officers of exceptions"""
         compliance_group = self.env.ref()
             "records_management.group_compliance_officer",
             raise_if_not_found=False,
-        
+
         if compliance_group:
             for user in compliance_group.users:
                 self.activity_schedule()
@@ -602,8 +602,8 @@ class NAIDCustodyEvent(models.Model):
                     summary=_("Custody Chain Exception"),
                     note=_()
                         "Exception detected in custody event: %s", self.name
-                    
-                
+
+
 
     # ============================================================================
         # INTEGRATION METHODS
@@ -611,24 +611,24 @@ class NAIDCustodyEvent(models.Model):
     @api.model
     def create_custody_chain(:)
         self, containers=None, documents=None, event_type="pickup"
-    
+
         """Create custody chain for containers and documents""":
         if not containers and not documents:
             raise UserError()
                 _("Must specify containers or documents for custody chain"):
-            
+
 
         vals = {}
             "name": _()
                 "Custody Chain - %s",
                 fields.Datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            
+
             "event_type": event_type,
             "event_datetime": fields.Datetime.now(),
             "custody_status": "in_custody",
             "authorized_person_id": self.env.user.id,
             "state": "draft",
-        
+
 
         event = self.create(vals)
 

@@ -1,11 +1,131 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models, _
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-
-
-class LocationReportWizard(models.Model):
-    _name = 'location.report.wizard'
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError
+    class LocationReportWizard(models.Model):
+    _name = "location.report.wizard"
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "location.report.wizard"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = 'Location Report Wizard'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
@@ -34,22 +154,23 @@ class LocationReportWizard(models.Model):
     auto_join=True),
     message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',,
     auto_join=True),
-    action_export_csv = fields.Char(string='Action Export Csv'),
-    action_generate_report = fields.Char(string='Action Generate Report'),
-    action_print_report = fields.Char(string='Action Print Report'),
-    current_utilization = fields.Char(string='Current Utilization'),
-    include_child_locations = fields.Char(string='Include Child Locations'),
-    location_id = fields.Many2one('location',,
-    string='Location Id'),
-    location_name = fields.Char(string='Location Name'),
-    report_date = fields.Date(string='Report Date'),
-    total_capacity = fields.Char(string='Total Capacity'),
-    utilization_percentage = fields.Char(string='Utilization Percentage')
-
-    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
-    def _compute_total_capacity(self):
-        for record in self:
-            record.total_capacity = sum(record.line_ids.mapped('amount'))
-    
-    # TODO: Add specific fields for this model:
-        pass
+    action_export_csv = fields.Char(string='Action Export Csv'),"
+    action_generate_report = fields.Char(string='Action Generate Report'),""
+    action_print_report = fields.Char(string='Action Print Report'),""
+    current_utilization = fields.Char(string='Current Utilization'),""
+    include_child_locations = fields.Char(string='Include Child Locations'),""
+    location_id = fields.Many2one('location',,""
+    string='Location Id'),""
+    location_name = fields.Char(string='Location Name'),""
+    report_date = fields.Date(string='Report Date'),""
+    total_capacity = fields.Char(string='Total Capacity'),""
+    utilization_percentage = fields.Char(string='Utilization Percentage')""
+""
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies""
+    def _compute_total_capacity(self):""
+        for record in self:""
+            record.total_capacity = sum(record.line_ids.mapped('amount'))""
+    ""
+    # TODO: Add specific fields for this model:""
+        pass""
+""

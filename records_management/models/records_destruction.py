@@ -26,7 +26,7 @@ from odoo.exceptions import UserError, ValidationError
 class RecordsDestruction(models.Model):
 
         Records Destruction Management
-    
+
     Manages destruction operations for document containers and records""":"
         with full NAID AAA compliance tracking.
 
@@ -49,7 +49,7 @@ class RecordsDestruction(models.Model):
         ,
     default=lambda self: _('New'),
         help="Unique reference for this destruction operation":
-    
+
 
     company_id = fields.Many2one(
         'res.company',
@@ -57,13 +57,13 @@ class RecordsDestruction(models.Model):
         required=True,
         default=lambda self: self.env.company,
         help="Company performing the destruction"
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this destruction record"
-    
+
 
         # ============================================================================
     # DESTRUCTION OPERATION FIELDS
@@ -74,7 +74,7 @@ class RecordsDestruction(models.Model):
         default=fields.Datetime.now,
         tracking=True,
         help="Date and time when destruction was performed"
-    
+
 
     ,
     destruction_method = fields.Selection([))
@@ -83,7 +83,7 @@ class RecordsDestruction(models.Model):
         ('incineration', 'Incineration'),
         ('degaussing', 'Degaussing'),
         ('other', 'Other')
-    
+
 
     state = fields.Selection([))
         ('draft', 'Draft'),
@@ -91,7 +91,7 @@ class RecordsDestruction(models.Model):
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -101,7 +101,7 @@ class RecordsDestruction(models.Model):
         "records_destruction_id",
         string="Destruction Items",
         help="Individual items being destroyed in this operation"
-    
+
 
     partner_id = fields.Many2one(
         'res.partner',
@@ -109,7 +109,7 @@ class RecordsDestruction(models.Model):
         required=True,
         tracking=True,
         help="Customer whose records are being destroyed"
-    
+
 
     responsible_user_id = fields.Many2one(
         'res.users',
@@ -118,14 +118,14 @@ class RecordsDestruction(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this destruction operation":
-    
+
 
     compliance_id = fields.Many2one(
         'naid.compliance',
         string='NAID Compliance Record',
         tracking=True,
         help="Associated NAID compliance record"
-    
+
 
         # ============================================================================
     # COMPLIANCE FIELDS
@@ -135,19 +135,19 @@ class RecordsDestruction(models.Model):
         default=True,
         tracking=True,
         help="Whether this destruction meets NAID AAA standards"
-    
+
 
     certificate_generated = fields.Boolean(
         string="Certificate Generated",
         default=False,
         tracking=True,
         help="Whether destruction certificate has been generated"
-    
+
 
     notes = fields.Text(
         string="Destruction Notes",
         help="Additional notes and observations about the destruction"
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -157,7 +157,7 @@ class RecordsDestruction(models.Model):
         compute='_compute_item_count',
         store=True,
         help="Number of items being destroyed"
-    
+
 
     total_weight = fields.Float(
         ,
@@ -165,7 +165,7 @@ class RecordsDestruction(models.Model):
         compute='_compute_total_weight',
         store=True,
         help="Total weight of all destroyed items"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
@@ -226,7 +226,7 @@ class RecordsDestruction(models.Model):
         self.write({)}
             'state': 'completed',
             'destruction_date': fields.Datetime.now()
-        
+
 
     def action_cancel(self):
         """Cancel destruction operation"""
@@ -248,11 +248,11 @@ class RecordsDestruction(models.Model):
                 'destruction_date': self.destruction_date,
                 'destruction_method': self.destruction_method,
                 'total_weight': self.total_weight,
-            
-            
+
+
             certificate = self.env['naid.certificate'].create(certificate_vals)
             self.write({'certificate_generated': True})
-            
+
             return {}
                 'type': 'ir.actions.act_window',
                 'name': _('Destruction Certificate'),
@@ -260,7 +260,7 @@ class RecordsDestruction(models.Model):
                 'res_id': certificate.id,
                 'view_mode': 'form',
                 'target': 'current',
-            
+
 
     # ============================================================================
         # VALIDATION METHODS

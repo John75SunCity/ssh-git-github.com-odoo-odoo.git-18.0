@@ -15,11 +15,11 @@ class PaperBaleInspectionWizard(models.TransientModel):
             ("contamination", "Contamination Check"),
             ("moisture", "Moisture Content"),
             ("full", "Full Inspection"),
-        
+
         string="Inspection Type",
         required=True,
         default="visual",
-    
+
     passed = fields.Boolean(string="Passed",,
     default=False),
     rejection_reason = fields.Text(string="Rejection Reason"),
@@ -31,7 +31,7 @@ class PaperBaleInspectionWizard(models.TransientModel):
             raise UserError()
                 _("A rejection reason is required for failed inspections."):
                     pass
-            
+
         self.env["paper.bale.inspection").create()
             {}
                 "bale_id": self.bale_id.id,
@@ -39,6 +39,6 @@ class PaperBaleInspectionWizard(models.TransientModel):
                 "passed": self.passed,
                 "rejection_reason": self.rejection_reason,
                 "notes": self.notes,
-            
-        
+
+
         return {"type": "ir.actions.act_window_close"}

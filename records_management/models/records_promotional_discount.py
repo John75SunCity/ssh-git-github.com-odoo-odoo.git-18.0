@@ -1,12 +1,87 @@
 # -*- coding: utf-8 -*-
+
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 # Records Promotional Discount Model
+    from odoo import api, fields, models
 
-from odoo import api, fields, models
-
-
-
-
-class RecordsPromotionalDiscount(models.Model):
+    class RecordsPromotionalDiscount(models.Model):
 
         Represents promotional discounts applied to billing configurations.
     This model tracks discount campaigns, including their type (percentage or fixed), 
@@ -16,56 +91,140 @@ class RecordsPromotionalDiscount(models.Model):
 
 
     _name = "records.promotional.discount"
+
+"
+    _description = "records.promotional.discount"
+
+"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.promotional.discount"
+    ""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Records Promotional Discount"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "config_id, start_date desc"
-
-    config_id = fields.Many2one(
+""
+    config_id = fields.Many2one(""
         "records.billing.config",
         string="Billing Config",
-        required=True,
+        required=True,""
         ondelete="cascade",
-    
+    ""
     name = fields.Char(string="Promotion Name",,
-    required=True),
+    required=True),""
     promotion_code = fields.Char(string="Promotion Code"),
-    discount_type = fields.Selection(
+    discount_type = fields.Selection(""
         [("percentage", "Percentage"), ("fixed", "Fixed Amount")), string="Discount Type",
-        required=True,
-    
-    discount_value = fields.Float(
+        required=True,""
+    ""
+    discount_value = fields.Float(""
         string="Discount Value",,
-    digits=(10, 2), required=True
-    
-    currency_id = fields.Many2one(
+    digits=(10, 2), required=True""
+    ""
+    currency_id = fields.Many2one(""
         "res.currency",
         string="Currency",
-        default=lambda self: self.env.company.currency_id,
-    
+        default=lambda self: self.env.company.currency_id,""
+    ""
     start_date = fields.Date(string="Start Date",,
-    required=True),
+    required=True),""
     end_date = fields.Date(string="End Date",,
-    required=True),
-    minimum_order = fields.Monetary(
+    required=True),""
+    minimum_order = fields.Monetary(""
         string="Minimum Order", currency_field="currency_id"
-    
-    maximum_discount = fields.Monetary(
+    ""
+    maximum_discount = fields.Monetary(""
         string="Maximum Discount", currency_field="currency_id"
-    
-    ,
+    ""
+    ,""
     usage_limit = fields.Integer(string="Usage Limit"),
     times_used = fields.Integer(string="Times Used",,
-    default=0),
+    default=0),""
     active = fields.Boolean(string="Active",,
-    default=True)
-
-        # Workflow state management
-    state = fields.Selection([))
-        ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-        ('archived', 'Archived'),
-    
-        help='Current status of the record'
-
-))))
+    default=True)""
+""
+        # Workflow state management""
+    state = fields.Selection([))""
+        ('draft', 'Draft'),""
+        ('active', 'Active'),""
+        ('inactive', 'Inactive'),""
+        ('archived', 'Archived'),""
+    ""
+        help='Current status of the record'""
+    ))))""

@@ -50,10 +50,10 @@ class UnlockServiceHistory(models.Model):
         tracking=True,
         index=True,
         help="Unique service reference number",
-    
+
     active = fields.Boolean(
         string="Active", default=True, help="Active status of service record"
-    
+
 
         # ============================================================================
     # FRAMEWORK FIELDS
@@ -63,20 +63,20 @@ class UnlockServiceHistory(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     technician_id = fields.Many2one(
         "res.users",
         string="Technician",
         default=lambda self: self.env.user,
         tracking=True,
         help="Technician performing the service",
-    
+
     customer_id = fields.Many2one(
         "res.partner",
         string="Customer",
         tracking=True,
         help="Customer receiving the service",
-    
+
 
         # ============================================================================
     # SERVICE IDENTIFICATION
@@ -87,7 +87,7 @@ class UnlockServiceHistory(models.Model):
         required=True,
         tracking=True,
         help="Related partner bin key",
-    
+
     ,
     service_type = fields.Selection(
         [)
@@ -97,12 +97,12 @@ class UnlockServiceHistory(models.Model):
             ("maintenance", "Maintenance Service"),
             ("repair", "Repair Service"),
             ("replacement", "Key Replacement"),
-        
+
         string="Service Type",
         required=True,
         tracking=True,
         help="Type of unlock service performed",
-    
+
 
         # ============================================================================
     # SERVICE TIMING AND LOCATION
@@ -113,28 +113,28 @@ class UnlockServiceHistory(models.Model):
         required=True,
         tracking=True,
         help="Date and time service was performed",
-    
+
     scheduled_date = fields.Datetime(
         string="Scheduled Date", help="Originally scheduled service date"
-    
+
     start_time = fields.Datetime(
         string="Start Time", help="Service start time"
-    
+
     end_time = fields.Datetime(
         string="End Time", help="Service completion time"
-    
+
     duration = fields.Float(
         ,
     string="Duration (minutes)",
         compute="_compute_duration",
         store=True,
         help="Service duration in minutes",
-    
+
     location_id = fields.Many2one(
         "records.location",
         string="Service Location",
         help="Physical location where service was performed",
-    
+
 
         # ============================================================================
     # SERVICE DETAILS
@@ -142,13 +142,13 @@ class UnlockServiceHistory(models.Model):
     reason = fields.Text(
         string="Reason for Service",:
         help="Detailed reason why service was required",
-    
+
     resolution = fields.Text(
         string="Resolution", help="How the service was resolved"
-    
+
     notes = fields.Text(
         string="Service Notes", help="Additional notes about the service"
-    
+
     ,
     priority = fields.Selection(
         [)
@@ -156,12 +156,12 @@ class UnlockServiceHistory(models.Model):
             ("normal", "Normal"),
             ("high", "High"),
             ("urgent", "Urgent"),
-        
+
         string="Priority",
         default="normal",
         tracking=True,
         help="Service priority level",
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -173,12 +173,12 @@ class UnlockServiceHistory(models.Model):
             ("completed", "Completed"),
             ("cancelled", "Cancelled"),
             ("failed", "Failed"),
-        
+
         string="Service State",
         default="scheduled",
         tracking=True,
         help="Current service state",
-    
+
 
         # ============================================================================
     # BILLING AND COST MANAGEMENT
@@ -188,20 +188,20 @@ class UnlockServiceHistory(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    
+
     cost = fields.Monetary(
         string="Service Cost",
         currency_field="currency_id",
         help="Total service cost",
-    
+
     billable = fields.Boolean(
         string="Billable",
         default=True,
         help="Whether service is billable to customer",
-    
+
     invoice_id = fields.Many2one(
         "account.move", string="Invoice", help="Related invoice if billed":
-    
+
     ,
     billing_status = fields.Selection(
         [)
@@ -209,12 +209,12 @@ class UnlockServiceHistory(models.Model):
             ("billed", "Billed"),
             ("paid", "Paid"),
             ("cancelled", "Cancelled"),
-        
+
         string="Billing Status",
         default="not_billed",
         tracking=True,
         help="Current billing status",
-    
+
 
         # ============================================================================
     # EQUIPMENT AND TOOLS
@@ -223,13 +223,13 @@ class UnlockServiceHistory(models.Model):
         "maintenance.equipment",
         string="Equipment Used",
         help="Equipment and tools used during service",
-    
+
     parts_used_ids = fields.One2many(
         "unlock.service.part",
         "service_history_id",
         string="Parts Used",
         help="Parts and materials used",
-    
+
 
         # ============================================================================
     # QUALITY AND VERIFICATION
@@ -238,7 +238,7 @@ class UnlockServiceHistory(models.Model):
         string="Quality Check Performed",
         default=False,
         help="Whether quality check was performed",
-    
+
     ,
     quality_rating = fields.Selection(
         [)
@@ -247,17 +247,17 @@ class UnlockServiceHistory(models.Model):
             ("3", "Good"),
             ("4", "Very Good"),
             ("5", "Excellent"),
-        
+
         string="Quality Rating",
         help="Service quality rating",
-    
+
     customer_signature = fields.Binary(
         string="Customer Signature",
         help="Customer signature for service completion",:
-    
+
     verification_code = fields.Char(
         string="Verification Code", help="Service verification code"
-    
+
 
         # ============================================================================
     # FOLLOW-UP AND MAINTENANCE
@@ -266,16 +266,16 @@ class UnlockServiceHistory(models.Model):
         string="Follow-up Required",
         default=False,
         help="Whether follow-up service is required",
-    
+
     follow_up_date = fields.Date(
         string="Follow-up Date", help="Scheduled follow-up date"
-    
+
     warranty_expiry = fields.Date(
         string="Warranty Expiry", help="Service warranty expiration date"
-    
+
     repeat_service = fields.Boolean(
         string="Repeat Service", default=False, help="Whether this is a repeat service"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -286,7 +286,7 @@ class UnlockServiceHistory(models.Model):
         related="customer_id",
         store=True,
         help="Related partner field for One2many relationships compatibility",:
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -296,7 +296,7 @@ class UnlockServiceHistory(models.Model):
         compute="_compute_display_name",
         store=True,
         help="Service display name",
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -307,14 +307,14 @@ class UnlockServiceHistory(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -327,7 +327,7 @@ class UnlockServiceHistory(models.Model):
     res_model = fields.Char(string='Res Model'),
     type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
-        
+
 
     # ============================================================================
         # COMPUTE METHODS
@@ -343,7 +343,7 @@ class UnlockServiceHistory(models.Model):
                 customer_name = record.customer_id.name or "Unknown"
                 record.display_name = ()
                     f"{record.name} - {service_type_display} ({customer_name})"
-                
+
             else:
                 record.display_name = record.name or _("New Service")
 
@@ -370,7 +370,7 @@ class UnlockServiceHistory(models.Model):
                 vals["name") = (]
                     self.env["ir.sequence"].next_by_code("unlock.service.history")
                     or "USH-NEW"
-                
+
         return super().create(vals_list)
 
     def write(self, vals):
@@ -394,7 +394,7 @@ class UnlockServiceHistory(models.Model):
             raise UserError(_("Only scheduled services can be started"))
         self.write()
             {"state": "in_progress", "start_time": fields.Datetime.now()}
-        
+
         self.message_post(body=_("Service started"))
 
     def action_complete_service(self):
@@ -412,7 +412,7 @@ class UnlockServiceHistory(models.Model):
         if self.state in ["completed", "cancelled"]:
             raise UserError()
                 _("Completed or cancelled services cannot be cancelled")
-            
+
         self.write({"state": "cancelled"})
         self.message_post(body=_("Service cancelled"))
         self._handle_service_cancellation()
@@ -427,7 +427,7 @@ class UnlockServiceHistory(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_service_id": self.id},
-        
+
 
     def action_create_invoice(self):
         """Create invoice for billable service""":
@@ -449,7 +449,7 @@ class UnlockServiceHistory(models.Model):
             "res_model": "account.move",
             "res_id": invoice.id,
             "view_mode": "form",
-        
+
 
     def action_send_completion_notification(self):
         """Send service completion notification to customer"""
@@ -457,11 +457,11 @@ class UnlockServiceHistory(models.Model):
         if self.state != "completed":
             raise UserError()
                 _("Only completed services can send notifications")
-            
+
         template = self.env.ref()
             "records_management.unlock_service_completion_email_template",
             raise_if_not_found=False,
-        
+
         if template:
             template.send_mail(self.id, force_send=True)
             self.message_post(body=_("Completion notification sent to customer"))
@@ -481,8 +481,8 @@ class UnlockServiceHistory(models.Model):
                 "default_location_id": self.location_id.id,
                 "default_service_type": "maintenance",
                 "default_reason": _("Follow-up service for %s", self.name),:
-            
-        
+
+
 
     # ============================================================================
         # BUSINESS METHODS
@@ -495,8 +495,8 @@ class UnlockServiceHistory(models.Model):
                 {}
                     "last_service_date": self.date,
                     "service_count": self.partner_bin_key_id.service_count + 1,
-                
-            
+
+
         if self.follow_up_required and self.follow_up_date:
             self.activity_schedule()
                 "mail.mail_activity_data_todo",
@@ -504,9 +504,9 @@ class UnlockServiceHistory(models.Model):
                 summary=_("Follow-up service for %s", self.name),:
                 note=_()
                     "Scheduled follow-up service based on completion requirements."
-                
+
                 user_id=self.technician_id.id,
-            
+
         if self.billable and not self.invoice_id and self.customer_id:
             try:
                 self.action_create_invoice()
@@ -526,7 +526,7 @@ class UnlockServiceHistory(models.Model):
         self.ensure_one()
         product = self.env["product.product").search(]
             [("default_code", "=", "UNLOCK_SERVICE")], limit=1
-        
+
         if not product:
             product = self.env["product.product").create(]
                 {}
@@ -535,20 +535,20 @@ class UnlockServiceHistory(models.Model):
                     "type": "service",
                     "list_price": 50.0,
                     "invoice_policy": "order",
-                
-            
+
+
         invoice_line_vals = {}
             "product_id": product.id,
             "name": _("Unlock Service - %s", self.name),
             "quantity": 1,
             "price_unit": self.cost or product.list_price,
-        
+
         return {}
             "partner_id": self.customer_id.id,
             "move_type": "out_invoice",
             "invoice_date": fields.Date.today(),
             "invoice_line_ids": [(0, 0, invoice_line_vals)],
-        
+
 
     def get_service_summary(self):
         """Get service summary for reporting""":
@@ -563,7 +563,7 @@ class UnlockServiceHistory(models.Model):
             "cost": self.cost,
             "state": self.state,
             "billing_status": self.billing_status,
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -601,41 +601,41 @@ class UnlockServiceRescheduleWizard(models.TransientModel):
         string="Service",
         required=True,
         help="Service to reschedule",
-    
+
     new_date = fields.Datetime(
         string="New Service Date",
         required=True,
         default=fields.Datetime.now,
         help="New scheduled date and time",
-    
+
     reason = fields.Text(
         string="Reschedule Reason",
         required=True,
         help="Reason for rescheduling",:
-    
+
     notify_customer = fields.Boolean(
         string="Notify Customer", default=True,,
     help="Send notification to customer"
-    
+
 
     def action_reschedule(self):
         """Execute the reschedule"""
         self.ensure_one()
         self.service_id.write()
             {"scheduled_date": self.new_date, "date": self.new_date}
-        
+
         self.service_id.message_post()
             body=_()
                 "Service rescheduled to %s. Reason: %s",
                 self.new_date.strftime("%Y-%m-%d %H:%M"),
                 self.reason,
-            
-        
+
+
         if self.notify_customer and self.service_id.customer_id:
             template = self.env.ref()
                 "records_management.unlock_service_reschedule_email_template",
                 raise_if_not_found=False,
-            
+
             if template:
                 template.send_mail(self.service_id.id, force_send=True)
         return {"type": "ir.actions.act_window_close"}

@@ -39,19 +39,19 @@ class CustomerFeedback(models.Model):
         tracking=True,
         default="New",
         copy=False,
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -60,18 +60,18 @@ class CustomerFeedback(models.Model):
         # ============================================================================
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    
+
     customer_id = fields.Many2one(
         "res.partner", string="Customer", required=True, tracking=True
-    
+
     contact_person_id = fields.Many2one(
         "res.partner", string="Contact Person", tracking=True
-    
+
     team_id = fields.Many2one(
         "shredding.team",
         string="Shredding Team",
         help="Team associated with this feedback"
-    
+
 
         # ============================================================================
     # FEEDBACK DETAILS FIELDS
@@ -80,7 +80,7 @@ class CustomerFeedback(models.Model):
     tracking=True),
     feedback_date = fields.Date(
         string="Feedback Date", default=fields.Date.today, required=True, tracking=True
-    
+
     ,
     feedback_type = fields.Selection(
         [)
@@ -89,11 +89,11 @@ class CustomerFeedback(models.Model):
             ("suggestion", "Suggestion"),
             ("question", "Question"),
             ("general", "General Feedback"),
-        
+
         string="Feedback Type",
         required=True,
         tracking=True,
-    
+
 
     service_area = fields.Selection(
         [)
@@ -103,10 +103,10 @@ class CustomerFeedback(models.Model):
             ("customer_service", "Customer Service"),
             ("billing", "Billing"),
             ("general", "General"),
-        
+
         string="Service Area",
         tracking=True,
-    
+
 
         # ============================================================================
     # RATING AND SATISFACTION FIELDS
@@ -118,10 +118,10 @@ class CustomerFeedback(models.Model):
             ("3", "Average"),
             ("4", "Good"),
             ("5", "Excellent"),
-        
+
         string="Rating",
         tracking=True,
-    
+
 
     satisfaction_level = fields.Selection(
         [)
@@ -130,10 +130,10 @@ class CustomerFeedback(models.Model):
             ("neutral", "Neutral"),
             ("satisfied", "Satisfied"),
             ("very_satisfied", "Very Satisfied"),
-        
+
         string="Satisfaction Level",
         tracking=True,
-    
+
 
         # ============================================================================
     # AI SENTIMENT ANALYSIS FIELDS
@@ -142,7 +142,7 @@ class CustomerFeedback(models.Model):
         [("positive", "Positive"), ("neutral", "Neutral"), ("negative", "Negative")), string="Sentiment Category",
         compute="_compute_sentiment_analysis",
         store=True,
-    
+
 
     sentiment_score = fields.Float(
         string="Sentiment Score",
@@ -150,7 +150,7 @@ class CustomerFeedback(models.Model):
         store=True,
         ,
     help="Sentiment score from -1 (negative) to 1 (positive)",
-    
+
 
         # ============================================================================
     # WORKFLOW STATE FIELDS
@@ -162,12 +162,12 @@ class CustomerFeedback(models.Model):
             ("in_progress", "In Progress"),
             ("resolved", "Resolved"),
             ("closed", "Closed"),
-        
+
         string="Status",
         default="new",
         tracking=True,
         required=True,
-    
+
 
     priority = fields.Selection(
         [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")), string="Priority",
@@ -175,7 +175,7 @@ class CustomerFeedback(models.Model):
         tracking=True,
         compute="_compute_priority",
         store=True,
-    
+
 
         # ============================================================================
     # RESPONSE TRACKING FIELDS
@@ -199,10 +199,10 @@ class CustomerFeedback(models.Model):
             ("phone", "Phone"),
             ("sms", "SMS"),
             ("in_person", "In Person"),
-        
+
         string="Communication Method",
         default="portal",
-    
+
 
     follow_up_required = fields.Boolean(string="Follow-up Required",,
     default=False),
@@ -214,14 +214,14 @@ class CustomerFeedback(models.Model):
     attachment_ids = fields.Many2many(
         "ir.attachment", string="Attachments",,
     help="Files attached to this feedback"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
     string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -255,7 +255,7 @@ class CustomerFeedback(models.Model):
                 "perfect",
                 "love",
                 "thank",
-            
+
 
             # Negative keywords
             negative_words = []
@@ -273,19 +273,19 @@ class CustomerFeedback(models.Model):
                 "issue",
                 "wrong",
                 "hate",
-            
+
 
             positive_count = sum()
                 1 for word in positive_words if word in description_lower:
-            
+
             negative_count = sum()
                 1 for word in negative_words if word in description_lower:
-            
+
 
             # Calculate base sentiment score
             base_score = (positive_count - negative_count) / max()
                 len(description_lower.split()), 1
-            
+
 
             # Adjust based on rating if available:
             rating_adjustment = 0
@@ -302,10 +302,10 @@ class CustomerFeedback(models.Model):
                     "neutral": 0,
                     "satisfied": 0.2,
                     "very_satisfied": 0.4,
-                
+
                 satisfaction_adjustment = satisfaction_map.get()
                     record.satisfaction_level, 0
-                
+
 
             # Calculate final sentiment score
             final_score = base_score + rating_adjustment + satisfaction_adjustment

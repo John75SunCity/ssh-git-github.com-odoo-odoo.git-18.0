@@ -31,13 +31,13 @@ class ProductTemplate(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
     active = fields.Boolean(string="Active",,
     default=True)
         # ============================================================================
@@ -49,7 +49,7 @@ class ProductTemplate(models.Model):
         default=lambda self: self.env.company.currency_id,
         required=True,
         help="Currency for monetary fields":
-    
+
 
         # ============================================================================
     # CONTAINER SPECIFICATIONS
@@ -58,7 +58,7 @@ class ProductTemplate(models.Model):
         string="Records Container",
         default=False,
         help="Whether this product is a records management container",
-    
+
     ,
     container_type = fields.Selection(
         [)
@@ -67,25 +67,25 @@ class ProductTemplate(models.Model):
             ("type_03", "TYPE 3: Map Box (0.875 CF)"),
             ("type_04", "TYPE 4: Odd Size/Temp Box (5.0 CF)"),
             ("type_06", "TYPE 6: Pathology Box (0.42 CF)"),
-        
+
         string="Container Type",
         help="Business container type specification",
-    
+
     container_volume_cf = fields.Float(
         ,
     string="Container Volume (Cubic Feet)",
         digits=(12, 3),
         help="Container volume in cubic feet for capacity planning",:
-    
+
     container_weight_lbs = fields.Float(
         ,
     string="Container Weight (lbs)",
         help="Average container weight in pounds",
-    
+
     container_dimensions = fields.Char(
         string="Container Dimensions",
         help="Physical dimensions of the container",
-    
+
 
         # ============================================================================
     # SERVICE CONFIGURATION
@@ -94,12 +94,12 @@ class ProductTemplate(models.Model):
         string="Template Service",
         default=False,
         help="Whether this is a records management service template",
-    
+
     is_featured_service = fields.Boolean(
         string="Featured Service",
         default=False,
         help="Whether this service is featured in customer portal",
-    
+
     ,
     template_category = fields.Selection(
         [)
@@ -109,32 +109,32 @@ class ProductTemplate(models.Model):
             ("digital", "Digital Services"),
             ("compliance", "Compliance Services"),
             ("consultation", "Consultation Services"),
-        
+
         string="Template Category",
         help="Category of records management service",
-    
+
 
         # ============================================================================
     # EXTERNAL INTEGRATION
         # ============================================================================
     external_service_id = fields.Char(
         string="External Service ID", help="External system service identifier"
-    
+
     sync_enabled = fields.Boolean(
         string="Sync Enabled",
         default=True,
         help="Enable synchronization with external systems",
-    
+
     api_integration = fields.Boolean(
         string="API Integration",
         default=False,
         help="Enable API integration for this service",:
-    
+
     webhook_notifications = fields.Boolean(
         string="Webhook Notifications",
         default=False,
         help="Enable webhook notifications for service events",:
-    
+
 
         # ============================================================================
     # SERVICE SPECIFICATIONS
@@ -143,7 +143,7 @@ class ProductTemplate(models.Model):
         ,
     string="Service Duration (hours)",
         help="Expected duration for service completion",:
-    
+
     service_frequency = fields.Selection(
         [)
             ("one_time", "One Time"),
@@ -152,27 +152,27 @@ class ProductTemplate(models.Model):
             ("quarterly", "Quarterly"),
             ("annual", "Annual"),
             ("on_demand", "On Demand"),
-        
+
         string="Service Frequency",
         default="one_time",
         help="How frequently this service is typically required",
-    
+
     requires_appointment = fields.Boolean(
         string="Requires Appointment",
         default=False,
         help="Whether service requires scheduled appointment",
-    
+
     advance_notice_days = fields.Integer(
         ,
     string="Advance Notice (days)",
         default=1,
         help="Days of advance notice required for scheduling",:
-    
+
     service_location = fields.Selection(
         [("onsite", "On-Site"), ("offsite", "Off-Site"), ("both", "Both")), string="Service Location",
         default="offsite",
         help="Where service can be performed",
-    
+
 
         # ============================================================================
     # COMPLIANCE & SECURITY
@@ -181,27 +181,27 @@ class ProductTemplate(models.Model):
         string="NAID Compliant",
         default=False,
         help="Service meets NAID compliance standards",
-    
+
     hipaa_compliant = fields.Boolean(
         string="HIPAA Compliant",
         default=False,
         help="Service meets HIPAA compliance requirements",
-    
+
     sox_compliant = fields.Boolean(
         string="SOX Compliant",
         default=False,
         help="Service meets SOX compliance requirements",
-    
+
     iso_compliant = fields.Boolean(
         string="ISO Compliant",
         default=False,
         help="Service meets ISO compliance standards",
-    
+
     security_clearance_required = fields.Boolean(
         string="Security Clearance Required",
         default=False,
         help="Service requires security clearance",
-    
+
     ,
     encryption_level = fields.Selection(
         [)
@@ -209,11 +209,11 @@ class ProductTemplate(models.Model):
             ("basic", "Basic Encryption"),
             ("advanced", "Advanced Encryption"),
             ("military", "Military Grade"),
-        
+
         string="Encryption Level",
         default="basic",
         help="Level of encryption provided",
-    
+
 
         # ============================================================================
     # CAPACITY & RESOURCE MANAGEMENT
@@ -222,20 +222,20 @@ class ProductTemplate(models.Model):
         string="Max Concurrent Jobs",
         default=1,
         help="Maximum number of concurrent jobs for this service",:
-    
+
     staff_required = fields.Integer(
         string="Staff Required", default=1, help="Number of staff members required"
-    
+
     equipment_required = fields.Text(
         string="Equipment Required", help="Description of equipment needed for service":
-    
+
     vehicle_required = fields.Boolean(
         string="Vehicle Required", default=False, help="Service requires vehicle"
-    
+
     service_radius_miles = fields.Integer(
         ,
     string="Service Radius (miles)", help="Maximum service radius in miles"
-    
+
 
         # ============================================================================
     # PRICING & BILLING
@@ -248,27 +248,27 @@ class ProductTemplate(models.Model):
             ("per_box", "Per Box"),
             ("subscription", "Subscription"),
             ("volume", "Volume Discount"),
-        
+
         string="Pricing Model",
         default="fixed",
         help="How this service is priced",
-    
+
     minimum_charge = fields.Float(
         string="Minimum Charge", help="Minimum charge for service":
-    
+
     setup_fee = fields.Float(string="Setup Fee",,
     help="One-time setup fee"),
     bulk_discount_threshold = fields.Integer(
         string="Bulk Discount Threshold", help="Minimum quantity for bulk discount":
-    
+
     bulk_discount_rate = fields.Float(
         ,
     string="Bulk Discount Rate (%)", help="Percentage discount for bulk orders":
-    
+
     subscription_period = fields.Selection(
         [("monthly", "Monthly"), ("quarterly", "Quarterly"), ("annual", "Annual")), string="Subscription Period",
         help="Billing period for subscription services",:
-    
+
 
         # ============================================================================
     # SCHEDULING & AVAILABILITY
@@ -292,23 +292,23 @@ class ProductTemplate(models.Model):
         default=8.0,
         ,
     help="Service start time (24-hour format)",
-    
+
     service_hours_end = fields.Float(
         string="Service Hours End",
         default=17.0,
         ,
     help="Service end time (24-hour format)",
-    
+
     emergency_service = fields.Boolean(
         string="Emergency Service Available",
         default=False,
         help="Service available for emergencies",:
-    
+
     after_hours_available = fields.Boolean(
         string="After Hours Available",
         default=False,
         help="Service available after regular hours",
-    
+
 
         # ============================================================================
     # SLA & PERFORMANCE
@@ -316,27 +316,27 @@ class ProductTemplate(models.Model):
     sla_response_time = fields.Float(
         ,
     string="SLA Response Time (hours)", help="Service Level Agreement response time"
-    
+
     sla_completion_time = fields.Float(
         ,
     string="SLA Completion Time (hours)",
         help="Service Level Agreement completion time",
-    
+
     quality_standard = fields.Selection(
         [)
             ("basic", "Basic Quality"),
             ("premium", "Premium Quality"),
             ("enterprise", "Enterprise Quality"),
-        
+
         string="Quality Standard",
         default="basic",
         help="Quality standard for service delivery",:
-    
+
     performance_guarantee = fields.Boolean(
         string="Performance Guarantee",
         default=False,
         help="Service comes with performance guarantee",
-    
+
 
         # ============================================================================
     # CUSTOMER EXPERIENCE
@@ -346,24 +346,24 @@ class ProductTemplate(models.Model):
         compute="_compute_customer_rating",
         store=True,
         help="Average customer rating from feedback",
-    
+
     feedback_count = fields.Integer(
         string="Feedback Count",
         compute="_compute_feedback_count",
         help="Total number of customer feedback records",
-    
+
     popular_service = fields.Boolean(
         string="Popular Service",
         compute="_compute_popular_service",
         store=True,
         help="Service is marked as popular based on usage",
-    
+
     service_description_portal = fields.Html(
         string="Portal Description", help="Description shown to customers in portal"
-    
+
     service_benefits = fields.Html(
         string="Service Benefits", help="Benefits and features of this service"
-    
+
 
     ,
     detailed_type = fields.Selection([("consu", "Consumable"), ("service", "Service")), ("product", "Storable Product")], string="Product Type")
@@ -477,13 +477,13 @@ class ProductTemplate(models.Model):
             if hasattr(self.env, "customer.feedback"):
                 feedback_records = self.env["customer.feedback").search()
                     [("product_template_id", "=", record.id), ("rating", ">", "0")]
-                
+
                 if feedback_records:
                     total_rating = sum()
                         int(feedback.rating)
                         for feedback in feedback_records:
                         if feedback.rating and feedback.rating.isdigit():
-                    
+
                     record.customer_rating = total_rating / len(feedback_records)
                 else:
                     record.customer_rating = 0.0
@@ -497,7 +497,7 @@ class ProductTemplate(models.Model):
             if hasattr(self.env, "customer.feedback"):
                 record.feedback_count = self.env["customer.feedback"].search_count()
                     [("product_template_id", "=", record.id)]
-                
+
             else:
                 record.feedback_count = 0
 
@@ -507,7 +507,7 @@ class ProductTemplate(models.Model):
         for record in self:
             record.popular_service = ()
                 record.customer_rating >= 4.0 and record.feedback_count >= 10
-            
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -529,10 +529,10 @@ class ProductTemplate(models.Model):
                 record.sla_response_time
                 and record.sla_completion_time
                 and record.sla_response_time > record.sla_completion_time
-            
+
                 raise ValidationError()
                     _("SLA response time cannot be greater than completion time.")
-                
+
 
     @api.constrains("service_radius_miles")
     def _check_service_radius(self):
@@ -560,8 +560,8 @@ class ProductTemplate(models.Model):
             "type_03": {"volume": 0.875, "weight": 35, "dimensions": '42" x 6" x 6"'},"
             "type_04": {"volume": 5.0, "weight": 75, "dimensions": "Variable"},
             "type_06": {"volume": 0.42, "weight": 40, "dimensions": '12" x 6" x 10"'},"
-        
-        
+
+
         if self.container_type and self.container_type in container_specs:
             specs = container_specs[self.container_type]
             self.container_volume_cf = specs["volume"]
@@ -601,8 +601,8 @@ class ProductTemplate(models.Model):
                 ("is_template_service", "=", True),
                 ("template_category", "=", category),
                 ("active", "=", True),
-            
-        
+
+
 
     def get_availability_display(self):
         """Get human-readable availability display"""
@@ -616,7 +616,7 @@ class ProductTemplate(models.Model):
             ("Friday", self.availability_friday),
             ("Saturday", self.availability_saturday),
             ("Sunday", self.availability_sunday),
-        
+
 
         for day_name, available in days:
             if available:
@@ -628,7 +628,7 @@ class ProductTemplate(models.Model):
             len(available_days) == 5
             and not self.availability_saturday
             and not self.availability_sunday
-        
+
             return "Available weekdays"
         elif len(available_days) == 0:
             return "No availability set"
@@ -666,7 +666,7 @@ class ProductTemplate(models.Model):
                 self.bulk_discount_threshold
                 and quantity >= self.bulk_discount_threshold
                 and self.bulk_discount_rate
-            
+
                 discount = total_price * (self.bulk_discount_rate / 100)
                 total_price -= discount
         else:

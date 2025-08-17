@@ -1,344 +1,621 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
-
 from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+    from odoo.exceptions import UserError, ValidationError
 
-
-
-
-class StockLotAttribute(models.Model):
+    class StockLotAttribute(models.Model):
     """Stock Lot Attribute Management"""
-
     _name = "stock.lot.attribute"
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+""
+    _description = "stock.lot.attribute"
+""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute"
+""
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Stock Lot Attribute"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
     _rec_name = "name"
-
-        # ============================================================================
-    # CORE IDENTIFICATION FIELDS
-        # ============================================================================
-    name = fields.Char(
+""
+        # ============================================================================""
+    # CORE IDENTIFICATION FIELDS""
+        # ============================================================================""
+    name = fields.Char(""
         string="Attribute Name",
-        required=True,
-        tracking=True,
-        index=True,
+        required=True,""
+        tracking=True,""
+        index=True,""
         help="Name of the lot attribute",
-    
-    company_id = fields.Many2one(
+    ""
+    company_id = fields.Many2one(""
         "res.company",
         string="Company",
-        default=lambda self: self.env.company,
-        required=True,
-    
-    user_id = fields.Many2one(
+        default=lambda self: self.env.company,""
+        required=True,""
+    ""
+    user_id = fields.Many2one(""
         "res.users",
         string="Created By",
-        default=lambda self: self.env.user,
-        tracking=True,
+        default=lambda self: self.env.user,""
+        tracking=True,""
         help="User who created this attribute",
-    
-    active = fields.Boolean(
+    ""
+    active = fields.Boolean(""
         string="Active", default=True, help="Active status of the attribute"
-    
-
-        # ============================================================================
-    # ATTRIBUTE CONFIGURATION
-        # ============================================================================
-    ,
-    attribute_type = fields.Selection(
-        [)
+    ""
+""
+        # ============================================================================""
+    # ATTRIBUTE CONFIGURATION""
+        # ============================================================================""
+    ,""
+    attribute_type = fields.Selection(""
+        [)""
             ("text", "Text"),
             ("number", "Number"),
             ("date", "Date"),
             ("boolean", "Boolean"),
             ("selection", "Selection"),
-        
+        ""
         string="Attribute Type",
-        required=True,
+        required=True,""
         default="text",
         help="Type of attribute value",
-    
-    description = fields.Text(
+    ""
+    description = fields.Text(""
         string="Description", help="Detailed description of this attribute"
-    
-    required = fields.Boolean(
+    ""
+    required = fields.Boolean(""
         string="Required", default=False, help="Whether this attribute is mandatory"
-    
-    sequence = fields.Integer(
+    ""
+    sequence = fields.Integer(""
         string="Sequence", default=10,,
     help="Display order sequence"
-    
-
-        # ============================================================================
-    # SELECTION OPTIONS (for selection type attributes):
-        # ============================================================================
-    selection_option_ids = fields.One2many(
+    ""
+""
+        # ============================================================================""
+    # SELECTION OPTIONS (for selection type attributes):""
+        # ============================================================================""
+    selection_option_ids = fields.One2many(""
         "stock.lot.attribute.option",
         "attribute_id",
         string="Selection Options",
         help="Available options for selection type attributes",:
-            pass
-    
-
-        # ============================================================================
-    # STATE MANAGEMENT
-        # ============================================================================
-    ,
-    state = fields.Selection(
-        [)
+            pass""
+    ""
+""
+        # ============================================================================""
+    # STATE MANAGEMENT""
+        # ============================================================================""
+    ,""
+    state = fields.Selection(""
+        [)""
             ("draft", "Draft"),
             ("confirmed", "Confirmed"),
             ("archived", "Archived"),
-        
+        ""
         string="State",
         default="draft",
-        tracking=True,
+        tracking=True,""
         help="Current state of the attribute",
-    
-
-        # ============================================================================
-    # RELATIONSHIP FIELDS
-        # ============================================================================
-    lot_attribute_value_ids = fields.One2many(
+    ""
+""
+        # ============================================================================""
+    # RELATIONSHIP FIELDS""
+        # ============================================================================""
+    lot_attribute_value_ids = fields.One2many(""
         "stock.lot.attribute.value",
         "attribute_id",
         string="Attribute Values",
         help="Values assigned to lots for this attribute",:
-    
-
-        # ============================================================================
-    # COMPUTED FIELDS
-        # ============================================================================
-    value_count = fields.Integer(
+    ""
+""
+        # ============================================================================""
+    # COMPUTED FIELDS""
+        # ============================================================================""
+    value_count = fields.Integer(""
         string="Value Count",
         compute="_compute_value_count",
         help="Number of values assigned for this attribute",:
-    
-
-    option_count = fields.Integer(
+    ""
+""
+    option_count = fields.Integer(""
         string="Option Count",
         compute="_compute_option_count",
         help="Number of selection options available",
-    
-
-        # ============================================================================
-    # MAIL THREAD FRAMEWORK FIELDS
-        # ============================================================================
-    activity_ids = fields.One2many(
+    ""
+""
+        # ============================================================================""
+    # MAIL THREAD FRAMEWORK FIELDS""
+        # ============================================================================""
+    activity_ids = fields.One2many(""
         "mail.activity",
         "res_id",
         string="Activities",
-        ,
-    domain=lambda self: [("res_model", "=", self._name)),
-    
-    message_follower_ids = fields.One2many(
-        "mail.followers",
+        ,""
+    domain=lambda self: [("res_model", "= """"
+        """"mail.followers","
         "res_id",
         string="Followers",
-        ,
-    domain=lambda self: [("res_model", "=", self._name)),
-    
-    message_ids = fields.One2many(
-        "mail.message",
+        ,""
+    domain=lambda self: [("res_model", "= """"
+        """"mail.message","
         "res_id",
         string="Messages",
-        ,
-    domain=lambda self: [("model", "=", self._name))
-    context = fields.Char(string='Context'),
-    domain = fields.Char(string='Domain'),
-    help = fields.Char(string='Help'),
-    res_model = fields.Char(string='Res Model'),
-    type = fields.Selection([), string='Type')  # TODO: Define selection options
-    view_mode = fields.Char(string='View Mode'),
-    context = fields.Char(string='Context'),
-    domain = fields.Char(string='Domain'),
-    help = fields.Char(string='Help'),
-    res_model = fields.Char(string='Res Model'),
-    type = fields.Selection([), string='Type')  # TODO: Define selection options
-    view_mode = fields.Char(string='View Mode')
-        
-
-    # ============================================================================
-        # COMPUTE METHODS
-    # ============================================================================
+        ,""
+    domain=lambda self: [("model", "= """"
+    context = fields.Char(string='"""Context'),"
+    domain = fields.Char(string='Domain'),""
+    help = fields.Char(string='Help'),""
+    res_model = fields.Char(string='Res Model'),""
+    type = fields.Selection([), string='Type')  # TODO: Define selection options""
+    view_mode = fields.Char(string='View Mode'),""
+    context = fields.Char(string='Context'),""
+    domain = fields.Char(string='Domain'),""
+    help = fields.Char(string='Help'),""
+    res_model = fields.Char(string='Res Model'),""
+    type = fields.Selection([), string='Type')  # TODO: Define selection options""
+    view_mode = fields.Char(string='View Mode')""
+        ""
+""
+    # ============================================================================""
+        # COMPUTE METHODS""
+    # ============================================================================""
     @api.depends("lot_attribute_value_ids")
-    def _compute_value_count(self):
-        """Compute the number of values for this attribute""":
-        for record in self:
-            record.value_count = len(record.lot_attribute_value_ids)
-
-    @api.depends("selection_option_ids")
-    def _compute_option_count(self):
+    def _compute_value_count(self):""
+        """Compute the number of values for this attribute"""
+    """    @api.depends("selection_option_ids")
+    def _compute_option_count(self):""
         """Compute the number of selection options"""
-        for record in self:
-            record.option_count = len(record.selection_option_ids)
-
-    # ============================================================================
-        # ACTION METHODS
-    # ============================================================================
-    def action_confirm(self):
+""""
+"""
+"""    def action_confirm(self):"
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
         """Confirm the attribute"""
-
-        self.ensure_one()
-        if self.state != "draft":
+"""        if self.state != "draft":"
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
             raise UserError(_("Only draft attributes can be confirmed."))
         self.write({"state": "confirmed"})
         self.message_post(body=_("Attribute confirmed"))
-
-    def action_archive(self):
+""
+    def action_archive(self):""
         """Archive the attribute"""
-
-        self.ensure_one()
-        self.write({"state": "archived", "active": False})
+"""        self.write({"state": "archived", "active": False})"
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
         self.message_post(body=_("Attribute archived"))
-
-    def action_activate(self):
+""
+    def action_activate(self):""
         """Activate archived attribute"""
-
-        self.ensure_one()
-        self.write({"state": "confirmed", "active": True})
+"""        self.write({"state": "confirmed", "active": True})"
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
         self.message_post(body=_("Attribute activated"))
-
-    def action_view_values(self):
+""
+    def action_view_values(self):""
         """View attribute values"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+"""
+""""
+"""            "type": "ir.actions.act_window","
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
             "name": _("Attribute Values"),
             "res_model": "stock.lot.attribute.value",
             "view_mode": "tree,form",
-            "domain": [("attribute_id", "=", self.id)),
-            "context": {"default_attribute_id": self.id},
-        
-
-    # ============================================================================
-        # CONSTRAINT METHODS
-    # ============================================================================
-    @api.constrains("attribute_type", "selection_option_ids")
-    def _check_selection_options(self):
+            "domain": [("attribute_id", "= """""
+            """"context": {"default_attribute_id": self.id},"
+        ""
+""
+    # ============================================================================ """"
+        # CONSTRAINT METHODS""""""
+    # ============================================================================ """"
+    @api.constrains(""""attribute_type", "selection_option_ids")"
+    def _check_selection_options(self):""
         """Validate that selection type attributes have options"""
-        for record in self:
             if record.attribute_type == "selection" and not record.selection_option_ids:
-                raise ValidationError()
-                    _()
+                raise ValidationError()""
+                    _()""
                         "Selection type attributes must have at least one option defined."
-                    
-                
-
+                    ""
+                ""
+""
     @api.constrains("name")
-    def _check_name_unique(self):
+    def _check_name_unique(self):""
         """Ensure attribute names are unique within company"""
-        for record in self:
-            existing = self.search()
-                []
-                    ("name", "=", record.name),
-                    ("company_id", "=", record.company_id.id),
-                    ("id", "!=", record.id),
-                
-            
-            if existing:
-                raise ValidationError()
-                    _()
-                        "An attribute with the name '%s' already exists in this company.",
-                        record.name,
-                    
-                
-
-    # ============================================================================
-        # UTILITY METHODS
-    # ============================================================================
-    def get_attribute_summary(self):
-        """Get summary information for this attribute""":
-        self.ensure_one()
-        return {}
-            "name": self.name,
+""""
+""""
+"""                    ("name", "= """"
+                    (""""company_id", "= """"
+                    (""""id", "!= """"
+""""
+                        """"An attribute with the name '%s' already exists in this company.","
+                        record.name,""
+                    ""
+                ""
+""
+    # ============================================================================""
+        # UTILITY METHODS""
+    # ============================================================================""
+    def get_attribute_summary(self):""
+        """Get summary information for this attribute"""
+"""            "name": self.name,"
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+""""
+""""
+""""
             "type": self.attribute_type,
             "required": self.required,
             "state": self.state,
             "value_count": self.value_count,
             "option_count": self.option_count
             if self.attribute_type == "selection":
-            else 0,
-        
-
-    @api.model
-    def get_available_types(self):
+            else 0,""
+        ""
+""
+    @api.model""
+    def get_available_types(self):""
         """Get available attribute types"""
         return dict(self._fields["attribute_type"].selection)
-
-    def copy(self, default=None):
+""
+    def copy(self, default=None):""
         """Override copy to handle name uniqueness"""
-        default = dict(default or {})
         if "name" not in default:
             default["name"] = _("%s (Copy)", self.name)
-        return super().copy(default)
-
-
-class StockLotAttributeOption(models.Model):
-    """Selection options for stock lot attributes""":
+        return super().copy(default)""
+    class StockLotAttributeOption(models.Model):""
+    """Selection options for stock lot attributes"""
     _name = "stock.lot.attribute.option"
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "stock.lot.attribute.option"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Stock Lot Attribute Option"
     _order = "sequence, name"
-
-    attribute_id = fields.Many2one(
+""
+    attribute_id = fields.Many2one(""
         "stock.lot.attribute",
         string="Attribute",
-        required=True,
+        required=True,""
         ondelete="cascade",
         help="Parent attribute",
-    
-
-    name = fields.Char(
+    ""
+""
+    name = fields.Char(""
         string="Option Name",
-        required=True,
+        required=True,""
         help="Name of the selection option",
-    
-
-    value = fields.Char(
+    ""
+""
+    value = fields.Char(""
         string="Option Value",
-        required=True,
+        required=True,""
         help="Internal value for this option",:
-    
-
-    sequence = fields.Integer(
+    ""
+""
+    sequence = fields.Integer(""
         string="Sequence", default=10, help="Display order"
-    
-
-    active = fields.Boolean(
+    ""
+""
+    active = fields.Boolean(""
         string="Active",
-        default=True,
-        ,
+        default=True,""
+        ,""
     help="Whether this option is available for selection",:
-    
-
+    ""
+""
     @api.constrains("value", "attribute_id")
-    def _check_value_unique(self):
+    def _check_value_unique(self):""
         """Ensure option values are unique within attribute"""
-        for record in self:
-            existing = self.search()
-                [)
-                    ("value", "=", record.value),
-                    ("attribute_id", "=", record.attribute_id.id),
-                    ("id", "!=", record.id),
-                
-            
-            if existing:
-                raise ValidationError()
-                    _()
-                        "Option value '%s' already exists for attribute '%s'.",:
-                        record.value,
-                        record.attribute_id.name,
-                    
-                
-
-    def name_get(self):
+""""
+""""
+"""                    ("value", "= """"
+                    (""""attribute_id", "= """"
+                    (""""id", "!= """"
+""""
+                        """"Option value '%s' already exists for attribute '%s'.",:"
+                        record.value,""
+                        record.attribute_id.name,""
+                    ""
+                ""
+""
+    def name_get(self):""
         """Custom name_get to show attribute context"""
-        result = []
-        for record in self:
-            name = f"[{record.attribute_id.name}] {record.name}"
-            result.append((record.id, name))
-        return result
-))))))))))))
+"""            name = f"[{record.attribute_id.name}] {record.name}""
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+"""
+"""

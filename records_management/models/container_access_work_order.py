@@ -53,27 +53,27 @@ class ContainerAccessWorkOrder(models.Model):
         ,
     default=lambda self: _("New"),
         help="Unique container access work order number"
-    
+
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
         help="Formatted display name for the work order":
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
         index=True
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
         help="Primary user responsible for this work order":
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -91,7 +91,7 @@ class ContainerAccessWorkOrder(models.Model):
         ('documented', 'Session Documented'),
         ('closed', 'Closed'),
         ('cancelled', 'Cancelled'),
-    
+
         help="Current status of the container access work order"
 
     priority = fields.Selection([))
@@ -100,7 +100,7 @@ class ContainerAccessWorkOrder(models.Model):
         ('2', 'High'),
         ('3', 'Urgent'),
         ('4', 'Emergency Audit'),
-    
+
         help="Work order priority level for processing"
     # ============================================================================
         # CUSTOMER AND REQUEST INFORMATION
@@ -113,26 +113,26 @@ class ContainerAccessWorkOrder(models.Model):
         ,
     domain="[('is_company', '=', True))",
         help="Customer requesting container access"
-    
+
     portal_request_id = fields.Many2one(
         "portal.request",
         string="Portal Request",
         help="Originating portal request if applicable":
-    
+
     requestor_name = fields.Char(
         string="Requestor Name",
         required=True,
         help="Name of person requesting access"
-    
+
     requestor_title = fields.Char(
         string="Requestor Title",
         help="Title/position of person requesting access"
-    
+
     access_purpose = fields.Text(
         string="Access Purpose",
         required=True,
         help="Detailed purpose for requesting container access":
-    
+
 
         # ============================================================================
     # ACCESS TYPE AND SCOPE
@@ -147,7 +147,7 @@ class ContainerAccessWorkOrder(models.Model):
         ('legal_review', 'Legal Document Review'),
         ('maintenance', 'Container Maintenance'),
         ('other', 'Other (Specify in Purpose)'),
-    
+
         help="Type of access being requested"
 
     access_scope = fields.Selection([))
@@ -156,7 +156,7 @@ class ContainerAccessWorkOrder(models.Model):
         ('contents_handle', 'Handle Contents (No Removal)'),
         ('limited_removal', 'Limited Item Removal'),
         ('full_access', 'Full Access'),
-    
+
         help="Scope of access to be granted"
 
     # ============================================================================
@@ -170,19 +170,19 @@ class ContainerAccessWorkOrder(models.Model):
         string="Containers for Access",:
         required=True,
         help="Containers requiring access"
-    
+
     container_count = fields.Integer(
         string="Container Count",
         compute="_compute_container_metrics",
         store=True,
         help="Number of containers requiring access"
-    
+
     access_location_id = fields.Many2one(
         "records.location",
         string="Access Location",
         required=True,
         help="Physical location where access will take place"
-    
+
 
         # ============================================================================
     # SCHEDULING AND TIMING
@@ -192,39 +192,39 @@ class ContainerAccessWorkOrder(models.Model):
         required=True,
         tracking=True,
         help="Planned start date/time for access":
-    
+
     scheduled_duration_hours = fields.Float(
         ,
     string="Scheduled Duration (Hours)",
         required=True,
         default=2.0,
         help="Expected duration of access session"
-    
+
     scheduled_end_time = fields.Datetime(
         string="Scheduled End Time",
         compute="_compute_scheduled_end_time",
         store=True,
         help="Calculated end time based on start time and duration"
-    
+
 
         # Actual timing
     actual_start_time = fields.Datetime(
         string="Actual Start Time",
         tracking=True,
         help="Actual time access session began"
-    
+
     actual_end_time = fields.Datetime(
         string="Actual End Time",
         tracking=True,
         help="Actual time access session ended"
-    
+
     actual_duration_hours = fields.Float(
         ,
     string="Actual Duration (Hours)",
         compute="_compute_actual_duration",
         store=True,
         help="Actual duration of access session"
-    
+
 
         # ============================================================================
     # SECURITY AND SUPERVISION
@@ -233,17 +233,17 @@ class ContainerAccessWorkOrder(models.Model):
         string="Requires Security Escort",
         default=True,
         help="Access requires security escort supervision"
-    
+
     escort_employee_id = fields.Many2one(
         "hr.employee",
         string="Security Escort",
         help="Employee providing security escort"
-    
+
     requires_key_access = fields.Boolean(
         string="Requires Key Access",
         default=True,
         help="Physical keys are required for container access":
-    
+
     bin_key_ids = fields.Many2many(
         "bin.key",
         "access_work_order_key_rel",
@@ -251,7 +251,7 @@ class ContainerAccessWorkOrder(models.Model):
         "key_id",
         string="Required Keys",
         help="Physical keys needed for container access":
-    
+
 
         # Visitor management
     visitor_ids = fields.One2many(
@@ -259,12 +259,12 @@ class ContainerAccessWorkOrder(models.Model):
         "work_order_id",
         string="Authorized Visitors",
         help="People authorized for this access session":
-    
+
     max_visitors = fields.Integer(
         string="Maximum Visitors",
         default=2,
         help="Maximum number of people allowed in access session"
-    
+
 
         # ============================================================================
     # ACCESS ACTIVITIES AND DOCUMENTATION
@@ -274,37 +274,37 @@ class ContainerAccessWorkOrder(models.Model):
         "work_order_id",
         string="Access Activities",
         help="Record of activities performed during access"
-    
+
     items_accessed_count = fields.Integer(
         string="Items Accessed",
         compute="_compute_access_metrics",
         store=True,
         help="Number of individual items accessed"
-    
+
     items_modified_count = fields.Integer(
         string="Items Modified",
         compute="_compute_access_metrics",
         store=True,
         help="Number of items that were modified or remarked"
-    
+
 
         # Documentation requirements
     photo_documentation = fields.Boolean(
         string="Photo Documentation Required",
         help="Photos must be taken before and after access"
-    
+
     video_monitoring = fields.Boolean(
         string="Video Monitoring",
         help="Access session will be video recorded"
-    
+
     witness_required = fields.Boolean(
         string="Independent Witness Required",
         help="Independent witness must be present"
-    
+
     witness_name = fields.Char(
         string="Witness Name",
         help="Name of independent witness"
-    
+
 
         # ============================================================================
     # COMPLIANCE AND AUDIT TRAIL
@@ -313,17 +313,17 @@ class ContainerAccessWorkOrder(models.Model):
         string="Chain of Custody Maintained",
         default=True,
         help="Chain of custody was maintained during access"
-    
+
     audit_trail_complete = fields.Boolean(
         string="Audit Trail Complete",
         compute="_compute_audit_trail_complete",
         store=True,
         help="Complete audit trail documentation available"
-    
+
     compliance_notes = fields.Text(
         string="Compliance Notes",
         help="Notes regarding compliance requirements and adherence"
-    
+
 
         # ============================================================================
     # SESSION RESULTS AND FINDINGS
@@ -331,19 +331,19 @@ class ContainerAccessWorkOrder(models.Model):
     session_summary = fields.Text(
         string="Session Summary",
         help="Summary of what was accomplished during access session"
-    
+
     findings = fields.Text(
         string="Findings",
         help="Any findings, issues, or observations from access session"
-    
+
     follow_up_required = fields.Boolean(
         string="Follow-up Required",
         help="Additional follow-up action is required"
-    
+
     follow_up_notes = fields.Text(
         string="Follow-up Notes",
         help="Details about required follow-up actions"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -440,7 +440,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.message_post()
             body=_("Container access request submitted for approval"),:
             message_type='notification'
-        
+
         return True
 
     def action_approve(self):
@@ -453,7 +453,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.message_post()
             body=_("Container access request approved"),
             message_type='notification'
-        
+
         return True
 
     def action_schedule(self):
@@ -466,7 +466,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.message_post()
             body=_("Access session scheduled for %s", self.scheduled_access_date.strftime('%Y-%m-%d %H:%M')),
             message_type='notification'
-        
+
         return True
 
     def action_start_access(self):
@@ -485,11 +485,11 @@ class ContainerAccessWorkOrder(models.Model):
         self.write({)}
             'state': 'in_progress',
             'actual_start_time': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Container access session started"),
             message_type='notification'
-        
+
         return True
 
     def action_suspend_access(self):
@@ -502,7 +502,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.message_post()
             body=_("Access session suspended"),
             message_type='notification'
-        
+
         return True
 
     def action_resume_access(self):
@@ -515,7 +515,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.message_post()
             body=_("Access session resumed"),
             message_type='notification'
-        
+
         return True
 
     def action_complete_access(self):
@@ -527,11 +527,11 @@ class ContainerAccessWorkOrder(models.Model):
         self.write({)}
             'state': 'completed',
             'actual_end_time': fields.Datetime.now()
-        
+
         self.message_post()
             body=_("Container access session completed"),
             message_type='notification'
-        
+
         return True
 
     def action_document_session(self):
@@ -547,7 +547,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.message_post()
             body=_("Access session documentation completed"),
             message_type='notification'
-        
+
         return True
 
     def action_close(self):
@@ -560,7 +560,7 @@ class ContainerAccessWorkOrder(models.Model):
         self.message_post()
             body=_("Container access work order closed successfully"),
             message_type='notification'
-        
+
         return True
 
     # ============================================================================
@@ -577,7 +577,7 @@ class ContainerAccessWorkOrder(models.Model):
             'item_modified': item_modified,
             'activity_time': fields.Datetime.now(),
             'user_id': self.env.user.id,
-        
+
 
     def generate_access_report(self):
         """Generate container access report"""
@@ -588,7 +588,7 @@ class ContainerAccessWorkOrder(models.Model):
             'report_type': 'qweb-pdf',
             'res_id': self.id,
             'target': 'new',
-        
+
 
     @api.constrains('scheduled_access_date', 'scheduled_duration_hours')
     def _check_scheduling(self):

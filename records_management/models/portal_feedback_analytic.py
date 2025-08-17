@@ -25,23 +25,23 @@ class PortalFeedbackAnalytic(models.Model):
     # CORE IDENTIFICATION FIELDS
         # ============================================================================
     name = fields.Char(
-        string="Analytics Period", 
-        required=True, 
-        tracking=True, 
+        string="Analytics Period",
+        required=True,
+        tracking=True,
         index=True
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
-        "res.users", 
-        string="User", 
-        default=lambda self: self.env.user, 
+        "res.users",
+        string="User",
+        default=lambda self: self.env.user,
         tracking=True
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -49,15 +49,15 @@ class PortalFeedbackAnalytic(models.Model):
     # PERIOD DEFINITION
         # ============================================================================
     period_start = fields.Date(
-        string="Period Start", 
-        required=True, 
+        string="Period Start",
+        required=True,
         tracking=True
-    
+
     period_end = fields.Date(
-        string="Period End", 
-        required=True, 
+        string="Period End",
+        required=True,
         tracking=True
-    
+
     ,
     period_type = fields.Selection([))
         ('daily', 'Daily'),
@@ -66,42 +66,42 @@ class PortalFeedbackAnalytic(models.Model):
         ('quarterly', 'Quarterly'),
         ('yearly', 'Yearly'),
         ('custom', 'Custom Range'),
-    
+
 
         # ============================================================================
     # VOLUME METRICS
         # ============================================================================
     total_feedback_count = fields.Integer(
-        string="Total Feedback", 
-        compute="_compute_analytics", 
+        string="Total Feedback",
+        compute="_compute_analytics",
         store=True
-    
+
     positive_feedback_count = fields.Integer(
-        string="Positive Feedback", 
-        compute="_compute_analytics", 
+        string="Positive Feedback",
+        compute="_compute_analytics",
         store=True
-    
+
     neutral_feedback_count = fields.Integer(
-        string="Neutral Feedback", 
-        compute="_compute_analytics", 
+        string="Neutral Feedback",
+        compute="_compute_analytics",
         store=True
-    
+
     negative_feedback_count = fields.Integer(
-        string="Negative Feedback", 
-        compute="_compute_analytics", 
+        string="Negative Feedback",
+        compute="_compute_analytics",
         store=True
-    
+
 
         # ============================================================================
     # RATING AND SATISFACTION METRICS
         # ============================================================================
     average_rating = fields.Float(
-        string="Average Rating", 
+        string="Average Rating",
         ,
-    digits=(3, 2), 
-        compute="_compute_analytics", 
+    digits=(3, 2),
+        compute="_compute_analytics",
         store=True
-    
+
     customer_satisfaction_index = fields.Float(
         ,
     string="Customer Satisfaction Index (%)",
@@ -109,7 +109,7 @@ class PortalFeedbackAnalytic(models.Model):
         compute="_compute_analytics",
         store=True,
         help="Overall satisfaction percentage based on ratings and sentiment"
-    
+
     nps_score = fields.Float(
         string="Net Promoter Score",
         ,
@@ -117,7 +117,7 @@ class PortalFeedbackAnalytic(models.Model):
         compute="_compute_analytics",
         store=True,
         help="Net Promoter Score based on rating distribution"
-    
+
 
         # ============================================================================
     # RESPONSE AND RESOLUTION METRICS
@@ -128,28 +128,28 @@ class PortalFeedbackAnalytic(models.Model):
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    
+
     average_resolution_time = fields.Float(
         ,
     string="Avg Resolution Time (Hours)",
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    
+
     fastest_response_time = fields.Float(
         ,
     string="Fastest Response (Hours)",
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    
+
     slowest_response_time = fields.Float(
         ,
     string="Slowest Response (Hours)",
         digits=(8, 2),
         compute="_compute_analytics",
         store=True,
-    
+
 
         # ============================================================================
     # SLA AND PERFORMANCE METRICS
@@ -160,21 +160,21 @@ class PortalFeedbackAnalytic(models.Model):
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    
+
     escalation_rate = fields.Float(
         ,
     string="Escalation Rate (%)",
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    
+
     first_contact_resolution_rate = fields.Float(
         ,
     string="First Contact Resolution Rate (%)",
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    
+
 
         # ============================================================================
     # TREND AND PATTERN METRICS
@@ -185,21 +185,21 @@ class PortalFeedbackAnalytic(models.Model):
         digits=(5, 2),
         compute="_compute_analytics",
         store=True,
-    
+
     improvement_trend = fields.Selection([))
         ('improving', 'Improving'),
         ('stable', 'Stable'),
         ('declining', 'Declining'),
         ('insufficient_data', 'Insufficient Data'),
-    
-    
+
+
     trend_percentage = fields.Float(
         ,
     string="Trend Change (%)",
         digits=(5, 2),
         compute="_compute_trend_analysis",
         store=True,
-    
+
 
         # ============================================================================
     # WORKFLOW STATE MANAGEMENT
@@ -208,7 +208,7 @@ class PortalFeedbackAnalytic(models.Model):
         ('draft', 'Draft'),
         ('active', 'Active'),
         ('archived', 'Archived'),
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -236,8 +236,8 @@ class PortalFeedbackAnalytic(models.Model):
                 ("create_date", ">=", record.period_start),
                 ("create_date", "<=", record.period_end),
                 ("company_id", "=", record.company_id.id),
-            
-            
+
+
             feedback_records = self.env["portal.feedback"].search(domain)
 
             if not feedback_records:
@@ -248,13 +248,13 @@ class PortalFeedbackAnalytic(models.Model):
             record.total_feedback_count = len(feedback_records)
             record.positive_feedback_count = len()
                 feedback_records.filtered(lambda f: f.sentiment_category == "positive")
-            
+
             record.neutral_feedback_count = len()
                 feedback_records.filtered(lambda f: f.sentiment_category == "neutral")
-            
+
             record.negative_feedback_count = len()
                 feedback_records.filtered(lambda f: f.sentiment_category == "negative")
-            
+
 
             # Rating metrics
             rated_feedback = feedback_records.filtered(lambda f: f.rating and f.rating != '0')
@@ -279,14 +279,14 @@ class PortalFeedbackAnalytic(models.Model):
 
             # Response and resolution time metrics
             record._compute_response_times(feedback_records)
-            
+
             # SLA and performance metrics
             record._compute_sla_metrics(feedback_records)
 
     def _compute_response_times(self, feedback_records):
         """Calculate response and resolution time metrics"""
         self.ensure_one()
-        
+
         responded_feedback = feedback_records.filtered(lambda f: f.first_response_date)
         if responded_feedback:
             response_times = []
@@ -295,7 +295,7 @@ class PortalFeedbackAnalytic(models.Model):
                     delta = feedback.first_response_date - feedback.create_date
                     hours = delta.total_seconds() / 3600
                     response_times.append(hours)
-            
+
             if response_times:
                 self.average_response_time = sum(response_times) / len(response_times)
                 self.fastest_response_time = min(response_times)
@@ -318,7 +318,7 @@ class PortalFeedbackAnalytic(models.Model):
                     delta = feedback.resolution_date - feedback.create_date
                     hours = delta.total_seconds() / 3600
                     resolution_times.append(hours)
-            
+
             if resolution_times:
                 self.average_resolution_time = sum(resolution_times) / len(resolution_times)
             else:
@@ -329,7 +329,7 @@ class PortalFeedbackAnalytic(models.Model):
     def _compute_sla_metrics(self, feedback_records):
         """Calculate SLA compliance and performance metrics"""
         self.ensure_one()
-        
+
         if not feedback_records:
             self.sla_compliance_rate = 0.0
             self.escalation_rate = 0.0
@@ -340,9 +340,9 @@ class PortalFeedbackAnalytic(models.Model):
 
         # SLA compliance (assuming 24 hour response SLA)
         sla_compliant = feedback_records.filtered()
-            lambda f: f.first_response_date and 
+            lambda f: f.first_response_date and
             (f.first_response_date - f.create_date).total_seconds() <= 86400  # 24 hours
-        
+
         self.sla_compliance_rate = (len(sla_compliant) / total_count * 100) if total_count else 0.0:
         # Escalation rate
         escalated = feedback_records.filtered(lambda f: f.priority in ['high', 'urgent'])
@@ -350,7 +350,7 @@ class PortalFeedbackAnalytic(models.Model):
         # First contact resolution rate
         first_contact_resolved = feedback_records.filtered()
             lambda f: f.state == 'resolved' and f.interaction_count <= 1
-        
+
         self.first_contact_resolution_rate = (len(first_contact_resolved) / total_count * 100) if total_count else 0.0:
         # Repeat feedback rate (customers providing multiple feedback in period)
         unique_customers = feedback_records.mapped('partner_id')
@@ -383,12 +383,12 @@ class PortalFeedbackAnalytic(models.Model):
                 ('period_start', '=', previous_start),
                 ('period_end', '=', previous_end),
                 ('company_id', '=', record.company_id.id),
-            
+
 
             if previous_analytics and previous_analytics.customer_satisfaction_index > 0:
                 current_csi = record.customer_satisfaction_index
                 previous_csi = previous_analytics.customer_satisfaction_index
-                
+
                 change_percentage = ((current_csi - previous_csi) / previous_csi * 100)
                 record.trend_percentage = change_percentage
 
@@ -422,7 +422,7 @@ class PortalFeedbackAnalytic(models.Model):
             "repeat_feedback_rate": 0.0,
             "improvement_trend": 'insufficient_data',
             "trend_percentage": 0.0,
-        
+
 
     # ============================================================================
         # ACTION METHODS
@@ -439,8 +439,8 @@ class PortalFeedbackAnalytic(models.Model):
                 "message": _("Analytics refreshed successfully"),
                 "type": "success",
                 "sticky": False,
-            
-        
+
+
 
     def action_view_period_feedback(self):
         """View feedback records for this analytics period""":
@@ -454,13 +454,13 @@ class PortalFeedbackAnalytic(models.Model):
                 ("create_date", ">=", self.period_start),
                 ("create_date", "<=", self.period_end),
                 ("company_id", "=", self.company_id.id),
-            
+
             "context": {}
                 "search_default_group_by_sentiment": 1,
                 "search_default_group_by_priority": 1,
-            
+
             "target": "current",
-        
+
 
     def action_generate_report(self):
         """Generate comprehensive analytics report"""
@@ -503,7 +503,7 @@ class PortalFeedbackAnalytic(models.Model):
                     ('period_start', '<=', record.period_start, '<=', 'period_end'),
                     ('period_start', '<=', record.period_end, '<=', 'period_end'),
                     '&', ('period_start', '>=', record.period_start), ('period_end', '<=', record.period_end),
-                
+
                 if overlapping:
                     raise ValidationError(_("Analytics period overlaps with existing period: %s", overlapping[0].name))
 
@@ -518,12 +518,12 @@ class PortalFeedbackAnalytic(models.Model):
 
         from datetime import date
         import calendar
-        
+
         start_date = date(year, month, 1)
         end_date = date(year, month, calendar.monthrange(year, month)[1])
-        
+
         name = _("Analytics %s/%s", calendar.month_name[month], year)
-        
+
         return self.create({)}
             'name': name,
             'period_start': start_date,
@@ -531,7 +531,7 @@ class PortalFeedbackAnalytic(models.Model):
             'period_type': 'monthly',
             'company_id': company_id,
             'state': 'active',
-        
+
 
     @api.model
     def get_dashboard_data(self, company_id=None):
@@ -544,7 +544,7 @@ class PortalFeedbackAnalytic(models.Model):
             ('state', '=', 'active'),
             ('period_start', '<=', fields.Date.today()),
             ('period_end', '>=', fields.Date.today()),
-        
+
 
         if not current_period:
             return {}
@@ -552,7 +552,7 @@ class PortalFeedbackAnalytic(models.Model):
                 'satisfaction_index': 0.0,
                 'nps_score': 0.0,
                 'average_rating': 0.0,
-            
+
 
         return {}
             'total_feedback': current_period.total_feedback_count,

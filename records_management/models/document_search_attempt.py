@@ -40,14 +40,14 @@ class DocumentSearchAttempt(models.Model):
         tracking=True,
         index=True,
         help="Reference number for this search attempt":
-    
+
 
     display_name = fields.Char(
         string="Display Name",
         compute='_compute_display_name',
         store=True,
         help="Formatted display name for the search attempt":
-    
+
 
     company_id = fields.Many2one(
         'res.company',
@@ -56,7 +56,7 @@ class DocumentSearchAttempt(models.Model):
         required=True,
         index=True,
         help='Company this record belongs to'
-    
+
 
     user_id = fields.Many2one(
         "res.users",
@@ -64,14 +64,14 @@ class DocumentSearchAttempt(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
         help="User who created this search record"
-    
+
 
     active = fields.Boolean(
         string='Active',
         default=True,
         tracking=True,
         help='Set to false to hide this record'
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -83,7 +83,7 @@ class DocumentSearchAttempt(models.Model):
         ondelete="cascade",
         index=True,
         help="Related document retrieval item"
-    
+
 
     work_order_id = fields.Many2one(
         "file.retrieval.work.order",
@@ -92,7 +92,7 @@ class DocumentSearchAttempt(models.Model):
         readonly=True,
         store=True,
         help="Related work order"
-    
+
 
     container_id = fields.Many2one(
         "records.container",
@@ -100,7 +100,7 @@ class DocumentSearchAttempt(models.Model):
         required=True,
         index=True,
         help="Container that was searched"
-    
+
 
     partner_id = fields.Many2one(
         "res.partner",
@@ -109,7 +109,7 @@ class DocumentSearchAttempt(models.Model):
         readonly=True,
         store=True,
         help="Customer requesting the document"
-    
+
 
     location_id = fields.Many2one(
         "records.location",
@@ -118,7 +118,7 @@ class DocumentSearchAttempt(models.Model):
         readonly=True,
         store=True,
         help="Location where search was performed"
-    
+
 
         # ============================================================================
     # PERSONNEL TRACKING
@@ -129,19 +129,19 @@ class DocumentSearchAttempt(models.Model):
         required=True,
         tracking=True,
         help="User who performed the search"
-    
+
 
     employee_id = fields.Many2one(
         "hr.employee",
         string="Employee",
         help="Employee who performed the search"
-    
+
 
     supervisor_id = fields.Many2one(
         "hr.employee",
         string="Supervisor",
         help="Supervising employee for this search":
-    
+
 
         # ============================================================================
     # SEARCH DETAILS
@@ -152,14 +152,14 @@ class DocumentSearchAttempt(models.Model):
         default=fields.Datetime.now,
         tracking=True,
         help="Date and time when search was performed"
-    
+
 
     search_duration_minutes = fields.Float(
         ,
     string="Search Duration (Minutes)",
         digits=(6, 2),
         help="Time spent searching this container"
-    
+
 
     search_method = fields.Selection([))
         ('manual', 'Manual Search'),
@@ -167,13 +167,13 @@ class DocumentSearchAttempt(models.Model):
         ('electronic', 'Electronic Index'),
         ('systematic', 'Systematic Review'),
         ('random', 'Random Sampling')
-    
+
     search_thoroughness = fields.Selection([))
         ('quick', 'Quick Scan'),
         ('standard', 'Standard Search'),
         ('thorough', 'Thorough Review'),
         ('complete', 'Complete Inventory')
-    
+
 
         # ============================================================================
     # SEARCH RESULTS
@@ -183,12 +183,12 @@ class DocumentSearchAttempt(models.Model):
         default=False,
         tracking=True,
         help="Whether the requested document was found"
-    
+
 
     found_date = fields.Datetime(
         string="Found Date",
         help="Date and time when document was found"
-    
+
 
     ,
     document_condition = fields.Selection([))
@@ -197,13 +197,13 @@ class DocumentSearchAttempt(models.Model):
         ('fair', 'Fair'),
         ('poor', 'Poor'),
         ('damaged', 'Damaged')
-    
+
 
     retrieval_successful = fields.Boolean(
         string="Retrieval Successful",
         default=False,
         help="Whether document was successfully retrieved"
-    
+
 
         # ============================================================================
     # STATUS AND WORKFLOW
@@ -215,14 +215,14 @@ class DocumentSearchAttempt(models.Model):
         ('completed', 'Completed'),
         ('verified', 'Verified'),
         ('cancelled', 'Cancelled')
-    
+
 
     priority = fields.Selection([))
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
         ('urgent', 'Urgent')
-    
+
 
         # ============================================================================
     # REFERENCE FIELDS
@@ -233,14 +233,14 @@ class DocumentSearchAttempt(models.Model):
         readonly=True,
         store=True,
         help="Name of requested file"
-    
+
 
     requested_file_description = fields.Text(
         related="retrieval_item_id.description",
         string="File Description",
         readonly=True,
         help="Description of requested file"
-    
+
 
     container_barcode = fields.Char(
         string="Container Barcode",
@@ -248,7 +248,7 @@ class DocumentSearchAttempt(models.Model):
         readonly=True,
         store=True,
         help="Barcode of searched container"
-    
+
 
     container_type = fields.Selection(
         related="container_id.container_type_id.standard_type",
@@ -256,7 +256,7 @@ class DocumentSearchAttempt(models.Model):
         store=True,
         string="Container Type",
         help="Type of container searched"
-    
+
 
         # ============================================================================
     # NOTES AND OBSERVATIONS
@@ -264,22 +264,22 @@ class DocumentSearchAttempt(models.Model):
     search_notes = fields.Text(
         string="Search Notes",
         help="Detailed notes about the search process"
-    
+
 
     findings = fields.Text(
         string="Search Findings",
         help="What was found during the search"
-    
+
 
     obstacles_encountered = fields.Text(
         string="Obstacles Encountered",
         help="Any issues or obstacles during search"
-    
+
 
     improvement_suggestions = fields.Text(
         string="Improvement Suggestions",
         help="Suggestions for improving search efficiency":
-    
+
 
         # ============================================================================
     # METRICS AND ANALYTICS
@@ -291,7 +291,7 @@ class DocumentSearchAttempt(models.Model):
         ,
     digits=(5, 2),
         help="Calculated search effectiveness score"
-    
+
 
     accuracy_rating = fields.Selection([))
         ('1', 'Poor'),
@@ -299,7 +299,7 @@ class DocumentSearchAttempt(models.Model):
         ('3', 'Good'),
         ('4', 'Very Good'),
         ('5', 'Excellent')
-    
+
 
         # ============================================================================
     # COMPLIANCE AND AUDIT
@@ -308,19 +308,19 @@ class DocumentSearchAttempt(models.Model):
         string="NAID Compliant",
         default=True,
         help="Whether search meets NAID standards"
-    
+
 
     audit_trail_created = fields.Boolean(
         string="Audit Trail Created",
         default=False,
         help="Whether audit trail was created for this search":
-    
+
 
     quality_checked = fields.Boolean(
         string="Quality Checked",
         default=False,
         help="Whether search results were quality checked"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -331,7 +331,7 @@ class DocumentSearchAttempt(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -339,7 +339,7 @@ class DocumentSearchAttempt(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -360,7 +360,7 @@ class DocumentSearchAttempt(models.Model):
     search_view_id = fields.Many2one('search.view',,
     string='Search View Id'),
     view_mode = fields.Char(string='View Mode')
-        
+
 
     # ============================================================================
         # COMPUTE METHODS
@@ -406,7 +406,7 @@ class DocumentSearchAttempt(models.Model):
                 'standard': 15.0,
                 'thorough': 25.0,
                 'complete': 35.0
-            
+
             score += thoroughness_scores.get(attempt.search_thoroughness, 15.0)
 
             # Accuracy rating
@@ -459,7 +459,7 @@ class DocumentSearchAttempt(models.Model):
         self.write({)}
             'state': 'in_progress',
             'search_date': fields.Datetime.now()
-        
+
 
         self._create_audit_log('search_started')
         self.message_post(body=_("Search started by %s", self.searched_by_id.name))
@@ -477,13 +477,13 @@ class DocumentSearchAttempt(models.Model):
         self.write({)}
             'state': 'completed',
             'audit_trail_created': True
-        
+
 
         self._create_audit_log('search_completed')
         self.message_post(body=_())
             "Search completed. Document %s",
             _("found") if self.found else _("not found"):
-        
+
 
     def action_verify_search(self):
         """Verify search results"""
@@ -494,7 +494,7 @@ class DocumentSearchAttempt(models.Model):
         self.write({)}
             'state': 'verified',
             'quality_checked': True
-        
+
 
         self._create_audit_log('search_verified')
         self.message_post(body=_("Search results verified"))
@@ -521,7 +521,7 @@ class DocumentSearchAttempt(models.Model):
             if attempt.search_duration_minutes and attempt.search_duration_minutes > 480:  # 8 hours
                 raise ValidationError(_())
                     "Search duration cannot exceed 8 hours. Please verify the time."
-                
+
 
     @api.constrains('search_date', 'found_date')
     def _check_date_sequence(self):
@@ -531,7 +531,7 @@ class DocumentSearchAttempt(models.Model):
                 if attempt.search_date > attempt.found_date:
                     raise ValidationError(_())
                         "Search date cannot be after found date"
-                    
+
 
     @api.constrains('found', 'document_condition')
     def _check_found_condition_consistency(self):
@@ -540,7 +540,7 @@ class DocumentSearchAttempt(models.Model):
             if attempt.found and not attempt.document_condition:
                 raise ValidationError(_())
                     "Please specify document condition when document is found"
-                
+
 
     # ============================================================================
         # BUSINESS LOGIC METHODS
@@ -558,7 +558,7 @@ class DocumentSearchAttempt(models.Model):
                 'search_attempt_id': self.id,
                 'container_id': self.container_id.id if self.container_id else False,:
                 'naid_compliant': self.naid_compliant,
-            
+
             return self.env['naid.audit.log'].create(audit_vals)
 
     def get_search_efficiency_metrics(self):
@@ -570,14 +570,14 @@ class DocumentSearchAttempt(models.Model):
             'time_efficiency': 'fast' if self.search_duration_minutes and self.search_duration_minutes <= 10 else 'standard',:
             'success_rate': 100.0 if self.found else 0.0,:
             'accuracy_score': int(self.accuracy_rating) * 20 if self.accuracy_rating else 60,:
-        
+
 
         # Calculate overall efficiency
         total_score = ()
             metrics['search_score'] * 0.4 +
             metrics['success_rate'] * 0.3 +
             metrics['accuracy_score'] * 0.3
-        
+
         metrics['overall_efficiency'] = round(total_score, 2)
 
         return metrics
@@ -600,7 +600,7 @@ class DocumentSearchAttempt(models.Model):
             "search_score": self.search_score,
             "notes": self.search_notes or "",
             "state": self.state,
-        
+
 
     @api.model
     def get_search_statistics(self, domain=None):
@@ -617,7 +617,7 @@ class DocumentSearchAttempt(models.Model):
                 'average_duration': 0.0,
                 'by_method': {},
                 'by_container_type': {}
-            
+
 
         stats = {}
             'total_attempts': len(attempts),
@@ -625,7 +625,7 @@ class DocumentSearchAttempt(models.Model):
             'success_rate': (len(attempts.filtered('found')) / len(attempts)) * 100,
             'average_duration': sum(attempts.mapped('search_duration_minutes')) / len(attempts),
             'average_score': sum(attempts.mapped('search_score')) / len(attempts),
-        
+
 
         # Group by method
         methods = attempts.mapped('search_method')
@@ -635,7 +635,7 @@ class DocumentSearchAttempt(models.Model):
             stats['by_method'][method] = {}
                 'count': len(method_attempts),
                 'success_rate': (len(method_attempts.filtered('found')) / len(method_attempts)) * 100
-            
+
 
         # Group by container type
         container_types = attempts.mapped('container_type')
@@ -646,7 +646,7 @@ class DocumentSearchAttempt(models.Model):
                 stats['by_container_type'][container_type] = {}
                     'count': len(type_attempts),
                     'success_rate': (len(type_attempts.filtered('found')) / len(type_attempts)) * 100
-                
+
 
         return stats
 
@@ -668,9 +668,9 @@ class DocumentSearchAttempt(models.Model):
                 'metrics': metrics,
                 'include_details': True,
                 'include_recommendations': True
-            
+
             'context': self.env.context
-        
+
 
     # ============================================================================
         # ORM METHODS
@@ -721,7 +721,7 @@ class DocumentSearchAttempt(models.Model):
             'res_id': self.container_id.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
     def action_view_retrieval_item(self):
         """View the related retrieval item"""
@@ -733,7 +733,7 @@ class DocumentSearchAttempt(models.Model):
             'res_id': self.retrieval_item_id.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
     def action_create_follow_up_search(self):
         """Create a follow-up search attempt"""
@@ -746,7 +746,7 @@ class DocumentSearchAttempt(models.Model):
             'searched_by_id': self.env.user.id,
             'priority': 'high',
             'search_notes': _("Follow-up search based on attempt %s", self.name),
-        
+
 
         follow_up = self.create(follow_up_vals)
 
@@ -757,6 +757,6 @@ class DocumentSearchAttempt(models.Model):
             'res_id': follow_up.id,
             'view_mode': 'form',
             'target': 'current',
-        
+
 
 ))))))))))))))))))))))))

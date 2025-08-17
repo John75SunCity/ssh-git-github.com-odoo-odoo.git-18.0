@@ -23,19 +23,19 @@ class DocumentRetrievalEquipment(models.Model):
         # ============================================================================
     name = fields.Char(
         string="Equipment Name", required=True, tracking=True, index=True
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -52,10 +52,10 @@ class DocumentRetrievalEquipment(models.Model):
             ("vehicle", "Transport Vehicle"),
             ("tools", "Hand Tools"),
             ("safety", "Safety Equipment"),
-        
+
         string="Equipment Type",
         required=True,
-    
+
 
         # ============================================================================
     # STATUS AND AVAILABILITY FIELDS
@@ -66,11 +66,11 @@ class DocumentRetrievalEquipment(models.Model):
             ("in_use", "In Use"),
             ("maintenance", "Under Maintenance"),
             ("retired", "Retired"),
-        
+
         string="Status",
         default="available",
         tracking=True,
-    
+
 
     location_id = fields.Many2one("records.location",,
     string="Current Location"),
@@ -101,14 +101,14 @@ class DocumentRetrievalEquipment(models.Model):
     current_work_order_id = fields.Many2one(
         "file.retrieval.work.order",,
     string="Current Work Order"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
     string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -118,6 +118,6 @@ class DocumentRetrievalEquipment(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    
+
         help='Current status of the record'
 ))))

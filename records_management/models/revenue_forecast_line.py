@@ -27,26 +27,26 @@ class RevenueForecastLine(models.Model):
         compute='_compute_name',
         store=True,
         help="Computed name based on customer and service"
-    
+
 
     display_name = fields.Char(
         string="Display Name",
         compute='_compute_display_name',
         help="Display name for the forecast line":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this forecast line"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -58,7 +58,7 @@ class RevenueForecastLine(models.Model):
         ondelete="cascade",
         index=True,
         help="Parent revenue forecast"
-    
+
 
     customer_id = fields.Many2one(
         "res.partner",
@@ -67,7 +67,7 @@ class RevenueForecastLine(models.Model):
         ,
     domain="[('is_company', '=', True))",
         help="Customer for this forecast line":
-    
+
 
         # ============================================================================
     # FORECAST DETAILS
@@ -80,14 +80,14 @@ class RevenueForecastLine(models.Model):
         ('delivery', 'Delivery Services'),
         ('consulting', 'Consulting Services'),
         ('other', 'Other Services')
-    
+
 
     period_type = fields.Selection([))
         ('monthly', 'Monthly'),
         ('quarterly', 'Quarterly'),
         ('semi_annual', 'Semi-Annual'),
         ('annual', 'Annual')
-    
+
 
         # ============================================================================
     # FINANCIAL FIELDS
@@ -97,7 +97,7 @@ class RevenueForecastLine(models.Model):
         string="Currency",
         related="company_id.currency_id",
         readonly=True
-    
+
 
     forecasted_amount = fields.Monetary(
         string="Forecasted Amount",
@@ -105,14 +105,14 @@ class RevenueForecastLine(models.Model):
         required=True,
         tracking=True,
         help="Predicted revenue amount"
-    
+
 
     actual_amount = fields.Monetary(
         string="Actual Amount",
         currency_field="currency_id",
         tracking=True,
         help="Actual revenue amount achieved"
-    
+
 
     variance_amount = fields.Monetary(
         string="Variance Amount",
@@ -120,14 +120,14 @@ class RevenueForecastLine(models.Model):
         compute='_compute_variance',
         store=True,
         help="Difference between forecasted and actual"
-    
+
 
     variance_percentage = fields.Float(
         string="Variance %",
         compute='_compute_variance',
         store=True,
         help="Variance as percentage"
-    
+
 
         # ============================================================================
     # VOLUME METRICS
@@ -136,23 +136,23 @@ class RevenueForecastLine(models.Model):
         ,
     string="Forecasted Volume (CF)",
         help="Predicted volume in cubic feet"
-    
+
 
     actual_volume = fields.Float(
         ,
     string="Actual Volume (CF)",
         help="Actual volume achieved"
-    
+
 
     forecasted_containers = fields.Integer(
         string="Forecasted Containers",
         help="Predicted number of containers"
-    
+
 
     actual_containers = fields.Integer(
         string="Actual Containers",
         help="Actual number of containers"
-    
+
 
         # ============================================================================
     # PROBABILITY AND CONFIDENCE
@@ -163,13 +163,13 @@ class RevenueForecastLine(models.Model):
         ('medium', 'Medium (30-70%)'),
         ('high', 'High (70-90%)'),
         ('very_high', 'Very High (90-100%)')
-    
+
 
     probability_percentage = fields.Float(
         string="Probability %",
         default=50.0,
         help="Probability of achieving this forecast"
-    
+
 
         # ============================================================================
     # STATUS AND NOTES
@@ -182,13 +182,13 @@ class RevenueForecastLine(models.Model):
         ('achieved', 'Achieved'),
         ('missed', 'Missed'),
         ('cancelled', 'Cancelled')
-    
+
 
     notes = fields.Text(
         string="Notes",
         ,
     help="Additional notes and assumptions"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
@@ -239,7 +239,7 @@ class RevenueForecastLine(models.Model):
             if record.period_type:
                 period_dict = dict(record._fields['period_type'].selection)
                 parts.append(period_dict.get(record.period_type, record.period_type))
-            
+
             record.name = " - ".join(parts) if parts else "New Forecast Line":
     @api.depends('name', 'forecasted_amount')
     def _compute_display_name(self):
@@ -255,7 +255,7 @@ class RevenueForecastLine(models.Model):
         """Calculate variance between forecasted and actual amounts"""
         for record in self:
             record.variance_amount = record.actual_amount - record.forecasted_amount
-            
+
             if record.forecasted_amount:
                 record.variance_percentage = (record.variance_amount / record.forecasted_amount) * 100
             else:
@@ -269,7 +269,7 @@ class RevenueForecastLine(models.Model):
         self.ensure_one()
         if self.status != 'draft':
             raise UserError(_('Can only confirm draft forecast lines'))
-        
+
         self.write({'status': 'confirmed'})
         self.message_post(body=_('Forecast line confirmed'))
 
@@ -278,7 +278,7 @@ class RevenueForecastLine(models.Model):
         self.ensure_one()
         if self.status != 'confirmed':
             raise UserError(_('Can only start tracking confirmed forecasts'))
-        
+
         self.write({'status': 'in_progress'})
         self.message_post(body=_('Forecast tracking started'))
 
@@ -287,7 +287,7 @@ class RevenueForecastLine(models.Model):
         self.ensure_one()
         if self.status != 'in_progress':
             raise UserError(_('Can only mark in-progress forecasts as achieved'))
-        
+
         self.write({'status': 'achieved'})
         self.message_post(body=_('Forecast achieved'))
 
@@ -296,7 +296,7 @@ class RevenueForecastLine(models.Model):
         self.ensure_one()
         if self.status != 'in_progress':
             raise UserError(_('Can only mark in-progress forecasts as missed'))
-        
+
         self.write({'status': 'missed'})
         self.message_post(body=_('Forecast missed'))
 

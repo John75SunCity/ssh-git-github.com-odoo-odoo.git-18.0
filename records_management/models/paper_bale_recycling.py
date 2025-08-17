@@ -1,12 +1,90 @@
 # -*- coding: utf-8 -*-
 
-Paper Bale Recycling Management Module
-
-This module provides comprehensive management of paper bale recycling operations within the Records Management System.
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    Paper Bale Recycling Management Module
+    This module provides comprehensive management of paper bale recycling operations within the Records Management System.
 It implements enterprise-grade tracking of paper bales from collection through processing, with environmental impact
 monitoring and NAID compliance integration.
-
-Key Features
+    Key Features
     pass
 - Complete paper bale lifecycle tracking with weight and quality monitoring
 - Environmental impact calculation (carbon footprint, water savings, energy savings)
@@ -22,269 +100,299 @@ Business Processes
 4. Environmental Monitoring: Calculate environmental benefits and impact metrics
 5. Financial Tracking: Monitor market prices, costs, and profit margins
 6. Compliance Documentation: Maintain chain of custody and certificate records
-
-Technical Implementation
+    Technical Implementation
 - Modern Odoo 18.0 patterns with mail.thread inheritance
 - Comprehensive validation with proper field constraints
 - Automated sequence generation for bale identification:
 - Integration with partner management for recycling facilities:
 - Currency field support for multi-company financial tracking""":"
-Author: Records Management System
-Version: 18.0.6.0.0
-License: LGPL-3
-
-
-from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
-
-
-class PaperBaleRecycling(models.Model):
+Author: Records Management System""
+Version: 18.0.6.0.0""
+License: LGPL-3""
+    from odoo import _, api, fields, models""
+from odoo.exceptions import UserError, ValidationError""
+    class PaperBaleRecycling(models.Model):""
     _name = "paper.bale.recycling"
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "paper.bale.recycling"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Paper Bale Recycling"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name desc"
     _rec_name = "name"
-
-        # ============================================================================
-    # CORE IDENTIFICATION FIELDS
-        # ============================================================================
-    name = fields.Char(string="Name", required=True, tracking=True,,
-    index=True),
+""
+        # ============================================================================ """"
+    # CORE IDENTIFICATION FIELDS"""""
+        # ============================================================================ """"
+    name = fields.Char(string=""""Name", required=True, tracking=True,,
+    index=True),""
     description = fields.Text(string="Description"),
     sequence = fields.Integer(string="Sequence",,
-    default=10),
+    default=10),""
     active = fields.Boolean(string="Active",,
-    default=True),
-    company_id = fields.Many2one(
+    default=True),""
+    company_id = fields.Many2one(""
         "res.company",
         string="Company",
-        default=lambda self: self.env.company,
-        required=True,
-        index=True,
-    
-    user_id = fields.Many2one(
+        default=lambda self: self.env.company,""
+        required=True,""
+        index=True,""
+    ""
+    user_id = fields.Many2one(""
         "res.users",
         string="Assigned User",
-        default=lambda self: self.env.user,
-        tracking=True,
-        index=True,
-    
-    partner_id = fields.Many2one(
+        default=lambda self: self.env.user,""
+        tracking=True,""
+        index=True,""
+    ""
+    partner_id = fields.Many2one(""
         "res.partner",
         string="Partner",
         help="Associated partner for this record",:
-    
-
-        # ============================================================================
-    # STATE MANAGEMENT
-        # ============================================================================
-    ,
-    state = fields.Selection(
-        [)
+    ""
+""
+        # ============================================================================ """"
+    # STATE MANAGEMENT"""""
+        # ============================================================================ """"
+    ,"""""
+    state = fields.Selection(""
+        [)""
             ("draft", "Draft"),
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("archived", "Archived"),
-        
+        ""
         string="Status",
         default="draft",
-        tracking=True,
-    
-
-        # ============================================================================
-    # BALE INFORMATION
-        # ============================================================================
-    bale_id = fields.Char(
+        tracking=True,""
+    ""
+""
+        # ============================================================================ """"
+    # BALE INFORMATION"""""
+        # ============================================================================ """"
+    bale_id = fields.Char("""""
         string="Bale ID",
-        required=True,
-        index=True,
-        tracking=True,
+        required=True,""
+        index=True,""
+        tracking=True,""
         help="Unique identifier for the paper bale",:
-    
-    ,
+    ""
+    ,""
     gross_weight = fields.Float(string="Gross Weight (lbs)", required=True, tracking=True)
-    bale_weight = fields.Float(
-        ,
+    bale_weight = fields.Float(""
     string="Bale Weight (lbs)",
-        required=True,
-        tracking=True,
+        required=True,""
+        tracking=True,""
         help="Total weight of the bale in pounds",
-    
-    net_weight = fields.Float(string='Net Weight (lbs)', compute='_compute_net_weight', store=True)
-    paper_type = fields.Selection(
-        [)
+    ""
+    net_weight = fields.Float(string='Net Weight (lbs)', compute='_compute_net_weight', store=True)"
+    paper_type = fields.Selection(""
+        [)""
             ("mixed", "Mixed Paper"),
             ("white", "White Office Paper"),
             ("newspaper", "Newspaper"),
             ("cardboard", "Cardboard"),
             ("magazine", "Magazine/Glossy"),
             ("confidential", "Confidential Documents"),
-        
+        ""
         string="Paper Type",
-        required=True,
+        required=True,""
         default="mixed",
-        tracking=True,
-    
-    grade_quality = fields.Selection(
-        [)
+        tracking=True,""
+    ""
+    grade_quality = fields.Selection(""
+        [)""
             ("grade_1", "Grade 1 - Highest"),
             ("grade_2", "Grade 2 - High"),
             ("grade_3", "Grade 3 - Standard"),
             ("grade_4", "Grade 4 - Low"),
-        
+        ""
         string="Grade Quality",
         default="grade_3",
-        tracking=True,
-    
-    contamination_level = fields.Float(
-        ,
+        tracking=True,""
+    ""
+    contamination_level = fields.Float(""
     string="Contamination Level (%)",
-        default=0.0,
+        default=0.0,""
         help="Percentage of non-paper contamination",
-    
-    moisture_content = fields.Float(
-        ,
+    ""
+    moisture_content = fields.Float(""
     string="Moisture Content (%)",
-        default=0.0,
+        default=0.0,""
         help="Moisture percentage in the bale",
-    
+    ""
     production_date = fields.Date(string="Production Date",,
-    tracking=True),
+    tracking=True),""
     paper_grade = fields.Char(string="Paper Grade Classification",,
-    tracking=True)
-
-        # ============================================================================
-    # RECYCLING PROCESS
-        # ============================================================================
-    processing_date = fields.Date(string="Processing Date",,
-    tracking=True),
-    recycling_facility_id = fields.Many2one(
+    tracking=True)""
+""
+        # ============================================================================ """"
+    # RECYCLING PROCESS"""""
+        # ============================================================================ """"
+    processing_date = fields.Date(string=""""Processing Date",,
+    tracking=True),""
+    recycling_facility_id = fields.Many2one(""
         "res.partner",
         string="Recycling Facility",
-        ,
-    domain=[("is_company", "=", True))
-        tracking=True,
-    
-    collection_date = fields.Date(string="Collection Date",,
-    tracking=True),
-    transport_method = fields.Selection(
-        [)
+        ,""
+    domain=[("is_company", "= """", True))"
+        tracking=True,""
+    ""
+    collection_date = fields.Date(string=""""Collection Date",,
+    tracking=True),""
+    transport_method = fields.Selection(""
+        [)""
             ("truck", "Truck Transport"),
             ("rail", "Rail Transport"),
             ("barge", "Barge Transport"),
             ("combination", "Combination"),
-        
+        ""
         string="Transport Method",
         default="truck",
-    
-    processing_status = fields.Selection(
-        [)
+    ""
+    processing_status = fields.Selection(""
+        [)""
             ("pending", "Pending Processing"),
             ("in_process", "In Process"),
             ("completed", "Completed"),
             ("rejected", "Rejected"),
-        
+        ""
         string="Processing Status",
         default="pending",
-        tracking=True,
-    
-
-        # ============================================================================
-    # ENVIRONMENTAL & COMPLIANCE
-        # ============================================================================
-    carbon_footprint_reduction = fields.Float(
-        ,
+        tracking=True,""
+    ""
+""
+        # ============================================================================ """"
+    # ENVIRONMENTAL & COMPLIANCE"""""
+        # ============================================================================ """"
+    carbon_footprint_reduction = fields.Float("""""
     string="Carbon Footprint Reduction (tons CO2)",
         help="Estimated carbon footprint reduction from recycling",
-    
-    water_savings = fields.Float(
-        ,
+    ""
+    water_savings = fields.Float(""
     string="Water Savings (gallons)", help="Estimated water savings from recycling"
-    
-    energy_savings = fields.Float(
-        ,
+    ""
+    energy_savings = fields.Float(""
     string="Energy Savings (kWh)", help="Estimated energy savings from recycling"
-    
-    landfill_diversion = fields.Float(
-        ,
+    ""
+    landfill_diversion = fields.Float(""
     string="Landfill Diversion (lbs)",
         help="Weight of material diverted from landfill",
-    
+    ""
     environmental_certificate = fields.Binary(string="Environmental Certificate"),
     recycling_certificate = fields.Binary(string="Recycling Certificate"),
     chain_of_custody = fields.Text(string="Chain of Custody Documentation")
-
-        # ============================================================================
-    # FINANCIAL TRACKING
-        # ============================================================================
-    currency_id = fields.Many2one(
+""
+        # ============================================================================ """"
+    # FINANCIAL TRACKING"""""
+        # ============================================================================ """"
+    currency_id = fields.Many2one("""""
         "res.currency",
         string="Currency",
-        default=lambda self: self.env.company.currency_id,
-        required=True,
-    
-    market_price_per_ton = fields.Monetary(
+        default=lambda self: self.env.company.currency_id,""
+        required=True,""
+    ""
+    market_price_per_ton = fields.Monetary(""
         string="Market Price per Ton", currency_field="currency_id"
-    
-    total_revenue = fields.Monetary(
+    ""
+    total_revenue = fields.Monetary(""
         string="Total Revenue",
         currency_field="currency_id",
         compute="_compute_total_revenue",
-        store=True,
-    
-    processing_cost = fields.Monetary(
+        store=True,""
+    ""
+    processing_cost = fields.Monetary(""
         string="Processing Cost", currency_field="currency_id"
-    
-    transport_cost = fields.Monetary(
+    ""
+    transport_cost = fields.Monetary(""
         string="Transport Cost", currency_field="currency_id"
-    
-    net_profit = fields.Monetary(
+    ""
+    net_profit = fields.Monetary(""
         string="Net Profit",
         currency_field="currency_id",
         compute="_compute_net_profit",
-        store=True,
-    
-
-        # ============================================================================
-    # RELATIONSHIP FIELDS
-        # ============================================================================
-    source_paper_bale_ids = fields.Many2many(
+        store=True,""
+    ""
+""
+        # ============================================================================ """"
+    # RELATIONSHIP FIELDS"""""
+        # ============================================================================ """"
+    source_paper_bale_ids = fields.Many2many("""""
         "paper.bale", "paper_bale_recycling_rel", "recycling_id", "bale_id", string="Source Paper Bales"
-    
-    shredding_service_ids = fields.One2many(
+    ""
+    shredding_service_ids = fields.One2many(""
         "shredding.service", "recycling_bale_id",,
     string="Related Shredding Services"
-    
-        # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
+    ""
+        # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):""
     activity_ids = fields.One2many("mail.activity", "res_id",,
     string="Activities"),
-    message_follower_ids = fields.One2many(
+    message_follower_ids = fields.One2many(""
         "mail.followers", "res_id", string="Followers"
-    
+    ""
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
-
-        # ============================================================================
-    # COMPUTED FIELDS
-        # ============================================================================
-    source_bale_count = fields.Integer(
+""
+        # ============================================================================ """"
+    # COMPUTED FIELDS"""""
+        # ============================================================================ """"
+    source_bale_count = fields.Integer("""""
         compute="_compute_source_bale_count",
         string="Source Bales",
         help="Number of source bales used for this recycling batch",:
-    
+    ""
     contamination = fields.Char(string="Contamination Notes",,
-    tracking=True),
+    tracking=True),""
     mobile_entry = fields.Boolean(string="Mobile Entry", default=False,,
-    tracking=True)
-
+    tracking=True)""
+""
     load_shipment_id = fields.Many2one("paper.load.shipment",,
     string="Load Shipment"),
     bale_number = fields.Char(string="Bale Number", required=True,,
-    index=True),
+    index=True),""
     weight_lbs = fields.Float(string="Weight (lbs)", digits=(8,2))
     weight_net = fields.Float(string="Net Weight (lbs)", digits=(8,2))
     moisture_level = fields.Float(string="Moisture Level %",,
-    digits=(5,2))
+    digits=(5,2))""
     contamination_notes = fields.Text(string="Contamination Notes"),
     processed_from_service = fields.Many2one("shredding.service",,
     string="Processed From Service"),
@@ -292,7 +400,7 @@ class PaperBaleRecycling(models.Model):
     weighed_by = fields.Many2one("hr.employee",,
     string="Weighed By"),
     scale_reading = fields.Float(string="Scale Reading",,
-    digits=(8,2))
+    digits=(8,2))""
     load_number = fields.Char(string="Load Number"),
     gps_coordinates = fields.Char(string="GPS Coordinates")
         # ============================================================================
@@ -320,269 +428,472 @@ class PaperBaleRecycling(models.Model):
     group_status = fields.Selection([), string='Group Status')  # TODO: Define selection options
     group_weighed_by = fields.Char(string='Group Weighed By'),
     help = fields.Char(string='Help'),
-    load_info = fields.Char(string='Load Info'),
-    location_info = fields.Char(string='Location Info'),
-    mixed_paper = fields.Char(string='Mixed Paper'),
-    paid = fields.Char(string='Paid'),
-    produced = fields.Char(string='Produced'),
-    quality_info = fields.Char(string='Quality Info'),
-    ready_ship = fields.Char(string='Ready Ship'),
-    res_model = fields.Char(string='Res Model'),
-    search_view_id = fields.Many2one('search.view',,
-    string='Search View Id'),
-    shipped = fields.Char(string='Shipped'),
-    stored = fields.Char(string='Stored'),
-    system_info = fields.Char(string='System Info'),
-    this_month = fields.Char(string='This Month'),
-    this_week = fields.Char(string='This Week'),
-    today = fields.Char(string='Today'),
-    view_mode = fields.Char(string='View Mode'),
-    weight_info = fields.Char(string='Weight Info'),
-    white_paper = fields.Char(string='White Paper'), ('inspected', 'Inspected'), ('loaded', 'Loaded'), ('shipped', 'Shipped'), ('sold', 'Sold')
-
+    load_info = fields.Char(string='Load Info'),"
+    location_info = fields.Char(string='Location Info'),"
+    mixed_paper = fields.Char(string='Mixed Paper'),"
+    paid = fields.Char(string='Paid'),"
+    produced = fields.Char(string='Produced'),"
+    quality_info = fields.Char(string='Quality Info'),"
+    ready_ship = fields.Char(string='Ready Ship'),"
+    res_model = fields.Char(string='Res Model'),"
+    search_view_id = fields.Many2one('search.view',,"
+    string='Search View Id'),"
+    shipped = fields.Char(string='Shipped'),"
+    stored = fields.Char(string='Stored'),"
+    system_info = fields.Char(string='System Info'),"
+    this_month = fields.Char(string='This Month'),"
+    this_week = fields.Char(string='This Week'),"
+    today = fields.Char(string='Today'),"
+    view_mode = fields.Char(string='View Mode'),"
+    weight_info = fields.Char(string='Weight Info'),"
+    white_paper = fields.Char(string='White Paper'), ('inspected', 'Inspected'), ('loaded', 'Loaded'), ('shipped', 'Shipped'), ('sold', 'Sold')"
+""
     @api.depends("bale_weight", "market_price_per_ton")
-    def _compute_total_revenue(self):
-        for record in self:
-            if record.bale_weight and record.market_price_per_ton:
-                weight_tons = record.bale_weight / 2000  # Convert lbs to tons
-                record.total_revenue = weight_tons * record.market_price_per_ton
-            else:
-                record.total_revenue = 0.0
-
+    def _compute_total_revenue(self):""
+        for record in self:""
+            if record.bale_weight and record.market_price_per_ton:""
+                weight_tons = record.bale_weight / 2000  # Convert lbs to tons""
+                record.total_revenue = weight_tons * record.market_price_per_ton""
+            else:""
+                record.total_revenue = 0.0""
+""
     @api.depends("total_revenue", "processing_cost", "transport_cost")
-    def _compute_net_profit(self):
-        for record in self:
-            record.net_profit = ()
-                record.total_revenue - record.processing_cost - record.transport_cost
-            
-
+    def _compute_net_profit(self):""
+        for record in self:""
+            record.net_profit = ()""
+                record.total_revenue - record.processing_cost - record.transport_cost""
+            ""
+""
     @api.depends("source_paper_bale_ids")
-    def _compute_source_bale_count(self):
-        for record in self:
-            record.source_bale_count = len(record.source_paper_bale_ids)
-
-    def _compute_net_weight(self):
-        # This method needs to be implemented
-        for record in self:
-            record.net_weight = record.gross_weight # Placeholder
-    # ============================================================================
-        # OVERRIDE METHODS
-    # ============================================================================
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
+    def _compute_source_bale_count(self):""
+        for record in self:""
+            record.source_bale_count = len(record.source_paper_bale_ids)""
+""
+    def _compute_net_weight(self):""
+        # This method needs to be implemented""
+        for record in self:""
+            record.net_weight = record.gross_weight # Placeholder""
+    # ============================================================================ """"
+        # OVERRIDE METHODS"""""
+    # ============================================================================ """"
+    @api.model_create_multi"""""
+    def create(self, vals_list):""
+        for vals in vals_list:""
             if not vals.get("bale_id"):
                 vals["bale_id") = ()
                     self.env["ir.sequence"].next_by_code("paper.bale.recycling")
                     or "PBR/"
-                
-        return super(PaperBaleRecycling, self).create(vals_list)
-
-    # ============================================================================
-        # ACTION METHODS
-    # ============================================================================
-    def action_start_processing(self):
+                ""
+        return super(PaperBaleRecycling, self).create(vals_list)""
+""
+    # ============================================================================ """"
+        # ACTION METHODS"""""
+    # ============================================================================ """"
+    def action_start_processing(self):"""""
         """Start the recycling processing workflow"""
-
-        self.ensure_one()
-        if self.state != "active":
+"""        if self.state != "active":"
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
             raise UserError(_("Only active bales can be processed."))
-        self.write()
+        self.write()""
             {"processing_status": "in_process", "processing_date": fields.Date.today()}
-        
-        self.message_post()
+        ""
+        self.message_post()""
             body=_("Recycling processing started for bale %s", self.bale_id):
-        
-
-    def action_complete_processing(self):
+        ""
+""
+    def action_complete_processing(self):""
         """Complete the recycling processing workflow"""
-
-        self.ensure_one()
-        if self.processing_status != "in_process":
+"""        if self.processing_status != "in_process":"
+"""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
             raise UserError(_("Only bales in process can be completed."))
         self.write({"processing_status": "completed"})
-        self.calculate_environmental_impact()
-        self.message_post()
+        self.calculate_environmental_impact()""
+        self.message_post()""
             body=_("Recycling processing completed for bale %s", self.bale_id):
-        
-
-    def action_reject_bale(self):
-        """Reject the bale for processing""":
-        self.ensure_one()
+        ""
+""
+    def action_reject_bale(self):""
+        """Reject the bale for processing"""
         self.write({"processing_status": "rejected"})
-        self.message_post()
+        self.message_post()""
             body=_("Bale %s has been rejected for processing", self.bale_id):
-        
-
-    def action_view_source_bales(self):
+        ""
+""
+    def action_view_source_bales(self):""
         """View source paper bales used in this recycling batch"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+""""
+"""
+"""            "type": "ir.actions.act_window","
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
             "name": "Source Paper Bales",
             "res_model": "paper.bale",
             "view_mode": "tree,form",
-            "domain": [("id", "in", self.source_paper_bales.ids)],
-        
-
-    def action_generate_certificate(self):
-        """Generate environmental certificate for this recycling batch""":
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+            "domain": [("id", "in", self.source_paper_bales.ids),
+        ""
+""
+    def action_generate_certificate(self):""
+        """Generate environmental certificate for this recycling batch"""
+"""            "type": "ir.actions.act_window","
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
             "name": "Generate Environmental Certificate",
             "res_model": "environmental.certificate.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_recycling_id": self.id},
-        
-
-    def action_assign_to_load(self):
+        ""
+""
+    def action_assign_to_load(self):""
         """Assign bale to transportation load"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+""""
+"""
+"""            "type": "ir.actions.act_window","
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
             "name": _("Assign To Load"),
             "res_model": "transport.load.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_bale_id": self.id},
-        
-
-    def action_mark_delivered(self):
+        ""
+""
+    def action_mark_delivered(self):""
         """Mark bale as delivered to recycling facility"""
-
-        self.ensure_one()
-        self.write({"state": "active"})
+"""        self.write({"state": "active"})"
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
         self.message_post(body=_("Bale %s marked as delivered", self.bale_id))
-        return True
-
-    def action_mark_paid(self):
+        return True""
+""
+    def action_mark_paid(self):""
         """Mark recycling payment as received"""
-
-        self.ensure_one()
-        # This would typically create an account.move entry
-        self.message_post(body=_("Payment received for bale %s", self.bale_id)):
-        return True
-
-    def action_ready_to_ship(self):
-        """Mark bale as ready for shipping""":
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+"""
+""""
+"""        self.message_post(body=_("Payment received for bale %s", self.bale_id)):"
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+    def action_ready_to_ship(self):""
+        """Mark bale as ready for shipping"""
+"""            "type": "ir.actions.act_window","
+"""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
             "name": _("Ready To Ship"),
             "res_model": "shipping.preparation.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_bale_id": self.id},
-        
-
-    def action_ship_bale(self):
+        ""
+""
+    def action_ship_bale(self):""
         """Process bale shipment to recycling facility"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+"""
+""""
+"""            "type": "ir.actions.act_window","
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
             "name": _("Ship Bale"),
             "res_model": "bale.shipment.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_bale_id": self.id},
-        
-
-    def action_store_bale(self):
+        ""
+""
+    def action_store_bale(self):""
         """Store bale in temporary storage before processing"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+""""
+""""
+"""            "type": "ir.actions.act_window","
+"""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
             "name": _("Store Bale"),
             "res_model": "bale.storage.wizard",
             "view_mode": "form",
             "target": "new",
             "context": {"default_bale_id": self.id},
-        
-
-    # ============================================================================
-        # UTILITY METHODS
-    # ============================================================================
-    def calculate_environmental_impact(self):
+        ""
+""
+    # ============================================================================""
+        # UTILITY METHODS""
+    # ============================================================================""
+    def calculate_environmental_impact(self):""
         """Calculate environmental impact metrics based on industry standards"""
-        self.ensure_one()
-
-        # Standard environmental benefits per ton of recycled paper
-        ton_weight = self.bale_weight / 2000
-
-        self.write()
-            {}
-                "carbon_footprint_reduction": ton_weight
-                * 1.0,  # 1 ton CO2 per ton paper
+"""
+""""
+"""                "carbon_footprint_reduction": ton_weight"
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+                * 1.0,  # 1 ton CO2 per ton paper""
                 "water_savings": ton_weight * 7000,  # 7000 gallons per ton
                 "energy_savings": ton_weight * 4100,  # 4100 kWh per ton
                 "landfill_diversion": self.bale_weight,  # Full weight diverted
-            
-        
-
-    def get_recycling_efficiency(self):
+            ""
+        ""
+""
+    def get_recycling_efficiency(self):""
         """Calculate recycling efficiency based on contamination and quality"""
-        self.ensure_one()
-
-        base_efficiency = 0.85  # 85% base efficiency
-        contamination_penalty = ()
-            self.contamination_level * 0.1
-        
-
-        grade_bonuses = {}
-            "grade_1": 0.10,
+    """"
+"""            "grade_1": 0.10,"
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
             "grade_2": 0.5,
             "grade_3": 0.0,
             "grade_4": -0.5,
-        
-
-        grade_bonus = grade_bonuses.get(self.grade_quality, 0.0)
-        efficiency = max(0.0, base_efficiency - contamination_penalty + grade_bonus)
-
-        return min(1.0, efficiency)  # Cap at 100%
-
-    # ============================================================================
-        # VALIDATION METHODS
-    # ============================================================================
+        ""
+""
+        grade_bonus = grade_bonuses.get(self.grade_quality, 0.0)""
+        efficiency = max(0.0, base_efficiency - contamination_penalty + grade_bonus)""
+""
+        return min(1.0, efficiency)  # Cap at 100%""
+""
+    # ============================================================================""
+        # VALIDATION METHODS""
+    # ============================================================================""
     @api.constrains("contamination_level", "moisture_content")
-    def _check_percentages(self):
-        for record in self:
-            if record.contamination_level < 0 or record.contamination_level > 100:
-                raise ValidationError()
+    def _check_percentages(self):""
+        for record in self:""
+            if record.contamination_level < 0 or record.contamination_level > 100:""
+                raise ValidationError()""
                     _("Contamination level must be between 0 and 100%.")
-                
-            if record.moisture_content < 0 or record.moisture_content > 100:
+                ""
+            if record.moisture_content < 0 or record.moisture_content > 100:""
                 raise ValidationError(_("Moisture content must be between 0 and 100%."))
-
+""
     @api.constrains("bale_weight")
-    def _check_bale_weight(self):
-        for record in self:
-            if record.bale_weight <= 0:
+    def _check_bale_weight(self):""
+        for record in self:""
+            if record.bale_weight <= 0:""
                 raise ValidationError(_("Bale weight must be greater than zero."))
-
+""
     @api.constrains("bale_id")
-    def _check_bale_id_uniqueness(self):
-        for record in self:
-            if record.bale_id:
-                existing = self.search()
-                    [("bale_id", "=", record.bale_id), ("id", "!=", record.id)]
-                
-                if existing:
-                    raise ValidationError(_("Bale ID must be unique."))
-
+    def _check_bale_id_uniqueness(self):""
+        for record in self:""
+            if record.bale_id:""
+                existing = self.search()""
+                    [("bale_id", "=", record.bale_id), ("id", "!= """", record.id)"
+                ""
+                if existing:""
+                    raise ValidationError(_(""""Bale ID must be unique."))"
+""
     @api.constrains("market_price_per_ton", "processing_cost", "transport_cost")
-    def _check_financial_fields(self):
-        for record in self:
-            if record.market_price_per_ton < 0:
+    def _check_financial_fields(self):""
+        for record in self:""
+            if record.market_price_per_ton < 0:""
                 raise ValidationError(_("Market price cannot be negative."))
-            if record.processing_cost < 0:
+            if record.processing_cost < 0:""
                 raise ValidationError(_("Processing cost cannot be negative."))
-            if record.transport_cost < 0:
+            if record.transport_cost < 0:""
                 raise ValidationError(_("Transport cost cannot be negative."))
-
-    """"))))))))))))))))))
+""
+    """"
+""""

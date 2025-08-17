@@ -17,12 +17,12 @@ class DestructionItem(models.Model):
     store=True),
     item_description = fields.Char(
         string="Item Description", required=True, tracking=True
-    
+
     sequence = fields.Integer(string="Sequence",,
     default=10),
     company_id = fields.Many2one(
         "res.company", default=lambda self: self.env.company, required=True
-    
+
     active = fields.Boolean(string="Active",,
     default=True)
 
@@ -42,9 +42,9 @@ class DestructionItem(models.Model):
             ("hard_drive", "Hard Drive"),
             ("media", "Media/Tapes"),
             ("other", "Other"),
-        
+
         string="Container Type",
-    
+
 
     destruction_status = fields.Selection(
         [)
@@ -52,11 +52,11 @@ class DestructionItem(models.Model):
             ("in_progress", "In Progress"),
             ("destroyed", "Destroyed"),
             ("verified", "Verified"),
-        
+
         string="Destruction Status",
         default="pending",
         tracking=True,
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -65,23 +65,23 @@ class DestructionItem(models.Model):
         "res.partner",
         string="Customer",
         help="Customer associated with this destruction item",
-    
+
 
     shredding_service_id = fields.Many2one(
         "shredding.service", string="Shredding Service", ondelete="cascade"
-    
+
 
     records_destruction_id = fields.Many2one(
         "records.destruction",
         string="Records Destruction",
         help="Associated records destruction record",
-    
+
 
     naid_certificate_id = fields.Many2one(
         "naid.certificate",
         string="NAID Certificate",
         help="Associated NAID destruction certificate",
-    
+
 
     certificate_id = fields.Many2one(
         "shredding.certificate",
@@ -89,7 +89,7 @@ class DestructionItem(models.Model):
         help="Associated shredding certificate for this destruction item",:
             pass
         ondelete="set null"
-    
+
 
     destruction_record_id = fields.Many2one(
         "naid.destruction.record",
@@ -97,15 +97,15 @@ class DestructionItem(models.Model):
         help="Associated NAID destruction record",
         ,
     ondelete="set null"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many(
         "mail.activity", "res_id", string="Activities"
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -114,7 +114,7 @@ class DestructionItem(models.Model):
         # ============================================================================
     date_created = fields.Datetime(
         string="Created Date", default=fields.Datetime.now, readonly=True
-    
+
     ,
     date_destroyed = fields.Datetime(string="Destruction Date"),
     date_verified = fields.Datetime(string="Verification Date")
@@ -127,7 +127,7 @@ class DestructionItem(models.Model):
         ('completed', 'Completed'),
         ('verified', 'Verified'),
         ('cancelled', 'Cancelled'),
-    
+
         help='Current status of the record'
 
     # ============================================================================
@@ -155,8 +155,8 @@ class DestructionItem(models.Model):
             {}
                 "destruction_status": "destroyed",
                 "date_destroyed": fields.Datetime.now(),
-            
-        
+
+
 
         # Create audit log
         self.message_post(body=_("Item marked as destroyed"))
@@ -171,8 +171,8 @@ class DestructionItem(models.Model):
             {}
                 "destruction_status": "verified",
                 "date_verified": fields.Datetime.now(),
-            
-        
+
+
 
         self.message_post(body=_("Destruction verified"))
 
@@ -185,7 +185,7 @@ class DestructionItem(models.Model):
                 vals["sequence"] = ()
                     self.env["ir.sequence"].next_by_code("destruction.item")
                     or 10
-                
+
 
         return super().create(vals_list)
 
@@ -208,15 +208,15 @@ class DestructionItem(models.Model):
             if (:)
                 record.destruction_status == "destroyed"
                 and not record.date_destroyed
-            
+
                 raise ValidationError()
                     _("Destruction date is required for destroyed items"):
-                
+
             if (:)
                 record.destruction_status == "verified"
                 and not record.date_verified
-            
+
                 raise ValidationError()
                     _("Verification date is required for verified items"):
-                
+
 ))))))))))

@@ -1,11 +1,131 @@
 # -*- coding: utf-8 -*-
 
-from odoo import api, fields, models, _
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-
-
-class RecordsManagementBaseMenus(models.Model):
-    _name = 'records.management.base.menus'
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError
+    class RecordsManagementBaseMenus(models.Model):
+    _name = "records.management.base.menus"
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "records.management.base.menus"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = 'Records Management Base Menus'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
@@ -24,22 +144,23 @@ class RecordsManagementBaseMenus(models.Model):
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'), 
         ('done', 'Done'),
-        ('cancelled', 'Cancelled')
-    
-    
-        # Standard message/activity fields
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',,
-    auto_join=True),
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',,
-    auto_join=True),
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',,
-    auto_join=True),
-    Analytics = fields.Char(string='Analytics'),
-    Certificates = fields.Char(string='Certificates'),
-    Configuration = fields.Char(string='Configuration'),
-    Inventory = fields.Char(string='Inventory'),
-    Operations = fields.Char(string='Operations'),
-    Reporting = fields.Char(string='Reporting')
-    
-        # TODO: Add specific fields for this model:
-            pass
+        ('cancelled', 'Cancelled')"
+    ""
+    ""
+        # Standard message/activity fields""
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',,""
+    auto_join=True),""
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',,""
+    auto_join=True),""
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',,""
+    auto_join=True),""
+    Analytics = fields.Char(string='Analytics'),""
+    Certificates = fields.Char(string='Certificates'),""
+    Configuration = fields.Char(string='Configuration'),""
+    Inventory = fields.Char(string='Inventory'),""
+    Operations = fields.Char(string='Operations'),""
+    Reporting = fields.Char(string='Reporting')""
+    ""
+        # TODO: Add specific fields for this model:""
+            pass""
+""

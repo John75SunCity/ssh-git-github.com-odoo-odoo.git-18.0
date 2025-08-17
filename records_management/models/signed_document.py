@@ -29,14 +29,14 @@ class SignedDocument(models.Model):
         tracking=True,
         index=True,
         help="Name of the signed document",
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
         help="Company associated with this signed document",
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
@@ -44,18 +44,18 @@ class SignedDocument(models.Model):
         tracking=True,
         help="User responsible for this signed document",:
             pass
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record",:
-    
+
     active = fields.Boolean(
         string="Active",
         default=True,
         tracking=True,
         help="Active status of the signed document",
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -67,7 +67,7 @@ class SignedDocument(models.Model):
         ondelete="cascade",
         tracking=True,
         help="Portal request that generated this signed document",
-    
+
 
         # ============================================================================
     # DOCUMENT CLASSIFICATION
@@ -82,12 +82,12 @@ class SignedDocument(models.Model):
             ("pickup_authorization", "Pickup Authorization"),
             ("chain_of_custody", "Chain of Custody"),
             ("naid_certificate", "NAID Certificate"),
-        
+
         string="Document Type",
         required=True,
         tracking=True,
         help="Type of signed document",
-    
+
 
         # ============================================================================
     # SIGNATURE INFORMATION
@@ -97,26 +97,26 @@ class SignedDocument(models.Model):
         tracking=True,
         index=True,
         help="Date and time when document was signed",
-    
+
     signatory_name = fields.Char(
         string="Signatory Name",
         tracking=True,
         help="Full name of the person who signed",
-    
+
     signatory_email = fields.Char(
         string="Signatory Email",
         tracking=True,
         help="Email address of the signatory",
-    
+
     signatory_title = fields.Char(
         string="Signatory Title",
         tracking=True,
         help="Job title or position of the signatory",
-    
+
     signatory_ip_address = fields.Char(
         string="Signatory IP Address",
         help="IP address from which document was signed",
-    
+
 
         # ============================================================================
     # DOCUMENT STORAGE
@@ -125,20 +125,20 @@ class SignedDocument(models.Model):
         string="PDF Document",
         attachment=True,
         help="Signed PDF document file",
-    
+
     pdf_filename = fields.Char(
         string="PDF Filename",
         help="Original filename of the PDF document",
-    
+
     original_document = fields.Binary(
         string="Original Document",
         attachment=True,
         help="Original unsigned document for comparison",:
-    
+
     original_filename = fields.Char(
         string="Original Filename",
         help="Filename of the original document",
-    
+
 
         # ============================================================================
     # WORKFLOW MANAGEMENT
@@ -152,13 +152,13 @@ class SignedDocument(models.Model):
             ("verified", "Verified"),
             ("archived", "Archived"),
             ("rejected", "Rejected"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
         required=True,
         help="Current status of the signed document",
-    
+
 
         # ============================================================================
     # SECURITY AND VERIFICATION
@@ -166,11 +166,11 @@ class SignedDocument(models.Model):
     signature_hash = fields.Char(
         string="Signature Hash",
         help="Cryptographic hash of the signature for verification",:
-    
+
     document_hash = fields.Char(
         string="Document Hash",
         help="Hash of the complete signed document",
-    
+
     ,
     verification_status = fields.Selection(
         [)
@@ -178,21 +178,21 @@ class SignedDocument(models.Model):
             ("valid", "Valid"),
             ("invalid", "Invalid"),
             ("expired", "Expired"),
-        
+
         string="Verification Status",
         default="pending",
         tracking=True,
         help="Status of signature verification",
-    
+
     verification_date = fields.Datetime(
         string="Verification Date",
         help="Date when signature was last verified",
-    
+
     verified_by_id = fields.Many2one(
         "res.users",
         string="Verified By",
         help="User who verified the signature",
-    
+
 
         # ============================================================================
     # LEGAL AND COMPLIANCE
@@ -202,17 +202,17 @@ class SignedDocument(models.Model):
     string="Legal Validity Period (Days)",
         default=2555,  # 7 years default
         help="Number of days the signature remains legally valid",
-    
+
     expiry_date = fields.Date(
         string="Signature Expiry Date",
         compute="_compute_expiry_date",
         store=True,
         help="Date when signature expires",
-    
+
     compliance_notes = fields.Text(
         string="Compliance Notes",
         help="Notes related to legal compliance and requirements",
-    
+
 
         # ============================================================================
     # NAID COMPLIANCE INTEGRATION
@@ -221,7 +221,7 @@ class SignedDocument(models.Model):
         string="NAID Compliant",
         default=True,
         help="Whether this signature meets NAID requirements",
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -231,18 +231,18 @@ class SignedDocument(models.Model):
         compute="_compute_display_name",
         store=True,
         help="Display name for this signed document",:
-    
+
     is_expired = fields.Boolean(
         string="Is Expired",
         compute="_compute_is_expired",
         help="Whether the signature has expired",
-    
+
     signature_age_days = fields.Integer(
         ,
     string="Signature Age (Days)",
         compute="_compute_signature_age_days",
         help="Number of days since signature",
-    
+
 
         # ============================================================================
     # DOCUMENTATION
@@ -250,12 +250,12 @@ class SignedDocument(models.Model):
     notes = fields.Text(
         string="Notes",
         help="Additional notes or comments about the signed document",
-    
+
     internal_notes = fields.Text(
         string="Internal Notes",
         ,
     help="Internal notes not visible to customers",
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance):
@@ -266,19 +266,19 @@ class SignedDocument(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_follower_ids = fields.One2many(
-        "mail.followers", 
+        "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
@@ -288,7 +288,7 @@ class SignedDocument(models.Model):
     res_model = fields.Char(string='Res Model'),
     type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
-        
+
     # ============================================================================
         # COMPUTE METHODS
     # ============================================================================
@@ -299,7 +299,7 @@ class SignedDocument(models.Model):
             if record.signatory_name and record.signature_date:
                 record.display_name = _()
                     "%s - Signed by %s", record.name, record.signatory_name
-                
+
             elif record.signatory_name:
                 record.display_name = _("%s - %s", record.name, record.signatory_name)
             else:
@@ -312,7 +312,7 @@ class SignedDocument(models.Model):
             if record.signature_date and record.legal_validity_period > 0:
                 expiry_datetime = record.signature_date + timedelta()
                     days=record.legal_validity_period
-                
+
                 record.expiry_date = expiry_datetime.date()
             else:
                 record.expiry_date = False
@@ -375,8 +375,8 @@ class SignedDocument(models.Model):
                     "verification_status": "valid",
                     "verification_date": fields.Datetime.now(),
                     "verified_by_id": self.env.user.id,
-                
-            
+
+
             self.message_post(body=_("Signature verified successfully"))
         else:
             self.write()
@@ -384,8 +384,8 @@ class SignedDocument(models.Model):
                     "verification_status": "invalid",
                     "verification_date": fields.Datetime.now(),
                     "verified_by_id": self.env.user.id,
-                
-            
+
+
             self.message_post(body=_("Signature verification failed"))
 
         self._create_audit_log("signature_verified")
@@ -420,7 +420,7 @@ class SignedDocument(models.Model):
             "url": "/web/content/%s/%s/pdf_document?download=true&filename=%s"
             % (self._name, self.id, self.pdf_filename or "signed_document.pdf"),
             "target": "self",
-        
+
 
     # ============================================================================
         # BUSINESS METHODS
@@ -440,8 +440,8 @@ class SignedDocument(models.Model):
                 "timestamp": fields.Datetime.now(),
                 "ip_address": self.env.context.get("request_ip"),
                 "details": _("Action: %s performed on document %s", action, self.name),
-            
-        
+
+
 
     # ============================================================================
         # CONSTRAINT METHODS
@@ -460,7 +460,7 @@ class SignedDocument(models.Model):
             if record.signatory_email and not re.match(:)
                 r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
                 record.signatory_email,
-            
+
                 raise ValidationError(_("Please enter a valid email address"))
 
     @api.constrains("legal_validity_period")
@@ -470,7 +470,7 @@ class SignedDocument(models.Model):
             if record.legal_validity_period <= 0:
                 raise ValidationError()
                     _("Legal validity period must be greater than zero")
-                
+
 
     # ============================================================================
         # ORM OVERRIDES
@@ -482,7 +482,7 @@ class SignedDocument(models.Model):
             if not vals.get("name") or vals["name"] == "/":
                 vals["name") = (]
                     self.env["ir.sequence"].next_by_code("signed.document") or _("New")
-                
+
 
         documents = super().create(vals_list)
 
@@ -511,15 +511,15 @@ class SignedDocument(models.Model):
                 ("state", "in", ["signed", "verified"]),
                 ("expiry_date", "<=", expiry_date_limit),
                 ("expiry_date", ">=", fields.Date.today()),
-            
-        
+
+
 
     @api.model
     def cleanup_expired_signatures(self):
         """Archive expired signatures"""
         expired = self.search()
             [("state", "in", ["signed", "verified"]), ("is_expired", "=", True)]
-        
+
         for doc in expired:
             doc.message_post(body=_("Signature expired - document archived"))
             doc.write({"state": "archived"})

@@ -33,38 +33,38 @@ class FileRetrievalWorkOrderItem(models.Model):
         index=True,
         help="Reference number or identifier for this specific file":
             pass
-    
+
 
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True,
         help="Formatted display name combining reference and description"
-    
+
 
     description = fields.Text(
         string="File Description",
         required=True,
         help="Detailed description of the file to be retrieved"
-    
+
 
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Order sequence for processing items":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         related="work_order_id.company_id",
         store=True,
         string="Company"
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True
-    
+
 
         # ============================================================================
     # WORK ORDER RELATIONSHIP
@@ -75,14 +75,14 @@ class FileRetrievalWorkOrderItem(models.Model):
         required=True,
         ondelete="cascade",
         index=True
-    
+
 
     partner_id = fields.Many2one(
         "res.partner",
         related="work_order_id.partner_id",
         store=True,
         string="Customer"
-    
+
 
         # ============================================================================
     # FILE DETAILS AND SPECIFICATIONS
@@ -90,18 +90,18 @@ class FileRetrievalWorkOrderItem(models.Model):
     file_name = fields.Char(
         string="File Name",
         help="Specific name or title of the file"
-    
+
 
     estimated_pages = fields.Integer(
         string="Estimated Pages",
         default=1,
         help="Estimated number of pages in this file"
-    
+
 
     actual_pages = fields.Integer(
         string="Actual Pages",
         help="Actual number of pages found during retrieval"
-    
+
 
     ,
     file_type = fields.Selection([))
@@ -114,7 +114,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         ("contract", "Contract"),
         ("correspondence", "Correspondence"),
         ("other", "Other"),
-    
+
         default="document",
         help="Category of file being retrieved"
 
@@ -124,7 +124,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         ("microfilm", "Microfilm"),
         ("digital_printout", "Digital Printout"),
         ("other", "Other Format"),
-    
+
         default="paper",
         help="Physical format of the file"
 
@@ -135,25 +135,25 @@ class FileRetrievalWorkOrderItem(models.Model):
         "records.container",
         string="Source Container",
         help="Container where this file is stored"
-    
+
 
     container_location = fields.Char(
         string="Container Location",
         related="container_id.location_id.name",
         store=True,
         help="Current location of the source container"
-    
+
 
     location_notes = fields.Text(
         string="Location Notes",
         help="Specific notes about where to find this file within the container"
-    
+
 
     file_position = fields.Char(
         string="File Position",
         ,
     help="Position or folder location within container (e.g., 'Folder A-C, Tab 2')"
-    
+
 
         # ============================================================================
     # STATUS AND PROGRESS TRACKING
@@ -168,7 +168,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         ("packaged", "Packaged"),
         ("not_found", "Not Found"),
         ("damaged", "Damaged"),
-    
+
         default="pending",
         tracking=True,
         help="Current status of this file retrieval"
@@ -183,29 +183,29 @@ class FileRetrievalWorkOrderItem(models.Model):
         ("poor", "Poor"),
         ("damaged", "Damaged"),
         ("illegible", "Illegible"),
-    
+
         help="Physical condition of the file when retrieved"
 
     quality_notes = fields.Text(
         string="Quality Notes",
         help="Notes about file condition or quality issues"
-    
+
 
     quality_approved = fields.Boolean(
         string="Quality Approved",
         help="Whether this file passed quality inspection"
-    
+
 
     quality_approved_by_id = fields.Many2one(
         "res.users",
         string="Quality Approved By",
         help="User who approved the quality of this file"
-    
+
 
     quality_approved_date = fields.Datetime(
         string="Quality Approved Date",
         help="Date when quality was approved"
-    
+
 
         # ============================================================================
     # TIMING FIELDS
@@ -213,17 +213,17 @@ class FileRetrievalWorkOrderItem(models.Model):
     date_located = fields.Datetime(
         string="Date Located",
         help="Date and time when file was located"
-    
+
 
     date_retrieved = fields.Datetime(
         string="Date Retrieved",
         help="Date and time when file was retrieved"
-    
+
 
     date_quality_checked = fields.Datetime(
         string="Date Quality Checked",
         help="Date when quality check was performed"
-    
+
 
         # ============================================================================
     # WORKFLOW STATE MANAGEMENT
@@ -234,7 +234,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    
+
         help='Current status of the record'
 
     # ============================================================================
@@ -245,14 +245,14 @@ class FileRetrievalWorkOrderItem(models.Model):
         "res_id",
         ,
     domain=lambda self: [('res_model', '=', self._name)), string="Activities"
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         ,
     domain=lambda self: [('res_model', '=', self._name)), string="Followers"
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -266,7 +266,7 @@ class FileRetrievalWorkOrderItem(models.Model):
     type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
         string="Messages"
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -294,7 +294,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         self.write({)}
             "status": "located",
             "date_located": fields.Datetime.now()
-        
+
 
         # Update work order progress
         if hasattr(self.work_order_id, '_update_progress_metrics'):
@@ -303,7 +303,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         self.message_post()
             body=_("File located successfully"),
             message_type="notification"
-        
+
         return True
 
     def action_mark_retrieved(self):
@@ -312,12 +312,12 @@ class FileRetrievalWorkOrderItem(models.Model):
         if self.status not in ["located", "retrieving"]:
             raise ValidationError()
                 _("Item must be located before it can be retrieved")
-            
+
 
         self.write({)}
             "status": "retrieved",
             "date_retrieved": fields.Datetime.now()
-        
+
 
         # Update work order progress
         if hasattr(self.work_order_id, '_update_progress_metrics'):
@@ -326,7 +326,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         self.message_post()
             body=_("File retrieved successfully"),
             message_type="notification"
-        
+
         return True
 
     def action_quality_check(self):
@@ -335,7 +335,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         if self.status != "retrieved":
             raise ValidationError()
                 _("Item must be retrieved before quality check")
-            
+
 
         return {}
             "type": "ir.actions.act_window",
@@ -346,8 +346,8 @@ class FileRetrievalWorkOrderItem(models.Model):
             "context": {}
                 "default_item_id": self.id,
                 "default_work_order_id": self.work_order_id.id,
-            
-        
+
+
 
     def action_approve_quality(self):
         """Approve quality for this item""":
@@ -358,7 +358,7 @@ class FileRetrievalWorkOrderItem(models.Model):
             "quality_approved_by_id": self.env.user.id,
             "quality_approved_date": fields.Datetime.now(),
             "date_quality_checked": fields.Datetime.now(),
-        
+
 
         # Update work order progress
         if hasattr(self.work_order_id, '_update_progress_metrics'):
@@ -367,7 +367,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         self.message_post()
             body=_("File quality approved by %s", self.env.user.name),
             message_type="notification",
-        
+
         return True
 
     def action_mark_not_found(self):
@@ -378,7 +378,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         self.message_post()
             body=_("File marked as not found"),
             message_type="notification"
-        
+
 
         # Update work order progress
         if hasattr(self.work_order_id, '_update_progress_metrics'):
@@ -392,12 +392,12 @@ class FileRetrievalWorkOrderItem(models.Model):
         self.write({)}
             "status": "damaged",
             "condition": "damaged"
-        
+
 
         self.message_post()
             body=_("File marked as damaged"),
             message_type="notification"
-        
+
 
         # Update work order progress
         if hasattr(self.work_order_id, '_update_progress_metrics'):
@@ -411,13 +411,13 @@ class FileRetrievalWorkOrderItem(models.Model):
         if self.status != "pending":
             raise ValidationError()
                 _("Can only start locating pending items")
-            
+
 
         self.write({"status": "locating"})
         self.message_post()
             body=_("Started locating file"),
             message_type="notification"
-        
+
         return True
 
     def action_start_retrieving(self):
@@ -426,13 +426,13 @@ class FileRetrievalWorkOrderItem(models.Model):
         if self.status != "located":
             raise ValidationError()
                 _("Can only start retrieving located items")
-            
+
 
         self.write({"status": "retrieving"})
         self.message_post()
             body=_("Started retrieving file"),
             message_type="notification"
-        
+
         return True
 
     def action_package(self):
@@ -441,13 +441,13 @@ class FileRetrievalWorkOrderItem(models.Model):
         if self.status != "quality_checked":
             raise ValidationError()
                 _("Item must pass quality check before packaging")
-            
+
 
         self.write({"status": "packaged"})
         self.message_post()
             body=_("File packaged for delivery"),:
             message_type="notification"
-        
+
         return True
 
     # ============================================================================
@@ -468,7 +468,7 @@ class FileRetrievalWorkOrderItem(models.Model):
             'container': self.container_id.name if self.container_id else '',:
             'quality_approved': self.quality_approved,
             'location_notes': self.location_notes or '',
-        
+
 
     def update_progress_status(self, new_status, notes=None):
         """Update item status with optional notes"""
@@ -500,7 +500,7 @@ class FileRetrievalWorkOrderItem(models.Model):
             domain=[],
             fields=['status'],
             groupby=['status']
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -520,10 +520,10 @@ class FileRetrievalWorkOrderItem(models.Model):
         for record in self:
             if record.quality_approved and record.status not in [:]
                 "quality_checked", "packaged"
-            
+
                 raise ValidationError()
                     _("Quality can only be approved for quality checked or packaged items"):
-                
+
 
     @api.constrains("work_order_id", "name")
     def _check_unique_reference_per_order(self):
@@ -534,11 +534,11 @@ class FileRetrievalWorkOrderItem(models.Model):
                     ('work_order_id', '=', record.work_order_id.id),
                     ('name', '=', record.name),
                     ('id', '!=', record.id)
-                
+
                 if existing:
                     raise ValidationError()
                         _("Item reference %s already exists in this work order", record.name)
-                    
+
 
     # ============================================================================
         # ORM OVERRIDES
@@ -564,7 +564,7 @@ class FileRetrievalWorkOrderItem(models.Model):
                 status_display = dict(record._fields['status'].selection).get(vals["status"], vals["status"])
                 record.message_post()
                     body=_("Item status changed to %s", status_display)
-                
+
 
         return result
 
@@ -592,7 +592,7 @@ class FileRetrievalWorkOrderItem(models.Model):
                 ("file_name", operator, name),
                 ("description", operator, name),
                 ("display_name", operator, name),
-            
+
 
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
@@ -614,7 +614,7 @@ class FileRetrievalWorkOrderItem(models.Model):
             'position': self.file_position,
             'quality_approved': self.quality_approved,
             'quality_notes': self.quality_notes,
-        
+
 
     # ============================================================================
         # REPORTING METHODS
@@ -663,5 +663,5 @@ class FileRetrievalWorkOrderItem(models.Model):
             'total_pages': total_pages,
             'items': [item.get_retrieval_summary() for item in items],:
             'quality_approval_rate': len(items.filtered('quality_approved')) / total_items * 100 if total_items > 0 else 0,:
-        
+
 )))))))))))))))

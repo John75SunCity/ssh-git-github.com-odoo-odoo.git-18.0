@@ -26,20 +26,20 @@ class ContainerAccessVisitor(models.Model):
         tracking=True,
         index=True,
         help="Name of the visitor"
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this visitor record"
-    
+
 
         # ============================================================================
     # VISITOR INFORMATION
@@ -53,12 +53,12 @@ class ContainerAccessVisitor(models.Model):
         ('inspector', 'Inspector'),
         ('maintenance', 'Maintenance'),
         ('other', 'Other')
-    
+
 
     company_name = fields.Char(
         string="Company/Organization",
         help="Company or organization the visitor represents"
-    
+
 
     ,
     identification_type = fields.Selection([))
@@ -67,22 +67,22 @@ class ContainerAccessVisitor(models.Model):
         ('employee_id', 'Employee ID'),
         ('government_id', 'Government ID'),
         ('other', 'Other')
-    
+
 
     identification_number = fields.Char(
         string="ID Number",
         help="Identification number"
-    
+
 
     contact_phone = fields.Char(
         string="Phone Number",
         help="Contact phone number"
-    
+
 
     contact_email = fields.Char(
         string="Email",
         help="Contact email address"
-    
+
 
         # ============================================================================
     # VISIT DETAILS
@@ -93,7 +93,7 @@ class ContainerAccessVisitor(models.Model):
         default=fields.Date.today,
         tracking=True,
         help="Date of the visit"
-    
+
 
     visit_time = fields.Datetime(
         string="Visit Time",
@@ -101,19 +101,19 @@ class ContainerAccessVisitor(models.Model):
         required=True,
         tracking=True,
         help="Time of arrival"
-    
+
 
     departure_time = fields.Datetime(
         string="Departure Time",
         tracking=True,
         help="Time of departure"
-    
+
 
     purpose = fields.Text(
         string="Purpose of Visit",
         required=True,
         help="Purpose of the visit"
-    
+
 
         # ============================================================================
     # ACCESS CONTROL
@@ -124,24 +124,24 @@ class ContainerAccessVisitor(models.Model):
         required=True,
         tracking=True,
         help="Staff member who authorized the visit"
-    
+
 
     escort_required = fields.Boolean(
         string="Escort Required",
         default=True,
         help="Whether visitor must be escorted"
-    
+
 
     escort_id = fields.Many2one(
         "hr.employee",
         string="Escort",
         help="Employee escorting the visitor"
-    
+
 
     access_areas = fields.Text(
         string="Authorized Areas",
         help="Areas the visitor is authorized to access"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -150,26 +150,26 @@ class ContainerAccessVisitor(models.Model):
         "res.partner",
         string="Related Customer",
         help="Customer this visit is related to"
-    
+
 
     work_order_id = fields.Many2one(
         "container.access.work.order",
         string="Work Order",
         help="Related container access work order"
-    
+
 
     container_ids = fields.Many2many(
         "records.container",
         string="Accessed Containers",
         help="Containers accessed during the visit"
-    
+
 
     access_activity_ids = fields.One2many(
         "container.access.activity",
         "visitor_id",
         string="Access Activities",
         help="Activities performed during the visit"
-    
+
 
         # ============================================================================
     # SECURITY FIELDS
@@ -181,12 +181,12 @@ class ContainerAccessVisitor(models.Model):
         ('standard', 'Standard'),
         ('high', 'High'),
         ('top_secret', 'Top Secret')
-    
+
 
     badge_number = fields.Char(
         string="Badge Number",
         help="Visitor badge number assigned"
-    
+
 
         # ============================================================================
     # STATUS
@@ -198,7 +198,7 @@ class ContainerAccessVisitor(models.Model):
         ('in_progress', 'In Progress'),
         ('checked_out', 'Checked Out'),
         ('cancelled', 'Cancelled')
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
             pass
@@ -227,7 +227,7 @@ class ContainerAccessVisitor(models.Model):
     string="Visit Duration (Hours)",
         compute='_compute_visit_duration',
         help="Duration of the visit in hours"
-    
+
 
         # ============================================================================
     # ACTION METHODS
@@ -237,11 +237,11 @@ class ContainerAccessVisitor(models.Model):
         self.ensure_one()
         if self.status != 'scheduled':
             raise UserError(_('Can only check in scheduled visitors'))
-        
+
         self.write({)}
             'status': 'checked_in',
             'visit_time': fields.Datetime.now()
-        
+
         self.message_post(body=_('Visitor checked in'))
 
     def action_start_visit(self):
@@ -249,7 +249,7 @@ class ContainerAccessVisitor(models.Model):
         self.ensure_one()
         if self.status != 'checked_in':
             raise UserError(_('Visitor must be checked in first'))
-        
+
         self.write({'status': 'in_progress'})
         self.message_post(body=_('Visit started'))
 
@@ -258,11 +258,11 @@ class ContainerAccessVisitor(models.Model):
         self.ensure_one()
         if self.status not in ('checked_in', 'in_progress'):
             raise UserError(_('Can only check out active visitors'))
-        
+
         self.write({)}
             'status': 'checked_out',
             'departure_time': fields.Datetime.now()
-        
+
         self.message_post(body=_('Visitor checked out'))
 
     def action_cancel_visit(self):
@@ -270,7 +270,7 @@ class ContainerAccessVisitor(models.Model):
         self.ensure_one()
         if self.status in ('checked_out', 'cancelled'):
             raise UserError(_('Cannot cancel completed or already cancelled visits'))
-        
+
         self.write({'status': 'cancelled'})
         self.message_post(body=_('Visit cancelled'))
 

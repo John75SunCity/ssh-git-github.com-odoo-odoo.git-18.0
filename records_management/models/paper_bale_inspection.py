@@ -20,13 +20,13 @@ class PaperBaleInspection(models.Model):
     default=lambda self: _('New'),
         help='Unique identifier for this record':
             pass
-    
+
     active = fields.Boolean(
         string='Active',
         default=True,
         tracking=True,
         help='Set to false to hide this record'
-    
+
     company_id = fields.Many2one(
         'res.company',
         string='Company',
@@ -34,14 +34,14 @@ class PaperBaleInspection(models.Model):
         required=True,
         index=True,
         help='Company this record belongs to'
-    
+
     ,
     state = fields.Selection([))
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('done', 'Done'),
         ('cancelled', 'Cancelled'),
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance):
@@ -52,23 +52,23 @@ class PaperBaleInspection(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_follower_ids = fields.One2many(
-        "mail.followers", 
+        "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
         # ============================================================================
     # ORM METHODS
         # ============================================================================
@@ -82,13 +82,13 @@ class PaperBaleInspection(models.Model):
 
     bale_id = fields.Many2one(
         "paper.bale", string="Paper Bale", required=True, ondelete="cascade"
-    
+
     inspection_date = fields.Datetime(
         string="Inspection Date", required=True, default=fields.Datetime.now
-    
+
     inspector_id = fields.Many2one(
         "res.users", string="Inspector", default=lambda self: self.env.user
-    
+
     ,
     inspection_type = fields.Selection(
         [)
@@ -96,11 +96,11 @@ class PaperBaleInspection(models.Model):
             ("contamination", "Contamination Check"),
             ("moisture", "Moisture Content"),
             ("full", "Full Inspection"),
-        
+
         string="Inspection Type",
         required=True,
         default="visual",
-    
+
     passed = fields.Boolean(string="Passed",,
     default=False),
     notes = fields.Text(string="Inspection Notes"),
@@ -118,7 +118,7 @@ class PaperBaleInspection(models.Model):
             if not inspection.passed and not inspection.rejection_reason:
                 raise ValidationError()
                     _("A rejection reason is required for failed inspections."):
-                
+
 
     def action_pass_inspection(self):
         self.ensure_one()

@@ -27,20 +27,20 @@ class PortalFeedbackResolution(models.Model):
         tracking=True,
         index=True,
         help="Brief summary of the resolution"
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this resolution"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -51,7 +51,7 @@ class PortalFeedbackResolution(models.Model):
         required=True,
         ondelete="cascade",
         help="The feedback this resolution addresses"
-    
+
 
     resolved_by_id = fields.Many2one(
         "res.users",
@@ -60,7 +60,7 @@ class PortalFeedbackResolution(models.Model):
         required=True,
         tracking=True,
         help="User who provided this resolution"
-    
+
 
         # ============================================================================
     # RESOLUTION DETAILS
@@ -71,7 +71,7 @@ class PortalFeedbackResolution(models.Model):
         required=True,
         tracking=True,
         help="Date and time when resolution was provided"
-    
+
 
     ,
     resolution_type = fields.Selection([))
@@ -83,18 +83,18 @@ class PortalFeedbackResolution(models.Model):
         ('escalation', 'Escalated to Management'),
         ('no_action', 'No Action Required'),
         ('other', 'Other')
-    
+
 
     description = fields.Html(
         string="Resolution Description",
         required=True,
         help="Detailed description of the resolution"
-    
+
 
     internal_notes = fields.Text(
         string="Internal Notes",
         help="Internal notes not visible to customer"
-    
+
 
         # ============================================================================
     # STATUS AND TRACKING
@@ -106,7 +106,7 @@ class PortalFeedbackResolution(models.Model):
         ('verified', 'Verified'),
         ('customer_notified', 'Customer Notified'),
         ('closed', 'Closed')
-    
+
 
     customer_satisfaction = fields.Selection([))
         ('very_satisfied', 'Very Satisfied'),
@@ -114,7 +114,7 @@ class PortalFeedbackResolution(models.Model):
         ('neutral', 'Neutral'),
         ('dissatisfied', 'Dissatisfied'),
         ('very_dissatisfied', 'Very Dissatisfied')
-    
+
 
         # ============================================================================
     # FOLLOW-UP FIELDS
@@ -124,17 +124,17 @@ class PortalFeedbackResolution(models.Model):
         default=False,
         tracking=True,
         help="Whether this resolution requires follow-up"
-    
+
 
     follow_up_date = fields.Date(
         string="Follow-up Date",
         help="Date for follow-up action":
-    
+
 
     follow_up_notes = fields.Text(
         string="Follow-up Notes",
         help="Notes for follow-up actions":
-    
+
 
         # ============================================================================
     # METRICS
@@ -144,7 +144,7 @@ class PortalFeedbackResolution(models.Model):
     string="Resolution Time (Hours)",
         compute='_compute_resolution_time',
         help="Time taken to resolve the feedback"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,
@@ -175,7 +175,7 @@ class PortalFeedbackResolution(models.Model):
         self.ensure_one()
         if self.status != 'draft':
             raise UserError(_('Can only implement draft resolutions'))
-        
+
         self.write({'status': 'implemented'})
         self.message_post(body=_('Resolution implemented'))
 
@@ -184,7 +184,7 @@ class PortalFeedbackResolution(models.Model):
         self.ensure_one()
         if self.status != 'implemented':
             raise UserError(_('Can only verify implemented resolutions'))
-        
+
         self.write({'status': 'verified'})
         self.message_post(body=_('Resolution verified'))
 
@@ -193,13 +193,13 @@ class PortalFeedbackResolution(models.Model):
         self.ensure_one()
         if self.status not in ('implemented', 'verified'):
             raise UserError(_('Can only notify customer after implementation'))
-        
+
         # Send notification to customer
         self.feedback_id.partner_id.message_post()
             body=_('Your feedback has been addressed: %s') % self.name,
             subject=_('Feedback Resolution: %s') % self.feedback_id.name
-        
-        
+
+
         self.write({'status': 'customer_notified'})
         self.message_post(body=_('Customer notified of resolution'))
 
@@ -208,7 +208,7 @@ class PortalFeedbackResolution(models.Model):
         self.ensure_one()
         if self.status != 'customer_notified':
             raise UserError(_('Must notify customer before closing'))
-        
+
         self.write({'status': 'closed'})
         self.message_post(body=_('Resolution closed'))
 

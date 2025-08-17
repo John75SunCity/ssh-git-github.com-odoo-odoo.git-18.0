@@ -22,13 +22,13 @@ class PortalFeedbackCommunication(models.Model):
     default=lambda self: _('New'),
         help='Unique identifier for this record':
             pass
-    
+
     state = fields.Selection([))
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('done', 'Done'),
         ('cancelled', 'Cancelled'),
-    
+
 
         # ============================================================================
     # MAIL FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance):
@@ -39,23 +39,23 @@ class PortalFeedbackCommunication(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_follower_ids = fields.One2many(
-        "mail.followers", 
+        "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
         # ============================================================================
     # ORM METHODS
         # ============================================================================
@@ -79,17 +79,17 @@ class PortalFeedbackCommunication(models.Model):
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users", string="User", default=lambda self: self.env.user, tracking=True
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         related="feedback_id.partner_id",
         store=True,
         help="Associated partner for this record",:
-    
+
     active = fields.Boolean(string="Active",,
     default=True)
 
@@ -102,13 +102,13 @@ class PortalFeedbackCommunication(models.Model):
         required=True,
         ondelete="cascade",
         index=True,
-    
+
     communication_date = fields.Datetime(
         string="Communication Date",
         required=True,
         default=fields.Datetime.now,
         tracking=True,
-    
+
     ,
     communication_type = fields.Selection(
         [)
@@ -118,20 +118,20 @@ class PortalFeedbackCommunication(models.Model):
             ("in_person", "In Person"),
             ("video_call", "Video Call"),
             ("chat", "Live Chat"),
-        
+
         string="Communication Type",
         required=True,
         tracking=True,
-    
+
     direction = fields.Selection(
         [)
             ("inbound", "Inbound (from Customer)"),
             ("outbound", "Outbound (to Customer)"),
-        
+
         string="Direction",
         required=True,
         tracking=True,
-    
+
     message = fields.Text(string="Message Content",,
     required=True),
     sender_id = fields.Many2one("res.users",,
@@ -145,7 +145,7 @@ class PortalFeedbackCommunication(models.Model):
         # ============================================================================
     response_required = fields.Boolean(
         string="Response Required", default=False, tracking=True
-    
+
     ,
     response_deadline = fields.Datetime(string="Response Deadline"),
     context = fields.Char(string='Context'),
@@ -164,7 +164,7 @@ class PortalFeedbackCommunication(models.Model):
         self.write({"response_required": False})
         self.message_post()
             body=_("Communication has been responded to."), message_type="notification"
-        
+
 
     def action_send_followup(self):
         """Send a follow-up communication"""
@@ -176,6 +176,6 @@ class PortalFeedbackCommunication(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_original_communication_id": self.id},
-        
+
 
 )))))

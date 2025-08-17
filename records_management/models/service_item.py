@@ -51,24 +51,24 @@ class ServiceItem(models.Model):
         tracking=True,
         index=True,
         help="Name or identifier for this service item",:
-    
+
     description = fields.Text(
         string="Description", help="Detailed description of the service item"
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
         index=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this service item",:
-    
+
     active = fields.Boolean(string="Active", default=True,,
     tracking=True)
 
@@ -82,27 +82,27 @@ class ServiceItem(models.Model):
                 ("category", "=", "service_management"),
                 ("config_key", "=", feature_key),
                 ("company_id", "in", [self.env.company.id, False]),
-            
+
             limit=1,
-        
+
         return configurator.boolean_value if configurator else True:
     # Configurator visibility controls
     show_maintenance_tracking = fields.Boolean(
         string="Show Maintenance Tracking",
         compute="_compute_configurator_settings",
         help="Show maintenance tracking fields based on configuration",
-    
+
     show_financial_tracking = fields.Boolean(
         string="Show Financial Tracking",
         compute="_compute_configurator_settings",
         help="Show financial tracking fields based on configuration",
-    
+
     show_performance_metrics = fields.Boolean(
         string="Show Performance Metrics",
         compute="_compute_configurator_settings",
         ,
     help="Show performance metrics based on configuration",
-    
+
 
     @api.depends("company_id")
     def _compute_configurator_settings(self):
@@ -111,18 +111,18 @@ class ServiceItem(models.Model):
             record.show_maintenance_tracking = ()
                 record._is_service_item_feature_enabled()
                     "enable_maintenance_tracking"
-                
-            
+
+
             record.show_financial_tracking = ()
                 record._is_service_item_feature_enabled()
                     "enable_financial_tracking"
-                
-            
+
+
             record.show_performance_metrics = ()
                 record._is_service_item_feature_enabled()
                     "enable_performance_metrics"
-                
-            
+
+
 
     # ============================================================================
         # STATE MANAGEMENT
@@ -134,12 +134,12 @@ class ServiceItem(models.Model):
             ("in_use", "In Use"),
             ("maintenance", "Under Maintenance"),
             ("retired", "Retired"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
         help="Current status of the service item",
-    
+
 
         # ============================================================================
     # SERVICE CONFIGURATION
@@ -154,12 +154,12 @@ class ServiceItem(models.Model):
             ("transport", "Transport Service"),
             ("scanning", "Scanning Service"),
             ("consultation", "Consultation Service"),
-        
+
         string="Service Type",
         required=True,
         tracking=True,
         help="Type of service this item supports",
-    
+
     category = fields.Selection(
         [)
             ("equipment", "Equipment"),
@@ -168,35 +168,35 @@ class ServiceItem(models.Model):
             ("tool", "Tool"),
             ("software", "Software"),
             ("personnel", "Personnel"),
-        
+
         string="Category",
         required=True,
         tracking=True,
         help="Category classification of the service item",
-    
+
 
         # ============================================================================
     # ITEM SPECIFICATIONS
         # ============================================================================
     model_number = fields.Char(
         string="Model Number", help="Manufacturer model number"
-    
+
     serial_number = fields.Char(
         string="Serial Number",
         index=True,
         help="Unique serial number for identification",:
-    
+
     manufacturer = fields.Char(
         string="Manufacturer", help="Equipment or item manufacturer"
-    
+
     purchase_date = fields.Date(
         string="Purchase Date",
         tracking=True,
         help="Date of purchase or acquisition",
-    
+
     warranty_expiry = fields.Date(
         string="Warranty Expiry", tracking=True, help="Warranty expiration date"
-    
+
 
         # ============================================================================
     # FINANCIAL INFORMATION
@@ -206,27 +206,27 @@ class ServiceItem(models.Model):
         string="Currency",
         default=lambda self: self.env.company.currency_id,
         required=True,
-    
+
     purchase_cost = fields.Monetary(
         string="Purchase Cost",
         currency_field="currency_id",
         help="Original purchase cost",
-    
+
     current_value = fields.Monetary(
         string="Current Value",
         currency_field="currency_id",
         help="Current estimated value",
-    
+
     maintenance_cost = fields.Monetary(
         string="Total Maintenance Cost",
         currency_field="currency_id",
         help="Cumulative maintenance costs",
-    
+
     depreciation_rate = fields.Float(
         string="Annual Depreciation Rate %",
         default=10.0,
         help="Annual depreciation percentage",
-    
+
         # ============================================================================
     # OPERATIONAL STATUS
         # ============================================================================
@@ -235,19 +235,19 @@ class ServiceItem(models.Model):
         string="Current Location",
         tracking=True,
         help="Current physical location",
-    
+
     assigned_user_id = fields.Many2one(
         "res.users",
         string="Assigned To",
         tracking=True,
         help="User currently assigned to this item",
-    
+
     department_id = fields.Many2one(
         "records.department",
         string="Department",
         tracking=True,
         help="Department responsible for this item",:
-    
+
 
         # ============================================================================
     # MAINTENANCE TRACKING
@@ -256,32 +256,32 @@ class ServiceItem(models.Model):
         string="Last Maintenance",
         tracking=True,
         help="Date of last maintenance service",
-    
+
     next_maintenance = fields.Date(
         string="Next Maintenance",
         compute="_compute_next_maintenance",
         store=True,
         help="Calculated next maintenance date",
-    
+
     maintenance_interval = fields.Integer(
         ,
     string="Maintenance Interval (days)",
         default=90,
         help="Number of days between maintenance services",
-    
+
     maintenance_due = fields.Boolean(
         string="Maintenance Due",
         compute="_compute_maintenance_due",
         store=True,
         help="Whether maintenance is currently due",
-    
+
 
         # ============================================================================
     # CAPACITY & PERFORMANCE
         # ============================================================================
     capacity = fields.Float(
         string="Capacity", help="Maximum capacity of the service item"
-    
+
     ,
     capacity_unit = fields.Selection(
         [)
@@ -292,29 +292,29 @@ class ServiceItem(models.Model):
             ("pages", "Pages"),
             ("liters", "Liters"),
             ("cubic_meters", "Cubic Meters"),
-        
+
         string="Capacity Unit",
         default="pieces",
         help="Unit of measurement for capacity",:
-    
+
     utilization_rate = fields.Float(
         string="Utilization Rate %",
         default=0.0,
         ,
     digits=(5, 2),
         help="Current utilization percentage",
-    
+
     efficiency_rating = fields.Selection(
         [)
             ("poor", "Poor"),
             ("fair", "Fair"),
             ("good", "Good"),
             ("excellent", "Excellent"),
-        
+
         string="Efficiency Rating",
         default="good",
         help="Performance efficiency rating",
-    
+
 
         # ============================================================================
     # COMPUTED STATUS FIELDS
@@ -324,19 +324,19 @@ class ServiceItem(models.Model):
             ("active", "Active"),
             ("expired", "Expired"),
             ("unknown", "Unknown"),
-        
+
         string="Warranty Status",
         compute="_compute_warranty_status",
         store=True,
         help="Current warranty status",
-    
+
     age_months = fields.Integer(
         ,
     string="Age (Months)",
         compute="_compute_age",
         store=True,
         help="Age of the item in months",
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -346,13 +346,13 @@ class ServiceItem(models.Model):
         "service_item_id",
         string="Service Requests",
         help="Service requests using this item",
-    
+
     maintenance_request_ids = fields.One2many(
         "maintenance.request",
         "equipment_id",
         string="Maintenance Requests",
         help="Maintenance requests for this item",:
-    
+
 
         # ============================================================================
     # DOCUMENTATION FIELDS
@@ -360,14 +360,14 @@ class ServiceItem(models.Model):
     specifications = fields.Text(
         string="Technical Specifications",
         help="Detailed technical specifications",
-    
+
     operating_instructions = fields.Text(
         string="Operating Instructions",
         help="Instructions for operating the item",:
-    
+
     safety_notes = fields.Text(
         string="Safety Notes", help="Important safety considerations"
-    
+
     notes = fields.Text(string="Internal Notes",,
     help="Internal notes and comments")
 
@@ -380,14 +380,14 @@ class ServiceItem(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -508,7 +508,7 @@ class ServiceItem(models.Model):
     def _compute_total_revenue(self):
         for record in self:
             record.total_revenue = sum(record.line_ids.mapped('amount'))
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -533,7 +533,7 @@ class ServiceItem(models.Model):
             if item.last_maintenance and item.maintenance_interval:
                 item.next_maintenance = item.last_maintenance + timedelta()
                     days=item.maintenance_interval
-                
+
             else:
                 item.next_maintenance = False
 
@@ -556,7 +556,7 @@ class ServiceItem(models.Model):
                 # Calculate difference in months
                 months = (today.year - item.purchase_date.year) * 12 + ()
                     today.month - item.purchase_date.month
-                
+
                 item.age_months = max(0, months)  # Ensure non-negative
             else:
                 item.age_months = 0
@@ -572,7 +572,7 @@ class ServiceItem(models.Model):
             if record.category:
                 category_name = dict(self._fields["category").selection).get(]
                     record.category
-                
+
                 name = _("%s (%s)", name, category_name)
             if record.model_number:
                 name = _("%s - %s", name, record.model_number)
@@ -588,7 +588,7 @@ class ServiceItem(models.Model):
         if self.state not in ["draft", "maintenance"]:
             raise UserError()
                 _("Cannot mark item as available from current state")
-            
+
         self.write({"state": "available"})
         self.message_post(body=_("Service item marked as available"))
 
@@ -612,16 +612,16 @@ class ServiceItem(models.Model):
                     "equipment_id": self.id,
                     "request_type": ()
                         "corrective" if self.maintenance_due else "preventive":
-                    
+
                     "description": _("Maintenance required for %s", self.name),:
-                
-            
+
+
             self.message_post()
                 body=_()
                     "Service item sent to maintenance. Request created: %s",
                     maintenance_request.name,
-                
-            
+
+
             return {}
                 "type": "ir.actions.act_window",
                 "name": _("Maintenance Request"),
@@ -629,7 +629,7 @@ class ServiceItem(models.Model):
                 "res_id": maintenance_request.id,
                 "view_mode": "form",
                 "target": "current",
-            
+
         else:
             self.message_post(body=_("Service item sent to maintenance"))
 
@@ -648,8 +648,8 @@ class ServiceItem(models.Model):
                     "default_equipment_id": self.id,
                     "default_request_type": "preventive",
                     "default_description": _("Scheduled maintenance for %s", self.name),:
-                
-            
+
+
         else:
             raise UserError(_("Maintenance module not available"))
 
@@ -671,7 +671,7 @@ class ServiceItem(models.Model):
             "view_mode": "tree,form",
             "domain": [("service_item_id", "=", self.id)],
             "context": {"default_service_item_id": self.id},
-        
+
 
     def action_view_maintenance_history(self):
         """View maintenance history"""
@@ -684,7 +684,7 @@ class ServiceItem(models.Model):
                 "view_mode": "tree,form",
                 "domain": [("equipment_id", "=", self.id)],
                 "context": {"default_equipment_id": self.id},
-            
+
         else:
             raise UserError(_("Maintenance module not available"))
 
@@ -698,7 +698,7 @@ class ServiceItem(models.Model):
             if record.maintenance_interval < 1 or record.maintenance_interval > 3650:
                 raise ValidationError()
                     _("Maintenance interval must be between 1 and 3650 days")
-                
+
 
     @api.constrains("utilization_rate")
     def _check_utilization_rate(self):
@@ -724,8 +724,8 @@ class ServiceItem(models.Model):
                     record.purchase_cost or 0,
                     record.current_value or 0,
                     record.maintenance_cost or 0,
-                
-            
+
+
                 raise ValidationError(_("Financial values cannot be negative"))
 
     # ============================================================================
@@ -743,7 +743,7 @@ class ServiceItem(models.Model):
             "state": self.state,
             "maintenance_due": self.maintenance_due,
             "age_months": self.age_months,
-        
+
 
     def calculate_depreciated_value(self):
         """Calculate current depreciated value"""
@@ -753,7 +753,7 @@ class ServiceItem(models.Model):
         age_years = self.age_months / 12.0
         depreciation_amount = ()
             self.purchase_cost * (self.depreciation_rate / 100.0) * age_years
-        
+
         depreciated_value = max(0.0, self.purchase_cost - depreciation_amount)
         return depreciated_value
 
@@ -769,8 +769,8 @@ class ServiceItem(models.Model):
             []
                 ("maintenance_due", "=", True),
                 ("state", "not in", ["maintenance", "retired"]),
-            
-        
+
+
         for item in overdue_items:
             # Determine assigned user
             assigned_user_id = item.user_id.id or item.assigned_user_id.id
@@ -784,10 +784,10 @@ class ServiceItem(models.Model):
                     summary=_("Maintenance Due: %s", item.name),
                     note=_()
                         "Service item maintenance is due based on the scheduled interval."
-                    
+
                     user_id=assigned_user_id,
                     date_deadline=fields.Date.today(),
-                
+
             except Exception
                 # Continue processing other items if activity creation fails:
                 continue

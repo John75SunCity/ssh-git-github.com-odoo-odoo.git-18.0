@@ -18,7 +18,7 @@ from odoo.exceptions import ValidationError
 class PaymentSplitLine(models.Model):
 
         Payment Split Line
-    
+
     Individual line items for payment allocation across multiple services,:
         billing periods, or cost centers. Enables sophisticated payment splitting
     for enterprise billing scenarios.:
@@ -39,32 +39,32 @@ class PaymentSplitLine(models.Model):
         tracking=True,
         index=True,
         help="Description of this payment split"
-    
+
 
     display_name = fields.Char(
         string="Display Name",
         compute='_compute_display_name',
         store=True,
         help="Display name for the split line":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True
-    
+
 
     allocation_order = fields.Integer(
         string="Allocation Order",
         default=10,
         help="Order for payment allocation processing":
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -76,7 +76,7 @@ class PaymentSplitLine(models.Model):
         ondelete="cascade",
         index=True,
         help="Parent payment record"
-    
+
 
     invoice_id = fields.Many2one(
         "account.move",
@@ -84,13 +84,13 @@ class PaymentSplitLine(models.Model):
         ,
     domain="[('move_type', '=', 'out_invoice'))",
         help="Invoice this split applies to"
-    
+
 
     service_id = fields.Many2one(
         "shredding.service",
         string="Service",
         help="Service this split applies to"
-    
+
 
     partner_id = fields.Many2one(
         "res.partner",
@@ -99,7 +99,7 @@ class PaymentSplitLine(models.Model):
         readonly=True,
         store=True,
         help="Customer for this payment allocation":
-    
+
 
         # ============================================================================
     # FINANCIAL DETAILS
@@ -109,7 +109,7 @@ class PaymentSplitLine(models.Model):
         string="Currency",
         related="company_id.currency_id",
         readonly=True
-    
+
 
     allocated_amount = fields.Monetary(
         string="Allocated Amount",
@@ -117,7 +117,7 @@ class PaymentSplitLine(models.Model):
         required=True,
         tracking=True,
         help="Amount allocated to this split"
-    
+
 
     allocation_percentage = fields.Float(
         string="Allocation %",
@@ -126,20 +126,20 @@ class PaymentSplitLine(models.Model):
         ,
     digits=(5, 2),
         help="Percentage of total payment"
-    
+
 
     unit_price = fields.Monetary(
         string="Unit Price",
         currency_field="currency_id",
         help="Price per unit for this allocation":
-    
+
 
     quantity = fields.Float(
         string="Quantity",
         default=1.0,
         digits='Product Unit of Measure',
         help="Quantity for this allocation":
-    
+
 
         # ============================================================================
     # SERVICE CATEGORIZATION
@@ -155,19 +155,19 @@ class PaymentSplitLine(models.Model):
         ('setup', 'Setup/Installation'),
         ('maintenance', 'Maintenance'),
         ('other', 'Other Services')
-    
+
 
     billing_period = fields.Selection([))
         ('current', 'Current Period'),
         ('previous', 'Previous Period'),
         ('advance', 'Advance Payment'),
         ('credit', 'Credit Application')
-    
+
 
     cost_center = fields.Char(
         string="Cost Center",
         help="Cost center for accounting allocation":
-    
+
 
         # ============================================================================
     # PROCESSING STATUS
@@ -178,13 +178,13 @@ class PaymentSplitLine(models.Model):
         ('allocated', 'Allocated'),
         ('processed', 'Processed'),
         ('cancelled', 'Cancelled')
-    
+
 
     allocation_date = fields.Date(
         string="Allocation Date",
         default=fields.Date.context_today,
         help="Date when allocation was made"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -195,7 +195,7 @@ class PaymentSplitLine(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -203,7 +203,7 @@ class PaymentSplitLine(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -211,7 +211,7 @@ class PaymentSplitLine(models.Model):
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -223,7 +223,7 @@ class PaymentSplitLine(models.Model):
             if record.service_type:
                 service_dict = dict(record._fields['service_type'].selection)
                 service_label = service_dict.get(record.service_type, record.service_type)
-                
+
                 if record.allocated_amount and record.currency_id:
                     amount_str = record.currency_id.symbol + str(record.allocated_amount)
                     record.display_name = _("%s: %s", service_label, amount_str)
@@ -279,7 +279,7 @@ class PaymentSplitLine(models.Model):
                         'Payment: %s, Total Allocated: %s',
                         record.payment_id.total_amount,
                         total_allocated
-                    
+
 
     # ============================================================================
         # ACTION METHODS
@@ -289,39 +289,39 @@ class PaymentSplitLine(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise ValidationError(_('Can only allocate draft payment splits'))
-        
+
         self.write({)}
             'state': 'allocated',
             'allocation_date': fields.Date.context_today(self)
-        
-        
+
+
         self.message_post()
             body=_('Payment allocation confirmed for %s', self.display_name):
-        
+
 
     def action_process(self):
         """Mark allocation as processed"""
         self.ensure_one()
         if self.state != 'allocated':
             raise ValidationError(_('Can only process allocated payment splits'))
-        
+
         self.write({'state': 'processed'})
-        
+
         self.message_post()
             body=_('Payment allocation processed for %s', self.display_name):
-        
+
 
     def action_cancel(self):
         """Cancel allocation"""
         self.ensure_one()
         if self.state in ['processed']:
             raise ValidationError(_('Cannot cancel processed allocations'))
-        
+
         self.write({'state': 'cancelled'})
-        
+
         self.message_post()
             body=_('Payment allocation cancelled for %s', self.display_name):
-        
+
 
     # ============================================================================
         # ONCHANGE METHODS
@@ -341,8 +341,8 @@ class PaymentSplitLine(models.Model):
                 'shredding.service': 'destruction',
                 'document.retrieval.service': 'retrieval',
                 'document.scanning.service': 'scanning',
-            
-            
+
+
             service_type = service_type_mapping.get(self.service_id._name, 'other')
             self.service_type = service_type
 
@@ -356,7 +356,7 @@ class PaymentSplitLine(models.Model):
         Args
             payment: Payment record
             allocations: List of allocation dictionaries
-        
+
         Returns
             Created allocation line records
 
@@ -369,22 +369,22 @@ class PaymentSplitLine(models.Model):
                 'allocated_amount': allocation.get('amount', 0.0),
                 'billing_period': allocation.get('billing_period', 'current'),
                 'cost_center': allocation.get('cost_center', ''),
-            
-            
+
+
             # Add optional relationships
             if allocation.get('invoice_id'):
                 allocation_vals['invoice_id'] = allocation['invoice_id']
             if allocation.get('service_id'):
                 allocation_vals['service_id'] = allocation['service_id']
-            
+
             lines.append(allocation_vals)
-        
+
         return self.create(lines)
 
     def get_allocation_summary(self):
         """Get summary of allocations for reporting""":
         self.ensure_one()
-        
+
         return {}
             'name': self.display_name,
             'service_type': dict(self._fields['service_type'].selection)[self.service_type],
@@ -393,7 +393,7 @@ class PaymentSplitLine(models.Model):
             'allocation_percentage': self.allocation_percentage,
             'currency': self.currency_id.symbol,
             'state': dict(self._fields['state'].selection)[self.state],
-        
+
 
     # ============================================================================
         # ORM METHODS
@@ -407,7 +407,7 @@ class PaymentSplitLine(models.Model):
                 service_dict = dict(self._fields['service_type'].selection)
                 service_label = service_dict.get(service_type, service_type)
                 vals['name'] = _('Allocation: %s', service_label)
-        
+
         return super().create(vals_list)
 
     def name_get(self):
@@ -415,13 +415,13 @@ class PaymentSplitLine(models.Model):
         result = []
         for record in self:
             name = record.display_name or record.name or _('Payment Allocation')
-            
+
             if record.state != 'draft':
                 state_label = dict(record._fields['state'].selection)[record.state]
                 name = _('%s [%s]', name, state_label)
-            
+
             result.append((record.id, name))
-        
+
         return result
 
     # ============================================================================
@@ -435,36 +435,36 @@ class PaymentSplitLine(models.Model):
             date_from: Start date for filtering:
             date_to: End date for filtering:
             group_by: Field to group by ('service_type', 'billing_period', 'partner_id')
-        
+
         Returns
             Dictionary with aggregated allocation data
 
         domain = [('state', '!=', 'cancelled')]
-        
+
         if date_from:
             domain.append(('allocation_date', '>=', date_from))
         if date_to:
             domain.append(('allocation_date', '<=', date_to))
-        
+
         allocations = self.search(domain)
-        
+
         # Group and aggregate data
         grouped_data = {}
         for allocation in allocations:
             key = getattr(allocation, group_by)
             if hasattr(key, 'name'):
                 key = key.name
-            
+
             if key not in grouped_data:
                 grouped_data[key] = {}
                     'count': 0,
                     'total_amount': 0.0,
                     'avg_amount': 0.0,
-                
-            
+
+
             grouped_data[key]['count'] += 1
             grouped_data[key]['total_amount'] += allocation.allocated_amount
-        
+
         # Calculate averages
         for key in grouped_data:
             data = grouped_data[key]
@@ -476,22 +476,22 @@ class PaymentSplitLine(models.Model):
         for record in self:
             if record.state != 'processed':
                 continue
-            
+
             # Create journal entry for allocation:
             move_vals = {}
                 'date': record.allocation_date,
                 'ref': _('Payment Allocation: %s', record.display_name),
                 'journal_id': self.env.company.currency_exchange_journal_id.id,
                 'line_ids': [],
-            
-            
+
+
             # Add accounting lines based on service type and cost center
             # This would be customized based on specific accounting requirements
-            
+
             if record.cost_center:
                 # Add cost center allocation logic
                 pass
-            
+
             # Create the accounting move
             # move = self.env['account.move'].create(move_vals)
             # move.post()

@@ -26,20 +26,20 @@ class MobilePhoto(models.Model):
         tracking=True,
         index=True,
         help="Name or description of the photo"
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this photo"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -48,14 +48,14 @@ class MobilePhoto(models.Model):
         "mobile.bin.key.wizard",
         string="Bin Key Wizard",
         help="Associated mobile bin key wizard"
-    
+
 
     mobile_bin_key_wizard_id = fields.Many2one(
         "mobile.bin.key.wizard",
         string="Mobile Bin Key Wizard",
         ,
     help="Associated mobile bin key wizard (alternative field name)"
-    
+
 
         # ============================================================================
     # PHOTO FIELDS
@@ -64,29 +64,29 @@ class MobilePhoto(models.Model):
         string="Photo",
         required=True,
         help="Photo image data"
-    
+
 
     photo_filename = fields.Char(
         string="Filename",
         help="Original photo filename"
-    
+
 
     photo_date = fields.Datetime(
         string="Photo Date",
         default=fields.Datetime.now,
         required=True,
         help="Date and time when photo was taken"
-    
+
 
     gps_latitude = fields.Float(
         string="GPS Latitude",
         help="GPS latitude where photo was taken"
-    
+
 
     gps_longitude = fields.Float(
         string="GPS Longitude",
         help="GPS longitude where photo was taken"
-    
+
 
     ,
     photo_type = fields.Selection([))
@@ -96,7 +96,7 @@ class MobilePhoto(models.Model):
         ('evidence', 'Evidence'),
         ('damage', 'Damage Documentation'),
         ('other', 'Other')
-    
+
 
         # ============================================================================
     # METADATA FIELDS
@@ -104,19 +104,19 @@ class MobilePhoto(models.Model):
     device_info = fields.Char(
         string="Device Info",
         help="Information about the device used to take the photo"
-    
+
 
     file_size = fields.Integer(
         ,
     string="File Size (bytes)",
         help="Size of the photo file"
-    
+
 
     resolution = fields.Char(
         string="Resolution",
         ,
     help="Photo resolution (e.g., '1920x1080')"
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -125,7 +125,7 @@ class MobilePhoto(models.Model):
         string="Has GPS",
         compute='_compute_has_gps',
         help="Whether photo has GPS coordinates"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -136,7 +136,7 @@ class MobilePhoto(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -144,7 +144,7 @@ class MobilePhoto(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -152,7 +152,7 @@ class MobilePhoto(models.Model):
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
 
         # ============================================================================
     # COMPUTE METHODS
@@ -202,7 +202,7 @@ class MobilePhoto(models.Model):
             'res_id': self.id,
             'view_mode': 'form',
             'target': 'new',
-        
+
 
     def action_download_photo(self):
         """Download photo file"""
@@ -214,9 +214,9 @@ class MobilePhoto(models.Model):
             'type': 'ir.actions.act_url',
             'url': '/web/content/mobile.photo/%s/photo_data/%s?download=true' % ()
                 self.id, self.photo_filename or 'photo.jpg'
-            
+
             'target': 'self',
-        
+
 
     # ============================================================================
         # BUSINESS METHODS
@@ -241,7 +241,7 @@ class MobilePhoto(models.Model):
             'device_info': mobile_data.get('device_info'),
             'file_size': mobile_data.get('file_size'),
             'resolution': mobile_data.get('resolution'),
-        
+
 
         # Associate with wizard if provided:
         if mobile_data.get('wizard_id'):
@@ -258,13 +258,13 @@ class MobilePhoto(models.Model):
         result = []
         for record in self:
             name_parts = [record.name]
-            
+
             if record.photo_type:
                 type_label = dict(record._fields['photo_type'].selection).get()
                     record.photo_type, record.photo_type
-                
+
                 name_parts.append(_("(%s)", type_label))
-            
+
             if record.photo_date:
                 name_parts.append(record.photo_date.strftime("- %Y-%m-%d"))
 
@@ -278,7 +278,7 @@ class MobilePhoto(models.Model):
             '|',
             ('wizard_id', '=', wizard_id),
             ('mobile_bin_key_wizard_id', '=', wizard_id)
-        
+
         return self.search(domain, order='photo_date desc')
 
     def get_photo_metadata(self):
@@ -294,5 +294,5 @@ class MobilePhoto(models.Model):
             'file_size': self.file_size,
             'resolution': self.resolution,
             'filename': self.photo_filename,
-        
+
 )))))))))))))

@@ -13,7 +13,7 @@ class RecordsRetrievalWorkOrder(models.Model):
         ('in_progress', 'In Progress'),
         ('done', 'Done'),
         ('cancelled', 'Cancelled'),
-    
+
     partner_id = fields.Many2one('res.partner', string='Customer',,
     required=True),
     company_id = fields.Many2one('res.company', string='Company',,

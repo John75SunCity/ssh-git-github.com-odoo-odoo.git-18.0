@@ -29,7 +29,7 @@ from odoo.exceptions import ValidationError, UserError
 
 class SignedDocumentAudit(models.Model):
     """Signed Document Audit Trail"
-    
+
         Comprehensive audit trail tracking for all signed document actions""":"
     with complete compliance logging and security monitoring.
 
@@ -48,7 +48,7 @@ class SignedDocumentAudit(models.Model):
         tracking=True,
         index=True,
         help="Unique identifier for this audit entry":
-    
+
 
     company_id = fields.Many2one(
         "res.company",
@@ -56,7 +56,7 @@ class SignedDocumentAudit(models.Model):
         default=lambda self: self.env.company,
         required=True,
         index=True
-    
+
 
     user_id = fields.Many2one(
         "res.users",
@@ -64,13 +64,13 @@ class SignedDocumentAudit(models.Model):
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this audit entry":
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Whether this audit entry is active"
-    
+
 
         # ============================================================================
     # DOCUMENT AND ACTION TRACKING
@@ -82,7 +82,7 @@ class SignedDocumentAudit(models.Model):
         ondelete="cascade",
         tracking=True,
         help="The signed document this audit entry relates to"
-    
+
 
     ,
     action = fields.Selection([))
@@ -96,7 +96,7 @@ class SignedDocumentAudit(models.Model):
         ("completed", "Process Completed"),
         ("voided", "Document Voided"),
         ("archived", "Document Archived"),
-    
+
         required=True,
         tracking=True,
         help="Type of action performed on the document"
@@ -104,7 +104,7 @@ class SignedDocumentAudit(models.Model):
     action_description = fields.Char(
         string="Action Description",
         help="Brief description of the action performed"
-    
+
 
         # ============================================================================
     # USER AND SESSION TRACKING
@@ -114,28 +114,28 @@ class SignedDocumentAudit(models.Model):
         string="Performing User",
         required=True,
         help="User who performed the action"
-    
+
 
     partner_id = fields.Many2one(
         "res.partner",
         string="Associated Partner",
         help="Partner associated with this audit entry"
-    
+
 
     ip_address = fields.Char(
         string="IP Address",
         help="IP address from which the action was performed"
-    
+
 
     user_agent = fields.Text(
         string="User Agent",
         help="Browser/device information from the session"
-    
+
 
     session_id = fields.Char(
         string="Session ID",
         help="User session identifier"
-    
+
 
         # ============================================================================
     # TIMESTAMP AND LOCATION TRACKING
@@ -147,17 +147,17 @@ class SignedDocumentAudit(models.Model):
         tracking=True,
         index=True,
         help="When the action was performed"
-    
+
 
     timezone = fields.Char(
         string="Timezone",
         help="Timezone where the action was performed"
-    
+
 
     geolocation = fields.Char(
         string="Geolocation",
         help="Geographic location information if available":
-    
+
 
         # ============================================================================
     # AUDIT DETAILS AND COMPLIANCE
@@ -165,29 +165,29 @@ class SignedDocumentAudit(models.Model):
     details = fields.Text(
         string="Action Details",
         help="Detailed information about the action performed"
-    
+
 
     before_state = fields.Text(
         string="State Before Action",
         help="Document state before the action was performed"
-    
+
 
     after_state = fields.Text(
         string="State After Action",
         help="Document state after the action was performed"
-    
+
 
     compliance_required = fields.Boolean(
         string="Compliance Required",
         default=True,
         help="Whether this action requires compliance documentation"
-    
+
 
     naid_compliant = fields.Boolean(
         string="NAID Compliant",
         default=True,
         help="Whether this audit entry meets NAID AAA standards"
-    
+
 
         # ============================================================================
     # SECURITY AND VERIFICATION
@@ -195,18 +195,18 @@ class SignedDocumentAudit(models.Model):
     verification_hash = fields.Char(
         string="Verification Hash",
         help="Hash for verifying audit entry integrity":
-    
+
 
     signature_verification = fields.Boolean(
         string="Signature Verified",
         help="Whether the document signature was verified during this action"
-    
+
 
     certificate_id = fields.Many2one(
         "digital.certificate",
         string="Digital Certificate",
         help="Digital certificate used for verification":
-    
+
 
     ,
     risk_level = fields.Selection([))
@@ -214,7 +214,7 @@ class SignedDocumentAudit(models.Model):
         ("medium", "Medium"),
         ("high", "High"),
         ("critical", "Critical"),
-    
+
         default="low",
         help="Risk level associated with this action"
 
@@ -226,7 +226,7 @@ class SignedDocumentAudit(models.Model):
         ('logged', 'Logged'),
         ('verified', 'Verified'),
         ('archived', 'Archived'),
-    
+
         help='Current status of the audit entry'
 
     # ============================================================================
@@ -236,13 +236,13 @@ class SignedDocumentAudit(models.Model):
         "portal.request",
         string="Portal Request",
         help="Portal request that initiated this action"
-    
+
 
     workflow_instance_id = fields.Many2one(
         "workflow.instance",
         string="Workflow Instance",
         help="Workflow instance associated with this action"
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -253,7 +253,7 @@ class SignedDocumentAudit(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_follower_ids = fields.One2many(
         "mail.followers",
@@ -261,7 +261,7 @@ class SignedDocumentAudit(models.Model):
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
 
     message_ids = fields.One2many(
         "mail.message",
@@ -269,7 +269,7 @@ class SignedDocumentAudit(models.Model):
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -283,7 +283,7 @@ class SignedDocumentAudit(models.Model):
                     'action': dict(record._fields['action'].selection).get(record.action, record.action),
                     'user': record.performing_user_id.name,
                     'time': record.timestamp.strftime('%Y-%m-%d %H:%M:%S')
-                
+
             else:
                 record.audit_summary = _("Incomplete audit entry")
 
@@ -292,7 +292,7 @@ class SignedDocumentAudit(models.Model):
         compute="_compute_audit_summary",
         store=True,
         help="Brief summary of the audit entry"
-    
+
     ,
     context = fields.Char(string='Context'),
     domain = fields.Char(string='Domain'),
@@ -310,35 +310,35 @@ class SignedDocumentAudit(models.Model):
         for vals in vals_list:
             if vals.get("name", "New") == "New":
                 vals["name") = self.env["ir.sequence"].next_by_code("signed.document.audit") or _("New")
-            
+
             # Set performing user if not specified:
             if not vals.get("performing_user_id"):
                 vals["performing_user_id"] = self.env.user.id
-            
+
             # Generate verification hash
             if not vals.get("verification_hash"):
                 vals["verification_hash"] = self._generate_verification_hash(vals)
-        
+
         records = super().create(vals_list)
-        
+
         # Create NAID audit log entry for compliance:
         for record in records:
             if record.naid_compliant:
                 record._create_naid_audit_log()
-        
+
         return records
 
     def write(self, vals):
         """Override write to track changes"""
         result = super().write(vals)
-        
+
         # Log state changes
         if "state" in vals:
             for record in self:
                 record.message_post()
                     body=_("Audit entry state changed to %s", vals["state"])
-                
-        
+
+
         return result
 
     # ============================================================================
@@ -347,45 +347,45 @@ class SignedDocumentAudit(models.Model):
     def action_verify_audit(self):
         """Verify the integrity of this audit entry"""
         self.ensure_one()
-        
+
         # Verify hash integrity
         current_hash = self._generate_verification_hash({)}
             'document_id': self.document_id.id,
             'action': self.action,
             'performing_user_id': self.performing_user_id.id,
             'timestamp': self.timestamp,
-        
-        
+
+
         if current_hash != self.verification_hash:
             raise UserError(_("Audit entry integrity verification failed"))
-        
+
         self.write({'state': 'verified'})
         self.message_post(body=_("Audit entry verified successfully"))
 
     def action_archive_audit(self):
         """Archive this audit entry"""
         self.ensure_one()
-        
+
         if self.state != 'verified':
             raise UserError(_("Only verified audit entries can be archived"))
-        
+
         self.write({'state': 'archived'})
         self.message_post(body=_("Audit entry archived"))
 
     def action_view_document(self):
         """View the related signed document"""
         self.ensure_one()
-        
+
         if not self.document_id:
             raise UserError(_("No document associated with this audit entry"))
-        
+
         return {}
             "type": "ir.actions.act_window",
             "res_model": "signed.document",
             "view_mode": "form",
             "res_id": self.document_id.id,
             "target": "current",
-        
+
 
     # ============================================================================
         # BUSINESS METHODS
@@ -404,30 +404,30 @@ class SignedDocumentAudit(models.Model):
             'session_id': kwargs.get('session_id'),
             'before_state': kwargs.get('before_state'),
             'after_state': kwargs.get('after_state'),
-        
-        
+
+
         return self.create(vals)
 
     def _generate_verification_hash(self, vals):
         """Generate verification hash for audit entry integrity""":
         import hashlib
         import json
-        
+
         # Create a deterministic hash from key audit data
         hash_data = {}
             'document_id': vals.get('document_id'),
             'action': vals.get('action'),
             'user_id': vals.get('performing_user_id'),
             'timestamp': str(vals.get('timestamp', fields.Datetime.now())),
-        
-        
+
+
         hash_string = json.dumps(hash_data, sort_keys=True)
         return hashlib.sha256(hash_string.encode()).hexdigest()[:32]
 
     def _create_naid_audit_log(self):
         """Create NAID audit log entry for compliance""":
         self.ensure_one()
-        
+
         try:
             self.env['naid.audit.log'].create({)}
                 'event_type': 'document_action',
@@ -436,18 +436,18 @@ class SignedDocumentAudit(models.Model):
                 'document_id': self.document_id.id,
                 'audit_entry_id': self.id,
                 'compliance_level': 'aaa',
-            
+
         except Exception as e
             # Log error but don't fail the audit entry creation'
             self.message_post()
                 body=_("Warning: Could not create NAID audit log: %s", str(e)),
                 message_type='comment'
-            
+
 
     def get_audit_summary_data(self):
         """Get audit summary data for reporting""":
         self.ensure_one()
-        
+
         return {}
             'entry_name': self.name,
             'document_name': self.document_id.name if self.document_id else '',:
@@ -460,7 +460,7 @@ class SignedDocumentAudit(models.Model):
             'risk_level': self.risk_level,
             'compliance_status': 'Compliant' if self.naid_compliant else 'Non-Compliant',:
             'state': self.state,
-        
+
 
     # ============================================================================
         # REPORTING METHODS
@@ -469,38 +469,38 @@ class SignedDocumentAudit(models.Model):
     def generate_audit_report(self, date_from=None, date_to=None, document_ids=None):
         """Generate comprehensive audit report"""
         domain = []
-        
+
         if date_from:
             domain.append(('timestamp', '>=', date_from))
         if date_to:
             domain.append(('timestamp', '<=', date_to))
         if document_ids:
             domain.append(('document_id', 'in', document_ids))
-        
+
         audit_entries = self.search(domain, order='timestamp desc')
-        
+
         # Compile statistics
         total_entries = len(audit_entries)
         by_action = {}
         by_user = {}
         risk_summary = {'low': 0, 'medium': 0, 'high': 0, 'critical': 0}
-        
+
         for entry in audit_entries:
             # By action
             if entry.action not in by_action:
                 by_action[entry.action] = 0
             by_action[entry.action] += 1
-            
+
             # By user
             user_name = entry.performing_user_id.name
             if user_name not in by_user:
                 by_user[user_name] = 0
             by_user[user_name] += 1
-            
+
             # Risk level
             if entry.risk_level in risk_summary:
                 risk_summary[entry.risk_level] += 1
-        
+
         return {}
             'period': {'from': date_from, 'to': date_to},
             'total_entries': total_entries,
@@ -509,7 +509,7 @@ class SignedDocumentAudit(models.Model):
             'risk_summary': risk_summary,
             'entries': [entry.get_audit_summary_data() for entry in audit_entries],:
             'compliance_rate': len(audit_entries.filtered('naid_compliant')) / total_entries * 100 if total_entries > 0 else 0,:
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -539,7 +539,7 @@ class SignedDocumentAudit(models.Model):
                 'name': record.name,
                 'action': dict(record._fields['action'].selection).get(record.action, record.action),
                 'user': record.performing_user_id.name
-            
+
             result.append((record.id, name))
         return result
 
@@ -548,7 +548,7 @@ class SignedDocumentAudit(models.Model):
         """Enhanced search by name, action, or user"""
         args = args or []
         domain = []
-        
+
         if name:
             domain = []
                 "|", "|", "|",
@@ -556,62 +556,62 @@ class SignedDocumentAudit(models.Model):
                 ("action", operator, name),
                 ("performing_user_id.name", operator, name),
                 ("document_id.name", operator, name),
-            
-        
+
+
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.model
     def cleanup_old_audits(self, days=365):
         """Clean up old audit entries based on retention policy"""
         from datetime import timedelta
-        
+
     cutoff_date = fields.Datetime.now() - timedelta(days=days)
-        
+
         # Only delete non-critical, archived entries
         domain = []
             ("timestamp", "<", cutoff_date),
             ("state", "=", "archived"),
             ("risk_level", "in", ["low", "medium"])
-        
-        
+
+
         old_audits = self.search(domain)
         if old_audits:
             count = len(old_audits)
             old_audits.unlink()
             return count
-        
+
         return 0
 
     @api.model
     def get_security_dashboard_data(self):
         """Get security monitoring dashboard data"""
     today = fields.Date.today()
-        
+
         return {}
             'total_audits_today': self.search_count([)]
                 ('timestamp', '>=', today)
-            
+
             'high_risk_actions': self.search_count([)]
                 ('risk_level', 'in', ['high', 'critical']),
                 ('timestamp', '>=', today)
-            
+
             'failed_verifications': self.search_count([)]
                 ('state', '=', 'draft'),
                 ('timestamp', '>=', today)
-            
+
             'top_actions': self.read_group()
                 [('timestamp', '>=', today)],
                 ['action'],
                 ['action']
-            
+
             'compliance_rate': self._calculate_compliance_rate(),
-        
+
 
     def _calculate_compliance_rate(self):
         """Calculate overall compliance rate"""
         total_audits = self.search_count([
         compliant_audits = self.search_count([('naid_compliant', '=', True)])
-        
+
         if total_audits > 0:
             return round((compliant_audits / total_audits) * 100, 2)
         return 100.0

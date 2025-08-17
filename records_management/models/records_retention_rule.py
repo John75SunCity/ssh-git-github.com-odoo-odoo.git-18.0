@@ -31,12 +31,12 @@ class RecordsRetentionRule(models.Model):
         required=True,
         tracking=True,
         help="Name of the retention rule"
-    
+
     sequence = fields.Integer(
         string="Sequence",
         default=10,
         help="Order of rule application"
-    
+
     active = fields.Boolean(
         string="Active",
         default=True,
@@ -56,7 +56,7 @@ class RecordsRetentionRule(models.Model):
         required=True,
         ondelete="cascade",
         help="Parent retention policy"
-    
+
 
         # ============================================================================
     # RULE CONDITIONS
@@ -65,21 +65,21 @@ class RecordsRetentionRule(models.Model):
         "records.document.type",
         string="Document Type",
         help="Specific document type this rule applies to"
-    
-    
+
+
     ,
     condition_type = fields.Selection([))
         ('document_type', 'Document Type'),
         ('tag', 'Document Tag'),
         ('category', 'Category'),
         ('custom', 'Custom Condition')
-    
-    
+
+
     condition_value = fields.Char(
         string="Condition Value",
         ,
     help="Value to match against (tag name, category, etc.)"
-        
+
 
     # ============================================================================
         # RULE ACTIONS
@@ -88,18 +88,18 @@ class RecordsRetentionRule(models.Model):
         string="Retention Years",
         default=0,
         help="Years to retain documents"
-    
+
     retention_months = fields.Integer(
-        string="Retention Months", 
+        string="Retention Months",
         default=0,
         help="Additional months to retain"
-    
+
     retention_days = fields.Integer(
         string="Retention Days",
         default=0,
         help="Additional days to retain"
-    
-    
+
+
     ,
     action = fields.Selection([))
         ('retain', 'Retain'),
@@ -107,32 +107,32 @@ class RecordsRetentionRule(models.Model):
             pass
         ('review', 'Flag for Review'),:
         ('archive', 'Archive')
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance):
         # ============================================================================
     activity_ids = fields.One2many(
         "mail.activity",
-        "res_id", 
+        "res_id",
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
-        "res_id", 
+        "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
+
     message_ids = fields.One2many(
         "mail.message",
-        "res_id", 
+        "res_id",
         string="Messages",
         ,
     domain=lambda self: [("model", "=", self._name))
-    
+
 
         # ============================================================================
     # VALIDATION METHODS
@@ -142,12 +142,12 @@ class RecordsRetentionRule(models.Model):
         """Validate retention periods are not negative"""
         for rule in self:
             if (rule.retention_years < 0 or:)
-                rule.retention_months < 0 or 
+                rule.retention_months < 0 or
                 rule.retention_days < 0
                 raise ValidationError(_("Retention periods cannot be negative"))
-            
+
             if (rule.retention_years == 0 and:)
-                rule.retention_months == 0 and 
+                rule.retention_months == 0 and
                 rule.retention_days == 0
                 raise ValidationError(_("At least one retention period must be specified"))
 
@@ -162,12 +162,12 @@ class RecordsRetentionRule(models.Model):
                 rule.display_name = f"{rule.policy_id.name} - {rule.name}"
             else:
                 rule.display_name = rule.name or "New Rule"
-    
+
     display_name = fields.Char(
         string="Display Name",
         compute="_compute_display_name",
         store=True
-    
+
 
         # Workflow state management
     ,
@@ -176,7 +176,7 @@ class RecordsRetentionRule(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    
+
         help='Current status of the record'
 
 ))))))))

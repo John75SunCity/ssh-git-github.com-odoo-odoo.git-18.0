@@ -1,119 +1,236 @@
 # -*- coding: utf-8 -*-
+
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+    from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
+from odoo import models, fields, api, _
+    from odoo.exceptions import ValidationError
 
-from odoo.exceptions import ValidationError
-
-
-
-
-class FieldLabelCustomization(models.Model):
+    class FieldLabelCustomization(models.Model):
     _name = "field.label.customization"
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "field.label.customization"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Field Label Customization"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name desc"
     _rec_name = "name"
-
-        # ============================================================================
-    # CORE IDENTIFICATION FIELDS
-        # ============================================================================
+""
+        # ============================================================================""
+    # CORE IDENTIFICATION FIELDS""
+        # ============================================================================""
     name = fields.Char(string="Name", required=True, tracking=True,,
-    index=True),
-    description = fields.Text(
+    index=True),""
+    description = fields.Text(""
         string="Description", help="Description of this field label customization set"
-    
-    company_id = fields.Many2one(
+    ""
+    company_id = fields.Many2one(""
         "res.company", string="Company", default=lambda self: self.env.company
-    
-    user_id = fields.Many2one(
+    ""
+    user_id = fields.Many2one(""
         "res.users",
         string="Assigned User",
-        default=lambda self: self.env.user,
-        tracking=True,
-    
+        default=lambda self: self.env.user,""
+        tracking=True,""
+    ""
     active = fields.Boolean(string="Active",,
-    default=True),
+    default=True),""
     sequence = fields.Integer(string="Sequence",,
-    default=10)
-
-        # ============================================================================
-    # STATE MANAGEMENT
-        # ============================================================================
-    state = fields.Selection(
-        [)
+    default=10)""
+""
+        # ============================================================================""
+    # STATE MANAGEMENT""
+        # ============================================================================""
+    state = fields.Selection(""
+        [)""
             ("draft", "Draft"),
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("archived", "Archived"),
-        
+        ""
         string="Status",
         default="draft",
-        tracking=True,
-    
-
-    priority = fields.Integer(
+        tracking=True,""
+    ""
+""
+    priority = fields.Integer(""
         string="Priority",
-        default=50,
+        default=50,""
         help="Priority level (1-100, lower,"
     numbers = higher priority)","
-    
-
-        # ============================================================================
-    # CUSTOMIZATION SPECIFICATIONS
-        # ============================================================================
+    ""
+""
+        # ============================================================================""
+    # CUSTOMIZATION SPECIFICATIONS""
+        # ============================================================================""
     model_name = fields.Char(string="Model Name",,
-    required=True),
+    required=True),""
     field_name = fields.Char(string="Field Name",,
-    required=True),
+    required=True),""
     original_label = fields.Char(string="Original Label"),
     custom_label = fields.Char(string="Custom Label",,
-    required=True)
-
-        # Label configuration
-    label_template = fields.Selection(
-        [)
+    required=True)""
+""
+        # Label configuration""
+    label_template = fields.Selection(""
+        [)""
             ("standard", "Standard"),
             ("verbose", "Verbose"),
             ("abbreviated", "Abbreviated"),
             ("technical", "Technical"),
-        
+        ""
         string="Label Template",
         default="standard",
-    
-
-    label_language = fields.Selection(
+    ""
+""
+    label_language = fields.Selection(""
         [("en", "English"), ("es", "Spanish"), ("fr", "French")), string="Language",
         default="en",
-    
-
-    label_size = fields.Selection(
+    ""
+""
+    label_size = fields.Selection(""
         [("small", "Small"), ("medium", "Medium"), ("large", "Large")), string="Label Size",
         default="medium",
-    
-
-        # ============================================================================
-    # SCOPE AND APPLICATION
-        # ============================================================================
-    scope = fields.Selection(
-        [)
+    ""
+""
+        # ============================================================================""
+    # SCOPE AND APPLICATION""
+        # ============================================================================""
+    scope = fields.Selection(""
+        [)""
             ("global", "Global"),
             ("company", "Company"),
             ("user", "User Specific"),
             ("department", "Department"),
-        
+        ""
         string="Scope",
         default="company",
-    
-
+    ""
+""
     department_ids = fields.Many2many("hr.department",,
     string="Departments"),
     user_ids = fields.Many2many("res.users",,
     string="Specific Users")
-
-        # ============================================================================
-    # COMPLIANCE AND INDUSTRY
-        # ============================================================================
-    industry_type = fields.Selection(
-        [)
+""
+        # ============================================================================""
+    # COMPLIANCE AND INDUSTRY""
+        # ============================================================================""
+    industry_type = fields.Selection(""
+        [)""
             ("healthcare", "Healthcare"),
             ("finance", "Finance"),
             ("legal", "Legal"),
@@ -121,385 +238,281 @@ class FieldLabelCustomization(models.Model):
             ("education", "Education"),
             ("government", "Government"),
             ("generic", "Generic"),
-        
+        ""
         string="Industry Type",
         default="generic",
-    
-
-    compliance_framework = fields.Selection(
-        [)
+    ""
+""
+    compliance_framework = fields.Selection(""
+        [)""
             ("hipaa", "HIPAA"),
             ("gdpr", "GDPR"),
             ("sox", "SOX"),
             ("iso27001", "ISO 27001"),
             ("naid", "NAID AAA"),
             ("custom", "Custom"),
-        
+        ""
         string="Compliance Framework",
-    
-
-    security_classification = fields.Selection(
-        [)
+    ""
+""
+    security_classification = fields.Selection(""
+        [)""
             ("public", "Public"),
             ("internal", "Internal"),
             ("confidential", "Confidential"),
             ("restricted", "Restricted"),
-        
+        ""
         string="Security Classification",
         default="internal",
-    
-
-        # ============================================================================
-    # CONTAINER/INVENTORY FIELD LABELS (Customer Customizable)
-        # ============================================================================
-    label_container_number = fields.Char(
+    ""
+""
+        # ============================================================================""
+    # CONTAINER/INVENTORY FIELD LABELS (Customer Customizable)""
+        # ============================================================================""
+    label_container_number = fields.Char(""
         string="Container Number Label",
         default="Container Number",
         help="Custom label for container/box number field",:
-            pass
-    
-    label_item_description = fields.Char(
+            pass""
+    ""
+    label_item_description = fields.Char(""
         string="Item Description Label",
         default="Item Description",
         help="Custom label for item description field",:
-    
-    label_content_description = fields.Char(
+    ""
+    label_content_description = fields.Char(""
         string="Content Description Label",
         default="Content Description",
         help="Custom label for content description field",:
-    
-    label_date_from = fields.Char(
+    ""
+    label_date_from = fields.Char(""
         string="Date From Label",
         default="Date From",
         help="Custom label for start date field",:
-    
-    label_date_to = fields.Char(
+    ""
+    label_date_to = fields.Char(""
         string="Date To Label",
         default="Date To",
         help="Custom label for end date field",:
-    
-    label_record_type = fields.Char(
+    ""
+    label_record_type = fields.Char(""
         string="Record Type Label",
         default="Record Type",
         help="Custom label for record type classification field",:
-    
-    label_confidentiality = fields.Char(
+    ""
+    label_confidentiality = fields.Char(""
         string="Confidentiality Label",
         default="Confidentiality",
         help="Custom label for confidentiality/security level field",:
-    
-    label_project_code = fields.Char(
+    ""
+    label_project_code = fields.Char(""
         string="Project Code Label",
         default="Project Code",
         help="Custom label for project/cost center code field",:
-    
-    label_client_reference = fields.Char(
+    ""
+    label_client_reference = fields.Char(""
         string="Client Reference Label",
         default="Client Reference",
         help="Custom label for client reference/matter number field",:
-    
-    label_authorized_by = fields.Char(
+    ""
+    label_authorized_by = fields.Char(""
         string="Authorized By Label",
         default="Authorized By",
         help="Custom label for authorization/approval field",:
-    
-    label_created_by_dept = fields.Char(
+    ""
+    label_created_by_dept = fields.Char(""
         string="Created By Department Label",
         default="Created By Department",
         help="Custom label for originating department field",:
-    
-    label_box_number = fields.Char(
-        string='Box Number Label', 
-        default='Box Number',
+    ""
+    label_box_number = fields.Char(""
+        string='Box Number Label', ""
+        default='Box Number',""
         help="Custom label for box number field":
-    
-
-        # ============================================================================
-    # DEPLOYMENT & VERSIONING
-        # ============================================================================
-    ,
-    deployment_status = fields.Selection(
-        [)
+    ""
+""
+        # ============================================================================""
+    # DEPLOYMENT & VERSIONING""
+        # ============================================================================""
+    ,""
+    deployment_status = fields.Selection(""
+        [)""
             ("pending", "Pending"),
             ("deployed", "Deployed"),
             ("failed", "Failed"),
             ("rolled_back", "Rolled Back"),
-        
+        ""
         string="Deployment Status",
         default="pending",
-        tracking=True,
-    
-
+        tracking=True,""
+    ""
+""
     version = fields.Char(string="Version",,
     default="1.0"),
     deployment_date = fields.Datetime(string="Deployment Date"),
     rollback_date = fields.Datetime(string="Rollback Date")
-
-        # ============================================================================
-    # VALIDATION & TESTING
-        # ============================================================================
+""
+        # ============================================================================""
+    # VALIDATION & TESTING""
+        # ============================================================================""
     validation_rules = fields.Text(string="Validation Rules"),
     test_results = fields.Text(string="Test Results"),
     approval_required = fields.Boolean(string="Approval Required",,
-    default=False),
+    default=False),""
     approved_by_id = fields.Many2one("res.users",,
     string="Approved By"),
     approval_date = fields.Datetime(string="Approval Date")
-
-        # ============================================================================
-    # BATCH-GENERATED FIELDS (From Ultimate Batch Fixer)
-        # ============================================================================
+""
+        # ============================================================================""
+    # BATCH-GENERATED FIELDS (From Ultimate Batch Fixer)""
+        # ============================================================================""
     partner_id = fields.Many2one("res.partner", string="Customer",,
-    tracking=True),
+    tracking=True),""
     department_id = fields.Many2one("hr.department", string="Department",,
-    tracking=True)
-
-        # ============================================================================
-    # RELATIONSHIP FIELDS
-        # ============================================================================
-    # Mail framework fields
-    activity_ids = fields.One2many(
+    tracking=True)""
+""
+        # ============================================================================""
+    # RELATIONSHIP FIELDS""
+        # ============================================================================""
+    # Mail framework fields""
+    activity_ids = fields.One2many(""
         "mail.activity", "res_id", string="Activities"
-    
-    message_follower_ids = fields.One2many(
+    ""
+    message_follower_ids = fields.One2many(""
         "mail.followers", "res_id", string="Followers"
-    
+    ""
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
-
-        # ============================================================================
-    # COMPUTED FIELDS
-        # ============================================================================
+""
+        # ============================================================================""
+    # COMPUTED FIELDS""
+        # ============================================================================""
     @api.depends("deployment_status", "deployment_date")
-    def _compute_is_deployed(self):
-        for record in self:
-            record.is_deployed = ()
+    def _compute_is_deployed(self):""
+        for record in self:""
+            record.is_deployed = ()""
                 record.deployment_status == "deployed" and record.deployment_date
-            
-
+            ""
+""
     @api.depends("model_name", "field_name", "custom_label")
-    def _compute_full_customization_name(self):
-        for record in self:
-            if record.model_name and record.field_name:
+    def _compute_full_customization_name(self):""
+        for record in self:""
+            if record.model_name and record.field_name:""
                 record.full_customization_name = _("%s.%s: %s", 
                     record.model_name, record.field_name, record.custom_label or "Custom Label"
-                
-            else:
+                ""
+            else:""
                 record.full_customization_name = record.name or _("Incomplete Configuration")
-
+""
     @api.depends("model_name")
-    def _compute_available_fields(self):
-        """Compute available fields for the selected model""":
-        for record in self:
-            if record.model_name and record._is_records_management_model(:)
-                record.model_name
-            
-                try:
-                    model = self.env[record.model_name)
-                    fields_list = []
-                    for field_name, field in model._fields.items(:
-                        if not field_name.startswith("_") and field_name not in [:]
+    def _compute_available_fields(self):""
+        """Compute available fields for the selected model"""
+"""
+"""                        if not field_name.startswith("_") and field_name not in [:]"
                             "id",
                             "create_date",
                             "write_date",
                             "create_uid",
                             "write_uid",
-                        
-                            fields_list.append()
+                        ""
+                            fields_list.append()""
                                 f"{field_name} ({field.string or field_name})"
-                            
+                            ""
                     record.available_fields = "\n".join(sorted(fields_list))
-                except Exception
+                except Exception""
                     record.available_fields = "Invalid model selected"
-            else:
-                record.available_fields = ()
+            else:""
+                record.available_fields = ()""
                     "No model selected or model not in records_management"
-                
-
+                ""
+""
     is_deployed = fields.Boolean(compute="_compute_is_deployed",,
     string="Is Deployed"),
-    full_customization_name = fields.Char(
+    full_customization_name = fields.Char(""
         compute="_compute_full_customization_name", string="Full Customization Name"
-    
-    available_fields = fields.Text(
+    ""
+    available_fields = fields.Text(""
         compute="_compute_available_fields",
         string="Available Fields",
         help="List of fields available for customization in the selected model",:
-    
-
-        # ============================================================================
-    customer_id = fields.Many2one('res.partner', string='Customer',,
-    domain=[('is_company', '=', True)))
-    action_apply_corporate_preset = fields.Char(string='Action Apply Corporate Preset'),
-    action_apply_financial_preset = fields.Char(string='Action Apply Financial Preset'),
-    action_apply_healthcare_preset = fields.Char(string='Action Apply Healthcare Preset'),
-    action_apply_legal_preset = fields.Char(string='Action Apply Legal Preset'),
-    action_reset_to_defaults = fields.Char(string='Action Reset To Defaults'),
-    action_setup_field_labels = fields.Char(string='Action Setup Field Labels'),
-    action_setup_transitory_config = fields.Char(string='Action Setup Transitory Config'),
-    active_transitory_items = fields.Char(string='Active Transitory Items'),
-    admin_fields = fields.Char(string='Admin Fields'),
-    allow_transitory_items = fields.Char(string='Allow Transitory Items'),
-    business_fields = fields.Char(string='Business Fields'),
-    config_preset = fields.Char(string='Config Preset'),
-    core_fields = fields.Char(string='Core Fields'),
-    customer_specific = fields.Char(string='Customer Specific'),
-    customized_label_count = fields.Integer(string='Customized Label Count', compute='_compute_customized_label_count',,
-    store=True),
-    date_fields = fields.Char(string='Date Fields'),
-    department_specific = fields.Char(string='Department Specific'),
-    field_config = fields.Char(string='Field Config'),
-    field_label_config_id = fields.Many2one('field.label.config',,
-    string='Field Label Config Id'),
-    global = fields.Char(string='Global'),
-    group_customer = fields.Char(string='Group Customer'),
-    group_department = fields.Char(string='Group Department'),
-    group_priority = fields.Selection([), string='Group Priority')  # TODO: Define selection options
-    help = fields.Char(string='Help'),
-    inactive = fields.Boolean(string='Inactive',,
-    default=False),
-    label_compliance_notes = fields.Char(string='Label Compliance Notes'),
-    label_destruction_date = fields.Date(string='Label Destruction Date'),
-    label_file_count = fields.Integer(string='Label File Count', compute='_compute_label_file_count',,
-    store=True),
-    label_filing_system = fields.Char(string='Label Filing System'),
-    label_folder_type = fields.Selection([), string='Label Folder Type')  # TODO: Define selection options
-    label_hierarchy_display = fields.Char(string='Label Hierarchy Display'),
-    label_parent_container = fields.Char(string='Label Parent Container'),
-    label_sequence_from = fields.Char(string='Label Sequence From'),
-    label_sequence_to = fields.Char(string='Label Sequence To'),
-    label_size_estimate = fields.Char(string='Label Size Estimate'),
-    label_special_handling = fields.Char(string='Label Special Handling'),
-    label_weight_estimate = fields.Char(string='Label Weight Estimate'),
-    max_transitory_items = fields.Char(string='Max Transitory Items'),
-    physical_fields = fields.Char(string='Physical Fields'),
-    require_client_reference = fields.Char(string='Require Client Reference'),
-    require_confidentiality = fields.Char(string='Require Confidentiality'),
-    require_container_number = fields.Char(string='Require Container Number'),
-    require_content_description = fields.Char(string='Require Content Description'),
-    require_date_from = fields.Char(string='Require Date From'),
-    require_date_to = fields.Char(string='Require Date To'),
-    require_description = fields.Char(string='Require Description'),
-    require_destruction_date = fields.Date(string='Require Destruction Date'),
-    require_project_code = fields.Char(string='Require Project Code'),
-    require_record_type = fields.Selection([), string='Require Record Type')  # TODO: Define selection options
-    require_sequence_from = fields.Char(string='Require Sequence From'),
-    require_sequence_to = fields.Char(string='Require Sequence To'),
-    required_field_count = fields.Integer(string='Required Field Count', compute='_compute_required_field_count',,
-    store=True),
-    requirements = fields.Char(string='Requirements'),
-    res_model = fields.Char(string='Res Model'),
-    scope_display = fields.Char(string='Scope Display'),
-    show_authorized_by = fields.Char(string='Show Authorized By'),
-    show_client_reference = fields.Char(string='Show Client Reference'),
-    show_compliance_notes = fields.Char(string='Show Compliance Notes'),
-    show_confidentiality = fields.Char(string='Show Confidentiality'),
-    show_container_number = fields.Char(string='Show Container Number'),
-    show_content_description = fields.Char(string='Show Content Description'),
-    show_created_by_dept = fields.Char(string='Show Created By Dept'),
-    show_date_ranges = fields.Char(string='Show Date Ranges'),
-    show_description = fields.Char(string='Show Description'),
-    show_destruction_date = fields.Date(string='Show Destruction Date'),
-    show_file_count = fields.Integer(string='Show File Count', compute='_compute_show_file_count',,
-    store=True),
-    show_filing_system = fields.Char(string='Show Filing System'),
-    show_project_code = fields.Char(string='Show Project Code'),
-    show_record_type = fields.Selection([), string='Show Record Type')  # TODO: Define selection options
-    show_sequence_ranges = fields.Char(string='Show Sequence Ranges'),
-    show_size_estimate = fields.Char(string='Show Size Estimate'),
-    show_special_handling = fields.Char(string='Show Special Handling'),
-    show_weight_estimate = fields.Char(string='Show Weight Estimate'),
-    total_records_containers = fields.Char(string='Total Records Containers'),
-    total_transitory_items = fields.Char(string='Total Transitory Items'),
-    transitory_field_config_id = fields.Many2one('transitory.field.config',,
-    string='Transitory Field Config Id'),
-    view_mode = fields.Char(string='View Mode'),
-    visibility = fields.Char(string='Visibility'),
-    visible_field_count = fields.Integer(string='Visible Field Count', compute='_compute_visible_field_count',,
-    store=True)
-
-    @api.depends('customized_label_ids')
-    def _compute_customized_label_count(self):
-        for record in self:
-            record.customized_label_count = len(record.customized_label_ids)
-
-    @api.depends('label_file_ids')
-    def _compute_label_file_count(self):
-        for record in self:
-            record.label_file_count = len(record.label_file_ids)
-
-    @api.depends('required_field_ids')
-    def _compute_required_field_count(self):
-        for record in self:
-            record.required_field_count = len(record.required_field_ids)
-
-    @api.depends('show_file_ids')
-    def _compute_show_file_count(self):
-        for record in self:
-            record.show_file_count = len(record.show_file_ids)
-
-    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
-    def _compute_total_records_containers(self):
-        for record in self:
-            record.total_records_containers = sum(record.line_ids.mapped('amount'))
-
-    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
-    def _compute_total_transitory_items(self):
-        for record in self:
-            record.total_transitory_items = sum(record.line_ids.mapped('amount'))
-
-    @api.depends('visible_field_ids')
-    def _compute_visible_field_count(self):
-        for record in self:
-            record.visible_field_count = len(record.visible_field_ids)
-    # HELPER METHODS
-        # ============================================================================
-    @api.model
-    def _get_records_management_models(self):
+    ""
+""
+        # ============================================================================""
+    customer_id = fields.Many2one('res.partner', string='Customer',,""
+    domain=[('is_company', '= """', True)))"
+    action_apply_corporate_preset = fields.Char(string='""""
+"""
         """Get all models that belong to records_management module"""
-        records_models = [)
-        for model_name in self.env.registry:
-            try:
-                model = self.env[model_name]
-                # Check if model belongs to records_management module:
-                if hasattr(model, "_module") and model._module == "records_management":
-                    records_models.append(model_name)
-                elif model_name.startswith()
+""""
+"""
+"""                if hasattr(model, "_module") and model._module == "records_management":"
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+                elif model_name.startswith()""
                     ("records.", "naid.", "customer.", "portal.")
-                
-                    # Additional check for records management related models:
-                    records_models.append(model_name)
-            except Exception
-                continue
-        return sorted(records_models)
-
-    def _is_records_management_model(self, model_name):
-        """Check if a model belongs to records_management module""":
-        try:
-            if model_name not in self.env.registry:
-                return False
-
-            model = self.env[model_name]
-            # Check if model belongs to records_management module:
-            if hasattr(model, "_module") and model._module == "records_management":
-                return True
-
-            # Additional check for records management related models by naming convention:
-            if model_name.startswith(:)
+                ""
+                    # Additional check for records management related models:""
+                    records_models.append(model_name)""
+            except Exception""
+                continue""
+        return sorted(records_models)""
+""
+    def _is_records_management_model(self, model_name):""
+        """Check if a model belongs to records_management module"""
+""""
+"""            if hasattr(model, "_module") and model._module == "records_management":"
+                return True""
+""
+            # Additional check for records management related models by naming convention:""
+            if model_name.startswith(:)""
                 ("records.", "naid.", "customer.", "portal.", "field.label")
-            
-                return True
-
-            return False
-        except Exception
-            return False
-
-    def _check_protected_search_field(self, model_name, field_name):
-        """Check if a field is protected from customization (critical for search functionality)""":
-        # Define protected fields by model
-        protected_fields = {}
-            "records.container": {}
-                # Core search functionality fields
+            ""
+                return True""
+""
+            return False""
+        except Exception""
+            return False""
+""
+    def _check_protected_search_field(self, model_name, field_name):""
+        """Check if a field is protected from customization (critical for search functionality)"""
+"""            "records.container": {}"
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+                # Core search functionality fields""
                 "alpha_range_start",
                 "alpha_range_end",
                 "alpha_range_display",
@@ -510,254 +523,379 @@ class FieldLabelCustomization(models.Model):
                 "search_keywords",
                 "customer_sequence_start",
                 "customer_sequence_end",
-                # Core identification fields
+                # Core identification fields""
                 "name",
                 "barcode",
                 "container_number",
-                # Critical search database fields
+                # Critical search database fields""
                 "partner_id",
                 "location_id",
                 "state",
-            
+            ""
             "records.document": {}
-                # Document search fields
+                # Document search fields""
                 "name",
                 "document_name",
                 "barcode",
                 "partner_id",
                 "container_id",
                 "document_type_id",
-                # Content classification for search:
+                # Content classification for search:""
                 "content_description",
                 "keywords",
-            
+            ""
             "records.location": {}
-                # Location search fields
+                # Location search fields""
                 "name",
                 "barcode",
                 "location_code",
                 "warehouse_id",
                 "parent_location_id",
-            
-            # Add other models with search-critical fields
+            ""
+            # Add other models with search-critical fields""
             "portal.request": {}
                 "name",
                 "partner_id",
                 "state",
                 "request_type",
-            
-        
-
-        return field_name in protected_fields.get(model_name, set())
-
-    @api.model
-    def get_model_field_options(self):
-        """Return available models and their fields for selection""":
-        result = {}
-        for model_name in self._get_records_management_models():
-            try:
-                model = self.env[model_name]
-                fields_info = {}
-                for field_name, field in model._fields.items(:
-                    if not field_name.startswith("_") and field_name not in [:]
+            ""
+        ""
+""
+        return field_name in protected_fields.get(model_name, set())""
+""
+    @api.model""
+    def get_model_field_options(self):""
+        """Return available models and their fields for selection"""
+""""
+"""                    if not field_name.startswith("_") and field_name not in [:]
                         "id",
                         "create_date",
                         "write_date",
                         "create_uid",
                         "write_uid",
-                    
-                        fields_info[field_name] = {}
+                    ""
+                        fields_info[field_name] = {}""
                             "string": field.string or field_name,
                             "type": field.type,
                             "help": field.help or "",
-                        
-                result[model_name] = {}
+                        ""
+                result[model_name] = {}""
                     "description": getattr(model, "_description", model_name),
                     "fields": fields_info,
-                
-            except Exception
-                continue
-        return result
-
-    # ============================================================================
-        # VALIDATION METHODS
-    # ============================================================================
-    @api.constrains("model_name")
-    def _check_model_in_records_management(self):
+                ""
+            except Exception""
+                continue""
+        return result""
+""
+    # ============================================================================ """"
+        # VALIDATION METHODS"""""
+    # ============================================================================ """"
+    @api.constrains(""""model_name")
+    def _check_model_in_records_management(self):""
         """Ensure the model belongs to records_management module"""
-        for record in self:
-            if record.model_name:
-                if not record._is_records_management_model(record.model_name):
-                    available_models = record._get_records_management_models()
-                    model_list = available_models[:10] + ["..."] if available_models else []:
-                    raise ValidationError()
+""""
+"""
+"""                    model_list = available_models[:10] + ["..."] if available_models else []:"
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+                    raise ValidationError()""
                         _("Model '%s' is not part of the records_management module.\nAvailable models:\n%s",
-                            record.model_name,
+                            record.model_name,""
                             "\n".join(model_list)
-                        
-                    
-
+                        ""
+                    ""
+""
     @api.constrains("model_name", "field_name")
-    def _check_field_exists(self):
-        for record in self:
-            if record.model_name and record.field_name:
-                # First check if model is in records_management:
-                if not record._is_records_management_model(record.model_name):
-                    raise ValidationError()
+    def _check_field_exists(self):""
+        for record in self:""
+            if record.model_name and record.field_name:""
+                # First check if model is in records_management:""
+                if not record._is_records_management_model(record.model_name):""
+                    raise ValidationError()""
                         _("Model '%s' is not part of the records_management module.", record.model_name)
-                    
-
-                # Check if field is protected from customization:
-                if record._check_protected_search_field(:)
-                    record.model_name, record.field_name
-                
-                    raise ValidationError()
+                    ""
+""
+                # Check if field is protected from customization:""
+                if record._check_protected_search_field(:)""
+                    record.model_name, record.field_name""
+                ""
+                    raise ValidationError()""
                         _("Field '%s' in model '%s' is protected and cannot be customized. This field is critical for the intelligent search functionality.",:)
-                            record.field_name, record.model_name
-                        
-                    
-
-                # Then validate that the field exists
-                try:
-                    if record.model_name not in self.env.registry:
-                        raise ValidationError()
+                            record.field_name, record.model_name""
+                        ""
+                    ""
+""
+                # Then validate that the field exists""
+                try:""
+                    if record.model_name not in self.env.registry:""
+                        raise ValidationError()""
                             _("Model '%s' does not exist.", record.model_name)
-                        
-
-                    model = self.env[record.model_name]
-                    if record.field_name not in model._fields:
-                        # Get available fields for helpful error message:
-                        available_fields = []
-                            f
-                            for f in model._fields.keys(:
+                        ""
+""
+                    model = self.env[record.model_name]""
+                    if record.field_name not in model._fields:""
+                        # Get available fields for helpful error message:""
+                        available_fields = []""
+                            f""
+                            for f in model._fields.keys(:""
                             if not f.startswith("_"):
-                            and f
-                            not in []
+                            and f""
+                            not in []""
                                 "id",
                                 "create_date",
                                 "write_date",
                                 "create_uid",
                                 "write_uid",
-                            
-                        
-                        field_list = sorted(available_fields)[:20]
-                        if available_fields:
+                            ""
+                        ""
+                        field_list = sorted(available_fields)[:20]""
+                        if available_fields:""
                             field_list.append("...")
-                        raise ValidationError()
+                        raise ValidationError()""
                             _("Field '%s' does not exist in model '%s'.\nAvailable fields:\n%s",
-                                record.field_name,
-                                record.model_name,
+                                record.field_name,""
+                                record.model_name,""
                                 "\n".join(field_list)
-                            
-                        
-                except Exception
-                    raise ValidationError()
+                            ""
+                        ""
+                except Exception""
+                    raise ValidationError()""
                         _("Model '%s' does not exist.", record.model_name)
-                    
-
+                    ""
+""
     @api.constrains("custom_label")
-    def _check_custom_label_length(self):
-        for record in self:
-            if record.custom_label and len(record.custom_label) > 100:
+    def _check_custom_label_length(self):""
+        for record in self:""
+            if record.custom_label and len(record.custom_label) > 100:""
                 raise ValidationError(_("Custom label cannot exceed 100 characters."))
-
+""
     @api.onchange("model_name")
-    def _onchange_model_name(self):
+    def _onchange_model_name(self):""
         """Clear field_name when model changes and show available fields"""
-        if self.model_name:
-            self.field_name = False
-            if not self._is_records_management_model(self.model_name):
-                return {}
-                    "warning": {}
+""""
+""""
+"""                    "warning": {}"
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
                         "title": _("Invalid Model"),
                         "message": _()
                             "The selected model is not part of the records_management module. "
                             "Please select a valid records_management model."
-                        
-                    
-                
-
+                        ""
+                    ""
+                ""
+""
     @api.onchange("field_name")
-    def _onchange_field_name(self):
+    def _onchange_field_name(self):""
         """Auto-populate original_label when field is selected"""
-        if self.model_name and self.field_name:
-            try:
-                model = self.env[self.model_name]
-                if self.field_name in model._fields:
-                    field = model._fields[self.field_name]
-                    self.original_label = field.string or self.field_name
-                    if not self.custom_label:
-                        self.custom_label = self.original_label
-            except Exception
-                pass
-
-    # ============================================================================
-        # ACTION METHODS
-    # ============================================================================
-    def action_apply_corporate_preset(self):
+""""
+"""
+"""    def action_apply_corporate_preset(self):"
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
         """Apply Corporate Preset - Action method"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+""""
+""""
+"""            "type": "ir.actions.act_window","
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
             "name": _("Apply Corporate Preset"),
             "res_model": "field.label.customization",
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        
-
-    def action_apply_financial_preset(self):
+        ""
+""
+    def action_apply_financial_preset(self):""
         """Apply Financial Preset - Action method"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+""""
+"""
+"""            "type": "ir.actions.act_window","
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
             "name": _("Apply Financial Preset"),
             "res_model": "field.label.customization",
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        
-
-    def action_apply_healthcare_preset(self):
+        ""
+""
+    def action_apply_healthcare_preset(self):""
         """Apply Healthcare Preset - Action method"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+""""
+""""
+"""            "type": "ir.actions.act_window","
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
             "name": _("Apply Healthcare Preset"),
             "res_model": "field.label.customization",
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        
-
-    def action_apply_legal_preset(self):
+        ""
+""
+    def action_apply_legal_preset(self):""
         """Apply Legal Preset - Action method"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+""""
+"""
+"""            "type": "ir.actions.act_window","
+"""
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
             "name": _("Apply Legal Preset"),
             "res_model": "field.label.customization",
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        
-
-    def action_restore_defaults(self):
+        ""
+""
+    def action_restore_defaults(self):""
         """Restore default settings - Action method"""
-
-        self.ensure_one()
-        return {}
-            "type": "ir.actions.act_window",
+""""
+""""
+"""            "type": "ir.actions.act_window","
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
             "name": _("Restore Default Settings"),
             "res_model": "field.label.customization",
             "view_mode": "form",
             "target": "new",
             "context": self.env.context,
-        
+        ""
         """_summary_"""
-
-)))))))))))))))))))
+""""

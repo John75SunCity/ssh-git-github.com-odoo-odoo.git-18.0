@@ -12,7 +12,7 @@ class HrEmployee(models.Model):
         string="Records Manager",
         help="User responsible for this employee's records management",:'
             pass
-    
+
 
         # NAID compliance fields
     ,
@@ -22,18 +22,18 @@ class HrEmployee(models.Model):
             ("basic", "Basic"),
             ("advanced", "Advanced"),
             ("certified", "Certified"),
-        
+
         string="NAID Security Level",
         default="none",
         tracking=True,
-    
+
 
         # Records access permissions
     records_access_level = fields.Selection(
         [("read", "Read Only"), ("write", "Read/Write"), ("admin", "Administrator")), string="Records Access Level",
         default="read",
         tracking=True,
-    
+
 
         # Documentation
     records_notes = fields.Text(string="Records Management Notes"),
@@ -78,7 +78,7 @@ class HrEmployee(models.Model):
                 'standard': 'Standard access to most records',
                 'elevated': 'Elevated access including confidential records',
                 'admin': 'Full administrative access to all records'
-            
+
             record.access_description = access_levels.get(record.records_access_level, 'No access defined')
 
 

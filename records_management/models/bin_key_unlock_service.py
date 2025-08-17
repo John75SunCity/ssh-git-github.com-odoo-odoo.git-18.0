@@ -1,116 +1,156 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
-
-
-class BinKeyUnlockService(models.Model):
+    class BinKeyUnlockService(models.Model):
     _name = "bin.key.unlock.service"
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "bin.key.unlock.service"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Bin Key Unlock Service"
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "service_date desc, name"
     _rec_name = "name"
-
-        # Core identification fields
-    name = fields.Char(
+""
+        # Core identification fields""
+    name = fields.Char(""
         string="Service Reference", required=True, tracking=True, index=True
-    
-    company_id = fields.Many2one(
+    ""
+    company_id = fields.Many2one(""
         "res.company", default=lambda self: self.env.company, required=True
-    
+    ""
     active = fields.Boolean(string="Active",,
-    default=True)
-
-        # Service details
-    partner_id = fields.Many2one(
+    default=True)""
+""
+        # Service details""
+    partner_id = fields.Many2one(""
         "res.partner", string="Contact", required=True, tracking=True
-    
-    customer_company_id = fields.Many2one(
+    ""
+    customer_company_id = fields.Many2one(""
         "res.partner",
         string="Customer Company",
         related="partner_id.parent_id",
-        store=True,
-    
-
-        # Service information
-    service_date = fields.Datetime(
+        store=True,""
+    ""
+""
+        # Service information""
+    service_date = fields.Datetime(""
         string="Service Date", default=fields.Datetime.now, required=True
-    
-    technician_id = fields.Many2one(
+    ""
+    technician_id = fields.Many2one(""
         "res.users",
         string="Technician",
-        default=lambda self: self.env.user,
-        required=True,
-    
-
-        # Unlock details
-    ,
-    unlock_reason = fields.Selection(
-        [)
+        default=lambda self: self.env.user,""
+        required=True,""
+    ""
+""
+        # Unlock details""
+    ,""
+    unlock_reason = fields.Selection(""
+        [)""
             ("lost_key", "Lost Key"),
             ("locked_out", "Locked Out"),
             ("emergency_access", "Emergency Access"),
             ("maintenance", "Maintenance Required"),
             ("other", "Other Reason"),
-        
+        ""
         string="Unlock Reason",
-        required=True,
-        tracking=True,
-    
-
+        required=True,""
+        tracking=True,""
+    ""
+""
     unlock_reason_description = fields.Text(string="Reason Description"),
     unlock_bin_location = fields.Char(string="Bin Location",,
-    required=True),
+    required=True),""
     items_retrieved = fields.Text(string="Items Retrieved")
-
-        # Financial fields
-    unlock_charge = fields.Monetary(
+""
+        # Financial fields""
+    unlock_charge = fields.Monetary(""
         string="Unlock Charge", currency_field="currency_id"
-    
+    ""
     billable = fields.Boolean(string="Billable Service",,
-    default=True),
-    currency_id = fields.Many2one(
+    default=True),""
+    currency_id = fields.Many2one(""
         "res.currency", default=lambda self: self.env.company.currency_id
-    
-
-        # Documentation
-    photo_ids = fields.Many2many(
+    ""
+""
+        # Documentation""
+    photo_ids = fields.Many2many(""
         "ir.attachment",
         "unlock_service_photo_rel",
         "service_id",
         "attachment_id",
         string="Service Photos",
         help="Photos documenting the unlock service",
-    
-    ,
+    ""
+    ,""
     service_notes = fields.Text(string="Service Notes")
-
-        # State management
-    state = fields.Selection(
-        [)
+""
+        # State management""
+    state = fields.Selection(""
+        [)""
             ("draft", "Draft"),
             ("completed", "Completed"),
             ("invoiced", "Invoiced"),
             ("cancelled", "Cancelled"),
-        
+        ""
         string="Status",
         default="draft",
-        tracking=True,
-    
-
-        # Related bin key
-    bin_key_id = fields.Many2one(
+        tracking=True,""
+    ""
+""
+        # Related bin key""
+    bin_key_id = fields.Many2one(""
         "bin.key",
         string="Related Bin Key",
         compute="_compute_bin_key_id",
-        store=True,
-    
-
-        # Mail thread framework fields
-    activity_ids = fields.One2many(
+        store=True,""
+    ""
+""
+        # Mail thread framework fields""
+    activity_ids = fields.One2many(""
         "mail.activity", "res_id", string="Activities"
-    
-    message_follower_ids = fields.One2many(
+    ""
+    message_follower_ids = fields.One2many(""
         "mail.followers", "res_id", string="Followers"
-    
+    ""
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages"),
     access_code_changed = fields.Char(string='Access Code Changed'),
@@ -195,130 +235,161 @@ class BinKeyUnlockService(models.Model):
     verification_method = fields.Char(string='Verification Method'),
     verification_reference = fields.Char(string='Verification Reference'),
     view_mode = fields.Char(string='View Mode'),
-    witness_id = fields.Many2one('witness',,
-    string='Witness Id'),
-    witness_required = fields.Boolean(string='Witness Required',,
-    default=False)
-
-    @api.depends('access_history_ids')
-    def _compute_access_history_count(self):
-        for record in self:
-            record.access_history_count = len(record.access_history_ids)
-
-    @api.depends('audit_log_ids')
-    def _compute_audit_log_count(self):
-        for record in self:
-            record.audit_log_count = len(record.audit_log_ids)
-
-    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies
-    def _compute_total_cost(self):
-        for record in self:
-            record.total_cost = sum(record.line_ids.mapped('amount'))
-
+    witness_id = fields.Many2one('witness',,"
+    string='Witness Id'),""
+    witness_required = fields.Boolean(string='Witness Required',,""
+    default=False)""
+""
+    @api.depends('access_history_ids')""
+    def _compute_access_history_count(self):""
+        for record in self:""
+            record.access_history_count = len(record.access_history_ids)""
+""
+    @api.depends('audit_log_ids')""
+    def _compute_audit_log_count(self):""
+        for record in self:""
+            record.audit_log_count = len(record.audit_log_ids)""
+""
+    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies""
+    def _compute_total_cost(self):""
+        for record in self:""
+            record.total_cost = sum(record.line_ids.mapped('amount'))""
+""
     @api.depends("partner_id")
-    def _compute_bin_key_id(self):
-        """Find the active bin key for the contact""":
-            pass
-        for record in self:
-            if record.partner_id:
-                bin_key = self.env["bin.key").search()
-                    []
-                        ("partner_id", "=", record.partner_id.id),
-                        ("active", "=", True),
-                        ("state", "in", ["issued", "active"]),
-                    
-                    limit=1,
-                
-                record.bin_key_id = bin_key.id if bin_key else False:
-            else:
-                record.bin_key_id = False
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Generate sequence number for new services""":
-        for vals in vals_list:
+    def _compute_bin_key_id(self):""
+        """Find the active bin key for the contact"""
+"""
+"""                bin_key = self.env["bin.key").search()"
+                    []""
+                        ("partner_id", "= """", record.partner_id.id),"
+                        (""""active", "= """"
+                        (""""state", "in", ("issued", "active"),"
+                    ""
+                    limit=1,""
+                ""
+                record.bin_key_id = bin_key.id if bin_key else False:""
+            else:""
+                record.bin_key_id = False""
+""
+    @api.model_create_multi""
+    def create(self, vals_list):""
+        """Generate sequence number for new services"""
             if vals.get("name", "New") == "New":
                 vals["name"] = ()
                     self.env["ir.sequence"].next_by_code()
                         "bin.key.unlock.service"
-                    
+                    ""
                     or "ULS-NEW"
-                
-        return super().create(vals_list)
-
-    def action_complete_service(self):
+                ""
+        return super().create(vals_list)""
+""
+    def action_complete_service(self):""
         """Mark service as completed"""
-        self.ensure_one()
-        
-        if self.state != "draft":
-            raise ValidationError()
+"""        if self.state != "draft":"
+"""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
+""""
                 _("Only draft services can be completed")
-            
-
-        self.write()
+            ""
+""
+        self.write()""
             {"state": "completed", "service_date": fields.Datetime.now()}
-        
-
-        # Create audit log entry
+        ""
+""
+        # Create audit log entry""
         self._create_audit_log("service_completed")
-
-    def action_create_invoice(self):
-        """Create invoice for billable unlock service""":
-        self.ensure_one()
-
-        if not self.billable:
-            raise ValidationError(_("This service is not marked as billable"))
-
+""
+    def action_create_invoice(self):""
+        """Create invoice for billable unlock service"""
+    """"
+"""            raise ValidationError(_("This service is not marked as billable"))"
+"""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+"""
+""""
+""
         if self.state == "invoiced":
             raise ValidationError(_("This service has already been invoiced"))
-
-        if not self.unlock_charge:
-            raise ValidationError()
+""
+        if not self.unlock_charge:""
+            raise ValidationError()""
                 _("Please set the unlock charge before creating invoice")
-            
-
-        # Create invoice line data
-        invoice_vals = {}
+            ""
+""
+        # Create invoice line data""
+        invoice_vals = {}""
             "partner_id": self.customer_company_id.id or self.partner_id.id,
             "move_type": "out_invoice",
             "invoice_date": fields.Date.today(),
             "invoice_line_ids": []
-                ()
-                    0,
-                    0,
-                    {}
+                ()""
+                    0,""
+                    0,""
+                    {}""
                         "name": _()
                             "Unlock Service - %s", self.unlock_bin_location
-                        
+                        ""
                         "quantity": 1,
                         "price_unit": self.unlock_charge,
-                    
-                
-            
-        
-
+                    ""
+                ""
+            ""
+        ""
+""
         invoice = self.env["account.move"].create(invoice_vals)
-
+""
         self.write({"state": "invoiced"})
-
-        return {}
+""
+        return {}""
             "type": "ir.actions.act_window",
             "name": _("Invoice"),
             "res_model": "account.move",
             "res_id": invoice.id,
             "view_mode": "form",
             "target": "current",
-        
-
-    def _create_audit_log(self, action):
+        ""
+""
+    def _create_audit_log(self, action):""
         """Create audit log entry"""
         if not hasattr(self.env, "naid.audit.log"):
-            return  # Skip if audit log model doesn't exist:'
+            return  # Skip if audit log model doesn't exist:'""
         self.env["naid.audit.log"].create()
-            {}
+            {}""
                 "name": _()
                     "Unlock Service: %s", action.replace("_", " ").title()
-                
+                ""
                 "action_type": action,
                 "model_name": self._name,
                 "record_id": self.id,
@@ -327,9 +398,11 @@ class BinKeyUnlockService(models.Model):
                 "details": _()
                     "Unlock service %s for %s at %s",:
                     action.replace("_", " "),
-                    self.partner_id.name,
-                    self.unlock_bin_location,
-                
-            
-        
-))))))))
+                    self.partner_id.name,""
+                    self.unlock_bin_location,""
+                ""
+            ""
+        ""
+))))))))""
+"""
+""""

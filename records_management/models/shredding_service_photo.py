@@ -25,13 +25,13 @@ class ShreddingServicePhoto(models.Model):
         string="Photo Description",
         required=True,
         tracking=True
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     ,
     active = fields.Boolean(default=True),
@@ -46,7 +46,7 @@ class ShreddingServicePhoto(models.Model):
         required=True,
         ondelete="cascade",
         index=True
-    
+
 
         # ============================================================================
     # PHOTO DETAILS
@@ -59,24 +59,24 @@ class ShreddingServicePhoto(models.Model):
         ('certificate', 'Certificate Documentation'),
         ('equipment', 'Equipment Used'),
         ('location', 'Service Location')
-    
+
 
     photo_data = fields.Binary(
         string="Photo",
         required=True,
         help="Photo image data"
-    
+
 
     photo_filename = fields.Char(
         string="Filename",
         help="Original filename"
-    
+
 
     photo_date = fields.Datetime(
         string="Photo Date",
         required=True,
         default=fields.Datetime.now
-    
+
 
         # ============================================================================
     # NAID COMPLIANCE
@@ -84,12 +84,12 @@ class ShreddingServicePhoto(models.Model):
     witness_name = fields.Char(
         string="Witness Name",
         help="Name of person who witnessed the photo"
-    
+
 
     witness_signature = fields.Binary(
         string="Witness Signature",
         help="Digital signature of witness"
-    
+
 
         # Mail Thread Framework Fields
     activity_ids = fields.One2many("mail.activity", "res_id",,

@@ -22,16 +22,16 @@ class ShreddingServiceLog(models.Model):
         index=True,
         help="Unique identifier for the shredding service log":
             pass
-    
+
     description = fields.Text(
         string='Description',
         help="Detailed description of the shredding service log"
-    
+
     sequence = fields.Integer(
         string='Sequence',
         default=10,
         help="Display order sequence"
-    
+
 
         # ============================================================================
     # FRAMEWORK FIELDS
@@ -42,19 +42,19 @@ class ShreddingServiceLog(models.Model):
         default=lambda self: self.env.company,
         required=True,
         help="Company associated with this log entry"
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Assigned User",
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for this log entry":
-    
+
     active = fields.Boolean(
         string='Active',
         default=True,
         help="Active status of the log entry"
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -64,7 +64,7 @@ class ShreddingServiceLog(models.Model):
         string="Partner",
         tracking=True,
         help="Associated partner for this record":
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -75,7 +75,7 @@ class ShreddingServiceLog(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived')
-    
+
         help="Current status of the log entry"
 
     # ============================================================================
@@ -86,18 +86,18 @@ class ShreddingServiceLog(models.Model):
         default=fields.Datetime.now,
         required=True,
         help="Date and time when log entry was created"
-    
+
     date_modified = fields.Datetime(
         string='Modified Date',
         help="Date and time when log entry was last modified"
-    
+
     duration_minutes = fields.Float(
         ,
     string='Duration (Minutes)',
         compute='_compute_duration_minutes',
         store=True,
         help="Duration of the logged activity in minutes"
-    
+
 
         # ============================================================================
     # SHREDDING SERVICE SPECIFIC FIELDS
@@ -107,17 +107,17 @@ class ShreddingServiceLog(models.Model):
         string='Shredding Service',
         ondelete='cascade',
         help="Associated shredding service"
-    
+
     operator_id = fields.Many2one(
         'hr.employee',
         string='Operator',
         help="Employee who performed the shredding operation"
-    
+
     equipment_id = fields.Many2one(
         "maintenance.equipment",
         string="Equipment Used",
         help="Equipment used for shredding operation",:
-    
+
 
         # ============================================================================
     # OPERATIONAL DATA
@@ -125,21 +125,21 @@ class ShreddingServiceLog(models.Model):
     start_time = fields.Datetime(
         string='Start Time',
         help="When the shredding operation started"
-    
+
     end_time = fields.Datetime(
         string='End Time',
         help="When the shredding operation ended"
-    
+
     weight_processed = fields.Float(
         ,
     string='Weight Processed (lbs)',
         digits=(10, 2),
         help="Total weight of material processed"
-    
+
     container_count = fields.Integer(
         string='Container Count',
         help="Number of containers processed"
-    
+
 
         # ============================================================================
     # QUALITY AND COMPLIANCE
@@ -147,20 +147,20 @@ class ShreddingServiceLog(models.Model):
     quality_check_passed = fields.Boolean(
         string='Quality Check Passed',
         help="Whether quality inspection passed"
-    
+
     witness_present = fields.Boolean(
         string='Customer Witness Present',
         help="Whether customer witness was present during destruction"
-    
+
     witness_name = fields.Char(
         string='Witness Name',
         help="Name of the customer witness"
-    
+
     witness_signature = fields.Binary(
         string='Witness Signature',
         attachment=True,
         help="Digital signature of the witness"
-    
+
 
         # ============================================================================
     # DOCUMENTATION
@@ -168,15 +168,15 @@ class ShreddingServiceLog(models.Model):
     notes = fields.Text(
         string='Internal Notes',
         help="Internal notes and observations"
-    
+
     operational_notes = fields.Text(
         string='Operational Notes',
         help="Notes about the shredding operation"
-    
+
     issues_encountered = fields.Text(
         string='Issues Encountered',
         help="Any issues or problems encountered during operation"
-    
+
 
         # ============================================================================
     # COMPUTED FIELDS
@@ -186,7 +186,7 @@ class ShreddingServiceLog(models.Model):
         compute='_compute_display_name',
         store=True,
         help="Display name for the log entry":
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -197,14 +197,14 @@ class ShreddingServiceLog(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name)),
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -217,7 +217,7 @@ class ShreddingServiceLog(models.Model):
     res_model = fields.Char(string='Res Model'),
     type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
-        
+
 
     # ============================================================================
         # COMPUTE METHODS
@@ -298,7 +298,7 @@ class ShreddingServiceLog(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {'default_log_id': self.id}
-        
+
 
     # ============================================================================
         # BUSINESS METHODS
@@ -316,7 +316,7 @@ class ShreddingServiceLog(models.Model):
             'container_count': self.container_count,
             'quality_passed': self.quality_check_passed,
             'witness_present': self.witness_present,
-        
+
 
     def create_naid_audit_entry(self):
         """Create NAID compliance audit entry"""
@@ -331,7 +331,7 @@ class ShreddingServiceLog(models.Model):
                 'timestamp': fields.Datetime.now(),
                 'weight_processed': self.weight_processed,
                 'witness_present': self.witness_present,
-            
+
 
     # ============================================================================
         # ORM OVERRIDES
@@ -401,7 +401,7 @@ class ShreddingServiceLog(models.Model):
             ('start_time', '>=', date),
             ('start_time', '<', date + fields.timedelta(days=1)),
             ('state', '=', 'active')
-        
+
 
         return {}
             'date': date,
@@ -410,7 +410,7 @@ class ShreddingServiceLog(models.Model):
             'total_containers': sum(logs.mapped('container_count')),
             'total_duration': sum(logs.mapped('duration_minutes')),
             'operations_with_witness': len(logs.filtered('witness_present')),
-        
+
 
     def toggle_active(self):
         """Toggle active state"""

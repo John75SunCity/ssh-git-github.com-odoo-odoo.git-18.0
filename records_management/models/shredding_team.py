@@ -27,31 +27,31 @@ class ShreddingTeam(models.Model):
         tracking=True,
         index=True,
         help="Unique team identification name",
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Created By",
         default=lambda self: self.env.user,
         tracking=True,
         help="User who created this team",
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Partner",
         help="Associated partner for this record",:
-    
+
     active = fields.Boolean(
         string="Active", default=True, help="Active status of the team"
-    
+
     sequence = fields.Integer(
         string="Sequence", default=10, help="Order sequence for sorting teams":
-    
+
 
         # ============================================================================
     # TEAM STATUS AND WORKFLOW
@@ -63,12 +63,12 @@ class ShreddingTeam(models.Model):
             ("active", "Active"),
             ("inactive", "Inactive"),
             ("suspended", "Suspended"),
-        
+
         string="Status",
         default="draft",
         tracking=True,
         help="Current team status",
-    
+
     description = fields.Text(string="Description",,
     help="Team description and notes")
 
@@ -80,28 +80,28 @@ class ShreddingTeam(models.Model):
         string="Team Leader",
         tracking=True,
         help="Primary team leader responsible for coordination",:
-    
+
     supervisor_id = fields.Many2one(
         "res.users",
         string="Supervisor",
         help="Team supervisor for escalations",:
-    
+
     member_ids = fields.Many2many(
         "res.users",
         string="Team Members",
         help="All team members including leader",
-    
+
     employee_ids = fields.Many2many(
         "hr.employee",
         string="Employees",
         help="HR employee records for team members",:
-    
+
     member_count = fields.Integer(
         string="Member Count",
         compute="_compute_member_count",
         store=True,
         help="Total number of team members",
-    
+
 
         # ============================================================================
     # SPECIALIZATION AND CAPABILITIES
@@ -117,18 +117,18 @@ class ShreddingTeam(models.Model):
             ("medical", "Medical Records"),
             ("financial", "Financial Documents"),
             ("government", "Government Documents"),
-        
+
         string="Primary Specialization",
         default="paper",
         required=True,
         help="Primary specialization of the team",
-    
+
         # TODO: Implement shredding.specialization model for team capabilities:
     # secondary_specialization_ids = fields.Many2many(
         #     "shredding.specialization",
     #     string="Secondary Specializations",
         #     help="Additional capabilities of the team",
-    # 
+    #
     ,
     certification_level = fields.Selection(
         [)
@@ -136,16 +136,16 @@ class ShreddingTeam(models.Model):
             ("standard", "Standard"),
             ("naid_aaa", "NAID AAA"),
             ("government", "Government Clearance"),
-        
+
         string="Certification Level",
         default="standard",
         help="Team certification level",
-    
+
     security_clearance = fields.Boolean(
         string="Security Clearance",
         default=False,
         help="Team has security clearance for classified materials",:
-    
+
 
         # ============================================================================
     # CAPACITY AND SCHEDULING
@@ -156,42 +156,42 @@ class ShreddingTeam(models.Model):
         digits="Stock Weight",
         default=0.0,
         help="Maximum daily processing capacity in pounds",
-    
+
     max_volume_per_day = fields.Float(
         ,
     string="Max Volume per Day (cubic feet)",
         digits="Stock Weight",
         default=0.0,
         help="Maximum daily processing volume",
-    
+
     working_hours_start = fields.Float(
         string="Working Hours Start",
         default=8.0,
         ,
     help="Daily working hours start time (24h format)",
-    
+
     working_hours_end = fields.Float(
         string="Working Hours End",
         default=17.0,
         ,
     help="Daily working hours end time (24h format)",
-    
+
     working_days = fields.Selection(
         [)
             ("monday_friday", "Monday to Friday"),
             ("monday_saturday", "Monday to Saturday"),
             ("seven_days", "Seven Days"),
             ("custom", "Custom Schedule"),
-        
+
         string="Working Days",
         default="monday_friday",
         help="Team working days schedule",
-    
+
     overtime_available = fields.Boolean(
         string="Overtime Available",
         default=True,
         help="Team available for overtime work",:
-    
+
 
         # ============================================================================
     # EQUIPMENT AND RESOURCES
@@ -200,20 +200,20 @@ class ShreddingTeam(models.Model):
         "records.vehicle",
         string="Assigned Vehicles",
         help="Vehicles assigned to this team",
-    
+
     equipment_ids = fields.Many2many(
         "maintenance.equipment",
         string="Assigned Equipment",
         help="Shredding equipment assigned to team",
-    
+
     primary_equipment_id = fields.Many2one(
         "maintenance.equipment",
         string="Primary Equipment",
         help="Primary shredding equipment for this team",:
-    
+
     mobile_unit = fields.Boolean(
         string="Mobile Unit", default=False, help="Team operates mobile shredding unit"
-    
+
 
         # ============================================================================
     # PERFORMANCE METRICS
@@ -223,54 +223,54 @@ class ShreddingTeam(models.Model):
         compute="_compute_performance_metrics",
         store=True,
         help="Total number of completed services",
-    
+
     total_weight_processed = fields.Float(
         ,
     string="Total Weight Processed (lbs)",
         compute="_compute_performance_metrics",
         store=True,
         help="Total weight processed by team",
-    
+
     average_service_time = fields.Float(
         ,
     string="Average Service Time (hours)",
         compute="_compute_performance_metrics",
         store=True,
         help="Average time per service completion",
-    
+
     efficiency_rating = fields.Float(
         ,
     string="Efficiency Rating (%)",
         compute="_compute_efficiency_rating",
         store=True,
         help="Team efficiency based on capacity utilization",
-    
+
     customer_satisfaction = fields.Float(
         string="Customer Satisfaction Score",
         compute="_compute_customer_satisfaction",
         store=True,
         ,
     help="Average customer satisfaction rating based on portal feedback (1.0-5.0 scale)",
-    
+
     total_ratings_received = fields.Integer(
         string="Total Ratings Received",
         compute="_compute_customer_satisfaction",
         store=True,
         help="Total number of customer ratings received via portal feedback",
-    
+
     satisfaction_percentage = fields.Float(
         string="Satisfaction Percentage",
         compute="_compute_customer_satisfaction",
         store=True,
         ,
     help="Percentage of satisfied customers (rating >= 4.0) from portal feedback",
-    
+
     latest_feedback_date = fields.Datetime(
         string="Latest Feedback Date",
         compute="_compute_customer_satisfaction",
         store=True,
         help="Date of most recent customer feedback",
-    
+
 
         # ============================================================================
     # RELATIONSHIP FIELDS
@@ -280,13 +280,13 @@ class ShreddingTeam(models.Model):
         "team_id",
         string="Shredding Services",
         help="Services assigned to this team",
-    
+
     service_count = fields.Integer(
         string="Service Count",
         compute="_compute_service_count",
         store=True,
         help="Total number of assigned services",
-    
+
     active_service_ids = fields.One2many(
         "shredding.service",
         "team_id",
@@ -294,7 +294,7 @@ class ShreddingTeam(models.Model):
         ,
     domain=[("state", "in", ["scheduled", "in_progress")))
         help="Currently active services",
-    
+
     completed_service_ids = fields.One2many(
         "shredding.service",
         "team_id",
@@ -302,13 +302,13 @@ class ShreddingTeam(models.Model):
         ,
     domain=[("state", "=", "completed"))
         help="Completed services",
-    
+
     feedback_ids = fields.One2many(
         "customer.feedback",
         "team_id",
         string="Customer Feedback",
         help="Customer feedback related to this team's services",'
-    
+
 
         # ============================================================================
     # LOCATION AND AVAILABILITY
@@ -317,23 +317,23 @@ class ShreddingTeam(models.Model):
         "records.location",
         string="Base Location",
         help="Team's base operating location",'
-    
+
     service_area_ids = fields.Many2many(
         "records.location",
         string="Service Areas",
         help="Geographic areas this team can service",
-    
+
     travel_radius = fields.Float(
         ,
     string="Travel Radius (miles)",
         default=50.0,
         help="Maximum travel distance for services",:
-    
+
     emergency_response = fields.Boolean(
         string="Emergency Response",
         default=False,
         help="Team available for emergency services",:
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
@@ -344,14 +344,14 @@ class ShreddingTeam(models.Model):
         string="Activities",
         ,
     domain=[("res_model", "=", "shredding.team"))
-    
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=[("res_model", "=", "shredding.team"))
-    
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -364,7 +364,7 @@ class ShreddingTeam(models.Model):
     res_model = fields.Char(string='Res Model'),
     type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
-        
+
 
     # ============================================================================
         # COMPUTE METHODS
@@ -385,28 +385,28 @@ class ShreddingTeam(models.Model):
         "service_ids.state",
         "service_ids.actual_weight",
         "service_ids.duration_hours",
-    
+
     def _compute_performance_metrics(self):
         """Compute team performance metrics"""
         for team in self:
             completed_services = team.service_ids.filtered()
                 lambda s: s.state == "completed"
-            
+
             team.total_services_completed = len(completed_services)
             team.total_weight_processed = sum()
                 completed_services.mapped("actual_weight")
-            
+
             if completed_services:
                 total_duration = sum()
                     s.duration_hours
                     for s in completed_services:
                     if s.duration_hours:
-                
+
                 team.average_service_time = ()
                     (total_duration / len(completed_services))
                     if completed_services:
                     else 0.0
-                
+
             else:
                 team.average_service_time = 0.0
 
@@ -414,7 +414,7 @@ class ShreddingTeam(models.Model):
         "total_weight_processed",
         "max_capacity_per_day",
         "total_services_completed",
-    
+
     def _compute_efficiency_rating(self):
         """Compute team efficiency rating"""
         for team in self:
@@ -425,10 +425,10 @@ class ShreddingTeam(models.Model):
                     ()
                         (team.total_weight_processed / theoretical_capacity)
                         * 100
-                    
+
                     if theoretical_capacity > 0:
                     else 0.0
-                
+
             else:
                 team.efficiency_rating = 0.0
 
@@ -436,7 +436,7 @@ class ShreddingTeam(models.Model):
         "feedback_ids.rating",
         "feedback_ids.sentiment_score",
         "service_ids.state",
-    
+
     def _compute_customer_satisfaction(self):
         """Compute customer satisfaction metrics using portal feedback."""
         for team in self:
@@ -445,8 +445,8 @@ class ShreddingTeam(models.Model):
                 []
                     ("service_id", "in", team.completed_service_ids.ids),
                     ("rating", ">", 0),
-                
-            
+
+
             all_feedback = team_feedback | service_feedback
             if all_feedback:
                 ratings = all_feedback.mapped("rating")
@@ -456,10 +456,10 @@ class ShreddingTeam(models.Model):
                     satisfied_count = len([r for r in ratings if r >= 4.0]):
                     team.satisfaction_percentage = ()
                         satisfied_count / len(ratings)
-                    
+
                     team.latest_feedback_date = all_feedback.sorted()
                         "create_date", reverse=True
-                    
+
                 else:
                     team._set_default_satisfaction_metrics()
             else:
@@ -492,8 +492,8 @@ class ShreddingTeam(models.Model):
             raise UserError()
                 _()
                     "Cannot deactivate team with active services. Complete or reassign services first."
-                
-            
+
+
         self.write({"state": "inactive"})
         self.message_post(body=_("Team deactivated"))
 
@@ -513,7 +513,7 @@ class ShreddingTeam(models.Model):
             "view_mode": "tree,form",
             "domain": [("team_id", "=", self.id)],
             "context": {"default_team_id": self.id},
-        
+
 
     # ============================================================================
         # BUSINESS METHODS
@@ -526,11 +526,11 @@ class ShreddingTeam(models.Model):
         scheduled_services = self.service_ids.filtered()
             lambda s: s.service_date == date
             and s.state in ["scheduled", "in_progress"]
-        
+
         scheduled_weight = sum(scheduled_services.mapped("estimated_weight"))
         available_capacity = max()
             0, self.max_capacity_per_day - scheduled_weight
-        
+
         return {}
             "available_capacity": available_capacity,
             "scheduled_weight": scheduled_weight,
@@ -539,8 +539,8 @@ class ShreddingTeam(models.Model):
                 (scheduled_weight / self.max_capacity_per_day * 100)
                 if self.max_capacity_per_day > 0:
                 else 0
-            
-        
+
+
 
     # ============================================================================
         # VALIDATION METHODS
@@ -579,7 +579,7 @@ class ShreddingTeam(models.Model):
         teams = super().create(vals_list)
         for team in teams.filtered(:)
             lambda t: t.team_leader_id and t.team_leader_id not in t.member_ids
-        
+
             team.member_ids = [(4, team.team_leader_id.id)]
         return teams
 
@@ -590,7 +590,7 @@ class ShreddingTeam(models.Model):
             for team in self.filtered(:)
                 lambda t: t.team_leader_id
                 and t.team_leader_id not in t.member_ids
-            
+
                 team.write({"member_ids": [(4, team.team_leader_id.id)]})
         return res
         return res

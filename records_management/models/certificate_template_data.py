@@ -27,20 +27,20 @@ class CertificateTemplateData(models.Model):
         tracking=True,
         index=True,
         help="Name of the certificate template"
-    
+
 
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
 
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Set to false to archive this template"
-    
+
 
         # ============================================================================
     # TEMPLATE CONFIGURATION
@@ -52,14 +52,14 @@ class CertificateTemplateData(models.Model):
         ('transfer', 'Transfer Certificate'),
         ('audit', 'Audit Certificate'),
         ('compliance', 'Compliance Certificate')
-    
+
 
     template_format = fields.Selection([))
         ('pdf', 'PDF'),
         ('html', 'HTML'),
         ('docx', 'Word Document'),
         ('xlsx', 'Excel Spreadsheet')
-    
+
 
         # ============================================================================
     # TEMPLATE CONTENT
@@ -67,17 +67,17 @@ class CertificateTemplateData(models.Model):
     header_text = fields.Html(
         string="Header Text",
         help="Header content for the certificate":
-    
+
 
     body_template = fields.Html(
         string="Body Template",
         help="Main body template with placeholders"
-    
+
 
     footer_text = fields.Html(
         string="Footer Text",
         help="Footer content for the certificate":
-    
+
 
         # ============================================================================
     # BRANDING
@@ -85,18 +85,18 @@ class CertificateTemplateData(models.Model):
     logo_image = fields.Binary(
         string="Logo",
         help="Company logo for certificate":
-    
+
 
     company_address = fields.Text(
         string="Company Address",
         help="Company address to display"
-    
+
 
     certification_authority = fields.Char(
         string="Certification Authority",
         ,
     help="Name of certifying authority"
-    
+
 
         # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance):
     activity_ids = fields.One2many("mail.activity", "res_id",,

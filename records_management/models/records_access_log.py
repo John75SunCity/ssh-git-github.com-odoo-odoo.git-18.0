@@ -37,7 +37,7 @@ _logger = logging.getLogger(__name__)
 
 class RecordsAccessLog(models.Model):
     """Records Access Log"""
-    
+
         Comprehensive access logging for documents with NAID compliance tracking,:
     security monitoring, and automated audit trail generation.
 
@@ -56,15 +56,15 @@ class RecordsAccessLog(models.Model):
         tracking=True,
         index=True,
         help="Unique identifier for the access log entry":
-    
-    
+
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
-    
+
+
     user_id = fields.Many2one(
         "res.users",
         string="Accessing User",
@@ -72,13 +72,13 @@ class RecordsAccessLog(models.Model):
         required=True,
         tracking=True,
         help="User who accessed the document"
-    
-    
+
+
     active = fields.Boolean(
         string="Active",
         default=True,
         help="Active status of the log entry"
-    
+
 
         # ============================================================================
     # DOCUMENT AND ACCESS INFORMATION
@@ -90,31 +90,31 @@ class RecordsAccessLog(models.Model):
         ondelete="cascade",
         tracking=True,
         help="Document that was accessed"
-    
-    
+
+
     container_id = fields.Many2one(
         "records.container",
         string="Container",
         related="document_id.container_id",
         store=True,
         help="Container holding the accessed document"
-    
-    
+
+
     customer_id = fields.Many2one(
         "res.partner",
         string="Customer",
         related="document_id.customer_id",
         store=True,
         help="Customer who owns the document"
-    
-    
+
+
     location_id = fields.Many2one(
         "records.location",
         string="Location",
         related="document_id.location_id",
         store=True,
         help="Physical location of the document"
-    
+
 
         # ============================================================================
     # ACCESS DETAILS AND TIMING
@@ -125,8 +125,8 @@ class RecordsAccessLog(models.Model):
         required=True,
         tracking=True,
         help="Date and time when document was accessed"
-    
-    
+
+
     ,
     access_type = fields.Selection([))
         ("view", "View"),
@@ -137,11 +137,11 @@ class RecordsAccessLog(models.Model):
         ("move", "Move"),
         ("scan", "Scan"),
         ("retrieve", "Physical Retrieval"),
-    
+
         required=True,
         tracking=True,
         help="Type of access performed on the document"
-    
+
     access_method = fields.Selection([))
         ("portal", "Customer Portal"),
         ("backend", "Backend System"),
@@ -149,24 +149,24 @@ class RecordsAccessLog(models.Model):
         ("api", "API Access"),
         ("barcode", "Barcode Scan"),
         ("physical", "Physical Access"),
-    
+
         required=True,
         help="Method used to access the document"
-    
+
     ip_address = fields.Char(
         string="IP Address",
         help="IP address of the accessing device"
-    
-    
+
+
     user_agent = fields.Text(
         string="User Agent",
         help="Browser/device information"
-    
-    
+
+
     session_id = fields.Char(
         string="Session ID",
         help="User session identifier"
-    
+
 
         # ============================================================================
     # ACCESS RESULT AND VALIDATION
@@ -177,30 +177,30 @@ class RecordsAccessLog(models.Model):
         ("denied", "Access Denied"),
         ("error", "Error"),
         ("partial", "Partial Access"),
-    
+
         default="success",
         required=True,
         tracking=True,
         help="Result of the access attempt"
-    
+
     error_message = fields.Text(
         string="Error Message",
         help="Error message if access failed":
-    
-    
+
+
     ,
     permission_level = fields.Selection([))
         ("read", "Read Only"),
         ("write", "Read/Write"),
         ("admin", "Administrative"),
         ("owner", "Owner Access"),
-    
+
         help="Permission level used for access"
     authorized_by_id = fields.Many2one(
         "res.users",
         string="Authorized By",
         help="User who authorized the access if different from accessing user":
-    
+
 
         # ============================================================================
     # AUDIT AND COMPLIANCE TRACKING
@@ -209,29 +209,29 @@ class RecordsAccessLog(models.Model):
         "naid.audit.log",
         string="NAID Audit Trail",
         help="Related NAID audit log entry"
-    
-    
+
+
     compliance_required = fields.Boolean(
         string="Compliance Required",
         compute="_compute_compliance_flags",
         store=True,
         help="Whether this access requires compliance documentation"
-    
-    
+
+
     security_level = fields.Selection(
         string="Security Level",
         related="document_id.security_level",
         store=True,
         help="Security level of the accessed document"
-    
-    
+
+
     risk_score = fields.Integer(
         string="Risk Score",
         compute="_compute_risk_score",
         store=True,
         ,
     help="Risk score for this access event (0-100)":
-    
+
 
         # ============================================================================
     # DOCUMENTATION AND NOTES
@@ -239,22 +239,22 @@ class RecordsAccessLog(models.Model):
     description = fields.Text(
         string="Description",
         help="Description of the access event"
-    
-    
+
+
     notes = fields.Text(
         string="Notes",
         help="Additional notes about the access"
-    
-    
+
+
     business_justification = fields.Text(
         string="Business Justification",
         help="Business reason for accessing the document":
-    
-    
+
+
     supervisor_notes = fields.Text(
         string="Supervisor Notes",
         help="Notes from supervisor regarding this access"
-    
+
 
         # ============================================================================
     # SYSTEM METADATA
@@ -263,24 +263,24 @@ class RecordsAccessLog(models.Model):
         string="Sequence",
         default=10,
         help="Sequence for ordering log entries":
-    
-    
+
+
     duration_seconds = fields.Integer(
         ,
     string="Access Duration (seconds)",
         help="How long the document was accessed"
-    
-    
+
+
     file_size_accessed = fields.Integer(
         ,
     string="File Size Accessed (bytes)",
         help="Size of the file accessed"
-    
-    
+
+
     checksum_verified = fields.Boolean(
         string="Checksum Verified",
         help="Whether document integrity was verified during access"
-    
+
 
         # ============================================================================
     # RELATIONSHIP COMPATIBILITY FIELDS
@@ -291,7 +291,7 @@ class RecordsAccessLog(models.Model):
         related="customer_id",
         store=True,
         help="Related partner field for One2many relationships compatibility":
-    
+
 
         # ============================================================================
     # WORKFLOW STATE MANAGEMENT
@@ -302,7 +302,7 @@ class RecordsAccessLog(models.Model):
         ('active', 'Active'),
         ('inactive', 'Inactive'),
         ('archived', 'Archived'),
-    
+
         help='Current status of the record'
 
     # ============================================================================
@@ -314,16 +314,16 @@ class RecordsAccessLog(models.Model):
         string="Activities",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_follower_ids = fields.One2many(
         "mail.followers",
         "res_id",
         string="Followers",
         ,
     domain=lambda self: [("res_model", "=", self._name))
-    
-    
+
+
     message_ids = fields.One2many(
         "mail.message",
         "res_id",
@@ -336,7 +336,7 @@ class RecordsAccessLog(models.Model):
     res_model = fields.Char(string='Res Model'),
     type = fields.Selection([), string='Type')  # TODO: Define selection options
     view_mode = fields.Char(string='View Mode')
-        
+
 
     # ============================================================================
         # COMPUTED FIELDS
@@ -347,44 +347,44 @@ class RecordsAccessLog(models.Model):
         for record in self:
             compliance_access_types = {"download", "print", "edit", "delete", "retrieve"}
             sensitive_levels = {"confidential", "restricted", "classified"}
-            
+
             record.compliance_required = ()
                 record.access_type in compliance_access_types
                 or record.security_level in sensitive_levels
-            
+
 
     @api.depends("access_type", "security_level", "access_result", "access_date")
     def _compute_risk_score(self):
         """Calculate risk score for access event""":
         for record in self:
             risk_score = 0
-            
+
             # Risk by access type
             risk_by_type = {}
                 "view": 10, "download": 30, "print": 40, "edit": 60,
                 "delete": 80, "move": 70, "scan": 20, "retrieve": 50
-            
+
             risk_score += risk_by_type.get(record.access_type, 10)
-            
+
             # Risk by security level
             risk_by_security = {}
                 "public": 0, "internal": 10, "confidential": 30,
                 "restricted": 50, "classified": 70
-            
+
             risk_score += risk_by_security.get(record.security_level, 0)
-            
+
             # Access result impact
             if record.access_result == "denied":
                 risk_score += 20
             elif record.access_result == "error":
                 risk_score += 15
-            
+
             # Time-based risk (outside business hours)
             if record.access_date:
                 hour = record.access_date.hour
                 if hour < 6 or hour > 22:  # Outside business hours
                     risk_score += 20
-            
+
             record.risk_score = min(risk_score, 100)
 
     # ============================================================================
@@ -396,7 +396,7 @@ class RecordsAccessLog(models.Model):
         for vals in vals_list:
             if not vals.get("name"):
                 vals["name") = self.env["ir.sequence"].next_by_code("records.access.log") or _("New Log")
-            
+
             # Create audit trail for compliance-required access:
             if vals.get("compliance_required"):
                 audit_vals = {}
@@ -404,24 +404,24 @@ class RecordsAccessLog(models.Model):
                     "description": _("Document access: %s", vals.get('access_type', 'unknown')),
                     "user_id": vals.get("user_id"),
                     "document_id": vals.get("document_id"),
-                
+
                 try:
                     audit_log = self.env["naid.audit.log"].sudo().create(audit_vals)
                     vals["audit_trail_id"] = audit_log.id
                 except Exception as e
                     _logger.warning(_("Could not create NAID audit log: %s", e))
-        
+
         return super().create(vals_list)
 
     def write(self, vals):
         """Override write for audit trail updates""":
         res = super().write(vals)
-        
+
         if any(key in vals for key in ["access_result", "error_message", "risk_score"]):
             for record in self:
                 updates = ", ".join(["%s: %s" % (key, vals[key]) for key in vals if key in record._fields]):
                 record.message_post(body=_("Access log updated: %s", updates))
-        
+
         return res
 
     # ============================================================================
@@ -438,7 +438,7 @@ class RecordsAccessLog(models.Model):
             "user_agent": kwargs.get("user_agent"),
             "session_id": kwargs.get("session_id"),
             "business_justification": kwargs.get("justification"),
-        
+
         return self.create(vals)
 
     @api.model
@@ -448,15 +448,15 @@ class RecordsAccessLog(models.Model):
             "document_id": document_id,
             "access_type": access_type,
             "access_method": "portal"
-        
-        
+
+
         if request:
             vals.update({)}
                 "ip_address": request.httprequest.remote_addr,
                 "user_agent": request.httprequest.headers.get("User-Agent"),
                 "session_id": request.session.sid,
-            
-        
+
+
         return self.create(vals)
 
     def get_access_summary(self):
@@ -471,7 +471,7 @@ class RecordsAccessLog(models.Model):
             "access_result": self.access_result,
             "risk_score": self.risk_score,
             "compliance_required": self.compliance_required,
-        
+
 
     def generate_audit_report(self):
         """Generate audit report for this access log""":
@@ -490,7 +490,7 @@ class RecordsAccessLog(models.Model):
     def action_flag_suspicious(self):
         """Flag access as suspicious for investigation""":
         self.ensure_one()
-        
+
         try:
             activity_type = self.env.ref("mail.mail_activity_data_todo")
             manager_group = self.env.ref("records_management.group_records_manager")
@@ -500,17 +500,17 @@ class RecordsAccessLog(models.Model):
                 summary=_("Investigate Suspicious Access"),
                 note=_("Access log flagged as suspicious: %s", self.name),
                 user_id=user_id,
-            
+
             self.message_post(body=_("Access flagged as suspicious for investigation")):
         except Exception as e
             _logger.warning(_("Could not schedule suspicious access activity: %s", e))
-        
+
         return True
 
     def action_create_audit_trail(self):
         """Create formal audit trail entry"""
         self.ensure_one()
-        
+
         if self.audit_trail_id:
             raise UserError(_("An audit trail already exists for this log.")):
         try:
@@ -520,7 +520,7 @@ class RecordsAccessLog(models.Model):
                 risk_level = "high"
             elif self.risk_score > 40:
                 risk_level = "medium"
-            
+
             audit_vals = {}
                 "event_type": "document_access",
                 "description": _("Manual audit trail for access log %s", self.name),:
@@ -528,14 +528,14 @@ class RecordsAccessLog(models.Model):
                 "document_id": self.document_id.id,
                 "access_log_id": self.id,
                 "risk_level": risk_level,
-            
-            
+
+
             audit_log = self.env["naid.audit.log"].create(audit_vals)
             self.write({"audit_trail_id": audit_log.id})
             self.message_post(body=_("Audit trail created: %s", audit_log.name))
         except Exception as e
             raise UserError(_("Could not create audit trail entry: %s", e))
-        
+
         return True
 
     # ============================================================================
@@ -563,9 +563,9 @@ class RecordsAccessLog(models.Model):
                 raise ValidationError(_("Access duration cannot be negative."))
             if record.duration_seconds and record.duration_seconds > 86400:  # 24 hours
                 self.message_post()
-                    body=_("Warning: Unusually long access duration detected: %s seconds", 
+                    body=_("Warning: Unusually long access duration detected: %s seconds",
                             record.duration_seconds
-                
+
 
     # ============================================================================
         # UTILITY METHODS
@@ -579,7 +579,7 @@ class RecordsAccessLog(models.Model):
                 'document': record.document_id.name,
                 'access_type': record.access_type.title(),
                 'user': record.user_id.name
-            
+
             result.append((record.id, name))
         return result
 
@@ -588,7 +588,7 @@ class RecordsAccessLog(models.Model):
         """Enhanced search by name, document, or user"""
         args = args or []
         domain = []
-        
+
         if name:
             domain = []
                 "|", "|", "|",
@@ -596,45 +596,45 @@ class RecordsAccessLog(models.Model):
                 ("document_id.name", operator, name),
                 ("user_id.name", operator, name),
                 ("description", operator, name),
-            
-        
+
+
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
     @api.model
     def get_access_statistics(self, domain=None, group_by="access_type"):
         """Get access statistics for reporting""":
         domain = domain or []
-        
+
         if group_by not in ['access_type', 'user_id', 'risk_level', 'security_level']:
             raise UserError(_("Invalid group_by parameter."))
-        
+
         if group_by == "risk_level":
             # Custom handling for risk levels based on score ranges:
             low = self.search_count(domain + [('risk_score', '<=', 30)])
             medium = self.search_count(domain + [('risk_score', '>', 30), ('risk_score', '<=', 70)])
             high = self.search_count(domain + [('risk_score', '>', 70)])
             return {'low': low, 'medium': medium, 'high': high}
-        
+
         # Use read_group for performance with other group_by options:
         grouped_data = self.read_group(domain, [group_by], [group_by])
         return {}
-            (item[group_by][1] if isinstance(item[group_by], tuple) else item[group_by] or 'N/A'): 
+            (item[group_by][1] if isinstance(item[group_by], tuple) else item[group_by] or 'N/A'):
             item["%s_count" % group_by]
             for item in grouped_data:
-        
+
 
     @api.model
     def cleanup_old_logs(self, days=365):
         """Clean up old access logs based on retention policy"""
         _logger.info(_("Starting cleanup of old access logs older than %d days.", days))
     cutoff_date = fields.Datetime.now() - timedelta(days=days)
-        
+
         # Only delete non-compliance-required logs
         domain = []
             ("access_date", "<", cutoff_date),
             ("compliance_required", "=", False)
-        
-        
+
+
         # Use search_count for performance, then search and unlink if necessary:
         count = self.search_count(domain)
         if count > 0:
@@ -643,7 +643,7 @@ class RecordsAccessLog(models.Model):
             _logger.info(_("Successfully cleaned up %d old access logs.", count))
         else:
             _logger.info(_("No old access logs to clean up."))
-        
+
         return count
 
     # ============================================================================
@@ -653,22 +653,22 @@ class RecordsAccessLog(models.Model):
     def generate_access_report(self, date_from=None, date_to=None, user_ids=None):
         """Generate comprehensive access report"""
         domain = []
-        
+
         if date_from:
             domain.append(('access_date', '>=', date_from))
         if date_to:
             domain.append(('access_date', '<=', date_to))
         if user_ids:
             domain.append(('user_id', 'in', user_ids))
-        
+
         access_logs = self.search(domain)
-        
+
         # Compile statistics
         total_accesses = len(access_logs)
         successful_accesses = len(access_logs.filtered(lambda r: r.access_result == 'success'))
         denied_accesses = len(access_logs.filtered(lambda r: r.access_result == 'denied'))
         high_risk_accesses = len(access_logs.filtered(lambda r: r.risk_score > 70))
-        
+
         # User access patterns
         user_stats = {}
         for log in access_logs:
@@ -677,12 +677,12 @@ class RecordsAccessLog(models.Model):
                 user_stats[user_name] = {'count': 0, 'risk_total': 0}
             user_stats[user_name]['count'] += 1
             user_stats[user_name]['risk_total'] += log.risk_score
-        
+
         # Calculate average risk per user
         for user in user_stats:
             if user_stats[user]['count'] > 0:
                 user_stats[user]['avg_risk'] = user_stats[user]['risk_total'] / user_stats[user]['count']
-        
+
         return {}
             'period': {'from': date_from, 'to': date_to},
             'summary': {}
@@ -691,15 +691,15 @@ class RecordsAccessLog(models.Model):
                 'denied_accesses': denied_accesses,
                 'high_risk_accesses': high_risk_accesses,
                 'success_rate': (successful_accesses / total_accesses * 100) if total_accesses > 0 else 0,:
-            
+
             'user_statistics': user_stats,
             'access_logs': access_logs.ids,
-        
+
 
     def action_export_audit_data(self):
         """Export audit data for compliance reporting""":
         self.ensure_one()
-        
+
         export_data = {}
             'log_reference': self.name,
             'document_name': self.document_id.name,
@@ -715,38 +715,38 @@ class RecordsAccessLog(models.Model):
             'session_id': self.session_id,
             'business_justification': self.business_justification,
             'audit_trail_reference': self.audit_trail_id.name if self.audit_trail_id else None,:
-        
-        
+
+
         return export_data
 
     @api.model
     def get_security_dashboard_data(self):
         """Get data for security monitoring dashboard""":
     today = fields.Date.today()
-        
+
         # Recent high-risk access attempts
         high_risk_logs = self.search([)]
             ('risk_score', '>', 70),
             ('access_date', '>=', fields.Datetime.now() - timedelta(days=7))
-        
-        
+
+
         # Failed access attempts today
         failed_today = self.search_count([)]
             ('access_result', '!=', 'success'),
             ('access_date', '>=', today)
-        
-        
+
+
         # Most active users this week
         user_activity = self.read_group()
             [('access_date', '>=', fields.Datetime.now() - timedelta(days=7))],
             ['user_id'],
             ['user_id']
-        
-        
+
+
         return {}
             'high_risk_accesses': [log.get_access_summary() for log in high_risk_logs],:
             'failed_attempts_today': failed_today,
             'user_activity': user_activity,
             'compliance_logs': self.search_count([('compliance_required', '=', True)]),
-        
+
 )))))))))))))))))))))

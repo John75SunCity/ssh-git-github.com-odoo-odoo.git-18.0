@@ -70,22 +70,22 @@ class RecordsDocument(models.Model):
         tracking=True,
         index=True,
         help="Name or title of the document"
-    
+
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True
-    
+
     user_id = fields.Many2one(
         "res.users",
         string="Responsible User",
         default=lambda self: self.env.user,
         tracking=True,
-    
+
     active = fields.Boolean(
         string="Active", default=True, help="Whether this document is active"
-    
+
     partner_id = fields.Many2one(
         "res.partner",
         string="Customer",
@@ -93,12 +93,12 @@ class RecordsDocument(models.Model):
         tracking=True,
         index=True,
         help="Customer who owns this document"
-    
+
     customer_inventory_id = fields.Many2one(
         "customer.inventory",
         string="Customer Inventory",
         help="Customer inventory record for this document",:
-    
+
 
         # ============================================================================
     # DOCUMENT DETAILS
@@ -108,15 +108,15 @@ class RecordsDocument(models.Model):
         string="Document Type",
         tracking=True,
         help="Type/category of the document",
-    
+
     description = fields.Text(
         string="Description",
         help="Detailed description of the document",
-    
+
     reference = fields.Char(
         string="Reference Number",
         help="External reference or ID number",
-    
+
 
         # ============================================================================
     # CUSTOMER AND RELATIONSHIPS
@@ -127,36 +127,36 @@ class RecordsDocument(models.Model):
         required=True,
         tracking=True,
         help="Customer who owns this document",
-    
+
     container_id = fields.Many2one(
         "records.container",
         string="Container",
         help="Container where this document is stored",
-    
+
     location_id = fields.Many2one(
         "records.location",
         string="Location",
         ,
     help="Physical location of the document",
-    
-    
+
+
         # Document Retrieval Items (inverse relationship)
     retrieval_item_ids = fields.One2many(
         "document.retrieval.item", "document_id",
         string="Document Retrieval Items",
         help="Retrieval items that reference this document"
-    
-    
+
+
     temp_inventory_id = fields.Many2one(
         "temp.inventory",
         string="Temporary Inventory",
         help="Temporary inventory location for this document",:
-    
+
     lot_id = fields.Many2one(
         "stock.lot",
         string="Stock Lot",
         help="Associated stock lot for tracking",:
-    
+
 
         # ============================================================================
     # RETENTION AND LIFECYCLE MANAGEMENT
@@ -166,7 +166,7 @@ class RecordsDocument(models.Model):
         string="Retention Policy",
         tracking=True,
         help="Retention policy governing this document",
-    
+
 
         # ============================================================================
     # PERMANENT FLAG FIELDS
@@ -176,7 +176,7 @@ class RecordsDocument(models.Model):
         default=False,
         tracking=True,
         help="Whether this document has a permanent retention flag applied",
-    
+
     ,
     permanent_flag_reason = fields.Selection(
         [)
@@ -187,22 +187,22 @@ class RecordsDocument(models.Model):
             ("historical", "Historical Significance"),
             ("business_critical", "Business Critical"),
             ("custom", "Custom Reason"),
-        
+
         string="Permanent Flag Reason",
         tracking=True,
         help="Reason for applying the permanent flag",:
-    
+
     permanent_flag_date = fields.Datetime(
         string="Permanent Flag Date",
         tracking=True,
         help="Date when the permanent flag was applied",
-    
+
     permanent_flag_user_id = fields.Many2one(
         "res.users",
         string="Flagged By",
         tracking=True,
         help="User who applied the permanent flag",
-    
+
 
         # ============================================================================
     # STATE MANAGEMENT
@@ -214,12 +214,12 @@ class RecordsDocument(models.Model):
             ("archived", "Archived"),
             ("flagged", "Permanent Flag"),
             ("destroyed", "Destroyed"),
-        
+
         string="Document Status",
         default="active",
         tracking=True,
         help="Current status of the document",
-    
+
 
         # ============================================================================
     # DATE FIELDS
@@ -229,20 +229,20 @@ class RecordsDocument(models.Model):
         default=fields.Date.today,
         tracking=True,
         help="Date when the document was received"
-    
+
     creation_date = fields.Date(
         string="Creation Date",
         default=fields.Date.today,
         tracking=True,
         help="Date when the document record was created"
-    
+
     destruction_eligible_date = fields.Date(
         string="Destruction Eligible Date",
         compute="_compute_destruction_eligible_date",
         store=True,
         ,
     help="Date when document becomes eligible for destruction":
-    
+
 
         # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS (REQUIRED)
@@ -251,7 +251,7 @@ class RecordsDocument(models.Model):
     string="Activities"),
     message_follower_ids = fields.One2many(
         "mail.followers", "res_id", string="Followers"
-    
+
     message_ids = fields.One2many("mail.message", "res_id",,
     string="Messages")
 
@@ -417,8 +417,8 @@ class RecordsDocument(models.Model):
             'context': {}
                 'default_document_ids': [(6, 0, [self.id))],
                 'default_operation_type': 'apply',
-            
-        
+
+
 
     def action_remove_permanent_flag(self):
         """Remove permanent flag from document"""
@@ -433,7 +433,7 @@ class RecordsDocument(models.Model):
             'permanent_flag_date': False,
             'permanent_flag_user_id': False,
             'state': 'active',
-        
+
         self.message_post(body=_("Permanent flag removed by %s", self.env.user.name))
 
     def action_view_audit_trail(self):
@@ -447,7 +447,7 @@ class RecordsDocument(models.Model):
             'view_mode': 'tree,form',
             'domain': [('res_id', '=', self.id), ('model', '=', 'records.document')],
             'context': {'default_res_id': self.id, 'default_model': 'records.document'},
-        
+
 
     # ============================================================================
         # VALIDATION METHODS
