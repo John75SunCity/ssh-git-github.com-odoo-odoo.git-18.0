@@ -442,3 +442,5 @@ from . import shredding_picklist_item
 from . import customer_inventory_report_line
 
 from . import shredding_rates
+from . import records_billing
+from . import billing_service

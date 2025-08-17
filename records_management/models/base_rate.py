@@ -1,7 +1,18 @@
+# -*- coding: utf-8 -*-
+"""
+Base Rate Configuration Module
+
+Manages the base pricing rates for all services and products within the
+Records Management system. This model serves as the foundation for customer
+billing and can be customized with volume and location-based modifiers.
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import ValidationError
-
 
 class BaseRate(models.Model):
     _name = 'base.rate'
@@ -11,441 +22,237 @@ class BaseRate(models.Model):
     _order = 'company_id, effective_date desc'
 
     # ============================================================================
-    # FIELDS
+    # CORE IDENTIFICATION & WORKFLOW
     # ============================================================================
-    name = fields.Char()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean()
-    effective_date = fields.Date()
-    expiration_date = fields.Date()
-    version = fields.Char()
-    description = fields.Text()
-    currency_id = fields.Many2one()
-    standard_box_rate = fields.Monetary()
-    legal_box_rate = fields.Monetary()
-    map_box_rate = fields.Monetary()
-    odd_size_rate = fields.Monetary()
-    pathology_rate = fields.Monetary()
-    pickup_rate = fields.Monetary()
-    delivery_rate = fields.Monetary()
-    destruction_rate = fields.Monetary()
-    document_retrieval_rate = fields.Monetary()
-    scanning_rate = fields.Monetary()
-    indexing_rate = fields.Monetary()
-    technician_hourly_rate = fields.Monetary()
-    supervisor_hourly_rate = fields.Monetary()
-    new_customer_setup_fee = fields.Monetary()
-    container_setup_fee = fields.Monetary()
-    barcode_generation_fee = fields.Monetary()
-    enable_volume_tiers = fields.Boolean()
-    small_volume_threshold = fields.Integer()
-    small_volume_multiplier = fields.Float()
-    large_volume_threshold = fields.Integer()
-    large_volume_multiplier = fields.Float()
-    enterprise_volume_threshold = fields.Integer()
-    enterprise_volume_multiplier = fields.Float()
-    enable_location_modifiers = fields.Boolean()
-    premium_location_multiplier = fields.Float()
-    standard_location_multiplier = fields.Float()
-    economy_location_multiplier = fields.Float()
-    billing_frequency_default = fields.Selection()
-    proration_method = fields.Selection()
-    minimum_monthly_charge = fields.Monetary()
-    average_container_rate = fields.Monetary()
-    rate_per_cubic_foot = fields.Monetary()
-    total_service_rate = fields.Monetary()
-    customers_using_rates = fields.Integer()
-    containers_at_base_rates = fields.Integer()
-    state = fields.Selection()
-    activity_ids = fields.One2many('mail.activity')
-    message_follower_ids = fields.One2many('mail.followers')
-    message_ids = fields.One2many('mail.message')
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection(string='Type')
-    view_mode = fields.Char(string='View Mode')
+    name = fields.Char(string='Rate Name', required=True, tracking=True, default="Default Base Rates")
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(string='Active', default=True, tracking=True, help="Indicates if this rate card is currently active.")
+    effective_date = fields.Date(string='Effective Date', default=fields.Date.context_today, required=True, tracking=True)
+    expiration_date = fields.Date(string='Expiration Date', tracking=True)
+    version = fields.Char(string='Version', default='1.0', tracking=True)
+    description = fields.Text(string='Description')
+    currency_id = fields.Many2one('res.currency', related='company_id.currency_id', string='Currency', readonly=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('archived', 'Archived')
+    ], string='Status', default='draft', required=True, tracking=True)
 
     # ============================================================================
-    # METHODS
+    # CONTAINER STORAGE RATES (Based on Business Rules)
     # ============================================================================
+    standard_box_rate = fields.Monetary(string='Standard Box Rate (Type 01)', help="Rate for 1.2 CF Standard Box.")
+    legal_box_rate = fields.Monetary(string='Legal/Banker Box Rate (Type 02)', help="Rate for 2.4 CF Legal/Banker Box.")
+    map_box_rate = fields.Monetary(string='Map Box Rate (Type 03)', help="Rate for 0.875 CF Map Box.")
+    odd_size_rate = fields.Monetary(string='Odd Size/Temp Box Rate (Type 04)', help="Rate for 5.0 CF Odd Size/Temp Box.")
+    pathology_rate = fields.Monetary(string='Pathology Box Rate (Type 06)', help="Rate for 0.042 CF Pathology Box.")
+
+    # ============================================================================
+    # SERVICE & HOURLY RATES
+    # ============================================================================
+    pickup_rate = fields.Monetary(string='Pickup Rate')
+    delivery_rate = fields.Monetary(string='Delivery Rate')
+    destruction_rate = fields.Monetary(string='Destruction Rate')
+    document_retrieval_rate = fields.Monetary(string='Document Retrieval Rate')
+    scanning_rate = fields.Monetary(string='Scanning Rate (per page)')
+    indexing_rate = fields.Monetary(string='Indexing Rate (per item)')
+    technician_hourly_rate = fields.Monetary(string='Technician Hourly Rate')
+    supervisor_hourly_rate = fields.Monetary(string='Supervisor Hourly Rate')
+
+    # ============================================================================
+    # ONE-TIME FEES
+    # ============================================================================
+    new_customer_setup_fee = fields.Monetary(string='New Customer Setup Fee')
+    container_setup_fee = fields.Monetary(string='Container Setup Fee')
+    barcode_generation_fee = fields.Monetary(string='Barcode Generation Fee')
+
+    # ============================================================================
+    # VOLUME-BASED PRICING MODIFIERS
+    # ============================================================================
+    enable_volume_tiers = fields.Boolean(string='Enable Volume Tiers', tracking=True)
+    small_volume_threshold = fields.Integer(string='Small Volume Threshold', help="Upper limit for small volume pricing.")
+    small_volume_multiplier = fields.Float(string='Small Volume Multiplier', default=1.0)
+    large_volume_threshold = fields.Integer(string='Large Volume Threshold', help="Lower limit for large volume discount.")
+    large_volume_multiplier = fields.Float(string='Large Volume Multiplier', default=1.0)
+    enterprise_volume_threshold = fields.Integer(string='Enterprise Volume Threshold', help="Lower limit for enterprise discount.")
+    enterprise_volume_multiplier = fields.Float(string='Enterprise Volume Multiplier', default=1.0)
+
+    # ============================================================================
+    # LOCATION-BASED PRICING MODIFIERS
+    # ============================================================================
+    enable_location_modifiers = fields.Boolean(string='Enable Location Modifiers', tracking=True)
+    premium_location_multiplier = fields.Float(string='Premium Location Multiplier', default=1.2)
+    standard_location_multiplier = fields.Float(string='Standard Location Multiplier', default=1.0)
+    economy_location_multiplier = fields.Float(string='Economy Location Multiplier', default=0.9)
+
+    # ============================================================================
+    # BILLING CONFIGURATION
+    # ============================================================================
+    billing_frequency_default = fields.Selection([
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('annually', 'Annually')
+    ], string='Default Billing Frequency', default='monthly')
+    proration_method = fields.Selection([
+        ('none', 'No Proration'),
+        ('daily', 'Daily'),
+        ('monthly', 'Monthly')
+    ], string='Proration Method', default='daily')
+    minimum_monthly_charge = fields.Monetary(string='Minimum Monthly Charge')
+
+    # ============================================================================
+    # COMPUTED ANALYSIS & USAGE FIELDS
+    # ============================================================================
+    average_container_rate = fields.Monetary(string='Avg. Container Rate', compute='_compute_rate_analysis', store=True)
+    rate_per_cubic_foot = fields.Monetary(string='Avg. Rate per CF', compute='_compute_rate_analysis', store=True)
+    total_service_rate = fields.Monetary(string='Total Service Rate', compute='_compute_rate_analysis', store=True)
+    customers_using_rates = fields.Integer(string='Customers Using Rates', compute='_compute_usage_stats', store=True)
+    containers_at_base_rates = fields.Integer(string='Containers at Base Rates', compute='_compute_usage_stats', store=True)
+
+    # ============================================================================
+    # COMPUTE & ONCHANGE METHODS
+    # ============================================================================
+    @api.depends(
+        'standard_box_rate', 'legal_box_rate', 'map_box_rate', 'odd_size_rate', 'pathology_rate',
+        'pickup_rate', 'delivery_rate', 'destruction_rate', 'document_retrieval_rate', 'scanning_rate', 'indexing_rate'
+    )
     def _compute_rate_analysis(self):
-            """Compute rate analysis metrics"""
-            for rate in self:
-                # Calculate average container rate (weighted by typical usage)
-                # TYPE 1 is most common (60%), TYPE 2 (25%), others (15%)
-                total_rate = ()
-                    rate.standard_box_rate * 0.60 +
-                    rate.legal_box_rate * 0.25 +
-                    rate.map_box_rate * 0.5 +
-                    rate.odd_size_rate * 0.5 +
-                    rate.pathology_rate * 0.5
+        """Compute rate analysis metrics based on business container specifications."""
+        for rate in self:
+            # Weighted average based on typical usage: Type 01 (60%), Type 02 (25%), others (15% total)
+            total_rate = (
+                (rate.standard_box_rate or 0.0) * 0.60 +
+                (rate.legal_box_rate or 0.0) * 0.25 +
+                (rate.map_box_rate or 0.0) * 0.05 +
+                (rate.odd_size_rate or 0.0) * 0.05 +
+                (rate.pathology_rate or 0.0) * 0.05
+            )
+            rate.average_container_rate = total_rate
 
-                rate.average_container_rate = total_rate
+            # Weighted volume based on container specs
+            total_volume = (1.2 * 0.60) + (2.4 * 0.25) + (0.875 * 0.05) + (5.0 * 0.05) + (0.042 * 0.05)
+            rate.rate_per_cubic_foot = total_rate / total_volume if total_volume > 0 else 0.0
 
-                # Calculate rate per cubic foot (weighted average)
-                total_volume = (1.2 * 0.60) + (2.4 * 0.25) + (0.875 * 0.5) + (5.0 * 0.5) + (0.42 * 0.5)
-                if total_volume > 0:
-                    rate.rate_per_cubic_foot = total_rate / total_volume
-                else:
-                    rate.rate_per_cubic_foot = 0.0
+            # Sum all service rates
+            rate.total_service_rate = (
+                (rate.pickup_rate or 0.0) + (rate.delivery_rate or 0.0) + (rate.destruction_rate or 0.0) +
+                (rate.document_retrieval_rate or 0.0) + (rate.scanning_rate or 0.0) + (rate.indexing_rate or 0.0)
+            )
 
-                # Sum all service rates
-                rate.total_service_rate = ()
-                    rate.pickup_rate + rate.delivery_rate + rate.destruction_rate +
-                    (rate.document_retrieval_rate or 0.0) + (rate.scanning_rate or 0.0) +
-                    (rate.indexing_rate or 0.0)
-
-
-
+    @api.depends('active', 'company_id')
     def _compute_usage_stats(self):
-            """Compute statistics on rate usage"""
-            for rate in self:
-                if not rate.active:
-                    rate.customers_using_rates = 0
-                    rate.containers_at_base_rates = 0
-                    continue
+        """Compute statistics on rate usage."""
+        for rate in self:
+            if not rate.active or not rate.company_id:
+                rate.customers_using_rates = 0
+                rate.containers_at_base_rates = 0
+                continue
 
-                # Count customers without negotiated rates
-                all_customers = self.env['res.partner').search([)]
-                    ('is_company', '=', True),
-                    ('company_id', '=', rate.company_id.id)
-
-
-                customers_with_negotiated = self.env['customer.negotiated.rate'].search([)]
-                    ('state', '=', 'active'),
-                    ('company_id', '=', rate.company_id.id)
-
-
-                customers_using_base = all_customers - customers_with_negotiated
-                rate.customers_using_rates = len(customers_using_base)
-
-                # Count containers for customers using base rates:
-                containers = self.env['records.container'].search([)]
-                    ('partner_id', 'in', customers_using_base.ids),
-                    ('active', '=', True)
-
-                rate.containers_at_base_rates = len(containers)
-
-        # ============================================================================
-            # CONSTRAINT VALIDATIONS
-        # ============================================================================
-
-    def _check_date_validity(self):
-            """Validate date range"""
-            for rate in self:
-                if rate.expiration_date and rate.effective_date > rate.expiration_date:
-                    raise ValidationError(_('Effective date cannot be after expiration date'))
-
-
-    def _check_volume_thresholds(self):
-            """Validate volume thresholds are in ascending order"""
-            for rate in self:
-                if rate.enable_volume_tiers:
-                    if rate.small_volume_threshold >= rate.large_volume_threshold:
-                        raise ValidationError(_('Large volume threshold must be greater than small volume threshold'))
-                    if rate.large_volume_threshold >= rate.enterprise_volume_threshold:
-                        raise ValidationError(_('Enterprise volume threshold must be greater than large volume threshold'))
-
-
-    def _check_multipliers(self):
-            """Validate rate multipliers are reasonable"""
-            for rate in self:
-                multipliers = [rate.small_volume_multiplier, rate.large_volume_multiplier, rate.enterprise_volume_multiplier]
-                for multiplier in multipliers:
-                    if multiplier <= 0 or multiplier > 10:
-                        raise ValidationError(_('Rate multipliers must be between 0.1 and 10.0'))
-
-
-    def _check_unique_active_rate(self):
-            """Ensure only one active base rate per company"""
-            for rate in self:
-                if rate.active:
-                    other_active = self.search([)]
-                        ('company_id', '=', rate.company_id.id),
-                        ('active', '=', True),
-                        ('id', '!=', rate.id)
-
-                    if other_active:
-                        raise ValidationError(_('Only one active base rate configuration is allowed per company'))
-
-        # ============================================================================
-            # BUSINESS METHODS
-        # ============================================================================
-
-    def get_container_rate(self, container_type, volume=None):
-            """Get the rate for a specific container type""":
-            self.ensure_one()
-
-            base_rates = {}
-                'type_01': self.standard_box_rate,
-                'type_02': self.legal_box_rate,
-                'type_03': self.map_box_rate,
-                'type_04': self.odd_size_rate,
-                'type_06': self.pathology_rate,
-
-
-            return base_rates.get(container_type, self.standard_box_rate)
-
-
-    def get_volume_multiplier(self, container_count):
-            """Get volume-based rate multiplier"""
-            self.ensure_one()
-
-            if not self.enable_volume_tiers:
-                return 1.0
-
-            if container_count >= self.enterprise_volume_threshold:
-                return self.enterprise_volume_multiplier
-            elif container_count >= self.large_volume_threshold:
-                return self.large_volume_multiplier
-            elif container_count <= self.small_volume_threshold:
-                return self.small_volume_multiplier
-            else:
-                return 1.0
-
-
-    def get_location_multiplier(self, location_type):
-            """Get location-based rate multiplier"""
-            self.ensure_one()
-
-            if not self.enable_location_modifiers:
-                return 1.0
-
-            multipliers = {}
-                'premium': self.premium_location_multiplier,
-                'standard': self.standard_location_multiplier,
-                'economy': self.economy_location_multiplier,
-
-
-            return multipliers.get(location_type, self.standard_location_multiplier)
-
-
-    def calculate_customer_rate(self, partner_id, container_type, location_type='standard'):
-            """Calculate final rate for a customer considering all modifiers""":
-            self.ensure_one()
-
-            # Get base container rate
-            base_rate = self.get_container_rate(container_type)
-
-            # Get customer's container count for volume multiplier:'
-            container_count = self.env['records.container'].search_count([)]
-                ('partner_id', '=', partner_id),
-                ('active', '=', True)
-
-
-            volume_multiplier = self.get_volume_multiplier(container_count)
-            location_multiplier = self.get_location_multiplier(location_type)
-
-            final_rate = base_rate * volume_multiplier * location_multiplier
-
-            return {}
-                'base_rate': base_rate,
-                'volume_multiplier': volume_multiplier,
-                'location_multiplier': location_multiplier,
-                'final_rate': final_rate,
-                'container_count': container_count
-
-
-        # ============================================================================
-            # ACTION METHODS
-        # ============================================================================
-
-    def action_duplicate_rates(self):
-            """Create a new version of these rates"""
-            self.ensure_one()
-
-            new_rate = self.copy({)}
-                'name': _('%s (v%s)', self.name, fields.Datetime.now().strftime('%Y%m%d')),
-                'effective_date': fields.Date.today(),
-                'active': False,  # New rates start inactive
-                'version': str(float(self.version or '1.0') + 0.1)
-
-
-            return {}
-                'type': 'ir.actions.act_window',
-                'name': _('Base Rate Configuration'),
-                'res_model': 'base.rate',
-                'res_id': new_rate.id,
-                'view_mode': 'form',
-                'target': 'current'
-
-
-
-    def action_apply_increase(self):
-            """Open wizard to apply percentage increase to all rates"""
-            self.ensure_one()
-
-            return {}
-                'type': 'ir.actions.act_window',
-                'name': _('Apply Rate Increase'),
-                'res_model': 'base.rate.increase.wizard',
-                'view_mode': 'form',
-                'target': 'new',
-                'context': {'default_base_rate_id': self.id}
-
-
-
-    def action_view_customers_using_rates(self):
-            """View customers using these base rates"""
-            self.ensure_one()
-
-            # Get customers without negotiated rates
-            customers_with_negotiated = self.env['customer.negotiated.rate'].search([)]
+            # Count customers without negotiated rates
+            negotiated_partners = self.env['customer.negotiated.rate'].search([
                 ('state', '=', 'active'),
-                ('company_id', '=', self.company_id.id)
+                ('company_id', '=', rate.company_id.id)
+            ]).mapped('partner_id')
 
-
-            all_customers = self.env['res.partner'].search([)]
+            base_rate_customers = self.env['res.partner'].search([
                 ('is_company', '=', True),
-                ('company_id', '=', self.company_id.id)
+                ('company_id', '=', rate.company_id.id),
+                ('id', 'not in', negotiated_partners.ids)
+            ])
+            rate.customers_using_rates = len(base_rate_customers)
 
-
-            customers_using_base = all_customers - customers_with_negotiated
-
-            return {}
-                'type': 'ir.actions.act_window',
-                'name': _('Customers Using Base Rates'),
-                'res_model': 'res.partner',
-                'view_mode': 'tree,form',
-                'domain': [('id', 'in', customers_using_base.ids)],
-                'context': {'default_company_id': self.company_id.id}
-
-
-
-    def action_activate_rates(self):
-            """Activate these rates and deactivate others"""
-            self.ensure_one()
-
-            # Deactivate other active rates for this company:
-            other_rates = self.search([)]
-                ('company_id', '=', self.company_id.id),
-                ('active', '=', True),
-                ('id', '!=', self.id)
-
-            other_rates.write({'active': False})
-
-            # Activate this rate
-            self.write({'active': True, 'state': 'active'})
-
-            return {}
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {}
-                    'message': _('Base rates activated successfully'),
-                    'type': 'success'
-
-
-
-
-    def action_deactivate_rates(self):
-            """Deactivate these rates"""
-            self.ensure_one()
-
-            self.write({'active': False, 'state': 'inactive'})
-
-            return {}
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {}
-                    'message': _('Base rates deactivated successfully'),
-                    'type': 'success'
-
-
-
-        # ============================================================================
-            # UTILITY METHODS
-        # ============================================================================
-
-    def get_active_rate_for_company(self, company_id=None):
-            """Get the active base rate for a company""":
-            if not company_id:
-                company_id = self.env.company.id
-
-            return self.search([)]
-                ('company_id', '=', company_id),
+            # Count containers for customers using base rates
+            rate.containers_at_base_rates = self.env['records.container'].search_count([
+                ('partner_id', 'in', base_rate_customers.ids),
                 ('active', '=', True)
+            ])
 
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains('effective_date', 'expiration_date')
+    def _check_date_validity(self):
+        """Validate date range."""
+        for rate in self:
+            if rate.expiration_date and rate.effective_date > rate.expiration_date:
+                raise ValidationError(_('Effective date cannot be after expiration date.'))
 
+    @api.constrains('enable_volume_tiers', 'small_volume_threshold', 'large_volume_threshold', 'enterprise_volume_threshold')
+    def _check_volume_thresholds(self):
+        """Validate volume thresholds are in ascending order."""
+        for rate in self:
+            if rate.enable_volume_tiers:
+                if rate.small_volume_threshold >= rate.large_volume_threshold:
+                    raise ValidationError(_('Large volume threshold must be greater than small volume threshold.'))
+                if rate.large_volume_threshold >= rate.enterprise_volume_threshold:
+                    raise ValidationError(_('Enterprise volume threshold must be greater than large volume threshold.'))
 
-    def create_default_rates(self, company_id):
-            """Create default base rates for a new company""":
-            return self.create({)}
-                'name': _('Default Base Rates'),
-                'company_id': company_id,
-                'standard_box_rate': 4.50,
-                'legal_box_rate': 6.75,
-                'map_box_rate': 3.95,
-                'odd_size_rate': 22.50,
-                'pathology_rate': 0.19,
-                'pickup_rate': 50.0,
-                'delivery_rate': 50.0,
-                'destruction_rate': 75.0,
-                'document_retrieval_rate': 15.0,
-                'scanning_rate': 0.25,
-                'indexing_rate': 0.15,
-                'technician_hourly_rate': 45.0,
-                'supervisor_hourly_rate': 65.0,
-                'new_customer_setup_fee': 100.0,
-                'container_setup_fee': 2.50,
-                'barcode_generation_fee': 1.0,
-                'minimum_monthly_charge': 25.0,
-                'active': True,
-                'state': 'active'
+    @api.constrains('active', 'company_id')
+    def _check_unique_active_rate(self):
+        """Ensure only one active base rate per company."""
+        for rate in self:
+            if rate.active:
+                other_active = self.search([
+                    ('company_id', '=', rate.company_id.id),
+                    ('active', '=', True),
+                    ('id', '!=', rate.id)
+                ])
+                if other_active:
+                    raise ValidationError(_('Only one active base rate configuration is allowed per company.'))
 
+    # ============================================================================
+    # BUSINESS METHODS
+    # ============================================================================
+    def get_container_rate(self, container_type):
+        """Get the rate for a specific container type based on business rules."""
+        self.ensure_one()
+        base_rates = {
+            'type_01': self.standard_box_rate,
+            'type_02': self.legal_box_rate,
+            'type_03': self.map_box_rate,
+            'type_04': self.odd_size_rate,
+            'type_06': self.pathology_rate,
+        }
+        return base_rates.get(container_type, self.standard_box_rate or 0.0)
 
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_activate_rates(self):
+        """Activate these rates and deactivate others for the same company."""
+        self.ensure_one()
+        other_rates = self.search([
+            ('company_id', '=', self.company_id.id),
+            ('active', '=', True),
+            ('id', '!=', self.id)
+        ])
+        other_rates.write({'active': False, 'state': 'archived'})
+        self.write({'active': True, 'state': 'active'})
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Success'),
+                'message': _('Base rates activated successfully.'),
+                'type': 'success'
+            }
+        }
 
-    def get_service_rate(self, service_type):
-            """Get rate for a specific service type""":
-            self.ensure_one()
+    def action_archive_rates(self):
+        """Archive these rates."""
+        self.write({'active': False, 'state': 'archived'})
+        return True
 
-            service_rates = {}
-                'pickup': self.pickup_rate,
-                'delivery': self.delivery_rate,
-                'destruction': self.destruction_rate,
-                'document_retrieval': self.document_retrieval_rate,
-                'scanning': self.scanning_rate,
-                'indexing': self.indexing_rate,
-
-
-            return service_rates.get(service_type, 0.0)
-
-
-    def get_hourly_rate(self, role_type):
-            """Get hourly rate for a specific role""":
-            self.ensure_one()
-
-            hourly_rates = {}
-                'technician': self.technician_hourly_rate,
-                'supervisor': self.supervisor_hourly_rate,
-
-
-            return hourly_rates.get(role_type, self.technician_hourly_rate)
-
-        # ============================================================================
-            # VALIDATION METHODS
-        # ============================================================================
-
-    def _check_container_rates(self):
-            """Validate container rates are positive"""
-            for record in self:
-                container_rates = []
-                    record.standard_box_rate, record.legal_box_rate, record.map_box_rate,
-                    record.odd_size_rate, record.pathology_rate
-
-                for rate in container_rates:
-                    if rate < 0:
-                        raise ValidationError(_('Container rates cannot be negative'))
-
-
-    def _check_service_rates(self):
-            """Validate service rates are positive"""
-            for record in self:
-                service_rates = [record.pickup_rate, record.delivery_rate, record.destruction_rate]
-                for rate in service_rates:
-                    if rate < 0:
-                        raise ValidationError(_('Service rates cannot be negative'))
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to set a default name if not provided."""
+        for vals in vals_list:
+            if not vals.get('name'):
+                vals['name'] = _('Base Rates for %s', self.env['res.company'].browse(vals.get('company_id')).name)
+        return super().create(vals_list)
 
 

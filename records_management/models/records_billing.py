@@ -14,7 +14,7 @@ License: LGPL-3
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
-class Billing(models.Model):
+class RecordsBilling(models.Model):
     _name = 'records.billing'
     _description = 'Records Management Billing'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -135,6 +135,11 @@ class Billing(models.Model):
     notes = fields.Text(string='Notes')
     internal_notes = fields.Text(string='Internal Notes')
 
+    # Mail Thread Framework Fields (REQUIRED for mail.thread inheritance)
+    activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
+    message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
+    message_ids = fields.One2many("mail.message", "res_id", string="Messages")
+
     # ============================================================================
     # COMPUTE & ONCHANGE METHODS
     # ============================================================================
@@ -210,9 +215,27 @@ class Billing(models.Model):
 
     def action_cancel(self):
         """Cancel the billing record."""
-        self.ensure_one()
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Billing record cancelled."))
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains('period_start', 'period_end')
+    def _check_period_dates(self):
+        """Validate billing period dates."""
+        for record in self:
+            if record.period_start and record.period_end:
+                if record.period_start > record.period_end:
+                    raise ValidationError(_("Billing period start date cannot be after end date."))
+
+    @api.constrains('due_date', 'invoice_date')
+    def _check_due_date(self):
+        """Validate due date is not before invoice date."""
+        for record in self:
+            if record.due_date and record.invoice_date:
+                if record.due_date < record.invoice_date:
+                    raise ValidationError(_("Due date cannot be before invoice date."))
 
     # ============================================================================
     # ORM OVERRIDES

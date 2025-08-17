@@ -1,6 +1,18 @@
+# -*- coding: utf-8 -*-
+"""
+Container Destruction Work Order Module
+
+Manages the entire lifecycle of destroying records containers, from initial
+request and authorization to final certification, ensuring a compliant
+and auditable process.
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
 
 
 class ContainerDestructionWorkOrder(models.Model):
@@ -11,339 +23,238 @@ class ContainerDestructionWorkOrder(models.Model):
     _rec_name = 'display_name'
 
     # ============================================================================
-    # FIELDS
+    # CORE IDENTIFICATION & WORKFLOW
     # ============================================================================
-    name = fields.Char()
-    display_name = fields.Char()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean()
-    state = fields.Selection()
-    priority = fields.Selection()
-    partner_id = fields.Many2one()
-    portal_request_id = fields.Many2one()
-    destruction_reason = fields.Text()
-    customer_authorized = fields.Boolean()
-    customer_authorization_date = fields.Datetime()
-    authorized_by = fields.Char()
-    authorization_document = fields.Binary()
-    container_ids = fields.Many2many()
-    container_count = fields.Integer()
-    total_cubic_feet = fields.Float()
-    estimated_weight_lbs = fields.Float()
-    inventory_completed = fields.Boolean()
-    inventory_date = fields.Datetime()
-    inventory_user_id = fields.Many2one()
-    scheduled_destruction_date = fields.Datetime()
-    pickup_date = fields.Datetime()
-    actual_destruction_date = fields.Datetime()
-    estimated_duration_hours = fields.Float()
-    destruction_facility_id = fields.Many2one()
-    shredding_equipment_id = fields.Many2one()
-    destruction_method = fields.Selection()
-    naid_compliant = fields.Boolean()
-    witness_required = fields.Boolean()
-    customer_witness_name = fields.Char()
-    internal_witness_id = fields.Many2one()
-    independent_witness_name = fields.Char()
-    custody_transfer_ids = fields.One2many()
-    custody_complete = fields.Boolean()
-    transport_vehicle_id = fields.Many2one()
-    driver_id = fields.Many2one()
-    transport_departure_time = fields.Datetime()
-    transport_arrival_time = fields.Datetime()
-    actual_weight_destroyed_lbs = fields.Float()
-    destruction_start_time = fields.Datetime()
-    destruction_end_time = fields.Datetime()
-    destruction_duration_minutes = fields.Integer()
-    certificate_number = fields.Char()
-    certificate_generated = fields.Boolean()
-    certificate_date = fields.Date()
-    certificate_file = fields.Binary()
-    certificate_filename = fields.Char()
-    destruction_verified = fields.Boolean()
-    verification_date = fields.Datetime()
-    verification_notes = fields.Text()
-    activity_ids = fields.One2many()
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many()
+    name = fields.Char(
+        string='Work Order Reference',
+        required=True,
+        copy=False,
+        readonly=True,
+        default=lambda self: _('New')
+    )
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('authorized', 'Authorized'),
+        ('scheduled', 'Scheduled'),
+        ('in_progress', 'In Progress'),
+        ('destroyed', 'Destroyed'),
+        ('certified', 'Certified'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', required=True, tracking=True)
+    priority = fields.Selection([
+        ('0', 'Normal'),
+        ('1', 'High'),
+        ('2', 'Urgent')
+    ], string='Priority', default='0')
 
     # ============================================================================
-    # METHODS
+    # CUSTOMER & AUTHORIZATION
     # ============================================================================
-    def create(self, vals_list):
-            for vals in vals_list:
-                if vals.get('name', _('New')) == _('New'):
-                    vals['name'] = self.env['ir.sequence'].next_by_code(
-                        'container.destruction.work.order') or _('New')
-            return super().create(vals_list)
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    portal_request_id = fields.Many2one('portal.request', string='Portal Request', ondelete='set null')
+    destruction_reason = fields.Text(string='Reason for Destruction')
+    customer_authorized = fields.Boolean(string='Customer Authorized', readonly=True)
+    customer_authorization_date = fields.Datetime(string='Authorization Date', readonly=True)
+    authorized_by = fields.Char(string='Authorized By', tracking=True)
+    authorization_document = fields.Binary(string='Authorization Document', attachment=True)
 
-        # ============================================================================
-            # COMPUTE METHODS
-        # ============================================================================
+    # ============================================================================
+    # CONTAINER & INVENTORY DETAILS
+    # ============================================================================
+    container_ids = fields.Many2many('records.container', string='Containers for Destruction', required=True)
+    container_count = fields.Integer(string='Container Count', compute='_compute_container_metrics', store=True)
+    total_cubic_feet = fields.Float(string='Total Cubic Feet', compute='_compute_container_metrics', store=True)
+    estimated_weight_lbs = fields.Float(string='Estimated Weight (lbs)', compute='_compute_container_metrics', store=True)
+    inventory_completed = fields.Boolean(string='Inventory Completed', readonly=True)
+    inventory_date = fields.Datetime(string='Inventory Date', readonly=True)
+    inventory_user_id = fields.Many2one('res.users', string='Inventoried By', readonly=True)
 
+    # ============================================================================
+    # SCHEDULING & EXECUTION
+    # ============================================================================
+    scheduled_destruction_date = fields.Datetime(string='Scheduled Destruction Date', tracking=True)
+    pickup_date = fields.Datetime(string='Pickup Date', readonly=True)
+    actual_destruction_date = fields.Datetime(string='Actual Destruction Date', readonly=True)
+    estimated_duration_hours = fields.Float(string='Estimated Duration (Hours)', compute='_compute_estimated_duration')
+    destruction_facility_id = fields.Many2one('records.location', string='Destruction Facility', domain="[('is_destruction_facility', '=', True)]")
+    shredding_equipment_id = fields.Many2one('maintenance.equipment', string='Shredding Equipment')
+    destruction_method = fields.Selection([
+        ('shredding', 'Shredding'),
+        ('pulping', 'Pulping'),
+        ('incineration', 'Incineration'),
+        ('disintegration', 'Disintegration')
+    ], string='Destruction Method', default='shredding', required=True)
+    naid_compliant = fields.Boolean(string='NAID Compliant', default=True)
+
+    # ============================================================================
+    # WITNESS & VERIFICATION
+    # ============================================================================
+    witness_required = fields.Boolean(string='Witness Required')
+    customer_witness_name = fields.Char(string='Customer Witness')
+    internal_witness_id = fields.Many2one('res.users', string='Internal Witness')
+    destruction_verified = fields.Boolean(string='Destruction Verified', readonly=True)
+    verification_date = fields.Datetime(string='Verification Date', readonly=True)
+    verification_notes = fields.Text(string='Verification Notes')
+
+    # ============================================================================
+    # CHAIN OF CUSTODY
+    # ============================================================================
+    custody_transfer_ids = fields.One2many('custody.transfer.event', 'destruction_work_order_id', string='Chain of Custody')
+    custody_complete = fields.Boolean(string='Custody Complete', compute='_compute_custody_complete')
+    transport_vehicle_id = fields.Many2one('fleet.vehicle', string='Transport Vehicle')
+    driver_id = fields.Many2one('hr.employee', string='Driver')
+
+    # ============================================================================
+    # POST-DESTRUCTION & CERTIFICATION
+    # ============================================================================
+    actual_weight_destroyed_lbs = fields.Float(string='Actual Weight Destroyed (lbs)')
+    destruction_start_time = fields.Datetime(string='Destruction Start Time', readonly=True)
+    destruction_end_time = fields.Datetime(string='Destruction End Time', readonly=True)
+    destruction_duration_minutes = fields.Integer(string='Destruction Duration (Minutes)', compute='_compute_destruction_duration')
+    certificate_id = fields.Many2one('destruction.certificate', string='Certificate of Destruction', readonly=True)
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('name', 'partner_id.name', 'container_count')
     def _compute_display_name(self):
-            for record in self:
-                if record.partner_id and record.container_count:
-                    record.display_name = _("%s - %s (%s containers)",
-                        record.name, record.partner_id.name, record.container_count)
-                elif record.partner_id:
-                    record.display_name = _("%s - %s", record.name, record.partner_id.name)
-                else:
-                    record.display_name = record.name or _("New Container Destruction")
+        for record in self:
+            if record.partner_id and record.container_count:
+                record.display_name = _("%s - %s (%s containers)", record.name, record.partner_id.name, record.container_count)
+            elif record.partner_id:
+                record.display_name = _("%s - %s", record.name, record.partner_id.name)
+            else:
+                record.display_name = record.name or _("New Container Destruction")
 
-
+    @api.depends('container_ids')
     def _compute_container_metrics(self):
-            for record in self:
-                containers = record.container_ids
-                record.container_count = len(containers)
-                record.total_cubic_feet = sum(containers.mapped('cubic_feet')) if containers else 0.0:
-                record.estimated_weight_lbs = sum(containers.mapped('estimated_weight')) if containers else 0.0:
+        for record in self:
+            containers = record.container_ids
+            record.container_count = len(containers)
+            record.total_cubic_feet = sum(containers.mapped('cubic_feet'))
+            record.estimated_weight_lbs = sum(containers.mapped('estimated_weight'))
 
+    @api.depends('container_count', 'destruction_method')
     def _compute_estimated_duration(self):
-            for record in self:
-                if record.container_count:
-                    # Base time estimates by destruction method (minutes per container)
-                    base_minutes = {
-                        'shredding': 15,      # 15 minutes per container
-                        'pulping': 20,        # 20 minutes per container
-                        'incineration': 30,   # 30 minutes per container
-                        'disintegration': 25, # 25 minutes per container
-                    }
+        for record in self:
+            if record.container_count:
+                base_minutes = {'shredding': 15, 'pulping': 20, 'incineration': 30, 'disintegration': 25}
+                method_time = base_minutes.get(record.destruction_method, 15)
+                total_minutes = (record.container_count * method_time) + 60  # Add 1hr for setup
+                record.estimated_duration_hours = total_minutes / 60.0
+            else:
+                record.estimated_duration_hours = 0.0
 
-                    method_time = base_minutes.get(record.destruction_method, 15)
-                    total_minutes = record.container_count * method_time
-                    # Add setup and documentation time
-                    total_minutes += 60  # 1 hour for setup/documentation:
-                    record.estimated_duration_hours = total_minutes / 60.0
-                else:
-                    record.estimated_duration_hours = 0.0
-
-
+    @api.depends('custody_transfer_ids.event_type')
     def _compute_custody_complete(self):
-            for record in self:
-                # Check if all required custody transfers are documented:
-                required_events = ['pickup', 'transport', 'facility_receipt', 'destruction']
-                documented_events = record.custody_transfer_ids.mapped('event_type')
-                record.custody_complete = all(event in documented_events for event in required_events):
+        for record in self:
+            required_events = ['pickup', 'transport', 'facility_receipt', 'destruction']
+            documented_events = record.custody_transfer_ids.mapped('event_type')
+            record.custody_complete = all(event in documented_events for event in required_events)
 
+    @api.depends('destruction_start_time', 'destruction_end_time')
     def _compute_destruction_duration(self):
-            for record in self:
-                if record.destruction_start_time and record.destruction_end_time:
-                    duration = record.destruction_end_time - record.destruction_start_time
-                    record.destruction_duration_minutes = int(duration.total_seconds() / 60)
-                else:
-                    record.destruction_duration_minutes = 0
+        for record in self:
+            if record.destruction_start_time and record.destruction_end_time:
+                duration = record.destruction_end_time - record.destruction_start_time
+                record.destruction_duration_minutes = int(duration.total_seconds() / 60)
+            else:
+                record.destruction_duration_minutes = 0
 
-        # ============================================================================
-            # ACTION METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_confirm(self):
-            """Confirm the destruction work order"""
-            self.ensure_one()
-            if self.state != 'draft':
-                raise UserError(_("Only draft work orders can be confirmed"))
-
-            if not self.container_ids:
-                raise UserError(_("Please select containers for destruction")):
-            self.write({'state': 'confirmed'})
-            self.message_post(
-                body=_("Container destruction work order confirmed"),
-                message_type='notification'
-            )
-
-            return True
-
+        self.ensure_one()
+        if self.state != 'draft':
+            raise UserError(_("Only draft work orders can be confirmed."))
+        if not self.container_ids:
+            raise UserError(_("Please select containers for destruction."))
+        self.write({'state': 'confirmed'})
+        self.message_post(body=_("Work order confirmed."))
 
     def action_authorize(self):
-            """Mark as customer authorized"""
-            self.ensure_one()
-            if self.state != 'confirmed':
-                raise UserError(_("Can only authorize confirmed work orders"))
-
-            self.write({
-                'state': 'authorized',
-                'customer_authorized': True,
-                'customer_authorization_date': fields.Datetime.now()
-            })
-
-            self.message_post(
-                body=_("Customer authorization received for destruction"),:
-                message_type='notification'
-            )
-
-            return True
-
+        self.ensure_one()
+        if self.state != 'confirmed':
+            raise UserError(_("Can only authorize confirmed work orders."))
+        self.write({
+            'state': 'authorized',
+            'customer_authorized': True,
+            'customer_authorization_date': fields.Datetime.now()
+        })
+        self.message_post(body=_("Customer authorization received."))
 
     def action_schedule(self):
-            """Schedule the destruction"""
-            self.ensure_one()
-            if self.state != 'authorized':
-                raise UserError(_("Can only schedule authorized work orders"))
-
-            self.write({'state': 'scheduled'})
-            self.message_post(
-                body=_("Destruction scheduled for %s", self.scheduled_destruction_date.strftime('%Y-%m-%d %H:%M')),
-                message_type='notification'
-            )
-
-            return True
-
-
-    def action_pickup_complete(self):
-            """Mark containers as picked up"""
-            self.ensure_one()
-            if self.state != 'scheduled':
-                raise UserError(_("Can only complete pickup from scheduled state"))
-
-            self.write({
-                'state': 'picked_up',
-                'pickup_date': fields.Datetime.now()
-            })
-
-            self.message_post(
-                body=_("Containers picked up for destruction"),:
-                message_type='notification'
-            )
-
-            return True
-
-
-    def action_arrive_facility(self):
-            """Mark arrival at destruction facility"""
-            self.ensure_one()
-            if self.state != 'picked_up':
-                raise UserError(_("Can only arrive at facility after pickup"))
-
-            self.write({
-                'state': 'in_facility',
-                'transport_arrival_time': fields.Datetime.now()
-            })
-
-            self.message_post(
-                body=_("Containers arrived at destruction facility"),
-                message_type='notification'
-            )
-
-            return True
-
+        self.ensure_one()
+        if self.state != 'authorized':
+            raise UserError(_("Can only schedule authorized work orders."))
+        if not self.scheduled_destruction_date:
+            raise UserError(_("Please set a scheduled destruction date."))
+        self.write({'state': 'scheduled'})
+        self.message_post(body=_("Destruction scheduled for %s", self.scheduled_destruction_date.strftime('%Y-%m-%d')))
 
     def action_start_destruction(self):
-            """Start the destruction process"""
-            self.ensure_one()
-            if self.state not in ['in_facility', 'pre_destruction']:
-                raise UserError(_("Can only start destruction from facility or pre-destruction state"))
-
-            if not self.destruction_verified:
-                raise UserError(_("Pre-destruction verification must be completed first"))
-
-            self.write({
-                'state': 'destroying',
-                'destruction_start_time': fields.Datetime.now()
-            })
-
-            self.message_post(
-                body=_("Destruction process started"),
-                message_type='notification'
-            )
-
-            return True
-
+        self.ensure_one()
+        if self.state not in ['scheduled', 'in_progress']:
+            raise UserError(_("Can only start destruction from a scheduled or in-progress state."))
+        self.write({
+            'state': 'in_progress',
+            'destruction_start_time': fields.Datetime.now()
+        })
+        self.message_post(body=_("Destruction process started."))
 
     def action_complete_destruction(self):
-            """Complete the destruction process"""
-            self.ensure_one()
-            if self.state != 'destroying':
-                raise UserError(_("Can only complete destruction from destroying state"))
-
-            self.write({
-                'state': 'destroyed',
-                'destruction_end_time': fields.Datetime.now(),
-                'actual_destruction_date': fields.Datetime.now()
-            })
-
-            self.message_post(
-                body=_("Destruction process completed"),
-                message_type='notification'
-            )
-
-            return True
-
+        self.ensure_one()
+        if self.state != 'in_progress':
+            raise UserError(_("Can only complete destruction from an in-progress state."))
+        self.write({
+            'state': 'destroyed',
+            'destruction_end_time': fields.Datetime.now(),
+            'actual_destruction_date': fields.Datetime.now().date()
+        })
+        self.container_ids.write({'state': 'destroyed'})
+        self.message_post(body=_("Destruction process completed."))
 
     def action_generate_certificate(self):
-            """Generate certificate of destruction"""
-            self.ensure_one()
-            if self.state != 'destroyed':
-                raise UserError(_("Can only generate certificate after destruction completion"))
+        self.ensure_one()
+        if self.state != 'destroyed':
+            raise UserError(_("Can only generate a certificate after destruction is complete."))
+        if self.certificate_id:
+            raise UserError(_("A certificate has already been generated for this work order."))
 
-            # Generate certificate number if not exists:
-            if not self.certificate_number:
-                self.certificate_number = self.env['ir.sequence'].next_by_code(
-                    'destruction.certificate')
+        certificate = self.env['destruction.certificate'].create({
+            'work_order_id': self.id,
+            'partner_id': self.partner_id.id,
+            'destruction_date': self.actual_destruction_date,
+            'destruction_method': self.destruction_method,
+        })
+        self.write({'certificate_id': certificate.id, 'state': 'certified'})
+        self.message_post(body=_("Certificate of Destruction %s generated.", certificate.name))
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Certificate of Destruction'),
+            'res_model': 'destruction.certificate',
+            'res_id': certificate.id,
+            'view_mode': 'form',
+        }
 
-            self.write({
-                'state': 'certificate_generated',
-                'certificate_generated': True,
-                'certificate_date': fields.Date.today()
-            })
+    def action_cancel(self):
+        self.write({'state': 'cancelled'})
+        self.message_post(body=_("Work order cancelled."))
 
-            # Generate PDF certificate (implementation would go here)
-            self._generate_certificate_pdf()
-
-            self.message_post(
-                body=_("Certificate of destruction generated: %s", self.certificate_number),
-                message_type='notification'
-            )
-
-            return True
-
-
-    def action_complete(self):
-            """Complete the work order"""
-            self.ensure_one()
-            if self.state != 'certificate_generated':
-                raise UserError(_("Only work orders with generated certificates can be completed"))
-
-            self.write({'state': 'completed'})
-            self.message_post(
-                body=_("Container destruction work order completed successfully"),
-                message_type='notification'
-            )
-
-            return True
-
-        # ============================================================================
-            # UTILITY METHODS
-        # ============================================================================
-
-    def _generate_certificate_pdf(self):
-            """Generate PDF certificate of destruction"""
-            # Implementation for certificate generation:
-            # This would typically involve creating a PDF report
-            pass
-
-
-    def create_custody_event(self, event_type, notes=None):
-            """Create a chain of custody event"""
-            self.ensure_one()
-            self.env['custody.transfer.event'].create({
-                'work_order_id': self.id,
-                'event_type': event_type,
-                'event_date': fields.Datetime.now(),
-                'user_id': self.env.user.id,
-                'notes': notes or '',
-            })
-
-
-    def generate_destruction_report(self):
-            """Generate destruction completion report"""
-            self.ensure_one()
-            return {
-                'type': 'ir.actions.report',
-                'report_name': 'records_management.report_container_destruction',
-                'report_type': 'qweb-pdf',
-                'res_id': self.id,
-                'target': 'new'
-            }
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('container.destruction.work.order') or _('New')
+        return super().create(vals_list)
 

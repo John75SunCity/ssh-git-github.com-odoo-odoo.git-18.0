@@ -1,109 +1,208 @@
+# -*- coding: utf-8 -*-
+"""
+Bin Access Key Management Module
+
+Manages the lifecycle of physical keys used to access secure shredding bins.
+This includes assignment, return, loss tracking, and history logging, ensuring
+a secure chain of custody for bin access.
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo import models, fields""
-
 
 class BinKey(models.Model):
     _name = 'bin.key'
     _description = 'Bin Access Key'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'name'
+    _order = 'name desc'
+    _rec_name = 'display_name'
 
     # ============================================================================
-    # FIELDS
+    # CORE IDENTIFICATION & WORKFLOW
     # ============================================================================
-    assigned_to_id = fields.Many2one('res.partner')
-    current_holder_id = fields.Many2one('res.users')
-    assigned_to_id = fields.Many2one('res.partner')
-    current_holder_id = fields.Many2one('res.users')
-    name = fields.Char(required=True, tracking=True)
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean(string='Active')
-    partner_id = fields.Many2one()
-    state = fields.Selection()
-    currency_id = fields.Many2one()
-    key_code = fields.Char()
-    description = fields.Text()
-    key_type = fields.Selection()
-    access_level = fields.Selection()
-    valid_from = fields.Date()
-    valid_to = fields.Date(string='Valid To')
-    assigned_to_id = fields.Many2one('res.partner')
-    current_holder_id = fields.Many2one('res.users')
-    unlock_service_ids = fields.One2many()
-    bin_ids = fields.Many2many('shred.bin')
-    activity_ids = fields.One2many('mail.activity')
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many('mail.message')
-    key_number = fields.Char(string='Key Number', required=True)
-    bin_location = fields.Char(string='Bin Location')
-    assigned_to = fields.Many2one('res.partner')
-    issue_date = fields.Date(string='Issue Date')
-    return_date = fields.Date(string='Return Date')
-    security_deposit_required = fields.Boolean(string='Security Deposit Required')
-    security_deposit_amount = fields.Monetary(string='Security Deposit Amount')
-    emergency_access = fields.Boolean(string='Emergency Access')
-    last_maintenance_date = fields.Date(string='Last Maintenance Date')
-    next_maintenance_due = fields.Date(string='Next Maintenance Due')
-    action_assign_key = fields.Char(string='Action Assign Key')
-    action_mark_lost = fields.Char(string='Action Mark Lost')
-    action_reactivate_key = fields.Char(string='Action Reactivate Key')
-    action_retire_key = fields.Char(string='Action Retire Key')
-    action_return_key = fields.Char(string='Action Return Key')
-    action_view_management_records = fields.Char(string='Action View Management Records')
-    action_view_unlock_services = fields.Char(string='Action View Unlock Services')
-    assigned = fields.Char(string='Assigned')
-    assigned_date = fields.Date(string='Assigned Date')
-    assignment_date = fields.Date(string='Assignment Date')
-    assignment_reason = fields.Char(string='Assignment Reason')
-    available = fields.Char(string='Available')
-    bin_position = fields.Char(string='Bin Position')
-    bin_rack = fields.Char(string='Bin Rack')
-    bin_shelf = fields.Char(string='Bin Shelf')
-    button_box = fields.Char(string='Button Box')
-    charge_amount = fields.Float(string='Charge Amount')
-    context = fields.Char(string='Context')
-    current_holder = fields.Char(string='Current Holder')
-    customer_id = fields.Many2one('res.partner', string='Customer Id')
-    domain = fields.Char()
+    name = fields.Char(
+        string='Key Reference',
+        required=True,
+        copy=False,
+        readonly=True,
+        default=lambda self: _('New')
+    )
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        required=True,
+        default=lambda self: self.env.company
+    )
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    state = fields.Selection([
+        ('available', 'Available'),
+        ('assigned', 'Assigned'),
+        ('lost', 'Lost'),
+        ('retired', 'Retired')
+    ], string='Status', default='available', required=True, tracking=True, copy=False)
+
+    # ============================================================================
+    # KEY DETAILS
+    # ============================================================================
+    key_code = fields.Char(string='Key Code', required=True, copy=False, tracking=True)
+    key_type = fields.Selection([
+        ('master', 'Master'),
+        ('standard', 'Standard'),
+        ('temporary', 'Temporary')
+    ], string='Key Type', default='standard', required=True)
+    description = fields.Text(string='Description')
+
+    # ============================================================================
+    # ASSIGNMENT & VALIDITY
+    # ============================================================================
+    partner_id = fields.Many2one('res.partner', string='Assigned Customer', tracking=True)
+    issue_date = fields.Date(string='Issue Date', tracking=True)
+    return_date = fields.Date(string='Expected Return Date', tracking=True)
+    actual_return_date = fields.Date(string='Actual Return Date', readonly=True)
+
+    # ============================================================================
+    # FINANCIALS
+    # ============================================================================
+    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency')
+    replacement_fee = fields.Monetary(string='Replacement Fee')
+
+    # ============================================================================
+    # RELATIONSHIPS
+    # ============================================================================
+    bin_ids = fields.Many2many(
+        'shred.bin',
+        'bin_key_shred_bin_rel',
+        'key_id', 'bin_id',
+        string='Associated Bins'
+    )
+    history_ids = fields.One2many('bin.key.history', 'key_id', string='Assignment History')
+    replacement_of_id = fields.Many2one('bin.key', string='Replacement For', readonly=True)
+    replaced_by_id = fields.Many2one('bin.key', string='Replaced By', readonly=True)
+
+    # ============================================================================
+    # SQL CONSTRAINTS
+    # ============================================================================
+    _sql_constraints = [
+        ('key_code_company_uniq', 'unique(key_code, company_id)', 'The key code must be unique per company.')
+    ]
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('name', 'key_code')
+    def _compute_display_name(self):
+        """Computes a descriptive name for the key."""
+        for key in self:
+            key.display_name = f"{key.name} ({key.key_code or ''})"
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_assign_key(self):
+        """Opens a wizard to assign the key."""
+        self.ensure_one()
+        if self.state != 'available':
+            raise UserError(_("Only available keys can be assigned."))
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Assign Key'),
+            'res_model': 'bin.key.assignment.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_key_id': self.id}
+        }
+
+    def action_return_key(self):
+        """Marks the key as returned and available."""
+        self.ensure_one()
+        if self.state != 'assigned':
+            raise UserError(_("Only assigned keys can be returned."))
+        self.write({
+            'state': 'available',
+            'partner_id': False,
+            'actual_return_date': fields.Date.today()
+        })
+        self._create_history_entry('return')
+        self.message_post(body=_("Key returned and marked as available."))
+
+    def action_mark_lost(self):
+        """Marks the key as lost and opens the replacement wizard."""
+        self.ensure_one()
+        self.state = 'lost'
+        self._create_history_entry('lost')
+        self.message_post(body=_("Key marked as lost."))
+        # Optionally, open a wizard to create a replacement and invoice for the fee
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Replace Lost Key'),
+            'res_model': 'bin.key.replacement.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_lost_key_id': self.id}
+        }
+
+    def action_retire_key(self):
+        """Retires the key permanently."""
+        self.ensure_one()
+        self.write({'state': 'retired', 'active': False})
+        self._create_history_entry('retire')
+        self.message_post(body=_("Key has been retired."))
+
+    # ============================================================================
+    # BUSINESS METHODS
+    # ============================================================================
+    def _create_history_entry(self, event_type, notes=None):
+        """Creates a history record for a key event."""
+        self.ensure_one()
+        self.env['bin.key.history'].create({
+            'key_id': self.id,
+            'event_type': event_type,
+            'partner_id': self.partner_id.id,
+            'event_date': fields.Datetime.now(),
+            'notes': notes,
+        })
+
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Assign a sequence number on creation and log history."""
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('bin.key') or _('New')
+        keys = super().create(vals_list)
+        for key in keys:
+            key._create_history_entry('create')
+        return keys
+
+    def write(self, vals):
+        """Log significant changes to the history."""
+        res = super().write(vals)
+        if 'state' in vals and vals['state'] == 'assigned':
+            for key in self:
+                key._create_history_entry('assign')
+        return res
+
+class BinKeyHistory(models.Model):
+    _name = 'bin.key.history'
+    _description = 'Bin Key Assignment History'
+    _order = 'event_date desc'
+
+    key_id = fields.Many2one('bin.key', string='Key', required=True, ondelete='cascade')
+    event_date = fields.Datetime(string='Event Date', required=True, default=fields.Datetime.now)
+    event_type = fields.Selection([
+        ('assign', 'Assigned'),
+        ('return', 'Returned'),
+        ('lost', 'Marked as Lost'),
+        ('retire', 'Retired'),
+        ('create', 'Created')
+    ], string='Event Type', required=True)
+    user_id = fields.Many2one('res.users', string='Responsible User', required=True)
+    partner_id = fields.Many2one('res.partner', string='Assigned Customer')
+    notes = fields.Text(string='Notes')
