@@ -1,1124 +1,140 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    FSM Notification Manager
-    This module provides comprehensive FSM notification functionality for managing:
-    pass
-field service communications including day-of-service notifications, driver
-proximity alerts, task status updates, and route optimization notifications.
-    Key Features
-- Automated day of service notifications to customers
-- Real-time driver proximity alerts based on GPS location
-- Task status update notifications throughout service lifecycle
-- Route optimization notifications for efficiency improvements:
-- Integration with pickup requests and container management
-- Multi-channel delivery (email, SMS, portal notifications)
-    Author: Records Management System
-Version: 18.0.6.0.0
-License: LGPL-3
-    import logging
-from datetime import timedelta
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    _logger = logging.getLogger(__name__)
-    class FsmNotificationManager(models.Model):
-
-        FSM Notification Manager
-
-    Manages all field service notifications including customer communications,
-        driver alerts, task updates, and route optimization notifications.
-    Provides automated and manual notification capabilities with multi-channel
-        delivery support.
 
 
-    _name = "fsm.notification.manager"
+class FsmNotificationManager(models.Model):
+    _name = 'fsm.notification.manager'
+    _description = 'FSM Notification Manager'
+    _inherit = '['mail.thread', 'mail.activity.mixin']""'
+    _order = 'create_date desc'
+    _rec_name = 'name'
 
-"
-    _description = "fsm.notification.manager"
+    # ============================================================================
+    # FIELDS
+    # ============================================================================
+    name = fields.Char()
+    company_id = fields.Many2one()
+    user_id = fields.Many2one()
+    active = fields.Boolean()
+    notification_type = fields.Selection()
+    delivery_method = fields.Selection()
+    pickup_request_id = fields.Many2one()
+    container_ids = fields.Many2many()
+    partner_id = fields.Many2one()
+    technician_id = fields.Many2one()
+    subject = fields.Char()
+    message_body = fields.Html()
+    scheduled_datetime = fields.Datetime()
+    sent_datetime = fields.Datetime()
+    service_date = fields.Date()
+    service_time_window = fields.Char()
+    driver_location = fields.Char()
+    estimated_arrival = fields.Datetime()
+    proximity_radius = fields.Float()
+    state = fields.Selection()
+    priority = fields.Selection()
+    delivery_status = fields.Text()
+    retry_count = fields.Integer()
+    max_retries = fields.Integer()
+    auto_send = fields.Boolean()
+    template_id = fields.Many2one()
+    sms_template = fields.Text()
+    is_driver_nearby = fields.Boolean()
+    activity_ids = fields.One2many()
 
-"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "fsm.notification.manager"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "FSM Notification Manager"
-    _inherit = ['mail.thread', 'mail.activity.mixin']""
-    _order = 'create_date desc'""
-    _rec_name = 'name'""
-""
-        # ============================================================================""
-    # CORE IDENTIFICATION FIELDS""
-        # ============================================================================""
-    name = fields.Char(""
-        string="Notification Reference",
-        required=True,""
-        tracking=True,""
-        index=True,""
-        help="Unique reference for this notification":
-    ""
-""
-    company_id = fields.Many2one(""
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,""
-        required=True,""
-        help="Company context for FSM operations":
-    ""
-""
-    user_id = fields.Many2one(""
-        "res.users",
-        string="Responsible User",
-        default=lambda self: self.env.user,""
-        tracking=True,""
-        help="User responsible for managing this notification":
-    ""
-""
-    active = fields.Boolean(""
-        string="Active",
-        default=True,""
-        help="Whether this notification is active"
-    ""
-""
-        # ============================================================================""
-    # NOTIFICATION TYPE AND CONFIGURATION""
-        # ============================================================================""
-    ,""
-    notification_type = fields.Selection([))""
-        ('day_of_service', 'Day of Service Notification'),""
-        ('driver_proximity', 'Driver Proximity Alert'),""
-        ('task_status', 'Task Status Update'),""
-        ('route_optimization', 'Route Optimization Alert'),""
-        ('pickup_reminder', 'Pickup Reminder'),""
-        ('service_completion', 'Service Completion'),""
-        ('delay_notification', 'Service Delay Notification'),""
-        ('reschedule_confirmation', 'Reschedule Confirmation'),""
-    ""
-        help="Type of FSM notification to send"
-""
-    delivery_method = fields.Selection([))""
-        ('email', 'Email'),""
-        ('sms', 'SMS'),""
-        ('portal', 'Portal Notification'),""
-        ('all', 'All Methods'),""
-    ""
-        help="Method for delivering the notification"
-    # ============================================================================""
-        # RELATIONSHIP FIELDS""
-    # ============================================================================""
-    pickup_request_id = fields.Many2one(""
-        'pickup.request',""
-        string='Related Pickup Request',""
-        help="Pickup request associated with this notification"
-    ""
-""
-    container_ids = fields.Many2many(""
-        'records.container',""
-        string='Related Containers',""
-        help="Containers involved in the service notification"
-    ""
-""
-    partner_id = fields.Many2one(""
-        'res.partner',""
-        string='Customer',""
-        required=True,""
-        tracking=True,""
-        help="Customer receiving the notification"
-    ""
-""
-    technician_id = fields.Many2one(""
-        'hr.employee',""
-        string='Assigned Technician',""
-        help="Field technician assigned to the service"
-    ""
-""
-        # ============================================================================""
-    # NOTIFICATION CONTENT AND TIMING""
-        # ============================================================================""
-    subject = fields.Char(""
-        string="Subject",
-        required=True,""
-        help="Notification subject line"
-    ""
-""
-    message_body = fields.Html(""
-        string="Message Content",
-        required=True,""
-        help="Main notification message content"
-    ""
-""
-    scheduled_datetime = fields.Datetime(""
-        string="Scheduled Send Time",
-        help="When to send this notification automatically"
-    ""
-""
-    sent_datetime = fields.Datetime(""
-        string="Sent At",
-        readonly=True,""
-        help="When the notification was actually sent"
-    ""
-""
-        # ============================================================================""
-    # SERVICE DETAILS""
-        # ============================================================================""
-    service_date = fields.Date(""
-        string="Service Date",
-        help="Date when field service is scheduled"
-    ""
-""
-    service_time_window = fields.Char(""
-        string="Service Time Window",
-        ,""
-    help="Estimated time window for service (e.g., '9:0 AM - 11:0 AM')"
-    ""
-""
-    driver_location = fields.Char(""
-        string="Driver Current Location",
-        help="Current location of assigned driver/technician"
-    ""
-""
-    estimated_arrival = fields.Datetime(""
-        string="Estimated Arrival Time",
-        help="Estimated arrival time at customer location"
-    ""
-""
-    proximity_radius = fields.Float(""
-    string="Proximity Radius (miles)",
-        default=5.0,""
-        help="Distance threshold for proximity notifications":
-    ""
-""
-        # ============================================================================""
-    # STATE MANAGEMENT""
-        # ============================================================================""
-    state = fields.Selection([))""
-        ('draft', 'Draft'),""
-        ('scheduled', 'Scheduled'),""
-        ('sent', 'Sent'),""
-        ('failed', 'Failed'),""
-        ('cancelled', 'Cancelled'),""
-    ""
-        help="Current status of the notification"
-""
-    # ============================================================================""
-        # ADDITIONAL TRACKING FIELDS""
-    # ============================================================================""
-    priority = fields.Selection([))""
-        ('low', 'Low'),""
-        ('normal', 'Normal'),""
-        ('high', 'High'),""
-        ('urgent', 'Urgent'),""
-    ""
-        help="Notification priority level"
-""
-    delivery_status = fields.Text(""
-        string="Delivery Status",
-        readonly=True,""
-        help="Status details of notification delivery attempt"
-    ""
-""
-    retry_count = fields.Integer(""
-        string="Retry Count",
-        default=0,""
-        help="Number of delivery retry attempts"
-    ""
-""
-    max_retries = fields.Integer(""
-        string="Max Retries",
-        default=3,""
-        help="Maximum number of delivery retry attempts"
-    ""
-""
-        # ============================================================================""
-    # AUTOMATION AND TEMPLATE FIELDS""
-        # ============================================================================""
-    auto_send = fields.Boolean(""
-        string="Automatic Send",
-        default=True,""
-        help="Whether to send this notification automatically"
-    ""
-""
-    template_id = fields.Many2one(""
-        'mail.template',""
-        string='Email Template',""
-        help="Email template to use for notification":
-    ""
-""
-    sms_template = fields.Text(""
-        string="SMS Template",
-        help="SMS message template"
-    ""
-""
-        # ============================================================================""
-    # COMPUTED FIELDS""
-        # ============================================================================""
-    is_driver_nearby = fields.Boolean(""
-        string="Driver Nearby",
-        compute='_compute_proximity_status',""
-        help="Whether driver is within proximity radius"
-    ""
-""
-        # ============================================================================""
-    # MAIL THREAD FRAMEWORK FIELDS""
-        # ============================================================================""
-    activity_ids = fields.One2many(""
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        ,""
-    domain=lambda self: [("res_model", "= """"
-    """"
-        """"mail.followers","
-        "res_id",
-        string="Followers",
-        ,""
-    domain=lambda self: [("res_model", "= """""
-    """
-        """"mail.message","
-        "res_id",
-        string="Messages",
-        ,""
-    domain=lambda self: [("model", "= """"
-"""    @api.depends('"""pickup_request_id', 'notification_type', 'service_date')"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-    def _compute_name(self):""
-        """Generate notification reference name"""
-"""                base_name = _("FSM-%s", record.pickup_request_id.name)"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-                base_name = _("FSM-%s", record.id or 'NEW')
-""
-            type_abbrev = {}""
-                'day_of_service': 'DOS',"
-                'driver_proximity': 'PROX',"
-                'task_status': 'STATUS',"
-                'route_optimization': 'ROUTE',"
-                'pickup_reminder': 'REMIND',"
-                'service_completion': 'COMP',"
-                'delay_notification': 'DELAY',"
-                'reschedule_confirmation': 'RESCHED',"
+    # ============================================================================
+    # METHODS
+    # ============================================================================
+    def _compute_name(self):
+            """Generate notification reference name"""
+
+    def _compute_proximity_status(self):
+            """Compute if driver is within proximity radius""":
+
+    def action_schedule_notification(self):
+            """Schedule notification for automatic sending""":
+
+    def action_cancel_notification(self):
+            """Cancel the notification"""
+
+    def _send_sms_notification(self):
+            """Send SMS notification"""
+
+    def _send_portal_notification(self):
+            """Send portal notification"""
+
+    def send_day_of_service_notification(self, pickup_request):
+            """Send day of service notification for pickup request""":
+
+    def _get_proximity_template(self, pickup_request, location):
+            """Get proximity notification template"""
+
+    def _get_completion_template(self, pickup_request):
+            """Get service completion template"""
+
+    def _handle_send_failure(self, error_msg=None):
+            """Handle notification send failure"""
+
+    def _log_notification_sent(self):
+            """Log successful notification send"""
+                body=_("Notification sent via %s to %s", self.delivery_method, self.partner_id.name)
             ""
-""
-            record.name = _("%s-%s", base_name, type_abbrev)
-""
-    @api.depends('estimated_arrival', 'proximity_radius')"
-    def _compute_proximity_status(self):""
-        """Compute if driver is within proximity radius"""
-""""
-"""    def create(self, vals_list):"
-        """Override create to generate sequence"""
-""""
-"""
-""""
-        """Send the notification using configured delivery method"""
-    """
-"""            raise UserError(_("This notification has already been sent."))"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            _logger.error("Failed to send notification %s: %s", self.name, str(e))
-            self._handle_send_failure(str(e))""
-""
-        return True""
-""
-    def action_schedule_notification(self):""
-        """Schedule notification for automatic sending"""
-    """"
-"""            raise UserError(_("Please set a scheduled send time first."))"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-        self.message_post()""
-            body=_("Notification scheduled for %s", self.scheduled_datetime):
-        ""
-""
-        return True""
-""
-    def action_cancel_notification(self):""
-        """Cancel the notification"""
-    """"
-"""        self.message_post(body=_("Notification cancelled by user"))"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-        """Retry sending failed notification"""
-    """"
-"""            raise UserError(_("Maximum retry attempts reached."))"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-        """Create scheduled action for automatic notification"""
-""""
-"""    def _send_email_notification(self):"
-        """Send email notification"""
-""""
-"""
-"""            _logger.error("Email send failed: %s", str(e))"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-    def _send_sms_notification(self):""
-        """Send SMS notification"""
-"""                _logger.warning("No mobile number for partner %s", self.partner_id.name):"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-            _logger.error("SMS send failed: %s", str(e))
-            return False""
-""
-    def _send_portal_notification(self):""
-        """Send portal notification"""
-"""
-""""
-"""            _logger.error("Portal notification failed: %s", str(e))
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-    def send_day_of_service_notification(self, pickup_request):""
-        """Send day of service notification for pickup request"""
-    """"
-"""    def send_driver_nearby_notification(self, pickup_request, driver_location):"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-        """Send driver proximity alert"""
-    """"
-"""
-""""
-        """Send task completion notification"""
-"""
-""""
-"""    def _get_day_of_service_template(self, pickup_request):"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-        """Get day of service notification template"""
-""""
-""""
-    """        return _(""")""
-        <p>Dear %(customer)s,</p>""
-""
-        <p>This is a reminder that your records service is scheduled for tomorrow,:""
-        %(date)s.</p>""
-""
-        <p><strong>Service Details:</strong></p>""
-        <ul>""
-            <li>Service Type: %(service)s</li>""
-            <li>Estimated Time: %(time)s</li>""
-            <li>Contact: %(contact)s</li>""
-        </ul>""
-""
-        <p>Our technician will contact you when they are on their way.</p>""
-""
-        <p>Thank you for choosing our records management services.</p>:""
-        """, {}"
-            'customer': pickup_request.partner_id.name,""
-            'date': service_date,""
-            'service': service_type,""
-            'time': time_window,""
-            'contact': contact_person,""
-        ""
-""
-    def _get_proximity_template(self, pickup_request, location):""
-        """Get proximity notification template"""
-    """        return _(""")""
-        <p>Dear %(customer)s,</p>""
-""
-        <p>Your assigned technician is now nearby and will arrive shortly for your:""
-        scheduled service.</p>""
-""
-        <p><strong>Current Status:</strong></p>""
-        <ul>""
-            <li>Technician Location: %(location)s</li>""
-            <li>Estimated Arrival: Within 15-20 minutes</li>""
-            <li>Service: %(service)s</li>""
-        </ul>""
-""
-        <p>Please ensure someone is available to meet our technician.</p>""
-        """, {}"
-            'customer': pickup_request.partner_id.name,""
-            'location': location,""
-            'service': service_type,""
-        ""
-""
-    def _get_completion_template(self, pickup_request):""
-        """Get service completion template"""
-""""
-""""
-"""        return _(""")""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-        <p>Thank you for your business. You will receive detailed documentation shortly.</p>:""
-        """, {}"
-            'customer': pickup_request.partner_id.name,""
-            'date': today,""
-            'technician': technician,""
-            'items': item_count,""
-        ""
-""
-    # ============================================================================""
-        # HELPER METHODS""
-    # ============================================================================""
-    def _handle_send_failure(self, error_msg=None):""
-        """Handle notification send failure"""
-"""
-""""
-"""            "mail.mail_activity_data_todo","
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            summary=_("Failed Notification Needs Attention"),
-            note=_("Notification send failed: %s", error_msg or "Unknown error"),
-            user_id=self.user_id.id,""
-        ""
-""
-    def _log_notification_sent(self):""
-        """Log successful notification send"""
-            body=_("Notification sent via %s to %s", self.delivery_method, self.partner_id.name)
-        ""
-""
-    # ============================================================================""
-        # BUSINESS METHODS""
-    # ============================================================================""
-    def get_notification_summary(self):""
-        """Get notification summary for reporting"""
-    """"
-""""
-""""
-        """Get notification statistics for dashboard"""
-    """"
-"""        for status in ["draft", "scheduled", "sent", "failed", "cancelled"]:"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-            stats[status] = self.search_count((("state", "= """"
-"""        stats['"""by_type'] = {}"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-        for notification_type, label in self._fields['notification_type'].selection:""
-            stats['by_type'][label] = self.search_count((("notification_type", "= """""
-"""        total_sent = stats[""""sent"] + stats["failed"]""
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-        if total_sent > 0:""
-            stats["success_rate"] = round((stats["sent"] / total_sent) * 100, 2)
-        else:""
-            stats["success_rate"] = 0.0
-""
-        return stats""
-""
-    # ============================================================================""
-        # VALIDATION METHODS""
-    # ============================================================================""
-    @api.constrains('scheduled_datetime')""
-    def _check_scheduled_datetime(self):""
-        """Validate scheduled datetime is in future"""
-"""                raise ValidationError(_("Scheduled send time must be in the future."))
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-        """Validate proximity radius is positive"""
-"""                raise ValidationError(_("Proximity radius must be greater than zero."))"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-        """Validate partner has required contact information"""
-"""                raise ValidationError(_("Customer must have an email address for email notifications")):
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-                raise ValidationError(_("Customer must have a mobile number for SMS notifications")):
-    # ============================================================================""
-        # CRON/SCHEDULED METHODS""
-    # ============================================================================""
-    @api.model""
-    def _process_scheduled_notifications(self):""
-        """Process notifications scheduled for sending (called by cron)"""
-"""            ('scheduled_datetime', '<= """', fields.Datetime.now()),""
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-            except Exception as e""
-""""""                _logger.error("Failed to send scheduled notification %s: %s", notification.name, str(e))
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-    @api.model""
-    def _cleanup_old_notifications(self, days=90):""
-        """Clean up old sent notifications (called by cron)"""
-""""
-""""
-    """        _logger.info("Cleaned up %d old FSM notifications", count)"
-        return count""
-""
-    # ============================================================================""
-        # UTILITY METHODS""
-    # ============================================================================ """"
-    def name_get(self):""""""
-        """Custom display name"""
-""""
-""""
-"""                name_parts.append(_("(%s)", type_label))"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            if record.partner_id:""
-                name_parts.append(_("- %s", record.partner_id.name))
-""
-            result.append((record.id, " ".join(name_parts)))
-        return result""
-""
-    @api.model""
+
+    def get_notification_summary(self):
+            """Get notification summary for reporting""":
+
+    def _check_scheduled_datetime(self):
+            """Validate scheduled datetime is in future"""
+
+    def _process_scheduled_notifications(self):
+            """Process notifications scheduled for sending (called by cron)""":
+
+    def _cleanup_old_notifications(self, days=90):
+            """Clean up old sent notifications (called by cron)"""
+
+    def name_get(self):
+            """Custom display name"""
+
     def _name_search(self, name="", args=None, operator="ilike", limit=100, name_get_uid=None):
-        """Enhanced search by name, customer, or type"""
-""""
-""""
-"""                "|", "|", "|","
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-                ("name", operator, name),
-                ("partner_id.name", operator, name),
-                ("subject", operator, name),
-                ("notification_type", operator, name),
-            ""
-""
-        return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)""
-))))))))))))))))))))""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-"""
+            """Enhanced search by name, customer, or type"""

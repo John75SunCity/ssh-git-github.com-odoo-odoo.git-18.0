@@ -1,33 +1,31 @@
-# -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import UserError
 
 
-class PaperBaleWeighWizard(models.TransientModel):
-    _name = "paper.bale.weigh.wizard"
-    _description = "Paper Bale Weighing Wizard"
+class GeneratedModel(models.Model):
+    _name = 'paper.bale.weigh.wizard'
+    _description = 'Paper Bale Weighing Wizard'
 
-    bale_id = fields.Many2one("paper.bale", string="Paper Bale",,
-    required=True),
-    measured_weight = fields.Float(
-        ,
-    string="Measured Weight (kg)", required=True
+    # ============================================================================
+    # FIELDS
+    # ============================================================================
+    bale_id = fields.Many2one('paper.bale', string='Paper Bale')
+    measured_weight = fields.Float()
+    weighing_date = fields.Datetime()
+    scale_used = fields.Char(string='Scale Used')
 
-    weighing_date = fields.Datetime(
-        string="Weighing Date", required=True, default=fields.Datetime.now
-
-    ,
-    scale_used = fields.Char(string="Scale Used")
-
+    # ============================================================================
+    # METHODS
+    # ============================================================================
     def action_record_weight(self):
-        self.ensure_one()
-        if self.measured_weight <= 0:
-            raise UserError(_("Measured weight must be positive."))
-        self.bale_id.write()
-            {}
-                "weight": self.measured_weight,
-                "last_weighed_date": self.weighing_date,
+            self.ensure_one()
+            if self.measured_weight <= 0:
+                raise UserError(_("Measured weight must be positive."))
+            self.bale_id.write()
+                {}
+                    "weight": self.measured_weight,
+                    "last_weighed_date": self.weighing_date,
 
 
-        return {"type": "ir.actions.act_window_close"}
-))
+            return {"type": "ir.actions.act_window_close"}

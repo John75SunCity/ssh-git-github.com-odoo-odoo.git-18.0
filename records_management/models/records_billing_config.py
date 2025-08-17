@@ -1,156 +1,66 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
-    class RecordsBillingConfig(models.Model):
-    _name = "records.billing.config"
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "records.billing.config"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+
+
+class RecordsBillingConfig(models.Model):
+    _name = 'records.billing.config'
     _description = 'Records BillingConfig'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
-    # Core fields"
-    name = fields.Char(string='Name', required=True, tracking=True, index=True)""
-    active = fields.Boolean(string='Active', default=True)""
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)""
-    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)""
-""
-    # State management""
-    state = fields.Selection([""
-        ('draft', 'Draft'),""
-        ('confirmed', 'Confirmed'),""
-        ('done', 'Done'),""
-        ('cancelled', 'Cancelled'),""
-    ], string='Status', default='draft', tracking=True)""
-""
-    # Dates""
-    create_date = fields.Datetime(string='Created On', readonly=True)""
-    write_date = fields.Datetime(string='Last Updated', readonly=True)""
-""
-    # Basic methods""
-    def action_confirm(self):""
-        """Confirm the record"""
-    """
-        """Mark as done"""
-    """"
-        """Cancel the record"""
-"""
-""""
+    # ============================================================================
+    # FIELDS
+    # ============================================================================
+    name = fields.Char(string='Name', required=True, tracking=True)
+    active = fields.Boolean(string='Active')
+    company_id = fields.Many2one('res.company', string='Company')
+    user_id = fields.Many2one('res.users', string='User')
+    state = fields.Selection()
+    create_date = fields.Datetime(string='Created On', readonly=True)
+    write_date = fields.Datetime(string='Last Updated', readonly=True)
+
+    # ============================================================================
+    # METHODS
+    # ============================================================================
+    def action_confirm(self):
+            """Confirm the record"""

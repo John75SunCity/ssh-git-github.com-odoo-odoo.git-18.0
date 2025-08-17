@@ -1,237 +1,86 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    NAID Compliance Checklist
-    from odoo import models, fields, api, _
-    class NAIDComplianceChecklist(models.Model):
-
-        NAID Compliance Checklist
 
 
-    _name = "naid.compliance.checklist"
+class NAIDComplianceChecklist(models.Model):
+    _name = 'naid.compliance.checklist'
+    _description = 'NAID Compliance Checklist'
+    _inherit = '['mail.thread', 'mail.activity.mixin']""'
+    _order = 'name'
 
-"
-    _description = "naid.compliance.checklist"
+    # ============================================================================
+    # FIELDS
+    # ============================================================================
+    name = fields.Char(string='Name', required=True)
+    company_id = fields.Many2one('res.company')
+    user_id = fields.Many2one('res.users')
+    compliance_id = fields.Many2one('naid.compliance')
+    active = fields.Boolean()
+    state = fields.Selection()
+    description = fields.Text()
+    notes = fields.Text()
+    date = fields.Date()
+    activity_ids = fields.One2many('mail.activity', string='Activities')
+    button_box = fields.Char(string='Button Box')
+    category = fields.Char(string='Category')
+    checklist_item_ids = fields.One2many('checklist.item')
+    checklist_items = fields.Char(string='Checklist Items')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    group_by_category = fields.Char(string='Group By Category')
+    help = fields.Char(string='Help')
+    inactive = fields.Boolean(string='Inactive')
+    is_required = fields.Boolean(string='Is Required')
+    message_follower_ids = fields.One2many('mail.followers', string='Followers')
+    message_ids = fields.One2many('mail.message', string='Messages')
+    res_model = fields.Char(string='Res Model')
+    search_view_id = fields.Many2one('search.view')
+    toggle_active = fields.Boolean(string='Toggle Active')
+    type = fields.Selection(string='Type')
+    view_mode = fields.Char(string='View Mode')
 
-"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "naid.compliance.checklist"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "NAID Compliance Checklist"
-    _inherit = ['mail.thread', 'mail.activity.mixin']""
-    _order = "name"
-""
-        # Core fields""
-    name = fields.Char(string="Name", required=True,,
-    tracking=True),""
-    company_id = fields.Many2one('res.company',,""
-    default=lambda self: self.env.company),""
-    user_id = fields.Many2one('res.users',,""
-    default=lambda self: self.env.user),""
-    compliance_id = fields.Many2one("naid.compliance",,
-    string="Compliance"),
-    active = fields.Boolean(default=True)
-
-        # Basic state management
-    state = fields.Selection([))
-        ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')
-    
-
-        # Common fields
-    description = fields.Text(
-    notes = fields.Text(
-    date = fields.Date(default=fields.Date.today),
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities',,
-    auto_join=True),
-    button_box = fields.Char(string='Button Box'),
-    category = fields.Char(string='Category'),
-    checklist_item_ids = fields.One2many('checklist.item', 'naid_compliance_checklist_id',,
-    string='Checklist Item Ids'),
-    checklist_items = fields.Char(string='Checklist Items'),
-    context = fields.Char(string='Context'),
-    domain = fields.Char(string='Domain'),"
-    group_by_category = fields.Char(string='Group By Category'),""
-    help = fields.Char(string='Help'),""
-    inactive = fields.Boolean(string='Inactive',,""
-    default=False),""
-    is_required = fields.Boolean(string='Is Required',,""
-    default=False),""
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers',,""
-    auto_join=True),""
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages',,""
-    auto_join=True),""
-    res_model = fields.Char(string='Res Model'),""
-    search_view_id = fields.Many2one('search.view',,""
-    string='Search View Id'),""
-    toggle_active = fields.Boolean(string='Toggle Active',,""
-    default=False),""
-    type = fields.Selection([), string='Type')  # TODO: Define selection options""
-    view_mode = fields.Char(string='View Mode')""
-""
-    def action_confirm(self):""
-        """Confirm the record"""
-"""
-""""
-    """
-        """Mark as done"""
-""""
-"""
-""""
+    # ============================================================================
+    # METHODS
+    # ============================================================================
+    def action_confirm(self):
+            """Confirm the record"""

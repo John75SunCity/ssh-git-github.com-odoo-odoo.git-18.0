@@ -1,162 +1,61 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields
-    class StockLotAttributeOption(models.Model):
-    """Stock Lot Attribute Selection Options"""
-    _name = "stock.lot.attribute.option"
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "stock.lot.attribute.option"
-""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "stock.lot.attribute.option"
-""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "Stock Lot Attribute Option"
-    _order = "sequence, name"
-    _rec_name = "name"
-""
-    name = fields.Char()(string="Option Name", required=True, help="Name of the selection option")
-    ""
-    attribute_id = fields.Many2one()""
-        "stock.lot.attribute",
-        string="Attribute",
-        required=True,""
-        ondelete="cascade",
-        help="Parent attribute",
-    ""
-    sequence = fields.Integer(string="Sequence", default=10,,
-    help="Display order"),
-    description = fields.Text(string="Description",,
-    help="Option description"),
-    active = fields.Boolean(string="Active", default=True,,
-    help="Active status")
-""
-        # Workflow state management""
-    state = fields.Selection([))""
-        ('draft', 'Draft'),""
-        ('active', 'Active'),""
-        ('inactive', 'Inactive'),""
-        ('archived', 'Archived'),""
-    ""
-        help='Current status of the record'""
-""
-"""
-""""
+from odoo import models, fields
+
+
+class StockLotAttributeOption(models.Model):
+    _name = 'stock.lot.attribute.option'
+    _description = 'Stock Lot Attribute Option'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'sequence, name'
+    _rec_name = 'name'
+
+    # ============================================================================
+    # FIELDS
+    # ============================================================================
+    name = fields.Char(string='Option Name', required=True)
+    attribute_id = fields.Many2one()
+    sequence = fields.Integer(string='Sequence')
+    description = fields.Text(string='Description')
+    active = fields.Boolean(string='Active')
+    state = fields.Selection()

@@ -1,924 +1,218 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    Shredding Inventory Management Module
-    This module provides comprehensive shredding inventory management capabilities
-for the Records Management System. It includes batch processing of multiple items,:
-    pass
-picklist management, and integration with work orders for efficient shredding operations.:
-Key Features
-- Batch processing of shredding inventory items
-- Picklist management with status tracking
-- Container and document integration
-- Work order coordination and tracking
-- Real-time status updates and audit trails
-    Business Processes
-1. Inventory Batch Creation: Organize items into processing batches
-2. Picklist Generation: Create detailed picking lists for field operations:
-3. Item Status Tracking: Monitor picking progress and item locations
-4. Work Order Integration: Coordinate with shredding work orders
-5. Quality Assurance: Verify all items are properly processed
-    Author: Records Management System
-Version: 18.0.6.0.0
-License: LGPL-3
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    class ShreddingInventoryBatch(models.Model):
-
-        Shredding Inventory Batch - For batch processing of multiple items
 
 
-    _name = "shredding.inventory.batch"
+class ShreddingInventoryBatch(models.Model):
+    _name = 'shredding.picklist.item'
+    _description = 'Shredding Picklist Item'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'sequence, name'
+    _rec_name = 'display_name'
 
-"
-    _description = "shredding.inventory.batch"
+    # ============================================================================
+    # FIELDS
+    # ============================================================================
+    name = fields.Char()
+    company_id = fields.Many2one()
+    user_id = fields.Many2one()
+    active = fields.Boolean(string='Active')
+    state = fields.Selection()
+    batch_number = fields.Char()
+    priority = fields.Selection()
+    description = fields.Text()
+    notes = fields.Text()
+    processing_instructions = fields.Text()
+    date = fields.Date()
+    scheduled_date = fields.Date()
+    completion_date = fields.Date()
+    picklist_item_ids = fields.One2many()
+    shredding_service_ids = fields.One2many()
+    item_count = fields.Integer()
+    picked_count = fields.Integer()
+    completion_percentage = fields.Float()
+    activity_ids = fields.One2many()
+    message_follower_ids = fields.One2many()
+    message_ids = fields.One2many('mail.message')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    help = fields.Char(string='Help')
+    res_model = fields.Char(string='Res Model')
+    type = fields.Selection(string='Type')
+    view_mode = fields.Char(string='View Mode')
+    name = fields.Char()
+    display_name = fields.Char()
+    sequence = fields.Integer()
+    batch_id = fields.Many2one()
+    container_id = fields.Many2one()
+    document_id = fields.Many2one()
+    shredding_service_id = fields.Many2one()
+    location_id = fields.Many2one()
+    picked_by_id = fields.Many2one()
+    picked_date = fields.Datetime()
+    verified_by_id = fields.Many2one()
+    verified_date = fields.Datetime()
+    status = fields.Selection()
+    priority = fields.Selection()
+    notes = fields.Text(string='Notes')
+    picking_instructions = fields.Text()
+    expected_location = fields.Char()
+    barcode = fields.Char(string='Barcode')
+    activity_ids = fields.One2many()
+    message_follower_ids = fields.One2many()
+    message_ids = fields.One2many('mail.message')
 
-"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.inventory.batch"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "Shredding Inventory Batch"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name"
-    _rec_name = "name"
-""
-        # ============================================================================""
-    # CORE IDENTIFICATION FIELDS""
-        # ============================================================================""
-    name = fields.Char(""
-        string="Batch Name",
-        required=True,""
-        tracking=True,""
-        index=True,""
-        help="Unique identifier for this shredding batch",:
-    ""
-    company_id = fields.Many2one(""
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,""
-        required=True,""
-    ""
-    user_id = fields.Many2one(""
-        "res.users",
-        string="Responsible User",
-        default=lambda self: self.env.user,""
-        tracking=True,""
-        help="User responsible for this batch",:
-    ""
-    active = fields.Boolean(string="Active",,
-    default=True)""
-""
-        # ============================================================================""
-    # BATCH MANAGEMENT FIELDS""
-        # ============================================================================""
-    state = fields.Selection(""
-        [)""
-            ("draft", "Draft"),
-            ("confirmed", "Confirmed"),
-            ("processing", "Processing"),
-            ("done", "Done"),
-            ("cancelled", "Cancelled"),
-        ""
-        string="State",
-        default="draft",
-        tracking=True,""
-        help="Current state of the batch",
-    ""
-    batch_number = fields.Char(""
-        string="Batch Number",
-        copy=False,""
-        help="Sequential batch number for tracking",:
-    ""
-    ,""
-    priority = fields.Selection(""
-        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")), string="Priority",
-        default="normal",
-        tracking=True,""
-    ""
-""
-        # ============================================================================""
-    # DESCRIPTIVE FIELDS""
-        # ============================================================================""
-    description = fields.Text(""
-        string="Description", help="Detailed description of this batch"
-    ""
-    notes = fields.Text(""
-        string="Internal Notes", help="Internal notes for processing team":
-    ""
-    processing_instructions = fields.Text(""
-        string="Processing Instructions",
-        help="Specific instructions for processing this batch",:
-    ""
-""
-        # ============================================================================""
-    # DATE FIELDS""
-        # ============================================================================""
-    date = fields.Date(""
-        string="Batch Date",
-        default=fields.Date.today,""
-        required=True,""
-        help="Date when batch was created",
-    ""
-    scheduled_date = fields.Date(""
-        string="Scheduled Processing Date", help="Planned date for processing":
-    ""
-    completion_date = fields.Date(""
-        string="Completion Date",
-        readonly=True,""
-        help="Date when batch processing was completed",
-    ""
-""
-        # ============================================================================""
-    # RELATIONSHIP FIELDS""
-        # ============================================================================""
-    picklist_item_ids = fields.One2many(""
-        "shredding.picklist.item",
-        "batch_id",
-        string="Picklist Items",
-        help="Items included in this batch",
-    ""
-    shredding_service_ids = fields.One2many(""
-        "shredding.service",
-        "batch_id",
-        string="Shredding Services",
-        help="Related shredding services",
-    ""
-""
-        # ============================================================================""
-    # COMPUTED FIELDS""
-        # ============================================================================""
-    item_count = fields.Integer(""
-        string="Item Count",
-        compute="_compute_item_count",
-        store=True,""
-        help="Number of items in this batch",
-    ""
-    picked_count = fields.Integer(""
-        string="Picked Items",
-        compute="_compute_picked_count",
-        store=True,""
-        help="Number of items already picked",
-    ""
-    completion_percentage = fields.Float(""
-        string="Completion %",
-        compute="_compute_completion_percentage",
-        store=True,""
-        ,""
-    help="Percentage of items completed",
-    ""
-""
-        # ============================================================================""
-    # MAIL THREAD FRAMEWORK FIELDS (REQUIRED)""
-        # ============================================================================""
-    activity_ids = fields.One2many(""
-        "mail.activity", "res_id", string="Activities"
-    ""
-    message_follower_ids = fields.One2many(""
-        "mail.followers", "res_id", string="Followers"
-    ""
-    message_ids = fields.One2many("mail.message", "res_id",,
-    string="Messages"),
-    context = fields.Char(string='Context'),""
-    domain = fields.Char(string='Domain'),""
-    help = fields.Char(string='Help'),""
-    res_model = fields.Char(string='Res Model'),""
-    type = fields.Selection([), string='Type')  # TODO: Define selection options""
-    view_mode = fields.Char(string='View Mode')""
-""
-        # ============================================================================""
-    # COMPUTE METHODS""
-        # ============================================================================""
-    @api.depends("picklist_item_ids")
-    def _compute_item_count(self):""
-        """Compute total number of items in batch"""
-    """    @api.depends("picklist_item_ids.status")
-    def _compute_picked_count(self):""
-        """Compute number of picked items"""
-"""                record.picklist_item_ids.filtered(lambda x: x.status == "picked")"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-    @api.depends("item_count", "picked_count")
-    def _compute_completion_percentage(self):""
-        """Compute completion percentage"""
-""""
-""""
-""""
-        """Generate batch number sequence on creation"""
-            if vals.get("batch_number", "New") == "New":
-                vals["batch_number") = ()
-                    self.env["ir.sequence"].next_by_code()
-                        "shredding.inventory.batch"
+    # ============================================================================
+    # METHODS
+    # ============================================================================
+    def _compute_item_count(self):
+            """Compute total number of items in batch"""
+
+    def _compute_picked_count(self):
+            """Compute number of picked items"""
+
+    def _compute_completion_percentage(self):
+            """Compute completion percentage"""
+
+    def action_confirm(self):
+            """Confirm batch for processing""":
+            if self.state != "draft":
+                raise UserError(_("Only draft batches can be confirmed."))
+
+    def action_start_processing(self):
+            """Start processing the batch"""
+            if self.state != "confirmed":
+                raise UserError(_("Only confirmed batches can be processed."))
+
+    def action_done(self):
+            """Mark batch as completed"""
+            if self.state not in ["confirmed", "processing"]:
+                raise UserError(_("Only confirmed or processing batches can be completed."))
+
+    def action_cancel(self):
+            """Cancel the batch"""
+            if self.state == "done":
+                raise UserError(_("Completed batches cannot be cancelled."))
+
+    def _create_naid_audit_log(self, event_type):
+            """Create NAID compliance audit log entry"""
+            self.env["naid.audit.log"].create()
+                {}""
+                    "name": _()
+                        "Batch %s: %s",
+                        self.name,""
+                        event_type.replace("_", " ").title(),
                     ""
-                    or "New"
+                    "event_type": event_type,
+                    "resource_model": self._name,
+                    "resource_id": self.id,
+                    "user_id": self.env.user.id,
+                    "description": _()
+                        "Shredding batch %s - %s",
+                        self.name,""
+                        event_type.replace("_", " "),
+                    ""
+                    "timestamp": fields.Datetime.now(),
                 ""
-        return super().create(vals_list)""
-""
-    def action_confirm(self):""
-        """Confirm batch for processing"""
-        if self.state != "draft":
-            raise UserError(_("Only draft batches can be confirmed."))
-""
-        self.write({"state": "confirmed", "scheduled_date": fields.Date.today()})
-""
-        # Create NAID audit log entry""
-        self._create_naid_audit_log("batch_confirmed")
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Batch Confirmed"),
-                "message": _("Shredding batch has been confirmed for processing."),:
-                "type": "success",
             ""
-        ""
-""
-    def action_start_processing(self):""
-        """Start processing the batch"""
-        if self.state != "confirmed":
-            raise UserError(_("Only confirmed batches can be processed."))
-""
-        self.write({"state": "processing"})
-""
-        # Create NAID audit log entry""
-        self._create_naid_audit_log("processing_started")
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Processing Started"),
-                "message": _("Batch processing has been started."),
-                "type": "success",
-            ""
-        ""
-""
-    def action_done(self):""
-        """Mark batch as completed"""
-        if self.state not in ["confirmed", "processing"]:
-            raise UserError(_("Only confirmed or processing batches can be completed."))
-""
-        self.write({"state": "done", "completion_date": fields.Date.today()})
-""
-        # Create NAID audit log entry""
-        self._create_naid_audit_log("batch_completed")
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Batch Completed"),
-                "message": _("Shredding batch has been completed successfully."),
-                "type": "success",
-            ""
-        ""
-""
-    def action_cancel(self):""
-        """Cancel the batch"""
-        if self.state == "done":
-            raise UserError(_("Completed batches cannot be cancelled."))
-""
-        self.write({"state": "cancelled"})
-""
-        # Create NAID audit log entry""
-        self._create_naid_audit_log("batch_cancelled")
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Batch Cancelled"),
-                "message": _("Shredding batch has been cancelled."),
-                "type": "warning",
-            ""
-        ""
-""
-    def _create_naid_audit_log(self, event_type):""
-        """Create NAID compliance audit log entry"""
-        self.env["naid.audit.log"].create()
-            {}""
-                "name": _()
-                    "Batch %s: %s",
-                    self.name,""
-                    event_type.replace("_", " ").title(),
+
+    def _check_scheduled_date(self):
+            """Validate scheduled date is not in the past"""
+
+    def _compute_display_name(self):
+            """Compute display name with context information"""
+
+    def action_mark_picked(self):
+            """Mark item as picked"""
+            if self.status != "pending_pickup":
+                raise UserError(_("Only pending items can be marked as picked."))
+
+    def action_mark_verified(self):
+            """Mark item as verified"""
+            if self.status != "picked":
+                raise UserError(_("Only picked items can be verified."))
+
+    def action_mark_not_found(self):
+            """Mark item as not found"""
+            if self.status not in ["pending_pickup", "picked"]:
+                raise UserError()""
+                    _("Only pending or picked items can be marked as not found.")
                 ""
-                "event_type": event_type,
-                "resource_model": self._name,
-                "resource_id": self.id,
-                "user_id": self.env.user.id,
-                "description": _()
-                    "Shredding batch %s - %s",
-                    self.name,""
-                    event_type.replace("_", " "),
+
+    def action_confirm(self):
+            """Confirm item for pickup""":
+            if self.status != "draft":
+                raise UserError(_("Only draft items can be confirmed."))
+
+    def action_reset_to_draft(self):
+            """Reset item to draft status"""
+            if self.status == "verified":
+                raise UserError(_("Verified items cannot be reset to draft."))
+
+    def _create_naid_audit_log(self, event_type):
+            """Create NAID compliance audit log entry"""
+            self.env["naid.audit.log"].create()
+                {}""
+                    "name": _()
+                        "Picklist Item %s: %s",
+                        self.name,""
+                        event_type.replace("_", " ").title(),
+                    ""
+                    "event_type": event_type,
+                    "resource_model": self._name,
+                    "resource_id": self.id,
+                    "user_id": self.env.user.id,
+                    "description": _()
+                        "Picklist item %s - %s",
+                        self.name,""
+                        event_type.replace("_", " "),
+                    ""
+                    "timestamp": fields.Datetime.now(),
                 ""
-                "timestamp": fields.Datetime.now(),
             ""
-        ""
-""
-    # ============================================================================""
-        # VALIDATION METHODS""
-    # ============================================================================""
-    @api.constrains("scheduled_date")
-    def _check_scheduled_date(self):""
-        """Validate scheduled date is not in the past"""
-"""                raise ValidationError(_("Scheduled date cannot be in the past."))"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-    _name = "shredding.picklist.item"
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "shredding.picklist.item"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shredding.picklist.item"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "Shredding Picklist Item"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "sequence, name"
-    _rec_name = "display_name"
-""
-        # ============================================================================""
-    # CORE IDENTIFICATION FIELDS""
-        # ============================================================================""
-    name = fields.Char(""
-        string="Item Name",
-        required=True,""
-        tracking=True,""
-        index=True,""
-        help="Name of the item to be picked",
-    ""
-    display_name = fields.Char(""
-        string="Display Name",
-        compute="_compute_display_name",
-        store=True,""
-        help="Computed display name with context",
-    ""
-    sequence = fields.Integer(""
-        string="Sequence", default=10, help="Order sequence for picking":
-    ""
-""
-        # ============================================================================""
-    # RELATIONSHIP FIELDS""
-        # ============================================================================""
-    batch_id = fields.Many2one(""
-        "shredding.inventory.batch",
-        string="Batch",
-        ondelete="cascade",
-        required=True,""
-        help="Related shredding batch",
-    ""
-    container_id = fields.Many2one(""
-        "records.container", string="Container", help="Related container record"
-    ""
-    document_id = fields.Many2one(""
-        "records.document", string="Document", help="Related document record"
-    ""
-    shredding_service_id = fields.Many2one(""
-        "shredding.service",
-        string="Shredding Service",
-        help="Related shredding service",
-    ""
-    location_id = fields.Many2one(""
-        "records.location", string="Location", help="Storage location of the item"
-    ""
-""
-        # ============================================================================""
-    # PICKING DETAILS""
-        # ============================================================================""
-    picked_by_id = fields.Many2one(""
-        "res.users", string="Picked By", help="User who picked this item"
-    ""
-    picked_date = fields.Datetime(""
-        string="Picked Date", help="Date and time when item was picked"
-    ""
-    verified_by_id = fields.Many2one(""
-        "res.users", string="Verified By", help="User who verified the pick"
-    ""
-    verified_date = fields.Datetime(""
-        string="Verified Date", help="Date and time when pick was verified"
-    ""
-""
-        # ============================================================================""
-    # STATUS TRACKING""
-        # ============================================================================""
-    ,""
-    status = fields.Selection(""
-        [)""
-            ("draft", "Draft"),
-            ("pending_pickup", "Pending Pickup"),
-            ("picked", "Picked"),
-            ("verified", "Verified"),
-            ("not_found", "Not Found"),
-            ("cancelled", "Cancelled"),
-        ""
-        string="Status",
-        default="draft",
-        tracking=True,""
-        help="Current status of the item",
-    ""
-    priority = fields.Selection(""
-        [("low", "Low"), ("normal", "Normal"), ("high", "High"), ("urgent", "Urgent")), string="Priority",
-        default="normal",
-        help="Priority level for picking",:
-    ""
-""
-        # ============================================================================""
-    # ADDITIONAL FIELDS""
-        # ============================================================================""
-    notes = fields.Text(string="Notes",,
-    help="Additional notes about this item"),
-    picking_instructions = fields.Text(""
-        string="Picking Instructions", help="Special instructions for picking this item":
-    ""
-    expected_location = fields.Char(""
-        string="Expected Location", help="Expected location code for this item":
-    ""
-    barcode = fields.Char(string="Barcode",,
-    help="Item barcode for scanning"):
-        # ============================================================================""
-    # MAIL THREAD FRAMEWORK FIELDS (REQUIRED)""
-        # ============================================================================""
-    activity_ids = fields.One2many(""
-        "mail.activity", "res_id", string="Activities"
-    ""
-    message_follower_ids = fields.One2many(""
-        "mail.followers", "res_id", string="Followers"
-    ""
-    message_ids = fields.One2many("mail.message", "res_id",,
-    string="Messages")
-""
-        # ============================================================================""
-    # COMPUTE METHODS""
-        # ============================================================================""
-    @api.depends("name", "container_id", "document_id")
-    def _compute_display_name(self):""
-        """Compute display name with context information"""
-"""                record.display_name = _("%s (Container: %s)", record.name, record.container_id.name)
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-                record.display_name = _("%s (Document: %s)", record.name, record.document_id.name)
-            else:""
-                record.display_name = record.name or _("New Item")
-""
-    # ============================================================================ """"
-        # ACTION METHODS""""""
-    # ============================================================================ """"
-    def action_mark_picked(self):""""""
-        """Mark item as picked"""
-        if self.status != "pending_pickup":
-            raise UserError(_("Only pending items can be marked as picked."))
-""
-        self.write()""
-            {}""
-                "status": "picked",
-                "picked_by_id": self.env.user.id,
-                "picked_date": fields.Datetime.now(),
-            ""
-        ""
-""
-        # Create NAID audit log entry""
-        self._create_naid_audit_log("item_picked")
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Item Picked"),
-                "message": _("Item has been marked as picked successfully."),
-                "type": "success",
-            ""
-        ""
-""
-    def action_mark_verified(self):""
-        """Mark item as verified"""
-        if self.status != "picked":
-            raise UserError(_("Only picked items can be verified."))
-""
-        self.write()""
-            {}""
-                "status": "verified",
-                "verified_by_id": self.env.user.id,
-                "verified_date": fields.Datetime.now(),
-            ""
-        ""
-""
-        # Create NAID audit log entry""
-        self._create_naid_audit_log("item_verified")
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Item Verified"),
-                "message": _("Item has been verified successfully."),
-                "type": "success",
-            ""
-        ""
-""
-    def action_mark_not_found(self):""
-        """Mark item as not found"""
-        if self.status not in ["pending_pickup", "picked"):
-            raise UserError()""
-                _("Only pending or picked items can be marked as not found.")
-            ""
-""
-        self.write({"status": "not_found"})
-""
-        # Create NAID audit log entry""
-        self._create_naid_audit_log("item_not_found")
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Item Not Found"),
-                "message": _("Item has been marked as not found."),
-                "type": "warning",
-            ""
-        ""
-""
-    def action_confirm(self):""
-        """Confirm item for pickup"""
-        if self.status != "draft":
-            raise UserError(_("Only draft items can be confirmed."))
-""
-        self.write({"status": "pending_pickup"})
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Item Confirmed"),
-                "message": _("Item has been confirmed for pickup."),:
-                "type": "success",
-            ""
-        ""
-""
-    def action_reset_to_draft(self):""
-        """Reset item to draft status"""
-        if self.status == "verified":
-            raise UserError(_("Verified items cannot be reset to draft."))
-""
-        self.write()""
-            {}""
-                "status": "draft",
-                "picked_by_id": False,
-                "picked_date": False,
-                "verified_by_id": False,
-                "verified_date": False,
-            ""
-        ""
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Item Reset"),
-                "message": _("Item has been reset to draft status."),
-                "type": "info",
-            ""
-        ""
-""
-    def _create_naid_audit_log(self, event_type):""
-        """Create NAID compliance audit log entry"""
-        self.env["naid.audit.log"].create()
-            {}""
-                "name": _()
-                    "Picklist Item %s: %s",
-                    self.name,""
-                    event_type.replace("_", " ").title(),
-                ""
-                "event_type": event_type,
-                "resource_model": self._name,
-                "resource_id": self.id,
-                "user_id": self.env.user.id,
-                "description": _()
-                    "Picklist item %s - %s",
-                    self.name,""
-                    event_type.replace("_", " "),
-                ""
-                "timestamp": fields.Datetime.now(),
-            ""
-        ""
-""
-    # ============================================================================""
-        # VALIDATION METHODS""
-    # ============================================================================""
-    @api.constrains("picked_date", "verified_date")
-    def _check_date_sequence(self):""
-        """Validate that verified date is after picked date"""
-""""
-""""
-"""                raise ValidationError(_("Verified date cannot be before picked date."))"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-""""
-""""
-""""
-""
-    @api.constrains("container_id", "document_id")
-    def _check_container_or_document(self):""
-        """Validate that either container or document is specified"""
-""""
-""""
-"""                    _("Either container or document must be specified.")"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-))))))))))))))))))))))))))))))""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-"""
-"""
+
+    def _check_date_sequence(self):
+            """Validate that verified date is after picked date"""
+
+    def _check_container_or_document(self):
+            """Validate that either container or document is specified"""

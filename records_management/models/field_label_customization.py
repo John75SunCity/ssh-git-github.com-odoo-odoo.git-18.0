@@ -1,901 +1,171 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from odoo import models, fields, api, _
-    from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError
 
-    class FieldLabelCustomization(models.Model):
-    _name = "field.label.customization"
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "field.label.customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "Field Label Customization"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name desc"
-    _rec_name = "name"
-""
-        # ============================================================================""
-    # CORE IDENTIFICATION FIELDS""
-        # ============================================================================""
-    name = fields.Char(string="Name", required=True, tracking=True,,
-    index=True),""
-    description = fields.Text(""
-        string="Description", help="Description of this field label customization set"
-    ""
-    company_id = fields.Many2one(""
-        "res.company", string="Company", default=lambda self: self.env.company
-    ""
-    user_id = fields.Many2one(""
-        "res.users",
-        string="Assigned User",
-        default=lambda self: self.env.user,""
-        tracking=True,""
-    ""
-    active = fields.Boolean(string="Active",,
-    default=True),""
-    sequence = fields.Integer(string="Sequence",,
-    default=10)""
-""
-        # ============================================================================""
-    # STATE MANAGEMENT""
-        # ============================================================================""
-    state = fields.Selection(""
-        [)""
-            ("draft", "Draft"),
-            ("active", "Active"),
-            ("inactive", "Inactive"),
-            ("archived", "Archived"),
-        ""
-        string="Status",
-        default="draft",
-        tracking=True,""
-    ""
-""
-    priority = fields.Integer(""
-        string="Priority",
-        default=50,""
-        help="Priority level (1-100, lower,"
-    numbers = higher priority)","
-    ""
-""
-        # ============================================================================""
-    # CUSTOMIZATION SPECIFICATIONS""
-        # ============================================================================""
-    model_name = fields.Char(string="Model Name",,
-    required=True),""
-    field_name = fields.Char(string="Field Name",,
-    required=True),""
-    original_label = fields.Char(string="Original Label"),
-    custom_label = fields.Char(string="Custom Label",,
-    required=True)""
-""
-        # Label configuration""
-    label_template = fields.Selection(""
-        [)""
-            ("standard", "Standard"),
-            ("verbose", "Verbose"),
-            ("abbreviated", "Abbreviated"),
-            ("technical", "Technical"),
-        ""
-        string="Label Template",
-        default="standard",
-    ""
-""
-    label_language = fields.Selection(""
-        [("en", "English"), ("es", "Spanish"), ("fr", "French")), string="Language",
-        default="en",
-    ""
-""
-    label_size = fields.Selection(""
-        [("small", "Small"), ("medium", "Medium"), ("large", "Large")), string="Label Size",
-        default="medium",
-    ""
-""
-        # ============================================================================""
-    # SCOPE AND APPLICATION""
-        # ============================================================================""
-    scope = fields.Selection(""
-        [)""
-            ("global", "Global"),
-            ("company", "Company"),
-            ("user", "User Specific"),
-            ("department", "Department"),
-        ""
-        string="Scope",
-        default="company",
-    ""
-""
-    department_ids = fields.Many2many("hr.department",,
-    string="Departments"),
-    user_ids = fields.Many2many("res.users",,
-    string="Specific Users")
-""
-        # ============================================================================""
-    # COMPLIANCE AND INDUSTRY""
-        # ============================================================================""
-    industry_type = fields.Selection(""
-        [)""
-            ("healthcare", "Healthcare"),
-            ("finance", "Finance"),
-            ("legal", "Legal"),
-            ("manufacturing", "Manufacturing"),
-            ("education", "Education"),
-            ("government", "Government"),
-            ("generic", "Generic"),
-        ""
-        string="Industry Type",
-        default="generic",
-    ""
-""
-    compliance_framework = fields.Selection(""
-        [)""
-            ("hipaa", "HIPAA"),
-            ("gdpr", "GDPR"),
-            ("sox", "SOX"),
-            ("iso27001", "ISO 27001"),
-            ("naid", "NAID AAA"),
-            ("custom", "Custom"),
-        ""
-        string="Compliance Framework",
-    ""
-""
-    security_classification = fields.Selection(""
-        [)""
-            ("public", "Public"),
-            ("internal", "Internal"),
-            ("confidential", "Confidential"),
-            ("restricted", "Restricted"),
-        ""
-        string="Security Classification",
-        default="internal",
-    ""
-""
-        # ============================================================================""
-    # CONTAINER/INVENTORY FIELD LABELS (Customer Customizable)""
-        # ============================================================================""
-    label_container_number = fields.Char(""
-        string="Container Number Label",
-        default="Container Number",
-        help="Custom label for container/box number field",:
-            pass""
-    ""
-    label_item_description = fields.Char(""
-        string="Item Description Label",
-        default="Item Description",
-        help="Custom label for item description field",:
-    ""
-    label_content_description = fields.Char(""
-        string="Content Description Label",
-        default="Content Description",
-        help="Custom label for content description field",:
-    ""
-    label_date_from = fields.Char(""
-        string="Date From Label",
-        default="Date From",
-        help="Custom label for start date field",:
-    ""
-    label_date_to = fields.Char(""
-        string="Date To Label",
-        default="Date To",
-        help="Custom label for end date field",:
-    ""
-    label_record_type = fields.Char(""
-        string="Record Type Label",
-        default="Record Type",
-        help="Custom label for record type classification field",:
-    ""
-    label_confidentiality = fields.Char(""
-        string="Confidentiality Label",
-        default="Confidentiality",
-        help="Custom label for confidentiality/security level field",:
-    ""
-    label_project_code = fields.Char(""
-        string="Project Code Label",
-        default="Project Code",
-        help="Custom label for project/cost center code field",:
-    ""
-    label_client_reference = fields.Char(""
-        string="Client Reference Label",
-        default="Client Reference",
-        help="Custom label for client reference/matter number field",:
-    ""
-    label_authorized_by = fields.Char(""
-        string="Authorized By Label",
-        default="Authorized By",
-        help="Custom label for authorization/approval field",:
-    ""
-    label_created_by_dept = fields.Char(""
-        string="Created By Department Label",
-        default="Created By Department",
-        help="Custom label for originating department field",:
-    ""
-    label_box_number = fields.Char(""
-        string='Box Number Label', ""
-        default='Box Number',""
-        help="Custom label for box number field":
-    ""
-""
-        # ============================================================================""
-    # DEPLOYMENT & VERSIONING""
-        # ============================================================================""
-    ,""
-    deployment_status = fields.Selection(""
-        [)""
-            ("pending", "Pending"),
-            ("deployed", "Deployed"),
-            ("failed", "Failed"),
-            ("rolled_back", "Rolled Back"),
-        ""
-        string="Deployment Status",
-        default="pending",
-        tracking=True,""
-    ""
-""
-    version = fields.Char(string="Version",,
-    default="1.0"),
-    deployment_date = fields.Datetime(string="Deployment Date"),
-    rollback_date = fields.Datetime(string="Rollback Date")
-""
-        # ============================================================================""
-    # VALIDATION & TESTING""
-        # ============================================================================""
-    validation_rules = fields.Text(string="Validation Rules"),
-    test_results = fields.Text(string="Test Results"),
-    approval_required = fields.Boolean(string="Approval Required",,
-    default=False),""
-    approved_by_id = fields.Many2one("res.users",,
-    string="Approved By"),
-    approval_date = fields.Datetime(string="Approval Date")
-""
-        # ============================================================================""
-    # BATCH-GENERATED FIELDS (From Ultimate Batch Fixer)""
-        # ============================================================================""
-    partner_id = fields.Many2one("res.partner", string="Customer",,
-    tracking=True),""
-    department_id = fields.Many2one("hr.department", string="Department",,
-    tracking=True)""
-""
-        # ============================================================================""
-    # RELATIONSHIP FIELDS""
-        # ============================================================================""
-    # Mail framework fields""
-    activity_ids = fields.One2many(""
-        "mail.activity", "res_id", string="Activities"
-    ""
-    message_follower_ids = fields.One2many(""
-        "mail.followers", "res_id", string="Followers"
-    ""
-    message_ids = fields.One2many("mail.message", "res_id",,
-    string="Messages")
-""
-        # ============================================================================""
-    # COMPUTED FIELDS""
-        # ============================================================================""
-    @api.depends("deployment_status", "deployment_date")
-    def _compute_is_deployed(self):""
-        for record in self:""
-            record.is_deployed = ()""
-                record.deployment_status == "deployed" and record.deployment_date
-            ""
-""
-    @api.depends("model_name", "field_name", "custom_label")
-    def _compute_full_customization_name(self):""
-        for record in self:""
-            if record.model_name and record.field_name:""
-                record.full_customization_name = _("%s.%s: %s", 
-                    record.model_name, record.field_name, record.custom_label or "Custom Label"
+
+class FieldLabelCustomization(models.Model):
+    _name = 'field.label.customization'
+    _description = 'Field Label Customization'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'name desc'
+    _rec_name = 'name'
+
+    # ============================================================================
+    # FIELDS
+    # ============================================================================
+    name = fields.Char(string='Name', required=True, tracking=True)
+    description = fields.Text()
+    company_id = fields.Many2one()
+    user_id = fields.Many2one()
+    active = fields.Boolean(string='Active')
+    sequence = fields.Integer(string='Sequence')
+    state = fields.Selection()
+    priority = fields.Integer()
+    model_name = fields.Char(string='Model Name')
+    field_name = fields.Char(string='Field Name')
+    original_label = fields.Char(string='Original Label')
+    custom_label = fields.Char(string='Custom Label')
+    label_template = fields.Selection()
+    label_language = fields.Selection()
+    label_size = fields.Selection()
+    scope = fields.Selection()
+    department_ids = fields.Many2many('hr.department')
+    user_ids = fields.Many2many('res.users')
+    industry_type = fields.Selection()
+    compliance_framework = fields.Selection()
+    security_classification = fields.Selection()
+    label_container_number = fields.Char()
+    label_item_description = fields.Char()
+    label_content_description = fields.Char()
+    label_date_from = fields.Char()
+    label_date_to = fields.Char()
+    label_record_type = fields.Char()
+    label_confidentiality = fields.Char()
+    label_project_code = fields.Char()
+    label_client_reference = fields.Char()
+    label_authorized_by = fields.Char()
+    label_created_by_dept = fields.Char()
+    label_box_number = fields.Char()
+    deployment_status = fields.Selection()
+    version = fields.Char(string='Version')
+    deployment_date = fields.Datetime(string='Deployment Date')
+    rollback_date = fields.Datetime(string='Rollback Date')
+    validation_rules = fields.Text(string='Validation Rules')
+    test_results = fields.Text(string='Test Results')
+    approval_required = fields.Boolean(string='Approval Required')
+    approved_by_id = fields.Many2one('res.users')
+    approval_date = fields.Datetime(string='Approval Date')
+    partner_id = fields.Many2one('res.partner', string='Customer')
+    department_id = fields.Many2one('hr.department', string='Department')
+    activity_ids = fields.One2many()
+    message_follower_ids = fields.One2many()
+    message_ids = fields.One2many('mail.message')
+    is_deployed = fields.Boolean()
+    full_customization_name = fields.Char()
+    available_fields = fields.Text()
+    customer_id = fields.Many2one('res.partner', string='Customer')
+    action_apply_corporate_preset = fields.Char()
+
+    # ============================================================================
+    # METHODS
+    # ============================================================================
+    def _compute_is_deployed(self):
+            for record in self:""
+                record.is_deployed = ()""
+                    record.deployment_status == "deployed" and record.deployment_date
                 ""
-            else:""
-                record.full_customization_name = record.name or _("Incomplete Configuration")
-""
-    @api.depends("model_name")
-    def _compute_available_fields(self):""
-        """Compute available fields for the selected model"""
-"""
-"""                        if not field_name.startswith("_") and field_name not in [:]"
-                            "id",
-                            "create_date",
-                            "write_date",
-                            "create_uid",
-                            "write_uid",
-                        ""
-                            fields_list.append()""
-                                f"{field_name} ({field.string or field_name})"
-                            ""
-                    record.available_fields = "\n".join(sorted(fields_list))
-                except Exception""
-                    record.available_fields = "Invalid model selected"
-            else:""
-                record.available_fields = ()""
-                    "No model selected or model not in records_management"
-                ""
-""
-    is_deployed = fields.Boolean(compute="_compute_is_deployed",,
-    string="Is Deployed"),
-    full_customization_name = fields.Char(""
-        compute="_compute_full_customization_name", string="Full Customization Name"
-    ""
-    available_fields = fields.Text(""
-        compute="_compute_available_fields",
-        string="Available Fields",
-        help="List of fields available for customization in the selected model",:
-    ""
-""
-        # ============================================================================""
-    customer_id = fields.Many2one('res.partner', string='Customer',,""
-    domain=[('is_company', '= """', True)))"
-    action_apply_corporate_preset = fields.Char(string='""""
-"""
-        """Get all models that belong to records_management module"""
-""""
-"""
-"""                if hasattr(model, "_module") and model._module == "records_management":"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-                elif model_name.startswith()""
-                    ("records.", "naid.", "customer.", "portal.")
-                ""
-                    # Additional check for records management related models:""
-                    records_models.append(model_name)""
-            except Exception""
-                continue""
-        return sorted(records_models)""
-""
-    def _is_records_management_model(self, model_name):""
-        """Check if a model belongs to records_management module"""
-""""
-"""            if hasattr(model, "_module") and model._module == "records_management":"
-                return True""
-""
-            # Additional check for records management related models by naming convention:""
-            if model_name.startswith(:)""
-                ("records.", "naid.", "customer.", "portal.", "field.label")
-            ""
-                return True""
-""
-            return False""
-        except Exception""
-            return False""
-""
-    def _check_protected_search_field(self, model_name, field_name):""
-        """Check if a field is protected from customization (critical for search functionality)"""
-"""            "records.container": {}"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-                # Core search functionality fields""
-                "alpha_range_start",
-                "alpha_range_end",
-                "alpha_range_display",
-                "content_date_from",
-                "content_date_to",
-                "content_date_range_display",
-                "primary_content_type",
-                "search_keywords",
-                "customer_sequence_start",
-                "customer_sequence_end",
-                # Core identification fields""
-                "name",
-                "barcode",
-                "container_number",
-                # Critical search database fields""
-                "partner_id",
-                "location_id",
-                "state",
-            ""
-            "records.document": {}
-                # Document search fields""
-                "name",
-                "document_name",
-                "barcode",
-                "partner_id",
-                "container_id",
-                "document_type_id",
-                # Content classification for search:""
-                "content_description",
-                "keywords",
-            ""
-            "records.location": {}
-                # Location search fields""
-                "name",
-                "barcode",
-                "location_code",
-                "warehouse_id",
-                "parent_location_id",
-            ""
-            # Add other models with search-critical fields""
-            "portal.request": {}
-                "name",
-                "partner_id",
-                "state",
-                "request_type",
-            ""
-        ""
-""
-        return field_name in protected_fields.get(model_name, set())""
-""
-    @api.model""
-    def get_model_field_options(self):""
-        """Return available models and their fields for selection"""
-""""
-"""                    if not field_name.startswith("_") and field_name not in [:]
-                        "id",
-                        "create_date",
-                        "write_date",
-                        "create_uid",
-                        "write_uid",
+
+    def _compute_full_customization_name(self):
+            for record in self:""
+                if record.model_name and record.field_name:""
+                    record.full_customization_name = _("%s.%s: %s",
+                        record.model_name, record.field_name, record.custom_label or "Custom Label"
                     ""
-                        fields_info[field_name] = {}""
-                            "string": field.string or field_name,
-                            "type": field.type,
-                            "help": field.help or "",
-                        ""
-                result[model_name] = {}""
-                    "description": getattr(model, "_description", model_name),
-                    "fields": fields_info,
-                ""
-            except Exception""
-                continue""
-        return result""
-""
-    # ============================================================================ """"
-        # VALIDATION METHODS"""""
-    # ============================================================================ """"
-    @api.constrains(""""model_name")
-    def _check_model_in_records_management(self):""
-        """Ensure the model belongs to records_management module"""
-""""
-"""
-"""                    model_list = available_models[:10] + ["..."] if available_models else []:"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-                    raise ValidationError()""
-                        _("Model '%s' is not part of the records_management module.\nAvailable models:\n%s",
-                            record.model_name,""
-                            "\n".join(model_list)
-                        ""
-                    ""
-""
-    @api.constrains("model_name", "field_name")
-    def _check_field_exists(self):""
-        for record in self:""
-            if record.model_name and record.field_name:""
-                # First check if model is in records_management:""
-                if not record._is_records_management_model(record.model_name):""
-                    raise ValidationError()""
-                        _("Model '%s' is not part of the records_management module.", record.model_name)
-                    ""
-""
-                # Check if field is protected from customization:""
-                if record._check_protected_search_field(:)""
-                    record.model_name, record.field_name""
-                ""
-                    raise ValidationError()""
-                        _("Field '%s' in model '%s' is protected and cannot be customized. This field is critical for the intelligent search functionality.",:)
-                            record.field_name, record.model_name""
-                        ""
-                    ""
-""
-                # Then validate that the field exists""
-                try:""
-                    if record.model_name not in self.env.registry:""
+                else:""
+                    record.full_customization_name = record.name or _("Incomplete Configuration")
+
+    def _compute_available_fields(self):
+            """Compute available fields for the selected model""":
+
+    def _is_records_management_model(self, model_name):
+            """Check if a model belongs to records_management module""":
+
+    def _check_protected_search_field(self, model_name, field_name):
+            """Check if a field is protected from customization (critical for search functionality)""":
+
+    def get_model_field_options(self):
+            """Return available models and their fields for selection""":
+
+    def _check_model_in_records_management(self):
+            """Ensure the model belongs to records_management module"""
+
+    def _check_field_exists(self):
+            for record in self:""
+                if record.model_name and record.field_name:""
+                    # First check if model is in records_management:""
+                    if not record._is_records_management_model(record.model_name):""
                         raise ValidationError()""
-                            _("Model '%s' does not exist.", record.model_name)
+                            _("Model '%s' is not part of the records_management module.", record.model_name)
                         ""
-""
-                    model = self.env[record.model_name]""
-                    if record.field_name not in model._fields:""
-                        # Get available fields for helpful error message:""
-                        available_fields = []""
-                            f""
-                            for f in model._fields.keys(:""
-                            if not f.startswith("_"):
-                            and f""
-                            not in []""
-                                "id",
-                                "create_date",
-                                "write_date",
-                                "create_uid",
-                                "write_uid",
-                            ""
-                        ""
-                        field_list = sorted(available_fields)[:20]""
-                        if available_fields:""
-                            field_list.append("...")
-                        raise ValidationError()""
-                            _("Field '%s' does not exist in model '%s'.\nAvailable fields:\n%s",
-                                record.field_name,""
-                                record.model_name,""
-                                "\n".join(field_list)
-                            ""
-                        ""
-                except Exception""
-                    raise ValidationError()""
-                        _("Model '%s' does not exist.", record.model_name)
-                    ""
-""
-    @api.constrains("custom_label")
-    def _check_custom_label_length(self):""
-        for record in self:""
-            if record.custom_label and len(record.custom_label) > 100:""
-                raise ValidationError(_("Custom label cannot exceed 100 characters."))
-""
-    @api.onchange("model_name")
-    def _onchange_model_name(self):""
-        """Clear field_name when model changes and show available fields"""
-""""
-""""
-"""                    "warning": {}"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-                        "title": _("Invalid Model"),
-                        "message": _()
-                            "The selected model is not part of the records_management module. "
-                            "Please select a valid records_management model."
-                        ""
-                    ""
-                ""
-""
-    @api.onchange("field_name")
-    def _onchange_field_name(self):""
-        """Auto-populate original_label when field is selected"""
-""""
-"""
-"""    def action_apply_corporate_preset(self):"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-        """Apply Corporate Preset - Action method"""
-""""
-""""
-"""            "type": "ir.actions.act_window","
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-            "name": _("Apply Corporate Preset"),
-            "res_model": "field.label.customization",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        ""
-""
-    def action_apply_financial_preset(self):""
-        """Apply Financial Preset - Action method"""
-""""
-"""
-"""            "type": "ir.actions.act_window","
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            "name": _("Apply Financial Preset"),
-            "res_model": "field.label.customization",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        ""
-""
-    def action_apply_healthcare_preset(self):""
-        """Apply Healthcare Preset - Action method"""
-""""
-""""
-"""            "type": "ir.actions.act_window","
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-            "name": _("Apply Healthcare Preset"),
-            "res_model": "field.label.customization",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        ""
-""
-    def action_apply_legal_preset(self):""
-        """Apply Legal Preset - Action method"""
-""""
-"""
-"""            "type": "ir.actions.act_window","
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            "name": _("Apply Legal Preset"),
-            "res_model": "field.label.customization",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        ""
-""
-    def action_restore_defaults(self):""
-        """Restore default settings - Action method"""
-""""
-""""
-"""            "type": "ir.actions.act_window","
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-            "name": _("Restore Default Settings"),
-            "res_model": "field.label.customization",
-            "view_mode": "form",
-            "target": "new",
-            "context": self.env.context,
-        ""
-        """_summary_"""
-""""
+
+    def _check_custom_label_length(self):
+            for record in self:""
+                if record.custom_label and len(record.custom_label) > 100:""
+                    raise ValidationError(_("Custom label cannot exceed 100 characters."))
+
+    def _onchange_model_name(self):
+            """Clear field_name when model changes and show available fields"""
+
+    def _onchange_field_name(self):
+            """Auto-populate original_label when field is selected"""
+
+    def action_apply_financial_preset(self):
+            """Apply Financial Preset - Action method"""
+
+    def action_apply_healthcare_preset(self):
+            """Apply Healthcare Preset - Action method"""
+
+    def action_apply_legal_preset(self):
+            """Apply Legal Preset - Action method"""
+
+    def action_restore_defaults(self):
+            """Restore default settings - Action method"""

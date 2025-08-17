@@ -1,304 +1,240 @@
-# -*- coding: utf-8 -*-
-
-Advanced Billing Module
-
-See RECORDS_MANAGEMENT_SYSTEM_MANUAL.md - Section 6: Advanced Billing Period Management Module
-for comprehensive documentation, business processes, and integration details.""":"
-    pass
-Author: Records Management System
-Version: 18.0.6.0.0
-License: LGPL-3
-
-
-# Standard Odoo imports with development environment handling
-try:
-    from odoo import api, fields, models, _
-    from odoo.exceptions import ValidationError
-except ImportError:
-    # Development environment fallback
-    api = fields = models = None
-    ValidationError = Exception
-    _ = lambda x, *args, **kwargs: x % args if args else x:
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 
 
 class AdvancedBilling(models.Model):
-    _name = "advanced.billing"
-    _description = "Advanced Billing"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name desc"
-    _rec_name = "name"
-
-        # ============================================================================
-    # CORE IDENTIFICATION FIELDS
-        # ============================================================================
-    name = fields.Char(string="Name", required=True, tracking=True,,
-    index=True),
-    company_id = fields.Many2one(
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,
-        required=True,
-
-    user_id = fields.Many2one(
-        "res.users",
-        string="User",
-        default=lambda self: self.env.user,
-        tracking=True,
-
-    active = fields.Boolean(string="Active",,
-    default=True)
-
-        # ============================================================================
-    # BILLING FIELDS
-        # ============================================================================
-    partner_id = fields.Many2one(
-        "res.partner", string="Customer", required=True, tracking=True
-
-    billing_period_id = fields.Many2one(
-        "records.advanced.billing.period",
-        string="Billing Period",
-        tracking=True,
-
-    currency_id = fields.Many2one(
-        "res.currency",
-        string="Currency",
-        default=lambda self: self.env.company.currency_id,
-        required=True,
-
-    invoice_id = fields.Many2one(
-        "account.move", string="Invoice", tracking=True
-
-    ,
-    payment_terms = fields.Selection(
-        [)
-            ("immediate", "Immediate Payment"),
-            ("net_15", "Net 15 Days"),
-            ("net_30", "Net 30 Days"),
-            ("net_45", "Net 45 Days"),
-            ("net_60", "Net 60 Days"),
-            ("custom", "Custom Terms"),
-
-        string="Payment Terms",
-        default="net_30",
-        tracking=True,
-
-
-        # ============================================================================
-    # STATE MANAGEMENT
-        # ============================================================================
-    state = fields.Selection(
-        [)
-            ("draft", "Draft"),
-            ("confirmed", "Confirmed"),
-            ("invoiced", "Invoiced"),
-            ("done", "Done"),
-            ("cancelled", "Cancelled"),
-
-        string="State",
-        default="draft",
-        tracking=True,
-
-
-        # ============================================================================
-    # RELATIONSHIP FIELDS
-        # ============================================================================
-    line_ids = fields.One2many(
-        "records.billing.line", "billing_id", string="Billing Lines"
-
-
-        # ============================================================================
-    # COMPUTED FIELDS
-        # ============================================================================
-    total_amount = fields.Monetary(
-        string="Total Amount",
-        compute="_compute_total_amount",
-        store=True,
-        currency_field="currency_id",
-
-
-        # ============================================================================
-    # MAIL FRAMEWORK FIELDS
-        # ============================================================================
-    activity_ids = fields.One2many(
-        "mail.activity", "res_id", string="Activities"
-
-    message_ids = fields.One2many(
-        "mail.message", "res_id", string="Messages"
-
-    message_follower_ids = fields.One2many(
-        "mail.followers", "res_id", string="Followers"
-
-    billing_line_ids = fields.Char(string="Billing Line Ids",,
-    help="Billing line items"),
-    billing_ids = fields.Char(string="Billing Ids",,
-    help="Related billing records"),
-    quantity = fields.Float(string="Quantity", default=1.0,,
-    help="Quantity"),
-    action_generate_invoice = fields.Char(string='Action Generate Invoice'),
-    action_generate_service_lines = fields.Char(string='Action Generate Service Lines'),
-    action_generate_storage_lines = fields.Char(string='Action Generate Storage Lines'),
-    amount = fields.Char(string='Amount'),
-    auto_generate_service_invoices = fields.Char(string='Auto Generate Service Invoices'),
-    auto_generate_storage_invoices = fields.Char(string='Auto Generate Storage Invoices'),
-    auto_send_invoices = fields.Char(string='Auto Send Invoices'),
-    billing_contact_ids = fields.One2many('billing.contact', 'advanced_billing_id',,
-    string='Billing Contact Ids'),
-    billing_day = fields.Char(string='Billing Day'),
-    billing_direction = fields.Char(string='Billing Direction'),
-    billing_profile_id = fields.Many2one('billing.profile',,
-    string='Billing Profile Id'),
-    billing_type = fields.Selection([), string='Billing Type')  # TODO: Define selection options
-    box_id = fields.Many2one('box',,
-    string='Box Id'),
-    button_box = fields.Char(string='Button Box'),
-    description = fields.Char(string='Description'),
-    email = fields.Char(string='Email'),
-    generate_monthly_billing = fields.Char(string='Generate Monthly Billing'),
-    invoice_date = fields.Date(string='Invoice Date'),
-    invoice_due_days = fields.Char(string='Invoice Due Days'),
-    payment_term_id = fields.Many2one('payment.term',,
-    string='Payment Term Id'),
-    period_end_date = fields.Date(string='Period End Date'),
-    period_start_date = fields.Date(string='Period Start Date'),
-    phone = fields.Char(string='Phone'),
-    prepaid_balance = fields.Char(string='Prepaid Balance'),
-    prepaid_discount_percent = fields.Float(string='Prepaid Discount Percent',,
-    digits=(12, 2))
-    prepaid_enabled = fields.Char(string='Prepaid Enabled'),
-    prepaid_months = fields.Char(string='Prepaid Months'),
-    primary_contact = fields.Char(string='Primary Contact'),
-    receive_service_invoices = fields.Char(string='Receive Service Invoices'),
-    receive_statements = fields.Char(string='Receive Statements'),
-    receive_storage_invoices = fields.Char(string='Receive Storage Invoices'),
-    res_model = fields.Char(string='Res Model'),
-    retrieval_work_order_id = fields.Many2one('retrieval.work.order',,
-    string='Retrieval Work Order Id'),
-    service_amount = fields.Float(string='Service Amount',,
-    digits=(12, 2))
-    service_billing_cycle = fields.Char(string='Service Billing Cycle'),
-    service_date = fields.Date(string='Service Date'),
-    service_line_ids = fields.One2many('service.line', 'advanced_billing_id',,
-    string='Service Line Ids'),
-    shredding_work_order_id = fields.Many2one('shredding.work.order',,
-    string='Shredding Work Order Id'),
-    storage_advance_months = fields.Char(string='Storage Advance Months'),
-    storage_amount = fields.Float(string='Storage Amount',,
-    digits=(12, 2))
-    storage_bill_in_advance = fields.Char(string='Storage Bill In Advance'),
-    storage_billing_cycle = fields.Char(string='Storage Billing Cycle'),
-    storage_line_ids = fields.One2many('storage.line', 'advanced_billing_id',,
-    string='Storage Line Ids'),
-    target = fields.Char(string='Target'),
-    toggle_active = fields.Boolean(string='Toggle Active',,
-    default=False),
-    type = fields.Selection([), string='Type')  # TODO: Define selection options
-    unit_price = fields.Float(string='Unit Price',,
-    digits=(12, 2))
-    view_mode = fields.Char(string='View Mode')
-
-        # ============================================================================
-    # COMPUTE METHODS
-        # ============================================================================
-    @api.depends("line_ids.price_total")
-    def _compute_total_amount(self):
-        for record in self:
-            record.total_amount = sum(record.line_ids.mapped("price_total"))
+    _name = 'advanced.billing'
+    _description = 'Advanced Billing'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'name desc'
+    _rec_name = 'name'
 
     # ============================================================================
-        # ACTION METHODS
+    # CORE IDENTIFICATION FIELDS
+    # ============================================================================
+    name = fields.Char(string='Name', required=True, tracking=True, index=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
+    user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
+    
+    # ============================================================================
+    # BUSINESS SPECIFIC FIELDS
+    # ============================================================================
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    billing_period_id = fields.Many2one('billing.period', string='Billing Period')
+    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
+    invoice_id = fields.Many2one('account.move', string='Generated Invoice', readonly=True)
+    
+    payment_terms = fields.Selection([
+        ('immediate', 'Immediate'),
+        ('15_days', '15 Days'),
+        ('30_days', '30 Days'),
+        ('45_days', '45 Days'),
+        ('60_days', '60 Days'),
+    ], string='Payment Terms', default='30_days')
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('invoiced', 'Invoiced'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', required=True, tracking=True)
+    
+    # Line relationships
+    line_ids = fields.One2many('advanced.billing.line', 'billing_id', string='Billing Lines')
+    service_line_ids = fields.One2many('advanced.billing.service.line', 'billing_id', string='Service Lines')
+    storage_line_ids = fields.One2many('advanced.billing.storage.line', 'billing_id', string='Storage Lines')
+    
+    # Financial fields
+    total_amount = fields.Monetary(string='Total Amount', currency_field='currency_id', compute='_compute_total_amount', store=True)
+    service_amount = fields.Float(string='Service Amount')
+    storage_amount = fields.Float(string='Storage Amount')
+    
+    # ============================================================================
+    # BILLING CONFIGURATION FIELDS
+    # ============================================================================
+    billing_type = fields.Selection([
+        ('service', 'Service Billing'),
+        ('storage', 'Storage Billing'),
+        ('combined', 'Combined Billing'),
+    ], string='Billing Type', default='combined')
+    
+    billing_day = fields.Integer(string='Billing Day', default=1, help='Day of month for billing')
+    
+    # Dates
+    invoice_date = fields.Date(string='Invoice Date')
+    period_start_date = fields.Date(string='Period Start Date')
+    period_end_date = fields.Date(string='Period End Date')
+    
+    # Contact information
+    email = fields.Char(string='Email')
+    phone = fields.Char(string='Phone')
+    primary_contact = fields.Char(string='Primary Contact')
+    
+    # Prepaid configuration
+    prepaid_enabled = fields.Boolean(string='Prepaid Enabled')
+    prepaid_balance = fields.Monetary(string='Prepaid Balance', currency_field='currency_id')
+    prepaid_discount_percent = fields.Float(string='Prepaid Discount %')
+    prepaid_months = fields.Integer(string='Prepaid Months')
+    
+    # Automation settings
+    auto_generate_service_invoices = fields.Boolean(string='Auto Generate Service Invoices')
+    auto_generate_storage_invoices = fields.Boolean(string='Auto Generate Storage Invoices')
+    auto_send_invoices = fields.Boolean(string='Auto Send Invoices')
+    
+    # Billing preferences
+    receive_service_invoices = fields.Boolean(string='Receive Service Invoices', default=True)
+    receive_statements = fields.Boolean(string='Receive Statements', default=True)
+    receive_storage_invoices = fields.Boolean(string='Receive Storage Invoices', default=True)
+    
+    # Work order relationships
+    retrieval_work_order_id = fields.Many2one('document.retrieval.work.order', string='Retrieval Work Order')
+    shredding_work_order_id = fields.Many2one('shredding.service', string='Shredding Work Order')
+    
+    # ============================================================================
+    # MAIL THREAD FRAMEWORK FIELDS
+    # ============================================================================
+    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
+    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
+    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('line_ids', 'line_ids.price_total', 'service_line_ids', 'service_line_ids.subtotal', 'storage_line_ids', 'storage_line_ids.subtotal')
+    def _compute_total_amount(self):
+        """Calculate total amount from all billing lines"""
+        for record in self:
+            line_total = sum(record.line_ids.mapped('price_total'))
+            service_total = sum(record.service_line_ids.mapped('subtotal'))
+            storage_total = sum(record.storage_line_ids.mapped('subtotal'))
+            record.total_amount = line_total + service_total + storage_total
+
+    # ============================================================================
+    # ACTION METHODS
     # ============================================================================
     def action_confirm(self):
         """Confirm billing"""
-
         self.ensure_one()
-        if self.state != "draft":
+        if self.state != 'draft':
             raise ValidationError(_("Only draft billing can be confirmed"))
-
-        self.write({"state": "confirmed"})
+        
+        if not self.line_ids and not self.service_line_ids and not self.storage_line_ids:
+            raise ValidationError(_("Cannot confirm billing without any lines"))
+        
+        self.write({'state': 'confirmed'})
         self.message_post(body=_("Advanced billing confirmed"))
 
     def action_generate_invoice(self):
-        """Generate invoice"""
-
+        """Generate invoice from billing lines"""
         self.ensure_one()
-        if self.state != "confirmed":
+        if self.state != 'confirmed':
             raise ValidationError(_("Only confirmed billing can be invoiced"))
-
-        # Create invoice from billing lines
-        invoice_vals = {}
+        
+        if not self.partner_id:
+            raise ValidationError(_("Customer is required to generate invoice"))
+        
+        # Prepare invoice lines
+        invoice_lines = []
+        for line in self.line_ids:
+            invoice_lines.append((0, 0, {
+                'product_id': line.product_id.id if line.product_id else False,
+                'name': line.name or line.description,
+                'quantity': line.quantity,
+                'price_unit': line.price_unit,
+                'tax_ids': [(6, 0, line.tax_ids.ids)] if line.tax_ids else False,
+            }))
+        
+        # Add service lines
+        for line in self.service_line_ids:
+            invoice_lines.append((0, 0, {
+                'name': _("Service: %s", line.name),
+                'quantity': 1,
+                'price_unit': line.subtotal,
+            }))
+        
+        # Add storage lines
+        for line in self.storage_line_ids:
+            invoice_lines.append((0, 0, {
+                'name': _("Storage: %s", line.name),
+                'quantity': 1,
+                'price_unit': line.subtotal,
+            }))
+        
+        # Create invoice
+        invoice_vals = {
             'partner_id': self.partner_id.id,
             'move_type': 'out_invoice',
             'currency_id': self.currency_id.id,
-            'invoice_line_ids': [(0, 0, {))}
-                'product_id': line.product_id.id,
-                'name': line.name,
-                'quantity': line.quantity,
-                'price_unit': line.price_unit,
-
-
-
+            'invoice_date': self.invoice_date or fields.Date.today(),
+            'invoice_line_ids': invoice_lines,
+        }
+        
         invoice = self.env['account.move'].create(invoice_vals)
-        self.write({)}
-            "state": "invoiced",
-            "invoice_id": invoice.id,
-
-
-        self.message_post(body=_("Invoice generated: %s") % invoice.name)
-
-        return {}
+        self.write({
+            'state': 'invoiced',
+            'invoice_id': invoice.id,
+        })
+        
+        self.message_post(body=_("Invoice generated: %s", invoice.name))
+        
+        return {
             'type': 'ir.actions.act_window',
             'name': _('Generated Invoice'),
             'res_model': 'account.move',
             'res_id': invoice.id,
             'view_mode': 'form',
             'target': 'current',
-
+        }
 
     def action_done(self):
         """Mark billing as done"""
-
         self.ensure_one()
-        if self.state != "invoiced":
+        if self.state != 'invoiced':
             raise ValidationError(_("Only invoiced billing can be marked as done"))
-
-        self.write({"state": "done"})
+        
+        self.write({'state': 'done'})
         self.message_post(body=_("Advanced billing completed"))
 
     def action_cancel(self):
         """Cancel billing"""
-
         self.ensure_one()
-        if self.state in ["invoiced", "done"]:
+        if self.state in ['invoiced', 'done']:
             raise ValidationError(_("Cannot cancel invoiced or completed billing"))
-
-        self.write({"state": "cancelled"})
+        
+        self.write({'state': 'cancelled'})
         self.message_post(body=_("Advanced billing cancelled"))
 
     # ============================================================================
-        # VALIDATION METHODS
+    # VALIDATION METHODS
     # ============================================================================
-    @api.constrains("total_amount")
+    @api.constrains('total_amount')
     def _check_total_amount(self):
+        """Validate total amount is not negative"""
         for record in self:
             if record.total_amount < 0:
                 raise ValidationError(_("Total amount cannot be negative"))
 
-    @api.depends('billing_line_ids', 'billing_line_ids.subtotal')
-    def _compute_subtotal(self):
-        """Calculate billing subtotal"""
+    @api.constrains('period_start_date', 'period_end_date')
+    def _check_period_dates(self):
+        """Validate period dates are logical"""
         for record in self:
-            record.subtotal = sum(record.billing_line_ids.mapped('subtotal'))
+            if record.period_start_date and record.period_end_date:
+                if record.period_end_date < record.period_start_date:
+                    raise ValidationError(_("Period end date cannot be before start date"))
 
-    @api.depends('billing_ids', 'billing_ids.total_amount')
-    def _compute_total(self):
-        """Calculate total from billing lines"""
+    @api.constrains('billing_day')
+    def _check_billing_day(self):
+        """Validate billing day is within valid range"""
         for record in self:
-            record.total_amount = sum(record.billing_ids.mapped('total_amount'))
+            if record.billing_day and (record.billing_day < 1 or record.billing_day > 31):
+                raise ValidationError(_("Billing day must be between 1 and 31"))
 
-    @api.depends('quantity', 'unit_price')
-    def _compute_line_total(self):
-        """Calculate line total"""
+    @api.constrains('prepaid_discount_percent')
+    def _check_prepaid_discount(self):
+        """Validate prepaid discount percentage"""
         for record in self:
-            record.line_total = (record.quantity or 0.0) * (record.unit_price or 0.0)
+            if record.prepaid_discount_percent and (record.prepaid_discount_percent < 0 or record.prepaid_discount_percent > 100):
+                raise ValidationError(_("Prepaid discount percentage must be between 0 and 100"))
 
-    """"))))))))

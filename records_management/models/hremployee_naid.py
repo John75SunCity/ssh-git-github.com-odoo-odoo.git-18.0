@@ -1,630 +1,110 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    HR Employee NAID Compliance Extension Module
-    This module extends HR Employee functionality with NAID (National Association for)
-Information Destruction
-    pass
-records management access controls for the Records Management System.:
-    import datetime
-    from odoo import models, fields, api, _
-    from odoo.exceptions import ValidationError
-
-    class HREmployeeNAID(models.Model):
-
-        HR Employee NAID Compliance Extension
-
-    Extends hr.employee with NAID security clearance levels, records management
-        access permissions, and compliance tracking for document destruction services.:
+from odoo.exceptions import ValidationError
 
 
-    _name = "hr.employee.naid"
+class HREmployeeNAID(models.Model):
+    _name = 'hr.employee.naid'
+    _description = 'HR Employee NAID Compliance Extension'
+    _inherit = '['mail.thread', 'mail.activity.mixin']""'
+    _order = 'name'
+    _rec_name = 'name'
 
-"
-    _description = "hr.employee.naid"
+    # ============================================================================
+    # FIELDS
+    # ============================================================================
+    name = fields.Char()
+    company_id = fields.Many2one()
+    user_id = fields.Many2one()
+    active = fields.Boolean()
+    employee_id = fields.Many2one()
+    naid_security_clearance = fields.Selection()
+    clearance_date = fields.Date()
+    clearance_expiry = fields.Date()
+    background_check_completed = fields.Boolean()
+    training_completed = fields.Boolean()
+    records_access_level = fields.Selection()
+    records_department_ids = fields.Many2many()
+    can_witness_destruction = fields.Boolean()
+    can_transport_documents = fields.Boolean()
+    state = fields.Selection()
+    description = fields.Text()
+    notes = fields.Text()
+    compliance_notes = fields.Text()
+    profile_date = fields.Date()
+    last_review_date = fields.Date()
+    next_review_date = fields.Date()
+    activity_ids = fields.One2many()
+    message_follower_ids = fields.One2many()
+    message_ids = fields.One2many()
+    display_name = fields.Char()
 
-"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-""
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "hr.employee.naid"
-    ""
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "HR Employee NAID Compliance Extension"
-    _inherit = ['mail.thread', 'mail.activity.mixin']""
-    _order = "name"
-    _rec_name = "name"
-""
-        # ============================================================================""
-    # CORE IDENTIFICATION FIELDS""
-        # ============================================================================""
-""
-    name = fields.Char(""
-        string="Employee NAID Profile",
-        required=True,""
-        tracking=True,""
-        help="NAID compliance profile name for this employee":
-    ""
-    company_id = fields.Many2one(""
-        'res.company',""
-        string="Company",
-        default=lambda self: self.env.company,""
-        required=True""
-    ""
-    user_id = fields.Many2one(""
-        'res.users',""
-        string="User",
-        default=lambda self: self.env.user,""
-        tracking=True""
-    ""
-    active = fields.Boolean(""
-        string="Active",
-        default=True,""
-        help="Uncheck to archive this NAID profile"
-    ""
-""
-        # ============================================================================""
-    # EMPLOYEE RELATIONSHIP""
-        # ============================================================================""
-""
-    employee_id = fields.Many2one(""
-        'hr.employee',""
-        string="Employee",
-        required=True,""
-        ondelete='cascade',""
-        tracking=True,""
-        help="Related HR employee record"
-    ""
-""
-        # ============================================================================""
-    # NAID COMPLIANCE FIELDS""
-        # ============================================================================""
-""
-    ,""
-    naid_security_clearance = fields.Selection([))""
-        ('none', 'No Clearance'),""
-        ('basic', 'Basic Security'),""
-        ('advanced', 'Advanced Security'),""
-        ('certified', 'NAID Certified'),""
-        ('aaa_certified', 'NAID AAA Certified')""
-    ""
-        default='none',""
-        tracking=True,""
-        help="Current NAID security clearance level"
-""
-    clearance_date = fields.Date(""
-        string="Clearance Date",
-        tracking=True,""
-        help="Date when security clearance was granted"
-    ""
-    clearance_expiry = fields.Date(""
-        string="Clearance Expiry",
-        tracking=True,""
-        help="Date when security clearance expires"
-    ""
-    background_check_completed = fields.Boolean(""
-        string="Background Check Completed",
-        default=False,""
-        tracking=True,""
-        help="Background screening completed for NAID compliance":
-    ""
-    training_completed = fields.Boolean(""
-        string="NAID Training Completed",
-        default=False,""
-        tracking=True,""
-        help="Required NAID training completed"
-    ""
-""
-        # ============================================================================""
-    # RECORDS ACCESS MANAGEMENT""
-        # ============================================================================""
-""
-    ,""
-    records_access_level = fields.Selection([))""
-        ('none', 'No Access'),""
-        ('read', 'Read Only'),""
-        ('write', 'Read/Write'),""
-        ('admin', 'Administrator'),""
-        ('compliance', 'Compliance Officer')""
-    ""
-        default='none',""
-        tracking=True,""
-        help="Access level for records management system"
-    records_department_ids = fields.Many2many(""
-        'records.department',""
-        string="Authorized Departments",
-        help="Departments this employee can access"
-    ""
-    can_witness_destruction = fields.Boolean(""
-        string="Can Witness Destruction",
-        default=False,""
-        tracking=True,""
-        help="Authorized to witness document destruction"
-    ""
-    can_transport_documents = fields.Boolean(""
-        string="Can Transport Documents",
-        default=False,""
-        tracking=True,""
-        help="Authorized to transport secure documents"
-    ""
-""
-        # ============================================================================""
-    # STATE MANAGEMENT""
-        # ============================================================================""
-""
-    ,""
-    state = fields.Selection([))""
-        ('draft', 'Draft'),""
-        ('pending_approval', 'Pending Approval'),""
-        ('active', 'Active'),""
-        ('suspended', 'Suspended'),""
-        ('expired', 'Expired')""
-    ""
-        default='draft',""
-        tracking=True,""
-        help="Current status of NAID compliance profile"
-""
-    # ============================================================================""
-        # DOCUMENTATION FIELDS""
-    # ============================================================================""
-""
-    description = fields.Text(""
-        string="Description",
-        help="Additional details about employee's NAID profile"'
-    ""
-    notes = fields.Text(""
-        string="Internal Notes",
-        help="Internal notes and observations"
-    ""
-    compliance_notes = fields.Text(""
-        string="Compliance Notes",
-        help="Notes related to NAID compliance and certifications"
-    ""
-""
-        # ============================================================================""
-    # DATES & TRACKING""
-        # ============================================================================""
-""
-    profile_date = fields.Date(""
-        string="Profile Date",
-        default=fields.Date.today,""
-        required=True,""
-        help="Date when NAID profile was created"
-    ""
-    last_review_date = fields.Date(""
-        string="Last Review Date",
-        tracking=True,""
-        help="Date of last compliance review"
-    ""
-    next_review_date = fields.Date(""
-        string="Next Review Date",
-        tracking=True,""
-        help="Date when next compliance review is due"
-    ""
-""
-        # ============================================================================""
-    # MAIL THREAD FRAMEWORK FIELDS""
-        # ============================================================================""
-""
-    activity_ids = fields.One2many(""
-        "mail.activity",
-        "res_id",
-        string="Activities",
-        auto_join=True,""
-        groups="base.group_user"
-    ""
-    message_follower_ids = fields.One2many(""
-        "mail.followers",
-        "res_id",
-        string="Followers",
-        groups="base.group_user"
-    ""
-    message_ids = fields.One2many(""
-        "mail.message",
-        "res_id",
-        string="Messages",
-        ,""
-    groups="base.group_user"
-    ""
-""
-        # ============================================================================""
-    # ACTION METHODS""
-        # ============================================================================""
-""
-    def action_submit_for_approval(self):""
-        """Submit NAID profile for approval"""
-"""
-"""        self.message_post(body="NAID profile submitted for approval"):"
-    def action_approve_profile(self):""
-        """Approve NAID compliance profile"""
-"""
-""""
-"""        self.message_post(body="NAID profile approved and activated")"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-    def action_suspend_profile(self):""
-        """Suspend NAID compliance profile"""
-""""
-""""
-"""        self.message_post(body="NAID profile suspended - access revoked")"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-    def action_reactivate_profile(self):""
-        """Reactivate suspended NAID profile"""
-"""
-""""
-"""        self.message_post(body="NAID profile reactivated")"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-    def action_expire_profile(self):""
-        """Mark NAID profile as expired"""
-""""
-""""
-"""        self.message_post(body="NAID profile expired - renewal required")"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-    def action_schedule_review(self):""
-        """Schedule next compliance review"""
-"""
-""""
-"""            summary=_("NAID Compliance Review - %s", self.name),"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            note=_("Annual NAID compliance review for %s", self.employee_id.name),:
-            user_id=self.user_id.id,""
-            date_deadline=next_review""
-        ""
-""
-    # ============================================================================ """"
-        # COMPUTED METHODS""""""
-    # ============================================================================ """"
-""
-    @api.depends('"""employee_id.name', 'name')"""
-    def _compute_display_name(self):""
-        """Compute display name with employee context"""
-"""                record.display_name = _("NAID Profile - %s", record.employee_id.name)"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-                record.display_name = record.name or _("New NAID Profile")
-""
-    display_name = fields.Char(""
-        string="Display Name",
-        compute="_compute_display_name",
-        ,""
-    store=True""
-    ""
-""
-        # ============================================================================""
-    # VALIDATION METHODS""
-        # ============================================================================ """"
-""
-    @api.constrains('"""clearance_date', 'clearance_expiry')"
-    def _check_clearance_dates(self):""
-        """Validate clearance date logic"""
-""""
-""""
-"""                        _("Clearance date must be before expiry date")"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-                'mail.mail_activity_data_todo',""
-                summary=_("Complete NAID Profile Setup - %s", record.name),
-                note=_("Complete NAID compliance profile setup and documentation"),
-                user_id=record.user_id.id,""
-                date_deadline=deadline_date""
-            ""
-""
-            record.message_post()""
-                body=_()""
-                    "NAID compliance profile created for %s",:
-                    record.employee_id.name if record.employee_id else 'employee':""
-                ""
-            ""
-""
-        return records""
-""
-    def write(self, vals):""
-        """Override write to track important changes"""
-""""
-""""
-"""                        body=_("NAID security clearance changed from %s to %s", old_level, new_level)"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-                    record.message_post()""
-                        body=_("Records access level changed from %s to %s", old_access, new_access)
-                    ""
-""
-        return super().write(vals)""
-)))))))))))))))))""
-""""
-""""
-""""
+    # ============================================================================
+    # METHODS
+    # ============================================================================
+    def action_submit_for_approval(self):
+            """Submit NAID profile for approval""":
+
+    def action_approve_profile(self):
+            """Approve NAID compliance profile"""
+
+    def action_suspend_profile(self):
+            """Suspend NAID compliance profile"""
+
+    def action_reactivate_profile(self):
+            """Reactivate suspended NAID profile"""
+
+    def action_expire_profile(self):
+            """Mark NAID profile as expired"""
+
+    def action_schedule_review(self):
+            """Schedule next compliance review"""
+
+    def _compute_display_name(self):
+            """Compute display name with employee context"""
+
+    def _check_clearance_dates(self):
+            """Validate clearance date logic"""
+
+    def write(self, vals):
+            """Override write to track important changes"""

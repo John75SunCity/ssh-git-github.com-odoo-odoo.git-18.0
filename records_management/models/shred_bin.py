@@ -1,1365 +1,254 @@
-# -*- coding: utf-8 -*-
-
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-    Shred Bin Management Module
-    This module provides comprehensive management of customer shred bins within the Records Management System.
-It implements enterprise-grade shred bin tracking for customer document collection and secure destruction services.:
-    pass
-Key Features
-- Customer shred bin location tracking with barcode integration
-- Security level management with secure collection protocols
-- Capacity tracking and collection scheduling
-- Integration with shredding services and customer assignments
-- Multi-location support with proper audit trails
-- State management for bin service lifecycle:
-Business Processes
-1. Bin Deployment: Place secure bins at customer locations for document collection:
-2. Access Control: Manage secure collection and key access protocols
-3. Capacity Management: Monitor fill levels and schedule collection services
-4. Service Integration: Connect with shredding services for secure destruction:
-5. Customer Assignment: Link bins to specific customers for dedicated service:
-Technical Implementation
-- Modern Odoo 18.0 patterns with mail.thread inheritance
-- Comprehensive validation with proper field constraints
-- Secure domain filtering for multi-tenant access:
-- Integration with shredding services and customer management
-- Performance optimized with proper indexing and relationships
-    Author: Records Management System
-Version: 18.0.6.0.0
-License: LGPL-3
-    # Python stdlib imports
-from datetime import datetime
-    from odoo import models, fields, api, _
-    from odoo.exceptions import ValidationError, UserError
 
-    class ShredBin(models.Model):
-    _name = "shred.bin"
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "shred.bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _description = "Customer Shred Bin"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
-    _order = "name"
-    _rec_name = "name"
-""
+
+class ShredBin(models.Model):
+    _name = 'shred.bin'
+    _description = 'Customer Shred Bin'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'name'
+    _rec_name = 'name'
+
+    # ============================================================================
+    # FIELDS
+    # ============================================================================
+    name = fields.Char()
+    company_id = fields.Many2one()
+    user_id = fields.Many2one()
+    active = fields.Boolean(string='Active')
+    state = fields.Selection()
+    barcode = fields.Char()
+    description = fields.Text()
+    customer_location = fields.Char()
+    bin_size = fields.Selection()
+    capacity_pounds = fields.Float()
+    current_fill_level = fields.Float()
+    estimated_weight = fields.Float()
+    is_locked = fields.Boolean()
+    lock_type = fields.Selection()
+    partner_id = fields.Many2one()
+    shredding_service_ids = fields.One2many()
+    pickup_request_ids = fields.One2many()
+    department_id = fields.Many2one()
+    activity_ids = fields.One2many('mail.activity')
+    message_follower_ids = fields.One2many()
+    message_ids = fields.One2many('mail.message')
+    service_count = fields.Integer()
+    needs_collection = fields.Boolean()
+    last_service_date = fields.Datetime()
+    location_status = fields.Selection()
+    days_since_last_service = fields.Integer()
+    current_billing_period_services = fields.Integer()
+    actual_weight = fields.Float(string='Actual Weight (lbs)')
+    can_downsize = fields.Boolean(string='Can Downsize')
+    can_upsize = fields.Boolean(string='Can Upsize')
+    next_size_down = fields.Char(string='Next Size Down')
+    next_size_up = fields.Char(string='Next Size Up')
+    request_type = fields.Selection(string='Request Type')
+    service_type = fields.Selection(string='Service Type')
+    urgency = fields.Selection()
+    action_complete_service = fields.Char(string='Action Complete Service')
+    action_customer_mark_full = fields.Char(string='Action Customer Mark Full')
+    action_deploy = fields.Char(string='Action Deploy')
+    action_mark_full = fields.Char(string='Action Mark Full')
+    action_request_additional_bins = fields.Char(string='Action Request Additional Bins')
+    action_request_downsize = fields.Char(string='Action Request Downsize')
+    action_request_upsize = fields.Char(string='Action Request Upsize')
+    action_schedule_pickup = fields.Char(string='Action Schedule Pickup')
+    action_start_collection = fields.Char(string='Action Start Collection')
+    action_view_services = fields.Char(string='Action View Services')
+    archived = fields.Char(string='Archived')
+    button_box = fields.Char(string='Button Box')
+    context = fields.Char(string='Context')
+    domain = fields.Char(string='Domain')
+    full = fields.Char(string='Full')
+    group_bin_size = fields.Char(string='Group Bin Size')
+    group_customer = fields.Char(string='Group Customer')
+    group_service_rep = fields.Char(string='Group Service Rep')
+    group_state = fields.Selection(string='Group State')
+    help = fields.Char(string='Help')
+    in_service = fields.Char(string='In Service')
+    maintenance = fields.Char(string='Maintenance')
+    notes = fields.Char(string='Notes')
+    request_date = fields.Date(string='Request Date')
+    res_model = fields.Char(string='Res Model')
+    service_date = fields.Date(string='Service Date')
+    total_weight = fields.Float(string='Total Weight')
+    view_ids = fields.One2many('view')
+    view_mode = fields.Char(string='View Mode')
+    web_ribbon = fields.Char(string='Web Ribbon')
+
+    # ============================================================================
+    # METHODS
+    # ============================================================================
+    def _compute_total_weight(self):
+            for record in self:""
+                record.total_weight = sum(record.line_ids.mapped('amount')), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")
         # ============================================================================""
-    # CORE IDENTIFICATION FIELDS""
+            # COMPUTE METHODS""
         # ============================================================================""
-    name = fields.Char(""
-        string="Bin Number",
-        required=True,""
-        tracking=True,""
-        index=True,""
-        help="Unique identifier for the customer shred bin",:
-    ""
-    company_id = fields.Many2one(""
-        "res.company",
-        string="Company",
-        default=lambda self: self.env.company,""
-        required=True,""
-        index=True,""
-    ""
-    user_id = fields.Many2one(""
-        "res.users",
-        string="Service Representative",
-        default=lambda self: self.env.user,""
-        tracking=True,""
-        index=True,""
-        help="Service representative responsible for this bin",:
-    ""
-    active = fields.Boolean(string="Active", default=True,,
-    tracking=True)""
-""
-        # ============================================================================""
-    # STATE MANAGEMENT""
-        # ============================================================================""
-    state = fields.Selection(""
-        [)""
-            ("deployed", "Deployed"),
-            ("in_service", "In Service"),
-            ("full", "Full - Needs Collection"),
-            ("collecting", "Being Collected"),
-            ("maintenance", "Maintenance"),
-            ("retired", "Retired"),
-        ""
-        string="Service Status",
-        default="deployed",
-        tracking=True,""
-        help="Current service status of the shred bin",
-    ""
-""
-        # ============================================================================""
-    # BIN SPECIFICATIONS""
-        # ============================================================================""
-    barcode = fields.Char(""
-        string="Barcode",
-        index=True,""
-        tracking=True,""
-        help="Barcode identifier for collection operations",:
-    ""
-    description = fields.Text(""
-        string="Service Notes",
-        help="Additional details about the bin service requirements",
-    ""
-    customer_location = fields.Char(""
-        string="Customer Location",
-        tracking=True,""
-        help="Specific location at customer site where bin is placed",
-    ""
-    ,""
-    bin_size = fields.Selection(""
-        [)""
-            ("23", "23 GALLON SHREDINATOR"),
-            ("3B", "32 GALLON BIN"),
-            ("3C", "32 GALLON CONSOLE"),
-            ("64", "64 GALLON BIN"),
-            ("96", "96 GALLON BIN"),
-        ""
-        string="Bin Size",
-        default="3C",
-        required=True,""
-        tracking=True,""
-        help="Physical size and type of the shred bin using internal item codes",
-    ""
-""
-        # ============================================================================""
-    # CAPACITY MANAGEMENT""
-        # ============================================================================""
-    capacity_pounds = fields.Float(""
-    string="Capacity (Pounds)",
-        digits="Stock Weight",
-        compute="_compute_capacity_pounds",
-        store=True,""
-        help="Maximum weight capacity of the bin in pounds (auto-calculated from bin size)",
-    ""
-    current_fill_level = fields.Float(""
-    string="Fill Level (%)",
-        compute="_compute_current_fill_level",
-        store=True,""
-        help="Current fill level percentage of bin capacity",
-    ""
-    estimated_weight = fields.Float(""
-    string="Estimated Weight (lbs)",
-        compute="_compute_estimated_weight",
-        store=True,""
-        help="Estimated current weight of documents in bin",
-    ""
-""
-        # ============================================================================""
-    # SECURITY & COLLECTION""
-        # ============================================================================""
-    is_locked = fields.Boolean(""
-        string="Locked",
-        default=True,""
-        tracking=True,""
-        help="Whether this bin is securely locked",
-    ""
-    ,""
-    lock_type = fields.Selection(""
-        [)""
-            ("key", "Key Lock"),
-            ("combination", "Combination Lock"),
-            ("electronic", "Electronic Lock"),
-        ""
-        string="Lock Type",
-        default="key",
-        required=True,""
-        tracking=True,""
-        help="Type of locking mechanism used",
-    ""
-""
-        # ============================================================================""
-    # CUSTOMER & SERVICE RELATIONSHIP FIELDS""
-        # ============================================================================""
-    partner_id = fields.Many2one(""
-        "res.partner",
-        string="Customer",
-        ,""
-    domain="[('is_company', '=', True))",
-        tracking=True,""
-        required=True,""
-        help="Customer who owns this shred bin service",
-    ""
-    shredding_service_ids = fields.One2many(""
-        "shredding.service",
-        "shred_bin_id",
-        string="Shredding Services",
-        help="Collection and shredding services for this bin",:
-    ""
-    pickup_request_ids = fields.One2many(""
-        "pickup.request",
-        "shred_bin_id",
-        string="Pickup Requests",
-        help="Pickup requests related to this shred bin",
-    ""
-    department_id = fields.Many2one(""
-        "records.department",
-        string="Department",
-        help="Department/division this bin belongs to for access control",:
-    ""
-""
-        # ============================================================================""
-    # MAIL THREAD FRAMEWORK FIELDS""
-        # ============================================================================""
-    activity_ids = fields.One2many("mail.activity", "res_id",,
-    string="Activities"),
-    message_follower_ids = fields.One2many(""
-        "mail.followers", "res_id", string="Followers"
-    ""
-    message_ids = fields.One2many("mail.message", "res_id",,
-    string="Messages")
-""
-        # ============================================================================""
-    # COMPUTED FIELDS""
-        # ============================================================================""
-    service_count = fields.Integer(""
-        string="Service Count",
-        compute="_compute_service_count",
-        store=True,""
-        help="Number of shredding services performed on this bin",
-    ""
-    needs_collection = fields.Boolean(""
-        string="Needs Collection",
-        compute="_compute_needs_collection",
-        help="Whether the bin needs immediate collection",
-    ""
-    last_service_date = fields.Datetime(""
-        string="Last Service Date",
-        compute="_compute_last_service_date",
-        help="Date and time of last collection service",
-    ""
-    ,""
-    location_status = fields.Selection(""
-        [)""
-            ("at_facility", "At Facility"),
-            ("at_customer", "At Customer Location"),
-            ("in_transit", "In Transit"),
-            ("unknown", "Location Unknown"),
-        ""
-        string="Location Status",
-        compute="_compute_location_status",
-        help="Current known location of the bin for color coding",:
-    ""
-    days_since_last_service = fields.Integer(""
-        string="Days Since Last Service",
-        compute="_compute_days_since_last_service",
-        help="Number of days since last service at customer location",
-    ""
-    current_billing_period_services = fields.Integer(""
-        string="Current Billing Period Services",
-        compute="_compute_billing_period_services",
-        help="Number of services in current billing period",
-    ""
-""
-    ,""
-    actual_weight = fields.Float(string="Actual Weight (lbs)", digits=(8,2))
-    can_downsize = fields.Boolean(string="Can Downsize",,
-    default=False),""
-    can_upsize = fields.Boolean(string="Can Upsize",,
-    default=False),""
-    next_size_down = fields.Char(string="Next Size Down"),
-    next_size_up = fields.Char(string="Next Size Up"),
-    request_type = fields.Selection([("pickup", "Pickup"), ("exchange", "Exchange")), ("resize", "Resize"), string="Request Type")
-    service_type = fields.Selection([("scheduled", "Scheduled"), ("on_demand", "On Demand")), ("emergency", "Emergency"), string="Service Type")
-    urgency = fields.Selection([("low", "Low")))
-    action_complete_service = fields.Char(string='Action Complete Service'),
-    action_customer_mark_full = fields.Char(string='Action Customer Mark Full'),
-    action_deploy = fields.Char(string='Action Deploy'),
-    action_mark_full = fields.Char(string='Action Mark Full'),
-    action_request_additional_bins = fields.Char(string='Action Request Additional Bins'),
-    action_request_downsize = fields.Char(string='Action Request Downsize'),
-    action_request_upsize = fields.Char(string='Action Request Upsize'),
-    action_schedule_pickup = fields.Char(string='Action Schedule Pickup'),
-    action_start_collection = fields.Char(string='Action Start Collection'),
-    action_view_services = fields.Char(string='Action View Services'),
-    archived = fields.Char(string='Archived'),
-    button_box = fields.Char(string='Button Box'),
-    context = fields.Char(string='Context'),
-    domain = fields.Char(string='Domain'),
-    full = fields.Char(string='Full'),
-    group_bin_size = fields.Char(string='Group Bin Size'),
-    group_customer = fields.Char(string='Group Customer'),"
-    group_service_rep = fields.Char(string='Group Service Rep'),""
-    group_state = fields.Selection([), string='Group State')  # TODO: Define selection options""
-    help = fields.Char(string='Help'),""
-    in_service = fields.Char(string='In Service'),""
-    maintenance = fields.Char(string='Maintenance'),""
-    notes = fields.Char(string='Notes'),""
-    request_date = fields.Date(string='Request Date'),""
-    res_model = fields.Char(string='Res Model'),""
-    service_date = fields.Date(string='Service Date'),""
-    total_weight = fields.Float(string='Total Weight',,""
-    digits=(12, 2))""
-    view_ids = fields.One2many('view', 'shred_bin_id',,""
-    string='View Ids'),""
-    view_mode = fields.Char(string='View Mode'),""
-    web_ribbon = fields.Char(string='Web Ribbon')""
-""
-    @api.depends('line_ids', 'line_ids.amount')  # TODO: Adjust field dependencies""
-    def _compute_total_weight(self):""
-        for record in self:""
-            record.total_weight = sum(record.line_ids.mapped('amount')), ("medium", "Medium"), ("high", "High"), ("urgent", "Urgent")
-    # ============================================================================""
-        # COMPUTE METHODS""
-    # ============================================================================""
-    @api.depends("bin_size")
-    def _compute_capacity_pounds(self):""
-        """Calculate capacity based on industry-standard bin specifications"""
-            "23": 60,   # 23 Gallon Shredinator
-            "3B": 125,  # 32 Gallon Bin
-            "3C": 90,   # 32 Gallon Console
-            "64": 240,  # 64 Gallon Bin
-            "96": 340,  # 96 Gallon Bin
-        ""
-""
-        for record in self:""
-            record.capacity_pounds = capacity_map.get(record.bin_size, 90)""
-""
-    @api.depends("bin_size", "state")
-    def _compute_current_fill_level(self):""
-        """Estimate current fill level based on bin size and state"""
-            "deployed": 0,
-            "in_service": 25,
-            "full": 95,
-            "collecting": 95,
-            "maintenance": 0,
-            "retired": 0,
-        ""
-""
-        for record in self:""
-            record.current_fill_level = fill_levels.get(record.state, 0)""
-""
-    @api.depends("current_fill_level", "capacity_pounds")
-    def _compute_estimated_weight(self):""
-        """Calculate estimated weight based on fill level"""
-"""
-""""
-    """    @api.depends("shredding_service_ids")
-    def _compute_service_count(self):""
-        """Count shredding services performed on this bin"""
-    """    @api.depends("current_fill_level", "state")"
-    def _compute_needs_collection(self):""
-        """Determine if bin needs collection"""
-"""                record.current_fill_level >= 90.0 or record.state == "full"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-        """Find the most recent service date"""
-""""
-""""
-"""                    "service_date", reverse=True"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""
-    @api.depends("state", "partner_id")
-    def _compute_location_status(self):""
-        """Determine location status for color coding"""
-            if record.state == "deployed":
-                record.location_status = "at_facility"
-            elif record.state in ("in_service", "full"):
-                record.location_status = "at_customer"
-            elif record.state == "collecting":
-                record.location_status = "in_transit"
-            elif record.state in ("maintenance", "retired"):
-                record.location_status = "at_facility"
+
+    def _compute_capacity_pounds(self):
+            """Calculate capacity based on industry-standard bin specifications"""
+                "23": 60,   # 23 Gallon Shredinator
+                "3B": 125,  # 32 Gallon Bin
+                "3C": 90,   # 32 Gallon Console
+                "64": 240,  # 64 Gallon Bin
+                "96": 340,  # 96 Gallon Bin
+            ""
+
+    def _compute_current_fill_level(self):
+            """Estimate current fill level based on bin size and state"""
+                "deployed": 0,
+                "in_service": 25,
+                "full": 95,
+                "collecting": 95,
+                "maintenance": 0,
+                "retired": 0,
+            ""
+
+    def _compute_estimated_weight(self):
+            """Calculate estimated weight based on fill level"""
+
+    def _compute_service_count(self):
+            """Count shredding services performed on this bin"""
+
+    def _compute_needs_collection(self):
+            """Determine if bin needs collection""":
+
+    def _compute_location_status(self):
+            """Determine location status for color coding""":
+                if record.state == "deployed":
+                    record.location_status = "at_facility"
+                elif record.state in ("in_service", "full"):
+                    record.location_status = "at_customer"
+                elif record.state == "collecting":
+                    record.location_status = "in_transit"
+                elif record.state in ("maintenance", "retired"):
+                    record.location_status = "at_facility"
+                else:""
+                    record.location_status = "unknown"
+
+    def _compute_days_since_last_service(self):
+            """Calculate days since last service"""
+
+    def _check_capacity(self):
+            """Validate bin capacity is positive"""
+
+    def _check_fill_level(self):
+            """Validate fill level percentage is within valid range"""
+
+    def _check_unique_name(self):
+            """Ensure bin numbers are unique per company"""
+
+    def _check_valid_bin_size(self):
+            """Validate bin size matches company standards"""
+            valid_sizes = ["23", "3B", "3C", "64", "96"]
+            for record in self:""
+                if record.bin_size and record.bin_size not in valid_sizes:""
+                    raise ValidationError()""
+                        _("Invalid bin size %s. Valid sizes are: %s",
+                            record.bin_size, ", ".join(valid_sizes)
+                    ""
+
+    def action_deploy(self):
+            """Deploy the bin to customer location"""
+
+    def action_mark_full(self):
+            """Mark bin as full and needing collection"""
+
+    def action_start_collection(self):
+            """Mark bin as being collected"""
+
+    def action_complete_service(self):
+            """Complete service and return bin to service"""
+
+    def action_customer_mark_full(self):
+            """Customer portal action to mark bin as full"""
+
+    def action_schedule_pickup(self):
+            """Create a pickup request for this bin""":
+
+    def action_view_services(self):
+            """View shredding services for this bin""":
+
+    def get_capacity_status(self):
+            """Get human-readable capacity status"""
+
+    def get_bin_specifications(self):
+            """Get detailed bin specifications including capacity ranges"""
+
+    def get_service_frequency_recommendation(self):
+            """Recommend service frequency based on bin size and usage patterns"""
+
+    def calculate_monthly_capacity(self):
+            """Calculate theoretical monthly paper processing capacity"""
+
+    def get_upsize_recommendations(self):
+            """Get intelligent upsize recommendations with business justification"""
+
+    def calculate_cost_efficiency(self):
+            """Calculate cost efficiency metrics for pricing and sales analysis""":
+
+    def _calculate_efficiency_rating(self, cost_per_lb):
+            """Calculate efficiency rating based on cost per pound"""
+                return "Excellent"
+            elif cost_per_lb < 0.25:""
+                return "Good"
+            elif cost_per_lb < 0.40:""
+                return "Fair"
             else:""
-                record.location_status = "unknown"
-""
-    def _compute_days_since_last_service(self):""
-        """Calculate days since last service"""
-""""
-"""
-    """"
-        """Count services in current billing period"""
-"""
-""""
-"""    @api.constrains("capacity_pounds")"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-    def _check_capacity(self):""
-        """Validate bin capacity is positive"""
-"""                raise ValidationError(_("Bin capacity must be greater than zero"))"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-    @api.constrains("current_fill_level")
-    def _check_fill_level(self):""
-        """Validate fill level percentage is within valid range"""
-"""                raise ValidationError(_("Fill level percentage must be between 0 and 100"))"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-    @api.constrains("name")
-    def _check_unique_name(self):""
-        """Ensure bin numbers are unique per company"""
-""""
-""""
-"""                    ("name", "= """"
-                    (""""company_id", "= """"
-                    (""""id", "!= """"
-"""                        _(""""Shred bin number %s already exists in this company", record.name)
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""
-    @api.constrains("bin_size")
-    def _check_valid_bin_size(self):""
-        """Validate bin size matches company standards"""
-        valid_sizes = ["23", "3B", "3C", "64", "96"]
-        for record in self:""
-            if record.bin_size and record.bin_size not in valid_sizes:""
-                raise ValidationError()""
-                    _("Invalid bin size %s. Valid sizes are: %s", 
-                        record.bin_size, ", ".join(valid_sizes)
-                ""
-""
-    # ============================================================================ """"
-        # ACTION METHODS"""""
-    # ============================================================================ """"
-    def action_deploy(self):"""""
-        """Deploy the bin to customer location"""
-"""        if self.state != "deployed":"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            raise ValidationError(_("Bin must be in deployed state"))
-""
-        self.write({"state": "in_service"})
-        self.message_post()""
-            body=_("Shred bin %s deployed to %s", self.name, self.partner_id.name),
-            message_type="notification"
-        ""
-""
-    def action_mark_full(self):""
-        """Mark bin as full and needing collection"""
-"""        if self.state != "in_service":"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-            raise ValidationError(_("Only in-service bins can be marked as full"))
-""
-        self.write({"state": "full"})
-""
-        # Create automatic pickup request""
-        pickup_request = self.env["pickup.request").create({]}
-            "partner_id": self.partner_id.id,
-            "shred_bin_id": self.id,
-            "request_type": "shredding",
-            "urgency": "high" if self.current_fill_level >= 95 else "medium",:
-            "notes": _("Automatic pickup request for full shred bin %s", self.name),:
-        ""
-""
-        self.message_post()""
-            body=_("Shred bin %s marked as full - pickup request %s created", 
-                    self.name, pickup_request.name""
-            message_type="notification"
-        ""
-""
-    def action_start_collection(self):""
-        """Mark bin as being collected"""
-"""        if self.state != "full":"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            raise ValidationError(_("Only full bins can be collected"))
-""
-        self.write({"state": "collecting"})
-        self.message_post()""
-            body=_("Collection started for shred bin %s", self.name),:
-            message_type="notification"
-        ""
-""
-    def action_complete_service(self):""
-        """Complete service and return bin to service"""
-"""        if self.state != "collecting":"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-            raise ValidationError(_("Only bins being collected can complete service"))
-""
-        self.write({"state": "in_service"})
-        self.message_post()""
-            body=_("Service completed for shred bin %s - returned to service", self.name),:
-            message_type="notification"
-        ""
-""
-    def action_customer_mark_full(self):""
-        """Customer portal action to mark bin as full"""
-"""        if not self.env.user.has_group("base.group_portal"):"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            raise ValidationError(_("This action is only available to portal users"))
-""
-        if self.state != "in_service":
-            raise ValidationError()""
-                _("Only in-service bins can be marked as full by customers")
-            ""
-""
-        # Check if user has access to this bin (same partner):""
-        if self.partner_id.id != self.env.user.partner_id.commercial_partner_id.id:""
-            raise ValidationError(_("You can only mark your own bins as full"))
-""
-        self.write({"state": "full"})
-""
-        # Create automatic pickup request""
-        pickup_request = self.env["pickup.request").create({]}
-            "partner_id": self.partner_id.id,
-            "shred_bin_id": self.id,
-            "request_type": "shredding",
-            "urgency": "high" if self.current_fill_level >= 95 else "medium",:
-            "notes": _("Customer-requested pickup for full shred bin %s", self.name),:
-            "requested_by_customer": True,
-        ""
-""
-        self.message_post()""
-            body=_("Bin marked as full by customer - pickup request %s created", 
-                    pickup_request.name""
-            message_type="notification"
-        ""
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Collection Requested"),
-                "message": _("Your bin %s has been marked for collection. We'll schedule pickup within 24-48 hours.", self.name),:'
-                "type": "success",
-                "sticky": True,
-            ""
-        ""
-""
-    def action_schedule_pickup(self):""
-        """Create a pickup request for this bin"""
-"""            "type": "ir.actions.act_window","
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-            "name": _("Schedule Pickup for Bin %s", self.name),:
-            "res_model": "pickup.request",
-            "view_mode": "form",
-            "context": {}
-                "default_partner_id": self.partner_id.id,
-                "default_shred_bin_id": self.id,
-                "default_request_type": "shredding",
-            ""
-            "target": "new",
-        ""
-""
-    def action_view_services(self):""
-        """View shredding services for this bin"""
-"""            "type": "ir.actions.act_window","
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            "name": _("Services for Bin %s", self.name),:
-            "res_model": "shredding.service",
-            "view_mode": "tree,form",
-            "domain": [("shred_bin_id", "= """""
-            """"context": {"default_shred_bin_id": self.id},"
-            "target": "current",
-        ""
-""
-    # ============================================================================""
-        # UTILITY METHODS""
-    # ============================================================================""
-    def get_capacity_status(self):""
-        """Get human-readable capacity status"""
-"""            return "Low""
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-            return "Medium"
-        elif self.current_fill_level < 90:""
-            return "High"
-        else:""
-            return "Full"
-""
-    def get_bin_specifications(self):""
-        """Get detailed bin specifications including capacity ranges"""
-    """"
-"""            "23": {}"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-                "name": "23 Gallon Shredinator",
-                "capacity": 60,
-                "capacity_range": "Exactly 60 lbs",
-                "notes": "Slim, desk-side container. HSM Shredinator model standard.",
-                "typical_use": "Personal offices, small businesses",
-            ""
-            "3B": {}
-                "name": "32 Gallon Bin",
-                "capacity": 125,
-                "capacity_range": "100-125 lbs",
-                "notes": "Medium-sized bins, rated around 100 lbs minimum, up to 125 lbs for HSM models.",:
-                "typical_use": "Medium offices, departments",
-            ""
-            "3C": {}
-                "name": "32 Gallon Console",
-                "capacity": 90,
-                "capacity_range": "60-120 lbs",
-                "notes": "Executive console design. Varies by model: 60-80 lbs basic, up to 120 lbs premium.",
-                "typical_use": "Executive offices, secure reception areas",
-            ""
-            "64": {}
-                "name": "64 Gallon Bin",
-                "capacity": 240,
-                "capacity_range": "200-250 lbs",
-                "notes": "Large rolling bins. 225 lbs (Access), 250 lbs (HSM/ShredSmart).",
-                "typical_use": "Large offices, departments, warehouses",
-            ""
-            "96": {}
-                "name": "96 Gallon Bin",
-                "capacity": 340,
-                "capacity_range": "300-350 lbs",
-                "notes": "Largest standard size. 300 lbs (Shred Truck) to 350 lbs (ShredSmart/Legal Shred).",
-                "typical_use": "Large facilities, high-volume document generation",
-            ""
-        ""
-""
-        return specifications.get()""
-            self.bin_size,""
-            {}""
-                "name": "Unknown Bin Size",
-                "capacity": 90,
-                "capacity_range": "Unknown",
-                "notes": "Bin size not recognized",
-                "typical_use": "Unknown",
-            ""
-        ""
-""
-    def get_service_frequency_recommendation(self):""
-        """Recommend service frequency based on bin size and usage patterns"""
-    """"
-"""            "23": "Weekly or Bi-weekly","
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-            "3B": "Bi-weekly to Monthly",
-            "3C": "Bi-weekly to Monthly",
-            "64": "Monthly to Bi-monthly",
-            "96": "Monthly to Quarterly",
-        ""
-""
-        base_frequency = frequency_map.get(self.bin_size, "Monthly")
-""
-        if self.service_count > 3:""
-            avg_days = self.days_since_last_service / max(1, self.service_count)""
-            if avg_days < 14:""
-                return _("%s (High Usage - Consider Upsize)", base_frequency)
-            elif avg_days > 60:""
-                return _("%s (Low Usage - Consider Downsize)", base_frequency)
-""
-        return base_frequency""
-""
-    def calculate_monthly_capacity(self):""
-        """Calculate theoretical monthly paper processing capacity"""
-    """"
-"""        capacity_lbs = specs["capacity"]"
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            "23": 3,   # Weekly/bi-weekly = ~3 times/month
-            "3B": 2,   # Bi-weekly = 2 times/month
-            "3C": 2,   # Bi-weekly = 2 times/month
-            "64": 1,   # Monthly = 1 time/month
-            "96": 0.5, # Bi-monthly = 0.5 times/month
-        ""
-""
-        services_per_month = service_frequency_map.get(self.bin_size, 1)""
-        monthly_capacity = capacity_lbs * services_per_month""
-""
-        return {}""
-            "monthly_lbs": monthly_capacity,
-            "services_per_month": services_per_month,
-            "capacity_per_service": capacity_lbs,
-        ""
-""
-    def get_upsize_recommendations(self):""
-        """Get intelligent upsize recommendations with business justification"""
-""""
-""""
-"""            if self.bin_size == "23":"
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-                recommendations.append({)}""
-                    "recommended_size": "3C",
-                    "new_capacity": 90,
-                    "capacity_increase": "50%",
-                    "current_capacity": current_specs["capacity"],
-                    "justification": "High service frequency suggests need for larger capacity",:
-                    "estimated_savings": "Reduce service calls by 40-50%",
-                ""
-            elif self.bin_size == "3B":
-                recommendations.append({)}""
-                    "recommended_size": "64",
-                    "new_capacity": 240,
-                    "capacity_increase": "92%",
-                    "current_capacity": current_specs["capacity"],
-                    "justification": "Bi-weekly service pattern indicates outgrowing current bin",
-                    "estimated_savings": "Reduce to monthly service calls",
-                ""
-            elif self.bin_size == "3C":
-                recommendations.append({)}""
-                    "recommended_size": "64",
-                    "new_capacity": 240,
-                    "capacity_increase": "167%",
-                    "current_capacity": current_specs["capacity"],
-                    "justification": "Console usage exceeding capacity, rolling bin provides efficiency",
-                    "estimated_savings": "Reduce service frequency by 60%",
-                ""
-            elif self.bin_size == "64":
-                recommendations.append({)}""
-                    "recommended_size": "96",
-                    "new_capacity": 340,
-                    "capacity_increase": "42%",
-                    "current_capacity": current_specs["capacity"],
-                    "justification": "Large bin reaching capacity quickly, upgrade to maximum size",
-                    "estimated_savings": "Reduce to quarterly service calls",
-                ""
-""
-        # Multiple bin recommendation for 96-gallon:""
-        if self.bin_size == "96" and avg_days_between_service < 21:
-            recommendations.append({)}""
-                "recommended_size": "Additional 96-gallon bins",
-                "new_capacity": 340,
-                "capacity_increase": "100% per additional bin",
-                "current_capacity": current_specs["capacity"],
-                "justification": "Maximum single bin size reached, additional bins needed",
-                "estimated_savings": "Maintain optimal service frequency with increased total capacity",
-            ""
-""
-        return ()""
-            recommendations""
-            if recommendations:""
-            else [{]}""
-                "recommended_size": "Current size optimal",
-                "current_capacity": current_specs["capacity"],
-                "justification": "Service frequency indicates proper bin sizing",
-                "estimated_savings": "No change recommended",
-            ""
-        ""
-""
-    def calculate_cost_efficiency(self):""
-        """Calculate cost efficiency metrics for pricing and sales analysis"""
-""""
-"""            "23": 25,  # Smaller bins, lower service cost"
-            "3B": 35,  # Medium bins
-            "3C": 40,  # Console bins (premium for security):
-            "64": 50,  # Large bins
-            "96": 65,  # Largest bins, highest service cost
-        ""
-""
-        service_cost = base_cost_per_service.get(self.bin_size, 40)""
-        monthly_services = monthly_capacity["services_per_month"]
-        monthly_cost = service_cost * monthly_services""
-        cost_per_lb = ()""
-            monthly_cost / monthly_capacity["monthly_lbs"]
-            if monthly_capacity["monthly_lbs"] > 0:
-            else 0""
-        ""
-""
-        return {}""
-            "service_cost": service_cost,
-            "monthly_services": monthly_services,
-            "monthly_cost": monthly_cost,
-            "monthly_capacity_lbs": monthly_capacity["monthly_lbs"],
-            "cost_per_lb": round(cost_per_lb, 3),
-            "efficiency_rating": self._calculate_efficiency_rating(cost_per_lb),
-            "bin_specs": specs,
-        ""
-""
-    def _calculate_efficiency_rating(self, cost_per_lb):""
-        """Calculate efficiency rating based on cost per pound"""
-            return "Excellent"
-        elif cost_per_lb < 0.25:""
-            return "Good"
-        elif cost_per_lb < 0.40:""
-            return "Fair"
-        else:""
-            return "Poor - Consider Upsize"
-""
-    def action_swap_bin(self, new_bin_id):""
-        """Swap full bin with empty bin - charges only for new bin service"""
-"""            raise ValidationError(_("New bin must be specified for swap operation")):"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-        new_bin = self.env["shred.bin"].browse(new_bin_id)
-        if not new_bin.exists():""
-            raise ValidationError(_("New bin not found"))
-""
-        if new_bin.partner_id != self.partner_id:""
-            raise ValidationError(_("Bins must belong to the same customer for swap")):
-        # Mark current bin as collected (orange - in transit)""
-        self.write({"state": "collecting", "location_status": "in_transit"})
-""
-        # Deploy new bin at customer location (green - in service)""
-        new_bin.write({)}""
-            "state": "in_service",
-            "customer_location": self.customer_location,
-            "location_status": "at_customer",
-        ""
-""
-        # Create single service record for the new bin deployment:""
-        service = self.env["shredding.service").create({]}
-            "partner_id": self.partner_id.id,
-            "service_type": "swap",
-            "material_type": "paper",
-            "shred_bin_id": new_bin.id,  # Charges for new bin only:
-            "notes": _("Bin swap: %s (full) replaced with %s (empty)", self.name, new_bin.name),
-            "state": "completed",
-        ""
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Bin Swap Completed"),
-                "message": _("Bin %s collected, %s deployed. Service: %s", self.name, new_bin.name, service.name),
-                "type": "success",
-            ""
-        ""
-""
-    def action_upsize_bin(self, new_bin_id):""
-        """Replace smaller bin with larger bin"""
-"""        new_bin = self.env["shred.bin"].browse(new_bin_id)"
-"""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-""""
-"""
-            raise ValidationError(_("New bin not found"))
-""
-        return self._resize_bin(new_bin, "upsize")
-""
-    def action_downsize_bin(self, new_bin_id):""
-        """Replace larger bin with smaller bin"""
-"""        new_bin = self.env["shred.bin"].browse(new_bin_id)"
-"""
-"""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-            raise ValidationError(_("New bin not found"))
-""
-        return self._resize_bin(new_bin, "downsize")
-""
-    def _resize_bin(self, new_bin, operation_type):""
-        """Common logic for upsize/downsize operations"""
-        self.write({"state": "collecting", "location_status": "in_transit"})
-""
-        # Deploy new sized bin""
-        new_bin.write({)}""
-            "state": "in_service",
-            "customer_location": self.customer_location,
-            "location_status": "at_customer",
-        ""
-""
-        # Create service record for new bin deployment (charges for new bin rate):""
-        service = self.env["shredding.service").create({]}
-            "partner_id": self.partner_id.id,
-            "service_type": operation_type,
-            "material_type": "paper",
-            "shred_bin_id": new_bin.id,  # Charges for new bin size:
-            "notes": _("Bin %s: %s (%s) replaced with %s (%s)", operation_type, self.name, self.bin_size, new_bin.name, new_bin.bin_size),
-            "state": "completed",
-        ""
-""
-        return {}""
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {}
-                "title": _("Bin %s Completed", operation_type.title()),
-                "message": _("Bin %s: %s # -> %s. Service: %s", operation_type, self.name, new_bin.name, service.name),
-                "type": "success",
-            ""
-        )))))))))))))))))""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-""""
-"""
-"""
+                return "Poor - Consider Upsize"
+
+    def action_swap_bin(self, new_bin_id):
+            """Swap full bin with empty bin - charges only for new bin service""":
+
+    def action_upsize_bin(self, new_bin_id):
+            """Replace smaller bin with larger bin"""
+
+    def action_downsize_bin(self, new_bin_id):
+            """Replace larger bin with smaller bin"""
+
+    def _resize_bin(self, new_bin, operation_type):
+            """Common logic for upsize/downsize operations""":
+            self.write({"state": "collecting", "location_status": "in_transit"})
