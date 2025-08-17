@@ -1,13 +1,15 @@
 {
+    "github.copilot.advanced.instructionsFile": ".github/copilot-instructions.md",
+    "grok.integration.instructionsFile": ".github/copilot-instructions.md",
     "odoo.selectedProfile": "",
     "odoo.serverLogLevel": "error",
     "odooServer.trace.server": "off",
     "odoo.disablePythonLanguageServerPopup": true,
-    
+
     // === PYTHON ANALYSIS SETTINGS ===
     "python.analysis.disabled": [
         "reportMissingImports",
-        "reportMissingModuleSource", 
+        "reportMissingModuleSource",
         "reportAttributeAccessIssue",
         "reportUnusedImport",
         "reportUnusedVariable",
@@ -43,7 +45,7 @@
         "reportImplicitOverride",
         "reportShadowedImports"
     ],
-    
+
     // === PYLANCE SPECIFIC SETTINGS ===
     "python.analysis.typeCheckingMode": "off",
     "python.analysis.autoSearchPaths": true,
@@ -54,7 +56,7 @@
         "./addons",
         "./typings"
     ],
-    
+
     // === ODOO-SPECIFIC PYLSP SETTINGS ===
     "pylsp.plugins.pylint.enabled": false,
     "pylsp.plugins.flake8.enabled": false,
@@ -63,22 +65,22 @@
     "pylsp.plugins.mccabe.enabled": false,
     "pylsp.plugins.pyflakes.enabled": false,
     "pylsp.configurationSources": [],
-    
+
     // === PROBLEM MATCHER IGNORE PATTERNS ===
     "problems.showCurrentInStatus": false,
-    
+
     // === SPECIFIC ODOO ERROR SUPPRESSION ===
     "python.analysis.diagnosticSeverityOverrides": {
         "reportMissingImports": "none",
         "reportMissingModuleSource": "none",
-        "reportUnknownMemberType": "none", 
+        "reportUnknownMemberType": "none",
         "reportUnknownArgumentType": "none",
         "reportUnknownParameterType": "none",
         "reportGeneralTypeIssues": "none",
         "reportOptionalMemberAccess": "none",
         "reportAttributeAccessIssue": "none",
         "reportUnusedImport": "none",
-        "reportUnusedVariable": "none", 
+        "reportUnusedVariable": "none",
         "reportUndefinedVariable": "none",
         "reportOptionalSubscript": "none",
         "reportUnknownVariableType": "none",
@@ -100,7 +102,7 @@
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
     "python.languageServer": "Pylance",
-    
+
     // === ODOO EXTENSION SETTINGS ===
     "odoo.addonsPath": "./records_management,./addons",
     "odoo.pythonPath": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/.venv/bin/python",
@@ -114,16 +116,16 @@
     "odoo.disableSecurityWarnings": true,
     "odoo.disableWorkflowWarnings": true,
     "odoo.disableMethodWarnings": true,
-    
+
     // === ADDITIONAL WARNING SUPPRESSION ===
     "python.analysis.logLevel": "Error",
     "python.linting.ignorePatterns": [
         "**/models/**/*.py",
-        "**/controllers/**/*.py", 
+        "**/controllers/**/*.py",
         "**/wizards/**/*.py",
         "**/views/**/*.xml"
     ],
-    
+
     // === PYLINT CONFIGURATION ===
     "python.linting.pylintArgs": [
         "--rcfile=.pylintrc",
@@ -140,14 +142,14 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
-    
+
     // === FORMATTER PROTECTION FOR ODOO ===
     "python.formatting.provider": "none",
     "python.formatting.autopep8Args": [],
     "python.formatting.blackArgs": [],
     "python.formatting.yapfArgs": [],
     "python.defaultInterpreterPath": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/.venv/bin/python",
-    
+
     // === DISABLE ALL AUTO-FORMATTERS ===
     "autopep8.args": ["--disable"],
     "black-formatter.args": ["--check", "--diff"],
@@ -155,7 +157,7 @@
     "ruff.format.args": ["--check", "--diff"],
     "python.analysis.autoFormatStrings": false,
     "python.analysis.autoImportCompletions": false,
-    
+
     // === AUTO-SAVE AND FORMATTING CONTROL ===
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false,
@@ -164,17 +166,17 @@
         "source.organizeImports": "never",
         "source.fixAll": "never"
     },
-    
+
     // === COMPREHENSIVE FORMATTER DISABLE ===
     "editor.defaultFormatter": null,
     "workbench.editor.enablePreview": false,
     "diffEditor.ignoreTrimWhitespace": true,
     "diffEditor.renderSideBySide": true,
-    
+
     // === DISABLE ALL POSSIBLE AUTO-FORMATTERS ===
     "python.terminal.activateEnvironment": false,
     "python.terminal.executeInFileDir": false,
-    
+
     // === ADDITIONAL FORMATTER PROTECTION ===
     "python.formatting.blackPath": "",
     "python.formatting.autopep8Path": "",
@@ -183,7 +185,7 @@
     "python.linting.pycodestyleEnabled": false,
     "python.linting.prospectorEnabled": false,
     "python.linting.pydocstyleEnabled": false,
-    
+
     // === ODOO-SPECIFIC INDENTATION ===
     "[python]": {
         "editor.tabSize": 4,
@@ -195,7 +197,7 @@
         "editor.autoIndent": "keep",
         "editor.trimAutoWhitespace": false
     },
-    
+
     // === XML FORMATTING FOR ODOO VIEWS ===
     "[xml]": {
         "editor.tabSize": 4,
@@ -205,25 +207,25 @@
         "editor.formatOnPaste": false,
         "editor.autoIndent": "keep"
     },
-    
+
     // === FILE ASSOCIATIONS ===
     "files.associations": {
         "*.py": "python",
         "*.xml": "xml",
         "*.csv": "plaintext"
     },
-    
+
     // === WORKSPACE SPECIFIC OVERRIDES ===
     "workbench.colorCustomizations": {
         "editorError.foreground": "#ff0000",
         "editorWarning.foreground": "#00000000",
         "editorInfo.foreground": "#00000000"
     },
-    
+
     // === NOTIFICATION CONTROL ===
     "problems.decorations.enabled": false,
     "editor.renderValidationDecorations": "off",
-    
+
     // === AUTO-SAVE PROTECTION ===
     "files.autoSave": "onFocusChange",
     "files.trimTrailingWhitespace": false,
