@@ -1,97 +1,89 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-
+from odoo.exceptions import ValidationError
 
 class PosConfig(models.Model):
-    _description = 'Point of Sale Configuration Extension'
     _inherit = 'pos.config'
 
     # ============================================================================
-    # FIELDS
+    # FIELDS - Records Management Integration
     # ============================================================================
-    description = fields.Text(string='Description')
-    sequence = fields.Integer(string='Sequence')
-    user_id = fields.Many2one()
-    date_created = fields.Datetime(string='Created Date')
-    date_modified = fields.Datetime(string='Modified Date')
-    notes = fields.Text(string='Internal Notes')
-    display_name = fields.Char()
+    enable_records_management = fields.Boolean(
+        string="Enable Records Management",
+        help="Activate records management features in this Point of Sale."
+    )
+    destruction_service_product_id = fields.Many2one(
+        'product.product',
+        string="Destruction Service Product",
+        domain="[('sale_ok', '=', True), ('type', '=', 'service')]",
+        help="The product used for on-the-spot destruction services."
+    )
+    pickup_request_product_id = fields.Many2one(
+        'product.product',
+        string="Pickup Request Product",
+        domain="[('sale_ok', '=', True), ('type', '=', 'service')]",
+        help="The product used to create a records pickup request from the PoS."
+    )
+    default_destruction_location_id = fields.Many2one(
+        'stock.location',
+        string="Default Destruction Location",
+        domain="[('usage', '=', 'internal')]",
+        help="The default location for items processed for destruction via this PoS."
+    )
 
     # ============================================================================
-    # METHODS
+    # CONSTRAINTS
     # ============================================================================
-    def _compute_display_name(self):
-            """Compute display name."""
-                record.display_name = record.name or _("New")
+    @api.constrains('enable_records_management', 'destruction_service_product_id', 'pickup_request_product_id')
+    def _check_records_management_products(self):
+        """
+        Ensures that if the records management feature is enabled, the necessary
+        service products are configured to avoid errors during PoS operations.
+        """
+        for config in self:
+            if config.enable_records_management and not (config.destruction_service_product_id or config.pickup_request_product_id):
+                raise ValidationError(_(
+                    "To enable Records Management features, you must select at least one "
+                    "service product (Destruction or Pickup Request)."
+                ))
 
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
     def write(self, vals):
-            """Override write to update modification date."""
+        """
+        Override write to log significant changes to the PoS configuration,
+        which is important for compliance and security auditing.
+        """
+        # Example of logging changes for audit purposes
+        if 'enable_records_management' in vals or 'destruction_service_product_id' in vals:
+            self.env['naid.audit.log']._log_action(
+                description=f"PoS Config '{self.name}' updated. Records Management settings changed.",
+                action_type='write',
+                record=self
+            )
+        return super(PosConfig, self).write(vals)
 
-    def action_activate(self):
-            """Activate the POS configuration."""
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_view_records_management_orders(self):
+        """
+        Provides a quick link to view all PoS orders that included a records
+        management service, which is useful for reporting and operations.
+        """
+        self.ensure_one()
+        service_product_ids = (self.destruction_service_product_id | self.pickup_request_product_id).ids
+        if not service_product_ids:
+            raise ValidationError(_("No records management service products are configured on this PoS."))
 
-    def action_force_close_session(self):
-            """Force close POS session with administrative override."""
-
-    def action_open_session(self):
-            """Open new POS session."""
-
-    def action_view_orders(self):
-            """View all orders for this POS configuration.""":
-
-    def action_view_sales_report(self):
-            """View sales report for this POS configuration.""":
-
-    def action_view_sessions(self):
-            """View all sessions for this POS configuration.""":
-
-    def get_session_status(self):
-            """Get current session status for this configuration.""":
-            current_session = self.env["pos.session"].search()
-                [("config_id", "=", self.id), ("state", "=", "opened"], limit=1
-            ""
-
-    def get_daily_sales_summary(self):
-            """Get daily sales summary for this configuration.""":
-
-    def validate_session_closure(self):
-            """Validate if session can be closed properly.""":
+        return {
+            'name': _('Records Management PoS Orders'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'pos.order',
+            'view_mode': 'tree,form,graph',
+            'domain': [
+                ('config_id', '=', self.id),
+                ('lines.product_id', 'in', service_product_ids)
+            ],
+            'context': {'search_default_config_id': self.id}
+        }

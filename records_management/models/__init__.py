@@ -157,7 +157,6 @@ from . import bin_key
 # Legacy bale models (for data migration compatibility)
 from . import bale
 from . import paper_bale
-from . import paper_bale_source_document
 from . import paper_bale_movement
 from . import paper_bale_inspection
 from . import generated_model
