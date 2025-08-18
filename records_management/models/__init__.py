@@ -74,8 +74,8 @@ from . import temp_inventory_audit
 from . import temp_inventory_reject_wizard
 
 # Pickup and transportation
-from . import pickup_request_item
 from . import pickup_request
+from . import pickup_request_item
 from . import pickup_route
 from . import pickup_route_stop
 from . import records_vehicle
