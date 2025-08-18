@@ -1,96 +1,59 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo import models, fields, api
-
 
 class MaintenanceEquipment(models.Model):
-    _inherit = 'maintenance.team'
+    _inherit = 'maintenance.equipment'
 
     # ============================================================================
     # FIELDS
     # ============================================================================
-    equipment_category = fields.Selection()
-    shredding_capacity = fields.Float()
-    security_level = fields.Selection()
-    location_id = fields.Many2one('records.location')
-    shredding_service_ids = fields.Many2many()
-    naid_certification = fields.Selection()
-    certification_expiry = fields.Date(string='Certification Expiry Date')
-    calibration_required = fields.Boolean(string='Requires Calibration')
-    last_calibration_date = fields.Date(string='Last Calibration Date')
-    next_calibration_date = fields.Date(string='Next Calibration Date')
-    shredding_service_id = fields.Many2one()
-    customer_impact = fields.Selection()
-    requires_certification = fields.Boolean()
-    compliance_notes = fields.Text(string='Compliance Notes')
-    parts_cost = fields.Float(string='Parts Cost')
-    labor_cost = fields.Float(string='Labor Cost')
-    external_cost = fields.Float(string='External Service Cost')
-    total_maintenance_cost = fields.Float()
+    shredding_capacity_per_hour = fields.Float(string='Shredding Capacity (lbs/hour)')
+    security_level = fields.Selection([
+        ('p1', 'P-1'), ('p2', 'P-2'), ('p3', 'P-3'),
+        ('p4', 'P-4'), ('p5', 'P-5'), ('p6', 'P-6'), ('p7', 'P-7')
+    ], string='Security Level (DIN 66399)')
+    
+    location_id = fields.Many2one('records.location', string='Physical Location')
+    
+    # NAID Compliance
     naid_certification_date = fields.Date(string='NAID Certification Date')
     naid_certification_expiry = fields.Date(string='NAID Certification Expiry')
-    shredding_capacity_per_hour = fields.Float(string='Shredding Capacity (lbs/hour)')
-    maintenance_frequency = fields.Selection(string='Maintenance Frequency')
-    records_department_id = fields.Many2one('records.department')
-    destruction_service_ids = fields.One2many('shredding.service')
-    specialization = fields.Selection()
-    service_location_ids = fields.Many2many()
-    naid_certified = fields.Boolean(string='NAID Certified Team')
-    certification_level = fields.Selection()
-    average_response_time = fields.Float()
-    average_resolution_time = fields.Float()
+    
+    # Calibration
+    calibration_required = fields.Boolean(string='Requires Calibration', default=False)
+    last_calibration_date = fields.Date(string='Last Calibration Date')
+    next_calibration_date = fields.Date(string='Next Calibration Date', compute='_compute_next_calibration_date', store=True)
+    maintenance_frequency = fields.Selection([
+        ('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'), ('yearly', 'Yearly')
+    ], string='Maintenance Frequency')
+
+    # Costing
+    parts_cost = fields.Float(string='Parts Cost', related='maintenance_ids.parts_cost', readonly=False)
+    labor_cost = fields.Float(string='Labor Cost', related='maintenance_ids.labor_cost', readonly=False)
+    external_cost = fields.Float(string='External Service Cost', related='maintenance_ids.external_cost', readonly=False)
+    total_maintenance_cost = fields.Float(string='Total Maintenance Cost', compute='_compute_total_cost', store=True)
+    
+    compliance_notes = fields.Text(string='Compliance Notes')
 
     # ============================================================================
-    # METHODS
+    # COMPUTE METHODS
     # ============================================================================
+    @api.depends('maintenance_ids.parts_cost', 'maintenance_ids.labor_cost', 'maintenance_ids.external_cost')
     def _compute_total_cost(self):
-                for request in self:""
-                request.total_maintenance_cost = ()""
-                    (request.parts_cost or 0.0)""
-                    + (request.labor_cost or 0.0)""
-                    + (request.external_cost or 0.0)""
-                ""
+        for equipment in self:
+            total = 0.0
+            for maintenance in equipment.maintenance_ids:
+                total += (maintenance.parts_cost or 0.0) + (maintenance.labor_cost or 0.0) + (maintenance.external_cost or 0.0)
+            equipment.total_maintenance_cost = total
 
-    def _compute_performance_metrics(self):
-                from datetime import datetime
+    @api.depends('last_calibration_date', 'maintenance_frequency')
+    def _compute_next_calibration_date(self):
+        # This is a placeholder for more complex date logic
+        for equipment in self:
+            if equipment.last_calibration_date and equipment.maintenance_frequency:
+                # Simple example: add 30 days for monthly
+                # A real implementation would use dateutil.relativedelta
+                equipment.next_calibration_date = equipment.last_calibration_date + fields.date_utils.relativedelta(days=30)
+            else:
+                equipment.next_calibration_date = False
 

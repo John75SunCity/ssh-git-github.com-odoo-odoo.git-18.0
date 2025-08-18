@@ -19,79 +19,40 @@ class Load(models.Model):
 
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('planned', 'Planned'),
         ('loading', 'Loading'),
-        ('in_transit', 'In Transit'),
-        ('delivered', 'Delivered'),
-        ('sold', 'Sold'),
+        ('ready_for_pickup', 'Ready for Pickup'),
+        ('picked_up', 'Picked Up'),
+        ('invoiced', 'Invoiced'),
+        ('paid', 'Paid'),
         ('cancel', 'Cancelled')
     ], string='Status', default='draft', tracking=True, copy=False)
 
-    load_type = fields.Selection([
-        ('outbound', 'Outbound'),
-        ('inbound', 'Inbound')
-    ], string='Load Type', default='outbound', required=True)
-
     # Logistical Information
-    trailer_id = fields.Many2one(
-        'maintenance.equipment',
-        string='Trailer',
-        domain="[('category_id.name', '=', 'Trailer')]"
-    )
-    driver_id = fields.Many2one('hr.employee', string='Driver')
+    pickup_date = fields.Date(string='Pickup Date')
+    driver_name = fields.Char(string="Driver's Name")
+    driver_signature = fields.Binary(string="Driver's Signature", attachment=True)
 
-    # Dates
-    date_created = fields.Datetime(string='Creation Date', default=fields.Datetime.now, readonly=True)
-    loading_start_date = fields.Datetime(string='Loading Start Date')
-    loading_end_date = fields.Datetime(string='Loading End Date')
-    scheduled_ship_date = fields.Date(string='Scheduled Ship Date')
-    actual_ship_date = fields.Date(string='Actual Ship Date')
-    estimated_delivery_date = fields.Date(string='Estimated Delivery Date')
-    actual_delivery_date = fields.Date(string='Actual Delivery Date')
-
-    # Destination & Pickup
-    destination_partner_id = fields.Many2one('res.partner', string='Destination/Buyer')
-    pickup_location_id = fields.Many2one('stock.location', string='Pickup Location')
-    delivery_address = fields.Text(string='Delivery Address', compute='_compute_delivery_address', readonly=True, store=True)
+    # Destination
+    buyer_id = fields.Many2one('res.partner', string='Buyer/Recycling Center', domain="[('is_company', '=', True)]")
 
     # Contents
     paper_bale_ids = fields.One2many('paper.bale', 'load_id', string='Paper Bales')
     total_bales = fields.Integer(string='Total Bales', compute='_compute_load_stats', store=True)
-    current_weight = fields.Float(string='Total Weight (lbs)', compute='_compute_load_stats', store=True)
-    weight_utilization = fields.Float(string='Weight Utilization (%)', compute='_compute_weight_utilization')
+    total_weight = fields.Float(string='Total Weight (lbs)', compute='_compute_load_stats', store=True)
 
-    # Financials
+    # Computed Weight Totals by Paper Type
+    total_weight_wht = fields.Float(string='WHT Weight (lbs)', compute='_compute_weight_by_type', store=True)
+    total_weight_mix = fields.Float(string='MIX Weight (lbs)', compute='_compute_weight_by_type', store=True)
+    total_weight_occ = fields.Float(string='OCC Weight (lbs)', compute='_compute_weight_by_type', store=True)
+
+    # Financials & Payment
     currency_id = fields.Many2one('res.currency', related='company_id.currency_id', store=True)
-    estimated_revenue = fields.Monetary(string='Estimated Revenue')
-    actual_revenue = fields.Monetary(string='Actual Revenue')
-    transportation_cost = fields.Monetary(string='Transportation Cost')
-    fuel_cost = fields.Monetary(string='Fuel Cost')
-    total_costs = fields.Monetary(string='Total Costs', compute='_compute_financials', store=True)
-    net_profit = fields.Monetary(string='Net Profit', compute='_compute_financials', store=True)
-
-    # Quality Control
-    quality_grade = fields.Selection([
-        ('wht', 'White (WHT)'),
-        ('mix', 'Mixed (MIX)'),
-        ('occ', 'Cardboard (OCC)'),
-        ('trash', 'Trash (TRASH)')
-    ], string='Paper Type')
-    
-    # Bale Management
-    has_burst_bales = fields.Boolean(string='Has Burst Bales', default=False)
-    burst_bale_count = fields.Integer(string='Burst Bales Count', default=0)
-    reprocessing_required = fields.Boolean(string='Reprocessing Required', compute='_compute_reprocessing_required', store=True)
-    
-    exclude_trash_from_tracking = fields.Boolean(string='Exclude Trash from Market Tracking', default=True)
-    
-    contamination_level = fields.Float(string='Contamination Level (%)')
-    moisture_content = fields.Float(string='Moisture Content (%)')
-    quality_inspection_passed = fields.Boolean(string='QC Passed')
-    inspection_notes = fields.Text(string='Inspection Notes')
+    invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True, copy=False)
+    payment_status = fields.Selection(related='invoice_id.payment_state', string="Payment Status", readonly=True, store=True)
 
     # Attachments
-    bill_of_lading = fields.Binary(string='Bill of Lading')
-    weight_ticket = fields.Binary(string='Weight Ticket')
+    manifest_document = fields.Binary(string='Load Manifest', readonly=True, copy=False, attachment=True)
+    manifest_filename = fields.Char(string="Manifest Filename", readonly=True, copy=False)
 
     # ============================================================================
     # ORM OVERRIDES
@@ -100,113 +61,119 @@ class Load(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                seq = self.env['ir.sequence'].next_by_code('paper.bale.load')
-                if not seq:
-                    raise UserError(_("The sequence 'paper.bale.load' is missing. Please create it in Settings > Technical > Sequences."))
-                vals['name'] = seq
+                vals['name'] = self.env['ir.sequence'].next_by_code('paper.bale.load') or _('New')
         return super().create(vals_list)
 
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
     @api.depends('paper_bale_ids', 'paper_bale_ids.weight')
     def _compute_load_stats(self):
         for load in self:
             load.total_bales = len(load.paper_bale_ids)
-            load.current_weight = sum(load.paper_bale_ids.mapped('weight'))
+            load.total_weight = sum(load.paper_bale_ids.mapped('weight'))
 
-    @api.depends('current_weight', 'trailer_id.max_weight_capacity')
-    def _compute_weight_utilization(self):
+    @api.depends('paper_bale_ids', 'paper_bale_ids.weight', 'paper_bale_ids.paper_type')
+    def _compute_weight_by_type(self):
         for load in self:
-            if load.trailer_id and load.trailer_id.max_weight_capacity > 0:
-                load.weight_utilization = (load.current_weight / load.trailer_id.max_weight_capacity) * 100
-            else:
-                load.weight_utilization = 0.0
-
-    @api.depends('transportation_cost', 'fuel_cost', 'actual_revenue')
-    def _compute_financials(self):
-        for load in self:
-            load.total_costs = (load.transportation_cost or 0.0) + (load.fuel_cost or 0.0)
-            load.net_profit = (load.actual_revenue or 0.0) - load.total_costs
-
-    @api.depends('destination_partner_id')
-    def _compute_delivery_address(self):
-        for load in self:
-            if load.destination_partner_id:
-                address = load.destination_partner_id._display_address()
-                load.delivery_address = address if address else False
-            else:
-                load.delivery_address = False
-
-    @api.depends('has_burst_bales', 'burst_bale_count')
-    def _compute_reprocessing_required(self):
-        for load in self:
-            load.reprocessing_required = load.has_burst_bales and load.burst_bale_count > 0
+            load.total_weight_wht = sum(b.weight for b in load.paper_bale_ids if b.paper_type == 'wht')
+            load.total_weight_mix = sum(b.weight for b in load.paper_bale_ids if b.paper_type == 'mix')
+            load.total_weight_occ = sum(b.weight for b in load.paper_bale_ids if b.paper_type == 'occ')
 
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_plan(self):
+    def action_mark_ready_for_pickup(self):
         self.ensure_one()
-        self.write({'state': 'planned'})
+        if not self.paper_bale_ids:
+            raise UserError(_("You cannot mark a load as ready without any bales."))
+        self.write({'state': 'ready_for_pickup'})
 
-    def action_start_loading(self):
+    def action_mark_picked_up(self):
         self.ensure_one()
-        self.write({
-            'state': 'loading',
-            'loading_start_date': fields.Datetime.now()
+        self.write({'state': 'picked_up', 'pickup_date': fields.Date.context_today(self)})
+
+    def action_generate_manifest(self):
+        self.ensure_one()
+        # This will be the action to trigger the PDF report
+        return self.env.ref('records_management.action_report_load_manifest').report_action(self)
+
+    def action_create_invoice(self):
+        self.ensure_one()
+        if self.invoice_id:
+            raise UserError(_("An invoice has already been created for this load."))
+        if not self.buyer_id:
+            raise UserError(_("Please select a Buyer/Recycling Center before creating an invoice."))
+
+        invoice_lines = []
+        # This is a simplified example. You would likely have products for each paper type.
+        product_map = {
+            'wht': self.env.ref('records_management.product_paper_wht', raise_if_not_found=False),
+            'mix': self.env.ref('records_management.product_paper_mix', raise_if_not_found=False),
+            'occ': self.env.ref('records_management.product_paper_occ', raise_if_not_found=False),
+        }
+
+        if self.total_weight_wht > 0:
+            product = product_map.get('wht')
+            if not product: raise UserError(_("Product for 'WHT' paper not found."))
+            invoice_lines.append((0, 0, {
+                'product_id': product.id,
+                'name': _('White Paper Scrap'),
+                'quantity': self.total_weight_wht,
+                'product_uom_id': product.uom_id.id,
+                'price_unit': product.list_price,
+            }))
+
+        if self.total_weight_mix > 0:
+            product = product_map.get('mix')
+            if not product: raise UserError(_("Product for 'MIX' paper not found."))
+            invoice_lines.append((0, 0, {
+                'product_id': product.id,
+                'name': _('Mixed Paper Scrap'),
+                'quantity': self.total_weight_mix,
+                'product_uom_id': product.uom_id.id,
+                'price_unit': product.list_price,
+            }))
+
+        if self.total_weight_occ > 0:
+            product = product_map.get('occ')
+            if not product: raise UserError(_("Product for 'OCC' paper not found."))
+            invoice_lines.append((0, 0, {
+                'product_id': product.id,
+                'name': _('Cardboard/OCC Scrap'),
+                'quantity': self.total_weight_occ,
+                'product_uom_id': product.uom_id.id,
+                'price_unit': product.list_price,
+            }))
+
+        if not invoice_lines:
+            raise UserError(_("There is nothing to invoice for this load."))
+
+        invoice = self.env['account.move'].create({
+            'move_type': 'out_invoice',
+            'partner_id': self.buyer_id.id,
+            'invoice_date': fields.Date.context_today(self),
+            'invoice_line_ids': invoice_lines,
+            'ref': self.name,
         })
 
-    def action_finish_loading(self):
-        self.ensure_one()
-        self.write({
-            'state': 'in_transit',
-            'loading_end_date': fields.Datetime.now(),
-            'actual_ship_date': fields.Date.context_today(self)
-        })
+        self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
 
-    def action_deliver(self):
-        self.ensure_one()
-        self.write({
-            'state': 'delivered',
-            'actual_delivery_date': fields.Date.context_today(self)
-        })
-
-    def action_mark_sold(self):
-        self.ensure_one()
-        self.write({'state': 'sold'})
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Customer Invoice'),
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     def action_cancel(self):
         self.ensure_one()
+        if self.invoice_id and self.invoice_id.state != 'cancel':
+            raise UserError(_("You must cancel the related invoice first."))
         self.write({'state': 'cancel'})
 
     def action_reset_to_draft(self):
         self.ensure_one()
         self.write({'state': 'draft'})
-
-    def action_discard_burst_bales(self):
-        self.ensure_one()
-        if not self.has_burst_bales:
-            raise UserError(_("No burst bales identified for this load."))
-        
-        burst_bales = self.paper_bale_ids.filtered(lambda b: b.is_burst)
-        for bale in burst_bales:
-            bale.write({
-                'state': 'discarded',
-                'discard_reason': 'Burst bale - requires reprocessing',
-                'discard_date': fields.Datetime.now()
-            })
-        
-        self.message_post(
-            body=_("Discarded %d burst bale(s) for reprocessing. Bale numbers freed for reuse.", len(burst_bales))
-        )
-        
-        return True
-
-    def action_exclude_trash_bales(self):
-        self.ensure_one()
-        trash_bales = self.paper_bale_ids.filtered(lambda b: b.paper_type == 'trash')
-        trash_bales.write({'exclude_from_market_tracking': True})
-        
-        self.message_post(
-            body=_("Excluded %d TRASH bale(s) from market tracking.", len(trash_bales))
-        )
-        
-        return True

@@ -171,9 +171,10 @@ from . import load
 # Core NAID compliance
 from . import naid_compliance
 from . import naid_custody
-from . import naid_custody_event
-from . import naid_audit_log
+from . import naidcustody_event
+from . import naidaudit_log
 from . import naid_certificate
+from . import naid_certificate_item
 from . import naid_compliance_checklist_item
 from . import naid_compliance_action_plan
 from . import naid_compliance_alert
@@ -442,3 +443,4 @@ from . import customer_inventory_report_line
 from . import shredding_rates
 from . import records_billing
 from . import billing_service
+from . import maintenance_team

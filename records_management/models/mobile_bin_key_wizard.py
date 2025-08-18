@@ -1,9 +1,8 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 
-class GeneratedModel(models.Model):
+class MobileBinKeyWizard(models.TransientModel):
     _name = 'mobile.bin.key.wizard'
     _description = 'Mobile Bin Key Management Wizard'
     _order = 'create_date desc'
@@ -11,497 +10,306 @@ class GeneratedModel(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    employee_id = fields.Many2one()
-    action_type = fields.Selection()
-    priority = fields.Selection()
-    mobile_session_id = fields.Char()
-    device_info = fields.Char()
-    bin_key_id = fields.Many2one()
-    bin_location_id = fields.Many2one()
-    bin_number = fields.Char()
-    key_code = fields.Char()
-    access_level_required = fields.Selection()
-    partner_id = fields.Many2one()
-    customer_contact_id = fields.Many2one()
-    emergency_contact_id = fields.Many2one()
-    contact_name = fields.Char()
-    contact_phone = fields.Char()
-    contact_email = fields.Char()
-    operation_reason = fields.Selection()
-    operation_description = fields.Text()
-    special_instructions = fields.Text()
-    estimated_duration = fields.Float()
-    authorization_required = fields.Boolean()
-    authorized_by_id = fields.Many2one()
-    authorization_code = fields.Char()
-    approval_date = fields.Datetime()
-    operation_start_time = fields.Datetime()
-    operation_end_time = fields.Datetime()
-    items_accessed = fields.Text()
-    items_retrieved = fields.Text()
-    bin_condition_notes = fields.Text()
-    billable = fields.Boolean()
-    service_charge = fields.Float()
-    emergency_charge = fields.Float()
-    billing_notes = fields.Text()
-    show_contact_creation = fields.Boolean()
-    show_key_assignment = fields.Boolean()
-    show_lookup_results = fields.Boolean()
-    show_emergency_options = fields.Boolean()
-    mobile_view_mode = fields.Selection()
-    photo_ids = fields.One2many()
-    signature_image = fields.Binary()
-    documentation_required = fields.Boolean()
-    naid_compliance_check = fields.Boolean()
-    audit_trail_created = fields.Boolean()
-    chain_of_custody_id = fields.Many2one()
-    compliance_notes = fields.Text()
-    lookup_query = fields.Char()
-    lookup_results = fields.Text()
-    containers_found = fields.Integer()
-    documents_found = fields.Integer()
-    state = fields.Selection()
-    operation_status = fields.Selection()
-    operation_notes = fields.Text()
-    technician_notes = fields.Text()
-    customer_feedback = fields.Text()
-    issue_encountered = fields.Text()
-    actual_duration = fields.Float()
+    name = fields.Char(string="Operation Reference", readonly=True, default=_('New Mobile Operation'))
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Technician', default=lambda self: self.env.user)
+    employee_id = fields.Many2one('hr.employee', string='Employee', readonly=True)
+
+    action_type = fields.Selection([
+        ('access', 'Standard Access'),
+        ('emergency_access', 'Emergency Access'),
+        ('quick_lookup', 'Quick Lookup'),
+        ('inspect', 'Inspect Bin'),
+        ('audit_check', 'Audit Check')
+    ], string='Action Type', required=True, default='access')
+
+    priority = fields.Selection([('normal', 'Normal'), ('urgent', 'Urgent')], string='Priority', default='normal')
+    mobile_session_id = fields.Char(string='Mobile Session ID')
+    device_info = fields.Char(string='Device Info')
+
+    bin_key_id = fields.Many2one('records.bin.key', string='Bin Key')
+    bin_location_id = fields.Many2one('records.location', string='Bin Location')
+    bin_number = fields.Char(string='Bin Number')
+    key_code = fields.Char(string='Key Code')
+    access_level_required = fields.Selection([
+        ('standard', 'Standard'),
+        ('restricted', 'Restricted'),
+        ('confidential', 'Confidential'),
+        ('secure_vault', 'Secure Vault')
+    ], string='Required Access Level')
+
+    partner_id = fields.Many2one('res.partner', string='Customer')
+    operation_reason = fields.Selection([
+        ('retrieval', 'Item Retrieval'),
+        ('deposit', 'Item Deposit'),
+        ('maintenance', 'Maintenance'),
+        ('audit', 'Audit'),
+        ('emergency', 'Emergency')
+    ], string='Reason for Operation')
+    operation_description = fields.Text(string='Operation Description')
+
+    authorization_required = fields.Boolean(string='Authorization Required')
+    authorized_by_id = fields.Many2one('res.users', string='Authorized By', readonly=True)
+    approval_date = fields.Datetime(string='Approval Date', readonly=True)
+
+    operation_start_time = fields.Datetime(string='Operation Start Time', readonly=True)
+    operation_end_time = fields.Datetime(string='Operation End Time', readonly=True)
+    actual_duration = fields.Float(string='Actual Duration (Hours)', compute='_compute_operation_duration', store=True)
+
+    billable = fields.Boolean(string='Is Billable')
+    service_charge = fields.Float(string='Service Charge')
+
+    # UI Control Fields
+    show_lookup_results = fields.Boolean(string='Show Lookup Results')
+    show_emergency_options = fields.Boolean(string='Show Emergency Options')
+
+    # Lookup Fields
+    lookup_query = fields.Char(string='Search Query')
+    lookup_results = fields.Text(string='Lookup Results', readonly=True)
+    containers_found = fields.Integer(string='Containers Found', readonly=True)
+    documents_found = fields.Integer(string='Documents Found', readonly=True)
+
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('auth_pending', 'Pending Authorization'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', readonly=True)
+    operation_notes = fields.Text(string='Operation Notes')
+
+    # Compliance
+    naid_compliance_check = fields.Boolean(string='NAID Compliance Check')
+    audit_trail_created = fields.Boolean(string='Audit Trail Created', readonly=True)
+    chain_of_custody_id = fields.Many2one('records.chain.of.custody', string='Chain of Custody Record', readonly=True)
 
     # ============================================================================
-    # METHODS
+    # COMPUTE & ONCHANGE
     # ============================================================================
+    @api.depends('operation_start_time', 'operation_end_time')
     def _compute_operation_duration(self):
-            """Calculate actual operation duration"""
-            for wizard in self:
-                if wizard.operation_start_time and wizard.operation_end_time:
-                    delta = wizard.operation_end_time - wizard.operation_start_time
-                    wizard.actual_duration = delta.total_seconds() / 3600.0
-                else:
-                    wizard.actual_duration = 0.0
+        for wizard in self:
+            if wizard.operation_start_time and wizard.operation_end_time:
+                delta = wizard.operation_end_time - wizard.operation_start_time
+                wizard.actual_duration = delta.total_seconds() / 3600.0
+            else:
+                wizard.actual_duration = 0.0
 
-
+    @api.onchange('user_id')
     def _onchange_user_id(self):
-            """Update employee when user changes"""
-            if self.user_id and self.user_id.employee_id:
-                self.employee_id = self.user_id.employee_id
+        if self.user_id and self.user_id.employee_id:
+            self.employee_id = self.user_id.employee_id
 
-
+    @api.onchange('bin_key_id')
     def _onchange_bin_key_id(self):
-            """Update related fields when bin key changes"""
-            if self.bin_key_id:
-                self.bin_location_id = self.bin_key_id.location_id
-                self.bin_number = self.bin_key_id.bin_number
-                self.access_level_required = self.bin_key_id.access_level
+        if self.bin_key_id:
+            self.bin_location_id = self.bin_key_id.location_id
+            self.bin_number = self.bin_key_id.bin_number
+            self.access_level_required = self.bin_key_id.access_level
 
-
+    @api.onchange('action_type')
     def _onchange_action_type(self):
-            """Update fields based on action type"""
-            if self.action_type == 'emergency_access':
-                self.priority = 'urgent'
-                self.authorization_required = True
-                self.show_emergency_options = True
-            elif self.action_type == 'quick_lookup':
-                self.show_lookup_results = True
-                self.billable = False
-            elif self.action_type in ['inspect', 'audit_check']:
-                self.documentation_required = True
-                self.naid_compliance_check = True
+        if self.action_type == 'emergency_access':
+            self.priority = 'urgent'
+            self.authorization_required = True
+            self.show_emergency_options = True
+        elif self.action_type == 'quick_lookup':
+            self.show_lookup_results = True
+            self.billable = False
+        elif self.action_type in ['inspect', 'audit_check']:
+            self.naid_compliance_check = True
 
-
-    def _onchange_partner_id(self):
-            """Update contact information when partner changes"""
-            if self.partner_id:
-                # Set default contact information from partner
-                self.contact_name = self.partner_id.name
-                self.contact_phone = self.partner_id.phone
-                self.contact_email = self.partner_id.email
-
-        # ============================================================================
-            # ACTION METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_start_operation(self):
-            """Start the mobile operation"""
-            self.ensure_one()
+        self.ensure_one()
+        if self.state != 'draft':
+            raise UserError(_("Can only start draft operations."))
+        if self.authorization_required and not self.authorized_by_id:
+            raise UserError(_("Authorization is required before starting this operation."))
+        if not self._check_access_permissions():
+            raise UserError(_("You do not have sufficient access permissions for this operation."))
 
-            if self.state != 'draft':
-                raise UserError(_("Can only start draft operations"))
-
-            # Validate authorization if required:
-            if self.authorization_required and not self.authorized_by_id:
-                raise UserError(_("Authorization required before starting operation"))
-
-            # Check access permissions
-            if not self._check_access_permissions():
-                raise UserError(_("Insufficient access permissions for this operation")):
-            self.write({)}
-                'state': 'in_progress',
-                'operation_status': 'executing',
-                'operation_start_time': fields.Datetime.now()
-
-
-            self._create_audit_log('operation_started')
-            self.message_post(body=_("Mobile operation started by %s", self.user_id.name))
-
-            return self._return_mobile_interface()
-
+        self.write({
+            'state': 'in_progress',
+            'operation_start_time': fields.Datetime.now()
+        })
+        self._create_audit_log('operation_started')
+        self.message_post(body=_("Mobile operation started by %s.", self.user_id.name))
+        return self._return_mobile_interface()
 
     def action_complete_operation(self):
-            """Complete the mobile operation"""
-            self.ensure_one()
+        self.ensure_one()
+        if self.state != 'in_progress':
+            raise UserError(_("Can only complete operations that are in progress."))
+        if self.naid_compliance_check and not self.operation_notes:
+            raise UserError(_("Operation notes are required for compliance purposes."))
 
-            if self.state != 'in_progress':
-                raise UserError(_("Can only complete operations in progress"))
+        self.write({
+            'state': 'completed',
+            'operation_end_time': fields.Datetime.now()
+        })
 
-            # Validate required fields
-            if self.documentation_required and not self.operation_notes:
-                raise UserError(_("Operation notes required for this type of operation")):
-            self.write({)}
-                'state': 'completed',
-                'operation_status': 'success',
-                'operation_end_time': fields.Datetime.now()
+        if self.naid_compliance_check:
+            self._create_chain_of_custody_record()
+        self._create_audit_log('operation_completed')
+        self.message_post(body=_("Mobile operation completed successfully."))
 
-
-            # Create chain of custody record if needed:
-            if self.naid_compliance_check:
-                self._create_chain_of_custody_record()
-
-            self._create_audit_log('operation_completed')
-            self.message_post(body=_("Mobile operation completed successfully"))
-
-            # Generate billing record if billable:
-            if self.billable:
-                self._create_billing_record()
-
-            return {'type': 'ir.actions.act_window_close'}
-
+        if self.billable:
+            self._create_billing_record()
+        return {'type': 'ir.actions.act_window_close'}
 
     def action_cancel_operation(self):
-            """Cancel the mobile operation"""
-            self.ensure_one()
-
-            self.write({)}
-                'state': 'cancelled',
-                'operation_status': 'failed'
-
-
-            self._create_audit_log('operation_cancelled')
-            self.message_post(body=_("Mobile operation cancelled"))
-
-            return {'type': 'ir.actions.act_window_close'}
-
+        self.ensure_one()
+        self.write({'state': 'cancelled'})
+        self._create_audit_log('operation_cancelled')
+        self.message_post(body=_("Mobile operation cancelled."))
+        return {'type': 'ir.actions.act_window_close'}
 
     def action_execute_lookup(self):
-            """Execute quick lookup operation"""
-            self.ensure_one()
-
-            if not self.lookup_query:
-                raise UserError(_("Please enter search criteria for lookup")):
-            # Perform database lookup
-            results = self._perform_database_lookup()
-
-            self.write({)}
-                'lookup_results': results.get('formatted_results', ''),
-                'containers_found': results.get('containers_count', 0),
-                'documents_found': results.get('documents_count', 0),
-                'show_lookup_results': True
-
-
-            self._create_audit_log('lookup_performed')
-
-            return {}
-                'type': 'ir.actions.act_window',
-                'res_model': 'mobile.bin.key.wizard',
-                'res_id': self.id,
-                'view_mode': 'form',
-                'target': 'new',
-                'context': dict(self.env.context, show_lookup_results=True)
-
-
+        self.ensure_one()
+        if not self.lookup_query:
+            raise UserError(_("Please enter search criteria for the lookup."))
+        results = self._perform_database_lookup()
+        self.write({
+            'lookup_results': results.get('formatted_results', ''),
+            'containers_found': results.get('containers_count', 0),
+            'documents_found': results.get('documents_count', 0),
+            'show_lookup_results': True
+        })
+        self._create_audit_log('lookup_performed')
+        return self._return_mobile_interface()
 
     def action_request_authorization(self):
-            """Request supervisor authorization"""
-            self.ensure_one()
+        self.ensure_one()
+        self.state = 'auth_pending'
+        manager_group = self.env.ref('records_management.group_records_manager', raise_if_not_found=False)
+        if not manager_group:
+            raise UserError(_("The 'Records Manager' security group could not be found."))
 
-            # Create activity for supervisor:
-            supervisor_group = self.env.ref('records_management.group_records_manager')
-            supervisors = self.env['res.users'].search([)]
-                ('groups_id', 'in', supervisor_group.id)
-
-
-            for supervisor in supervisors:
-                self.activity_schedule()
-                    'mail.mail_activity_data_todo',
-                    user_id=supervisor.id,
-                    summary=_("Authorization Required: %s", self.name),
-                    note=_("Mobile operation requires supervisor authorization:\n")
-                            "Operation: %s\n"
-                            "Technician: %s\n"
-                            "Reason: %s",
-                            self.action_type, self.user_id.name, self.operation_reason
-
-
-            self.message_post(body=_("Authorization requested from supervisors"))
-
-            return {}
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {}
-                    'message': _("Authorization request sent to supervisors"),
-                    'type': 'success'
-
-
-
+        self.activity_schedule(
+            'mail.mail_activity_data_todo',
+            summary=_("Authorization Required: %s", self.name),
+            note=_("Mobile operation '%s' by %s requires supervisor authorization.", self.action_type, self.user_id.name),
+            user_id=manager_group.users[0].id if manager_group.users else self.env.ref('base.user_admin').id
+        )
+        self.message_post(body=_("Authorization requested from supervisors."))
+        return self._return_mobile_interface()
 
     def action_authorize_operation(self):
-            """Authorize the operation (supervisor action)"""
-            self.ensure_one()
+        self.ensure_one()
+        if not self.env.user.has_group('records_management.group_records_manager'):
+            raise UserError(_("Only supervisors can authorize operations."))
+        self.write({
+            'authorized_by_id': self.env.user.id,
+            'approval_date': fields.Datetime.now(),
+            'state': 'draft'
+        })
+        self._create_audit_log('operation_authorized')
+        self.message_post(body=_("Operation authorized by %s.", self.env.user.name))
+        return self._return_mobile_interface()
 
-            if not self.env.user.has_group('records_management.group_records_manager'):
-                raise UserError(_("Only supervisors can authorize operations"))
-
-            self.write({)}
-                'authorized_by_id': self.env.user.id,
-                'approval_date': fields.Datetime.now(),
-                'authorization_required': False
-
-
-            self._create_audit_log('operation_authorized')
-            self.message_post(body=_("Operation authorized by %s", self.env.user.name))
-
-            return self._return_mobile_interface()
-
-        # ============================================================================
-            # VALIDATION METHODS
-        # ============================================================================
-
-    def _check_operation_times(self):
-            """Validate operation time sequence"""
-            for wizard in self:
-                if (wizard.operation_start_time and wizard.operation_end_time and:)
-                    wizard.operation_start_time > wizard.operation_end_time
-                    raise ValidationError(_())
-                        "Operation start time cannot be after end time"
-
-
-
-    def _check_charges(self):
-            """Validate charge amounts"""
-            for wizard in self:
-                if wizard.service_charge and wizard.service_charge < 0:
-                    raise ValidationError(_("Service charge cannot be negative"))
-                if wizard.emergency_charge and wizard.emergency_charge < 0:
-                    raise ValidationError(_("Emergency charge cannot be negative"))
-
-        # ============================================================================
-            # BUSINESS LOGIC METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # BUSINESS LOGIC
+    # ============================================================================
     def _check_access_permissions(self):
-            """Check if user has permission for the requested access level""":
-            self.ensure_one()
-
-            user_groups = self.env.user.groups_id.mapped('name')
-
-            access_requirements = {}
-                'standard': ['Records User'],
-                'restricted': ['Records User', 'Records Manager'],
-                'confidential': ['Records Manager'],
-                'secure_vault': ['Records Manager', 'Compliance Officer']
-
-
-            required_groups = access_requirements.get(self.access_level_required, [])
-            return any(group in user_groups for group in required_groups):
+        self.ensure_one()
+        # This is a simplified placeholder. Real logic would be more robust.
+        if self.access_level_required == 'secure_vault':
+            return self.env.user.has_group('records_management.group_records_manager')
+        return True
 
     def _perform_database_lookup(self):
-            """Perform database lookup based on query"""
-            self.ensure_one()
-
-            query = self.lookup_query.strip()
-            results = {'containers_count': 0, 'documents_count': 0, 'formatted_results': ''}
-
-            if not query:
-                return results
-
-            # Search containers
-            containers = self.env['records.container'].search([)]
-                '|', '|',
-                ('name', 'ilike', query),
-                ('barcode', 'ilike', query),
-                ('description', 'ilike', query)
-
-
-            # Search documents
-            documents = self.env['records.document'].search([)]
-                '|', '|',
-                ('name', 'ilike', query),
-                ('document_number', 'ilike', query),
-                ('description', 'ilike', query)
-
-
-            results['containers_count'] = len(containers)
-            results['documents_count'] = len(documents)
-
-            # Format results
-            formatted_lines = []
-            if containers:
-                formatted_lines.append(_("CONTAINERS FOUND (%d):", len(containers)))
-                for container in containers[:10]:  # Limit to first 10
-                    formatted_lines.append(_("- %s (Location: %s)",
-                                            container.name,
-                                            container.location_id.name or 'Unknown'
-
-            if documents:
-                formatted_lines.append(_("\nDOCUMENTS FOUND (%d):", len(documents)))
-                for document in documents[:10]:  # Limit to first 10
-                    formatted_lines.append(_("- %s (Container: %s)",
-                                            document.name,
-                                            document.container_id.name or 'Unknown'
-
-            results['formatted_results'] = '\n'.join(formatted_lines)
+        self.ensure_one()
+        query = self.lookup_query.strip()
+        results = {'containers_count': 0, 'documents_count': 0, 'formatted_results': ''}
+        if not query:
             return results
 
+        containers = self.env['records.container'].search([('name', 'ilike', query)], limit=10)
+        documents = self.env['records.document'].search([('name', 'ilike', query)], limit=10)
+        results['containers_count'] = len(containers)
+        results['documents_count'] = len(documents)
 
-    def _create_audit_log(self, action_type):
-            """Create NAID compliance audit log"""
-            self.ensure_one()
+        lines = []
+        if containers:
+            lines.append(_("CONTAINERS FOUND (%d):", len(containers)))
+            lines.extend([f"- {c.name} (Location: {c.location_id.name or 'N/A'})" for c in containers])
+        if documents:
+            lines.append(_("\nDOCUMENTS FOUND (%d):", len(documents)))
+            lines.extend([f"- {d.name} (Container: {d.container_id.name or 'N/A'})" for d in documents])
 
-            if 'naid.audit.log' in self.env:
-                audit_vals = {}
-                    'action_type': action_type,
-                    'user_id': self.env.user.id,
-                    'timestamp': fields.Datetime.now(),
-                    'description': _("Mobile bin key operation: %s", action_type),
-                    'mobile_wizard_id': self.id,
-                    'bin_key_id': self.bin_key_id.id if self.bin_key_id else False,:
-                    'location_id': self.bin_location_id.id if self.bin_location_id else False,:
-                    'naid_compliant': self.naid_compliance_check,
+        results['formatted_results'] = '\n'.join(lines) if lines else _("No results found.")
+        return results
 
-                self.env['naid.audit.log'].create(audit_vals)
-                self.audit_trail_created = True
-
+    def _create_audit_log(self, action):
+        self.ensure_one()
+        if 'naid.audit.log' in self.env:
+            self.env['naid.audit.log'].create({
+                'action_type': action,
+                'user_id': self.env.user.id,
+                'description': _("Mobile bin key operation: %s on bin %s", action, self.bin_number or 'N/A'),
+                'naid_compliant': self.naid_compliance_check,
+            })
+            self.audit_trail_created = True
 
     def _create_chain_of_custody_record(self):
-            """Create chain of custody record for NAID compliance""":
-            self.ensure_one()
-
-            if 'records.chain.of.custody' in self.env:
-                custody_vals = {}
-                    'name': _("Mobile Operation: %s", self.name),
-                    'event_type': 'mobile_access',
-                    'responsible_user_id': self.user_id.id,
-                    'event_date': fields.Datetime.now(),
-                    'location_id': self.bin_location_id.id if self.bin_location_id else False,:
-                    'description': self.operation_description or '',
-                    'mobile_wizard_id': self.id,
-
-                custody_record = self.env['records.chain.of.custody'].create(custody_vals)
-                self.chain_of_custody_id = custody_record.id
-
+        self.ensure_one()
+        if 'records.chain.of.custody' in self.env:
+            custody = self.env['records.chain.of.custody'].create({
+                'name': _("Mobile Operation: %s", self.name),
+                'event_type': 'mobile_access',
+                'responsible_user_id': self.user_id.id,
+                'location_id': self.bin_location_id.id if self.bin_location_id else False,
+                'description': self.operation_description or '',
+            })
+            self.chain_of_custody_id = custody.id
 
     def _create_billing_record(self):
-            """Create billing record for billable operations""":
-            self.ensure_one()
-
-            if not self.billable or not (self.service_charge or self.emergency_charge):
-                return
-
-            total_charge = (self.service_charge or 0.0) + (self.emergency_charge or 0.0)
-
-            if 'account.move' in self.env and self.partner_id:
-                # Create invoice line for the service:
-                invoice_vals = {}
-                    'partner_id': self.partner_id.id,
-                    'move_type': 'out_invoice',
-                    'invoice_line_ids': [(0, 0, {)]}
-                        'name': _("Mobile Bin Key Service: %s", self.action_type),
-                        'quantity': 1,
-                        'price_unit': total_charge,
-                        'account_id': self.env['account.account'].search([)]
-                            ('user_type_id.name', '=', 'Income')
-
-
-
-                invoice = self.env['account.move'].create(invoice_vals)
-                self.message_post(body=_("Billing record created: %s", invoice.name))
-
+        self.ensure_one()
+        if not self.billable or not self.service_charge > 0 or not self.partner_id:
+            return
+        # Simplified invoice creation. A real implementation would use products.
+        self.env['account.move'].create({
+            'partner_id': self.partner_id.id,
+            'move_type': 'out_invoice',
+            'invoice_line_ids': [(0, 0, {
+                'name': _("Mobile Bin Key Service: %s", self.action_type),
+                'quantity': 1,
+                'price_unit': self.service_charge,
+            })]
+        })
 
     def _return_mobile_interface(self):
-            """Return appropriate mobile interface view"""
-            self.ensure_one()
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Mobile Bin Key Operation"),
+            'res_model': 'mobile.bin.key.wizard',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }
 
-            return {}
-                'type': 'ir.actions.act_window',
-                'name': _("Mobile Bin Key Operation"),
-                'res_model': 'mobile.bin.key.wizard',
-                'res_id': self.id,
-                'view_mode': 'form',
-                'target': 'new',
-                'context': dict(self.env.context,
-                                mobile_interface=True,
-                                view_mode=self.mobile_view_mode
-
-
-        # ============================================================================
-            # MOBILE INTERFACE METHODS
-        # ============================================================================
-
-    def get_mobile_dashboard_data(self):
-            """Get dashboard data for mobile interface""":
-            self.ensure_one()
-
-            return {}
-                'operation_status': self.operation_status,
-                'current_location': self.bin_location_id.name if self.bin_location_id else '',:
-                'operation_duration': self.actual_duration,
-                'containers_found': self.containers_found,
-                'documents_found': self.documents_found,
-                'authorization_status': 'authorized' if not self.authorization_required else 'pending',:
-                'billing_estimate': (self.service_charge or 0.0) + (self.emergency_charge or 0.0)
-
-
-
-    def create_from_mobile_request(self, mobile_data):
-            """Create wizard from mobile app request"""
-            vals = {}
-                'name': mobile_data.get('operation_name', _('Mobile Operation')),
-                'action_type': mobile_data.get('action_type', 'quick_lookup'),
-                'mobile_session_id': mobile_data.get('session_id'),
-                'device_info': mobile_data.get('device_info'),
-                'lookup_query': mobile_data.get('search_query'),
-                'operation_reason': mobile_data.get('reason'),
-                'priority': mobile_data.get('priority', 'normal'),
-
-
-            return self.create(vals)
-
-        # ============================================================================
-            # ORM METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
     def create(self, vals_list):
-            """Override create to set default name and mobile settings"""
-            for vals in vals_list:
-                if not vals.get('name') or vals['name'] == _('New Mobile Operation'):
-                    sequence = self.env['ir.sequence'].next_by_code('mobile.bin.key.wizard')
-                    vals['name'] = sequence or _('Mobile Op %s', fields.Datetime.now().strftime('%Y%m%d-%H%M'))
-
-            return super().create(vals_list)
-
+        for vals in vals_list:
+            if not vals.get('name') or vals.get('name') == _('New Mobile Operation'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('mobile.bin.key.wizard') or _('New Mobile Operation')
+        return super().create(vals_list)
 
     def name_get(self):
-            """Custom name display for mobile operations""":
-            result = []
-            for wizard in self:
-                name = wizard.name
-                if wizard.action_type and wizard.state:
-                    action_label = dict(wizard._fields['action_type'].selection)[wizard.action_type]
-                    state_label = dict(wizard._fields['state'].selection)[wizard.state]
-                    name = _("%s - %s [%s]", name, action_label, state_label)
-                result.append((wizard.id, name))
-            return result
+        result = []
+        for wizard in self:
+            name = wizard.name
+            if wizard.action_type and wizard.state:
+                action_label = dict(wizard._fields['action_type'].selection).get(wizard.action_type, '')
+                state_label = dict(wizard._fields['state'].selection).get(wizard.state, '')
+                name = f"{name} - {action_label} [{state_label}]"
+            result.append((wizard.id, name))
+        return result
 

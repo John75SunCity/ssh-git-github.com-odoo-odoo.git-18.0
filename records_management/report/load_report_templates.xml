@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_load_manifest">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <div class="row">
+                            <div class="col-12">
+                                <h2>Load Manifest: <span t-field="doc.name"/></h2>
+                            </div>
+                        </div>
+
+                        <div class="row mt32">
+                            <div class="col-6">
+                                <strong>Buyer:</strong>
+                                <p t-field="doc.buyer_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Scheduled Ship Date:</strong>
+                                <p t-field="doc.scheduled_ship_date"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm o_main_table mt32">
+                            <thead>
+                                <tr>
+                                    <th name="th_bale_number" class="text-left">Bale Number</th>
+                                    <th name="th_paper_type" class="text-left">Paper Type</th>
+                                    <th name="th_weight" class="text-right">Weight (lbs)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.paper_bale_ids" t-as="bale">
+                                    <tr>
+                                        <td><span t-field="bale.name"/></td>
+                                        <td><span t-field="bale.paper_type"/></td>
+                                        <td class="text-right"><span t-field="bale.weight"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div class="row justify-content-end">
+                            <div class="col-4">
+                                <table class="table table-sm">
+                                    <tr class="border-black">
+                                        <td><strong>Total Weight (WHT)</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.total_weight_wht"/> lbs
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Weight (MIX)</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.total_weight_mix"/> lbs
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Weight (OCC)</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.total_weight_occ"/> lbs
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black">
+                                        <td><strong>Total Load Weight</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="doc.total_weight"/> lbs
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row mt32">
+                            <div class="col-6">
+                                <strong>Driver's Signature:</strong>
+                                <div style="border-bottom: 1px solid black; height: 50px;"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Pickup Date:</strong>
+                                <div style="border-bottom: 1px solid black; height: 50px;"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

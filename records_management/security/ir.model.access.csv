@@ -220,6 +220,12 @@ access_container_access_work_order_portal,access_container_access_work_order_por
 access_container_access_work_order_fsm,access_container_access_work_order_fsm,model_container_access_work_order,industry_fsm.group_fsm_user,1,1,1,0
 
 # ============================================================================
+# LOAD ACCESS RULES
+# ============================================================================
+access_load_user,load_user,model_load,records_management.group_records_user,1,1,1,0
+access_load_manager,load_manager,model_load,records_management.group_records_manager,1,1,1,1
+
+# ============================================================================
 # DESTRUCTION ITEM ACCESS RULES
 # ============================================================================
 access_destruction_item_user,destruction.item.user,model_destruction_item,records_management.group_records_user,1,1,1,0
@@ -227,7 +233,7 @@ access_destruction_item_manager,destruction.item.manager,model_destruction_item,
 access_destruction_item_portal,destruction.item.portal,model_destruction_item,base.group_portal,1,0,0,0
 
 # ============================================================================
-# NAID CERTIFICATE ACCESS RULES  
+# NAID CERTIFICATE ACCESS RULES
 # ============================================================================
 access_naid_certificate_user,naid.certificate.user,model_naid_certificate,records_management.group_records_user,1,1,1,0
 access_naid_certificate_manager,naid.certificate.manager,model_naid_certificate,records_management.group_records_manager,1,1,1,1
@@ -303,87 +309,10 @@ access_container_access_work_order_portal,access_container_access_work_order_por
 access_container_access_work_order_fsm,access_container_access_work_order_fsm,model_container_access_work_order,industry_fsm.group_fsm_user,1,1,1,0
 
 # ============================================================================
-# DESTRUCTION ITEM ACCESS RULES
+# LOAD ACCESS RULES
 # ============================================================================
-access_destruction_item_user,destruction.item.user,model_destruction_item,records_management.group_records_user,1,1,1,0
-access_destruction_item_manager,destruction.item.manager,model_destruction_item,records_management.group_records_manager,1,1,1,1
-access_destruction_item_portal,destruction.item.portal,model_destruction_item,base.group_portal,1,0,0,0
-
-# ============================================================================
-# NAID CERTIFICATE ACCESS RULES  
-# ============================================================================
-access_naid_certificate_user,naid.certificate.user,model_naid_certificate,records_management.group_records_user,1,1,1,0
-access_naid_certificate_manager,naid.certificate.manager,model_naid_certificate,records_management.group_records_manager,1,1,1,1
-access_naid_certificate_portal,naid.certificate.portal,model_naid_certificate,base.group_portal,1,0,0,0
-
-# ============================================================================
-# WORK ORDER INTEGRATION COORDINATOR ACCESS RULES
-# ============================================================================
-access_work_order_coordinator_user,access_work_order_coordinator_user,model_work_order_coordinator,records_management.group_records_user,1,1,1,0
-access_work_order_coordinator_manager,access_work_order_coordinator_manager,model_work_order_coordinator,records_management.group_records_manager,1,1,1,1
-access_work_order_coordinator_portal,access_work_order_coordinator_portal,model_work_order_coordinator,base.group_portal,1,0,0,0
-access_work_order_coordinator_fsm,access_work_order_coordinator_fsm,model_work_order_coordinator,industry_fsm.group_fsm_user,1,1,1,0
-
-# Work Order Integration Mixin (abstract model - no direct access needed)
-access_file_retrieveal_work_order_item_py_manager,file_retrieveal_work_order_item_py_manager,model_file_retrieveal_work_order_item_py,,1,1,1,1
-access_file_retrieval_work_order_item_manager,file_retrieval_work_order_item_manager,model_file_retrieval_work_order_item,,1,1,1,1
-access_field_label_customization_manager,field_label_customization_manager,model_field_label_customization,,1,1,1,1
-
-# ============================================================================
-# REPORT ACCESS RULES
-# ============================================================================
-
-# Revenue Forecasting Report
-access_report_revenue_forecasting_user,report.revenue.forecasting.user,records_management.report.records_management.report_revenue_forecasting,records_management.group_records_user,1,0,0,0
-access_report_revenue_forecasting_manager,report.revenue.forecasting.manager,records_management.report.records_management.report_revenue_forecasting,records_management.group_records_manager,1,0,0,0
-
-# NAID Compliance Report
-access_naid_compliance_user,naid.compliance.user,model_naid_compliance,records_management.group_records_user,1,0,0,0
-access_naid_compliance_manager,naid.compliance.manager,model_naid_compliance,records_management.group_records_manager,1,1,1,1
-
-# Management Dashboard
-access_records_management_dashboard_user,records.management.dashboard.user,model_records_management_dashboard,records_management.group_records_user,1,0,0,0
-access_records_management_dashboard_manager,records.management.dashboard.manager,model_records_management_dashboard,records_management.group_records_manager,1,1,1,1
-
-# ============================================================================
-# NEW INTEGRATED WORK ORDER ACCESS RULES (5 Work Order Types)
-# ============================================================================
-
-# Container Retrieval Work Order Access
-access_container_retrieval_work_order_user,access_container_retrieval_work_order_user,model_container_retrieval_work_order,records_management.group_records_user,1,1,1,0
-access_container_retrieval_work_order_manager,access_container_retrieval_work_order_manager,model_container_retrieval_work_order,records_management.group_records_manager,1,1,1,1
-access_container_retrieval_work_order_portal,access_container_retrieval_work_order_portal,model_container_retrieval_work_order,base.group_portal,1,1,1,0
-access_container_retrieval_work_order_fsm,access_container_retrieval_work_order_fsm,model_container_retrieval_work_order,industry_fsm.group_fsm_user,1,1,1,0
-
-# File Retrieval Work Order Access
-access_file_retrieval_work_order_user,access_file_retrieval_work_order_user,model_file_retrieval_work_order,records_management.group_records_user,1,1,1,0
-access_file_retrieval_work_order_manager,access_file_retrieval_work_order_manager,model_file_retrieval_work_order,records_management.group_records_manager,1,1,1,1
-access_file_retrieval_work_order_portal,access_file_retrieval_work_order_portal,model_file_retrieval_work_order,base.group_portal,1,1,1,0
-access_file_retrieval_work_order_fsm,access_file_retrieval_work_order_fsm,model_file_retrieval_work_order,industry_fsm.group_fsm_user,1,1,1,0
-access_file_retrieval_item_user,access_file_retrieval_item_user,model_file_retrieval_item,records_management.group_records_user,1,1,1,0
-access_file_retrieval_item_manager,access_file_retrieval_item_manager,model_file_retrieval_item,records_management.group_records_manager,1,1,1,1
-access_file_retrieval_item_portal,access_file_retrieval_item_portal,model_file_retrieval_item,base.group_portal,1,0,0,0
-
-# Scan Retrieval Work Order Access
-access_scan_retrieval_work_order_user,access_scan_retrieval_work_order_user,model_scan_retrieval_work_order,records_management.group_records_user,1,1,1,0
-access_scan_retrieval_work_order_manager,access_scan_retrieval_work_order_manager,model_scan_retrieval_work_order,records_management.group_records_manager,1,1,1,1
-access_scan_retrieval_work_order_portal,access_scan_retrieval_work_order_portal,model_scan_retrieval_work_order,base.group_portal,1,1,1,0
-access_scan_retrieval_work_order_fsm,access_scan_retrieval_work_order_fsm,model_scan_retrieval_work_order,industry_fsm.group_fsm_user,1,1,1,0
-access_scan_retrieval_item_user,access_scan_retrieval_item_user,model_scan_retrieval_item,records_management.group_records_user,1,1,1,0
-access_scan_retrieval_item_manager,access_scan_retrieval_item_manager,model_scan_retrieval_item,records_management.group_records_manager,1,1,1,1
-access_scan_retrieval_item_portal,access_scan_retrieval_item_portal,model_scan_retrieval_item,base.group_portal,1,0,0,0
-
-# Container Destruction Work Order Access
-access_container_destruction_work_order_user,access_container_destruction_work_order_user,model_container_destruction_work_order,records_management.group_records_user,1,1,1,0
-access_container_destruction_work_order_manager,access_container_destruction_work_order_manager,model_container_destruction_work_order,records_management.group_records_manager,1,1,1,1
-access_container_destruction_work_order_portal,access_container_destruction_work_order_portal,model_container_destruction_work_order,base.group_portal,1,1,1,0
-access_container_destruction_work_order_fsm,access_container_destruction_work_order_fsm,model_container_destruction_work_order,industry_fsm.group_fsm_user,1,1,1,0
-
-# Container Access Work Order Access
-access_container_access_work_order_user,access_container_access_work_order_user,model_container_access_work_order,records_management.group_records_user,1,1,1,0
-access_container_access_work_order_manager,access_container_access_work_order_manager,model_container_access_work_order,records_management.group_records_manager,1,1,1,1
-access_container_access_work_order_portal,access_container_access_work_order_portal,model_container_access_work_order,base.group_portal,1,1,1,0
-access_container_access_work_order_fsm,access_container_access_work_order_fsm,model_container_access_work_order,industry_fsm.group_fsm_user,1,1,1,0
+access_load_user,load_user,model_load,records_management.group_records_user,1,1,1,0
+access_load_manager,load_manager,model_load,records_management.group_records_manager,1,1,1,1
 
 # ============================================================================
 # DESTRUCTION ITEM ACCESS RULES
@@ -393,7 +322,7 @@ access_destruction_item_manager,destruction.item.manager,model_destruction_item,
 access_destruction_item_portal,destruction.item.portal,model_destruction_item,base.group_portal,1,0,0,0
 
 # ============================================================================
-# NAID CERTIFICATE ACCESS RULES  
+# NAID CERTIFICATE ACCESS RULES
 # ============================================================================
 access_naid_certificate_user,naid.certificate.user,model_naid_certificate,records_management.group_records_user,1,1,1,0
 access_naid_certificate_manager,naid.certificate.manager,model_naid_certificate,records_management.group_records_manager,1,1,1,1
@@ -438,7 +367,7 @@ access_bin_key_unlock_service_manager,bin_key_unlock_service_manager,model_bin_k
 access_revenue_forecast_line_user,access_revenue_forecast_line_user,model_revenue_forecast_line,records_management.group_records_user,1,1,1,0
 access_revenue_forecast_line_manager,access_revenue_forecast_line_manager,model_revenue_forecast_line,records_management.group_records_manager,1,1,1,1
 
-# Records Billing Config Audit Access Rules  
+# Records Billing Config Audit Access Rules
 access_records_billing_config_audit_user,access_records_billing_config_audit_user,model_records_billing_config_audit,records_management.group_records_user,1,1,1,0
 access_records_billing_config_audit_manager,access_records_billing_config_audit_manager,model_records_billing_config_audit,records_management.group_records_manager,1,1,1,1
 
@@ -475,3 +404,4 @@ access_customer_inventory_report_line_user,access_customer_inventory_report_line
 access_customer_inventory_report_line_manager,access_customer_inventory_report_line_manager,model_customer_inventory_report_line,records_management.group_records_manager,1,1,1,1
 access_customer_inventory_report_line_portal,access_customer_inventory_report_line_portal,model_customer_inventory_report_line,base.group_portal,1,0,0,0
 access_paper_bale_weigh_wizard_manager,paper_bale_weigh_wizard_manager,model_paper_bale_weigh_wizard,,1,1,1,1
+access_mobile_photo_manager,mobile_photo_manager,model_mobile_photo,,1,1,1,1
