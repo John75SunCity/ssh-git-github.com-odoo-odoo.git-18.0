@@ -100,23 +100,34 @@ class PortalFeedbackResolution(models.Model):
     def action_implement(self):
         """Mark resolution as implemented"""
         self.ensure_one()
+        if self.state != 'draft':
+            raise ValidationError(_("Only draft resolutions can be implemented."))
         self.write({'state': 'implemented'})
         self.message_post(body=_('Resolution has been marked as implemented.'))
 
     def action_verify(self):
         """Verify resolution by management"""
         self.ensure_one()
+        if self.state != 'implemented':
+            raise ValidationError(_("Only implemented resolutions can be verified."))
         self.write({'state': 'verified'})
         self.message_post(body=_('Resolution has been verified by management.'))
 
     def action_close(self):
         """Close the resolution"""
         self.ensure_one()
+        if self.state != 'verified':
+            raise ValidationError(_("Only verified resolutions can be closed."))
         self.write({
             'state': 'closed',
             'resolution_date': fields.Datetime.now()
         })
         self.message_post(body=_('Resolution has been closed.'))
+        
+        # Also mark the related feedback as resolved
+        if self.feedback_id.state not in ['resolved', 'closed']:
+            self.feedback_id.action_resolve()
+
         # Optionally, notify the customer
         template = self.env.ref('records_management.email_template_feedback_resolved', raise_if_not_found=False)
         if template:

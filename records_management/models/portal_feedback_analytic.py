@@ -1,393 +1,180 @@
+import calendar
+from datetime import timedelta
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import ValidationError
 
 
 class PortalFeedbackAnalytic(models.Model):
     _name = 'portal.feedback.analytic'
     _description = 'Portal Feedback Analytics'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'period_start desc'
+    _order = 'period_end desc'
     _rec_name = 'name'
 
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean(string='Active')
-    period_start = fields.Date()
-    period_end = fields.Date()
-    period_type = fields.Selection()
-    total_feedback_count = fields.Integer()
-    positive_feedback_count = fields.Integer()
-    neutral_feedback_count = fields.Integer()
-    negative_feedback_count = fields.Integer()
-    average_rating = fields.Float()
-    customer_satisfaction_index = fields.Float()
-    nps_score = fields.Float()
-    average_response_time = fields.Float()
-    average_resolution_time = fields.Float()
-    fastest_response_time = fields.Float()
-    slowest_response_time = fields.Float()
-    sla_compliance_rate = fields.Float()
-    escalation_rate = fields.Float()
-    first_contact_resolution_rate = fields.Float()
-    repeat_feedback_rate = fields.Float()
-    improvement_trend = fields.Selection()
-    trend_percentage = fields.Float()
-    state = fields.Selection()
-    activity_ids = fields.One2many('mail.activity')
-    message_follower_ids = fields.One2many('mail.followers')
-    message_ids = fields.One2many('mail.message')
+    name = fields.Char(string='Period Name', required=True, readonly=True, states={'draft': [('readonly', False)]})
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    active = fields.Boolean(default=True)
+
+    period_start = fields.Date(string='Period Start Date', required=True, readonly=True, states={'draft': [('readonly', False)]})
+    period_end = fields.Date(string='Period End Date', required=True, readonly=True, states={'draft': [('readonly', False)]})
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('generating', 'Generating'),
+        ('done', 'Done'),
+        ('error', 'Error'),
+    ], string='Status', default='draft', readonly=True, copy=False)
+
+    # --- METRIC FIELDS ---
+    total_feedback_count = fields.Integer(string='Total Feedback', readonly=True)
+    positive_feedback_count = fields.Integer(string='Positive Feedback', readonly=True)
+    neutral_feedback_count = fields.Integer(string='Neutral Feedback', readonly=True)
+    negative_feedback_count = fields.Integer(string='Negative Feedback', readonly=True)
+    
+    average_rating = fields.Float(string='Average Rating (1-5)', readonly=True, digits=(3, 2))
+    customer_satisfaction_index = fields.Float(string='CSI (%)', readonly=True, digits=(5, 2), help="Customer Satisfaction Index")
+    nps_score = fields.Float(string='NPS', readonly=True, help="Net Promoter Score")
+    
+    average_response_time = fields.Float(string='Avg. Response Time (Hours)', readonly=True, digits=(16, 2))
+    average_resolution_time = fields.Float(string='Avg. Resolution Time (Hours)', readonly=True, digits=(16, 2))
+    
+    sla_compliance_rate = fields.Float(string='SLA Compliance (%)', readonly=True, digits=(5, 2))
+    escalation_rate = fields.Float(string='Escalation Rate (%)', readonly=True, digits=(5, 2))
+    first_contact_resolution_rate = fields.Float(string='FCR (%)', readonly=True, digits=(5, 2), help="First Contact Resolution Rate")
+    
+    improvement_trend = fields.Selection([
+        ('improving', 'Improving'),
+        ('declining', 'Declining'),
+        ('stable', 'Stable'),
+        ('insufficient_data', 'Insufficient Data')
+    ], string='Trend vs Previous Period', readonly=True, default='insufficient_data')
+    trend_percentage = fields.Float(string='Trend Change (%)', readonly=True, digits=(5, 2))
 
     # ============================================================================
-    # METHODS
+    # CONSTRAINTS
+    # ============================================================================
+    @api.constrains('period_start', 'period_end')
+    def _check_period_dates(self):
+        for record in self:
+            if record.period_start and record.period_end and record.period_start >= record.period_end:
+                raise ValidationError(_("Period start date must be before the end date."))
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_generate_analytics(self):
+        for record in self:
+            record.write({'state': 'generating'})
+            record.message_post(body=_("Analytics generation started..."))
+            try:
+                record._compute_analytics()
+                record.write({'state': 'done'})
+                record.message_post(body=_("Analytics generated successfully."))
+            except Exception as e:
+                record.write({'state': 'error'})
+                record.message_post(body=_("Failed to generate analytics: %s", e))
+
+    # ============================================================================
+    # COMPUTE METHODS
     # ============================================================================
     def _compute_analytics(self):
-            """Compute comprehensive analytics for the specified period""":
-            for record in self:
-                if not record.period_start or not record.period_end:
-                    record._reset_analytics()
-                    continue
+        self.ensure_one()
+        
+        domain = [
+            ("create_date", ">=", self.period_start),
+            ("create_date", "<=", self.period_end),
+            ("company_id", "=", self.company_id.id),
+        ]
+        feedback_records = self.env["portal.feedback"].search(domain)
 
-                # Get feedback records for the period:
-                domain = []
-                    ("create_date", ">=", record.period_start),
-                    ("create_date", "<=", record.period_end),
-                    ("company_id", "=", record.company_id.id),
+        if not feedback_records:
+            self._reset_analytics()
+            return
 
+        vals = {}
+        # Volume metrics
+        vals['total_feedback_count'] = len(feedback_records)
+        vals['positive_feedback_count'] = len(feedback_records.filtered(lambda f: f.sentiment_category == "positive"))
+        vals['neutral_feedback_count'] = len(feedback_records.filtered(lambda f: f.sentiment_category == "neutral"))
+        vals['negative_feedback_count'] = len(feedback_records.filtered(lambda f: f.sentiment_category == "negative"))
 
-                feedback_records = self.env["portal.feedback"].search(domain)
+        # Rating metrics
+        self._compute_rating_metrics(feedback_records, vals)
+        
+        # Time metrics
+        self._compute_time_metrics(feedback_records, vals)
 
-                if not feedback_records:
-                    record._reset_analytics()
-                    continue
+        # SLA metrics
+        self._compute_sla_metrics(feedback_records, vals)
+        
+        self.write(vals)
 
-                # Volume metrics
-                record.total_feedback_count = len(feedback_records)
-                record.positive_feedback_count = len()
-                    feedback_records.filtered(lambda f: f.sentiment_category == "positive")
+    def _compute_rating_metrics(self, feedback_records, vals):
+        rated_feedback = feedback_records.filtered(lambda f: f.rating and f.rating != '0')
+        if not rated_feedback:
+            vals.update({'average_rating': 0.0, 'nps_score': 0.0, 'customer_satisfaction_index': 0.0})
+            return
 
-                record.neutral_feedback_count = len()
-                    feedback_records.filtered(lambda f: f.sentiment_category == "neutral")
+        ratings = [int(f.rating) for f in rated_feedback if f.rating.isdigit()]
+        vals['average_rating'] = sum(ratings) / len(ratings) if ratings else 0.0
+        
+        # NPS Score
+        promoters = len([r for r in ratings if r >= 9])
+        detractors = len([r for r in ratings if r <= 6])
+        vals['nps_score'] = ((promoters - detractors) / len(ratings) * 100) if ratings else 0.0
+        
+        # CSI
+        satisfaction_ratio = (vals['positive_feedback_count'] + (vals['neutral_feedback_count'] * 0.5)) / vals['total_feedback_count']
+        vals['customer_satisfaction_index'] = satisfaction_ratio * 100
 
-                record.negative_feedback_count = len()
-                    feedback_records.filtered(lambda f: f.sentiment_category == "negative")
+    def _compute_time_metrics(self, feedback_records, vals):
+        # Response Times
+        responded_feedback = feedback_records.filtered(lambda f: f.first_response_date and f.create_date)
+        response_times = [(f.first_response_date - f.create_date).total_seconds() / 3600 for f in responded_feedback]
+        vals['average_response_time'] = sum(response_times) / len(response_times) if response_times else 0.0
 
+        # Resolution Times
+        resolved_feedback = feedback_records.filtered(lambda f: f.resolution_date and f.create_date)
+        resolution_times = [(f.resolution_date - f.create_date).total_seconds() / 3600 for f in resolved_feedback]
+        vals['average_resolution_time'] = sum(resolution_times) / len(resolution_times) if resolution_times else 0.0
 
-                # Rating metrics
-                rated_feedback = feedback_records.filtered(lambda f: f.rating and f.rating != '0')
-                if rated_feedback:
-                    ratings = [int(f.rating) for f in rated_feedback if f.rating.isdigit()]:
-                    record.average_rating = sum(ratings) / len(ratings) if ratings else 0.0:
-                    # Calculate NPS (ratings 9-10 promoters, 7-8 neutral, 0-6 detractors)
-                    promoters = len([r for r in ratings if r >= 9]):
-                    detractors = len([r for r in ratings if r <= 6]):
-                    total_ratings = len(ratings)
-                    record.nps_score = ((promoters - detractors) / total_ratings * 100) if total_ratings else 0.0:
-                else:
-                    record.average_rating = 0.0
-                    record.nps_score = 0.0
+    def _compute_sla_metrics(self, feedback_records, vals):
+        total_count = vals['total_feedback_count']
+        if not total_count:
+            vals.update({'sla_compliance_rate': 0.0, 'escalation_rate': 0.0, 'first_contact_resolution_rate': 0.0})
+            return
 
-                # Customer satisfaction index (combination of ratings and sentiment)
-                if record.total_feedback_count > 0:
-                    satisfaction_ratio = (record.positive_feedback_count + (record.neutral_feedback_count * 0.5)) / record.total_feedback_count
-                    record.customer_satisfaction_index = satisfaction_ratio * 100
-                else:
-                    record.customer_satisfaction_index = 0.0
+        # SLA compliance (assuming 24 hour response SLA)
+        sla_compliant = feedback_records.filtered(lambda f: f.first_response_date and (f.first_response_date - f.create_date).total_seconds() <= 86400)
+        vals['sla_compliance_rate'] = (len(sla_compliant) / total_count * 100)
 
-                # Response and resolution time metrics
-                record._compute_response_times(feedback_records)
+        # Escalation rate
+        escalated = feedback_records.filtered(lambda f: f.priority in ['3', '4']) # high, urgent
+        vals['escalation_rate'] = (len(escalated) / total_count * 100)
 
-                # SLA and performance metrics
-                record._compute_sla_metrics(feedback_records)
-
-
-    def _compute_response_times(self, feedback_records):
-            """Calculate response and resolution time metrics"""
-            self.ensure_one()
-
-            responded_feedback = feedback_records.filtered(lambda f: f.first_response_date)
-            if responded_feedback:
-                response_times = []
-                for feedback in responded_feedback:
-                    if feedback.create_date and feedback.first_response_date:
-                        delta = feedback.first_response_date - feedback.create_date
-                        hours = delta.total_seconds() / 3600
-                        response_times.append(hours)
-
-                if response_times:
-                    self.average_response_time = sum(response_times) / len(response_times)
-                    self.fastest_response_time = min(response_times)
-                    self.slowest_response_time = max(response_times)
-                else:
-                    self.average_response_time = 0.0
-                    self.fastest_response_time = 0.0
-                    self.slowest_response_time = 0.0
-            else:
-                self.average_response_time = 0.0
-                self.fastest_response_time = 0.0
-                self.slowest_response_time = 0.0
-
-            # Resolution times
-            resolved_feedback = feedback_records.filtered(lambda f: f.resolution_date)
-            if resolved_feedback:
-                resolution_times = []
-                for feedback in resolved_feedback:
-                    if feedback.create_date and feedback.resolution_date:
-                        delta = feedback.resolution_date - feedback.create_date
-                        hours = delta.total_seconds() / 3600
-                        resolution_times.append(hours)
-
-                if resolution_times:
-                    self.average_resolution_time = sum(resolution_times) / len(resolution_times)
-                else:
-                    self.average_resolution_time = 0.0
-            else:
-                self.average_resolution_time = 0.0
-
-
-    def _compute_sla_metrics(self, feedback_records):
-            """Calculate SLA compliance and performance metrics"""
-            self.ensure_one()
-
-            if not feedback_records:
-                self.sla_compliance_rate = 0.0
-                self.escalation_rate = 0.0
-                self.first_contact_resolution_rate = 0.0
-                return
-
-            total_count = len(feedback_records)
-
-            # SLA compliance (assuming 24 hour response SLA)
-            sla_compliant = feedback_records.filtered()
-                lambda f: f.first_response_date and
-                (f.first_response_date - f.create_date).total_seconds() <= 86400  # 24 hours
-
-            self.sla_compliance_rate = (len(sla_compliant) / total_count * 100) if total_count else 0.0:
-            # Escalation rate
-            escalated = feedback_records.filtered(lambda f: f.priority in ['high', 'urgent'])
-            self.escalation_rate = (len(escalated) / total_count * 100) if total_count else 0.0:
-            # First contact resolution rate
-            first_contact_resolved = feedback_records.filtered()
-                lambda f: f.state == 'resolved' and f.interaction_count <= 1
-
-            self.first_contact_resolution_rate = (len(first_contact_resolved) / total_count * 100) if total_count else 0.0:
-            # Repeat feedback rate (customers providing multiple feedback in period)
-            unique_customers = feedback_records.mapped('partner_id')
-            if unique_customers:
-                customers_with_multiple = 0
-                for customer in unique_customers:
-                    customer_feedback = feedback_records.filtered(lambda f: f.partner_id == customer)
-                    if len(customer_feedback) > 1:
-                        customers_with_multiple += 1
-                self.repeat_feedback_rate = (customers_with_multiple / len(unique_customers) * 100) if unique_customers else 0.0:
-            else:
-                self.repeat_feedback_rate = 0.0
-
-
-    def _compute_trend_analysis(self):
-            """Analyze trends compared to previous period"""
-            for record in self:
-                if not record.period_start or not record.period_end:
-                    record.improvement_trend = 'insufficient_data'
-                    record.trend_percentage = 0.0
-                    continue
-
-                # Calculate previous period
-                period_length = (record.period_end - record.period_start).days
-                previous_start = record.period_start - timedelta(days=period_length)
-                previous_end = record.period_start - timedelta(days=1)
-
-                # Find previous period analytics
-                previous_analytics = self.search([)]
-                    ('period_start', '=', previous_start),
-                    ('period_end', '=', previous_end),
-                    ('company_id', '=', record.company_id.id),
-
-
-                if previous_analytics and previous_analytics.customer_satisfaction_index > 0:
-                    current_csi = record.customer_satisfaction_index
-                    previous_csi = previous_analytics.customer_satisfaction_index
-
-                    change_percentage = ((current_csi - previous_csi) / previous_csi * 100)
-                    record.trend_percentage = change_percentage
-
-                    if abs(change_percentage) < 5:  # Less than 5% change
-                        record.improvement_trend = 'stable'
-                    elif change_percentage > 0:
-                        record.improvement_trend = 'improving'
-                    else:
-                        record.improvement_trend = 'declining'
-                else:
-                    record.improvement_trend = 'insufficient_data'
-                    record.trend_percentage = 0.0
-
+        # First contact resolution
+        fcr = feedback_records.filtered(lambda f: f.state == 'resolved' and f.interaction_count <= 1)
+        vals['first_contact_resolution_rate'] = (len(fcr) / total_count * 100)
 
     def _reset_analytics(self):
-            """Reset all analytics metrics to zero"""
-            self.write({)}
-                "total_feedback_count": 0,
-                "positive_feedback_count": 0,
-                "neutral_feedback_count": 0,
-                "negative_feedback_count": 0,
-                "average_rating": 0.0,
-                "customer_satisfaction_index": 0.0,
-                "nps_score": 0.0,
-                "average_response_time": 0.0,
-                "average_resolution_time": 0.0,
-                "fastest_response_time": 0.0,
-                "slowest_response_time": 0.0,
-                "sla_compliance_rate": 0.0,
-                "escalation_rate": 0.0,
-                "first_contact_resolution_rate": 0.0,
-                "repeat_feedback_rate": 0.0,
-                "improvement_trend": 'insufficient_data',
-                "trend_percentage": 0.0,
-
-
-        # ============================================================================
-            # ACTION METHODS
-        # ============================================================================
-
-    def action_refresh_analytics(self):
-            """Manually refresh analytics data"""
-            self.ensure_one()
-            self._compute_analytics()
-            self.message_post(body=_("Analytics refreshed by %s", self.env.user.name))
-            return {}
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {}
-                    "message": _("Analytics refreshed successfully"),
-                    "type": "success",
-                    "sticky": False,
-
-
-
-
-    def action_view_period_feedback(self):
-            """View feedback records for this analytics period""":
-            self.ensure_one()
-            return {}
-                "type": "ir.actions.act_window",
-                "name": _("Period Feedback - %s", self.name),
-                "res_model": "portal.feedback",
-                "view_mode": "tree,form",
-                "domain": []
-                    ("create_date", ">=", self.period_start),
-                    ("create_date", "<=", self.period_end),
-                    ("company_id", "=", self.company_id.id),
-
-                "context": {}
-                    "search_default_group_by_sentiment": 1,
-                    "search_default_group_by_priority": 1,
-
-                "target": "current",
-
-
-
-    def action_generate_report(self):
-            """Generate comprehensive analytics report"""
-            self.ensure_one()
-            return self.env.ref('records_management.action_report_feedback_analytics').report_action(self)
-
-
-    def action_activate(self):
-            """Activate analytics period"""
-            for record in self:
-                record.write({'state': 'active'})
-                record.message_post(body=_("Analytics period activated by %s", self.env.user.name))
-
-
-    def action_archive(self):
-            """Archive analytics period"""
-            for record in self:
-                record.write({'state': 'archived', 'active': False})
-                record.message_post(body=_("Analytics period archived by %s", self.env.user.name))
-
-        # ============================================================================
-            # VALIDATION METHODS
-        # ============================================================================
-
-    def _check_period_dates(self):
-            """Validate period dates"""
-            for record in self:
-                if record.period_start and record.period_end:
-                    if record.period_start >= record.period_end:
-                        raise ValidationError(_("Period start date must be before end date"))
-
-
-    def _check_period_overlap(self):
-            """Prevent overlapping periods for same company""":
-            for record in self:
-                if record.period_start and record.period_end:
-                    overlapping = self.search([)]
-                        ('id', '!=', record.id),
-                        ('company_id', '=', record.company_id.id),
-                        ('state', '!=', 'archived'),
-                        '|', '|',
-                        ('period_start', '<=', record.period_start, '<=', 'period_end'),
-                        ('period_start', '<=', record.period_end, '<=', 'period_end'),
-                        '&', ('period_start', '>=', record.period_start), ('period_end', '<=', record.period_end),
-
-                    if overlapping:
-                        raise ValidationError(_("Analytics period overlaps with existing period: %s", overlapping[0].name))
-
-        # ============================================================================
-            # UTILITY METHODS
-        # ============================================================================
-
-    def create_monthly_analytics(self, year, month, company_id=None):
-            """Create monthly analytics period"""
-            if not company_id:
-                company_id = self.env.company.id
-
-            from datetime import date
-            import calendar
-
-            start_date = date(year, month, 1)
-            end_date = date(year, month, calendar.monthrange(year, month)[1])
-
-            name = _("Analytics %s/%s", calendar.month_name[month], year)
-
-            return self.create({)}
-                'name': name,
-                'period_start': start_date,
-                'period_end': end_date,
-                'period_type': 'monthly',
-                'company_id': company_id,
-                'state': 'active',
-
-
-
-    def get_dashboard_data(self, company_id=None):
-            """Get dashboard data for current period""":
-            if not company_id:
-                company_id = self.env.company.id
-
-            current_period = self.search([)]
-                ('company_id', '=', company_id),
-                ('state', '=', 'active'),
-                ('period_start', '<=', fields.Date.today()),
-                ('period_end', '>=', fields.Date.today()),
-
-
-            if not current_period:
-                return {}
-                    'total_feedback': 0,
-                    'satisfaction_index': 0.0,
-                    'nps_score': 0.0,
-                    'average_rating': 0.0,
-
-
-            return {}
-                'total_feedback': current_period.total_feedback_count,
-                'satisfaction_index': current_period.customer_satisfaction_index,
-                'nps_score': current_period.nps_score,
-                'average_rating': current_period.average_rating,
-                'trend': current_period.improvement_trend,
-                'trend_percentage': current_period.trend_percentage)))))))))))))))))
+        self.write({
+            "total_feedback_count": 0,
+            "positive_feedback_count": 0,
+            "neutral_feedback_count": 0,
+            "negative_feedback_count": 0,
+            "average_rating": 0.0,
+            "customer_satisfaction_index": 0.0,
+            "nps_score": 0.0,
+            "average_response_time": 0.0,
+            "average_resolution_time": 0.0,
+            "sla_compliance_rate": 0.0,
+            "escalation_rate": 0.0,
+            "first_contact_resolution_rate": 0.0,
+            "improvement_trend": 'insufficient_data',
+            "trend_percentage": 0.0,
+        })
 

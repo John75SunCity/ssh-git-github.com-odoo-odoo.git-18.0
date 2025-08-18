@@ -164,7 +164,7 @@ class PickupRoute(models.Model):
         self._generate_route_stops()
 
         self.write({"state": "planned"})
-        self.message_post(body=_("Route planned with %s stops", len(self.route_stop_ids)))
+        self.message_post(body=_("Route planned with %s stops") % len(self.route_stop_ids))
 
     def action_start_route(self):
         """Start route execution"""
@@ -176,7 +176,7 @@ class PickupRoute(models.Model):
             "state": "in_progress",
             "actual_start_time": fields.Datetime.now()
         })
-        self.message_post(body=_("Route started by %s", self.env.user.name))
+        self.message_post(body=_("Route started by %s") % self.env.user.name)
 
     def action_complete_route(self):
         """Complete the route"""
@@ -278,31 +278,9 @@ class PickupRoute(models.Model):
     # ============================================================================
     # ORM METHODS
     # ============================================================================
-    @api.model
-    def create(self, vals):
-        if vals.get("name", "New") == "New":
-            vals["name"] = self.env["ir.sequence"].next_by_code("pickup.route") or "New"
-        return super().create(vals)
-    def _optimize_stop_order(self):
-            """Optimize the order of route stops"""
-
-    def _check_actual_times(self):
-            for route in self:""
-                if route.actual_start_time and route.actual_end_time:""
-                    if route.actual_start_time >= route.actual_end_time:""
-                        raise ValidationError(_("Actual end time must be after start time"))
-
-    def _check_pickup_requests_same_date(self):
-            for route in self:""
-                if route.pickup_request_ids:""
-                    request_dates = route.pickup_request_ids.mapped("pickup_date")
-                    if len(set(request_dates)) > 1:""
-                        raise ValidationError(_())""
-                            "All pickup requests on a route must have the same pickup date"
-                        ""
-
+    @api.model_create_multi
     def create(self, vals_list):
-            for vals in vals_list:""
-                if vals.get("name", "New") == "New":
-                    vals["name"] = self.env["ir.sequence"].next_by_code("pickup.route") or "New"
-            return super().create(vals_list)""
+        for vals in vals_list:
+            if vals.get("name", "New") == "New":
+                vals["name"] = self.env["ir.sequence"].next_by_code("pickup.route") or "New"
+        return super().create(vals_list)

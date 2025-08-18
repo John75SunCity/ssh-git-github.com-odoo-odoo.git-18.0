@@ -47,6 +47,7 @@ from . import records_retention_rule
 from . import records_policy_version
 from . import records_approval_workflow
 from . import records_approval_step
+from . import records_approval_workflow_line
 
 # Container and storage models (in dependency order)
 from . import customer_inventory
@@ -263,7 +264,7 @@ from . import hremployee_naid
 from . import product_template
 from . import product_product
 from . import barcode_product
-from . import barcode_models
+from . import barcode_models_enhanced
 
 # Barcode support models (comprehensive system)
 from . import barcode_generation_history
