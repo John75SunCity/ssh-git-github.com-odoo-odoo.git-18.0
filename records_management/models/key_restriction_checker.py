@@ -1,164 +1,130 @@
+from datetime import date, timedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
 
 
 class KeyRestrictionChecker(models.Model):
     _name = 'key.restriction.checker'
-    _description = 'Key Restriction Checker'
+    _description = 'Key Restriction Checker Log'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
-    _rec_name = 'name'
 
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string='Name', required=True, tracking=True)
-    active = fields.Boolean(string='Active')
-    sequence = fields.Integer(string='Sequence')
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    partner_id = fields.Many2one()
-    customer_id = fields.Many2one()
-    customer_name = fields.Char()
-    restriction_type = fields.Selection()
-    access_level = fields.Selection()
-    state = fields.Selection()
+    name = fields.Char(string='Check Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    active = fields.Boolean(string='Active', default=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Checked By', default=lambda self: self.env.user)
+    partner_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    
+    restriction_type = fields.Selection([
+        ('none', 'None'),
+        ('blacklist', 'Blacklisted'),
+        ('whitelist', 'Whitelisted'),
+        ('limited', 'Limited Access')
+    ], string='Restriction Type', default='none', tracking=True)
+    
+    access_level = fields.Selection([
+        ('none', 'No Access'),
+        ('read', 'Read-Only'),
+        ('full', 'Full Access')
+    ], string='Access Level', default='none', tracking=True)
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('checked', 'Checked'),
+        ('violation', 'Violation Detected'),
+        ('resolved', 'Resolved')
+    ], string='Status', default='draft', tracking=True)
+
     bin_number = fields.Char(string='Bin Number', tracking=True)
-    bin_identifier = fields.Char(string='Bin Identifier')
-    key_allowed = fields.Boolean(string='Key Allowed')
-    authorized_by_id = fields.Many2one()
-    access_level_verified = fields.Boolean()
-    authorization_bypass_used = fields.Boolean()
-    override_reason = fields.Text(string='Override Reason')
-    security_violation_detected = fields.Boolean()
-    created_date = fields.Date()
-    updated_date = fields.Date(string='Updated Date')
-    expiration_date = fields.Date(string='Expiration Date')
-    last_check_date = fields.Date(string='Last Check Date')
-    restriction_date = fields.Date()
-    action_required = fields.Boolean()
-    check_performed = fields.Boolean()
-    notes = fields.Text(string='Description')
-    restriction_notes = fields.Text()
-    restriction_reason = fields.Text()
-    status_message = fields.Char()
-    audit_trail_enabled = fields.Boolean()
-    last_audit_date = fields.Date(string='Last Audit Date')
-    compliance_notes = fields.Text(string='Compliance Notes')
-    retention_policy = fields.Selection()
-    is_expired = fields.Boolean()
-    days_until_expiration = fields.Integer()
-    activity_ids = fields.One2many('mail.activity')
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many('mail.message')
-    action_buttons = fields.Char(string='Action Buttons')
-    action_check_customer = fields.Char(string='Action Check Customer')
-    action_create_unlock_service = fields.Char(string='Action Create Unlock Service')
-    action_reset = fields.Char(string='Action Reset')
-    bin_info = fields.Char(string='Bin Info')
-    context = fields.Char(string='Context')
-    customer_info = fields.Char(string='Customer Info')
-    input_section = fields.Char(string='Input Section')
-    res_model = fields.Char(string='Res Model')
-    restriction_details = fields.Char(string='Restriction Details')
-    results_section = fields.Char(string='Results Section')
-    target = fields.Char(string='Target')
-    type = fields.Selection(string='Type')
-    view_mode = fields.Char(string='View Mode')
+    key_allowed = fields.Boolean(string='Key Allowed', readonly=True)
+    authorized_by_id = fields.Many2one('res.users', string='Authorized By', readonly=True)
+    authorization_bypass_used = fields.Boolean(string='Bypass Used', readonly=True)
+    override_reason = fields.Text(string='Override Reason', readonly=True)
+    security_violation_detected = fields.Boolean(string='Violation Detected', readonly=True)
+    
+    expiration_date = fields.Date(string='Restriction Expiry Date')
+    last_check_date = fields.Datetime(string='Last Check Time', readonly=True)
+    
+    notes = fields.Text(string='Check Notes')
+    restriction_reason = fields.Text(string='Reason for Restriction')
+    
+    is_expired = fields.Boolean(string="Is Expired", compute='_compute_expiration_status')
+    days_until_expiration = fields.Integer(string="Days to Expire", compute='_compute_expiration_status')
 
     # ============================================================================
-    # METHODS
+    # ORM OVERRIDES
     # ============================================================================
-    def _compute_is_expired(self):
-            """Compute if the restriction has expired""":
-
-    def _compute_days_until_expiration(self):
-            """Compute days until expiration"""
-
-    def __check__check_customer(self):
-            """Check customer restrictions"""
-
-    def action_reset(self):
-            """Reset checker to initial state"""
-
-    def action_create_unlock_service(self):
-            """Create unlock service request"""
-
-    def action_approve_access(self):
-            """Approve access request"""
-
-    def action_deny_access(self):
-            """Deny access request"""
-
-    def action_escalate_security_violation(self):
-            """Escalate security violation to management"""
-
-    def _check_expiration_date(self):
-            """Validate expiration date is not before creation date"""
-
-    def _check_access_consistency(self):
-            """Validate access level is consistent with restriction type"""
-                if record.restriction_type == "blacklist" and record.access_level == "full":
-                    raise ValidationError()""
-                        _("Blacklisted entries cannot have full access level.")
-                    ""
-
-    def _check_bin_number_format(self):
-            """Validate bin number format"""
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('key.restriction.checker') or _('New')
+        return super().create(vals_list)
 
     def write(self, vals):
-            """Override write to track updates"""
-            if any(key in vals for key in ("state", "restriction_type", "access_level"):
+        """Override write to track updates and log messages."""
+        if any(key in self for key in ('state', 'restriction_type', 'access_level')):
+            self.message_post(body=_("Restriction details updated."))
+        return super().write(vals)
 
-    def get_restriction_status_color(self):
-            """Get color code for restriction status display""":
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('expiration_date')
+    def _compute_expiration_status(self):
+        """Compute if the restriction has expired and days remaining."""
+        for record in self:
+            if record.expiration_date:
+                today = date.today()
+                delta = record.expiration_date - today
+                record.is_expired = delta.days < 0
+                record.days_until_expiration = delta.days if delta.days >= 0 else 0
+            else:
+                record.is_expired = False
+                record.days_until_expiration = 0
 
-    def get_access_level_color(self):
-            """Get color code for access level display""":
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_check_restrictions(self):
+        """Check customer and bin restrictions."""
+        self.ensure_one()
+        # Placeholder for actual restriction checking logic
+        # This would query other models based on self.partner_id and self.bin_number
+        self.write({
+            'state': 'checked',
+            'key_allowed': True, # Default to allowed, logic would change this
+            'last_check_date': fields.Datetime.now(),
+        })
+        self.message_post(body=_("Restriction check performed."))
 
-    def get_state_color(self):
-            """Get color code for state display""":
+    def action_reset(self):
+        """Reset checker to initial state."""
+        self.ensure_one()
+        self.write({
+            'state': 'draft',
+            'key_allowed': False,
+            'security_violation_detected': False,
+            'override_reason': False,
+        })
 
-    def _check_expiring_restrictions(self):
-            """Cron job to check for expiring restrictions""":
+    def action_escalate_violation(self):
+        """Escalate security violation to management."""
+        self.ensure_one()
+        if not self.security_violation_detected:
+            raise UserError(_("There is no security violation to escalate."))
+        # Logic to create an activity for a security manager
+        self.message_post(body=_("Security violation has been escalated."))
+
+    # ============================================================================
+    # CONSTRAINTS
+    # ============================================================================
+    @api.constrains('restriction_type', 'access_level')
+    def _check_access_consistency(self):
+        """Validate access level is consistent with restriction type."""
+        for record in self:
+            if record.restriction_type == "blacklist" and record.access_level == "full":
+                raise ValidationError(_("Blacklisted entries cannot have full access level."))

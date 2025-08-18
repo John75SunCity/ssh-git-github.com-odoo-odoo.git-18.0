@@ -1,5 +1,4 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
 from odoo.exceptions import ValidationError
 
 
@@ -12,64 +11,57 @@ class PaperBaleMovement(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char()
-    active = fields.Boolean()
-    company_id = fields.Many2one()
-    bale_id = fields.Many2one()
-    source_location_id = fields.Many2one()
-    destination_location_id = fields.Many2one()
-    movement_date = fields.Datetime()
-    responsible_user_id = fields.Many2one()
-    state = fields.Selection()
+    name = fields.Char(string="Movement Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    active = fields.Boolean(default=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    bale_id = fields.Many2one('paper.bale', string="Paper Bale", required=True, ondelete='cascade')
+    source_location_id = fields.Many2one('stock.location', string="Source Location", required=True)
+    destination_location_id = fields.Many2one('stock.location', string="Destination Location", required=True)
+    movement_date = fields.Datetime(string="Movement Date", default=fields.Datetime.now, required=True)
+    responsible_user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_transit', 'In Transit'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
     notes = fields.Text(string='Movement Notes')
-    activity_ids = fields.One2many('mail.activity')
-    message_follower_ids = fields.One2many('mail.followers')
-    message_ids = fields.One2many('mail.message')
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection(string='Type')
-    view_mode = fields.Char(string='View Mode')
 
     # ============================================================================
-    # METHODS
+    # CONSTRAINTS
     # ============================================================================
+    @api.constrains('source_location_id', 'destination_location_id')
     def _check_locations(self):
-            for movement in self:
-                if movement.source_location_id == movement.destination_location_id:
-                    raise ValidationError()
-                        _("Source and destination locations cannot be the same.")
+        for movement in self:
+            if movement.source_location_id == movement.destination_location_id:
+                raise ValidationError(_("Source and destination locations cannot be the same."))
 
-
-
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_start_transit(self):
-            self.ensure_one()
-            self.write({"state": "in_transit"})
-
+        self.ensure_one()
+        self.write({"state": "in_transit"})
+        self.message_post(body=_("Movement has started and is now in transit."))
 
     def action_complete_movement(self):
-            self.ensure_one()
-            self.write({"state": "completed"})
-            for movement in self:
-                movement.bale_id.location_id = movement.destination_location_id
-
+        self.ensure_one()
+        self.write({"state": "completed"})
+        self.bale_id.location_id = self.destination_location_id
+        self.message_post(body=_("Movement completed. Bale is now at %s", self.destination_location_id.display_name))
 
     def action_cancel_movement(self):
-            self.ensure_one()
-            self.write({"state": "cancelled"})
+        self.ensure_one()
+        self.write({"state": "cancelled"})
+        self.message_post(body=_("Movement has been cancelled."))
 
-        # ============================================================================
-            # ORM METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
     def create(self, vals_list):
-            """Override create to add auto-numbering"""
-            for vals in vals_list:
-                if vals.get('name', _('New')) == _('New'):
-                    vals['name') = self.env['ir.sequence'].next_by_code('paper.bale.movement') or _('New')
-            return super().create(vals_list)
-
-        # ============================================================================
-            # MAIL THREAD FRAMEWORK FIELDS
-        # ============================================================================
+        """Override create to add auto-numbering"""
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('paper.bale.movement') or _('New')
+        return super().create(vals_list)

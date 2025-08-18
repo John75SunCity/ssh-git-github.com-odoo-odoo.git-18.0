@@ -11,7 +11,7 @@ Import order follows Odoo 18.0 best practices:
 6. Wizards and utilities last
 
 This ensures proper ORM setup and prevents KeyError exceptions during module loading.
-""""
+"""
 
 # =============================================================================
 # STANDARD LIBRARY IMPORTS
@@ -119,7 +119,6 @@ from . import document_retrieval_item
 from . import document_retrieval_team
 from . import document_retrieval_pricing
 from . import document_retrieval_equipment
-from . import file_retrieval_metric
 from . import document_retrieval_support_models
 
 from . import document_search_attempt
@@ -161,7 +160,7 @@ from . import paper_bale
 from . import paper_bale_source_document
 from . import paper_bale_movement
 from . import paper_bale_inspection
-from . import paper_bale_weigh_wizard
+from . import generated_model
 from . import paper_bale_inspection_wizard
 from . import load
 
@@ -294,7 +293,7 @@ from . import records_deletion_request
 # =============================================================================
 
 # Module management
-from . import installer
+from . import records_installer
 from . import records_management_base_menus
 from . import location_report_wizard
 
@@ -302,6 +301,7 @@ from . import location_report_wizard
 # WIZARDS AND UTILITIES
 # =============================================================================
 
+from . import hard_drive_scan_wizard
 from . import fsm_reschedule_wizard
 from . import key_restriction_checker
 from . import records_permanent_flag_wizard
@@ -368,7 +368,7 @@ from . import container_retrieval_work_order
 
 # RM Module Configurator (if not already imported)
 try:
-    from . import rmmodule_configurator
+    from . import rm_module_configurator
     _logger.info("RM module configurator loaded successfully")
 except (ImportError, AttributeError) as e:
     _logger.warning("RM module configurator not available: %s", str(e))
@@ -378,10 +378,8 @@ from . import file_retrieval_work_order_item
 from . import records_location_report_wizard
 from . import records_inventory_dashboard
 from . import customer_negotiated_rate
-from . import base_rate
 from . import product_container_type
 from . import feedback_improvement_area
-
 # =============================================================================
 # NEWLY CREATED MISSING MODELS (10 MODELS)
 # =============================================================================
@@ -393,7 +391,7 @@ from . import scan_digital_asset
 from . import mobile_photo
 
 # FSM route planning
-from . import fsm_route
+from . import fsmroute
 
 # Portal feedback enhancements
 from . import portal_feedback_resolution

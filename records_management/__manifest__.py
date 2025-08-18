@@ -269,6 +269,7 @@
         "views/work_order_coordinator_views.xml",
         "views/work_order_shredding_views.xml",
         "reports/bin_key_report.xml",
+        "reports/paper_bale_weigh_wizard_report.xml",
         "#CustomerPortalDiagramviews/customer_portal_diagram_views.xml",
         "#CustomerPortalOrganizationDiagramtemplates/portal_organization_diagram.xml",
         "#Datadata/ir_sequence_data.xml",

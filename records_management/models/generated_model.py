@@ -19,13 +19,11 @@ class GeneratedModel(models.Model):
     # METHODS
     # ============================================================================
     def action_record_weight(self):
-            self.ensure_one()
-            if self.measured_weight <= 0:
-                raise UserError(_("Measured weight must be positive."))
-            self.bale_id.write()
-                {}
-                    "weight": self.measured_weight,
-                    "last_weighed_date": self.weighing_date,
-
-
-            return {"type": "ir.actions.act_window_close"}
+        self.ensure_one()
+        if self.measured_weight <= 0:
+            raise UserError(_("Measured weight must be positive."))
+        self.bale_id.write({
+            "weight": self.measured_weight,
+            "last_weighed_date": self.weighing_date,
+        })
+        return {"type": "ir.actions.act_window_close"}
