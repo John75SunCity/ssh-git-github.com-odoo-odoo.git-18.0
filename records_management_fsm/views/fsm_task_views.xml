@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+                <record id="fsm_task_service_line_view_form" model="ir.ui.view">
+            <field name="name">fsm.task.service.line.view.form</field>
+            <field name="model">fsm.task.service.line</field>
+            <field name="arch" type="xml">
+                <form string="Service Line">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="service_name"/>
+                                <field name="service_type"/>
+                                <field name="task_id"/>
+                            </group>
+                            <group>
+                                <field name="state"/>
+                                <field name="quantity"/>
+                                <field name="unit_price"/>
+                                <field name="total_price" widget="monetary"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description"/>
+                            </page>
+                            <page string="Approval">
+                                <group>
+                                    <field name="customer_approved"/>
+                                    <field name="approval_method"/>
+                                </group>
+                            </page>
+                            <page string="On-Site Info">
+                                <group>
+                                    <field name="added_on_site"/>
+                                    <field name="added_by_id"/>
+                                    <field name="added_date"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree View for fsm.task.service.line -->
+        <record id="fsm_task_service_line_view_tree" model="ir.ui.view">
+            <field name="name">fsm.task.service.line.view.tree</field>
+            <field name="model">fsm.task.service.line</field>
+            <field name="arch" type="xml">
+                <tree string="Service Lines">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="service_type"/>
+                    <field name="state"/>
+                    <field name="quantity"/>
+                    <field name="total_price" widget="monetary"/>
+                </tree>
+            </field>
+        </record>
+        </record>
+
+        <!-- Tree View for fsm.task.service.line -->
+        <record id="fsm_task_service_line_view_tree" model="ir.ui.view">
+            <field name="name">fsm.task.service.line.view.tree</field>
+            <field name="model">fsm.task.service.line</field>
+            <field name="arch" type="xml">
+                <tree string="Service Lines">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="service_type"/>
+                    <field name="state"/>
+                    <field name="quantity"/>
+                    <field name="total_price" widget="monetary"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

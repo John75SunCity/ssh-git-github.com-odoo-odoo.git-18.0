@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_delete
+access_fsm_task_service_line_user,fsm.task.service.line.user,model_fsm_task_service_line,records_management.group_records_user,1,1,1,1
+access_fsm_task_service_line_manager,fsm.task.service.line.manager,model_fsm_task_service_line,records_management.group_records_manager,1,1,1,1

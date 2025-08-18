@@ -6,11 +6,11 @@
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": """
         Records Management - Enterprise Grade DMS Module
-        
-        A comprehensive, enterprise-grade Document Management System (DMS) built for Odoo 18.0. 
-        This module provides advanced functionality for managing physical document boxes, records, 
+
+        A comprehensive, enterprise-grade Document Management System (DMS) built for Odoo 18.0.
+        This module provides advanced functionality for managing physical document boxes, records,
         shredding services, and compliance tracking with NAID AAA and ISO 15489 standards.
-        
+
         Key Features:
         - Advanced Records Management: Track document boxes, locations, and retention policies
         - NAID AAA Compliance: Complete audit trails with encrypted signatures
@@ -127,8 +127,6 @@
         "views/file_retrieval_work_order_views.xml",
         "views/file_retrieveal_work_order_item_py_views.xml",
         "views/fsm_reschedule_wizard_views.xml",
-        "views/fsm_task_service_line_views.xml",
-        "views/fsm_task_views.xml",
         "views/hard_drive_scan_views.xml",
         "views/hard_drive_scan_wizard_views.xml",
         "views/hr_employee_views.xml",

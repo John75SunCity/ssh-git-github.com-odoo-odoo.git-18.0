@@ -1,169 +1,191 @@
+# -*- coding: utf-8 -*-
+"""
+Customer Portal Diagram Module
+
+This model generates data for an interactive organizational diagram,
+visualizing the relationships between companies, departments, and users
+for customer portal users.
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
+
+import json
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
 from odoo.exceptions import UserError
 
 
-class GeneratedModel(models.Model):
+class CustomerPortalDiagram(models.Model):
     _name = 'customer.portal.diagram'
     _description = 'Interactive Customer Portal Organization Diagram'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ============================================================================
-    # FIELDS
+    # CORE & CONFIGURATION
     # ============================================================================
-    name = fields.Char()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean(string='Active')
-    node_data = fields.Text()
-    edge_data = fields.Text()
-    diagram_stats = fields.Text()
-    search_user_id = fields.Many2one()
-    search_company_id = fields.Many2one()
-    search_department_id = fields.Many2one()
-    search_query = fields.Char()
-    show_access_rights = fields.Boolean()
-    show_messaging = fields.Boolean()
-    layout_type = fields.Selection()
-    allowed_user_ids = fields.Many2many()
-    restricted_models = fields.Char()
-    activity_ids = fields.One2many('mail.activity')
-    message_follower_ids = fields.One2many('mail.followers')
-    message_ids = fields.One2many('mail.message')
+    name = fields.Char(string="Diagram Name", required=True, default="Customer Organization Diagram")
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
+    active = fields.Boolean(string='Active', default=True)
 
     # ============================================================================
-    # METHODS
+    # DIAGRAM DATA (Computed)
     # ============================================================================
+    diagram_data = fields.Text(string="Diagram JSON Data", compute='_compute_diagram_data', help="JSON data for the diagram visualization.")
+    diagram_stats = fields.Text(string="Diagram Statistics", compute='_compute_diagram_stats', help="Summary statistics of the diagram.")
+
+    # ============================================================================
+    # FILTER & DISPLAY OPTIONS
+    # ============================================================================
+    search_partner_id = fields.Many2one('res.partner', string="Filter by Customer")
+    search_department_id = fields.Many2one('records.department', string="Filter by Department", domain="[('partner_id', '=', search_partner_id)]")
+    search_query = fields.Char(string="Search Query")
+    show_access_rights = fields.Boolean(string="Show Access Rights", default=False)
+    layout_type = fields.Selection([
+        ('hierarchical', 'Hierarchical'),
+        ('force_directed', 'Force Directed')
+    ], string="Layout Type", default='hierarchical', required=True)
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('search_partner_id', 'search_department_id', 'search_query', 'show_access_rights', 'layout_type')
     def _compute_diagram_data(self):
-            """Compute the diagram nodes and edges data for the interactive visualization""":
+        """
+        Compute the diagram nodes and edges data for the interactive visualization.
+        This method orchestrates the generation of the entire diagram structure.
+        """
+        for record in self:
+            nodes = []
+            edges = []
 
+            # Determine the scope based on the user type (portal vs. internal)
+            partner_scope = self._get_portal_user_scope()
+            if record.search_partner_id:
+                partner_scope = record.search_partner_id
+
+            if not partner_scope:
+                record.diagram_data = json.dumps({'nodes': [], 'edges': []})
+                continue
+
+            # Generate nodes and edges for different elements
+            nodes, edges = self._generate_partner_nodes(nodes, edges, partner_scope)
+            nodes, edges = self._generate_department_nodes(nodes, edges, partner_scope)
+            nodes, edges = self._generate_user_nodes(nodes, edges, partner_scope)
+
+            # Apply filtering if any search criteria is provided
+            # Note: A full implementation would filter nodes/edges here based on search_query
+            
+            record.diagram_data = json.dumps({'nodes': nodes, 'edges': edges})
+
+    @api.depends('diagram_data')
     def _compute_diagram_stats(self):
-            """Compute diagram statistics for display""":
+        """Compute diagram statistics for display."""
+        for record in self:
+            try:
+                data = json.loads(record.diagram_data or '{}')
+                nodes = data.get('nodes', [])
+                stats = {
+                    'partners': len([n for n in nodes if n.get('group') == 'partner']),
+                    'departments': len([n for n in nodes if n.get('group') == 'department']),
+                    'users': len([n for n in nodes if n.get('group') == 'user']),
+                }
+                record.diagram_stats = json.dumps(stats, indent=2)
+            except (json.JSONDecodeError, TypeError):
+                record.diagram_stats = "Invalid data format."
 
-    def _generate_company_nodes(self, nodes, edges, allowed_companies):
-            """Generate company nodes for the diagram""":
-            company_domain = [("id", "in", allowed_companies]
-            if self.search_company_id:""
-                company_domain.append(("id", "= """""
-            companies = self.env[""""res.company"].sudo().search(company_domain)""""
-            for company in companies:""
-                node_id = "company_%s" % company.id
-                nodes.append()""
-                    {}""
-                        "id": node_id,
-                        "label": company.name,
-                        "title": _("Company: %s", company.name),
-                        "group": "company",
-                        "level": 0,
-                        "color": {"background": "#FFD700", "border": "#FFA500"},
-                        "shape": "box",
-                        "font": {"color": "#0000", "size": 14},
-                    ""
-                ""
-            return nodes, edges""
+    # ============================================================================
+    # HELPER METHODS (Node & Edge Generation)
+    # ============================================================================
+    def _get_portal_user_scope(self):
+        """Get the recordset of partners a portal user is allowed to see."""
+        if self.env.user.has_group('base.group_portal'):
+            return self.env.user.partner_id
+        # Internal users can see all customers by default, can be filtered later
+        return self.env['res.partner'].search([('is_company', '=', True)])
 
-    def _generate_department_nodes(self, nodes, edges, allowed_companies, allowed_departments):
-            """Generate department nodes for the diagram""":
-            dept_domain = [("company_id", "in", allowed_companies]
-            if allowed_departments:""
-                dept_domain.append(("id", "in", allowed_departments))
-            if self.search_department_id:""
-                dept_domain = [("id", "= """""
-            departments = self.env[""""records.department"].sudo().search(dept_domain)""""
-            for dept in departments:""
-                node_id = "dept_%s" % dept.id
-                company_name = dept.company_id.name if dept.company_id else _("N/A"):
-                nodes.append()""
-                    {}""
-                        "id": node_id,
-                        "label": dept.name,
-                        "title": _("Department: %s\nCompany: %s", dept.name, company_name),
-                        "group": "department",
-                        "level": 1,
-                        "color": {"background": "#90EE90", "border": "#32CD32"},
-                        "shape": "ellipse",
-                        "font": {"color": "#0000", "size": 12},
-                    ""
-                ""
+    def _generate_partner_nodes(self, nodes, edges, partners):
+        """Generate partner (customer) nodes for the diagram."""
+        for partner in partners:
+            nodes.append({
+                'id': f'partner_{partner.id}',
+                'label': partner.name,
+                'title': _("Customer: %s", partner.name),
+                'group': 'partner',
+                'level': 0,
+                'shape': 'box',
+            })
+        return nodes, edges
 
-    def _generate_user_nodes(self, nodes, edges, allowed_companies, allowed_departments, current_user):
-            """Generate user nodes for the diagram""":
-            portal_user = current_user.has_group("portal.group_portal")
-            ""
-            user_domain = []""
-                ("company_id", "in", allowed_companies),
-                ("active", "= """""
+    def _generate_department_nodes(self, nodes, edges, partners):
+        """Generate department nodes for the diagram."""
+        domain = [('partner_id', 'in', partners.ids)]
+        if self.search_department_id:
+            domain.append(('id', '=', self.search_department_id.id))
+        
+        departments = self.env['records.department'].search(domain)
+        for dept in departments:
+            nodes.append({
+                'id': f'dept_{dept.id}',
+                'label': dept.name,
+                'title': _("Department: %s\nCustomer: %s", dept.name, dept.partner_id.name),
+                'group': 'department',
+                'level': 1,
+                'shape': 'ellipse',
+            })
+            edges.append({
+                'from': f'partner_{dept.partner_id.id}',
+                'to': f'dept_{dept.id}',
+            })
+        return nodes, edges
 
-    def _generate_access_rights_nodes(self, nodes, edges, allowed_companies):
-            """Generate access rights visualization nodes"""
-            restricted_models = (self.restricted_models or "").split(",")
-            model_list = [m.strip() for m in restricted_models if m.strip(]:""
-            if not model_list:""
-                return nodes, edges""
+    def _generate_user_nodes(self, nodes, edges, partners):
+        """Generate user nodes for the diagram."""
+        users = self.env['res.users'].search([('partner_id', 'in', partners.ids)])
+        for user in users:
+            # Find which department the user belongs to, if any
+            department = self.env['records.department'].search([
+                ('partner_id', '=', user.partner_id.id),
+                # A more specific link might be needed here depending on your model structure
+            ], limit=1)
 
-    def _apply_search_filtering(self, nodes, edges):
-            """Apply search filtering to nodes and edges"""
+            nodes.append({
+                'id': f'user_{user.id}',
+                'label': user.name,
+                'title': _("User: %s", user.name),
+                'group': 'user',
+                'level': 2,
+                'shape': 'circle',
+            })
+            
+            # Link user to a department or directly to the partner
+            if department:
+                edges.append({'from': f'dept_{department.id}', 'to': f'user_{user.id}'})
+            else:
+                edges.append({'from': f'partner_{user.partner_id.id}', 'to': f'user_{user.id}'})
+        return nodes, edges
 
-    def action_open_messaging(self, target_user_id):
-            """Open messaging interface for communicating with another user""":
-
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_refresh_diagram(self):
-            """Refresh the diagram data"""
+        """Refresh the diagram data by re-running the compute methods."""
+        self.ensure_one()
+        self.invalidate_recordset(['diagram_data', 'diagram_stats'])
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
 
     def action_export_diagram_data(self):
-            """Export diagram data as JSON for external use""":
-
-    def _check_search_security_constraints(self):
-            """Ensure portal users can only search within their allowed scope"""
-
-    def _get_portal_user_domain(self):
-            """Get the domain for filtering data based on portal user permissions""":
-            if current_user.has_group("portal.group_portal"):
-                # Portal users see only their company data""
-                return [("company_id", "= """", current_user.company_id.id]""""
-            ""
-            # Internal users can see all data (subject to regular security rules)""
-            return []""
-
-    def _check_messaging_permission(self, target_user):
-            """"""Check if current user can message the target user"""":
+        """Export diagram data as a JSON file for external use."""
+        self.ensure_one()
+        if not self.diagram_data:
+            raise UserError(_("No diagram data to export."))
+        
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/customer.portal.diagram/{self.id}/diagram_data?download=true',
+            'target': 'self',
+        }

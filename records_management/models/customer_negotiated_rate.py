@@ -1,6 +1,17 @@
+# -*- coding: utf-8 -*-
+"""
+Customer Negotiated Rate Module
+
+Manages special pricing agreements with customers for specific services or
+container types, including an approval workflow and automated application.
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import ValidationError
 
 
 class CustomerNegotiatedRate(models.Model):
@@ -8,340 +19,266 @@ class CustomerNegotiatedRate(models.Model):
     _description = 'Customer Negotiated Rate'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'name'
-    _order = 'partner_id, rate_type, effective_date desc'
+    _order = 'partner_id, priority, effective_date desc'
 
     # ============================================================================
-    # FIELDS
+    # CORE & WORKFLOW
     # ============================================================================
-    name = fields.Char()
-    partner_id = fields.Many2one()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean()
-    rate_type = fields.Selection()
-    container_type = fields.Selection()
-    service_type = fields.Selection()
-    effective_date = fields.Date()
-    expiration_date = fields.Date()
-    is_current = fields.Boolean()
-    currency_id = fields.Many2one()
-    monthly_rate = fields.Monetary()
-    annual_rate = fields.Monetary()
-    setup_fee = fields.Monetary()
-    per_service_rate = fields.Monetary()
-    per_hour_rate = fields.Monetary()
-    per_document_rate = fields.Monetary()
-    minimum_volume = fields.Integer()
-    maximum_volume = fields.Integer()
-    discount_percentage = fields.Float()
-    contract_reference = fields.Char()
-    approval_required = fields.Boolean()
-    approved_by_id = fields.Many2one()
-    approval_date = fields.Datetime()
-    state = fields.Selection()
-    billing_profile_id = fields.Many2one()
-    auto_apply = fields.Boolean()
-    priority = fields.Integer()
-    base_rate_comparison = fields.Monetary()
-    savings_amount = fields.Monetary()
-    savings_percentage = fields.Float()
-    containers_using_rate = fields.Integer()
-    monthly_revenue_impact = fields.Monetary()
-    activity_ids = fields.One2many()
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many()
-    today = fields.Date()
+    name = fields.Char(string="Rate Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('submitted', 'Submitted for Approval'),
+        ('approved', 'Approved'),
+        ('active', 'Active'),
+        ('expired', 'Expired'),
+        ('rejected', 'Rejected')
+    ], string='Status', default='draft', required=True, tracking=True)
+    priority = fields.Integer(string='Priority', default=10, help="Lower number means higher priority for auto-application.")
 
     # ============================================================================
-    # METHODS
+    # RELATIONSHIPS
     # ============================================================================
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    billing_profile_id = fields.Many2one('customer.billing.profile', string='Billing Profile', domain="[('partner_id', '=', partner_id)]")
+
+    # ============================================================================
+    # RATE CONFIGURATION
+    # ============================================================================
+    rate_type = fields.Selection([
+        ('storage', 'Storage'),
+        ('service', 'Service'),
+        ('volume_discount', 'Volume Discount')
+    ], string='Rate Type', required=True, default='storage', tracking=True)
+    container_type_id = fields.Many2one('records.container.type', string='Container Type', help="Apply this rate to a specific container type.")
+    service_type_id = fields.Many2one('records.service.type', string='Service Type', help="Apply this rate to a specific service type.")
+    effective_date = fields.Date(string='Effective Date', required=True, default=fields.Date.context_today, tracking=True)
+    expiration_date = fields.Date(string='Expiration Date', tracking=True)
+    is_current = fields.Boolean(string='Is Currently Active', compute='_compute_is_current', store=True)
+    auto_apply = fields.Boolean(string='Auto-Apply Rate', default=True, help="If checked, this rate will be automatically applied to new matching services/containers.")
+    contract_reference = fields.Char(string='Contract Reference', tracking=True)
+
+    # ============================================================================
+    # FINANCIALS & PRICING
+    # ============================================================================
+    currency_id = fields.Many2one('res.currency', related='company_id.currency_id', string='Currency')
+    monthly_rate = fields.Monetary(string='Monthly Rate', tracking=True)
+    annual_rate = fields.Monetary(string='Annual Rate', compute='_compute_annual_rate', inverse='_inverse_annual_rate', store=True)
+    setup_fee = fields.Monetary(string='One-Time Setup Fee')
+    per_service_rate = fields.Monetary(string='Per Service Rate')
+    per_hour_rate = fields.Monetary(string='Per Hour Rate')
+    per_document_rate = fields.Monetary(string='Per Document Rate')
+    minimum_volume = fields.Integer(string='Minimum Volume/Quantity')
+    maximum_volume = fields.Integer(string='Maximum Volume/Quantity')
+    discount_percentage = fields.Float(string='Discount (%)')
+
+    # ============================================================================
+    # APPROVAL
+    # ============================================================================
+    approval_required = fields.Boolean(string='Approval Required', default=True)
+    approved_by_id = fields.Many2one('res.users', string='Approved By', readonly=True, copy=False)
+    approval_date = fields.Datetime(string='Approval Date', readonly=True, copy=False)
+
+    # ============================================================================
+    # ANALYTICS & COMPARISON
+    # ============================================================================
+    base_rate_comparison = fields.Monetary(string='Base Rate Comparison', compute='_compute_rate_comparison', store=True)
+    savings_amount = fields.Monetary(string='Savings Amount', compute='_compute_rate_comparison', store=True)
+    savings_percentage = fields.Float(string='Savings (%)', compute='_compute_rate_comparison', store=True)
+    containers_using_rate = fields.Integer(string='Containers Using Rate', compute='_compute_usage_stats')
+    monthly_revenue_impact = fields.Monetary(string='Monthly Revenue Impact', compute='_compute_usage_stats')
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('effective_date', 'expiration_date', 'state')
     def _compute_is_current(self):
-            """Determine if rate is currently active""":
+        """Determine if a rate is currently active based on dates and state."""
+        today = fields.Date.today()
+        for rate in self:
+            is_effective = rate.effective_date <= today
+            is_not_expired = not rate.expiration_date or rate.expiration_date >= today
+            rate.is_current = rate.state == 'active' and is_effective and is_not_expired
 
+    @api.depends('monthly_rate')
+    def _compute_annual_rate(self):
+        """Calculate annual rate from monthly rate."""
+        for rate in self:
+            rate.annual_rate = rate.monthly_rate * 12
+
+    def _inverse_annual_rate(self):
+        """Calculate monthly rate from annual rate."""
+        for rate in self:
+            rate.monthly_rate = (rate.annual_rate / 12) if rate.annual_rate else 0.0
+
+    @api.depends('rate_type', 'monthly_rate', 'container_type_id')
     def _compute_rate_comparison(self):
-            """Compare negotiated rate to base rate"""
-            for rate in self:
-                if rate.rate_type != 'storage' or not rate.monthly_rate:
-                    rate.base_rate_comparison = 0.0
-                    rate.savings_amount = 0.0
-                    rate.savings_percentage = 0.0
-                    continue
+        """Compare negotiated rate to the standard base rate."""
+        # This method assumes a 'base.rate' model exists with standard pricing.
+        # The logic may need adjustment based on the actual base rate model structure.
+        base_rate_model = self.env.get('records.base.rate')
+        if not base_rate_model:
+            self.update({'base_rate_comparison': 0, 'savings_amount': 0, 'savings_percentage': 0})
+            return
 
-                # Get base rate for comparison:
-                base_rates = self.env['base.rate'].search([)]
-                    ('company_id', '=', rate.company_id.id),
-                    ('active', '=', True)
+        base_rate_rec = base_rate_model.search([('company_id', '=', self.env.company.id)], limit=1)
+        if not base_rate_rec:
+            self.update({'base_rate_comparison': 0, 'savings_amount': 0, 'savings_percentage': 0})
+            return
 
+        for rate in self:
+            if rate.rate_type != 'storage' or not rate.container_type_id:
+                rate.base_rate_comparison = 0.0
+                rate.savings_amount = 0.0
+                rate.savings_percentage = 0.0
+                continue
 
-                if not base_rates:
-                    rate.base_rate_comparison = 0.0
-                    rate.savings_amount = 0.0
-                    rate.savings_percentage = 0.0
-                    continue
+            # Simplified: assumes base rate is on container type. Adjust if needed.
+            base_rate = rate.container_type_id.standard_rate
+            rate.base_rate_comparison = base_rate
+            rate.savings_amount = base_rate - rate.monthly_rate
+            if base_rate > 0:
+                rate.savings_percentage = ((base_rate - rate.monthly_rate) / base_rate) * 100
+            else:
+                rate.savings_percentage = 0.0
 
-                # Get base rate based on container type
-                if rate.container_type == 'type_01':
-                    base_rate = base_rates.standard_box_rate
-                elif rate.container_type == 'type_02':
-                    base_rate = base_rates.legal_box_rate
-                elif rate.container_type == 'type_03':
-                    base_rate = base_rates.map_box_rate
-                elif rate.container_type == 'type_04':
-                    base_rate = base_rates.odd_size_rate
-                elif rate.container_type == 'type_06':
-                    base_rate = base_rates.pathology_rate
-                else:
-                    base_rate = base_rates.standard_box_rate
-
-                rate.base_rate_comparison = base_rate
-                rate.savings_amount = base_rate - rate.monthly_rate
-
-                if base_rate > 0:
-                    rate.savings_percentage = ((base_rate - rate.monthly_rate) / base_rate) * 100
-                else:
-                    rate.savings_percentage = 0.0
-
-
+    @api.depends('partner_id', 'is_current', 'rate_type', 'container_type_id', 'monthly_rate')
     def _compute_usage_stats(self):
-            """Compute usage statistics for this rate""":
-            for rate in self:
-                if not rate.partner_id or not rate.is_current:
-                    rate.containers_using_rate = 0
-                    rate.monthly_revenue_impact = 0.0
-                    continue
+        """Compute usage statistics for this rate."""
+        for rate in self:
+            if not rate.partner_id or not rate.is_current or rate.rate_type != 'storage':
+                rate.containers_using_rate = 0
+                rate.monthly_revenue_impact = 0.0
+                continue
 
-                # Count containers that would use this rate
-                domain = [('partner_id', '=', rate.partner_id.id), ('active', '=', True)]
-                if rate.container_type != 'all':
-                    domain.append(('container_type', '=', rate.container_type))
+            domain = [('partner_id', '=', rate.partner_id.id), ('state', '!=', 'destroyed')]
+            if rate.container_type_id:
+                domain.append(('container_type_id', '=', rate.container_type_id.id))
 
-                containers = self.env['records.container'].search(domain)
-                rate.containers_using_rate = len(containers)
-                rate.monthly_revenue_impact = len(containers) * (rate.monthly_rate or 0.0)
+            container_count = self.env['records.container'].search_count(domain)
+            rate.containers_using_rate = container_count
+            rate.monthly_revenue_impact = container_count * (rate.monthly_rate or 0.0)
 
-        # ============================================================================
-            # CONSTRAINT VALIDATIONS
-        # ============================================================================
-
-    def _check_date_validity(self):
-            """Validate date range"""
-            for rate in self:
-                if rate.expiration_date and rate.effective_date > rate.expiration_date:
-                    raise ValidationError(_('Effective date cannot be after expiration date'))
-
-
-    def _check_volume_range(self):
-            """Validate volume range"""
-            for rate in self:
-                if rate.maximum_volume and rate.minimum_volume > rate.maximum_volume:
-                    raise ValidationError(_('Minimum volume cannot be greater than maximum volume'))
-
-
-    def _check_discount_percentage(self):
-            """Validate discount percentage"""
-            for rate in self:
-                if rate.discount_percentage < 0 or rate.discount_percentage > 100:
-                    raise ValidationError(_('Discount percentage must be between 0 and 100'))
-
-
-    def _check_priority(self):
-            """Validate priority value"""
-            for rate in self:
-                if rate.priority < 0:
-                    raise ValidationError(_('Priority must be a positive number'))
-
-        # ============================================================================
-            # ONCHANGE METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # ONCHANGE METHODS
+    # ============================================================================
+    @api.onchange('partner_id')
     def _onchange_partner_id(self):
-            """Update fields when customer changes"""
-            if self.partner_id:
-                # Set default name
-                if not self.name or self.name == 'New':
-                    self.name = _('%s - Negotiated Rate', self.partner_id.name)
+        """Update fields when customer changes."""
+        if self.partner_id:
+            if not self.name or self.name == _('New'):
+                self.name = _('Rate for %s', self.partner_id.name)
+            
+            billing_profile = self.env['customer.billing.profile'].search([
+                ('partner_id', '=', self.partner_id.id),
+                ('active', '=', True)
+            ], limit=1)
+            if billing_profile:
+                self.billing_profile_id = billing_profile.id
 
-                # Look for existing billing profile:
-                billing_profile = self.env['customer.billing.profile'].search([)]
-                    ('partner_id', '=', self.partner_id.id),
-                    ('active', '=', True)
-
-                if billing_profile:
-                    self.billing_profile_id = billing_profile.id
-
-
+    @api.onchange('rate_type')
     def _onchange_rate_type(self):
-            """Clear irrelevant fields when rate type changes"""
-            if self.rate_type == 'storage':
-                self.service_type = False
-                self.per_service_rate = 0.0
-                self.per_hour_rate = 0.0
-                self.per_document_rate = 0.0
-            elif self.rate_type == 'service':
-                self.container_type = False
-                self.monthly_rate = 0.0
-                self.annual_rate = 0.0
-            elif self.rate_type == 'volume_discount':
-                self.per_service_rate = 0.0
-                self.per_hour_rate = 0.0
-                self.per_document_rate = 0.0
+        """Clear irrelevant fields when rate type changes."""
+        if self.rate_type == 'storage':
+            self.service_type_id = False
+            self.per_service_rate = 0.0
+            self.per_hour_rate = 0.0
+            self.per_document_rate = 0.0
+        elif self.rate_type == 'service':
+            self.container_type_id = False
+            self.monthly_rate = 0.0
+            self.annual_rate = 0.0
 
+    # ============================================================================
+    # CONSTRAINTS
+    # ============================================================================
+    @api.constrains('effective_date', 'expiration_date')
+    def _check_date_validity(self):
+        for rate in self:
+            if rate.expiration_date and rate.effective_date > rate.expiration_date:
+                raise ValidationError(_('Effective date cannot be after expiration date.'))
 
-    def _onchange_monthly_rate(self):
-            """Calculate annual rate when monthly rate changes"""
-            if self.monthly_rate:
-                self.annual_rate = self.monthly_rate * 12
+    @api.constrains('minimum_volume', 'maximum_volume')
+    def _check_volume_range(self):
+        for rate in self:
+            if rate.maximum_volume and rate.minimum_volume > rate.maximum_volume:
+                raise ValidationError(_('Minimum volume cannot be greater than maximum volume.'))
 
+    @api.constrains('discount_percentage')
+    def _check_discount_percentage(self):
+        for rate in self:
+            if not (0 <= rate.discount_percentage <= 100):
+                raise ValidationError(_('Discount percentage must be between 0 and 100.'))
 
-    def _onchange_annual_rate(self):
-            """Calculate monthly rate when annual rate changes"""
-            if self.annual_rate:
-                self.monthly_rate = self.annual_rate / 12
-
-        # ============================================================================
-            # ACTION METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_submit_for_approval(self):
-            """Submit rate for management approval""":
-            self.ensure_one()
-            if self.state != 'draft':
-                raise ValidationError(_('Only draft rates can be submitted for approval')):
-            self.write({'state': 'submitted'})
+        self.ensure_one()
+        if self.state != 'draft':
+            raise UserError(_('Only draft rates can be submitted for approval.'))
+        self.write({'state': 'submitted'})
+        self.message_post(body=_("Rate submitted for approval."))
 
-            # Create activity for approver:
-            self.activity_schedule()
-                'mail.mail_activity_data_todo',
-                summary=_('Rate Approval Required'),
-                note=_('Negotiated rate for %s requires approval', self.partner_id.name),:
-                user_id=self.env.user.id  # Could be dynamic based on approval workflow
+    def action_approve(self):
+        self.ensure_one()
+        if self.state != 'submitted':
+            raise UserError(_('Only submitted rates can be approved.'))
+        
+        vals = {
+            'state': 'approved',
+            'approved_by_id': self.env.user.id,
+            'approval_date': fields.Datetime.now()
+        }
+        self.write(vals)
+        self.message_post(body=_("Rate approved by %s.", self.env.user.name))
+        
+        # Automatically activate if the effective date is today or in the past
+        if self.effective_date <= fields.Date.today():
+            self.action_activate()
 
+    def action_reject(self):
+        self.ensure_one()
+        self.write({'state': 'rejected'})
+        self.message_post(body=_("Rate rejected by %s.", self.env.user.name))
 
-            return {}
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {}
-                    'message': _('Rate submitted for approval'),:
-                    'type': 'success'
+    def action_activate(self):
+        for rate in self:
+            if rate.state != 'approved':
+                raise UserError(_('Only approved rates can be activated.'))
+            if rate.effective_date > fields.Date.today():
+                raise UserError(_('Cannot activate rate before its effective date (%s).', rate.effective_date))
+            rate.write({'state': 'active'})
+            rate.message_post(body=_("Rate activated."))
 
+    def action_expire(self):
+        self.write({'state': 'expired'})
+        self.message_post(body=_("Rate manually expired."))
 
+    def action_reset_to_draft(self):
+        self.write({'state': 'draft'})
+        self.message_post(body=_("Rate reset to draft."))
 
+    # ============================================================================
+    # CRON METHODS
+    # ============================================================================
+    @api.model
+    def _cron_activate_pending_rates(self):
+        """Cron job to activate approved rates when their effective date is reached."""
+        rates_to_activate = self.search([
+            ('state', '=', 'approved'),
+            ('effective_date', '<=', fields.Date.today())
+        ])
+        rates_to_activate.action_activate()
 
-    def action_approve_rate(self):
-            """Approve the negotiated rate"""
-            self.ensure_one()
-            if self.state != 'submitted':
-                raise ValidationError(_('Only submitted rates can be approved'))
-
-            self.write({)}
-                'state': 'approved',
-                'approved_by_id': self.env.user.id,
-                'approval_date': fields.Datetime.now()
-
-
-            # Activate if effective date has passed:
-
-    def action_activate_rate(self):
-            """Activate the rate (if approved and effective date reached)""":
-            self.ensure_one()
-            if self.state != 'approved':
-                raise ValidationError(_('Rate must be approved before activation'))
-
-            if self.effective_date > fields.Date.today():
-                raise ValidationError(_('Cannot activate rate before effective date'))
-
-            self.write({'state': 'active'})
-
-            return {}
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {}
-                    'message': _('Rate activated successfully'),
-                    'type': 'success'
-
-
-
-
-    def action_expire_rate(self):
-            """Expire the rate"""
-            self.ensure_one()
-            self.write({'state': 'expired'})
-
-            return {}
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {}
-                    'message': _('Rate expired'),
-                    'type': 'info'
-
-
-
-
-    def action_view_containers(self):
-            """View containers that use this rate"""
-            self.ensure_one()
-
-            domain = [('partner_id', '=', self.partner_id.id)]
-            if self.container_type != 'all':
-                domain.append(('container_type', '=', self.container_type))
-
-            return {}
-                'type': 'ir.actions.act_window',
-                'name': _('Containers Using This Rate'),
-                'res_model': 'records.container',
-                'view_mode': 'tree,form',
-                'domain': domain,
-                'context': {'default_partner_id': self.partner_id.id}
-
-
-
-    def action_duplicate_rate(self):
-            """Duplicate this rate for modification""":
-            self.ensure_one()
-
-            new_rate = self.copy({)}
-                'name': _('%s (Copy)', self.name),
-                'state': 'draft',
-                'approved_by_id': False,
-                'approval_date': False,
-                'effective_date': fields.Date.today()
-
-
-            return {}
-                'type': 'ir.actions.act_window',
-                'name': _('Negotiated Rate'),
-                'res_model': 'customer.negotiated.rate',
-                'res_id': new_rate.id,
-                'view_mode': 'form',
-                'target': 'current'
-
-
-        # ============================================================================
-            # CRON AND SCHEDULED METHODS
-        # ============================================================================
-
-    def cron_activate_rates(self):
-            """Cron job to activate approved rates when effective date is reached"""
-            rates_to_activate = self.search([)]
-                ('state', '=', 'approved'),
-                ('effective_date', '<=', fields.Date.today())
-
-
-            for rate in rates_to_activate:
-                rate.state = 'active'
-
-            return True
-
-
-    def cron_expire_rates(self):
-            """Cron job to expire rates when expiration date is reached"""
-            rates_to_expire = self.search([)]
-                ('state', 'in', ['active', 'approved']),
-                ('expiration_date', '<', fields.Date.today())
-
-
-            for rate in rates_to_expire:
-                rate.state = 'expired'
-
-            return True
+    @api.model
+    def _cron_expire_active_rates(self):
+        """Cron job to expire rates when their expiration date is reached."""
+        rates_to_expire = self.search([
+            ('state', 'in', ['active', 'approved']),
+            ('expiration_date', '<', fields.Date.today())
+        ])
+        rates_to_expire.action_expire()
 

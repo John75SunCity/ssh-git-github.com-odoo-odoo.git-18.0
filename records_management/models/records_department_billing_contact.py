@@ -1,168 +1,99 @@
+# -*- coding: utf-8 -*-
+"""
+Department Billing Contact Module
+
+Manages specific billing contacts associated with a customer's department,
+ensuring invoices and billing communications are sent to the correct person.
+
+Author: Records Management System
+Version: 18.0.6.0.0
+License: LGPL-3
+"""
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
 
 
 class RecordsDepartmentBillingContact(models.Model):
     _name = 'records.department.billing.contact'
-    _description = 'Records Department Billing Contact'
+    _description = 'Department Billing Contact'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'partner_id, name'
+    _order = 'department_id, sequence, name'
     _rec_name = 'name'
 
     # ============================================================================
-    # FIELDS
+    # CORE & RELATIONSHIPS
     # ============================================================================
     name = fields.Char(string='Contact Name', required=True, tracking=True)
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean(string='Active')
-    partner_id = fields.Many2one()
-    department_id = fields.Many2one()
-    email = fields.Char(string='Email')
-    phone = fields.Char(string='Phone')
-    mobile = fields.Char(string='Mobile')
-    billing_role = fields.Selection()
-    authorization_level = fields.Selection()
-    approval_limit = fields.Monetary()
-    notification_preferences = fields.Selection()
-    billing_frequency = fields.Selection()
-    invoice_delivery_preference = fields.Selection()
-    service_type = fields.Selection()
-    state = fields.Selection()
-    start_date = fields.Date()
-    end_date = fields.Date(string='End Date')
-    last_contact_date = fields.Date(string='Last Contact Date')
-    currency_id = fields.Many2one()
-    monthly_budget = fields.Monetary()
-    approval_history_ids = fields.One2many()
-    approval_count = fields.Integer()
-    notes = fields.Text(string='Internal Notes')
-    special_instructions = fields.Text(string='Special Instructions')
-    communication_preferences = fields.Text(string='Communication Preferences')
-    approval_authority = fields.Char(string='Approval Authority')
-    budget_utilization = fields.Float()
-    email_notifications = fields.Boolean()
-    activity_ids = fields.One2many()
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many()
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection(string='Type')
-    view_mode = fields.Char(string='View Mode')
+    department_id = fields.Many2one('records.department', string='Department', required=True, ondelete='cascade', tracking=True)
+    partner_id = fields.Many2one(related='department_id.partner_id', string='Customer', store=True, readonly=True)
+    company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    sequence = fields.Integer(string='Sequence', default=10, help="Determines the order of contacts, lower is higher priority.")
 
     # ============================================================================
-    # METHODS
+    # CONTACT INFORMATION
     # ============================================================================
-    def _compute_approval_count(self):
-            """Count approval history records"""
+    email = fields.Char(string='Email', required=True, tracking=True)
+    phone = fields.Char(string='Phone', tracking=True)
+    contact_type = fields.Selection([
+        ('primary', 'Primary Billing Contact'),
+        ('secondary', 'Secondary Contact'),
+        ('accounts_payable', 'Accounts Payable'),
+        ('other', 'Other')
+    ], string='Contact Type', default='primary', required=True, tracking=True)
 
-    def action_suspend(self):
-            """Suspend the billing contact"""
+    # ============================================================================
+    # NOTES
+    # ============================================================================
+    notes = fields.Text(string='Notes')
 
-    def action_deactivate(self):
-            """Deactivate the billing contact"""
-
-    def action_view_approvals(self):
-            """View approval history"""
-
-    def action_budget_report(self):
-            """Generate budget report"""
-
-    def action_send_bill_notification(self):
-            """Send billing notification"""
-
-    def _check_dates(self):
-            """Validate date consistency"""
-
-    def _check_approval_limit(self):
-            """Validate approval limit"""
-
+    # ============================================================================
+    # CONSTRAINTS
+    # ============================================================================
+    @api.constrains('email')
     def _check_email(self):
-            """Validate email format"""
-                if record.email and "@" not in record.email:
-                    raise ValidationError(_("Invalid email format"))
+        """Validate email format."""
+        for record in self:
+            if record.email and '@' not in record.email:
+                raise ValidationError(_("Please enter a valid email address."))
 
-    def _check_budget_utilization(self):
-            """Validate budget utilization percentage"""
+    @api.constrains('department_id', 'contact_type')
+    def _check_unique_primary_contact(self):
+        """Ensure only one primary billing contact per department."""
+        for record in self:
+            if record.contact_type == 'primary':
+                domain = [
+                    ('department_id', '=', record.department_id.id),
+                    ('contact_type', '=', 'primary'),
+                    ('id', '!=', record.id)
+                ]
+                if self.search_count(domain) > 0:
+                    raise ValidationError(_("A primary billing contact already exists for this department."))
 
-    def create(self, vals_list):
-            """Override create for automatic name generation""":
-                if "name" not in vals and "partner_id" in vals:
-                    partner = self.env["res.partner"].browse(vals("partner_id")
-                    partner_name = ()""
-                        partner.name""
-                        if partner and partner.exists() and partner.name:""
-                        else _("Unknown Partner")
-                    ""
-                    vals["name"] = _("Billing Contact - %s", partner_name)
-            return super(RecordsDepartmentBillingContact, self).create(vals_list)""
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_send_test_email(self):
+        """Sends a test email to the contact to verify the address."""
+        self.ensure_one()
+        if not self.email:
+            raise UserError(_("This contact does not have an email address."))
 
-    def write(self, vals):
-            """Override write for state change tracking""":
-            if "state" in vals:
-                for record in self:""
-                    old_state = record.state""
-                    new_state = vals["state"]
-                    if old_state != new_state:""
-                        record.message_post()""
-                            body=_("Status changed from %s to %s", (old_state), new_state)
-                        ""
-            return super(RecordsDepartmentBillingContact, self).write(vals)""
+        mail_template = self.env.ref('mail.mail_template_data_notification_email_default', raise_if_not_found=False)
+        if not mail_template:
+            raise UserError(_("The default email template could not be found. Please contact an administrator."))
 
-    def name_get(self):
-            """Custom name display"""
+        mail_body = _("""
+            <p>Hello %s,</p>
+            <p>This is a test email from your Records Management provider to confirm that your contact information is correct in our system.</p>
+            <p>No action is required on your part.</p>
+            <p>Thank you,<br/>%s</p>
+        """) % (self.name, self.company_id.name)
 
-    def _search_name():
-            self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+        mail_template.with_context(
+            body_html=mail_body,
+            subject=_("Test Email from %s", self.company_id.name)
+        ).send_mail(self.id, force_send=True)
 
-    def get_approval_status(self):
-            """Get current approval status summary"""
-
-    def send_notification(self, message, notification_type="email"):
-            """Send notification to billing contact"""
-
-    def get_billing_summary(self):
-            """Get billing configuration summary"""
+        self.message_post(body=_("Test email sent to %s.", self.email))

@@ -127,7 +127,7 @@ from . import file_retrieval_work_order
 
 # Service rates and billing (consolidated system)
 from . import base_rates
-from . import customer_negotiated_rates
+from . import customer_negotiated_rate
 
 # Billing profiles (MUST be loaded before records_billing_contact)
 from . import records_billing_profile
@@ -247,7 +247,7 @@ from . import stock_picking
 
 # Project and FSM integration
 from . import project_task
-from . import fsm_task
+# from . import fsm_task
 
 # POS integration
 from . import pos_config
