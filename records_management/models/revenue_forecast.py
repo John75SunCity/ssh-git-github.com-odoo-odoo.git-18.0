@@ -47,7 +47,7 @@ class RevenueForecast(models.Model):
     total_forecasted_amount = fields.Monetary(string="Total Forecasted Revenue", compute='_compute_aggregated_amounts', store=True)
     total_actual_amount = fields.Monetary(string="Total Actual Revenue", compute='_compute_aggregated_amounts', store=True)
     total_variance_amount = fields.Monetary(string="Total Variance", compute='_compute_aggregated_amounts', store=True)
-    achievement_percentage = fields.Float(string="Achievement (%)", compute='_compute_aggregated_amounts', store=True, group_operator="avg")
+    achievement_percentage = fields.Float(string="Achievement (%)", compute='_compute_aggregated_amounts', store=True, aggregator="avg")
 
     # ============================================================================
     # COMPUTE METHODS
@@ -120,7 +120,7 @@ class RevenueForecast(models.Model):
                 period_end = current_date + relativedelta(months=1, days=-1)
                 if period_end > end_date:
                     period_end = end_date
-                
+
                 lines_to_create.append({
                     'name': _("Forecast for %s") % period_start.strftime('%B %Y'),
                     'date_start': period_start,
@@ -128,7 +128,7 @@ class RevenueForecast(models.Model):
                     'forecast_id': self.id,
                 })
                 current_date += relativedelta(months=1)
-        
+
         elif self.period_type == 'quarterly':
             current_date = start_date
             quarter = (start_date.month - 1) // 3 + 1
@@ -160,5 +160,5 @@ class RevenueForecast(models.Model):
         if lines_to_create:
             self.env['revenue.forecast.line'].create(lines_to_create)
             self.message_post(body=_("%s forecast lines have been generated.") % len(lines_to_create))
-        
+
         return True

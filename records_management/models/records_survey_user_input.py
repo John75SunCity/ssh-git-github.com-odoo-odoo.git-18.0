@@ -42,7 +42,7 @@ class RecordsSurveyUserInput(models.Model):
     # ============================================================================
     # AI-DRIVEN ANALYTICS (COMPUTED)
     # ============================================================================
-    sentiment_score = fields.Float(string="Sentiment Score", compute='_compute_analytics', store=True, group_operator="avg")
+    sentiment_score = fields.Float(string="Sentiment Score", compute='_compute_analytics', store=True, aggregator="avg")
     sentiment_category = fields.Selection([
         ('very_negative', 'Very Negative'),
         ('negative', 'Negative'),
@@ -104,7 +104,7 @@ class RecordsSurveyUserInput(models.Model):
         for record in self:
             # 1. Extract Numerical Ratings
             numerical_ratings = record._extract_numerical_ratings()
-            
+
             # 2. Calculate Satisfaction Metrics
             if numerical_ratings:
                 avg_rating = sum(numerical_ratings) / len(numerical_ratings)
@@ -201,7 +201,7 @@ class RecordsSurveyUserInput(models.Model):
         for record in self:
             if not record.requires_followup:
                 raise UserError(_("This feedback does not require follow-up based on current analytics."))
-            
+
             assignee = record._get_followup_assignee()
             record.write({
                 'state': 'follow_up',
@@ -265,10 +265,10 @@ class RecordsSurveyUserInput(models.Model):
         manager_group = self.env.ref("records_management.group_records_manager", raise_if_not_found=False)
         if manager_group and self.feedback_priority == 'urgent':
             return manager_group.users[:1]
-        
+
         user_group = self.env.ref("records_management.group_records_user", raise_if_not_found=False)
         if user_group:
             return user_group.users[:1]
-            
+
         return self.env['res.users']
 

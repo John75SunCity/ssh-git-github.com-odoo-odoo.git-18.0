@@ -34,7 +34,7 @@ class RevenueAnalytic(models.Model):
     total_revenue = fields.Monetary(string="Total Revenue", currency_field='currency_id', tracking=True)
     projected_revenue = fields.Monetary(string="Projected Revenue", currency_field='currency_id', tracking=True)
     actual_costs = fields.Monetary(string='Actual Costs', currency_field='currency_id', tracking=True)
-    profit_margin = fields.Float(string="Profit Margin (%)", compute='_compute_profit_margin', store=True, group_operator="avg")
+    profit_margin = fields.Float(string="Profit Margin (%)", compute='_compute_profit_margin', store=True, aggregator="avg")
     
     # ============================================================================
     # CUSTOMER METRICS

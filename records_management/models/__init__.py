@@ -56,6 +56,20 @@ from . import container_content
 from . import records_container_type_converter
 
 # =============================================================================
+# SERVICE MANAGEMENT MODELS (Load shredding_service before paper_bale_recycling)
+# =============================================================================
+
+# Shredding services (MUST be loaded before paper_bale_recycling due to inverse field)
+from . import shredding_team
+# from . import shredding_equipment # This file does not exist
+from . import shredding_certificate
+from . import shredding_service
+from . import shredding_hard_drive
+from . import shredding_service_log
+from . import destruction_item
+from . import shred_bin
+
+# =============================================================================
 # CORE BUSINESS MODELS
 # =============================================================================
 
@@ -81,20 +95,6 @@ from . import pickup_request_item
 from . import pickup_route
 from . import pickup_route_stop
 from . import records_vehicle
-
-# =============================================================================
-# SERVICE MANAGEMENT MODELS (Load shredding_service before paper_bale_recycling)
-# =============================================================================
-
-# Shredding services (MUST be loaded before paper_bale_recycling due to inverse field)
-from . import shredding_team
-# from . import shredding_equipment # This file does not exist
-from . import shredding_certificate
-from . import shredding_service
-from . import shredding_hard_drive
-from . import shredding_service_log
-from . import destruction_item
-from . import shred_bin
 
 # =============================================================================
 # PAPER RECYCLING AND BALING MODELS (After shredding services)

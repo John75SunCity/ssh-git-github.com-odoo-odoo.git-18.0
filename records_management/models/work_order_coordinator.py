@@ -42,7 +42,7 @@ class WorkOrderCoordinator(models.Model):
     # Coordination Metrics
     total_work_orders = fields.Integer(string="Total Work Orders", compute='_compute_coordination_metrics', store=True)
     completed_work_orders = fields.Integer(string="Completed Work Orders", compute='_compute_coordination_metrics', store=True)
-    coordination_progress = fields.Float(string="Progress (%)", compute='_compute_coordination_metrics', store=True, group_operator="avg")
+    coordination_progress = fields.Float(string="Progress (%)", compute='_compute_coordination_metrics', store=True, aggregator="avg")
 
     # Resource Allocation
     employee_ids = fields.Many2many('hr.employee', string="Assigned Employees")

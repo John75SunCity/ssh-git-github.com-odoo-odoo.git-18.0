@@ -89,7 +89,7 @@ class CustomerFeedback(models.Model):
         ('neutral', 'Neutral'),
         ('negative', 'Negative')
     ], string='Sentiment Category', compute='_compute_sentiment_analysis', store=True)
-    sentiment_score = fields.Float(string='Sentiment Score', compute='_compute_sentiment_analysis', store=True, group_operator='avg')
+    sentiment_score = fields.Float(string='Sentiment Score', compute='_compute_sentiment_analysis', store=True, aggregator='avg')
 
     # ============================================================================
     # RESOLUTION & FOLLOW-UP

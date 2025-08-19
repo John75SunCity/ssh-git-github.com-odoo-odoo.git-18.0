@@ -55,8 +55,8 @@ class RevenueForecastLine(models.Model):
     forecasted_amount = fields.Monetary(string="Forecasted Amount", currency_field='currency_id', tracking=True)
     actual_amount = fields.Monetary(string="Actual Amount", currency_field='currency_id', tracking=True)
     variance_amount = fields.Monetary(string="Variance", compute='_compute_variance', store=True)
-    variance_percentage = fields.Float(string="Variance (%)", compute='_compute_variance', store=True, group_operator="avg")
-    
+    variance_percentage = fields.Float(string="Variance (%)", compute='_compute_variance', store=True, aggregator="avg")
+
     forecasted_volume = fields.Float(string="Forecasted Volume", help="e.g., number of boxes, weight in kg")
     actual_volume = fields.Float(string="Actual Volume")
     forecasted_containers = fields.Integer(string="Forecasted Containers")

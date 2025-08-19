@@ -17,7 +17,7 @@ class TempInventory(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     partner_id = fields.Many2one('res.partner', string="Customer/Owner", help="Optional: Link this inventory to a specific customer.")
-    
+
     # ============================================================================
     # STATE & LIFECYCLE
     # ============================================================================
@@ -28,7 +28,7 @@ class TempInventory(models.Model):
         ('full', 'Full'),
         ('archived', 'Archived'),
     ], string="Status", default='draft', required=True, tracking=True)
-    
+
     priority = fields.Selection([
         ('0', 'Normal'),
         ('1', 'High'),
@@ -41,7 +41,7 @@ class TempInventory(models.Model):
     capacity_limit = fields.Integer(string="Capacity Limit (Items)", default=100)
     current_count = fields.Integer(string="Current Item Count", compute='_compute_current_count', store=True)
     available_capacity = fields.Integer(string="Available Capacity", compute='_compute_capacity_metrics', store=True)
-    utilization_percent = fields.Float(string="Utilization (%)", compute='_compute_capacity_metrics', store=True, group_operator="avg")
+    utilization_percent = fields.Float(string="Utilization (%)", compute='_compute_capacity_metrics', store=True, aggregator="avg")
 
     # ============================================================================
     # CONTENTS

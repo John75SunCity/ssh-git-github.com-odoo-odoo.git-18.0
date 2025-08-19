@@ -40,7 +40,7 @@ class RecordsLocation(models.Model):
     zip = fields.Char(string='Zip', change_default=True)
     country_id = fields.Many2one('res.country', string='Country', ondelete='restrict')
     full_address = fields.Text(string="Full Address", compute='_compute_full_address')
-    
+
     building = fields.Char(string="Building")
     floor = fields.Char(string="Floor")
     zone = fields.Char(string="Zone")
@@ -54,7 +54,7 @@ class RecordsLocation(models.Model):
     # CAPACITY & UTILIZATION
     # ============================================================================
     max_capacity = fields.Integer(string="Maximum Capacity (Containers)", tracking=True, help="The total number of containers this location can hold.")
-    utilization_percentage = fields.Float(string="Utilization (%)", compute='_compute_utilization_percentage', store=True, group_operator="avg")
+    utilization_percentage = fields.Float(string="Utilization (%)", compute='_compute_utilization_percentage', store=True, aggregator="avg")
     available_spaces = fields.Integer(string="Available Spaces", compute='_compute_available_spaces', store=True)
     is_at_capacity = fields.Boolean(string="Is At Capacity", compute='_compute_is_at_capacity', store=True)
 
