@@ -10,7 +10,7 @@ class MobileBinKeyWizard(models.TransientModel):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string="Operation Reference", readonly=True, default=_('New Mobile Operation'))
+    name = fields.Char(string="Operation Reference", readonly=True, default=lambda self: _('New Mobile Operation'))
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Technician', default=lambda self: self.env.user)
     employee_id = fields.Many2one('hr.employee', string='Employee', readonly=True)
