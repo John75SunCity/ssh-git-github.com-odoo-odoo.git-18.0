@@ -200,7 +200,7 @@ from . import records_access_log
 # Core billing system
 from . import billing
 from . import records_billing_service
-from . import department_billing
+# from . import department_billing # This file does not exist
 
 # Advanced billing features
 from . import customer_billing_profile

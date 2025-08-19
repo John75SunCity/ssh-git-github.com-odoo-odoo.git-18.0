@@ -111,7 +111,7 @@ class Photo(models.Model):
         self.ensure_one()
         if not self.image:
             raise UserError(_('No image attached to this photo.'))
-        
+
         return {
             'type': 'ir.actions.act_url',
             'url': f'/web/content?model=photo&id={self.id}&field=image&download=true&filename={self.image_filename or "photo.jpg"}',
@@ -122,7 +122,7 @@ class Photo(models.Model):
         """View detailed photo metadata"""
         self.ensure_one()
         metadata = self.get_photo_metadata()
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('Photo Metadata'),
@@ -191,16 +191,16 @@ class Photo(models.Model):
         self.ensure_one()
         if not self.image:
             return False
-        
+
         try:
             image_data = base64.b64decode(self.image)
             image = Image.open(io.BytesIO(image_data))
             image.thumbnail(size, Image.Resampling.LANCZOS)
-            
+
             output = io.BytesIO()
             image.save(output, format='JPEG', quality=85)
             thumbnail_data = output.getvalue()
-            
+
             return base64.b64encode(thumbnail_data)
         except Exception:
             return False
@@ -213,16 +213,13 @@ class Photo(models.Model):
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
-    @api.model
+    @api.model_create_multi
     def create(self, vals_list):
         """Override create for automatic photo numbering and audit trail."""
-        if not isinstance(vals_list, list):
-            vals_list = [vals_list]
-        
         for vals in vals_list:
             if vals.get('name', 'New Photo') == 'New Photo':
                 vals['name'] = self.env['ir.sequence'].next_by_code('photo') or _('New Photo')
-        
+
         photos = super().create(vals_list)
         for photo in photos:
             photo.message_post(body=_("Photo created: %s") % photo.name)
@@ -231,16 +228,16 @@ class Photo(models.Model):
     def write(self, vals):
         """Override write for file info updates and detailed audit trail."""
         result = super().write(vals)
-        
+
         # Log significant changes
         if 'state' in vals:
             for record in self:
                 record.message_post(body=_("Photo state changed to: %s") % record.state)
-        
+
         if 'category' in vals:
             for record in self:
                 record.message_post(body=_("Photo category changed to: %s") % record.category)
-        
+
         return result
 
     def unlink(self):
