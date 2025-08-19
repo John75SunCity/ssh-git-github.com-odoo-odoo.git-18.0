@@ -111,7 +111,7 @@ from . import records_advanced_billing_period
 
 # Work orders
 from . import work_order_shredding
-from . import document_retrieval_work_order
+# from . import document_retrieval_work_order # This file does not exist
 from . import records_retrieval_work_order
 from . import work_order_retrieval
 
@@ -175,12 +175,14 @@ from . import naidcustody_event
 from . import naidaudit_log
 from . import naid_certificate
 from . import naid_certificate_item
+from . import naid_compliance_checklist
 from . import naid_compliance_checklist_item
 from . import naid_compliance_action_plan
 from . import naid_compliance_alert
 from . import naid_destruction_record
 from . import records_destruction  # New destruction model
 from . import naid_performance_history
+from . import naid_risk_assessment
 
 # Chain of custody tracking
 from . import records_chain_of_custody
@@ -202,7 +204,7 @@ from . import department_billing
 
 # Advanced billing features
 from . import customer_billing_profile
-from . import revenue_forecaster
+from . import revenue_forecast
 from . import revenue_forecast_line
 
 # =============================================================================
