@@ -314,7 +314,7 @@ from . import rm_module_configurator
 from . import hard_drive_scan_wizard
 from . import fsm_reschedule_wizard
 from . import key_restriction_checker
-from . import records_permanent_flag_wizard
+# from . import records_permanent_flag_wizard # This file does not exist
 
 # Stock extensions (loaded after core models)
 from . import stock_lot
@@ -329,7 +329,7 @@ from . import records_usage_tracking
 from . import maintenance_equipment
 from . import maintenance_team
 from . import shredding_inventory_batch
-from . import wizard_template
+# from . import wizard_template # This file does not exist
 
 # =============================================================================
 # OPTIONAL EXTENSIONS AND INTEGRATIONS
@@ -354,7 +354,7 @@ except (ImportError, AttributeError) as e:
 
 
 
-from . import records_user_invitation_wizard
+# from . import records_user_invitation_wizard # This file does not exist
 
 # Work Order Integration System (load mixin first)
 from . import work_order_coordinator
