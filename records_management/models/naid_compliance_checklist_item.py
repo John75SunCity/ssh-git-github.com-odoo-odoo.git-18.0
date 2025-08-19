@@ -20,7 +20,9 @@ class NAIDComplianceChecklistItem(models.Model):
     # METHODS
     # ============================================================================
     def action_mark_non_compliant(self):
-            """Mark item as non-compliant"""
+        """Mark item as non-compliant"""
+        pass
 
     def _check_deadline(self):
-            """Validate deadline is not in the past for new items"""
+        """Validate deadline is not in the past for new items"""
+        pass

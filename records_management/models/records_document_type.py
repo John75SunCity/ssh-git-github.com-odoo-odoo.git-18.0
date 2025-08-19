@@ -531,8 +531,10 @@ class RecordsDocumentType(models.Model):
             "archived": ["active"],
         }
         for record in self:
-            if (record.state in valid_transitions
-                    and new_state not in valid_transitions[record.state]):
+            if (
+                record.state in valid_transitions
+                and new_state not in valid_transitions.get(record.state, [])
+            ):
                 raise ValidationError(
                     _(
                         "Invalid state transition from '%s' to '%s'",
