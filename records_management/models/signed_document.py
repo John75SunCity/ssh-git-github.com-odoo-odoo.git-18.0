@@ -183,20 +183,17 @@ class SignedDocument(models.Model):
         """Perform actual signature verification. Placeholder for now."""
         return True
 
-    def _create_audit_log(self, action):
-        """Create audit log entry for NAID compliance."""
-        if 'naid.audit.log' not in self.env:
-            return
+    def _create_audit_log(self, action, details=None):
+        """Create an audit log entry using the dedicated audit model."""
         for record in self:
-            self.env['naid.audit.log'].create({
-                'document_id': record.id,
-                'event_type': 'signature_event',
-                'model_name': self._name,
-                'record_id': record.id,
-                'description': _("Action: %s performed on document %s") % (action, record.name),
-                'operator_id': self.env.user.id,
-                'timestamp': fields.Datetime.now(),
-            })
+            before_state = self.env.context.get('old_state')
+            self.env['signed.document.audit'].log_action(
+                document_id=record.id,
+                action=action,
+                details=details,
+                before_state=before_state,
+                after_state=record.state if before_state else None
+            )
 
     # ============================================================================
     # CONSTRAINT METHODS
@@ -233,7 +230,13 @@ class SignedDocument(models.Model):
         return documents
 
     def write(self, vals):
+        old_states = {rec: rec.state for rec in self} if 'state' in vals else {}
         res = super().write(vals)
         if "state" in vals:
-            self._create_audit_log(f"state_changed_to_{vals['state']}")
+            for record in self:
+                details = _('State changed from %s to %s', old_states.get(record, 'N/A'), record.state)
+                self.with_context(old_state=old_states.get(record))._create_audit_log(
+                    "state_changed",
+                    details=details
+                )
         return res

@@ -210,7 +210,7 @@ from . import revenue_forecaster
 # Portal requests and feedback
 from . import portal_request
 from . import signed_document
-from . import signed_document_audit2
+from . import signed_document_audit
 from . import portal_feedback
 from . import customer_feedback
 
