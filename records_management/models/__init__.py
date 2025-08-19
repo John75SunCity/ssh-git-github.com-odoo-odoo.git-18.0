@@ -63,7 +63,6 @@ from . import records_container_type_converter
 from . import shredding_team
 # from . import shredding_equipment # This file does not exist
 from . import shredding_certificate
-from . import shredding_service
 from . import shredding_hard_drive
 from . import shredding_service_log
 from . import destruction_item
