@@ -74,8 +74,8 @@ class RecordsSecurityAudit(models.Model):
         """Prevent deletion of audit logs."""
         raise UserError(_("Security audit logs are immutable and cannot be deleted."))
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to ensure it can be called from other parts of the system."""
         # This method is kept to allow creation, but write/unlink are blocked.
-        return super(RecordsSecurityAudit, self).create(vals)
+        return super().create(vals_list)

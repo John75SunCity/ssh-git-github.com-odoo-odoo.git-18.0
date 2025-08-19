@@ -285,7 +285,7 @@ from . import service_item
 # =============================================================================
 
 from . import visitor
-from . import visitor_pos_wizard
+# from . import visitor_pos_wizard # This file does not exist
 from . import required_document
 from . import container_access_visitor
 from . import container_access_activity
