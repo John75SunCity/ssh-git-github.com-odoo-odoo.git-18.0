@@ -93,7 +93,7 @@ class RecordsDepartmentBillingContact(models.Model):
 
         mail_template.with_context(
             body_html=mail_body,
-            subject=_("Test Email from %s", self.company_id.name)
+            subject=_("Test Email from %s") % self.company_id.name
         ).send_mail(self.id, force_send=True)
 
-        self.message_post(body=_("Test email sent to %s.", self.email))
+        self.message_post(body=_("Test email sent to %s.") % self.email)
