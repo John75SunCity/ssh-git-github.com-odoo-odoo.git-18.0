@@ -23,6 +23,7 @@ from . import records_permanent_flag_wizard
 from . import records_location_report_wizard
 from . import work_order_bin_assignment_wizard
 from . import system_flowchart_wizard
+from . import unlock_service_reschedule_wizard
 
 # Note: records_user_invitation_wizard is in models folder, not wizards
 # Note: fsm_reschedule_wizard_placeholder.py does not exist - removed
