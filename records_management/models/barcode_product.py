@@ -411,7 +411,7 @@ class BarcodeProduct(models.Model):
         """Validate that the barcode length matches the expected category based on business rules."""
         LENGTH_CATEGORY_MAP = {
             5: "location", 6: "container_box", 7: "file_folder",
-            10: "shred_bin", 14: "temp_folder", 15: "location""
+            10: "shred_bin", 14: "temp_folder", 15: "location"
         }
         for record in self:
             if record.barcode and record.product_category:

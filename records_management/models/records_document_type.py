@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.tools import float_compare
@@ -118,17 +121,12 @@ class RecordsDocumentType(models.Model):
 
 
     def _compute_effective_retention(self):
-            """Calculate effective retention period"""
-            for record in self:
-                if (:)
-                    record.retention_policy_id
-                    and record.retention_policy_id.retention_years
-
-                    record.effective_retention_years = ()
-                        record.retention_policy_id.retention_years
-
-                else:
-                    record.effective_retention_years = record.default_retention_years or 7
+        """Calculate effective retention period"""
+        for record in self:
+            if record.retention_policy_id and record.retention_policy_id.retention_years:
+                record.effective_retention_years = record.retention_policy_id.retention_years
+            else:
+                record.effective_retention_years = record.default_retention_years or 7
 
 
     def _compute_status_display(self):
@@ -138,214 +136,212 @@ class RecordsDocumentType(models.Model):
                 if not record.active:
                     status_parts.append("Inactive")
                 if record.document_count:
-                    status_parts.append(_("%d docs", record.document_count))
+                    status_parts.append(_("%s docs", record.document_count))
                 record.status_display = " | ".join(status_parts)
 
 
     def _compute_classification_accuracy(self):
-            """Compute classification accuracy based on document history"""
-            for record in self:
-                if record.document_ids:
-                    total_docs = len(record.document_ids)
-                    correctly_classified = len(record.document_ids.filtered())
-                        lambda d: d.state != 'error'
-
-                    record.classification_accuracy_score = ()
-                        correctly_classified / total_docs * 100 if total_docs else 0.0:
-
-                else:
-                    record.classification_accuracy_score = 0.0
+        """Compute classification accuracy based on document history"""
+        for record in self:
+            if record.document_ids:
+                total_docs = len(record.document_ids)
+                correctly_classified = len(record.document_ids.filtered(
+                    lambda d: d.state != 'error'))
+                record.classification_accuracy_score = (
+                    correctly_classified / total_docs * 100 if total_docs else 0.0)
+            else:
+                record.classification_accuracy_score = 0.0
 
 
     def _compute_regulatory_compliance(self):
-            """Compute overall regulatory compliance score"""
-            for record in self:
-                score = 0.0
-                total_factors = 0
+        """Compute overall regulatory compliance score"""
+        for record in self:
+            score = 0.0
+            total_factors = 0
 
-                # Base compliance factors
-                compliance_factors = []
-                    record.naid_compliance,
-                    record.hipaa_protected,
-                    record.sox_compliance,
-                    record.gdpr_applicable
+            # Base compliance factors
+            compliance_factors = [
+                record.naid_compliance,
+                record.hipaa_protected,
+                record.sox_compliance,
+                record.gdpr_applicable
+            ]
 
+            for factor in compliance_factors:
+                total_factors += 1
+                if factor:
+                    score += 25.0  # Each factor worth 25 points
 
-                for factor in compliance_factors:
-                    total_factors += 1
-                    if factor:
-                        score += 25.0  # Each factor worth 25 points
+            # Adjust based on compliance status
+            status_multipliers = {
+                'compliant': 1.0,
+                'pending': 0.75,
+                'non_compliant': 0.25,
+                'exempted': 0.9
+            }
 
-                # Adjust based on compliance status
-                status_multipliers = {}
-                    'compliant': 1.0,
-                    'pending': 0.75,
-                    'non_compliant': 0.25,
-                    'exempted': 0.9
-
-
-                multiplier = status_multipliers.get(record.compliance_status, 0.5)
-                record.regulatory_compliance_score = score * multiplier
+            multiplier = status_multipliers.get(record.compliance_status, 0.5)
+            record.regulatory_compliance_score = score * multiplier
 
 
     def _compute_utilization_metrics(self):
-            """Compute document type utilization percentage"""
-            for record in self:
-                total_docs_in_system = self.env['records.document'].search_count([
-                record_docs = len(record.document_ids)
+        """Compute document type utilization percentage"""
+        for record in self:
+            total_docs_in_system = self.env['records.document'].search_count([])
+            record_docs = len(record.document_ids)
 
-                if total_docs_in_system > 0:
-                    record.document_type_utilization = ()
-                        record_docs / total_docs_in_system * 100
-
-                else:
-                    record.document_type_utilization = 0.0
+            if total_docs_in_system > 0:
+                record.document_type_utilization = (
+                    record_docs / total_docs_in_system * 100)
+            else:
+                record.document_type_utilization = 0.0
 
 
     def _compute_growth_trend(self):
-            """Compute growth trend based on recent document creation"""
-            for record in self:
-                if not record.document_ids:
-                    record.growth_trend_indicator = 'stable'
-                    continue
+        """Compute growth trend based on recent document creation"""
+        for record in self:
+            if not record.document_ids:
+                record.growth_trend_indicator = 'stable'
+                continue
 
-                # Compare last 30 days vs previous 30 days
-                from datetime import datetime, timedelta
-                today = datetime.now().date()
-                last_30_days = today - timedelta(days=30)
-                previous_30_days = today - timedelta(days=60)
+            # Compare last 30 days vs previous 30 days
+            today = datetime.now().date()
+            last_30_days = today - timedelta(days=30)
+            previous_30_days = today - timedelta(days=60)
 
-                recent_count = len(record.document_ids.filtered())
-                    lambda d: d.create_date and d.create_date.date() >= last_30_days
+            recent_count = len(record.document_ids.filtered(
+                lambda d: d.create_date and d.create_date.date() >= last_30_days))
 
-                previous_count = len(record.document_ids.filtered())
-                    lambda d: d.create_date and
-                    previous_30_days <= d.create_date.date() < last_30_days
+            previous_count = len(record.document_ids.filtered(
+                lambda d: d.create_date and
+                previous_30_days <= d.create_date.date() < last_30_days))
 
-
-                if previous_count == 0:
-                    if recent_count > 0:
-                        record.growth_trend_indicator = 'growing'
-                    else:
-                        record.growth_trend_indicator = 'stable'
+            if previous_count == 0:
+                if recent_count > 0:
+                    record.growth_trend_indicator = 'growing'
                 else:
-                    growth_rate = (recent_count - previous_count) / previous_count
-                    if growth_rate > 0.5:
-                        record.growth_trend_indicator = 'rapid_growth'
-                    elif growth_rate > 0.1:
-                        record.growth_trend_indicator = 'growing'
-                    elif growth_rate < -0.1:
-                        record.growth_trend_indicator = 'declining'
-                    else:
-                        record.growth_trend_indicator = 'stable'
+                    record.growth_trend_indicator = 'stable'
+            else:
+                growth_rate = (recent_count - previous_count) / previous_count
+                if growth_rate > 0.5:
+                    record.growth_trend_indicator = 'rapid_growth'
+                elif growth_rate > 0.1:
+                    record.growth_trend_indicator = 'growing'
+                elif growth_rate < -0.1:
+                    record.growth_trend_indicator = 'declining'
+                else:
+                    record.growth_trend_indicator = 'stable'
 
 
     def _compute_seasonal_patterns(self):
-            """Compute seasonal usage patterns"""
-            for record in self:
-                if len(record.document_ids) < 12:  # Need sufficient data
-                    record.seasonal_pattern_score = 0.0
-                    continue
+        """Compute seasonal usage patterns"""
+        for record in self:
+            if not record.document_ids:  # Need sufficient data
+                record.seasonal_pattern_score = 0.0
+                continue
 
-                # Group documents by month and calculate variance
-                monthly_counts = {}
-                for doc in record.document_ids:
-                    if doc.create_date:
-                        month = doc.create_date.month
-                        monthly_counts[month] = monthly_counts.get(month, 0) + 1
+            # Group documents by month and calculate variance
+            monthly_counts = {}
+            for doc in record.document_ids:
+                if doc.create_date:
+                    month = doc.create_date.month
+                    monthly_counts[month] = monthly_counts.get(month, 0) + 1
 
-                if len(monthly_counts) > 1:
-                    counts = list(monthly_counts.values())
-                    avg_count = sum(counts) / len(counts)
-                    variance = sum((x - avg_count) ** 2 for x in counts) / len(counts):
-                    # Higher variance indicates more seasonal patterns
-                    record.seasonal_pattern_score = min(variance / avg_count * 100, 100) if avg_count > 0 else 0.0:
-                else:
-                    record.seasonal_pattern_score = 0.0
+            if monthly_counts:
+                counts = list(monthly_counts.values())
+                avg_count = sum(counts) / len(counts)
+                variance = sum((x - avg_count) ** 2 for x in counts) / len(counts)
+                # Higher variance indicates more seasonal patterns
+                record.seasonal_pattern_score = min(variance / avg_count * 100, 100) if avg_count > 0 else 0.0
+            else:
+                record.seasonal_pattern_score = 0.0
 
         # ============================================================================
             # ENHANCED CRUD OPERATIONS
         # ============================================================================
 
     def create(self, vals_list):
-            """Enhanced create with automatic code generation and validation"""
-            for vals in vals_list:
-                if not vals.get("code"):
-                    vals["code") = self._generate_document_type_code(]
-                        vals.get("category", "other")
+        """Enhanced create with automatic code generation and validation"""
+        for vals in vals_list:
+            if not vals.get("code"):
+                vals["code"] = self._generate_document_type_code(
+                    vals.get("category", "other"))
 
-                if vals.get("confidentiality_level") in ["restricted", "top_secret"]:
-                    vals["encryption_required"] = True
-                if not vals.get("name"):
-                    raise ValidationError(_("Document type name is required"))
+            if vals.get("confidentiality_level") in ["restricted", "top_secret"]:
+                vals["encryption_required"] = True
+            if not vals.get("name"):
+                raise ValidationError(_("Document type name is required"))
 
-            records = super().create(vals_list)
-            for record in records:
-                record.message_post()
-                    body=_("Document type created with code: %s", record.code)
+        records = super().create(vals_list)
+        for record in records:
+            record.message_post(
+                body=_("Document type created with code: %s", record.code))
 
-            return records
+        return records
 
 
     def write(self, vals):
-            """Enhanced write with change validation and tracking"""
-            if "state" in vals:
-                self._validate_state_transition(vals["state"])
-            if "retention_policy_id" in vals or "default_retention_years" in vals:
-                self._handle_retention_changes(vals)
-            if vals.get("confidentiality_level") in ["restricted", "top_secret"]:
-                vals["encryption_required"] = True
+        """Enhanced write with change validation and tracking"""
+        if "state" in vals:
+            self._validate_state_transition(vals["state"])
+        if "retention_policy_id" in vals or "default_retention_years" in vals:
+            self._handle_retention_changes(vals)
+        if vals.get("confidentiality_level") in ["restricted", "top_secret"]:
+            vals["encryption_required"] = True
 
-            result = super().write(vals)
-            if any(:)
-                field in vals
-                for field in [:]
-                    "state",
-                    "retention_policy_id",
-                    "confidentiality_level",
+        result = super().write(vals)
+        if any(
+            field in vals
+            for field in [
+                "state",
+                "retention_policy_id",
+                "confidentiality_level",
+            ]
+        ):
+            for record in self:
+                record.message_post(
+                    body=_("Document type configuration updated"),
+                    subject=_("Configuration Change"),
+                )
 
-
-                for record in self:
-                    record.message_post()
-                        body=_("Document type configuration updated"),
-                        subject=_("Configuration Change"),
-
-            return result
+        return result
 
 
     def unlink(self):
-            """Enhanced unlink with dependency validation"""
-            for record in self:
-                if record.document_ids:
-                    raise UserError()
-                        _()
-                            "Cannot delete document type '%s' with %d associated documents. Archive instead.",
-                            record.name,
-                            len(record.document_ids),
+        """Enhanced unlink with dependency validation"""
+        for record in self:
+            if record.document_ids:
+                raise UserError(
+                    _(
+                        "Cannot delete document type '%s' with %d associated documents. Archive instead.",
+                        record.name,
+                        len(record.document_ids),
+                    )
+                )
 
+            if record.child_type_ids:
+                raise UserError(
+                    _(
+                        "Cannot delete document type '%s' with child types. Reassign children first.",
+                        record.name,
+                    )
+                )
 
-                if record.child_type_ids:
-                    raise UserError()
-                        _()
-                            "Cannot delete document type '%s' with child types. Reassign children first.",
-                            record.name,
-
-
-            return super().unlink()
+        return super().unlink()
 
         # ============================================================================
             # ACTION METHODS
         # ============================================================================
 
     def action_activate(self):
-            """Activate document type"""
-            self.ensure_one()
-            if self.state == "archived":
-                raise UserError()
-                    _("Cannot activate archived document type. Restore first.")
+        """Activate document type"""
+        self.ensure_one()
+        if self.state == "archived":
+            raise UserError(
+                _("Cannot activate archived document type. Restore first."))
 
-            self.write({"state": "active", "active": True})
-            return self._show_success_message(_("Document type activated successfully"))
+        self.write({"state": "active", "active": True})
+        return self._show_success_message(_("Document type activated successfully"))
 
 
     def action_deprecate(self):
@@ -358,46 +354,49 @@ class RecordsDocumentType(models.Model):
 
 
     def action_archive(self):
-            """Archive document type with safety checks"""
-            self.ensure_one()
-            active_docs = self.document_ids.filtered(lambda d: d.active)
-            if active_docs:
-                raise UserError()
-                    _()
-                        "Cannot archive document type with %d active documents",
-                        len(active_docs),
+        """Archive document type with safety checks"""
+        self.ensure_one()
+        active_docs = self.document_ids.filtered(lambda d: d.active)
+        if active_docs:
+            raise UserError(
+                _(
+                    "Cannot archive document type with %d active documents",
+                    len(active_docs),
+                )
+            )
 
-
-            self.write({"state": "archived", "active": False})
-            return self._show_success_message(_("Document type archived"))
+        self.write({"state": "archived", "active": False})
+        return self._show_success_message(_("Document type archived"))
 
 
     def action_view_documents(self):
-            """View all documents of this type"""
-            self.ensure_one()
-            return {}
-                "type": "ir.actions.act_window",
-                "name": _("Documents - %s", self.name),
-                "res_model": "records.document",
-                "view_mode": "tree,form,kanban",
-                "domain": [("document_type_id", "=", self.id)],
-                "context": {}
-                    "default_document_type_id": self.id,
-                    "search_default_group_by_state": 1,
-
+        """View all documents of this type"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Documents - %s", self.name),
+            "res_model": "records.document",
+            "view_mode": "tree,form,kanban",
+            "domain": [("document_type_id", "=", self.id)],
+            "context": {
+                "default_document_type_id": self.id,
+                "search_default_group_by_state": 1,
+            }
+        }
 
 
 
     def action_view_containers(self):
-            """View all containers using this document type"""
-            self.ensure_one()
-            return {}
-                "type": "ir.actions.act_window",
-                "name": _("Containers - %s", self.name),
-                "res_model": "records.container",
-                "view_mode": "tree,form",
-                "domain": [("document_type_id", "=", self.id)],
-                "context": {"default_document_type_id": self.id},
+        """View all containers using this document type"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Containers - %s", self.name),
+            "res_model": "records.container",
+            "view_mode": "tree,form",
+            "domain": [("document_type_id", "=", self.id)],
+            "context": {"default_document_type_id": self.id},
+        }
 
 
 
@@ -409,90 +408,92 @@ class RecordsDocumentType(models.Model):
 
 
     def action_create_retention_policy(self):
-            """Create default retention policy for this document type""":
-            self.ensure_one()
-            if not self.retention_policy_id:
-                self._setup_retention_policy()
-            return self._show_success_message(_("Default retention policy created"))
+        """Create default retention policy for this document type"""
+        self.ensure_one()
+        if not self.retention_policy_id:
+            self._setup_retention_policy()
+        return self._show_success_message(_("Default retention policy created"))
 
         # ============================================================================
             # BUSINESS LOGIC METHODS
         # ============================================================================
 
     def get_retention_date(self, creation_date):
-            """Calculate retention expiration date"""
-            if not creation_date:
+        """Calculate retention expiration date"""
+        if not creation_date:
+            return None
+        return creation_date + relativedelta(years=self.effective_retention_years)
 
     def is_eligible_for_destruction(self, document):
-            """Check if document is eligible for destruction""":
-            if not document:
-                return False
-            if self.requires_legal_hold and getattr(document, "legal_hold", False):
-                return False
-            retention_date = self.get_retention_date(document.create_date)
-            if fields.Date.today() < retention_date:
-                return False
-            if hasattr(document, "state") and document.state in [:]
-                "draft",
-                "processing",
+        """Check if document is eligible for destruction"""
+        if not document:
+            return False
+        if self.requires_legal_hold and getattr(document, "legal_hold", False):
+            return False
+        retention_date = self.get_retention_date(document.create_date)
+        if not retention_date or fields.Date.today() < retention_date:
+            return False
+        if hasattr(document, "state") and document.state in [
+            "draft",
+            "processing",
+        ]:
+            return False
+        return True
 
-                return False
-            return True
-
-        # ============================================================================
-            # VALIDATION METHODS
-        # ============================================================================
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
 
     def _check_retention_years(self):
-            """Enhanced retention years validation"""
-            for record in self:
-                if record.default_retention_years < 0:
-                    raise ValidationError(_("Retention years cannot be negative."))
-                if record.default_retention_years > 100:
-                    raise ValidationError(_("Retention years cannot exceed 100 years."))
+        """Enhanced retention years validation"""
+        for record in self:
+            if record.default_retention_years < 0:
+                raise ValidationError(_("Retention years cannot be negative."))
+            if record.default_retention_years > 100:
+                raise ValidationError(_("Retention years cannot exceed 100 years."))
 
 
     def _check_parent_type(self):
-            """Enhanced parent type validation with circular reference detection"""
-            for record in self:
-                if record.parent_type_id:
-                    if record.parent_type_id == record:
-                        raise ValidationError()
-                            _("Document type cannot be its own parent.")
+        """Enhanced parent type validation with circular reference detection"""
+        for record in self:
+            if record.parent_type_id:
+                if record.parent_type_id == record:
+                    raise ValidationError(
+                        _("Document type cannot be its own parent."))
 
-                    current = record.parent_type_id
-                    visited = {record.id}
-                    while current:
-                        if current.id in visited:
-                            raise ValidationError()
-                                _("Circular reference detected in document type hierarchy.")
+                current = record.parent_type_id
+                visited = {record.id}
+                while current:
+                    if current.id in visited:
+                        raise ValidationError(
+                            _("Circular reference detected in document type hierarchy."))
 
-                        visited.add(current.id)
-                        current = current.parent_type_id
+                    visited.add(current.id)
+                    current = current.parent_type_id
 
 
     def _check_max_box_weight(self):
-            """Validate maximum box weight"""
-            for record in self:
-                if float_compare(record.max_box_weight, 0.0, precision_digits=2) <= 0:
-                    raise ValidationError()
-                        _("Maximum box weight must be greater than zero.")
+        """Validate maximum box weight"""
+        for record in self:
+            if float_compare(record.max_box_weight, 0.0, precision_digits=2) <= 0:
+                raise ValidationError(
+                    _("Maximum box weight must be greater than zero."))
 
-                if record.max_box_weight > 500.0:
-                    raise ValidationError(_("Maximum box weight cannot exceed 500 lbs."))
+            if record.max_box_weight > 500.0:
+                raise ValidationError(_("Maximum box weight cannot exceed 500 lbs."))
 
 
     def _check_security_consistency(self):
-            """Ensure security settings are consistent"""
-            for record in self:
-                if (:)
-                    record.confidentiality_level in ["restricted", "top_secret"]
-                    and not record.encryption_required
-
-                    raise ValidationError()
-                        _()
-                            "Documents with '%s' confidentiality level must require encryption.",
-                            record.confidentiality_level,
+        """Ensure security settings are consistent"""
+        for record in self:
+            if (record.confidentiality_level in ["restricted", "top_secret"]
+                    and not record.encryption_required):
+                raise ValidationError(
+                    _(
+                        "Documents with '%s' confidentiality level must require encryption.",
+                        record.confidentiality_level,
+                    )
+                )
 
 
 
@@ -501,44 +502,44 @@ class RecordsDocumentType(models.Model):
         # ============================================================================
 
     def _generate_document_type_code(self, category):
-            """Generate unique document type code"""
-            category_prefixes = {}
-                "financial": "FIN",
-                "legal": "LEG",
-                "hr": "HR",
-                "medical": "MED",
-                "compliance": "COMP",
-                "government": "GOV",
-                "corporate": "CORP",
-                "technical": "TECH",
-                "operational": "OPS",
-                "other": "DOC",
-
-            prefix = category_prefixes.get(category, "DOC")
-            sequence = ()
-                self.env["ir.sequence"].next_by_code("records.document.type") or "1"
-
-            return f"{prefix}{sequence}"
+        """Generate unique document type code"""
+        category_prefixes = {
+            "financial": "FIN",
+            "legal": "LEG",
+            "hr": "HR",
+            "medical": "MED",
+            "compliance": "COMP",
+            "government": "GOV",
+            "corporate": "CORP",
+            "technical": "TECH",
+            "operational": "OPS",
+            "other": "DOC",
+        }
+        prefix = category_prefixes.get(category, "DOC")
+        sequence = (
+            self.env["ir.sequence"].next_by_code("records.document.type") or "1"
+        )
+        return f"{prefix}{sequence}"
 
 
     def _validate_state_transition(self, new_state):
-            """Validate allowed state transitions"""
-            valid_transitions = {}
-                "draft": ["active", "archived"],
-                "active": ["deprecated", "archived"],
-                "deprecated": ["archived"],
-                "archived": ["active"],
-
-            for record in self:
-                if (:)
-                    record.state in valid_transitions
-                    and new_state not in valid_transitions[record.state]
-
-                    raise ValidationError()
-                        _()
-                            "Invalid state transition from '%s' to '%s'",
-                            record.state,
-                            new_state,
+        """Validate allowed state transitions"""
+        valid_transitions = {
+            "draft": ["active", "archived"],
+            "active": ["deprecated", "archived"],
+            "deprecated": ["archived"],
+            "archived": ["active"],
+        }
+        for record in self:
+            if (record.state in valid_transitions
+                    and new_state not in valid_transitions[record.state]):
+                raise ValidationError(
+                    _(
+                        "Invalid state transition from '%s' to '%s'",
+                        record.state,
+                        new_state,
+                    )
+                )
 
 
 
@@ -547,90 +548,92 @@ class RecordsDocumentType(models.Model):
             """Handle retention policy changes impact"""
             for record in self:
                 if record.document_count > 0:
-                    _logger.warning()
-                        "Retention change affects %s documents for type %s",:
+                    _logger.warning(
+                        "Retention change affects %s documents for type %s",
                         record.document_count,
                         record.name,
+                    )
 
 
 
     def _show_success_message(self, message):
-            """Display success notification"""
-            return {}
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {}
-                    "title": _("Success"),
-                    "message": message,
-                    "type": "success",
-                    "sticky": False,
+        """Display success notification"""
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Success"),
+                "message": message,
+                "type": "success",
+                "sticky": False,
+            }
+        }
 
 
 
 
     def _show_deprecation_wizard(self):
-            """Show deprecation confirmation wizard"""
-            return {}
-                "type": "ir.actions.act_window",
-                "name": _("Confirm Deprecation"),
-                "res_model": "records.document.type.deprecate.wizard",
-                "view_mode": "form",
-                "target": "new",
-                "context": {"default_document_type_id": self.id},
+        """Show deprecation confirmation wizard"""
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Confirm Deprecation"),
+            "res_model": "records.document.type.deprecate.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_document_type_id": self.id},
+        }
 
 
 
     def _setup_retention_policy(self):
-            """Create default retention policy for certain categories""":
-            if not self.retention_policy_id and self.category in [:]
-                "financial",
-                "legal",
-                "compliance",
-
-                retention_years = {}
-                    "financial": 7,
-                    "legal": 10,
-                    "compliance": 5,
-
-                policy_name = _()
-                    "Default %s Policy - %s", self.category.title(), self.name
-
-                _logger.info()
-                    "Would create retention policy: %s with %s years retention",
-                    policy_name,
-                    retention_years,
-
-            return True
+        """Create default retention policy for certain categories"""
+        if not self.retention_policy_id and self.category in [
+            "financial",
+            "legal",
+            "compliance",
+        ]:
+            retention_years = {
+                "financial": 7,
+                "legal": 10,
+                "compliance": 5,
+            }
+            policy_name = _("Default %s Policy - %s", self.category.title(), self.name)
+            _logger.info(
+                "Would create retention policy: %s with %s years retention",
+                policy_name,
+                retention_years.get(self.category),
+            )
+        return True
 
 
     def _setup_security_rules(self):
-            """Set up security rules based on confidentiality level"""
-            security_configs = {}
-                "public": {"access_group": "base.group_user", "encryption": False},
-                "internal": {}
-                    "access_group": "base.group_user",
-                    "encryption": False,
-
-                "confidential": {}
-                    "access_group": "records_management.group_records_manager",
-                    "encryption": True,
-
-                "restricted": {}
-                    "access_group": "records_management.group_records_manager",
-                    "encryption": True,
-
-                "top_secret": {}
-                    "access_group": "records_management.group_records_admin",
-                    "encryption": True,
-
-
-            config = security_configs.get()
-                self.confidentiality_level, security_configs["internal"]
-
-            _logger.info()
-                "Would configure security for %s: access_group=%s, encryption=%s",
-                self.name,
-                config["access_group"],
-                config["encryption"],
-
-            return True
+        """Set up security rules based on confidentiality level"""
+        security_configs = {
+            "public": {"access_group": "base.group_user", "encryption": False},
+            "internal": {
+                "access_group": "base.group_user",
+                "encryption": False,
+            },
+            "confidential": {
+                "access_group": "records_management.group_records_manager",
+                "encryption": True,
+            },
+            "restricted": {
+                "access_group": "records_management.group_records_manager",
+                "encryption": True,
+            },
+            "top_secret": {
+                "access_group": "records_management.group_records_admin",
+                "encryption": True,
+            },
+        }
+        config = security_configs.get(
+            self.confidentiality_level, security_configs["internal"]
+        )
+        _logger.info(
+            "Would configure security for %s: access_group=%s, encryption=%s",
+            self.name,
+            config["access_group"],
+            config["encryption"],
+        )
+        return True

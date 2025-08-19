@@ -66,6 +66,7 @@ from . import records_digital_scan
 # Container operations (in dependency order)
 from . import records_container_movement
 from . import records_container_transfer
+from . import records_container_transfer_line
 
 # Customer and inventory management
 from . import customer_inventory_report
@@ -87,7 +88,7 @@ from . import records_vehicle
 
 # Shredding services (MUST be loaded before paper_bale_recycling due to inverse field)
 from . import shredding_team
-from . import shredding_equipment
+# from . import shredding_equipment # This file does not exist
 from . import shredding_certificate
 from . import shredding_service
 from . import shredding_hard_drive
@@ -117,15 +118,15 @@ from . import work_order_retrieval
 # Document retrieval support models (separate files following Odoo standards)
 from . import document_retrieval_item
 from . import document_retrieval_team
-from . import document_retrieval_pricing
+# from . import document_retrieval_pricing # This file does not exist
 from . import document_retrieval_equipment
-from . import document_retrieval_support_models
+# from . import document_retrieval_support_models # This file does not exist
 
 from . import document_search_attempt
 from . import file_retrieval_work_order
 
 # Service rates and billing (consolidated system)
-from . import base_rates
+from . import base_rate
 from . import customer_negotiated_rate
 
 # Billing profiles (MUST be loaded before records_billing_contact)
@@ -141,7 +142,7 @@ from . import invoice_generation_log
 from . import discount_rule
 from . import revenue_analytic
 from . import records_promotional_discount
-from . import billing_support_models
+# from . import billing_support_models # This file does not exist
 
 # Key management services
 from . import bin_key_management
@@ -168,8 +169,8 @@ from . import load
 # =============================================================================
 
 # Core NAID compliance
-from . import naid_compliance
-from . import naid_custody
+# from . import naid_compliance # This file does not exist
+# from . import naid_custody # This file does not exist
 from . import naidcustody_event
 from . import naidaudit_log
 from . import naid_certificate
@@ -202,6 +203,7 @@ from . import department_billing
 # Advanced billing features
 from . import customer_billing_profile
 from . import revenue_forecaster
+from . import revenue_forecast_line
 
 # =============================================================================
 # PORTAL AND CUSTOMER INTERACTION
@@ -222,12 +224,14 @@ from . import portal_feedback_escalation
 from . import portal_feedback_action
 from . import portal_feedback_communication
 from . import portal_feedback_analytic
+from . import portal_feedback_resolution
 
 # Survey and improvement tracking
-from . import scrm_records_management
+# from . import scrm_records_management # This file does not exist
 from . import records_survey_user_input
 from . import survey_feedback_theme
 from . import survey_improvement_action
+from . import feedback_improvement_area
 
 # Transitory items and field customization
 from . import transitory_field_config
@@ -247,14 +251,14 @@ from . import stock_picking
 
 # Project and FSM integration
 from . import project_task
-# from . import fsm_task
+from . import fsm_task
 
 # POS integration
 from . import pos_config
 
 # HR integration
 from . import hr_employee
-from . import hremployee_naid
+# from . import hremployee_naid # This file does not exist
 
 # =============================================================================
 # =============================================================================
@@ -263,6 +267,7 @@ from . import hremployee_naid
 
 from . import product_template
 from . import product_product
+from . import product_container_type
 from . import barcode_product
 from . import barcode_models_enhanced
 
@@ -280,6 +285,8 @@ from . import service_item
 from . import visitor
 from . import visitor_pos_wizard
 from . import required_document
+from . import container_access_visitor
+from . import container_access_activity
 
 # =============================================================================
 # BUSINESS LOGIC AND CRM
@@ -295,8 +302,9 @@ from . import records_deletion_request
 
 # Module management
 from . import records_installer
-from . import records_management_base_menus
+# from . import records_management_base_menus # This file does not exist
 from . import location_report_wizard
+from . import rm_module_configurator
 
 # =============================================================================
 # WIZARDS AND UTILITIES
@@ -314,8 +322,10 @@ from . import stock_lot_attribute_value
 
 # Final models
 from . import payment_split
+from . import payment_split_line
 from . import records_usage_tracking
 from . import maintenance_equipment
+from . import maintenance_team
 from . import shredding_inventory_batch
 from . import wizard_template
 
@@ -343,7 +353,6 @@ except (ImportError, AttributeError) as e:
 
 
 from . import records_user_invitation_wizard
-from . import records_bulk_user_import
 
 # Work Order Integration System (load mixin first)
 from . import work_order_coordinator
@@ -357,30 +366,6 @@ from . import account_move_line
 from . import container_retrieval_work_order
 
 # =============================================================================
-# LATE-LOADING MODELS (to avoid circular dependencies)
-# =============================================================================
-
-# Note: records_billing_line already imported at line 133
-
-# =============================================================================
-# MISSING MODELS THAT NEED TO BE IMPORTED
-# =============================================================================
-
-# RM Module Configurator (if not already imported)
-try:
-    from . import rm_module_configurator
-    _logger.info("RM module configurator loaded successfully")
-except (ImportError, AttributeError) as e:
-    _logger.warning("RM module configurator not available: %s", str(e))
-
-# File retrieval work order item (correct name)
-from . import file_retrieval_work_order_item
-from . import records_location_report_wizard
-from . import records_inventory_dashboard
-from . import customer_negotiated_rate
-from . import product_container_type
-from . import feedback_improvement_area
-# =============================================================================
 # NEWLY CREATED MISSING MODELS (10 MODELS)
 # =============================================================================
 
@@ -391,14 +376,7 @@ from . import scan_digital_asset
 from . import mobile_photo
 
 # FSM route planning
-from . import fsmroute
-
-# Portal feedback enhancements
-from . import portal_feedback_resolution
-
-# Container access control
-from . import container_access_visitor
-from . import container_access_activity
+# from . import fsmroute # Typo for fsm_route_management
 
 # Route optimization
 from . import route_optimizer
@@ -409,28 +387,19 @@ from . import custody_transfer_event
 # Certificate template system
 from . import certificate_template_data
 
-# Invoice line extensions
-from . import invoice_line
-
 # =============================================================================
 # SUB-MODEL EXTENSIONS (Individual models for One2many relationships)
 # =============================================================================
-
-# Revenue forecasting sub-models
-from . import revenue_forecast_line
 
 # Billing configuration audit and line sub-models
 from . import records_billing_config_audit
 from . import records_billing_config_line
 
 # FSM service line sub-models
-from . import fsmtask_service_line
+# from . import fsmtask_service_line # This file does not exist
 
 # File retrieval metrics sub-models
-from . import file_retrieval_metric
-
-# Payment processing sub-models
-from . import payment_split_line
+from . import retrieval_metric
 
 # Shredding service sub-models
 from . import shredding_service_photo
@@ -441,6 +410,7 @@ from . import customer_inventory_report_line
 
 from . import shredding_rate
 from . import records_billing
-from . import billing_service
-from . import maintenance_team
-from . import records_container_transfer_line
+# from . import billing_service # This is not a model
+from . import file_retrieval_work_order_item
+from . import records_location_report_wizard
+from . import records_inventory_dashboard

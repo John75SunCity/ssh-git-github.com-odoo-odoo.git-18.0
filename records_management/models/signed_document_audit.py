@@ -16,53 +16,53 @@ class SignedDocumentAudit(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
-        string="Audit Reference", 
-        required=True, 
-        copy=False, 
-        readonly=True, 
+        string="Audit Reference",
+        required=True,
+        copy=False,
+        readonly=True,
         default=lambda self: _('New')
     )
     display_name = fields.Char(
-        string='Display Name', 
-        compute='_compute_display_name', 
+        string='Display Name',
+        compute='_compute_display_name',
         store=True
     )
     company_id = fields.Many2one(
-        'res.company', 
-        string='Company', 
-        default=lambda self: self.env.company, 
-        required=True, 
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        required=True,
         readonly=True
     )
     active = fields.Boolean(default=True)
-    
+
     # ============================================================================
     # RELATIONSHIPS & CONTEXT
     # ============================================================================
     document_id = fields.Many2one(
-        'signed.document', 
-        string="Signed Document", 
-        required=True, 
-        ondelete='cascade', 
+        'signed.document',
+        string="Signed Document",
+        required=True,
+        ondelete='cascade',
         index=True
     )
     performing_user_id = fields.Many2one(
-        'res.users', 
-        string="Performed By", 
+        'res.users',
+        string="Performed By",
         readonly=True
     )
     partner_id = fields.Many2one(
-        'res.partner', 
-        string="Associated Partner", 
-        readonly=True, 
-        related='document_id.partner_id', 
+        'res.partner',
+        string="Associated Partner",
+        readonly=True,
+        related='document_id.partner_id',
         store=True
     )
     request_id = fields.Many2one(
-        'portal.request', 
-        string="Related Request", 
-        readonly=True, 
-        related='document_id.request_id', 
+        'portal.request',
+        string="Related Request",
+        readonly=True,
+        related='document_id.request_id',
         store=True
     )
 
@@ -80,10 +80,10 @@ class SignedDocumentAudit(models.Model):
         ('viewed', 'Viewed'),
         ('downloaded', 'Downloaded'),
     ], string="Action", required=True, readonly=True)
-    
+
     action_description = fields.Char(
-        string="Action Description", 
-        compute='_compute_display_name', 
+        string="Action Description",
+        compute='_compute_display_name',
         store=True
     )
     details = fields.Text(string="Details", readonly=True)
@@ -94,27 +94,27 @@ class SignedDocumentAudit(models.Model):
     # TECHNICAL & SECURITY DETAILS
     # ============================================================================
     timestamp = fields.Datetime(
-        string="Timestamp", 
-        required=True, 
-        default=fields.Datetime.now, 
-        readonly=True, 
+        string="Timestamp",
+        required=True,
+        default=fields.Datetime.now,
+        readonly=True,
         index=True
     )
     ip_address = fields.Char(string="IP Address", readonly=True)
     user_agent = fields.Text(string="User Agent", readonly=True)
     verification_hash = fields.Char(
-        string="Verification Hash", 
-        readonly=True, 
-        copy=False, 
+        string="Verification Hash",
+        readonly=True,
+        copy=False,
         index=True
     )
-    
+
     # ============================================================================
     # COMPLIANCE & RISK
     # ============================================================================
     naid_compliant = fields.Boolean(
-        string="NAID Compliant", 
-        default=True, 
+        string="NAID Compliant",
+        default=True,
         readonly=True
     )
     risk_level = fields.Selection([
@@ -132,10 +132,10 @@ class SignedDocumentAudit(models.Model):
         for record in self:
             action_display = dict(record._fields['action'].selection).get(record.action, record.action)
             user_name = record.performing_user_id.name or _("System")
-            
+
             action_description = _("%s by %s") % (action_display, user_name)
             record.action_description = action_description
-            
+
             if record.document_id.name:
                 record.display_name = _("%s on %s") % (action_description, record.document_id.name)
             else:
@@ -151,13 +151,13 @@ class SignedDocumentAudit(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 sequence = self.env['ir.sequence'].next_by_code('signed.document.audit')
                 vals['name'] = sequence or _('New')
-            
+
             if not vals.get('performing_user_id'):
                 vals['performing_user_id'] = self.env.user.id
-            
+
             if not vals.get('verification_hash'):
                 vals['verification_hash'] = self._generate_verification_hash(vals)
-                
+
         return super().create(vals_list)
 
     def write(self, vals):
@@ -188,7 +188,7 @@ class SignedDocumentAudit(models.Model):
     def verify_integrity(self):
         """Verifies the integrity of the audit entry by re-calculating the hash."""
         self.ensure_one()
-        
+
         timestamp_str = str(self.timestamp)
 
         current_vals = {
@@ -211,13 +211,13 @@ class SignedDocumentAudit(models.Model):
             'before_state': before_state,
             'after_state': after_state,
         }
-        
+
         if hasattr(self.env, 'request') and self.env.request:
             vals.update({
                 'ip_address': self.env.request.httprequest.environ.get('REMOTE_ADDR'),
                 'user_agent': self.env.request.httprequest.environ.get('HTTP_USER_AGENT'),
             })
-        
+
         return self.create(vals)
 
     # ============================================================================
@@ -228,7 +228,7 @@ class SignedDocumentAudit(models.Model):
         self.ensure_one()
         if not self.document_id:
             raise UserError(_("No document associated with this audit entry."))
-            
+
         return {
             "type": "ir.actions.act_window",
             "res_model": "signed.document",
@@ -241,14 +241,14 @@ class SignedDocumentAudit(models.Model):
     def action_verify_integrity(self):
         """Action to verify the integrity of audit entries."""
         failed_verifications = []
-        
+
         for record in self:
             if not record.verify_integrity():
                 failed_verifications.append(record.name)
-        
+
         if failed_verifications:
             raise UserError(
-                _("Integrity verification failed for the following audit entries:\n%s") % 
+                _("Integrity verification failed for the following audit entries:\n%s") %
                 '\n'.join(failed_verifications)
             )
         else:
@@ -279,4 +279,4 @@ class SignedDocumentAudit(models.Model):
             if not record.document_id:
                 raise ValidationError(_("Document ID is required for audit entries."))
             if not record.action:
-                raise ValidationError(_("Action is required
+                raise ValidationError(_("Action is required for audit entries."))

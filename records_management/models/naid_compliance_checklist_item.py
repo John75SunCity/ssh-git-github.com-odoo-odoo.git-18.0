@@ -23,4 +23,4 @@ class NAIDComplianceChecklistItem(models.Model):
             """Mark item as non-compliant"""
 
     def _check_deadline(self):
-            """Validate deadline is not in the past for new items""":
+            """Validate deadline is not in the past for new items"""
