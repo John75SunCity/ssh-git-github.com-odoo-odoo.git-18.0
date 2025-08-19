@@ -1,135 +1,58 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 
 class StockLotAttribute(models.Model):
-    _name = 'stock.lot.attribute.option'
-    _description = 'Stock Lot Attribute Option'
+    _name = 'stock.lot.attribute'
+    _description = 'Stock Lot Attribute'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, name'
-    _rec_name = 'name'
 
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean()
-    attribute_type = fields.Selection()
-    description = fields.Text()
-    required = fields.Boolean()
-    sequence = fields.Integer()
-    selection_option_ids = fields.One2many()
-    state = fields.Selection()
-    lot_attribute_value_ids = fields.One2many()
-    value_count = fields.Integer()
-    option_count = fields.Integer()
-    activity_ids = fields.One2many()
-    context = fields.Char()
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection(string='Type')
-    view_mode = fields.Char(string='View Mode')
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection(string='Type')
-    view_mode = fields.Char(string='View Mode')
-    attribute_id = fields.Many2one()
-    name = fields.Char()
-    value = fields.Char()
-    sequence = fields.Integer()
-    active = fields.Boolean()
+    name = fields.Char(string="Attribute Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    active = fields.Boolean(default=True)
+    sequence = fields.Integer(default=10)
+    attribute_type = fields.Selection([
+        ('char', 'Text (Single Line)'),
+        ('text', 'Text (Multi-Line)'),
+        ('integer', 'Number (Integer)'),
+        ('float', 'Number (Decimal)'),
+        ('boolean', 'Yes/No'),
+        ('date', 'Date'),
+        ('datetime', 'Date & Time'),
+        ('selection', 'Selection')
+    ], string="Type", required=True, default='char', tracking=True)
+    description = fields.Text(string="Description")
+    required = fields.Boolean(string="Required for Lot")
+
+    selection_option_ids = fields.One2many('stock.lot.attribute.option', 'attribute_id', string="Selection Options")
+    option_count = fields.Integer(compute='_compute_option_count', string="Option Count")
+
+    _sql_constraints = [
+        ('name_company_uniq', 'unique(name, company_id)', 'Attribute name must be unique per company!')
+    ]
 
     # ============================================================================
     # METHODS
     # ============================================================================
-    def _compute_value_count(self):
-            """Compute the number of values for this attribute""":
-
+    @api.depends('selection_option_ids')
     def _compute_option_count(self):
-            """Compute the number of selection options"""
+        for attribute in self:
+            attribute.option_count = len(attribute.selection_option_ids)
 
-    def action_archive(self):
-            """Archive the attribute"""
-
-    def action_activate(self):
-            """Activate archived attribute"""
-
-    def action_view_values(self):
-            """View attribute values"""
-
+    @api.constrains('attribute_type', 'selection_option_ids')
     def _check_selection_options(self):
-            """Validate that selection type attributes have options"""
-                if record.attribute_type == "selection" and not record.selection_option_ids:
-                    raise ValidationError()""
-                        _()""
-                            "Selection type attributes must have at least one option defined."
-                        ""
-                    ""
-
-    def _check_name_unique(self):
-            """Ensure attribute names are unique within company"""
-
-    def get_attribute_summary(self):
-            """Get summary information for this attribute""":
-
-    def get_available_types(self):
-            """Get available attribute types"""
-            return dict(self._fields["attribute_type"].selection)
+        for record in self:
+            if record.attribute_type == 'selection' and not record.selection_option_ids:
+                raise ValidationError(_("Selection type attributes must have at least one option defined."))
+            if record.attribute_type != 'selection' and record.selection_option_ids:
+                raise ValidationError(_("Only 'Selection' type attributes can have options."))
 
     def copy(self, default=None):
-            """Override copy to handle name uniqueness"""
-            if "name" not in default:
-                default["name"] = _("%s (Copy)", self.name)
-            return super().copy(default)""
-
-    def _check_value_unique(self):
-                """Ensure option values are unique within attribute"""
-
-    def name_get(self):
-                """Custom name_get to show attribute context"""
+        default = dict(default or {})
+        if 'name' not in default:
+            default['name'] = _("%s (Copy)") % self.name
+        return super().copy(default)

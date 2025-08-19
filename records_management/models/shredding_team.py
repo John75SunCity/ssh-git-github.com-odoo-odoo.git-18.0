@@ -1,268 +1,198 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
 
 
 class ShreddingTeam(models.Model):
     _name = 'shredding.team'
     _description = 'Shredding Team Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'name'
-    _rec_name = 'name'
+    _order = 'sequence, name'
 
     # ============================================================================
-    # FIELDS
+    # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    partner_id = fields.Many2one()
-    active = fields.Boolean()
-    sequence = fields.Integer()
-    state = fields.Selection()
+    name = fields.Char(string="Team Name", required=True, tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    active = fields.Boolean(default=True)
+    sequence = fields.Integer(default=10)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('suspended', 'Suspended'),
+        ('inactive', 'Inactive'),
+    ], string="Status", default='draft', required=True, tracking=True)
     description = fields.Text(string='Description')
-    team_leader_id = fields.Many2one()
-    supervisor_id = fields.Many2one()
-    member_ids = fields.Many2many()
-    employee_ids = fields.Many2many()
-    member_count = fields.Integer()
-    specialization = fields.Selection()
-    certification_level = fields.Selection()
-    security_clearance = fields.Boolean()
-    max_capacity_per_day = fields.Float()
-    max_volume_per_day = fields.Float()
-    working_hours_start = fields.Float()
-    working_hours_end = fields.Float()
-    working_days = fields.Selection()
-    overtime_available = fields.Boolean()
-    vehicle_ids = fields.Many2many()
-    equipment_ids = fields.Many2many()
-    primary_equipment_id = fields.Many2one()
-    mobile_unit = fields.Boolean()
-    total_services_completed = fields.Integer()
-    total_weight_processed = fields.Float()
-    average_service_time = fields.Float()
-    efficiency_rating = fields.Float()
-    customer_satisfaction = fields.Float()
-    total_ratings_received = fields.Integer()
-    satisfaction_percentage = fields.Float()
-    latest_feedback_date = fields.Datetime()
-    service_ids = fields.One2many()
-    service_count = fields.Integer()
-    active_service_ids = fields.One2many()
-    completed_service_ids = fields.One2many()
-    feedback_ids = fields.One2many()
-    base_location_id = fields.Many2one()
-    service_area_ids = fields.Many2many()
-    travel_radius = fields.Float()
-    emergency_response = fields.Boolean()
-    activity_ids = fields.One2many()
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many()
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection(string='Type')
-    view_mode = fields.Char(string='View Mode')
-    date = fields.Date()
 
     # ============================================================================
-    # METHODS
+    # TEAM COMPOSITION
     # ============================================================================
+    team_leader_id = fields.Many2one('hr.employee', string="Team Leader", tracking=True)
+    member_ids = fields.Many2many('hr.employee', 'shredding_team_member_rel', 'team_id', 'employee_id', string="Team Members")
+    member_count = fields.Integer(string="Member Count", compute='_compute_member_count', store=True)
+
+    # ============================================================================
+    # SPECIALIZATION & COMPLIANCE
+    # ============================================================================
+    specialization = fields.Selection([
+        ('on_site', 'On-Site Shredding'),
+        ('off_site', 'Off-Site Plant'),
+        ('media_destruction', 'Media Destruction'),
+        ('specialized', 'Specialized Destruction')
+    ], string="Specialization")
+    certification_level = fields.Selection([('naid_aaa', 'NAID AAA Certified'), ('standard', 'Standard')], string="Certification Level")
+    security_clearance = fields.Boolean(string="Security Clearance")
+
+    # ============================================================================
+    # CAPACITY & SCHEDULING
+    # ============================================================================
+    max_capacity_per_day = fields.Float(string="Max Weight/Day (kg)")
+    max_volume_per_day = fields.Float(string="Max Volume/Day (m³)")
+    working_hours_start = fields.Float(string="Working Hours Start", default=8.0)
+    working_hours_end = fields.Float(string="Working Hours End", default=17.0)
+    overtime_available = fields.Boolean(string="Overtime Available")
+
+    # ============================================================================
+    # RESOURCES & LOCATION
+    # ============================================================================
+    vehicle_ids = fields.Many2many('fleet.vehicle', string="Assigned Vehicles")
+    equipment_ids = fields.Many2many('maintenance.equipment', string="Assigned Equipment", domain="[('equipment_category', '=', 'shredder')]")
+    primary_equipment_id = fields.Many2one('maintenance.equipment', string="Primary Shredder")
+    mobile_unit = fields.Boolean(string="Is Mobile Unit")
+    base_location_id = fields.Many2one('stock.location', string="Base Location")
+    service_area_ids = fields.Many2many('res.country.state', string="Service Areas")
+    travel_radius = fields.Float(string="Travel Radius (km)")
+    emergency_response = fields.Boolean(string="Emergency Response Team")
+
+    # ============================================================================
+    # PERFORMANCE METRICS (COMPUTED)
+    # ============================================================================
+    service_ids = fields.One2many('fsm.order', 'shredding_team_id', string="Assigned Services")
+    service_count = fields.Integer(string="Total Service Count", compute='_compute_performance_metrics', store=True)
+    total_services_completed = fields.Integer(string="Services Completed", compute='_compute_performance_metrics', store=True)
+    total_weight_processed = fields.Float(string="Total Weight Processed (kg)", compute='_compute_performance_metrics', store=True)
+    average_service_time = fields.Float(string="Avg. Service Time (hrs)", compute='_compute_performance_metrics', store=True)
+    efficiency_rating = fields.Float(string="Efficiency Rating (%)", compute='_compute_performance_metrics', store=True)
+
+    # ============================================================================
+    # CUSTOMER FEEDBACK (COMPUTED)
+    # ============================================================================
+    feedback_ids = fields.One2many('customer.feedback', 'shredding_team_id', string="Direct Feedback")
+    customer_satisfaction = fields.Float(string="Avg. Satisfaction (1-5)", compute='_compute_customer_satisfaction', store=True)
+    total_ratings_received = fields.Integer(string="Total Ratings", compute='_compute_customer_satisfaction', store=True)
+    satisfaction_percentage = fields.Float(string="Satisfaction Rate (%)", compute='_compute_customer_satisfaction', store=True)
+    latest_feedback_date = fields.Datetime(string="Latest Feedback", compute='_compute_customer_satisfaction', store=True)
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('member_ids')
     def _compute_member_count(self):
-            """Compute total number of team members"""
-            for team in self:
-                team.member_count = len(team.member_ids)
+        for team in self:
+            team.member_count = len(team.member_ids)
 
-
-    def _compute_service_count(self):
-            """Compute total number of assigned services"""
-            for team in self:
-                team.service_count = len(team.service_ids)
-
-
+    @api.depends('service_ids.state', 'service_ids.total_weight', 'service_ids.duration', 'max_capacity_per_day')
     def _compute_performance_metrics(self):
-            """Compute team performance metrics"""
-            for team in self:
-                completed_services = team.service_ids.filtered()
-                    lambda s: s.state == "completed"
+        for team in self:
+            completed_services = team.service_ids.filtered(lambda s: s.state == 'done')
+            team.service_count = len(team.service_ids)
+            team.total_services_completed = len(completed_services)
+            team.total_weight_processed = sum(completed_services.mapped('total_weight'))
 
-                team.total_services_completed = len(completed_services)
-                team.total_weight_processed = sum()
-                    completed_services.mapped("actual_weight")
+            if completed_services:
+                total_duration = sum(completed_services.mapped('duration'))
+                team.average_service_time = total_duration / len(completed_services) if completed_services else 0.0
+            else:
+                team.average_service_time = 0.0
 
-                if completed_services:
-                    total_duration = sum()
-                        s.duration_hours
-                        for s in completed_services:
-                        if s.duration_hours:
+            if team.max_capacity_per_day > 0 and team.total_services_completed > 0:
+                # Assuming 1 service per day for simplicity in this calculation
+                theoretical_capacity = team.max_capacity_per_day * team.total_services_completed
+                team.efficiency_rating = (team.total_weight_processed / theoretical_capacity) * 100 if theoretical_capacity > 0 else 0.0
+            else:
+                team.efficiency_rating = 0.0
 
-                    team.average_service_time = ()
-                        (total_duration / len(completed_services))
-                        if completed_services:
-                        else 0.0
-
-                else:
-                    team.average_service_time = 0.0
-
-
-    def _compute_efficiency_rating(self):
-            """Compute team efficiency rating"""
-            for team in self:
-                if team.max_capacity_per_day > 0:
-                    days_active = max(1, team.total_services_completed // 5)
-                    theoretical_capacity = team.max_capacity_per_day * days_active
-                    team.efficiency_rating = ()
-                        ()
-                            (team.total_weight_processed / theoretical_capacity)
-                            * 100
-
-                        if theoretical_capacity > 0:
-                        else 0.0
-
-                else:
-                    team.efficiency_rating = 0.0
-
-
+    @api.depends('feedback_ids.rating', 'service_ids.feedback_ids.rating')
     def _compute_customer_satisfaction(self):
-            """Compute customer satisfaction metrics using portal feedback."""
-            for team in self:
-                team_feedback = team.feedback_ids.filtered(lambda f: f.rating > 0)
-                service_feedback = self.env["customer.feedback").search(]
-                    []
-                        ("service_id", "in", team.completed_service_ids.ids),
-                        ("rating", ">", 0),
+        for team in self:
+            all_feedback = team.feedback_ids | team.service_ids.mapped('feedback_ids')
+            valid_feedback = all_feedback.filtered(lambda f: f.rating and f.rating > 0)
 
+            if valid_feedback:
+                ratings = [float(r) for r in valid_feedback.mapped('rating')]
+                team.total_ratings_received = len(ratings)
+                team.customer_satisfaction = sum(ratings) / len(ratings) if ratings else 0.0
+                satisfied_count = len([r for r in ratings if r >= 4.0])
+                team.satisfaction_percentage = (satisfied_count / len(ratings) * 100) if ratings else 0.0
+                team.latest_feedback_date = max(valid_feedback.mapped('create_date'))
+            else:
+                team.total_ratings_received = 0
+                team.customer_satisfaction = 0.0
+                team.satisfaction_percentage = 0.0
+                team.latest_feedback_date = False
 
-                all_feedback = team_feedback | service_feedback
-                if all_feedback:
-                    ratings = all_feedback.mapped("rating")
-                    if ratings:
-                        team.total_ratings_received = len(ratings)
-                        team.customer_satisfaction = sum(ratings) / len(ratings)
-                        satisfied_count = len([r for r in ratings if r >= 4.0]):
-                        team.satisfaction_percentage = ()
-                            satisfied_count / len(ratings)
-
-                        team.latest_feedback_date = all_feedback.sorted()
-                            "create_date", reverse=True
-
-                    else:
-                        team._set_default_satisfaction_metrics()
-                else:
-                    team._set_default_satisfaction_metrics()
-
-
-    def _set_default_satisfaction_metrics(self):
-            """Set default satisfaction metrics when no data is available"""
-            self.total_ratings_received = 0
-            self.customer_satisfaction = 0.0
-            self.satisfaction_percentage = 0.0
-            self.latest_feedback_date = False
-
-        # ============================================================================
-            # ACTION METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_activate_team(self):
-            """Activate the team for service assignment""":
-            self.ensure_one()
-            if not self.team_leader_id:
-                raise UserError(_("Team leader is required to activate team"))
-            if not self.member_ids:
-                raise UserError(_("Team must have members to be activated"))
-            self.write({"state": "active"})
-            self.message_post(body=_("Team activated"))
-
+        self.ensure_one()
+        if not self.team_leader_id:
+            raise UserError(_("A team leader is required to activate the team."))
+        if not self.member_ids:
+            raise UserError(_("The team must have members to be activated."))
+        self.write({"state": "active"})
+        self.message_post(body=_("Team has been activated and is ready for service assignment."))
 
     def action_deactivate_team(self):
-            """Deactivate the team"""
-            self.ensure_one()
-            if self.active_service_ids:
-                raise UserError()
-                    _()
-                        "Cannot deactivate team with active services. Complete or reassign services first."
-
-
-            self.write({"state": "inactive"})
-            self.message_post(body=_("Team deactivated"))
-
-
-    def action_suspend_team(self):
-            """Suspend team operations temporarily"""
-            self.ensure_one()
-            self.write({"state": "suspended"})
-            self.message_post(body=_("Team suspended"))
-
+        self.ensure_one()
+        active_services = self.env['fsm.order'].search_count([('shredding_team_id', '=', self.id), ('stage_id.is_closed', '=', False)])
+        if active_services > 0:
+            raise UserError(_("Cannot deactivate a team with active services. Please complete or reassign all services first."))
+        self.write({"state": "inactive"})
+        self.message_post(body=_("Team has been deactivated."))
 
     def action_view_services(self):
-            """View all services assigned to this team"""
-            self.ensure_one()
-            return {}
-                "type": "ir.actions.act_window",
-                "name": _("Team Services"),
-                "res_model": "shredding.service",
-                "view_mode": "tree,form",
-                "domain": [("team_id", "=", self.id)],
-                "context": {"default_team_id": self.id},
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Team Services'),
+            'res_model': 'fsm.order',
+            'view_mode': 'tree,form,kanban',
+            'domain': [('shredding_team_id', '=', self.id)],
+            'context': {'default_shredding_team_id': self.id},
+        }
 
-
-        # ============================================================================
-            # BUSINESS METHODS
-        # ============================================================================
-
-    def get_available_capacity(self, date=None):
-            """Calculate available capacity for a given date""":
-            self.ensure_one()
-            if not date:
-
+    # ============================================================================
+    # CONSTRAINTS
+    # ============================================================================
+    @api.constrains('working_hours_start', 'working_hours_end')
     def _check_working_hours(self):
-            """Validate working hours"""
-            for team in self:
+        for team in self:
+            if team.working_hours_start is not False and team.working_hours_end is not False:
+                if not (0 <= team.working_hours_start < 24 and 0 <= team.working_hours_end <= 24):
+                    raise ValidationError(_("Working hours must be between 0 and 24."))
                 if team.working_hours_start >= team.working_hours_end:
-                    raise ValidationError(_("End time must be after start time"))
-                if not 0 <= team.working_hours_start <= 24:
-                    raise ValidationError(_("Start time must be between 0 and 24"))
-                if not 0 <= team.working_hours_end <= 24:
-                    raise ValidationError(_("End time must be between 0 and 24"))
+                    raise ValidationError(_("Start time must be before end time."))
 
-
-    def _check_capacity(self):
-            """Validate daily capacity"""
-            for team in self:
-                if team.max_capacity_per_day < 0:
-                    raise ValidationError(_("Daily capacity cannot be negative"))
-
-
+    @api.constrains('team_leader_id', 'member_ids')
     def _check_team_composition(self):
-            """Validate team composition"""
-            for team in self:
-                if team.team_leader_id and team.team_leader_id not in team.member_ids:
-                    raise ValidationError(_("Team leader must be included in team members"))
+        for team in self:
+            if team.team_leader_id and team.team_leader_id not in team.member_ids:
+                raise ValidationError(_("The team leader must be included in the team members list."))
 
-        # ============================================================================
-            # ORM OVERRIDES
-        # ============================================================================
-
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
     def create(self, vals_list):
-            """Override create to add team leader to members if not present.""":
-            teams = super().create(vals_list)
-            for team in teams.filtered(:)
-                lambda t: t.team_leader_id and t.team_leader_id not in t.member_ids
-
+        teams = super().create(vals_list)
+        for team in teams:
+            if team.team_leader_id and team.team_leader_id not in team.member_ids:
                 team.member_ids = [(4, team.team_leader_id.id)]
-            return teams
-
+        return teams
 
     def write(self, vals):
-            """Override write to ensure team leader is always a member."""
-            res = super().write(vals)
-            if "team_leader_id" in vals or "member_ids" in vals:
-                for team in self.filtered(:)
-                    lambda t: t.team_leader_id
-                    and t.team_leader_id not in t.member_ids
-
-                    team.write({"member_ids": [(4, team.team_leader_id.id)]})
-            return res
-            return res
+        res = super().write(vals)
+        if "team_leader_id" in vals or "member_ids" in vals:
+            for team in self.filtered(lambda t: t.team_leader_id and t.team_leader_id not in t.member_ids):
+                team.write({"member_ids": [(4, team.team_leader_id.id)]})
+        return res

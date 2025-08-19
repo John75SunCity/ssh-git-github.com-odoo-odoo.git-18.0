@@ -91,7 +91,6 @@ from . import shredding_equipment
 from . import shredding_certificate
 from . import shredding_service
 from . import shredding_hard_drive
-from . import shredding_inventory_item
 from . import shredding_service_log
 from . import destruction_item
 from . import shred_bin
@@ -211,7 +210,7 @@ from . import revenue_forecaster
 # Portal requests and feedback
 from . import portal_request
 from . import signed_document
-from . import signed_document_audit
+from . import signed_document_audit2
 from . import portal_feedback
 from . import customer_feedback
 
@@ -341,7 +340,7 @@ except (ImportError, AttributeError) as e:
 # CONDITIONAL IMPORTS FOR EXTENSION MODELS
 # =============================================================================
 
-# Note: records_deletion_request already imported at line 285
+
 
 from . import records_user_invitation_wizard
 from . import records_bulk_user_import
@@ -440,7 +439,7 @@ from . import shredding_picklist_item
 # Customer inventory sub-models
 from . import customer_inventory_report_line
 
-from . import shredding_rates
+from . import shredding_rate
 from . import records_billing
 from . import billing_service
 from . import maintenance_team

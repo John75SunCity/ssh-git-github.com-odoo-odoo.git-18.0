@@ -2,7 +2,7 @@
 import hashlib
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import ValidationError
 
 class ShreddingHardDrive(models.Model):
     _name = 'shredding.hard_drive'
@@ -74,18 +74,20 @@ class ShreddingHardDrive(models.Model):
     @api.constrains('serial_number', 'fsm_task_id')
     def _check_serial_number_unique_per_task(self):
         for record in self:
+            if not record.serial_number or not record.fsm_task_id:
+                continue
             domain = [
                 ('serial_number', '=', record.serial_number),
                 ('fsm_task_id', '=', record.fsm_task_id.id),
                 ('id', '!=', record.id)
             ]
             if self.search_count(domain) > 0:
-                raise ValidationError(_('The serial number has already been scanned for this task: %s', record.serial_number))
+                raise ValidationError(_('The serial number has already been scanned for this task: %s') % record.serial_number)
 
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('shredding.hard_drive') or _('New')
-        return super(ShreddingHardDrive, self).create(vals_list)
+        return super().create(vals_list)
 

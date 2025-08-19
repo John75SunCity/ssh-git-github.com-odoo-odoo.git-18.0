@@ -1,218 +1,93 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-
+from odoo.exceptions import UserError
 
 class ShreddingInventoryBatch(models.Model):
-    _name = 'shredding.picklist.item'
-    _description = 'Shredding Picklist Item'
+    _name = 'shredding.inventory.batch'
+    _description = 'Shredding Inventory Batch'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'sequence, name'
-    _rec_name = 'display_name'
+    _order = 'priority, scheduled_date desc, name'
 
     # ============================================================================
-    # FIELDS
+    # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean(string='Active')
-    state = fields.Selection()
-    batch_number = fields.Char()
-    priority = fields.Selection()
-    description = fields.Text()
-    notes = fields.Text()
-    processing_instructions = fields.Text()
-    date = fields.Date()
-    scheduled_date = fields.Date()
-    completion_date = fields.Date()
-    picklist_item_ids = fields.One2many()
-    shredding_service_ids = fields.One2many()
-    item_count = fields.Integer()
-    picked_count = fields.Integer()
-    completion_percentage = fields.Float()
-    activity_ids = fields.One2many()
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many('mail.message')
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection(string='Type')
-    view_mode = fields.Char(string='View Mode')
-    name = fields.Char()
-    display_name = fields.Char()
-    sequence = fields.Integer()
-    batch_id = fields.Many2one()
-    container_id = fields.Many2one()
-    document_id = fields.Many2one()
-    shredding_service_id = fields.Many2one()
-    location_id = fields.Many2one()
-    picked_by_id = fields.Many2one()
-    picked_date = fields.Datetime()
-    verified_by_id = fields.Many2one()
-    verified_date = fields.Datetime()
-    status = fields.Selection()
-    priority = fields.Selection()
-    notes = fields.Text(string='Notes')
-    picking_instructions = fields.Text()
-    expected_location = fields.Char()
-    barcode = fields.Char(string='Barcode')
-    activity_ids = fields.One2many()
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many('mail.message')
+    name = fields.Char(string="Batch Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    active = fields.Boolean(default=True)
+    priority = fields.Selection([('0', 'Normal'), ('1', 'High')], string="Priority", default='0')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('in_progress', 'In Progress'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled'),
+    ], string="Status", default='draft', required=True, tracking=True)
 
     # ============================================================================
-    # METHODS
+    # DATES & DETAILS
     # ============================================================================
-    def _compute_item_count(self):
-            """Compute total number of items in batch"""
+    scheduled_date = fields.Date(string="Scheduled Date", default=fields.Date.context_today, tracking=True)
+    completion_date = fields.Date(string="Completion Date", readonly=True)
+    description = fields.Text(string="Description")
+    notes = fields.Text(string="Internal Notes")
+    processing_instructions = fields.Text(string="Processing Instructions")
 
-    def _compute_picked_count(self):
-            """Compute number of picked items"""
+    # ============================================================================
+    # BATCH CONTENTS & PROGRESS
+    # ============================================================================
+    picklist_item_ids = fields.One2many('shredding.picklist.item', 'batch_id', string="Picklist Items")
+    item_count = fields.Integer(string="Item Count", compute='_compute_progress', store=True)
+    picked_count = fields.Integer(string="Picked Count", compute='_compute_progress', store=True)
+    completion_percentage = fields.Float(string="Completion (%)", compute='_compute_progress', store=True)
 
-    def _compute_completion_percentage(self):
-            """Compute completion percentage"""
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('shredding.inventory.batch') or _('New')
+        return super().create(vals_list)
 
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('picklist_item_ids', 'picklist_item_ids.status')
+    def _compute_progress(self):
+        for batch in self:
+            total_items = len(batch.picklist_item_ids)
+            picked_items = len(batch.picklist_item_ids.filtered(lambda item: item.status in ['picked', 'verified']))
+            batch.item_count = total_items
+            batch.picked_count = picked_items
+            batch.completion_percentage = (picked_items / total_items * 100) if total_items > 0 else 0.0
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_confirm(self):
-            """Confirm batch for processing""":
-            if self.state != "draft":
-                raise UserError(_("Only draft batches can be confirmed."))
+        self.ensure_one()
+        if not self.picklist_item_ids:
+            raise UserError(_("Cannot confirm a batch with no items."))
+        self.write({'state': 'confirmed'})
+        self.message_post(body=_("Batch confirmed and ready for processing."))
 
     def action_start_processing(self):
-            """Start processing the batch"""
-            if self.state != "confirmed":
-                raise UserError(_("Only confirmed batches can be processed."))
+        self.ensure_one()
+        self.write({'state': 'in_progress'})
+        self.message_post(body=_("Batch processing started."))
 
     def action_done(self):
-            """Mark batch as completed"""
-            if self.state not in ["confirmed", "processing"]:
-                raise UserError(_("Only confirmed or processing batches can be completed."))
+        self.ensure_one()
+        if any(item.status not in ['verified', 'not_found'] for item in self.picklist_item_ids):
+            raise UserError(_("All items must be 'Verified' or 'Not Found' before completing the batch."))
+        self.write({'state': 'done', 'completion_date': fields.Date.context_today(self)})
+        self.message_post(body=_("Batch marked as done."))
 
     def action_cancel(self):
-            """Cancel the batch"""
-            if self.state == "done":
-                raise UserError(_("Completed batches cannot be cancelled."))
-
-    def _create_naid_audit_log(self, event_type):
-            """Create NAID compliance audit log entry"""
-            self.env["naid.audit.log"].create()
-                {}""
-                    "name": _()
-                        "Batch %s: %s",
-                        self.name,""
-                        event_type.replace("_", " ").title(),
-                    ""
-                    "event_type": event_type,
-                    "resource_model": self._name,
-                    "resource_id": self.id,
-                    "user_id": self.env.user.id,
-                    "description": _()
-                        "Shredding batch %s - %s",
-                        self.name,""
-                        event_type.replace("_", " "),
-                    ""
-                    "timestamp": fields.Datetime.now(),
-                ""
-            ""
-
-    def _check_scheduled_date(self):
-            """Validate scheduled date is not in the past"""
-
-    def _compute_display_name(self):
-            """Compute display name with context information"""
-
-    def action_mark_picked(self):
-            """Mark item as picked"""
-            if self.status != "pending_pickup":
-                raise UserError(_("Only pending items can be marked as picked."))
-
-    def action_mark_verified(self):
-            """Mark item as verified"""
-            if self.status != "picked":
-                raise UserError(_("Only picked items can be verified."))
-
-    def action_mark_not_found(self):
-            """Mark item as not found"""
-            if self.status not in ["pending_pickup", "picked"]:
-                raise UserError()""
-                    _("Only pending or picked items can be marked as not found.")
-                ""
-
-    def action_confirm(self):
-            """Confirm item for pickup""":
-            if self.status != "draft":
-                raise UserError(_("Only draft items can be confirmed."))
+        self.write({'state': 'cancelled'})
+        self.message_post(body=_("Batch has been cancelled."))
 
     def action_reset_to_draft(self):
-            """Reset item to draft status"""
-            if self.status == "verified":
-                raise UserError(_("Verified items cannot be reset to draft."))
-
-    def _create_naid_audit_log(self, event_type):
-            """Create NAID compliance audit log entry"""
-            self.env["naid.audit.log"].create()
-                {}""
-                    "name": _()
-                        "Picklist Item %s: %s",
-                        self.name,""
-                        event_type.replace("_", " ").title(),
-                    ""
-                    "event_type": event_type,
-                    "resource_model": self._name,
-                    "resource_id": self.id,
-                    "user_id": self.env.user.id,
-                    "description": _()
-                        "Picklist item %s - %s",
-                        self.name,""
-                        event_type.replace("_", " "),
-                    ""
-                    "timestamp": fields.Datetime.now(),
-                ""
-            ""
-
-    def _check_date_sequence(self):
-            """Validate that verified date is after picked date"""
-
-    def _check_container_or_document(self):
-            """Validate that either container or document is specified"""
+        self.write({'state': 'draft'})
+        self.message_post(body=_("Batch reset to draft."))

@@ -35,9 +35,9 @@ class StockLotAttributeValue(models.Model):
                 record.display_name = _("Not Set")
                 continue
 
-            attr_name = record.attribute_id.name or "Unnamed Attribute"
+            attr_name = record.attribute_id.name or _("Unnamed Attribute")
             value_str = record._get_value_as_string()
-            record.display_name = f"{attr_name}: {value_str}"
+            record.display_name = _("%s: %s") % (attr_name, value_str)
 
     # ============================================================================
     # HELPER METHODS

@@ -1,7 +1,7 @@
+import re
+from datetime import timedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo import _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
 
 
 class SignedDocument(models.Model):
@@ -12,267 +12,228 @@ class SignedDocument(models.Model):
     _rec_name = 'display_name'
 
     # ============================================================================
-    # FIELDS
+    # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    partner_id = fields.Many2one()
-    active = fields.Boolean()
-    request_id = fields.Many2one()
-    document_type = fields.Selection()
-    signature_date = fields.Datetime()
-    signatory_name = fields.Char()
-    signatory_email = fields.Char()
-    signatory_title = fields.Char()
-    signatory_ip_address = fields.Char()
-    pdf_document = fields.Binary()
-    pdf_filename = fields.Char()
-    original_document = fields.Binary()
-    original_filename = fields.Char()
-    state = fields.Selection()
-    signature_hash = fields.Char()
-    document_hash = fields.Char()
-    verification_status = fields.Selection()
-    verification_date = fields.Datetime()
-    verified_by_id = fields.Many2one()
-    legal_validity_period = fields.Integer()
-    expiry_date = fields.Date()
-    compliance_notes = fields.Text()
-    naid_compliant = fields.Boolean()
-    display_name = fields.Char()
-    is_expired = fields.Boolean()
-    signature_age_days = fields.Integer()
-    notes = fields.Text()
-    internal_notes = fields.Text()
-    activity_ids = fields.One2many()
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many()
-    context = fields.Char(string='Context')
-    domain = fields.Char(string='Domain')
-    help = fields.Char(string='Help')
-    res_model = fields.Char(string='Res Model')
-    type = fields.Selection(string='Type')
-    view_mode = fields.Char(string='View Mode')
-    today = fields.Date()
-    today = fields.Date()
-    expiry_date_limit = fields.Date()
+    name = fields.Char(string="Document Name", required=True, copy=False, default=lambda self: _('New'))
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    partner_id = fields.Many2one('res.partner', string="Customer", related='request_id.partner_id', store=True, readonly=True)
+    active = fields.Boolean(default=True)
+    display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
 
     # ============================================================================
-    # METHODS
+    # RELATIONSHIP & DOCUMENT DETAILS
     # ============================================================================
+    request_id = fields.Many2one('portal.request', string="Related Request", ondelete='cascade')
+    document_type = fields.Selection([
+        ('destruction_certificate', 'Destruction Certificate'),
+        ('service_agreement', 'Service Agreement'),
+        ('pickup_confirmation', 'Pickup Confirmation'),
+        ('other', 'Other')
+    ], string="Document Type", required=True, default='other')
+    
+    pdf_document = fields.Binary(string="Signed PDF", attachment=True, required=True)
+    pdf_filename = fields.Char(string="PDF Filename")
+    original_document = fields.Binary(string="Original Document", attachment=True)
+    original_filename = fields.Char(string="Original Filename")
+
+    # ============================================================================
+    # STATE & SIGNATURE DETAILS
+    # ============================================================================
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('pending_signature', 'Pending Signature'),
+        ('signed', 'Signed'),
+        ('verified', 'Verified'),
+        ('rejected', 'Rejected'),
+        ('archived', 'Archived')
+    ], string="Status", default='draft', required=True, tracking=True)
+    
+    signature_date = fields.Datetime(string="Signature Date", readonly=True)
+    signatory_name = fields.Char(string="Signatory Name", tracking=True)
+    signatory_email = fields.Char(string="Signatory Email", tracking=True)
+    signatory_title = fields.Char(string="Signatory Title")
+    signatory_ip_address = fields.Char(string="Signatory IP Address", readonly=True)
+
+    # ============================================================================
+    # HASHING & VERIFICATION
+    # ============================================================================
+    signature_hash = fields.Char(string="Signature Hash", readonly=True, copy=False)
+    document_hash = fields.Char(string="Document Hash", readonly=True, copy=False)
+    verification_status = fields.Selection([
+        ('not_verified', 'Not Verified'),
+        ('valid', 'Valid'),
+        ('invalid', 'Invalid')
+    ], string="Verification Status", default='not_verified', tracking=True)
+    verification_date = fields.Datetime(string="Verification Date", readonly=True)
+    verified_by_id = fields.Many2one('res.users', string="Verified By", readonly=True)
+
+    # ============================================================================
+    # LEGAL & COMPLIANCE
+    # ============================================================================
+    legal_validity_period = fields.Integer(string="Validity Period (Days)", default=365)
+    expiry_date = fields.Date(string="Expiry Date", compute='_compute_expiry_date', store=True)
+    is_expired = fields.Boolean(string="Is Expired", compute='_compute_is_expired', store=True)
+    signature_age_days = fields.Integer(string="Signature Age (Days)", compute='_compute_signature_age_days', store=True)
+    compliance_notes = fields.Text(string="Compliance Notes")
+    naid_compliant = fields.Boolean(string="NAID Compliant", default=True)
+    notes = fields.Text(string="Notes")
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('name', 'signatory_name', 'signature_date')
     def _compute_display_name(self):
-            """Compute display name with signature info"""
-            for record in self:
-                if record.signatory_name and record.signature_date:
-                    record.display_name = _()
-                        "%s - Signed by %s", record.name, record.signatory_name
+        for record in self:
+            if record.signatory_name and record.signature_date:
+                record.display_name = _("%s - Signed by %s") % (record.name, record.signatory_name)
+            elif record.signatory_name:
+                record.display_name = _("%s - %s") % (record.name, record.signatory_name)
+            else:
+                record.display_name = record.name or _("New Signed Document")
 
-                elif record.signatory_name:
-                    record.display_name = _("%s - %s", record.name, record.signatory_name)
-                else:
-                    record.display_name = record.name or _("New Signed Document")
-
-
+    @api.depends('signature_date', 'legal_validity_period')
     def _compute_expiry_date(self):
-            """Compute signature expiry date"""
-            for record in self:
-                if record.signature_date and record.legal_validity_period > 0:
-                    expiry_datetime = record.signature_date + timedelta()
-                        days=record.legal_validity_period
+        for record in self:
+            if record.signature_date and record.legal_validity_period > 0:
+                expiry_datetime = record.signature_date + timedelta(days=record.legal_validity_period)
+                record.expiry_date = expiry_datetime.date()
+            else:
+                record.expiry_date = False
 
-                    record.expiry_date = expiry_datetime.date()
-                else:
-                    record.expiry_date = False
-
-
+    @api.depends('expiry_date')
     def _compute_is_expired(self):
-            """Check if signature has expired""":
+        for record in self:
+            record.is_expired = record.expiry_date and record.expiry_date < fields.Date.today()
 
+    @api.depends('signature_date')
     def _compute_signature_age_days(self):
-            """Compute age of signature in days"""
+        for record in self:
+            if record.signature_date:
+                age = fields.Datetime.now() - record.signature_date
+                record.signature_age_days = age.days
+            else:
+                record.signature_age_days = 0
 
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_request_signature(self):
-            """Request signature from signatory"""
-            self.ensure_one()
-            if self.state != "draft":
-                raise UserError(_("Only draft documents can be sent for signature")):
-            self.write({"state": "pending_signature"})
-            self.message_post(body=_("Document sent for signature")):
-            self._create_audit_log("signature_requested")
-
+        self.ensure_one()
+        if self.state != "draft":
+            raise UserError(_("Only draft documents can be sent for signature."))
+        self.write({"state": "pending_signature"})
+        self.message_post(body=_("Document sent for signature."))
+        self._create_audit_log("signature_requested")
 
     def action_mark_signed(self):
-            """Mark document as signed"""
-            self.ensure_one()
-            if self.state != "pending_signature":
-                raise UserError(_("Only pending documents can be marked as signed"))
-
-            if not self.signatory_name:
-                raise UserError(_("Please specify the signatory name"))
-
-            self.write({"state": "signed", "signature_date": fields.Datetime.now()})
-            self.message_post(body=_("Document signed by %s", self.signatory_name))
-            self._create_audit_log("document_signed")
-
+        self.ensure_one()
+        if self.state != "pending_signature":
+            raise UserError(_("Only pending documents can be marked as signed."))
+        if not self.signatory_name:
+            raise UserError(_("Please specify the signatory name."))
+        self.write({"state": "signed", "signature_date": fields.Datetime.now()})
+        self.message_post(body=_("Document signed by %s") % self.signatory_name)
+        self._create_audit_log("document_signed")
 
     def action_verify_signature(self):
-            """Verify document signature"""
-            self.ensure_one()
-            if self.state != "signed":
-                raise UserError(_("Only signed documents can be verified"))
-
-            verification_result = self._perform_signature_verification()
-
-            if verification_result:
-                self.write()
-                    {}
-                        "state": "verified",
-                        "verification_status": "valid",
-                        "verification_date": fields.Datetime.now(),
-                        "verified_by_id": self.env.user.id,
-
-
-                self.message_post(body=_("Signature verified successfully"))
-            else:
-                self.write()
-                    {}
-                        "verification_status": "invalid",
-                        "verification_date": fields.Datetime.now(),
-                        "verified_by_id": self.env.user.id,
-
-
-                self.message_post(body=_("Signature verification failed"))
-
-            self._create_audit_log("signature_verified")
-
+        self.ensure_one()
+        if self.state != "signed":
+            raise UserError(_("Only signed documents can be verified."))
+        
+        verification_result = self._perform_signature_verification()
+        
+        if verification_result:
+            self.write({
+                "state": "verified",
+                "verification_status": "valid",
+                "verification_date": fields.Datetime.now(),
+                "verified_by_id": self.env.user.id,
+            })
+            self.message_post(body=_("Signature verified successfully."))
+        else:
+            self.write({
+                "verification_status": "invalid",
+                "verification_date": fields.Datetime.now(),
+                "verified_by_id": self.env.user.id,
+            })
+            self.message_post(body=_("Signature verification failed."))
+        self._create_audit_log("signature_verified")
 
     def action_archive_document(self):
-            """Archive the signed document"""
-            self.ensure_one()
-            if self.state not in ["signed", "verified"]:
-                raise UserError(_("Only signed or verified documents can be archived"))
-
-            self.write({"state": "archived"})
-            self.message_post(body=_("Document archived"))
-            self._create_audit_log("document_archived")
-
+        self.ensure_one()
+        if self.state not in ["signed", "verified"]:
+            raise UserError(_("Only signed or verified documents can be archived."))
+        self.write({"state": "archived", "active": False})
+        self.message_post(body=_("Document archived."))
+        self._create_audit_log("document_archived")
 
     def action_reject_signature(self):
-            """Reject the signature"""
-            self.ensure_one()
-            if self.state not in ["pending_signature", "signed"]:
-                raise UserError(_("Cannot reject document in current state"))
+        self.ensure_one()
+        if self.state not in ["pending_signature", "signed"]:
+            raise UserError(_("Cannot reject document in current state."))
+        self.write({"state": "rejected", "verification_status": "invalid"})
+        self.message_post(body=_("Document signature rejected."))
+        self._create_audit_log("signature_rejected")
 
-            self.write({"state": "rejected", "verification_status": "invalid"})
-            self.message_post(body=_("Document signature rejected"))
-            self._create_audit_log("signature_rejected")
-
-
-    def action_download_signed_document(self):
-            """Download the signed PDF document"""
-            self.ensure_one()
-            if not self.pdf_document:
-                raise UserError(_("No signed document available for download")):
-            return {}
-                "type": "ir.actions.act_url",
-                "url": "/web/content/%s/%s/pdf_document?download=true&filename=%s"
-                % (self._name, self.id, self.pdf_filename or "signed_document.pdf"),
-                "target": "self",
-
-
-        # ============================================================================
-            # BUSINESS METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # BUSINESS METHODS
+    # ============================================================================
     def _perform_signature_verification(self):
-            """Perform actual signature verification"""
-            # Placeholder for signature verification logic:
-            return True
-
+        """Perform actual signature verification. Placeholder for now."""
+        return True
 
     def _create_audit_log(self, action):
-            """Create audit log entry"""
-            self.env["signed.document.audit").create(]
-                {}
-                    "document_id": self.id,
-                    "action": action,
-                    "user_id": self.env.user.id,
-                    "timestamp": fields.Datetime.now(),
-                    "ip_address": self.env.context.get("request_ip"),
-                    "details": _("Action: %s performed on document %s", action, self.name),
+        """Create audit log entry for NAID compliance."""
+        if 'naid.audit.log' not in self.env:
+            return
+        for record in self:
+            self.env['naid.audit.log'].create({
+                'document_id': record.id,
+                'event_type': 'signature_event',
+                'model_name': self._name,
+                'record_id': record.id,
+                'description': _("Action: %s performed on document %s") % (action, record.name),
+                'operator_id': self.env.user.id,
+                'timestamp': fields.Datetime.now(),
+            })
 
-
-
-        # ============================================================================
-            # CONSTRAINT METHODS
-        # ============================================================================
-
+    # ============================================================================
+    # CONSTRAINT METHODS
+    # ============================================================================
+    @api.constrains('signature_date')
     def _check_signature_date(self):
-            """Validate signature date is not in the future"""
-            for record in self:
-                if record.signature_date and record.signature_date > fields.Datetime.now():
-                    raise ValidationError(_("Signature date cannot be in the future"))
+        for record in self:
+            if record.signature_date and record.signature_date > fields.Datetime.now():
+                raise ValidationError(_("Signature date cannot be in the future."))
 
-
+    @api.constrains('signatory_email')
     def _check_signatory_email(self):
-            """Validate signatory email format"""
-            for record in self:
-                if record.signatory_email and not re.match(:)
-                    r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
-                    record.signatory_email,
+        for record in self:
+            if record.signatory_email and not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", record.signatory_email):
+                raise ValidationError(_("Please enter a valid email address for the signatory."))
 
-                    raise ValidationError(_("Please enter a valid email address"))
-
-
+    @api.constrains('legal_validity_period')
     def _check_validity_period(self):
-            """Validate legal validity period"""
-            for record in self:
-                if record.legal_validity_period <= 0:
-                    raise ValidationError()
-                        _("Legal validity period must be greater than zero")
+        for record in self:
+            if record.legal_validity_period < 0:
+                raise ValidationError(_("Legal validity period cannot be negative."))
 
-
-        # ============================================================================
-            # ORM OVERRIDES
-        # ============================================================================
-
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
     def create(self, vals_list):
-            """Override create to generate sequence and audit logs"""
-            for vals in vals_list:
-                if not vals.get("name") or vals["name"] == "/":
-                    vals["name") = (]
-                        self.env["ir.sequence"].next_by_code("signed.document") or _("New")
-
-
-            documents = super().create(vals_list)
-
-            for document in documents:
-                document._create_audit_log("document_created")
-
-            return documents
-
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('signed.document') or _('New')
+        
+        documents = super().create(vals_list)
+        documents._create_audit_log("document_created")
+        return documents
 
     def write(self, vals):
-            """Override write to track changes"""
-            res = super().write(vals)
-            if "state" in vals:
-                for record in self:
-                    record._create_audit_log("state_changed")
-            return res
-
-        # ============================================================================
-            # UTILITY METHODS
-        # ============================================================================
-
-    def get_expiring_signatures(self, days_ahead=30):
-            """Get signatures expiring within specified days"""
-
-    def cleanup_expired_signatures(self):
-            """Archive expired signatures"""
-            expired = self.search()
-                [("state", "in", ["signed", "verified"]), ("is_expired", "=", True)]
-
-            for doc in expired:
-                doc.message_post(body=_("Signature expired - document archived"))
-                doc.write({"state": "archived"})
+        res = super().write(vals)
+        if "state" in vals:
+            self._create_audit_log(f"state_changed_to_{vals['state']}")
+        return res
