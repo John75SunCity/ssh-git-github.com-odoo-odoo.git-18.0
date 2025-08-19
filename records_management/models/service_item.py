@@ -1,6 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
+from datetime import date, timedelta
 
 
 class ServiceItem(models.Model):
@@ -8,449 +8,246 @@ class ServiceItem(models.Model):
     _description = 'Service Item Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name, category, service_type'
-    _rec_name = 'name'
+    _rec_name = 'display_name'
 
     # ============================================================================
-    # FIELDS
+    # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char()
-    description = fields.Text()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    active = fields.Boolean(string='Active')
-    show_maintenance_tracking = fields.Boolean()
-    show_financial_tracking = fields.Boolean()
-    show_performance_metrics = fields.Boolean()
-    state = fields.Selection()
-    service_type = fields.Selection()
-    category = fields.Selection()
-    model_number = fields.Char()
-    serial_number = fields.Char()
-    manufacturer = fields.Char()
-    purchase_date = fields.Date()
-    warranty_expiry = fields.Date()
-    currency_id = fields.Many2one()
-    purchase_cost = fields.Monetary()
-    current_value = fields.Monetary()
-    maintenance_cost = fields.Monetary()
-    depreciation_rate = fields.Float()
-    location_id = fields.Many2one()
-    assigned_user_id = fields.Many2one()
-    department_id = fields.Many2one()
-    last_maintenance = fields.Date()
-    next_maintenance = fields.Date()
-    maintenance_interval = fields.Integer()
-    maintenance_due = fields.Boolean()
-    capacity = fields.Float()
-    capacity_unit = fields.Selection()
-    utilization_rate = fields.Float()
-    efficiency_rating = fields.Selection()
-    warranty_status = fields.Selection()
-    age_months = fields.Integer()
-    service_request_ids = fields.One2many()
-    maintenance_request_ids = fields.One2many()
-    specifications = fields.Text()
-    operating_instructions = fields.Text()
-    safety_notes = fields.Text()
-    notes = fields.Text(string='Internal Notes')
-    activity_ids = fields.One2many()
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many()
-    action_activate = fields.Char(string='Action Activate')
-    action_deactivate = fields.Char(string='Action Deactivate')
-    action_duplicate_service = fields.Char(string='Action Duplicate Service')
-    action_view_pricing_history = fields.Char(string='Action View Pricing History')
-    action_view_related_requests = fields.Char(string='Action View Related Requests')
-    activities = fields.Char(string='Activities')
-    activity_state = fields.Selection(string='Activity State')
-    adjustment_type = fields.Selection(string='Adjustment Type')
-    analytics = fields.Char(string='Analytics')
-    approval_level = fields.Char(string='Approval Level')
-    audit_trail_required = fields.Boolean(string='Audit Trail Required')
-    auto_create_task = fields.Char(string='Auto Create Task')
-    average_completion_time = fields.Float(string='Average Completion Time')
-    base_price = fields.Float(string='Base Price')
-    button_box = fields.Char(string='Button Box')
-    certificate_required = fields.Boolean(string='Certificate Required')
-    certification_required = fields.Boolean(string='Certification Required')
-    completed_count = fields.Integer(string='Completed Count')
-    compliance = fields.Char(string='Compliance')
-    condition_field = fields.Char(string='Condition Field')
-    condition_operator = fields.Char(string='Condition Operator')
-    condition_value = fields.Char(string='Condition Value')
-    context = fields.Char(string='Context')
-    cost_price = fields.Float(string='Cost Price')
-    customer_can_request = fields.Char(string='Customer Can Request')
-    customer_satisfaction = fields.Char(string='Customer Satisfaction')
-    domain = fields.Char(string='Domain')
-    email_confirmation_required = fields.Boolean(string='Email Confirmation Required')
-    equipment_ids = fields.One2many('equipment')
-    estimated_duration = fields.Char(string='Estimated Duration')
-    group_active = fields.Boolean(string='Group Active')
-    group_approval = fields.Char(string='Group Approval')
-    group_category = fields.Char(string='Group Category')
-    group_company = fields.Char(string='Group Company')
-    group_create_date = fields.Date(string='Group Create Date')
-    group_naid = fields.Char(string='Group Naid')
-    group_type = fields.Selection(string='Group Type')
-    help = fields.Char(string='Help')
-    high_demand = fields.Char(string='High Demand')
-    inactive = fields.Boolean(string='Inactive')
-    internal_notes = fields.Char(string='Internal Notes')
-    iso_compliant = fields.Char(string='Iso Compliant')
-    last_revenue_date = fields.Date(string='Last Revenue Date')
-    low_revenue = fields.Char(string='Low Revenue')
-    margin_percent = fields.Float(string='Margin Percent')
-    max_technicians = fields.Char(string='Max Technicians')
-    min_technicians = fields.Char(string='Min Technicians')
-    monthly_revenue = fields.Char(string='Monthly Revenue')
-    my_services = fields.Char(string='My Services')
-    naid_compliant = fields.Char(string='Naid Compliant')
-    notification_template_id = fields.Many2one('notification.template')
-    operational_settings = fields.Char(string='Operational Settings')
-    portal_category = fields.Char(string='Portal Category')
-    portal_description = fields.Char(string='Portal Description')
-    portal_settings = fields.Char(string='Portal Settings')
-    portal_visible = fields.Char(string='Portal Visible')
-    price_adjustment = fields.Char(string='Price Adjustment')
-    pricing = fields.Char(string='Pricing')
-    pricing_rule_ids = fields.One2many('pricing.rule')
-    pricing_rules = fields.Char(string='Pricing Rules')
-    quality_check_required = fields.Boolean(string='Quality Check Required')
-    request_count = fields.Integer(string='Request Count')
-    require_customer_approval = fields.Char(string='Require Customer Approval')
-    requires_approval = fields.Char(string='Requires Approval')
-    requires_equipment = fields.Char(string='Requires Equipment')
-    requires_witness = fields.Char(string='Requires Witness')
-    res_model = fields.Char(string='Res Model')
-    resources = fields.Char(string='Resources')
-    revenue_trend = fields.Char(string='Revenue Trend')
-    service_category = fields.Char(string='Service Category')
-    service_code = fields.Char(string='Service Code')
-    service_details = fields.Char(string='Service Details')
-    skill_level_required = fields.Boolean(string='Skill Level Required')
-    special_tools_required = fields.Boolean(string='Special Tools Required')
-    total_revenue = fields.Char(string='Total Revenue')
-    type = fields.Selection(string='Type')
-    unit_of_measure = fields.Char(string='Unit Of Measure')
-    vehicle_type_required = fields.Boolean(string='Vehicle Type Required')
-    view_mode = fields.Char(string='View Mode')
-    web_ribbon = fields.Char(string='Web Ribbon')
-    today = fields.Date()
-    today = fields.Date()
-    today = fields.Date()
+    name = fields.Char(string="Service/Item Name", required=True, tracking=True)
+    display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
+    active = fields.Boolean(default=True, tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
+    service_code = fields.Char(string="Service Code", copy=False)
+    
+    # ============================================================================
+    # CATEGORIZATION & TYPE
+    # ============================================================================
+    category = fields.Selection([
+        ('equipment', 'Equipment'),
+        ('service', 'Service'),
+        ('consumable', 'Consumable'),
+    ], string="Category", default='service', required=True, tracking=True)
+    
+    service_type = fields.Selection([
+        ('shredding', 'Shredding'),
+        ('storage', 'Storage'),
+        ('scanning', 'Scanning'),
+        ('consulting', 'Consulting'),
+        ('other', 'Other'),
+    ], string="Service Type", tracking=True)
 
     # ============================================================================
-    # METHODS
+    # STATUS & LIFECYCLE
     # ============================================================================
-    def _is_service_item_feature_enabled(self, feature_key):
-            """Check if service item feature is enabled in RM Module Configurator""":
-            configurator = self.env["rm.module.configurator").search(]
-                []
-                    ("category", "=", "service_management"),
-                    ("config_key", "=", feature_key),
-                    ("company_id", "in", [self.env.company.id, False]),
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('available', 'Available'),
+        ('in_use', 'In Use'),
+        ('maintenance', 'Under Maintenance'),
+        ('retired', 'Retired'),
+    ], string="Status", default='available', required=True, tracking=True, help="Lifecycle status of the service item.")
 
-                limit=1,
+    # ============================================================================
+    # SPECIFICATIONS (for Equipment)
+    # ============================================================================
+    model_number = fields.Char(string="Model Number", tracking=True)
+    serial_number = fields.Char(string="Serial Number", tracking=True)
+    manufacturer = fields.Char(string="Manufacturer", tracking=True)
+    capacity = fields.Float(string="Capacity", help="Capacity of the item, e.g., pages per minute for a scanner.")
+    capacity_unit = fields.Selection([
+        ('pages_per_minute', 'Pages/Minute'),
+        ('kg_per_hour', 'kg/Hour'),
+        ('items', 'Items'),
+    ], string="Capacity Unit")
+    specifications = fields.Text(string="Technical Specifications")
+    operating_instructions = fields.Text(string="Operating Instructions")
+    safety_notes = fields.Text(string="Safety Notes")
 
-            return configurator.boolean_value if configurator else True:
-        # Configurator visibility controls
+    # ============================================================================
+    # FINANCIALS
+    # ============================================================================
+    currency_id = fields.Many2one(related='company_id.currency_id')
+    purchase_cost = fields.Monetary(string="Purchase Cost", tracking=True)
+    current_value = fields.Monetary(string="Current Value", compute='_compute_current_value', store=True)
+    maintenance_cost = fields.Monetary(string="Total Maintenance Cost", compute='_compute_maintenance_cost', store=True)
+    purchase_date = fields.Date(string="Purchase Date", tracking=True)
+    warranty_expiry = fields.Date(string="Warranty Expiry", tracking=True)
+    depreciation_rate = fields.Float(string="Annual Depreciation Rate (%)", default=10.0)
+
+    # ============================================================================
+    # MAINTENANCE (for Equipment)
+    # ============================================================================
+    location_id = fields.Many2one('stock.location', string="Location", domain="[('usage', '=', 'internal')]")
+    assigned_user_id = fields.Many2one('res.users', string="Assigned User", tracking=True)
+    department_id = fields.Many2one('hr.department', string="Department")
+    last_maintenance_date = fields.Date(string="Last Maintenance Date", tracking=True)
+    next_maintenance_date = fields.Date(string="Next Maintenance Date", compute='_compute_next_maintenance_date', store=True)
+    maintenance_interval_days = fields.Integer(string="Maintenance Interval (Days)", default=180)
+    is_maintenance_due = fields.Boolean(string="Maintenance Due", compute='_compute_is_maintenance_due', store=True)
+    maintenance_request_ids = fields.One2many('maintenance.request', 'equipment_id', string="Maintenance Requests")
+    maintenance_request_count = fields.Integer(compute='_compute_maintenance_request_count', string="Maintenance Count")
+
+    # ============================================================================
+    # RELATIONSHIPS & ANALYTICS
+    # ============================================================================
+    service_request_ids = fields.One2many('fsm.order', 'service_item_id', string="Service Requests")
+    service_request_count = fields.Integer(compute='_compute_service_request_count', string="Service Request Count")
+    utilization_rate = fields.Float(string="Utilization Rate (%)", help="Calculated based on usage vs. availability.")
+    efficiency_rating = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], string="Efficiency Rating")
+    
+    # ============================================================================
+    # CONFIGURATOR VISIBILITY
+    # ============================================================================
+    show_maintenance_tracking = fields.Boolean(compute='_compute_configurator_settings')
+    show_financial_tracking = fields.Boolean(compute='_compute_configurator_settings')
+    show_performance_metrics = fields.Boolean(compute='_compute_configurator_settings')
+
+    # ============================================================================
+    # COMPUTE & CONSTRAINTS
+    # ============================================================================
+    @api.depends('name', 'service_code')
+    def _compute_display_name(self):
+        for record in self:
+            if record.service_code:
+                record.display_name = f"[{record.service_code}] {record.name}"
+            else:
+                record.display_name = record.name
+
+    def _is_feature_enabled(self, feature_key):
+        self.ensure_one()
+        return self.env['rm.module.configurator'].is_feature_enabled('service_management', feature_key, self.company_id.id)
 
     def _compute_configurator_settings(self):
-            """Compute configurator settings for UI visibility""":
-            for record in self:
-                record.show_maintenance_tracking = ()
-                    record._is_service_item_feature_enabled()
-                        "enable_maintenance_tracking"
+        for record in self:
+            record.show_maintenance_tracking = record._is_feature_enabled("enable_maintenance_tracking")
+            record.show_financial_tracking = record._is_feature_enabled("enable_financial_tracking")
+            record.show_performance_metrics = record._is_feature_enabled("enable_performance_metrics")
 
-
-                record.show_financial_tracking = ()
-                    record._is_service_item_feature_enabled()
-                        "enable_financial_tracking"
-
-
-                record.show_performance_metrics = ()
-                    record._is_service_item_feature_enabled()
-                        "enable_performance_metrics"
-
-
-
-        # ============================================================================
-            # STATE MANAGEMENT
-        # ============================================================================
-
-    def _compute_completed_count(self):
-            for record in self:
-                record.completed_count = len(record.completed_ids)
-
-
-    def _compute_request_count(self):
-            for record in self:
-                record.request_count = len(record.request_ids)
-
-
-    def _compute_total_revenue(self):
-            for record in self:
-                record.total_revenue = sum(record.line_ids.mapped('amount'))
-
-
-            # ============================================================================
-        # COMPUTE METHODS
-            # ============================================================================
-
-    def _compute_warranty_status(self):
-            """Compute warranty status based on expiry date"""
-
-    def _compute_next_maintenance(self):
-            """Calculate next maintenance date"""
-            for item in self:
-                if item.last_maintenance and item.maintenance_interval:
-                    item.next_maintenance = item.last_maintenance + timedelta()
-                        days=item.maintenance_interval
-
-                else:
-                    item.next_maintenance = False
-
-
-    def _compute_maintenance_due(self):
-            """Check if maintenance is due""":
-
-    def _compute_age(self):
-            """Calculate age in months"""
-
-    def name_get(self):
-            """Custom name display with category and model"""
-            result = []
-            for record in self:
-                name = record.name
-                if record.category:
-                    category_name = dict(self._fields["category").selection).get(]
-                        record.category
-
-                    name = _("%s (%s)", name, category_name)
-                if record.model_number:
-                    name = _("%s - %s", name, record.model_number)
-                result.append((record.id, name))
-            return result
-
-        # ============================================================================
-            # ACTION METHODS
-        # ============================================================================
-
-    def action_mark_available(self):
-            """Mark service item as available"""
-            self.ensure_one()
-            if self.state not in ["draft", "maintenance"]:
-                raise UserError()
-                    _("Cannot mark item as available from current state")
-
-            self.write({"state": "available"})
-            self.message_post(body=_("Service item marked as available"))
-
-
-    def action_mark_in_use(self):
-            """Mark service item as in use"""
-            self.ensure_one()
-            if self.state != "available":
-                raise UserError(_("Only available items can be marked as in use"))
-            self.write({"state": "in_use"})
-            self.message_post(body=_("Service item marked as in use"))
-
-
-    def action_send_to_maintenance(self):
-            """Send service item to maintenance"""
-            self.ensure_one()
-            self.write({"state": "maintenance"})
-            # Create maintenance request if maintenance module is available:
-            if "maintenance.request" in self.env:
-                maintenance_request = self.env["maintenance.request").create(]
-                    {}
-                        "name": _("Maintenance - %s", self.name),
-                        "equipment_id": self.id,
-                        "request_type": ()
-                            "corrective" if self.maintenance_due else "preventive":
-
-                        "description": _("Maintenance required for %s", self.name),:
-
-
-                self.message_post()
-                    body=_()
-                        "Service item sent to maintenance. Request created: %s",
-                        maintenance_request.name,
-
-
-                return {}
-                    "type": "ir.actions.act_window",
-                    "name": _("Maintenance Request"),
-                    "res_model": "maintenance.request",
-                    "res_id": maintenance_request.id,
-                    "view_mode": "form",
-                    "target": "current",
-
+    @api.depends('purchase_date', 'purchase_cost', 'depreciation_rate')
+    def _compute_current_value(self):
+        for record in self:
+            if record.purchase_cost and record.purchase_date:
+                age_days = (date.today() - record.purchase_date).days
+                age_years = age_days / 365.25
+                depreciation_amount = record.purchase_cost * (record.depreciation_rate / 100.0) * age_years
+                record.current_value = max(0.0, record.purchase_cost - depreciation_amount)
             else:
-                self.message_post(body=_("Service item sent to maintenance"))
+                record.current_value = record.purchase_cost or 0.0
 
+    @api.depends('maintenance_request_ids.cost')
+    def _compute_maintenance_cost(self):
+        for record in self:
+            record.maintenance_cost = sum(record.maintenance_request_ids.mapped('cost'))
 
-    def action_schedule_maintenance(self):
-            """Schedule preventive maintenance"""
-            self.ensure_one()
-            if "maintenance.request" in self.env:
-                return {}
-                    "type": "ir.actions.act_window",
-                    "name": _("Schedule Maintenance - %s", self.name),
-                    "res_model": "maintenance.request",
-                    "view_mode": "form",
-                    "target": "new",
-                    "context": {}
-                        "default_name": _("Scheduled Maintenance - %s", self.name),
-                        "default_equipment_id": self.id,
-                        "default_request_type": "preventive",
-                        "default_description": _("Scheduled maintenance for %s", self.name),:
-
-
+    @api.depends('last_maintenance_date', 'maintenance_interval_days')
+    def _compute_next_maintenance_date(self):
+        for record in self:
+            if record.last_maintenance_date and record.maintenance_interval_days > 0:
+                record.next_maintenance_date = record.last_maintenance_date + timedelta(days=record.maintenance_interval_days)
             else:
-                raise UserError(_("Maintenance module not available"))
+                record.next_maintenance_date = False
 
+    @api.depends('next_maintenance_date')
+    def _compute_is_maintenance_due(self):
+        for record in self:
+            record.is_maintenance_due = record.next_maintenance_date and record.next_maintenance_date <= date.today()
 
-    def action_retire_item(self):
-            """Retire service item"""
-            self.ensure_one()
-            if self.state == "in_use":
-                raise UserError(_("Cannot retire item that is currently in use"))
-            self.write({"state": "retired", "active": False})
-            self.message_post(body=_("Service item retired"))
+    @api.depends('maintenance_request_ids')
+    def _compute_maintenance_request_count(self):
+        for record in self:
+            record.maintenance_request_count = len(record.maintenance_request_ids)
 
+    @api.depends('service_request_ids')
+    def _compute_service_request_count(self):
+        for record in self:
+            record.service_request_count = len(record.service_request_ids)
+
+    @api.constrains('maintenance_interval_days')
+    def _check_maintenance_interval(self):
+        for record in self:
+            if record.maintenance_interval_days < 0:
+                raise ValidationError(_("Maintenance interval must be a positive number."))
+
+    @api.constrains('purchase_cost', 'current_value')
+    def _check_financial_values(self):
+        for record in self:
+            if record.purchase_cost < 0 or record.current_value < 0:
+                raise ValidationError(_("Financial values cannot be negative."))
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_set_available(self):
+        self.write({'state': 'available'})
+        self.message_post(body=_("Status set to Available."))
+
+    def action_set_in_use(self):
+        self.write({'state': 'in_use'})
+        self.message_post(body=_("Status set to In Use."))
+
+    def action_send_for_maintenance(self):
+        self.ensure_one()
+        self.write({'state': 'maintenance'})
+        self.message_post(body=_("Status set to Under Maintenance."))
+        if 'maintenance.request' in self.env:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('New Maintenance Request'),
+                'res_model': 'maintenance.request',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {
+                    'default_name': _('Maintenance for %s', self.name),
+                    'default_equipment_id': self.id,
+                    'default_maintenance_type': 'corrective' if self.is_maintenance_due else 'preventive',
+                }
+            }
+
+    def action_retire(self):
+        self.write({'state': 'retired', 'active': False})
+        self.message_post(body=_("Item has been retired."))
+
+    def action_view_maintenance_requests(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Maintenance Requests"),
+            "res_model": "maintenance.request",
+            "view_mode": "tree,form,kanban",
+            "domain": [("equipment_id", "=", self.id)],
+            "context": {'default_equipment_id': self.id}
+        }
 
     def action_view_service_requests(self):
-            """View service requests for this item""":
-            self.ensure_one()
-            return {}
-                "type": "ir.actions.act_window",
-                "name": _("Service Requests - %s", self.name),
-                "res_model": "portal.request",
-                "view_mode": "tree,form",
-                "domain": [("service_item_id", "=", self.id)],
-                "context": {"default_service_item_id": self.id},
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Service Requests"),
+            "res_model": "fsm.order",
+            "view_mode": "tree,form,kanban",
+            "domain": [("service_item_id", "=", self.id)],
+            "context": {'default_service_item_id': self.id}
+        }
 
-
-
-    def action_view_maintenance_history(self):
-            """View maintenance history"""
-            self.ensure_one()
-            if "maintenance.request" in self.env:
-                return {}
-                    "type": "ir.actions.act_window",
-                    "name": _("Maintenance History - %s", self.name),
-                    "res_model": "maintenance.request",
-                    "view_mode": "tree,form",
-                    "domain": [("equipment_id", "=", self.id)],
-                    "context": {"default_equipment_id": self.id},
-
-            else:
-                raise UserError(_("Maintenance module not available"))
-
-        # ============================================================================
-            # VALIDATION METHODS
-        # ============================================================================
-
-    def _check_maintenance_interval(self):
-            """Validate maintenance interval is reasonable"""
-            for record in self:
-                if record.maintenance_interval < 1 or record.maintenance_interval > 3650:
-                    raise ValidationError()
-                        _("Maintenance interval must be between 1 and 3650 days")
-
-
-
-    def _check_utilization_rate(self):
-            """Validate utilization rate is within valid range"""
-            for record in self:
-                if record.utilization_rate < 0 or record.utilization_rate > 100:
-                    raise ValidationError(_("Utilization rate must be between 0% and 100%"))
-
-
-    def _check_capacity(self):
-            """Validate capacity is positive"""
-            for record in self:
-                if record.capacity < 0:
-                    raise ValidationError(_("Capacity cannot be negative"))
-
-
-    def _check_financial_values(self):
-            """Validate financial values are not negative"""
-            for record in self:
-                if any(:)
-                    val < 0
-                    for val in [:]
-                        record.purchase_cost or 0,
-                        record.current_value or 0,
-                        record.maintenance_cost or 0,
-
-
-                    raise ValidationError(_("Financial values cannot be negative"))
-
-        # ============================================================================
-            # UTILITY METHODS
-        # ============================================================================
-
-    def get_utilization_summary(self):
-            """Get utilization summary for reporting""":
-            self.ensure_one()
-            return {}
-                "item_name": self.name,
-                "category": self.category,
-                "service_type": self.service_type,
-                "utilization_rate": self.utilization_rate,
-                "efficiency_rating": self.efficiency_rating,
-                "state": self.state,
-                "maintenance_due": self.maintenance_due,
-                "age_months": self.age_months,
-
-
-
-    def calculate_depreciated_value(self):
-            """Calculate current depreciated value"""
-            self.ensure_one()
-            if not self.purchase_cost or not self.purchase_date:
-                return 0.0
-            age_years = self.age_months / 12.0
-            depreciation_amount = ()
-                self.purchase_cost * (self.depreciation_rate / 100.0) * age_years
-
-            depreciated_value = max(0.0, self.purchase_cost - depreciation_amount)
-            return depreciated_value
-
-
-    def get_maintenance_due_items(self):
-            """Get all items with maintenance due"""
-            return self.search([("maintenance_due", "=", True), ("state", "!=", "retired")])
-
-
-    def _check_maintenance_schedules(self):
-            """Cron job to check maintenance schedules and create activities"""
-            overdue_items = self.search()
-                []
-                    ("maintenance_due", "=", True),
-                    ("state", "not in", ["maintenance", "retired"]),
-
-
-            for item in overdue_items:
-                # Determine assigned user
-                assigned_user_id = item.user_id.id or item.assigned_user_id.id
-                if not assigned_user_id:
-                    # Skip items without assigned users or log warning
-                    continue
-                # Create maintenance activity
-                try:
-                    item.activity_schedule()
-                        "mail.mail_activity_data_todo",
-                        summary=_("Maintenance Due: %s", item.name),
-                        note=_()
-                            "Service item maintenance is due based on the scheduled interval."
-
-                        user_id=assigned_user_id,
-                        date_deadline=fields.Date.today(),
-
-                except Exception
-                    # Continue processing other items if activity creation fails:
-                    continue
+    # ============================================================================
+    # CRON JOB
+    # ============================================================================
+    @api.model
+    def _cron_check_maintenance_due(self):
+        """Cron job to create activities for items due for maintenance."""
+        due_items = self.search([
+            ('is_maintenance_due', '=', True),
+            ('state', 'in', ['available', 'in_use'])
+        ])
+        for item in due_items:
+            activity_type = self.env.ref('mail.mail_activity_data_todo')
+            user = item.assigned_user_id or item.user_id
+            if user:
+                item.activity_schedule(
+                    activity_type_id=activity_type.id,
+                    summary=_("Maintenance Due: %s", item.display_name),
+                    note=_("Preventive maintenance is due for this item."),
+                    user_id=user.id,
+                    date_deadline=fields.Date.today(),
+                )

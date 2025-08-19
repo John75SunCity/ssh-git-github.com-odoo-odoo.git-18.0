@@ -1,46 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
+from dateutil.relativedelta import relativedelta
 
 
 class RecordsRetentionPolicy(models.Model):
@@ -48,158 +8,136 @@ class RecordsRetentionPolicy(models.Model):
     _description = 'Records Retention Policy'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, name'
-    _rec_name = 'name'
 
     # ============================================================================
-    # FIELDS
+    # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char()
-    code = fields.Char()
-    description = fields.Text()
-    sequence = fields.Integer(string='Sequence')
-    active = fields.Boolean(string='Active')
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
-    partner_id = fields.Many2one()
-    state = fields.Selection()
-    retention_years = fields.Integer()
-    retention_months = fields.Integer()
-    retention_days = fields.Integer()
-    trigger_event = fields.Selection()
-    policy_type = fields.Selection()
-    document_type_ids = fields.Many2many()
-    record_categories = fields.Char()
-    exclusions = fields.Text()
-    regulatory_basis = fields.Text()
-    legal_requirements = fields.Text()
-    compliance_standards = fields.Char()
-    sox_requirement = fields.Boolean()
-    hipaa_requirement = fields.Boolean()
-    gdpr_requirement = fields.Boolean()
-    industry_specific = fields.Boolean()
-    destruction_required = fields.Boolean()
-    destruction_method = fields.Selection()
-    auto_destruction = fields.Boolean()
-    destruction_approval_required = fields.Boolean()
-    certificate_required = fields.Boolean()
-    legal_hold_override = fields.Boolean()
-    litigation_hold_period = fields.Integer()
-    hold_notification_required = fields.Boolean()
-    review_frequency = fields.Selection()
-    last_review_date = fields.Date()
-    next_review_date = fields.Date()
-    review_notes = fields.Text()
-    policy_rule_ids = fields.One2many()
-    affected_document_ids = fields.One2many()
-    total_retention_days = fields.Integer()
-    rule_count = fields.Integer()
-    document_count = fields.Integer()
-    policy_rule_ids = fields.One2many()
-    activity_ids = fields.One2many()
-    message_follower_ids = fields.One2many()
-    message_ids = fields.One2many('mail.message')
-    policy_version = fields.Char(string='Policy Version')
-    effective_date = fields.Date(string='Effective Date')
-    approval_status = fields.Selection(string='Approval Status')
-    legal_basis = fields.Text(string='Legal Basis')
-    risk_level = fields.Selection(string='Risk Level')
-    compliance_rate = fields.Float(string='Compliance Rate %')
-    changed_by = fields.Many2one('res.users', string='Changed By')
-    destruction_efficiency_rate = fields.Float(string='Destruction Efficiency (%)')
-    exception_count = fields.Integer(string='Exceptions Count')
-    is_current_version = fields.Boolean(string='Current Version')
-    next_mandatory_review = fields.Date(string='Next Mandatory Review')
-    policy_effectiveness_score = fields.Float(string='Effectiveness Score')
-    policy_risk_score = fields.Float(string='Risk Score')
-    policy_status = fields.Selection(string='Policy Status')
-    review_cycle_months = fields.Integer(string='Review Cycle (Months)')
-    review_date = fields.Date(string='Last Review Date')
-    version_date = fields.Date(string='Version Date')
-    version_history_ids = fields.One2many('records.policy.version')
-    version_number = fields.Integer(string='Version Number')
-    action_activate_policy = fields.Char(string='Action Activate Policy')
-    action_deactivate_policy = fields.Char(string='Action Deactivate Policy')
-    action_review_policy = fields.Char(string='Action Review Policy')
-    action_view_exceptions = fields.Char(string='Action View Exceptions')
-    action_view_policy_documents = fields.Char(string='Action View Policy Documents')
-    button_box = fields.Char(string='Button Box')
-    group_policy_type = fields.Selection(string='Group Policy Type')
-    group_risk = fields.Char(string='Group Risk')
-    group_status = fields.Selection(string='Group Status')
-    help = fields.Char(string='Help')
-    high_risk = fields.Char(string='High Risk')
-    res_model = fields.Char(string='Res Model')
-    search_view_id = fields.Many2one('search.view')
-    under_review = fields.Char(string='Under Review')
-    view_mode = fields.Char(string='View Mode')
+    name = fields.Char(string="Policy Name", required=True, tracking=True)
+    code = fields.Char(string="Policy Code", required=True, copy=False, readonly=True, default=lambda self: _('New'), tracking=True)
+    sequence = fields.Integer(string='Sequence', default=10)
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    user_id = fields.Many2one('res.users', string="Policy Owner", default=lambda self: self.env.user, tracking=True)
+    description = fields.Text(string="Description")
 
     # ============================================================================
-    # METHODS
+    # STATE & LIFECYCLE
     # ============================================================================
-    def _compute_next_review_date(self):
-            """Calculate next review date based on frequency"""
-                if record.last_review_date and record.review_frequency != "as_needed":
-                    if record.review_frequency == "annual":
-                        record.next_review_date = record.last_review_date + relativedelta()""
-                            years=1""
-                        ""
-                    elif record.review_frequency == "biannual":
-                        record.next_review_date = record.last_review_date + relativedelta()""
-                            months=6""
-                        ""
-                    elif record.review_frequency == "quarterly":
-                        record.next_review_date = record.last_review_date + relativedelta()""
-                            months=3""
-                        ""
-                    else:""
-                        record.next_review_date = False""
-                else:""
-                    record.next_review_date = False""
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('archived', 'Archived'),
+    ], string="Status", default='draft', required=True, tracking=True)
 
-    def _compute_total_retention_days(self):
-            """Calculate total retention period in days"""
+    # ============================================================================
+    # RELATIONSHIPS
+    # ============================================================================
+    rule_ids = fields.One2many('records.retention.rule', 'policy_id', string="Retention Rules")
+    version_ids = fields.One2many('records.policy.version', 'policy_id', string="Version History")
 
-    def _compute_rule_count(self):
-            """Count policy rules"""
+    # ============================================================================
+    # COMPUTED COUNTS & STATS
+    # ============================================================================
+    rule_count = fields.Integer(string="Rule Count", compute='_compute_counts')
+    version_count = fields.Integer(string="Version Count", compute='_compute_counts')
+    current_version_id = fields.Many2one('records.policy.version', string="Current Active Version", compute='_compute_current_version', store=True)
 
-    def _compute_document_count(self):
-            """Count affected documents"""
+    # ============================================================================
+    # REVIEW & COMPLIANCE
+    # ============================================================================
+    review_frequency = fields.Selection([
+        ('quarterly', 'Quarterly'),
+        ('biannual', 'Biannual'),
+        ('annual', 'Annual'),
+        ('none', 'None'),
+    ], string="Review Frequency", default='annual', tracking=True)
+    last_review_date = fields.Date(string="Last Review Date", readonly=True)
+    next_review_date = fields.Date(string="Next Review Date", compute='_compute_next_review_date', store=True)
 
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
     def create(self, vals_list):
-            """"""Override create to set policy code""""
-                if not vals.get("code"):
-                    sequence = self.env["ir.sequence"].next_by_code()
-                        "records.retention.policy"
-                    ""
-                    vals["code"] = sequence or _("RRP-%s", fields.Date.today().strftime("%Y%m%d"))
-            return super().create(vals_list)""
+        for vals in vals_list:
+            if vals.get('code', _('New')) == _('New'):
+                vals['code'] = self.env['ir.sequence'].next_by_code('records.retention.policy') or _('New')
+        return super().create(vals_list)
 
-    def name_get(self):
-            """Custom name display"""
+    # ============================================================================
+    # COMPUTE & ONCHANGE METHODS
+    # ============================================================================
+    @api.depends('rule_ids', 'version_ids')
+    def _compute_counts(self):
+        for policy in self:
+            policy.rule_count = len(policy.rule_ids)
+            policy.version_count = len(policy.version_ids)
 
+    @api.depends('version_ids.state')
+    def _compute_current_version(self):
+        for policy in self:
+            active_version = policy.version_ids.filtered(lambda v: v.state == 'active')
+            policy.current_version_id = active_version[0] if active_version else False
+
+    @api.depends('last_review_date', 'review_frequency')
+    def _compute_next_review_date(self):
+        for policy in self:
+            if policy.last_review_date and policy.review_frequency != 'none':
+                months_map = {'quarterly': 3, 'biannual': 6, 'annual': 12}
+                policy.next_review_date = policy.last_review_date + relativedelta(months=months_map[policy.review_frequency])
+            else:
+                policy.next_review_date = False
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
     def action_activate(self):
-            """Activate the policy"""
+        self.ensure_one()
+        if not self.rule_ids:
+            raise UserError(_("You cannot activate a policy with no retention rules."))
+        self.write({'state': 'active'})
+        self.message_post(body=_("Policy activated."))
 
-    def action_deactivate(self):
-            """Deactivate the policy"""
+    def action_archive(self):
+        self.write({'state': 'archived', 'active': False})
+        self.message_post(body=_("Policy archived."))
 
-    def action_review(self):
-            """Mark policy as reviewed"""
+    def action_set_to_draft(self):
+        self.write({'state': 'draft', 'active': True})
+        self.message_post(body=_("Policy set to draft."))
 
-    def action_view_affected_documents(self):
-            """View documents affected by this policy"""
+    def action_create_new_version(self):
+        """Opens a wizard to create a new version of this policy."""
+        self.ensure_one()
+        # This would typically open a wizard. For now, it's a placeholder.
+        # You would pass context to the wizard with the policy_id.
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Create New Version'),
+            'res_model': 'records.policy.version.wizard', # Assumes a wizard exists
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_policy_id': self.id}
+        }
 
     def action_view_rules(self):
-            """View policy rules"""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Retention Rules'),
+            'res_model': 'records.retention.rule',
+            'view_mode': 'tree,form',
+            'domain': [('policy_id', '=', self.id)],
+            'context': {'default_policy_id': self.id}
+        }
 
-    def calculate_destruction_date(self, reference_date):
-            """Calculate destruction date based on policy"""
-
-    def _check_retention_period(self):
-            """Validate retention periods"""
-
-    def _check_code_uniqueness(self):
-            """Ensure policy codes are unique per company."""
-
-    def _cron_check_policies_for_review(self):
-            """Cron job to check for policies due for review.""":
+    def action_view_versions(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Policy Versions'),
+            'res_model': 'records.policy.version',
+            'view_mode': 'tree,form',
+            'domain': [('policy_id', '=', self.id)],
+            'context': {'default_policy_id': self.id}
+        }

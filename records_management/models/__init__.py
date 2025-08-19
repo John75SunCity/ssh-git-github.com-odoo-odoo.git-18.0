@@ -32,7 +32,7 @@ from . import records_config_settings
 from . import system_diagram_data
 
 # Core structure models
-from . import records_tag
+from . import records_tag_category
 from . import records_location
 from . import records_department
 from . import records_container

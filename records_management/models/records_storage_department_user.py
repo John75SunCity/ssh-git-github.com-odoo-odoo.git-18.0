@@ -1,114 +1,71 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
-from odoo.exceptions import UserError, ValidationError
 
 
 class RecordsStorageDepartmentUser(models.Model):
     _name = 'records.storage.department.user'
     _description = 'Storage Department User Assignment'
-    _inherit = '['mail.thread', 'mail.activity.mixin']""'
-    _order = 'name'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'department_id, user_id'
+    _rec_name = 'display_name'
 
     # ============================================================================
-    # FIELDS
+    # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string='Name', required=True)
-    company_id = fields.Many2one('res.company')
-    user_id = fields.Many2one('res.users')
-    active = fields.Boolean()
-    state = fields.Selection()
-    description = fields.Text()
-    notes = fields.Text()
-    date = fields.Date()
-    access_level = fields.Char(string='Access Level')
-    action = fields.Char(string='Action')
-    action_cancel = fields.Char(string='Action Cancel')
-    action_confirm = fields.Char(string='Action Confirm')
-    action_done = fields.Char(string='Action Done')
-    action_reset_to_draft = fields.Char(string='Action Reset To Draft')
-    action_view_assignments = fields.Char(string='Action View Assignments')
-    activity_ids = fields.One2many('mail.activity', string='Activities')
-    assignment_count = fields.Integer(string='Assignment Count')
-    assignment_info = fields.Char(string='Assignment Info')
-    basic_info = fields.Char(string='Basic Info')
-    button_box = fields.Char(string='Button Box')
-    can_approve_requests = fields.Char(string='Can Approve Requests')
-    can_edit_containers = fields.Char(string='Can Edit Containers')
-    can_generate_reports = fields.Char(string='Can Generate Reports')
-    can_view_containers = fields.Char(string='Can View Containers')
-    company_info = fields.Char(string='Company Info')
-    confirmed = fields.Boolean(string='Confirmed')
-    context = fields.Char(string='Context')
-    department_id = fields.Many2one('department')
-    domain = fields.Char(string='Domain')
-    done = fields.Char(string='Done')
-    draft = fields.Char(string='Draft')
-    end_date = fields.Date(string='End Date')
-    group_date = fields.Date(string='Group Date')
-    group_department = fields.Char(string='Group Department')
-    group_role = fields.Char(string='Group Role')
-    group_state = fields.Selection(string='Group State')
-    group_user = fields.Char(string='Group User')
-    help = fields.Char(string='Help')
-    history_ids = fields.One2many('history')
-    inactive = fields.Boolean(string='Inactive')
-    message_follower_ids = fields.One2many('mail.followers', string='Followers')
-    message_ids = fields.One2many('mail.message', string='Messages')
-    my_assignments = fields.Char(string='My Assignments')
-    permissions = fields.Char(string='Permissions')
-    res_model = fields.Char(string='Res Model')
-    role = fields.Char(string='Role')
-    start_date = fields.Date(string='Start Date')
-    this_month = fields.Char(string='This Month')
-    type = fields.Selection(string='Type')
-    view_ids = fields.One2many('view')
-    view_mode = fields.Char(string='View Mode')
+    display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
+    active = fields.Boolean(string='Active', default=True, tracking=True)
+    company_id = fields.Many2one(related='department_id.company_id', store=True, readonly=True)
 
     # ============================================================================
-    # METHODS
+    # RELATIONSHIPS
     # ============================================================================
-    def _compute_assignment_count(self):
-            for record in self:""
-                record.assignment_count = len(record.assignment_ids)""
+    department_id = fields.Many2one('records.department', string="Department", required=True, ondelete='cascade', index=True, tracking=True)
+    user_id = fields.Many2one('res.users', string="User", required=True, ondelete='cascade', index=True, tracking=True)
 
-    def action_confirm(self):
-            """Confirm the record"""
+    # ============================================================================
+    # PERMISSIONS & LIFECYCLE
+    # ============================================================================
+    role = fields.Selection([
+        ('viewer', 'Viewer'),
+        ('editor', 'Editor'),
+        ('manager', 'Manager'),
+    ], string="Role", default='viewer', required=True, tracking=True, help="Defines the user's level of access within this department.")
+    
+    state = fields.Selection([
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    ], string="Status", default='active', required=True, tracking=True)
+
+    start_date = fields.Date(string="Start Date", default=fields.Date.context_today, tracking=True)
+    end_date = fields.Date(string="End Date", tracking=True)
+
+    # ============================================================================
+    # SQL CONSTRAINTS
+    # ============================================================================
+    _sql_constraints = [
+        ('unique_user_department', 'unique(user_id, department_id)', 'A user can only be assigned to a department once.')
+    ]
+
+    # ============================================================================
+    # COMPUTE METHODS
+    # ============================================================================
+    @api.depends('user_id.name', 'department_id.name')
+    def _compute_display_name(self):
+        for record in self:
+            if record.user_id and record.department_id:
+                record.display_name = f"{record.user_id.name} - {record.department_id.name}"
+            else:
+                record.display_name = _("New Department Assignment")
+
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_activate(self):
+        """Activates the user's assignment to the department."""
+        self.write({'state': 'active', 'active': True})
+        self.message_post(body=_("User assignment activated."))
+
+    def action_deactivate(self):
+        """Deactivates the user's assignment, effectively revoking access."""
+        self.write({'state': 'inactive', 'active': False, 'end_date': fields.Date.context_today(self)})
+        self.message_post(body=_("User assignment deactivated."))
