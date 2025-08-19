@@ -145,7 +145,7 @@ from . import records_promotional_discount
 # from . import billing_support_models # This file does not exist
 
 # Key management services
-from . import bin_key_management
+# from . import bin_key_management # This file does not exist
 from . import partner_bin_key
 from . import bin_key_history
 from . import unlock_service_history
