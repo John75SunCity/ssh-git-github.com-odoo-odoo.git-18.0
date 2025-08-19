@@ -279,6 +279,7 @@
         "reports/paper_bale_weigh_wizard_report.xml",
         "reports/records_container_transfer_line_report.xml",
         "reports/records_container_transfer_report.xml",
+        "reports/stock_move_sms_validation_report.xml",
         "#CustomerPortalDiagramviews/customer_portal_diagram_views.xml",
         "#CustomerPortalOrganizationDiagramtemplates/portal_organization_diagram.xml",
         "#Datadata/ir_sequence_data.xml",

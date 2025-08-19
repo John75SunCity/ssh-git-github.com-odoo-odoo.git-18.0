@@ -44,7 +44,7 @@ class StockLotAttribute(models.Model):
             attribute.option_count = len(attribute.selection_option_ids)
 
     @api.constrains('attribute_type', 'selection_option_ids')
-    def _check_selection_options(self):
+    def _check_attribute_type_consistency(self):
         for record in self:
             if record.attribute_type == 'selection' and not record.selection_option_ids:
                 raise ValidationError(_("Selection type attributes must have at least one option defined."))
@@ -54,5 +54,5 @@ class StockLotAttribute(models.Model):
     def copy(self, default=None):
         default = dict(default or {})
         if 'name' not in default:
-            default['name'] = _("%s (Copy)") % self.name
+            default['name'] = _("%s (Copy)", self.name)
         return super().copy(default)

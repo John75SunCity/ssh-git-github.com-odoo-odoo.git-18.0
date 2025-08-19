@@ -224,6 +224,7 @@ from . import portal_feedback_communication
 from . import portal_feedback_analytic
 
 # Survey and improvement tracking
+from . import scrm_records_management
 from . import records_survey_user_input
 from . import survey_feedback_theme
 from . import survey_improvement_action
@@ -241,7 +242,7 @@ from . import res_partner
 from . import res_partner_key_restriction
 
 # Stock and inventory extensions
-from . import stock_move_sms_validation
+from . import stock_move_smsvalidation
 from . import stock_picking
 
 # Project and FSM integration
@@ -285,7 +286,7 @@ from . import required_document
 # =============================================================================
 
 from . import customer_category
-from . import scrm_records_management
+
 from . import records_deletion_request
 
 # =============================================================================
