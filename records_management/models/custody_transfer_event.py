@@ -17,7 +17,7 @@ from odoo.exceptions import ValidationError, UserError
 class CustodyTransferEvent(models.Model):
     """
     Custody Transfer Event Management
-    
+
     Logs each time physical custody of records is transferred from one
     party to another. This is a critical component of the NAID AAA
     compliant chain of custody system.
@@ -61,6 +61,7 @@ class CustodyTransferEvent(models.Model):
         string='Related Work Order',
         help="Work order associated with this transfer."
     )
+    destruction_work_order_id = fields.Many2one('container.destruction.work.order', string="Destruction Work Order")
     partner_id = fields.Many2one(
         related='custody_record_id.partner_id',
         store=True,

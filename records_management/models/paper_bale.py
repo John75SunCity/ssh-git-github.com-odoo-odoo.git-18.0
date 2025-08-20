@@ -35,6 +35,7 @@ class PaperBale(models.Model):
 
     location_id = fields.Many2one('stock.location', string="Current Location", tracking=True)
     shipment_id = fields.Many2one('paper.load.shipment', string="Shipment", readonly=True)
+    load_id = fields.Many2one('load', string="Load")
 
     inspection_ids = fields.One2many('paper.bale.inspection', 'bale_id', string="Inspections")
     inspection_count = fields.Integer(compute='_compute_inspection_count', string="Inspection Count")

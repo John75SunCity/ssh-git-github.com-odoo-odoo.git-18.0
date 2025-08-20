@@ -18,6 +18,7 @@ class FileRetrievalItem(models.Model):
     )
     discovery_container_id = fields.Many2one('records.container', string='Discovery Container', tracking=True)
     search_attempt_ids = fields.One2many('document.search.attempt', 'retrieval_item_id', string="Search Attempts")
+    work_order_id = fields.Many2one('file.retrieval.work.order', string="Work Order")
 
     status = fields.Selection([
         ('pending', 'Pending'),

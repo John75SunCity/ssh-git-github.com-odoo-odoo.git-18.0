@@ -22,6 +22,7 @@ class ScanRetrievalWorkOrder(models.Model):
     partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
     portal_request_id = fields.Many2one('portal.request', string="Portal Request", ondelete='set null')
     scan_request_description = fields.Text(string="Scan Request Description")
+    coordinator_id = fields.Many2one('work.order.coordinator', string="Coordinator")
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -127,7 +128,7 @@ class ScanRetrievalWorkOrder(models.Model):
                     minutes_per_page += 0.5
                 if record.image_enhancement:
                     minutes_per_page += 0.2
-                
+
                 total_minutes = record.total_pages_to_scan * minutes_per_page
                 total_minutes += 120  # Add 2 hours for setup and quality review
                 record.estimated_completion_date = record.scheduled_date + timedelta(minutes=total_minutes)
@@ -191,11 +192,11 @@ class ScanRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'ready_for_delivery':
             raise UserError(_("Can only deliver from the 'Ready for Delivery' state."))
-        
+
         # Placeholder for delivery logic
         delivery_method_str = dict(self._fields['delivery_method'].selection).get(self.delivery_method)
         self.message_post(body=_("Delivering files via %s.", delivery_method_str))
-        
+
         self.write({'state': 'delivered'})
 
     def action_complete(self):

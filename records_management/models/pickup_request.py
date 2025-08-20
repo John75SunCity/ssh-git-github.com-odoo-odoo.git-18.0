@@ -47,6 +47,7 @@ class PickupRequest(models.Model):
 
     pickup_item_ids = fields.One2many('pickup.request.item', 'request_id', string='Pickup Items')
     fsm_task_id = fields.Many2one('project.task', string='FSM Task', readonly=True, copy=False)
+    route_id = fields.Many2one('pickup.route', string="Pickup Route")
 
     total_items = fields.Integer(string='Total Items', compute='_compute_total_items', store=True)
     description = fields.Text(string='Description')

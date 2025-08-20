@@ -48,6 +48,8 @@ class CustomerFeedback(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
     contact_person_id = fields.Many2one('res.partner', string='Contact Person', domain="[('parent_id', '=', partner_id)]")
     team_id = fields.Many2one('crm.team', string='Sales Team', tracking=True)
+    shredding_team_id = fields.Many2one('shredding.team', string="Shredding Team")
+    theme_id = fields.Many2one('survey.feedback.theme', string="Feedback Theme")
 
     # ============================================================================
     # FEEDBACK DETAILS

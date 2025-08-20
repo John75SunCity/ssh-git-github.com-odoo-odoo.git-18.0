@@ -1,14 +1,5 @@
 from dateutil.relativedelta import relativedelta
-from odoo import models,     @a    def create(self, vals_list):
-        docs = super().create(vals_list)
-        for doc in docs:
-            doc.message_post(body=_('Document "%s" created', doc.name))
-        return docsdel_create_multi
-    def create(self, vals_list):
-        docs = super().create(vals_list)
-        for doc in docs:
-            doc.message_post(body=_("Document '%s' created") % (doc.name,))
-        return docs, api, _
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -39,6 +30,7 @@ class RecordsDocument(models.Model):
     location_id = fields.Many2one(related='container_id.location_id', string="Location", store=True, readonly=True)
     document_type_id = fields.Many2one('records.document.type', string="Document Type", tracking=True)
     lot_id = fields.Many2one('stock.lot', string="Stock Lot", tracking=True, help="Lot/Serial number associated with this document.")
+    temp_inventory_id = fields.Many2one('temp.inventory', string="Temporary Inventory")
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -85,7 +77,7 @@ class RecordsDocument(models.Model):
     def create(self, vals_list):
         docs = super().create(vals_list)
         for doc in docs:
-            doc.message_post(body=_("Document '%s' created") % doc.name)
+            doc.message_post(body=_('Document "%s" created', doc.name))
         return docs
 
     def write(self, vals):
@@ -215,7 +207,7 @@ class RecordsDocument(models.Model):
         self.env['naid.audit.log'].create({
             'document_id': self.id,
             'event_type': 'state_change',
-            'description': _("Document state reset to Draft by %s.", self.env.user.name),
+            'description': _("Document state reset to Draft by %s", self.env.user.name),
             'user_id': self.env.user.id,
         })
 
@@ -224,7 +216,7 @@ class RecordsDocument(models.Model):
         return {
             'effect': {
                 'fadeout': 'slow',
-                'message': _("Document %s has been reset to Draft.", self.display_name),
+                'message': _("Document %s has been reset to Draft", self.display_name),
                 'type': 'rainbow_man',
             }
         }

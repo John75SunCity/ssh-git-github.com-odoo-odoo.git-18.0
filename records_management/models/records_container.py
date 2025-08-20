@@ -19,7 +19,7 @@ class RecordsContainer(models.Model):
     currency_id = fields.Many2one(related='company_id.currency_id', readonly=True)
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     barcode = fields.Char(string='Barcode', copy=False, index=True)
-    
+
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
@@ -28,6 +28,8 @@ class RecordsContainer(models.Model):
     location_id = fields.Many2one('stock.location', string="Current Location", tracking=True, domain="[('usage', '=', 'internal')]")
     container_type_id = fields.Many2one('records.container.type', string="Container Type", required=True)
     retention_policy_id = fields.Many2one('records.retention.policy', string="Retention Policy")
+    temp_inventory_id = fields.Many2one('temp.inventory', string="Temporary Inventory")
+    document_type_id = fields.Many2one('records.document.type', string="Document Type")
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -70,7 +72,7 @@ class RecordsContainer(models.Model):
     movement_ids = fields.One2many('records.container.movement', 'container_id', string="Movement History")
     security_level = fields.Selection([('1', 'Standard'), ('2', 'Confidential'), ('3', 'High Security')], string="Security Level", default='1')
     access_restrictions = fields.Text(string='Access Restrictions')
-    
+
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
@@ -123,8 +125,8 @@ class RecordsContainer(models.Model):
         today = fields.Date.today()
         for container in self:
             container.is_due_for_destruction = bool(
-                container.destruction_due_date 
-                and container.destruction_due_date <= today 
+                container.destruction_due_date
+                and container.destruction_due_date <= today
                 and not container.permanent_retention
                 and container.state != 'destroyed'
             )
@@ -138,7 +140,7 @@ class RecordsContainer(models.Model):
         ]
         if (operator == '=' and value) or (operator == '!=' and not value):
             return domain
-        
+
         # This handles the inverse case: (operator == '!=' and value) or (operator == '=' and not value)
         # which means we are searching for containers NOT due for destruction.
         inverse_domain = [
@@ -158,7 +160,7 @@ class RecordsContainer(models.Model):
         self.ensure_one()
         if not self.partner_id:
             raise UserError(_("Customer must be specified before activation"))
-        
+
         self.write({
             "state": "active",
         })

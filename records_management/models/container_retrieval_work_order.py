@@ -74,6 +74,7 @@ class ContainerRetrievalWorkOrder(models.Model):
     driver_id = fields.Many2one('hr.employee', string='Driver')
     route_id = fields.Many2one('fsm.route', string='Route')
     equipment_needed = fields.Text(string='Special Equipment Needed')
+    coordinator_id = fields.Many2one('work.order.coordinator', string="Coordinator")
 
     # ============================================================================
     # COMPLETION & FEEDBACK

@@ -19,6 +19,7 @@ class DocumentSearchAttempt(models.Model):
 
     # Link to retrieval items
     retrieval_item_id = fields.Many2one('document.retrieval.item', string='Retrieval Item (DEPRECATED)')
+    file_retrieval_id = fields.Many2one('file.retrieval', string="File Retrieval")
     # TODO: Add links to new specialized retrieval items when they are ready
 
     # Core Search Details
@@ -28,10 +29,10 @@ class DocumentSearchAttempt(models.Model):
     searched_by_id = fields.Many2one('res.users', string='Searched By', required=True, default=lambda self: self.env.user)
     search_date = fields.Datetime(string='Search Date', required=True, default=fields.Datetime.now)
     search_duration = fields.Float(string='Search Duration (minutes)')
-    
+
     found = fields.Boolean(string='Found', default=False, tracking=True)
     found_date = fields.Datetime(string='Found Date')
-    
+
     requested_file_name = fields.Char(string="Requested File Name")
     search_notes = fields.Text(string="Search Notes / Findings")
 
@@ -69,7 +70,7 @@ class DocumentSearchAttempt(models.Model):
                 parts.append(attempt.requested_file_name)
             elif attempt.name:
                 parts.append(attempt.name)
-            
+
             if attempt.container_id:
                 parts.append(_("in %s", attempt.container_id.name))
 
@@ -96,7 +97,7 @@ class DocumentSearchAttempt(models.Model):
             raise UserError(_("Can only complete searches that are in progress."))
         if not self.search_notes:
             raise UserError(_("Please provide search notes before completing."))
-        
+
         status_msg = _("found") if self.found else _("not found")
         self.write({'state': 'completed'})
         self.message_post(body=_("Search completed. Document was %s.", status_msg))

@@ -42,6 +42,7 @@ class NAIDAuditLog(models.Model):
 
     # Inverse field for the One2many in project.task
     task_id = fields.Many2one('project.task', string='Related Task', ondelete='cascade', index=True)
+    document_id = fields.Many2one('records.document', string="Document")
 
     # ============================================================================
     # COMPUTE METHODS
