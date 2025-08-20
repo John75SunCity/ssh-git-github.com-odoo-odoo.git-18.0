@@ -23,6 +23,7 @@ class ProductTemplate(models.Model):
         ],
         string='RM Service Type',
         tracking=True,
+        default='other',
         ondelete={
             'storage': 'set default',
             'destruction': 'set default',
