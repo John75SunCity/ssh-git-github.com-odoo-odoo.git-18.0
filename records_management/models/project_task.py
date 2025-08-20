@@ -36,14 +36,22 @@ class ProjectTask(models.Model):
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
 
     # --- Compliance & Audit ---
-    naid_compliant = fields.Boolean(string="NAID Compliant", related='route_id.is_naid_compliant', store=True)
-    audit_trail_ids = fields.One2many('naid.audit.log', 'task_id', string="Audit Trail")
+    naid_audit_log_ids = fields.One2many('naid.audit.log', 'task_id', string='Audit Logs')
+    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy', index=True)  # Add index for search optimization
     certificate_required = fields.Boolean(string="Certificate Required", compute='_compute_certificate_required', store=True)
     certificate_of_destruction_id = fields.Many2one('ir.attachment', string="Certificate of Destruction", readonly=True)
+
+    # Optimized computed field
+    total_weight = fields.Float(string='Total Weight', compute='_compute_total_weight', store=True)  # Store for performance
 
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    @api.depends('timesheet_ids.hours_planned')  # Optimize dependencies
+    def _compute_total_weight(self):
+        for task in self:
+            task.total_weight = sum(task.timesheet_ids.mapped('hours_planned'))  # Efficient sum
+
     @api.depends('work_order_type')
     def _compute_certificate_required(self):
         """Determine if a completion certificate is required based on the task type."""
@@ -76,6 +84,12 @@ class ProjectTask(models.Model):
         if self.certificate_required:
             self._generate_completion_certificate()
 
+    def action_complete_destruction(self):
+        """Complete destruction task with NAID compliance logging."""
+        self.ensure_one()
+        self.write({'state': 'done'})
+        self.env['naid.audit.log'].create({'task_id': self.id, 'action': 'destruction_completed'})
+
     def action_view_related_containers(self):
         """Action to open the related containers' tree view."""
         self.ensure_one()
@@ -98,7 +112,7 @@ class ProjectTask(models.Model):
         """Create a NAID audit log entry if the task is NAID compliant."""
         if not self.naid_compliant:
             return
-        
+
         try:
             self.env['naid.audit.log'].create({
                 'event_type': event_type,

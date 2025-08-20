@@ -103,6 +103,9 @@ access_revenue_forecaster_manager,revenue_forecaster_manager,model_revenue_forec
 access_records_billing_config_user,access_records_billing_config_user,model_records_billing_config,records_management.group_records_user,1,0,0,0
 access_records_billing_config_manager,access_records_billing_config_manager,model_records_billing_config,records_management.group_records_manager,1,1,1,1
 
+access_records_billing_contact_user,records.billing.contact.user,model_records_billing_contact,records_management.group_records_user,1,1,1,0
+access_records_billing_contact_manager,records.billing.contact.manager,model_records_billing_contact,records_management.group_records_manager,1,1,1,1
+
 # ============================================================================
 # SYSTEM MODEL ACCESS RULES (MANAGER/SYSTEM ONLY)
 # ============================================================================

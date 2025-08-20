@@ -12,7 +12,7 @@ class RecordsDepartment(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string='Department Name', required=True, tracking=True)
+    name = fields.Char(string='Department Name', required=True, tracking=True, index=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(string='Active', default=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
@@ -25,6 +25,7 @@ class RecordsDepartment(models.Model):
     billing_contact_ids = fields.One2many('records.department.billing.contact', 'department_id', string="Billing Contacts")
     container_ids = fields.One2many('records.container', 'department_id', string="Containers")
     document_ids = fields.One2many('records.document', 'department_id', string="Documents")
+    user_ids = fields.Many2many('res.users', string='Users')
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -103,3 +104,6 @@ class RecordsDepartment(models.Model):
             'domain': [('department_id', '=', self.id)],
             'context': {'default_department_id': self.id, 'default_partner_id': self.partner_id.id}
         }
+
+    def get_department_users(self):
+        return self.user_ids.filtered(lambda u: u.active)

@@ -1,5 +1,9 @@
 from dateutil.relativedelta import relativedelta
-from odoo import models, fields, api, _
+from odoo import models, f    def create(self, vals_list):
+        docs = super().create(vals_list)
+        for doc in docs:
+            doc.message_post(body=_('Document "%s" created.') % doc.name)
+        return docs, api, _
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -29,6 +33,7 @@ class RecordsDocument(models.Model):
     container_id = fields.Many2one('records.container', string="Container", tracking=True)
     location_id = fields.Many2one(related='container_id.location_id', string="Location", store=True, readonly=True)
     document_type_id = fields.Many2one('records.document.type', string="Document Type", tracking=True)
+    lot_id = fields.Many2one('stock.lot', string="Stock Lot", tracking=True, help="Lot/Serial number associated with this document.")
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -75,7 +80,7 @@ class RecordsDocument(models.Model):
     def create(self, vals_list):
         docs = super().create(vals_list)
         for doc in docs:
-            doc.message_post(body=_("Document '%s' created.", doc.name))
+            doc.message_post(body=_("Document %s created", doc.name))
         return docs
 
     def write(self, vals):
