@@ -9,8 +9,6 @@ class RecordsRetentionPolicy(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, name'
 
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
-
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
@@ -18,7 +16,6 @@ class RecordsRetentionPolicy(models.Model):
     code = fields.Char(string="Policy Code", required=True, copy=False, readonly=True, default=lambda self: _('New'), tracking=True)
     sequence = fields.Integer(string='Sequence', default=10)
     active = fields.Boolean(string='Active', default=True, tracking=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Policy Owner", default=lambda self: self.env.user, tracking=True)
     description = fields.Text(string="Description")
 

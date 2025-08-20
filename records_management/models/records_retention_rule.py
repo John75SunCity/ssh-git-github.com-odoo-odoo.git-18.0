@@ -48,8 +48,7 @@ class RecordsRetentionRule(models.Model):
         ('review', 'Flag for Review'),
     ], string="Action on Expiry", default='destroy', required=True, tracking=True)
 
-    state = fields.Selection(
-        string="Status", default='draft', required=True, tracking=True, related='policy_id.state')
+    state = fields.Selection(related='policy_id.state', readonly=True, store=True)
 
     # ============================================================================
     # COMPUTE METHODS

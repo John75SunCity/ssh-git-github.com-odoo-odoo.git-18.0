@@ -16,11 +16,11 @@ class RecordsPolicyVersion(models.Model):
     company_id = fields.Many2one(related='policy_id.company_id', store=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Created By", default=lambda self: self.env.user, readonly=True, required=True)
     version_number = fields.Integer(string="Version Number", required=True, readonly=True)
-    
+
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    policy_id = fields.Many2one('records.policy', string="Policy", required=True, ondelete='cascade', index=True)
+    policy_id = fields.Many2one('records.retention.policy', string="Policy", required=True, ondelete='cascade', index=True)
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -36,12 +36,12 @@ class RecordsPolicyVersion(models.Model):
     # ============================================================================
     change_summary = fields.Text(string="Change Summary", required=True, help="Briefly describe the changes made in this version.")
     effective_date = fields.Date(string="Effective Date", required=True, default=fields.Date.context_today)
-    
+
     # Snapshot of policy fields at the time of versioning
     retention_period = fields.Integer(string="Retention Period (Days)", readonly=True)
     retention_unit = fields.Selection(related='policy_id.retention_unit', readonly=True) # Assuming unit is on policy
     destruction_method = fields.Selection(related='policy_id.destruction_method', readonly=True) # Assuming method is on policy
-    
+
     # ============================================================================
     # COMPUTE & ONCHANGE METHODS
     # ============================================================================
@@ -61,7 +61,7 @@ class RecordsPolicyVersion(models.Model):
         self.ensure_one()
         if self.policy_id.state != 'active':
             raise UserError(_("You can only activate a version for an active policy."))
-        
+
         # Archive other active versions of the same policy
         other_versions = self.search([
             ('policy_id', '=', self.policy_id.id),
