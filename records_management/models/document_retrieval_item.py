@@ -19,7 +19,7 @@ class DocumentRetrievalItem(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Assigned User', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
-    work_order_id = fields.Many2one('document.retrieval.workorder', string='Work Order')
+    work_order_id = fields.Many2one('records.retrieval.work.order', string='Work Order')
     sequence = fields.Integer(string='Sequence', default=10)
     priority = fields.Selection([
         ('0', 'Low'),
@@ -138,12 +138,7 @@ class DocumentRetrievalItem(models.Model):
     display_name = fields.Char(string='Display Name', compute='_compute_display_name')
     location_display = fields.Char(string='Location Display', compute='_compute_location_display')
     state = fields.Selection(related='status', string='State')
-    effective_priority = fields.Selection([
-        ('0', 'Low'),
-        ('1', 'Normal'),
-        ('2', 'High'),
-        ('3', 'Very High')
-    ], string='Effective Priority', related='priority')
+    effective_priority = fields.Selection(related='priority', string='Effective Priority')
 
     # ============================================================================
     # COMPUTED METHODS

@@ -12,14 +12,26 @@ class ProductTemplate(models.Model):
         help="Check this if the product is specifically for records management services, like storage, shredding, or retrieval."
     )
 
-    service_type = fields.Selection([
-        ('storage', 'Storage'),
-        ('destruction', 'Destruction'),
-        ('retrieval', 'Retrieval'),
-        ('pickup', 'Pickup'),
-        ('consulting', 'Consulting'),
-        ('other', 'Other'),
-    ], string='RM Service Type', tracking=True)
+    service_type = fields.Selection(
+        selection_add=[
+            ('storage', 'Storage'),
+            ('destruction', 'Destruction'),
+            ('retrieval', 'Retrieval'),
+            ('pickup', 'Pickup'),
+            ('consulting', 'Consulting'),
+            ('other', 'Other'),
+        ],
+        string='RM Service Type',
+        tracking=True,
+        ondelete={
+            'storage': 'set default',
+            'destruction': 'set default',
+            'retrieval': 'set default',
+            'pickup': 'set default',
+            'consulting': 'set default',
+            'other': 'set default',
+        }
+    )
 
     # --- Container Specs ---
     is_records_container = fields.Boolean(

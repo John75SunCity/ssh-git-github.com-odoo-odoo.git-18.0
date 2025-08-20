@@ -31,15 +31,22 @@ class ScanRetrievalItem(models.Model):
         ('archive', 'Archive Quality')
     ], string='Scan Quality', default='high')
 
-    status = fields.Selection([
-        ('pending', 'Pending'),
-        ('file_retrieved', 'File Retrieved'),
-        ('scanning', 'Scanning'),
-        ('quality_check', 'Quality Check'),
-        ('completed', 'Completed'),
-        ('delivered', 'Delivered'),
-        ('rescan_needed', 'Rescan Needed'),
-    ], string='Status', default='pending', tracking=True)
+    status = fields.Selection(
+        selection_add=[
+            ('file_retrieved', 'File Retrieved'),
+            ('scanning', 'Scanning'),
+            ('quality_check', 'Quality Check'),
+            ('delivered', 'Delivered'),
+            ('rescan_needed', 'Rescan Needed'),
+        ],
+        ondelete={
+            'file_retrieved': 'set default',
+            'scanning': 'set default',
+            'quality_check': 'set default',
+            'delivered': 'set default',
+            'rescan_needed': 'set default',
+        }
+    )
 
     # ============================================================================
     # NOTE: The following block of fields appears to be incorrectly generated
@@ -56,63 +63,63 @@ class ScanRetrievalItem(models.Model):
     # ============================================================================
     def action_start_scanning(self):
         """Mark this item as scanning started"""
-        for item in self:
-            if item.status not in ['pending', 'file_retrieved', 'rescan_needed']:
-                raise UserError(_("Can only start scanning from 'Pending', 'File Retrieved', or 'Rescan Needed' status."))
+        self.ensure_one()
+        if self.status not in ['pending', 'file_retrieved', 'rescan_needed']:
+            raise UserError(_("Can only start scanning from 'Pending', 'File Retrieved', or 'Rescan Needed' status."))
 
-            item.write({
-                'status': 'scanning',
-                'scan_start_time': fields.Datetime.now()
-            })
+        self.write({
+            'status': 'scanning',
+            'scan_start_time': fields.Datetime.now()
+        })
 
-            item.message_post(
-                body=_("Started scanning item: %s", item.display_name),
-                message_type='notification'
-            )
+        self.message_post(
+            body=_("Started scanning item"),
+            message_type='notification'
+        )
 
     def action_complete_scanning(self):
         """Mark this item as scanned and move to quality check"""
-        for item in self:
-            if item.status != 'scanning':
-                raise UserError(_("Can only complete scanning from 'Scanning' status."))
+        self.ensure_one()
+        if self.status != 'scanning':
+            raise UserError(_("Can only complete scanning from 'Scanning' status."))
 
-            item.write({
-                'status': 'quality_check',
-                'scan_completion_time': fields.Datetime.now()
-            })
+        self.write({
+            'status': 'quality_check',
+            'scan_completion_time': fields.Datetime.now()
+        })
 
-            item.message_post(
-                body=_("Completed scanning for item: %s. Awaiting quality check.", item.display_name),
-                message_type='notification'
-            )
+        self.message_post(
+            body=_("Completed scanning. Awaiting quality check."),
+            message_type='notification'
+        )
 
     def action_approve_quality(self):
         """Approve the quality of this scanned item"""
-        for item in self:
-            if item.status != 'quality_check':
-                raise UserError(_("Can only approve quality from 'Quality Check' status."))
+        self.ensure_one()
+        if self.status != 'quality_check':
+            raise UserError(_("Can only approve quality from 'Quality Check' status."))
 
-            item.write({'status': 'completed'})
-            item.message_post(
-                body=_("Quality approved for item: %s", item.display_name),
-                message_type='notification'
-            )
+        self.write({'status': 'completed'})
+        self.message_post(
+            body=_("Quality approved for scanned item"),
+            message_type='notification'
+        )
 
     def action_request_rescan(self):
         """Request that this item be rescanned due to quality issues"""
-        for item in self:
-            if item.status not in ['quality_check']:
-                raise UserError(_("Can only request rescan from 'Quality Check' status."))
+        self.ensure_one()
+        if self.status not in ['quality_check']:
+            raise UserError(_("Can only request rescan from 'Quality Check' status."))
 
-            item.write({
-                'status': 'rescan_needed',
-                'scan_start_time': False,
-                'scan_completion_time': False
-            })
+        self.write({
+            'status': 'rescan_needed',
+            'scan_start_time': False,
+            'scan_completion_time': False
+        })
 
-            item.message_post(
-                body=_("Rescan requested for item: %s", item.display_name),
-                message_type='notification'
-            )
+        self.message_post(
+            body=_("Rescan requested for item"),
+            message_type='notification'
+        )
 
 

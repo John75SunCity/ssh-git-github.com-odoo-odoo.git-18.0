@@ -11,7 +11,7 @@ class DocumentRetrievalTeam(models.Model):
     # ============================================================================
     # ADD ONLY THE FIELDS THAT ARE NOT ALREADY IN maintenance.team
     # ============================================================================
-    
+
     # Example of adding a specialization field
     retrieval_specialization = fields.Selection([
         ('standard', 'Standard'),
@@ -22,18 +22,18 @@ class DocumentRetrievalTeam(models.Model):
 
     # Example of adding a link to retrieval work orders
     retrieval_work_order_ids = fields.One2many(
-        'document.retrieval.workorder', 
-        'retrieval_team_id', 
+        'records.retrieval.work.order',
+        'retrieval_team_id',
         string='Retrieval Work Orders'
     )
 
     # Computed fields for team-specific metrics
     active_retrievals_count = fields.Integer(
-        string="Active Retrievals", 
+        string="Active Retrievals",
         compute='_compute_retrieval_metrics'
     )
     average_retrieval_time = fields.Float(
-        string="Avg. Retrieval Time (Hours)", 
+        string="Avg. Retrieval Time (Hours)",
         compute='_compute_retrieval_metrics',
         help="Average time from creation to completion for retrieval work orders."
     )
@@ -53,7 +53,7 @@ class DocumentRetrievalTeam(models.Model):
             completed_orders = team.retrieval_work_order_ids.filtered(
                 lambda wo: wo.state == 'completed' and wo.completion_date and wo.create_date
             )
-            
+
             if completed_orders:
                 total_duration_hours = 0
                 for order in completed_orders:
@@ -73,7 +73,7 @@ class DocumentRetrievalTeam(models.Model):
         return {
             'name': _('Retrieval Work Orders'),
             'type': 'ir.actions.act_window',
-            'res_model': 'document.retrieval.workorder',
+            'res_model': 'records.retrieval.work.order',
             'view_mode': 'tree,form,kanban',
             'domain': [('id', 'in', self.retrieval_work_order_ids.ids)],
         }

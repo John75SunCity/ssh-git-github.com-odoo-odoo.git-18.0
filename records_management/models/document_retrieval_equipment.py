@@ -11,7 +11,7 @@ class DocumentRetrievalEquipment(models.Model):
     # You only need to add fields that are NOT already in maintenance.equipment
     # For example, if you need a link to a specific work order type
     retrieval_work_order_id = fields.Many2one(
-        'document.retrieval.workorder', 
+        'records.retrieval.work.order',
         string='Current Retrieval Work Order',
         tracking=True
     )
