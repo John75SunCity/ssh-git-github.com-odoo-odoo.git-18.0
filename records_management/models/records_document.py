@@ -1,9 +1,5 @@
 from dateutil.relativedelta import relativedelta
-from odoo import models, f    def create(self, vals_list):
-        docs = super().create(vals_list)
-        for doc in docs:
-            doc.message_post(body=_('Document "%s" created.') % doc.name)
-        return docs, api, _
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -191,3 +187,11 @@ class RecordsDocument(models.Model):
             'context': {'default_document_id': self.id}
         }
 
+    def action_reset_to_draft(self):
+        """Reset document state to draft"""
+        self.ensure_one()
+        if self.state == 'destroyed':
+            raise UserError(_("Cannot reset a destroyed document to draft."))
+        self.write({'state': 'draft'})
+        self.message_post(body=_("Document reset to draft state"))
+        return True
