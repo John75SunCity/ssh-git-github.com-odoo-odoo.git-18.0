@@ -26,11 +26,12 @@ def get_model_name_to_file_map():
             module_name = filename[:-3]  # remove .py
             with open(filepath, 'r', encoding='utf-8') as f:
                 content = f.read()
-                matches = re.findall(r"_name\s*=\s*['\"]([\w\.]+)['\"]", content)
+                # Use a more specific regex to only find model names at the start of a line (with optional whitespace)
+                # This avoids matching _name in field definitions.
+                matches = re.findall(r"^\s*_name\s*=\s*['\"]([\w\.]+)['\"]", content, re.MULTILINE)
                 if matches:
                     for model_name_str in matches:
                         model_map[model_name_str] = module_name
-                        all_model_names.append(model_name_str)
     return model_map, list(set(all_model_names))
 
 def get_imported_models():
@@ -73,15 +74,18 @@ def get_security_entries():
             f.seek(0)
 
         for row in reader:
-            if row and len(row) > model_col_index and row[0].startswith('access_'):
-                model_id_str = row[model_col_index]
-                # Handle both formats: model_res_partner and res.partner
-                if model_id_str.startswith('model_'):
-                    model_name = model_id_str[len('model_'):].replace('_', '.')
-                else:
-                    # This case might not be needed if CSV is standardized, but good for robustness
-                    model_name = model_id_str
-                entries[model_name].append(row)
+            if row and len(row) > model_col_index:
+                # Check if the first column looks like a standard Odoo access rule ID
+                is_access_rule = row[0].startswith('access_') or 'group' in row[0]
+
+                if is_access_rule:
+                    model_id_str = row[model_col_index]
+                    # Handle both formats: model_res_partner and res.partner
+                    if model_id_str.startswith('model_'):
+                        model_name = model_id_str[len('model_'):].replace('_', '.')
+                    else:
+                        model_name = model_id_str
+                    entries[model_name].append(row)
     return entries
 
 def get_views_for_models():
@@ -110,14 +114,19 @@ def get_views_for_models():
                 print(f"Warning: Could not parse XML in {filename}")
     return views
 
-def get_reports():
-    reports = []
-    if not os.path.isdir(REPORT_DIR):
-        return reports
-    for filename in os.listdir(REPORT_DIR):
-        if filename.endswith(('.py', '.xml')) and not filename.startswith('__'):
-            reports.append(filename)
-    return reports
+# --- Main Analysis ---
+print("Starting Records Management Module Integrity Check...")
+print("="*50)
+
+all_model_map, all_models = get_model_name_to_file_map()
+imported_modules = get_imported_models()
+security_models = get_security_entries()
+view_models = get_views_for_models()
+report_files = get_reports()
+
+# --- Analysis Logic ---
+imported_set = set(imported_modules)
+model_module_files = set(all_model_map.values())
 
 # --- Main Analysis ---
 print("Starting Records Management Module Integrity Check...")
@@ -128,6 +137,9 @@ imported_modules = get_imported_models()
 security_models = get_security_entries()
 view_models = get_views_for_models()
 report_files = get_reports()
+
+# Call the debugging function
+debug_and_validate_data(all_models, security_models, view_models)
 
 # --- Analysis Logic ---
 imported_set = set(imported_modules)

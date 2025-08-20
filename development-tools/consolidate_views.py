@@ -39,6 +39,7 @@ def consolidate_duplicate_views():
         all_view_files = set() # Ensure it's a set
 
     files_to_delete = set()
+    primary_files = set()
 
     for match in duplicate_pattern.finditer(view_report):
         model_name = match.group(1)
@@ -50,6 +51,7 @@ def consolidate_duplicate_views():
 
         # Choose the primary file (e.g., the one with the model name in it)
         primary_file = next((f for f in files if model_name.replace('.', '_') in f), files[0])
+        primary_files.add(primary_file)
         other_files = [f for f in files if f != primary_file]
 
         primary_file_path = os.path.join(views_dir, primary_file)
@@ -96,9 +98,10 @@ def consolidate_duplicate_views():
 
 
     # Delete the redundant files
-    if files_to_delete:
+    actual_files_to_delete = files_to_delete - primary_files
+    if actual_files_to_delete:
         print("\nDeleting redundant view files...")
-        for file_to_delete in files_to_delete:
+        for file_to_delete in actual_files_to_delete:
             file_path = os.path.join(views_dir, file_to_delete)
             try:
                 os.remove(file_path)
@@ -107,9 +110,9 @@ def consolidate_duplicate_views():
                 print(f"  -> Error deleting file {file_to_delete}: {e}")
 
     # Update the manifest file
-    if all_view_files and files_to_delete:
+    if all_view_files and actual_files_to_delete:
         print("\nUpdating manifest file...")
-        updated_view_files = all_view_files - set('views/' + f for f in files_to_delete)
+        updated_view_files = all_view_files - set('views/' + f for f in actual_files_to_delete)
 
         # Create the new data list string
         new_data_list_str = ",\n        ".join(sorted([f"'{f}'" for f in updated_view_files]))
