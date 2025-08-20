@@ -1,5 +1,14 @@
 from dateutil.relativedelta import relativedelta
-from odoo import models, fields, api, _
+from odoo import models,     @a    def create(self, vals_list):
+        docs = super().create(vals_list)
+        for doc in docs:
+            doc.message_post(body=_('Document "%s" created', doc.name))
+        return docsdel_create_multi
+    def create(self, vals_list):
+        docs = super().create(vals_list)
+        for doc in docs:
+            doc.message_post(body=_("Document '%s' created") % (doc.name,))
+        return docs, api, _
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -76,7 +85,7 @@ class RecordsDocument(models.Model):
     def create(self, vals_list):
         docs = super().create(vals_list)
         for doc in docs:
-            doc.message_post(body=_("Document %s created", doc.name))
+            doc.message_post(body=_("Document '%s' created") % doc.name)
         return docs
 
     def write(self, vals):
@@ -188,10 +197,34 @@ class RecordsDocument(models.Model):
         }
 
     def action_reset_to_draft(self):
-        """Reset document state to draft"""
+        """
+        Reset document state to draft, with enhanced validation and auditing.
+        Only documents in 'in_storage' or 'archived' states can be reset.
+        This action is logged for compliance purposes.
+        """
         self.ensure_one()
-        if self.state == 'destroyed':
-            raise UserError(_("Cannot reset a destroyed document to draft."))
+        if self.state in ('destroyed', 'in_transit', 'checked_out'):
+            raise UserError(_(
+                "Cannot reset document to draft from its current state: %s. "
+                "Only documents that are in storage or archived can be reset.", self.state
+            ))
+
         self.write({'state': 'draft'})
-        self.message_post(body=_("Document reset to draft state"))
-        return True
+
+        # Create a NAID audit log for this action
+        self.env['naid.audit.log'].create({
+            'document_id': self.id,
+            'event_type': 'state_change',
+            'description': _("Document state reset to Draft by %s.", self.env.user.name),
+            'user_id': self.env.user.id,
+        })
+
+        self.message_post(body=_("Document reset to draft state."))
+
+        return {
+            'effect': {
+                'fadeout': 'slow',
+                'message': _("Document %s has been reset to Draft.", self.display_name),
+                'type': 'rainbow_man',
+            }
+        }
