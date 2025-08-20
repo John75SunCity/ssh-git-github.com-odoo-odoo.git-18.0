@@ -40,6 +40,9 @@ class NAIDAuditLog(models.Model):
     ip_address = fields.Char(string='IP Address', readonly=True)
     naid_compliant = fields.Boolean(string='NAID Compliant Action', default=True, readonly=True)
 
+    # Inverse field for the One2many in project.task
+    task_id = fields.Many2one('project.task', string='Related Task', ondelete='cascade', index=True)
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

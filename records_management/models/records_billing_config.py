@@ -14,18 +14,18 @@ class RecordsBillingConfig(models.Model):
     active = fields.Boolean(string='Active', default=True, tracking=True)
     sequence = fields.Integer(string='Sequence', default=10)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    
+
     # ============================================================================
     # BILLING DETAILS
     # ============================================================================
-    product_id = fields.Many2one('product.product', string="Service Product", required=True, domain="[('type', '=', 'service'), ('invoice_policy', '!=', 'no')]")
+    product_id = fields.Many2one('product.product', string="Service Product", required=True, domain="[('detailed_type', '=', 'service')]")
     billing_type = fields.Selection([
         ('recurring', 'Recurring'),
         ('one_time', 'One-Time'),
         ('usage', 'Usage-Based')
     ], string="Billing Type", required=True, default='recurring', tracking=True)
-    
-    unit_price = fields.Float(string="Unit Price", digits='Product Price', tracking=True)
+
+    unit_price = fields.Monetary(string="Unit Price", tracking=True, currency_field='currency_id')
     currency_id = fields.Many2one('res.currency', related='company_id.currency_id', string="Currency", readonly=True)
 
     # ============================================================================
@@ -61,8 +61,9 @@ class RecordsBillingConfig(models.Model):
 
     def action_archive(self):
         """Archive the billing configuration."""
-        self.write({'state': 'archived', 'active': False})
-        self.message_post(body=_("Configuration archived by %s.", self.env.user.name))
+        for record in self:
+            record.write({'state': 'archived', 'active': False})
+            record.message_post(body=_("Configuration archived by %s.", self.env.user.name))
 
     def action_reset_to_draft(self):
         """Reset the configuration to draft state."""
@@ -79,8 +80,16 @@ class RecordsBillingConfig(models.Model):
         if self.product_id:
             self.unit_price = self.product_id.lst_price
 
-    @api.constrains('recurring_interval')
-    def _check_recurring_interval(self):
+    @api.constrains('recurring_interval', 'recurring_period', 'billing_type')
+    def _check_recurring_config(self):
         for record in self:
-            if record.billing_type == 'recurring' and record.recurring_interval <= 0:
-                raise ValidationError(_("The recurring interval must be a positive number."))
+            if record.billing_type == 'recurring':
+                if record.recurring_interval <= 0:
+                    raise ValidationError(_("The recurring interval must be a positive number."))
+                if not record.recurring_period:
+                    raise ValidationError(_("The recurring period must be set for recurring billing."))
+            else:
+                # Optional: Clear recurring fields if not recurring
+                if record.recurring_interval or record.recurring_period:
+                    record.recurring_interval = False
+                    record.recurring_period = False

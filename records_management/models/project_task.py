@@ -1,5 +1,7 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+import base64
+
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError
 
 class ProjectTask(models.Model):
     _inherit = 'project.task'
@@ -46,7 +48,7 @@ class ProjectTask(models.Model):
     def _compute_certificate_required(self):
         """Determine if a completion certificate is required based on the task type."""
         for task in self:
-            task.certificate_required = task.work_order_type in ['destruction']
+            task.certificate_required = task.work_order_type == 'destruction'
 
     # ============================================================================
     # ACTION METHODS
@@ -60,7 +62,7 @@ class ProjectTask(models.Model):
             'actual_start_time': fields.Datetime.now(),
         })
         self._create_audit_log('task_started', _("Task execution started."))
-        self.message_post(body=_("Task started by %s.", self.env.user.name))
+        self.message_post(body=_("Task started."))
 
     def action_complete_task(self):
         """Complete the task, log the event, and generate certificates if needed."""
@@ -69,7 +71,7 @@ class ProjectTask(models.Model):
             'actual_end_time': fields.Datetime.now(),
         })
         self._create_audit_log('task_completed', _("Task execution completed."))
-        self.message_post(body=_("Task completed by %s.", self.env.user.name))
+        self.message_post(body=_("Task completed."))
 
         if self.certificate_required:
             self._generate_completion_certificate()
@@ -96,33 +98,33 @@ class ProjectTask(models.Model):
         """Create a NAID audit log entry if the task is NAID compliant."""
         if not self.naid_compliant:
             return
-
-        self.env['naid.audit.log'].create({
-            'event_type': event_type,
-            'description': description,
-            'user_id': self.env.user.id,
-            'task_id': self.id,
-            'res_model': self._name,
-            'res_id': self.id,
-        })
+        
+        try:
+            self.env['naid.audit.log'].create({
+                'event_type': event_type,
+                'description': description,
+                'user_id': self.env.user.id,
+                'task_id': self.id,
+                'res_model': self._name,
+                'res_id': self.id,
+            })
+        except Exception as e:
+            _logger.error("Failed to create NAID audit log for task %s: %s", self.name, e)
 
     def _generate_completion_certificate(self):
         """Generate and attach a Certificate of Destruction."""
         self.ensure_one()
-        # This would call a report action to generate the PDF
-        # For simplicity, we'll create a log message and a placeholder attachment.
         report_action = self.env.ref('records_management.action_report_certificate_of_destruction')
-        pdf_content, _file_type = report_action._render_qweb_pdf(self.ids)
-
+        pdf_content, _ = report_action._render_qweb_pdf(res_ids=self.ids)
         attachment = self.env['ir.attachment'].create({
-            'name': _("Certificate-of-Destruction-%s.pdf", self.name),
+            'name': _("Certificate-of-Destruction-") + self.name + ".pdf",
             'type': 'binary',
-            'datas': base64.b64encode(pdf_content),
+            'datas': base64.encodebytes(pdf_content),
+            'store_fname': fields.Datetime.now().strftime('certificate_%Y%m%d_%H%M%S.pdf'),
             'res_model': self._name,
             'res_id': self.id,
             'mimetype': 'application/pdf'
         })
-
         self.certificate_of_destruction_id = attachment.id
         self.message_post(
             body=_("Certificate of Destruction generated."),
@@ -135,10 +137,11 @@ class ProjectTask(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to add initial audit log."""
-        tasks = super(ProjectTask, self).create(vals_list)
+        tasks = super().create(vals_list)
         for task in tasks:
             if task.naid_compliant:
-                task._create_audit_log('task_created', _("Task created: %s", task.name))
+                description = _('Task created: ') + task.name
+                task._create_audit_log('task_created', description)
         return tasks
 
     def write(self, vals):
@@ -147,20 +150,21 @@ class ProjectTask(models.Model):
             stage = self.env['project.task.type'].browse(vals['stage_id'])
             for task in self:
                 if task.naid_compliant:
-                    task._create_audit_log('stage_change', _("Stage changed to: %s", stage.name))
+                    description = _('Stage changed to: ') + stage.name
+                    task._create_audit_log('stage_change', description)
 
         if 'user_ids' in vals:
             for task in self:
                 if task.naid_compliant:
                     task._create_audit_log('assignment_change', _("User assignment updated."))
 
-        return super(ProjectTask, self).write(vals)
+        return super().write(vals)
 
     def unlink(self):
         """Prevent deletion of tasks with audit trails."""
         for task in self:
             if task.audit_trail_ids:
                 raise UserError(_("Cannot delete a task with NAID audit trail entries. Please archive it instead."))
-
+        return super().unlink()
 
 
