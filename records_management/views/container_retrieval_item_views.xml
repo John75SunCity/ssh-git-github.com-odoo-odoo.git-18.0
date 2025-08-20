@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="container_retrieval_item_view_tree" model="ir.ui.view">
+            <field name="name">container.retrieval.item.view.tree</field>
+            <field name="model">container.retrieval.item</field>
+            <field name="arch" type="xml">
+                <tree string="Container Retrieval Item">
+                    <!-- Add fields here -->
+                </tree>
+            </field>
+        </record>
+
+        <record id="container_retrieval_item_view_form" model="ir.ui.view">
+            <field name="name">container.retrieval.item.view.form</field>
+            <field name="model">container.retrieval.item</field>
+            <field name="arch" type="xml">
+                <form string="Container Retrieval Item">
+                    <sheet>
+                        <group>
+                            <!-- Add fields here -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_container_retrieval_item" model="ir.actions.act_window">
+            <field name="name">Container Retrieval Item</field>
+            <field name="res_model">container.retrieval.item</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tree view for records.tag.category -->
+    <record id="records_tag_category_view_tree" model="ir.ui.view">
+        <field name="name">records.tag.category.view.tree</field>
+        <field name="model">records.tag.category</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view for records.tag.category -->
+    <record id="records_tag_category_view_form" model="ir.ui.view">
+        <field name="name">records.tag.category.view.form</field>
+        <field name="model">records.tag.category</field>
+        <field name="arch" type="xml">
+            <form string="Records.Tag.Category">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view for records.tag.category -->
+    <record id="records_tag_category_view_search" model="ir.ui.view">
+        <field name="name">records.tag.category.view.search</field>
+        <field name="model">records.tag.category</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action for records.tag.category -->
+    <record id="action_records_tag_category" model="ir.actions.act_window">
+        <field name="name">Records.Tag.Category</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">records.tag.category</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to add a new records.tag.category.
+            </p>
+        </field>
+    </record>
+
+</odoo>

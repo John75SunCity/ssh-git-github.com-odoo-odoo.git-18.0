@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree View -->
+        <record id="paper_bale_line_view_tree" model="ir.ui.view">
+            <field name="name">paper.bale.line.view.tree</field>
+            <field name="model">paper.bale.line</field>
+            <field name="arch" type="xml">
+                <tree string="Paper Bale Line">
+                    <!-- Add fields here -->
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="paper_bale_line_view_form" model="ir.ui.view">
+            <field name="name">paper.bale.line.view.form</field>
+            <field name="model">paper.bale.line</field>
+            <field name="arch" type="xml">
+                <form string="Paper Bale Line">
+                    <sheet>
+                        <group>
+                            <!-- Add fields here -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="paper_bale_line_view_search" model="ir.ui.view">
+            <field name="name">paper.bale.line.view.search</field>
+            <field name="model">paper.bale.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Paper Bale Line">
+                    <!-- Add search fields here -->
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_paper_bale_line" model="ir.actions.act_window">
+            <field name="name">Paper Bale Line</field>
+            <field name="res_model">paper.bale.line</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

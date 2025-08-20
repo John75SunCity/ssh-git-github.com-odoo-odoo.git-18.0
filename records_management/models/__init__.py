@@ -389,3 +389,17 @@ from . import records_billing
 from . import file_retrieval_work_order_item
 from . import records_location_report_wizard
 from . import records_inventory_dashboard
+
+# =============================================================================
+# NEWLY IDENTIFIED MISSING IMPORTS
+# =============================================================================
+from . import bin_key_unlock_service
+from . import container_retrieval
+from . import container_retrieval_item
+from . import file_retrieval
+from . import file_retrieval_item
+from . import naid_destruction_record
+from . import pickup_schedule_wizard
+from . import records_bulk_user_import
+from . import scan_retrieval
+from . import transitory_item

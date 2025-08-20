@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree View -->
+        <record id="media_type_view_tree" model="ir.ui.view">
+            <field name="name">media.type.view.tree</field>
+            <field name="model">media.type</field>
+            <field name="arch" type="xml">
+                <tree string="Media Type">
+                    <!-- Add fields here -->
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="media_type_view_form" model="ir.ui.view">
+            <field name="name">media.type.view.form</field>
+            <field name="model">media.type</field>
+            <field name="arch" type="xml">
+                <form string="Media Type">
+                    <sheet>
+                        <group>
+                            <!-- Add fields here -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="media_type_view_search" model="ir.ui.view">
+            <field name="name">media.type.view.search</field>
+            <field name="model">media.type</field>
+            <field name="arch" type="xml">
+                <search string="Search Media Type">
+                    <!-- Add search fields here -->
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_media_type" model="ir.actions.act_window">
+            <field name="name">Media Type</field>
+            <field name="res_model">media.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

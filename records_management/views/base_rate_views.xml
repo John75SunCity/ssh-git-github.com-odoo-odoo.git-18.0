@@ -58,4 +58,426 @@
         </field>
     </record>
 
+<data>
+        <!-- Tree view for Base -->
+        <record id="base_rates_view_tree" model="ir.ui.view">
+            <field name="name">base.rate.view.tree</field>
+            <field name="model">base.rate</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-warning="state == 'confirmed'" decoration-muted="state in ['superseded', 'expired', 'cancelled']">
+                    <field name="name"/>
+                    <field name="version"/>
+                    <field name="is_current" widget="boolean_toggle"/>
+                    <field name="effective_date"/>
+                    <field name="expiration_date"/>
+                    <field name="creation_method"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-warning="state == 'confirmed'" decoration-danger="state in ['expired', 'cancelled']"/>
+                    <field name="customer_count" string="Base Rate Users"/>
+                    <field name="negotiated_rate_count" string="Negotiated Users"/>
+                    <field name="average_service_rate" widget="monetary" string="Avg. Rate"/>
+                    <field name="company_id" optional="hide"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="base_rates_view_form" model="ir.ui.view">
+            <field name="name">base.rate.view.form</field>
+            <field name="model">base.rate</field>
+            <field name="arch" type="xml">
+                <form string="Base Rates">
+                    <header>
+                        <button name="action_activate" string="Activate Rate" type="object" class="oe_highlight" states="draft"/>
+                        <button name="action_expire" string="Expire Rate" type="object" states="active" confirm="Are you sure you want to expire this rate?"/>
+                        <button name="action_run_forecast" string="Revenue Forecast" type="object" class="btn-secondary"/>
+                        <button name="action_approve_changes" string="Approve Changes" type="object" states="draft" groups="records_management.group_records_manager"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,active,superseded,expired"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_customers_using_rate" type="object" class="oe_stat_button" icon="fa-users">
+                                <field name="customer_count" widget="statinfo" string="Base Rate Users"/>
+                            </button>
+                            <button name="action_view_negotiated_rates" type="object" class="oe_stat_button" icon="fa-handshake-o">
+                                <field name="negotiated_rate_count" widget="statinfo" string="Negotiated Rates"/>
+                            </button>
+                        </div>
+
+                        <group>
+                            <group string="Basic Information">
+                                <field name="name"/>
+                                <field name="company_id" options="{'no_create': True}"/>
+                                <field name="user_id"/>
+                                <field name="active"/>
+                                <field name="version"/>
+                            </group>
+                            <group string="Rate Information">
+                                <field name="is_current"/>
+                                <field name="effective_date"/>
+                                <field name="expiration_date"/>
+                                <field name="creation_method"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Service Rates" name="service_rates">
+                                <group>
+                                    <group string="External Shredding Services">
+                                        <field name="external_per_bin_rate" widget="monetary"/>
+                                        <field name="external_service_call_rate" widget="monetary"/>
+                                    </group>
+                                    <group string="Managed Document Services">
+                                        <field name="managed_permanent_removal_rate" widget="monetary"/>
+                                        <field name="managed_retrieval_rate" widget="monetary"/>
+                                        <field name="managed_service_call_rate" widget="monetary"/>
+                                        <field name="managed_shredding_rate" widget="monetary"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Pickup &amp;amp; Delivery">
+                                        <field name="pickup_rate" widget="monetary"/>
+                                        <field name="delivery_rate" widget="monetary"/>
+                                        <field name="emergency_pickup_rate" widget="monetary"/>
+                                        <field name="rush_delivery_rate" widget="monetary"/>
+                                    </group>
+                                    <group string="Storage Services">
+                                        <field name="storage_rate_monthly" widget="monetary"/>
+                                        <field name="storage_setup_fee" widget="monetary"/>
+                                        <field name="inactive_storage_rate" widget="monetary"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Container &amp;amp; Access Rates" name="container_rates">
+                                <group>
+                                    <group string="Container Access">
+                                        <field name="container_access_rate" widget="monetary"/>
+                                        <field name="container_access_monthly_rate" widget="monetary"/>
+                                        <field name="bulk_container_access_discount" widget="percentage"/>
+                                    </group>
+                                    <group string="Special Services">
+                                        <field name="not_found_search_rate" widget="monetary"/>
+                                        <field name="research_rate_hourly" widget="monetary"/>
+                                        <field name="scanning_rate_per_page" widget="monetary"/>
+                                        <field name="indexing_rate_per_document" widget="monetary"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Digital Services">
+                                        <field name="digital_delivery_rate" widget="monetary"/>
+                                        <field name="digital_storage_rate_gb" widget="monetary"/>
+                                        <field name="data_conversion_rate" widget="monetary"/>
+                                    </group>
+                                    <group string="Setup &amp;amp; Processing">
+                                        <field name="setup_fee_new_client" widget="monetary"/>
+                                        <field name="processing_fee_batch" widget="monetary"/>
+                                        <field name="verification_fee" widget="monetary"/>
+                                        <field name="audit_trail_fee" widget="monetary"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Compliance &amp;amp; Special" name="compliance_rates">
+                                <group>
+                                    <group string="NAID Compliance">
+                                        <field name="naid_witness_fee" widget="monetary"/>
+                                        <field name="naid_certificate_fee" widget="monetary"/>
+                                        <field name="compliance_audit_rate" widget="monetary"/>
+                                    </group>
+                                    <group string="Consultation &amp;amp; Support">
+                                        <field name="consultation_rate_hourly" widget="monetary"/>
+                                        <field name="training_rate_hourly" widget="monetary"/>
+                                        <field name="support_rate_hourly" widget="monetary"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Penalties &amp;amp; Fees">
+                                        <field name="late_fee_rate" widget="monetary"/>
+                                        <field name="cancellation_fee" widget="monetary"/>
+                                        <field name="returned_item_fee" widget="monetary"/>
+                                        <field name="restocking_fee_rate" widget="percentage"/>
+                                    </group>
+                                    <group string="Travel &amp;amp; Logistics">
+                                        <field name="travel_rate_per_mile" widget="monetary"/>
+                                        <field name="fuel_surcharge_rate" widget="percentage"/>
+                                        <field name="weekend_service_multiplier"/>
+                                        <field name="holiday_service_multiplier"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Computation &amp;amp; Statistics" name="computed_fields">
+                                <group>
+                                    <group string="Rate Analysis">
+                                        <field name="average_service_rate" widget="monetary" readonly="1"/>
+                                        <field name="total_setup_fees" widget="monetary" readonly="1"/>
+                                        <field name="highest_rate_service" readonly="1"/>
+                                        <field name="lowest_rate_service" readonly="1"/>
+                                    </group>
+                                    <group string="Usage Statistics">
+                                        <field name="most_requested_service" readonly="1"/>
+                                        <field name="total_monthly_potential" widget="monetary" readonly="1"/>
+                                        <field name="customer_count" readonly="1"/>
+                                        <field name="negotiated_rate_count" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Description &amp;amp; Notes" name="description">
+                                <group>
+                                    <field name="description" placeholder="Describe this rate set and when it applies..." nolabel="1"/>
+                                </group>
+                                <group string="Internal Notes">
+                                    <field name="notes" placeholder="Internal notes about this rate set..." nolabel="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree view for Revenue -->
+        <record id="revenue_forecaster_view_form" model="ir.ui.view">
+            <field name="name">revenue.forecaster.view.form</field>
+            <field name="model">revenue.forecaster</field>
+            <field name="arch" type="xml">
+                <form string="Revenue Forecaster">
+                    <header>
+                        <button name="action_run_forecast" string="🚀 Run Forecast Analysis" type="object" class="oe_highlight" attrs="{'invisible': [('analysis_complete', '=', True)]}"/>
+                        <button name="action_export_forecast" string="📊 Export to Excel" type="object" attrs="{'invisible': [('analysis_complete', '=', False)]}"/>
+                        <button name="action_apply_scenario" string="✅ Apply Rate Changes" type="object" class="oe_highlight" attrs="{'invisible': [('analysis_complete', '=', False)]}" confirm="This will implement the forecasted rate changes. Are you sure?"/>
+                    </header>
+                    <sheet>
+                        <div class="alert alert-info" role="alert" attrs="{'invisible': [('analysis_complete', '=', True)]}">
+                            <strong>Revenue Forecasting Tool</strong>
+                            <br/>
+                            Configure your scenario parameters below and click "Run Forecast Analysis" to see the potential revenue impact.
+                        </div>
+
+                        <!-- Tree view for Results -->
+                        <div class="o_form_sheet_bg" attrs="{'invisible': [('analysis_complete', '=', False)]}">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Current Revenue</h5>
+                                            <h3 class="text-primary">$<field name="current_monthly_revenue" nolabel="1"/>/mo</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Projected Revenue</h5>
+                                            <h3 class="text-success">$<field name="projected_monthly_revenue" nolabel="1"/>/mo</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Monthly Change</h5>
+                                            <h3 class="text-info">$<field name="revenue_difference" nolabel="1"/></h3>
+                                            <small class="text-muted"><field name="revenue_percentage_change" nolabel="1"/>%</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card text-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Annual Impact</h5>
+                                            <h3 class="text-warning">$<field name="annual_revenue_impact" nolabel="1"/></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Customers Affected:</strong>
+                                    <field name="customer_impact_count" nolabel="1"/>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Risk Assessment:</strong>
+                                    <field name="risk_assessment" nolabel="1" widget="badge" decoration-success="risk_assessment == 'low'" decoration-warning="risk_assessment == 'medium'" decoration-danger="risk_assessment in ['high', 'very_high']"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <group string="Scenario Configuration">
+                            <group>
+                                <field name="forecast_period"/>
+                                <field name="scenario_type"/>
+                                <field name="customer_segment"/>
+                            </group>
+                            <group>
+                                <field name="custom_start_date" attrs="{'invisible': [('forecast_period', '!=', 'custom')], 'required': [('forecast_period', '=', 'custom')]}"/>
+                                <field name="custom_end_date" attrs="{'invisible': [('forecast_period', '!=', 'custom')], 'required': [('forecast_period', '=', 'custom')]}"/>
+                                <field name="specific_customer_ids" widget="many2many_tags" attrs="{'invisible': [('customer_segment', '!=', 'specific_customers')]}"/>
+                            </group>
+                        </group>
+
+                        <group string="Rate Adjustment Parameters" attrs="{'invisible': [('scenario_type', 'not in', ['global_increase', 'global_decrease', 'category_specific'])]}">
+                            <group>
+                                <field name="global_adjustment_type" attrs="{'invisible': [('scenario_type', 'not in', ['global_increase', 'global_decrease'])]}"/>
+                                <field name="global_adjustment_value" attrs="{'invisible': [('scenario_type', 'not in', ['global_increase', 'global_decrease'])]}"/>
+                                <field name="service_category" attrs="{'invisible': [('scenario_type', '!=', 'category_specific')], 'required': [('scenario_type', '=', 'category_specific')]}"/>
+                                <field name="category_adjustment_value" attrs="{'invisible': [('scenario_type', '!=', 'category_specific')]}"/>
+                            </group>
+                        </group>
+
+                        <group string="Market Analysis Parameters">
+                            <group>
+                                <field name="market_growth_rate"/>
+                                <field name="inflation_rate"/>
+                            </group>
+                            <group>
+                                <field name="customer_retention_rate"/>
+                                <field name="competitor_rate_factor"/>
+                            </group>
+                        </group>
+
+                        <!-- Tree view for Detailed -->
+                        <notebook attrs="{'invisible': [('analysis_complete', '=', False)]}">
+                            <page string="Customer Impact Analysis">
+                                <field name="forecast_line_ids" readonly="1">
+                                    <tree decoration-success="revenue_change &amp;lt; 0" decoration-danger="revenue_change &amp;gt; 0">
+                                        <field name="partner_id"/>
+                                        <field name="customer_segment"/>
+                                        <field name="container_count"/>
+                                        <field name="current_monthly_revenue"/>
+                                        <field name="projected_monthly_revenue"/>
+                                        <field name="revenue_change"/>
+                                        <field name="revenue_change_percentage"/>
+                                        <field name="risk_level" widget="badge"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree view for Rate -->
+        <record id="rate_change_confirmation_wizard_view_form" model="ir.ui.view">
+            <field name="name">rate.change.confirmation.wizard.view.form</field>
+            <field name="model">rate.change.confirmation.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Rate Change Implementation">
+                    <header>
+                        <button name="action_approve_changes" string="✅ Approve Changes" type="object" class="oe_highlight" attrs="{'invisible': [('approved_by', '!=', False)]}" groups="records_management.group_records_manager"/>
+                        <button name="action_implement_changes" string="🚀 Implement Changes" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('approved_by', '=', False), ('requires_approval', '=', True)]}" confirm="This will implement the rate changes. This action cannot be undone. Are you sure?"/>
+                        <button name="action_cancel_implementation" string="Cancel" type="object" class="btn-secondary"/>
+                    </header>
+                    <sheet>
+                        <div class="alert alert-warning" role="alert">
+                            <strong>⚠️ Rate Change Implementation</strong>
+                            <br/>
+                            Please review the details below before implementing rate changes.
+                        </div>
+
+                        <group string="Impact Summary">
+                            <group>
+                                <field name="revenue_impact" widget="monetary"/>
+                                <field name="customer_count"/>
+                            </group>
+                            <group>
+                                <field name="effective_date"/>
+                                <field name="implementation_method"/>
+                            </group>
+                        </group>
+
+                        <group string="Customer Communication">
+                            <group>
+                                <field name="notification_required"/>
+                                <field name="advance_notice_days" attrs="{'invisible': [('notification_required', '=', False)]}"/>
+                            </group>
+                            <group>
+                                <field name="phase_duration_months" attrs="{'invisible': [('implementation_method', '!=', 'phased')]}"/>
+                            </group>
+                        </group>
+
+                        <group string="Approval" attrs="{'invisible': [('requires_approval', '=', False)]}">
+                            <group>
+                                <field name="requires_approval"/>
+                                <field name="approved_by" readonly="1"/>
+                                <field name="approval_date" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Communication Template" attrs="{'invisible': [('notification_required', '=', False)]}">
+                                <field name="communication_template" placeholder="Customize the customer communication template..."/>
+                            </page>
+                            <page string="Risk Management">
+                                <group>
+                                    <field name="risk_mitigation_plan" placeholder="Describe steps to mitigate implementation risks..."/>
+                                    <field name="rollback_plan" placeholder="Describe the rollback plan if issues arise..."/>
+                                </group>
+                            </page>
+                            <page string="Approval Notes" attrs="{'invisible': [('approved_by', '=', False)]}">
+                                <field name="approval_notes" placeholder="Management approval notes and conditions..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree view for Menu -->
+        <record id="action_base_rates" model="ir.actions.act_window">
+            <field name="name">Base Service Rates</field>
+            <field name="res_model">base.rate</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Set up your base service rates!
+                </p>
+                <p>
+                    Base rates are the default pricing for all services. Customers without negotiated rates will use these base rates.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_revenue_forecaster" model="ir.actions.act_window">
+            <field name="name">Revenue Forecaster</field>
+            <field name="res_model">revenue.forecaster</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record id="action_rate_analysis_wizard" model="ir.actions.act_window">
+            <field name="name">Rate Analysis</field>
+            <field name="res_model">rate.analysis.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{}</field>
+        </record>
+
+        <!-- Tree view for Rate -->
+        <menuitem id="menu_rate_management" name="Rate Management" parent="records_management.menu_records_configuration" sequence="30" groups="records_management.group_records_manager"/>
+
+        <!-- Tree view for Base -->
+        <menuitem id="menu_base_rates" name="Base Service Rates" parent="menu_rate_management" action="action_base_rates" sequence="10" groups="records_management.group_records_manager"/>
+
+        <!-- Tree view for Customer -->
+        <menuitem id="menu_customer_negotiated_rates" name="Customer Negotiated Rates" parent="menu_rate_management" action="action_customer_negotiated_rates" sequence="20" groups="records_management.group_records_manager"/>
+
+        <!-- Tree view for Revenue -->
+        <menuitem id="menu_revenue_forecaster" name="Revenue Forecaster" parent="menu_rate_management" action="action_revenue_forecaster" sequence="30" groups="records_management.group_records_manager"/>
+
+        <!-- Tree view for Rate -->
+        <menuitem id="menu_rate_analysis" name="Rate Analysis Tools" parent="menu_rate_management" action="action_rate_analysis_wizard" sequence="40" groups="records_management.group_records_manager"/>
+
+    </data>
+
 </odoo>

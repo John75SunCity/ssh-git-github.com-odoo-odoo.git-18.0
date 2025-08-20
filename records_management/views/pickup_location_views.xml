@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree View -->
+        <record id="pickup_location_view_tree" model="ir.ui.view">
+            <field name="name">pickup.location.view.tree</field>
+            <field name="model">pickup.location</field>
+            <field name="arch" type="xml">
+                <tree string="Pickup Location">
+                    <!-- Add fields here -->
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="pickup_location_view_form" model="ir.ui.view">
+            <field name="name">pickup.location.view.form</field>
+            <field name="model">pickup.location</field>
+            <field name="arch" type="xml">
+                <form string="Pickup Location">
+                    <sheet>
+                        <group>
+                            <!-- Add fields here -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="pickup_location_view_search" model="ir.ui.view">
+            <field name="name">pickup.location.view.search</field>
+            <field name="model">pickup.location</field>
+            <field name="arch" type="xml">
+                <search string="Search Pickup Location">
+                    <!-- Add search fields here -->
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_pickup_location" model="ir.actions.act_window">
+            <field name="name">Pickup Location</field>
+            <field name="res_model">pickup.location</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>
