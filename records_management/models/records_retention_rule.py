@@ -22,7 +22,7 @@ class RecordsRetentionRule(models.Model):
     # ============================================================================
     policy_id = fields.Many2one('records.policy', string="Policy", required=True, ondelete='cascade', index=True, tracking=True)
     document_type_id = fields.Many2one('records.document.type', string="Document Type", help="Apply this rule only to this type of document. Leave empty to apply to all.")
-    
+
     # ============================================================================
     # RETENTION PERIOD
     # ============================================================================
@@ -43,11 +43,8 @@ class RecordsRetentionRule(models.Model):
         ('review', 'Flag for Review'),
     ], string="Action on Expiry", default='destroy', required=True, tracking=True)
 
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('archived', 'Archived'),
-    ], string="Status", default='draft', required=True, tracking=True, related='policy_id.state')
+    state = fields.Selection(
+        string="Status", default='draft', required=True, tracking=True, related='policy_id.state')
 
     # ============================================================================
     # COMPUTE METHODS

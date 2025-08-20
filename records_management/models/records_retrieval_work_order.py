@@ -16,6 +16,9 @@ class RecordsRetrievalWorkOrder(models.Model):
     company_id = fields.Many2one('res.company', string='Company')
     user_id = fields.Many2one('res.users', string='Assigned To')
 
+    # Link to retrieval team (for One2many in maintenance.team)
+    retrieval_team_id = fields.Many2one('maintenance.team', string='Retrieval Team')
+
     # ============================================================================
     # METHODS
     # ============================================================================

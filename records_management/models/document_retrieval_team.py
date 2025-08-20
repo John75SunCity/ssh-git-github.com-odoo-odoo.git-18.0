@@ -18,7 +18,7 @@ class DocumentRetrievalTeam(models.Model):
         ('secure', 'Secure/Confidential'),
         ('bulk', 'Bulk Retrieval'),
         ('scan_on_demand', 'Scan-on-Demand')
-    ], string='Retrieval Specialization', default='standard', tracking=True)
+    ], string='Retrieval Specialization', default='standard')
 
     # Example of adding a link to retrieval work orders
     retrieval_work_order_ids = fields.One2many(
