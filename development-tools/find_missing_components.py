@@ -15,23 +15,26 @@ INIT_FILE = os.path.join(MODELS_DIR, '__init__.py')
 # Helper functions
 def get_model_name_to_file_map():
     model_map = {}
+    all_model_names = []
     if not os.path.isdir(MODELS_DIR):
         print(f"Error: Models directory not found at {MODELS_DIR}")
         return model_map, []
 
-    all_model_names = []
     for filename in os.listdir(MODELS_DIR):
         if filename.endswith('.py') and filename != '__init__.py':
             filepath = os.path.join(MODELS_DIR, filename)
             module_name = filename[:-3]  # remove .py
             with open(filepath, 'r', encoding='utf-8') as f:
                 content = f.read()
-                # Use a more specific regex to only find model names at the start of a line (with optional whitespace)
-                # This avoids matching _name in field definitions.
-                matches = re.findall(r"^\s*_name\s*=\s*['\"]([\w\.]+)['\"]", content, re.MULTILINE)
+                # A more precise regex to find _name attributes directly under a class definition.
+                # This avoids matching fields named '_name' by looking for the class structure.
+                matches = re.findall(r"class\s.*\(.*\):\s*_name\s*=\s*['\"]([\w\.]+)['\"]", content)
                 if matches:
                     for model_name_str in matches:
-                        model_map[model_name_str] = module_name
+                        # Odoo models typically contain a '.', which helps filter out simple variables.
+                        if '.' in model_name_str:
+                            model_map[model_name_str] = module_name
+                            all_model_names.append(model_name_str)
     return model_map, list(set(all_model_names))
 
 def get_imported_models():
@@ -55,32 +58,25 @@ def get_security_entries():
         try:
             header = next(reader, None)
             if header is None: return entries
-            # Find the column for model_id:id, which is more reliable than a fixed index
             model_col_index = -1
             for i, col in enumerate(header):
                 if 'model_id' in col:
                     model_col_index = i
                     break
             if model_col_index == -1:
-                 # Fallback for safety
                 model_col_index = 2
                 f.seek(0)
-                next(reader, None) # Skip header again
+                next(reader, None)
 
         except (StopIteration, ValueError):
-            # If header is missing or corrupt, fallback to default index
             model_col_index = 2
-            # Rewind file to read from the start
             f.seek(0)
 
         for row in reader:
             if row and len(row) > model_col_index:
-                # Check if the first column looks like a standard Odoo access rule ID
                 is_access_rule = row[0].startswith('access_') or 'group' in row[0]
-
                 if is_access_rule:
                     model_id_str = row[model_col_index]
-                    # Handle both formats: model_res_partner and res.partner
                     if model_id_str.startswith('model_'):
                         model_name = model_id_str[len('model_'):].replace('_', '.')
                     else:
@@ -114,19 +110,14 @@ def get_views_for_models():
                 print(f"Warning: Could not parse XML in {filename}")
     return views
 
-# --- Main Analysis ---
-print("Starting Records Management Module Integrity Check...")
-print("="*50)
-
-all_model_map, all_models = get_model_name_to_file_map()
-imported_modules = get_imported_models()
-security_models = get_security_entries()
-view_models = get_views_for_models()
-report_files = get_reports()
-
-# --- Analysis Logic ---
-imported_set = set(imported_modules)
-model_module_files = set(all_model_map.values())
+def get_reports():
+    reports = []
+    if not os.path.isdir(REPORT_DIR):
+        return reports
+    for filename in os.listdir(REPORT_DIR):
+        if filename.endswith(('.py', '.xml')) and not filename.startswith('__'):
+            reports.append(filename)
+    return reports
 
 # --- Main Analysis ---
 print("Starting Records Management Module Integrity Check...")
@@ -137,9 +128,6 @@ imported_modules = get_imported_models()
 security_models = get_security_entries()
 view_models = get_views_for_models()
 report_files = get_reports()
-
-# Call the debugging function
-debug_and_validate_data(all_models, security_models, view_models)
 
 # --- Analysis Logic ---
 imported_set = set(imported_modules)
@@ -164,46 +152,37 @@ else:
 
 # --- Security Analysis ---
 print("\n🔐 Security Rule Status (ir.model.access.csv):")
+missing_security_rules_found = False
 if not all_models:
     print("  - No models found to check.")
 else:
     for model_name in sorted(all_models):
-        # Check for direct model name and the model_ prefixed version
-        direct_name_entries = security_models.get(model_name, [])
-        model_prefixed_name = f"model_{model_name.replace('.', '_')}"
-
-        # This logic is simplified; a real-world scenario might need to merge these lists
-        # For this script, we'll just check if either exists.
-        num_entries = len(direct_name_entries)
-
+        num_entries = len(security_models.get(model_name, []))
         if num_entries == 0:
-            status = "[❌ MISSING]"
-            print(f"  {status} {model_name}")
+            print(f"  [❌ MISSING] {model_name}")
+            missing_security_rules_found = True
         elif num_entries > 1:
-            status = f"[⚠️ DUPLICATE] ({num_entries} entries)"
-            print(f"  {status} {model_name}")
-        else:
-            status = "[✅ OK]"
-            # To reduce noise, comment the line below if you only want to see problems
-            # print(f"  {status}      {model_name}")
+            print(f"  [⚠️ DUPLICATE] {model_name} ({num_entries} entries)")
+
+if not missing_security_rules_found:
+    print("  ✅ All models have corresponding security rules.")
 
 # --- View Analysis ---
 print("\n🖼️ View Definition Status:")
+missing_views_found = False
 if not all_models:
     print("  - No models found to check.")
 else:
     for model_name in sorted(all_models):
         num_files = len(view_models.get(model_name, []))
         if num_files == 0:
-            status = "[❌ MISSING]"
-            print(f"  {status} {model_name}")
+            print(f"  [❌ MISSING] {model_name}")
+            missing_views_found = True
         elif num_files > 1:
-            status = f"[⚠️ DUPLICATE]"
-            print(f"  {status} {model_name} (found in {', '.join(view_models[model_name])})")
-        else:
-            status = "[✅ OK]"
-            # To reduce noise, comment the line below if you only want to see problems
-            # print(f"  {status}      {model_name}")
+            print(f"  [⚠️ DUPLICATE] {model_name} (found in {', '.join(view_models[model_name])})")
+
+if not missing_views_found:
+    print("  ✅ All models have corresponding view definitions.")
 
 if report_files:
     print("\n📊 Reports Found:")
