@@ -64,28 +64,39 @@ class ProductTemplate(models.Model):
     # ============================================================================
     def _compute_feedback_stats(self):
         """Compute average customer rating and feedback count from feedback records."""
-        feedback_data = {}
-        if 'portal.feedback' in self.env:
-            # Using read_group is much more efficient than searching and looping in Python
-            feedback_data_result = self.env['portal.feedback']._read_group(
+        # Initialize stats for all templates
+        for template in self:
+            template.feedback_count = 0
+            template.customer_rating = 0.0
+
+        if 'portal.feedback' in self.env and self.ids:
+            # Efficiently read all feedback data in one go
+            feedback_data = self.env['portal.feedback']._read_group(
                 [('product_id.product_tmpl_id', 'in', self.ids), ('rating', '!=', False)],
                 ['product_id', 'rating'],
                 ['product_id']
             )
-            for data in feedback_data_result:
-                product_tmpl_id = self.env['product.product'].browse(data['product_id'][0]).product_tmpl_id.id
-                ratings = self.env['portal.feedback'].search(data['__domain']).mapped('rating')
-                numeric_ratings = [int(r) for r in ratings if r.isdigit()]
-                if numeric_ratings:
-                    feedback_data[product_tmpl_id] = {
-                        'count': len(numeric_ratings),
-                        'avg': sum(numeric_ratings) / len(numeric_ratings)
-                    }
+            
+            # Map results to template IDs
+            feedback_map = {}
+            for item in feedback_data:
+                product_tmpl_id = self.env['product.product'].browse(item['product_id'][0]).product_tmpl_id.id
+                if product_tmpl_id not in feedback_map:
+                    feedback_map[product_tmpl_id] = []
+                
+                # Assuming rating is a selection of strings '1', '2', '3', '4', '5'
+                try:
+                    feedback_map[product_tmpl_id].append(int(item['rating']))
+                except (ValueError, TypeError):
+                    continue # Ignore non-integer ratings
 
-        for template in self:
-            stats = feedback_data.get(template.id, {'count': 0, 'avg': 0.0})
-            template.feedback_count = stats['count']
-            template.customer_rating = stats['avg']
+            # Assign computed values
+            for template in self:
+                if template.id in feedback_map:
+                    ratings = feedback_map[template.id]
+                    if ratings:
+                        template.feedback_count = len(ratings)
+                        template.customer_rating = sum(ratings) / len(ratings)
 
     # ============================================================================
     # CONSTRAINTS

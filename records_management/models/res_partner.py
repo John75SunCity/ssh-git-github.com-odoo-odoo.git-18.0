@@ -14,13 +14,13 @@ class ResPartner(models.Model):
         tracking=True,
         help="Check this box if this partner is a customer of the records management services."
     )
-    
+
     department_ids = fields.One2many(
-        'records.department', 
-        'partner_id', 
+        'records.department',
+        'partner_id',
         string="Departments"
     )
-    
+
     department_count = fields.Integer(
         string="Department Count",
         compute='_compute_department_count',
@@ -59,7 +59,7 @@ class ResPartner(models.Model):
             ['partner_id'],
             ['__count']
         )
-        
+
         container_map = {item['partner_id'][0]: item['__count'] for item in container_data}
         document_map = {item['partner_id'][0]: item['__count'] for item in document_data}
 
