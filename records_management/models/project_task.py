@@ -16,13 +16,13 @@ class ProjectTask(models.Model):
     ], string="Work Order Type", tracking=True)
 
     work_order_reference = fields.Reference(
-        selection=[('portal.request', 'Portal Request')], 
+        selection=[('portal.request', 'Portal Request')],
         string="Originating Request",
         readonly=True
     )
 
     container_ids = fields.Many2many('records.container', string="Related Containers")
-    
+
     # --- Scheduling ---
     scheduled_start_time = fields.Datetime(string="Scheduled Start")
     scheduled_end_time = fields.Datetime(string="Scheduled End")
@@ -34,7 +34,7 @@ class ProjectTask(models.Model):
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
 
     # --- Compliance & Audit ---
-    naid_compliant = fields.Boolean(string="NAID Compliant", related='project_id.is_naid_compliant', store=True)
+    naid_compliant = fields.Boolean(string="NAID Compliant", related='route_id.is_naid_compliant', store=True)
     audit_trail_ids = fields.One2many('naid.audit.log', 'task_id', string="Audit Trail")
     certificate_required = fields.Boolean(string="Certificate Required", compute='_compute_certificate_required', store=True)
     certificate_of_destruction_id = fields.Many2one('ir.attachment', string="Certificate of Destruction", readonly=True)
@@ -70,7 +70,7 @@ class ProjectTask(models.Model):
         })
         self._create_audit_log('task_completed', _("Task execution completed."))
         self.message_post(body=_("Task completed by %s.", self.env.user.name))
-        
+
         if self.certificate_required:
             self._generate_completion_certificate()
 
@@ -79,7 +79,7 @@ class ProjectTask(models.Model):
         self.ensure_one()
         if not self.container_ids:
             raise UserError(_("No containers are associated with this task."))
-        
+
         return {
             "type": "ir.actions.act_window",
             "name": _("Related Containers"),
@@ -96,7 +96,7 @@ class ProjectTask(models.Model):
         """Create a NAID audit log entry if the task is NAID compliant."""
         if not self.naid_compliant:
             return
-        
+
         self.env['naid.audit.log'].create({
             'event_type': event_type,
             'description': description,
@@ -113,7 +113,7 @@ class ProjectTask(models.Model):
         # For simplicity, we'll create a log message and a placeholder attachment.
         report_action = self.env.ref('records_management.action_report_certificate_of_destruction')
         pdf_content, _file_type = report_action._render_qweb_pdf(self.ids)
-        
+
         attachment = self.env['ir.attachment'].create({
             'name': _("Certificate-of-Destruction-%s.pdf", self.name),
             'type': 'binary',
@@ -122,7 +122,7 @@ class ProjectTask(models.Model):
             'res_id': self.id,
             'mimetype': 'application/pdf'
         })
-        
+
         self.certificate_of_destruction_id = attachment.id
         self.message_post(
             body=_("Certificate of Destruction generated."),
@@ -148,7 +148,7 @@ class ProjectTask(models.Model):
             for task in self:
                 if task.naid_compliant:
                     task._create_audit_log('stage_change', _("Stage changed to: %s", stage.name))
-        
+
         if 'user_ids' in vals:
             for task in self:
                 if task.naid_compliant:

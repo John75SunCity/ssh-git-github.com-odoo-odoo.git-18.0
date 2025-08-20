@@ -1677,7 +1677,7 @@ python development-tools/analyze_model_capabilities.py model_name
 ```csv
 # ALWAYS add both user and manager access
 access_model_name_user,model.name.user,model_model_name,records_management.group_records_user,1,1,1,0
-access_model_name_manager,model.name.manager,model_model_name,records_management.group_records_manager,1,1,1,1,1
+access_model_name_manager,model.name.manager,model_model_name,records_management.group_records_manager,1,1,1,1
 ```
 
 **4. 👀 VIEW FILES** - Create/update XML views in `views/` directory:

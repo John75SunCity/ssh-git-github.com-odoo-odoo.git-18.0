@@ -61,12 +61,12 @@ from . import records_container_type_converter
 
 # Shredding services (MUST be loaded before paper_bale_recycling due to inverse field)
 from . import shredding_team
-# from . import shredding_equipment # This file does not exist
 from . import shredding_certificate
 from . import shredding_hard_drive
 from . import shredding_service_log
 from . import destruction_item
 from . import shred_bin
+from . import shredding_service
 
 # =============================================================================
 # CORE BUSINESS MODELS
@@ -110,7 +110,6 @@ from . import records_advanced_billing_period
 
 # Work orders
 from . import work_order_shredding
-# from . import document_retrieval_work_order # This file does not exist
 from . import records_retrieval_work_order
 from . import work_order_retrieval
 
@@ -118,9 +117,7 @@ from . import work_order_retrieval
 from . import retrieval_item_base  # ABSTRACT BASE - must be imported first
 from . import document_retrieval_item
 from . import document_retrieval_team
-# from . import document_retrieval_pricing # This file does not exist
 from . import document_retrieval_equipment
-# from . import document_retrieval_support_models # This file does not exist
 
 from . import document_search_attempt
 from . import file_retrieval_work_order
@@ -128,6 +125,8 @@ from . import file_retrieval_work_order
 # Service rates and billing (consolidated system)
 from . import base_rate
 from . import customer_negotiated_rate
+from . import base_rates
+from . import customer_negotiated_rates
 
 # Billing profiles (MUST be loaded before records_billing_contact)
 from . import records_billing_profile
@@ -142,10 +141,8 @@ from . import invoice_generation_log
 from . import discount_rule
 from . import revenue_analytic
 from . import records_promotional_discount
-# from . import billing_support_models # This file does not exist
 
 # Key management services
-# from . import bin_key_management # This file does not exist
 from . import partner_bin_key
 from . import bin_key_history
 from . import unlock_service_history
@@ -169,8 +166,6 @@ from . import load
 # =============================================================================
 
 # Core NAID compliance
-# from . import naid_compliance # This file does not exist
-# from . import naid_custody # This file does not exist
 from . import naidcustody_event
 from . import naidaudit_log
 from . import naid_certificate
@@ -179,13 +174,13 @@ from . import naid_compliance_checklist
 from . import naid_compliance_checklist_item
 from . import naid_compliance_action_plan
 from . import naid_compliance_alert
-from . import naid_destruction_record
 from . import records_destruction  # New destruction model
 from . import naid_performance_history
 from . import naid_risk_assessment
 
 # Chain of custody tracking
 from . import records_chain_of_custody
+from . import chain_of_custody
 
 # Security and audit logs
 from . import records_security_audit
@@ -200,7 +195,6 @@ from . import records_access_log
 # Core billing system
 from . import billing
 from . import records_billing_service
-# from . import department_billing # This file does not exist
 
 # Advanced billing features
 from . import customer_billing_profile
@@ -229,7 +223,6 @@ from . import portal_feedback_analytic
 from . import portal_feedback_resolution
 
 # Survey and improvement tracking
-# from . import scrm_records_management # This file does not exist
 from . import records_survey_user_input
 from . import survey_feedback_theme
 from . import survey_improvement_action
@@ -254,15 +247,14 @@ from . import stock_picking
 # Project and FSM integration
 from . import project_task
 from . import fsm_task
+from . import fsm_route
 
 # POS integration
 from . import pos_config
 
 # HR integration
 from . import hr_employee
-# from . import hremployee_naid # This file does not exist
 
-# =============================================================================
 # =============================================================================
 # PRODUCTS AND BARCODE MANAGEMENT
 # =============================================================================
@@ -285,7 +277,6 @@ from . import service_item
 # =============================================================================
 
 from . import visitor
-# from . import visitor_pos_wizard # This file does not exist
 from . import required_document
 from . import container_access_visitor
 from . import container_access_activity
@@ -304,7 +295,6 @@ from . import records_deletion_request
 
 # Module management
 from . import records_installer
-# from . import records_management_base_menus # This file does not exist
 from . import location_report_wizard
 from . import rm_module_configurator
 
@@ -314,7 +304,6 @@ from . import rm_module_configurator
 from . import hard_drive_scan_wizard
 from . import fsm_reschedule_wizard
 from . import key_restriction_checker
-# from . import records_permanent_flag_wizard # This file does not exist
 
 # Stock extensions (loaded after core models)
 from . import stock_lot
@@ -329,7 +318,6 @@ from . import records_usage_tracking
 from . import maintenance_equipment
 from . import maintenance_team
 from . import shredding_inventory_batch
-# from . import wizard_template # This file does not exist
 
 # =============================================================================
 # OPTIONAL EXTENSIONS AND INTEGRATIONS
@@ -347,14 +335,6 @@ except (ImportError, AttributeError) as e:
         str(e)
     )
 
-
-# =============================================================================
-# CONDITIONAL IMPORTS FOR EXTENSION MODELS
-# =============================================================================
-
-
-
-# from . import records_user_invitation_wizard # This file does not exist
 
 # Work Order Integration System (load mixin first)
 from . import work_order_coordinator
@@ -377,9 +357,6 @@ from . import scan_digital_asset
 # Mobile and photo models
 from . import mobile_photo
 
-# FSM route planning
-# from . import fsmroute # Typo for fsm_route_management
-
 # Route optimization
 from . import route_optimizer
 
@@ -397,9 +374,6 @@ from . import certificate_template_data
 from . import records_billing_config_audit
 from . import records_billing_config_line
 
-# FSM service line sub-models
-# from . import fsmtask_service_line # This file does not exist
-
 # File retrieval metrics sub-models
 from . import retrieval_metric
 
@@ -412,7 +386,6 @@ from . import customer_inventory_report_line
 
 from . import shredding_rate
 from . import records_billing
-# from . import billing_service # This is not a model
 from . import file_retrieval_work_order_item
 from . import records_location_report_wizard
 from . import records_inventory_dashboard
