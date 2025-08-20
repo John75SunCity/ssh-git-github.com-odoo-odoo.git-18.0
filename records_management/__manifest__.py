@@ -522,7 +522,7 @@
     "auto_install": False,
     "application": True,
     "sequence": 1001,
-    "images": ["static/description/icon.png"],,
+    "images": ["static/description/icon.png"],
     'data': [
         'views/account_move_line_views.xml',
         'views/advanced_billing_line_views.xml',
