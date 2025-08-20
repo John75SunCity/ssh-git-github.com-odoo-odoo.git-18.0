@@ -15,12 +15,17 @@ class RecordsRetentionRule(models.Model):
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     sequence = fields.Integer(string="Sequence", default=10, help="Determines the order of execution for rules within a policy.")
     active = fields.Boolean(string='Active', default=True, tracking=True)
-    company_id = fields.Many2one(related='policy_id.company_id', store=True, readonly=True)
+    company_id = fields.Many2one(
+        'res.company',
+        related='policy_id.company_id',
+        store=True,
+        readonly=True
+    )
 
     # ============================================================================
     # RELATIONSHIPS & APPLICABILITY
     # ============================================================================
-    policy_id = fields.Many2one('records.policy', string="Policy", required=True, ondelete='cascade', index=True, tracking=True)
+    policy_id = fields.Many2one('records.retention.policy', string="Policy", required=True, ondelete='cascade', index=True, tracking=True)
     document_type_id = fields.Many2one('records.document.type', string="Document Type", help="Apply this rule only to this type of document. Leave empty to apply to all.")
 
     # ============================================================================

@@ -22,14 +22,14 @@ class StockPicking(models.Model):
         help="The customer service request that generated this picking."
     )
     destruction_order_id = fields.Many2one(
-        'records.destruction.order',
+        'records.destruction',
         string="Destruction Order",
         copy=False,
         readonly=True,
         help="The destruction order associated with this picking."
     )
     shred_job_id = fields.Many2one(
-        'fsm.order',
+        'project.task',
         string="Shredding Job",
         domain="[('is_shred_job', '=', True)]",
         copy=False,

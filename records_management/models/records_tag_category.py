@@ -6,6 +6,7 @@ class RecordsTag(models.Model):
     _name = 'records.tag'
     _description = 'Records Tag'
     _order = 'sequence, name'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ============================================================================
     # CORE FIELDS

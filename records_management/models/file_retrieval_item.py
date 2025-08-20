@@ -20,16 +20,12 @@ class FileRetrievalItem(models.Model):
     search_attempt_ids = fields.One2many('document.search.attempt', 'retrieval_item_id', string="Search Attempts")
     work_order_id = fields.Many2one('file.retrieval.work.order', string="Work Order")
 
-    status = fields.Selection([
-        ('pending', 'Pending'),
-        ('searching', 'Searching'),
-        ('located', 'Located'),
-        ('retrieved', 'Retrieved'),
+    status = fields.Selection(selection_add=[
         ('packaged', 'Packaged'),
         ('delivered', 'Delivered'),
         ('returned', 'Returned'),
         ('not_found', 'Not Found')
-    ], string='Status', default='pending', tracking=True)
+    ], ondelete={'packaged': 'set default', 'delivered': 'set default', 'returned': 'set default', 'not_found': 'set default'})
 
     # File search methods
     def action_start_file_search(self):
@@ -65,6 +61,6 @@ class FileRetrievalItem(models.Model):
                 'status': 'located',
                 'discovery_container_id': container.id,
             })
-            self.message_post(body=_("File located in container %s", container.name))
+            self.message_post(body=_("File located in container %s", (container.name,)))
         else:
-            self.message_post(body=_("Container %s searched. File not found", container.name))
+            self.message_post(body=_("Container %s searched. File not found", (container.name,)))
