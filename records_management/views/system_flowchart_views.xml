@@ -38,25 +38,24 @@
         <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-<tree string="System Architecture Diagrams" decoration-success="nodes_data and edges_data" decoration-warning="not nodes_data or not edges_data" create="true" edit="true" delete="true">
+            <tree string="System Architecture Diagrams" decoration-success="nodes_data and edges_data" decoration-warning="not nodes_data or not edges_data" create="true" edit="true" delete="true">
+                <field name="name" string="Diagram Name"/>
+                <field name="search_type" string="Focus Type" widget="badge"/>
+                <field name="search_query" string="Query/Target"/>
+                <field name="show_access_only" string="Access Only" widget="boolean_toggle"/>
 
-    <field name="name" string="Diagram Name"/>
-    <field name="search_type" string="Focus Type" widget="badge"/>
-    <field name="search_query" string="Query/Target"/>
-    <field name="show_access_only" string="Access Only" widget="boolean_toggle"/>
+                <!-- Status indicators -->
+                <field name="nodes_data" invisible="1"/>
+                <field name="edges_data" invisible="1"/>
+                <field name="create_date" string="Created" widget="date"/>
 
-    <!-- Status indicators -->
-    <field name="nodes_data" invisible="1"/>
-    <field name="edges_data" invisible="1"/>
-    <field name="create_date" string="Created" widget="date"/>
-
-    <!-- Action buttons -->
-    <button name="action_generate_diagram" type="object" title="Generate Interactive Flowchart" icon="fa-sitemap" class="btn-primary"/>
-    <button name="action_export_diagram" type="object" title="Export Diagram Data" icon="fa-download" class="btn-secondary"/>
-    <button name="action_refresh_data" type="object" title="Refresh Diagram Data" icon="fa-refresh" class="btn-outline-primary"/>
-</tree>
-</field>
-</record>
+                <!-- Action buttons -->
+                <button name="action_generate_diagram" type="object" title="Generate Interactive Flowchart" icon="fa-sitemap" class="btn-primary"/>
+                <button name="action_export_diagram" type="object" title="Export Diagram Data" icon="fa-download" class="btn-secondary"/>
+                <button name="action_refresh_data" type="object" title="Refresh Diagram Data" icon="fa-refresh" class="btn-outline-primary"/>
+            </tree>
+        </field>
+    </record>
 
 <!-- ============================================================================ -->
 <!-- SYSTEM DIAGRAM DATA - KANBAN VIEW -->
@@ -155,7 +154,7 @@
     <button name="action_refresh_data" string="Refresh Data" type="object" class="btn-outline-primary"/>
     <button name="action_validate_config" string="Validate Configuration" type="object" class="btn-outline-success"/>
 </header>
-            
+
 <sheet>
 <div class="oe_button_box" name="button_box">
     <button name="action_view_related_users" type="object" class="oe_stat_button" icon="fa-users" attrs="{'invisible': [('search_type', '!=', 'user')]}">
@@ -172,7 +171,7 @@
 </div>
 
 <widget name="web_ribbon" title="Configuration Valid" bg_color="bg-success" attrs="{'invisible': [('nodes_data', '=', False)]}"/>
-                
+
 <group>
 <group string="Basic Configuration">
     <field name="name" placeholder="e.g., User Access Analysis - John Doe"/>
@@ -189,7 +188,7 @@
 <page string="📊 Diagram Visualization" name="diagram_viz">
     <div class="alert alert-info" role="alert" attrs="{'invisible': [('nodes_data', '!=', False), ('edges_data', '!=', False)]}">
         <i class="fa fa-info-circle"/>
- 
+
                             Click <strong>"Generate Interactive Flowchart"</strong> to create the diagram visualization.
     </div>
 
@@ -230,7 +229,7 @@
     </div>
 </div>
 </page>
-<page string="📋 Export & Share" name="export_share">
+<page string="📋 Export &amp; Share" name="export_share">
     <group>
 <group string="Export Options">
     <div>
@@ -277,7 +276,7 @@
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <p class="lead">
-                    Visualize your Records Management System architecture with interactive, 
+                    Visualize your Records Management System architecture with interactive,
                     real-time flowcharts showing models, users, access rights, and relationships.
         </p>
 <h5>✨ Key Features:</h5>
@@ -341,8 +340,7 @@
     <field name="name">🎯 Interactive System Flowchart</field>
     <field name="tag">records_management.system_flowchart_interactive</field>
     <field name="target">current</field>
-<field name="params" eval="{'fullscreen': True, 'withControlPanel': True}"/>
-
+    <field name="params" eval="{'fullscreen': True, 'withControlPanel': True}"/>
 </record>
 
 <!-- ============================================================================ -->

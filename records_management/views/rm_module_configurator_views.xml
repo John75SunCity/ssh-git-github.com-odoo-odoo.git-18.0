@@ -7,18 +7,17 @@
         <field name="model">rm.module.configurator</field>
         <field name="arch" type="xml">
 <tree decoration-info="active == True" decoration-muted="active == False" decoration-success="boolean_value == True" decoration-warning="boolean_value == False">
-    <field name="name" string="🔧 Configuration Name"/>
-    <field name="category" widget="badge"/>
-    <field name="config_key" string="🔑 Key"/>
-    <field name="description" string="📝 Description"/>
-    <field name="boolean_value" widget="boolean_toggle" string="✅ Enabled"/>
-    <field name="text_value" string="📋 Value" optional="hide"/>
-    <field name="priority" widget="priority"/>
-    <field name="active" widget="boolean_toggle"/>
-    <field name="company_id" groups="base.group_multi_company" optional="hide"/>
-    <field name="user_id" widget="many2one_avatar_user" string="👤 Owner" optional="hide"/>
-    <field name="create_date" string="📅 Created" optional="hide"/>
-
+                <field name="name" string="🔧 Configuration Name"/>
+                <field name="category" widget="badge"/>
+                <field name="config_key" string="🔑 Key"/>
+                <field name="description" string="📝 Description"/>
+                <field name="boolean_value" widget="boolean_toggle" string="✅ Enabled"/>
+                <field name="text_value" string="📋 Value" optional="hide"/>
+                <field name="priority" widget="priority"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user" string="👤 Owner" optional="hide"/>
+                <field name="create_date" string="📅 Created" optional="hide"/>
             </tree>
         </field>
     </record>
@@ -43,7 +42,7 @@
 </div>
 
 <widget name="web_ribbon" title="🔒 System Configuration" bg_color="bg-info" attrs="{'invisible': [('is_system_config', '=', False)]}"/>
-                            
+
                     <div class="oe_title">
 <label for="name" class="oe_edit_only" string="Configuration Name"/>
 
@@ -63,7 +62,7 @@
         <field name="priority" widget="priority" string="⚡ Priority"/>
         <field name="is_system_config" string="🔒 System Config" readonly="1"/>
     </group>
-    <group string="👤 Ownership & Access">
+    <group string="👤 Ownership &amp; Access">
         <field name="company_id" groups="base.group_multi_company"/>
         <field name="user_id" string="👤 Configuration Owner"/>
         <field name="department_id" string="🏢 Department" attrs="{'invisible': [('category', '!=', 'department_specific')]}"/>
@@ -97,7 +96,7 @@
         <field name="default_selection" string="🔄 Default Selection" readonly="1"/>
     </page>
 
-    <page string="🔗 Dependencies & Impact" name="dependencies">
+    <page string="🔗 Dependencies &amp; Impact" name="dependencies">
         <group>
             <group string="📦 Dependencies">
                 <field name="depends_on_configs" widget="many2many_tags" string="Depends On"/>
@@ -193,9 +192,8 @@
         <filter string="🔧 Configuration Type" name="group_by_type" context="{'group_by': 'config_type'}"/>
         <filter string="✅ Status" name="group_by_status" context="{'group_by': 'active'}"/>
         <filter string="📅 Creation Date" name="group_by_create_date" context="{'group_by': 'create_date:month'}"/>
-
-                </group>
-            </search>
+    </group>
+</search>
         </field>
     </record>
 
@@ -283,7 +281,6 @@
         <field name="res_model">rm.module.configurator</field>
 <field name="view_mode">kanban,tree,form</field>
 <field name="search_view_id" ref="rm_module_configurator_view_search"/>
-
         <field name="domain">[]</field>
 <field name="context">{
             'search_default_filter_active': 1,

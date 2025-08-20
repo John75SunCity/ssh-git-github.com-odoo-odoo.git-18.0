@@ -64,20 +64,19 @@
         <field name="name">service.item.view.tree</field>
         <field name="model">service.item</field>
         <field name="arch" type="xml">
-<tree string="Service Items" decoration-muted="not active" create="true" edit="true" delete="true">
-    <field name="sequence" widget="handle"/>
-    <field name="name" string="Service Name"/>
-    <field name="service_category" string="Category"/>
-    <field name="service_type" string="Type"/>
-    <field name="base_price" string="Base Price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-    <field name="currency_id" invisible="1"/>
-    <field name="unit_of_measure" string="UOM"/>
-    <field name="requires_approval" string="Approval Required" widget="boolean_toggle"/>
-    <field name="naid_compliant" string="NAID Compliant" widget="boolean_toggle"/>
-    <field name="active" string="Active" widget="boolean_toggle"/>
-    <field name="activity_ids" widget="list_activity"/>
-    <field name="company_id" invisible="1"/>
-
+            <tree string="Service Items" decoration-muted="not active" create="true" edit="true" delete="true">
+                <field name="sequence" widget="handle"/>
+                <field name="name" string="Service Name"/>
+                <field name="service_category" string="Category"/>
+                <field name="service_type" string="Type"/>
+                <field name="base_price" string="Base Price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="unit_of_measure" string="UOM"/>
+                <field name="requires_approval" string="Approval Required" widget="boolean_toggle"/>
+                <field name="naid_compliant" string="NAID Compliant" widget="boolean_toggle"/>
+                <field name="active" string="Active" widget="boolean_toggle"/>
+                <field name="activity_ids" widget="list_activity"/>
+                <field name="company_id" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -99,7 +98,7 @@
                 <sheet>
 <div class="oe_button_box" name="button_box">
     <button class="oe_stat_button" type="object" name="action_view_related_requests" icon="fa-tasks">
-        <field string="Requests" name="request_count" widget="statinfo"/>
+        <field name="request_count" string="Requests" widget="statinfo"/>
     </button>
     <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-line-chart">
         <div class="o_field_widget o_stat_info">
@@ -149,7 +148,7 @@
     <field name="requires_witness"/>
     <field name="requires_equipment"/>
 </group>
-<group name="compliance" string="Compliance & Quality">
+<group name="compliance" string="Compliance &amp; Quality">
     <field name="naid_compliant"/>
     <field name="iso_compliant"/>
     <field name="certificate_required"/>
@@ -167,7 +166,7 @@
     </group>
 </page>
 
-<page string="Equipment & Resources" name="resources">
+<page string="Equipment &amp; Resources" name="resources">
     <group>
         <group string="Required Equipment">
             <field name="equipment_ids" widget="many2many_tags" attrs="{'invisible': [('requires_equipment', '=', False)]}"/>
@@ -291,21 +290,21 @@
 
 <!-- Main Action -->
     <record id="action_service_item" model="ir.actions.act_window">
-<field name="name">Service Items</field>
+        <field name="name">Service Items</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">service.item</field>
-<field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[]</field>
-<field name="context">{
+        <field name="context">{
             'search_default_active': 1,
             'default_active': True,
             'default_currency_id': (context.get('default_currency_id') or company_currency_id),
         }</field>
         <field name="help" type="html">
-<p class="o_view_nocontent_create">
+            <p class="o_view_nocontent_create">
                 Click to create a new service item.
-</p>
-<p>
+            </p>
+            <p>
                 Service items define the various services your Records Management business offers,
                 including shredding services, storage solutions, pickup requests, and compliance auditing.
                 Each service item includes pricing, operational requirements, compliance settings, and portal visibility.
@@ -347,7 +346,7 @@
     <field name="domain">[('portal_visible', '=', True), ('active', '=', True)]</field>
     <field name="context">{
             'search_default_customer_can_request': 1,
-            'search_default_group_portal_category': 1,
+            'search_default_group_by_portal_category': 1,
         }</field>
 </record>
 

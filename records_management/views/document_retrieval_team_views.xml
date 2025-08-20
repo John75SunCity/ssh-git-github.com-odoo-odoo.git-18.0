@@ -63,7 +63,7 @@
                             <field name="current_location_id"/>
                             <field name="active"/>
                         </group>
-                        <group name="capacity_info" string="Capacity & Performance">
+                        <group name="capacity_info" string="Capacity &amp; Performance">
                             <field name="max_concurrent_orders"/>
                             <field name="avg_retrieval_time_hours"/>
                             <field name="success_rate_percentage"/>
@@ -98,7 +98,7 @@
                             </field>
                         </page>
 
-                        <page string="Equipment & Tools" name="equipment">
+                        <page string="Equipment &amp; Tools" name="equipment">
                             <group>
                                 <group name="standard_equipment" string="Standard Equipment">
                                     <field name="has_mobile_scanner"/>
@@ -115,7 +115,7 @@
                             </group>
                         </page>
 
-                        <page string="Schedule & Availability" name="schedule">
+                        <page string="Schedule &amp; Availability" name="schedule">
                             <group>
                                 <group name="working_hours" string="Working Hours">
                                     <field name="shift_start_time" widget="float_time"/>

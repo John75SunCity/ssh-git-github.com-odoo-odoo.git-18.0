@@ -106,7 +106,7 @@
                             <field name="description" placeholder="Detailed service description and notes..."/>
                         </page>
 
-                        <page name="security" string="Security & Compliance">
+                        <page name="security" string="Security &amp; Compliance">
                             <group>
                                 <group name="security_info" string="Security Information">
                                     <field name="security_level"/>
@@ -208,7 +208,7 @@
 
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} 
+                        <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)}
                                           oe_kanban_card oe_kanban_global_click">
                             <div class="o_dropdown_kanban dropdown">
                                 <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
@@ -288,6 +288,6 @@
     </record>
 
     <!-- Menu item for Bin Key Unlock Services -->
-    <menuitem id="menu_bin_key_unlock_service" name="Unlock Services" parent="records_management.menu_security_management" action="action_bin_key_unlock_service" sequence="30"/>
+    <menuitem id="menu_bin_key_unlock_service" name="Unlock Services" parent="records_management.menu_records_security" action="action_bin_key_unlock_service" sequence="30"/>
 
 </odoo>

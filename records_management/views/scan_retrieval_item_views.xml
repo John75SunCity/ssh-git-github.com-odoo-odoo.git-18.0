@@ -82,15 +82,14 @@
         <field name="arch" type="xml">
 <tree decoration-info="state == 'draft'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-danger="priority == 'high'">
                 <field name="name"/>
-<field name="barcode"/>
-<field name="document_type"/>
-<field name="scan_date"/>
-<field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'"/>
-<field name="priority" widget="priority"/>
-<field name="assigned_user_id" widget="many2one_avatar_user"/>
-<field name="retrieval_work_order_id"/>
-<field name="company_id" groups="base.group_multi_company"/>
-
+                <field name="barcode"/>
+                <field name="document_type"/>
+                <field name="scan_date"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'"/>
+                <field name="priority" widget="priority"/>
+                <field name="assigned_user_id" widget="many2one_avatar_user"/>
+                <field name="retrieval_work_order_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
     </record>
@@ -117,7 +116,7 @@
 </div>
 
 <widget name="web_ribbon" text="High Priority" bg_color="bg-danger" attrs="{'invisible': [('priority', '!=', 'high')]}"/>
-                    
+
                     <div class="oe_title">
 <label for="name" class="oe_edit_only"/>
 
@@ -135,7 +134,7 @@
         <field name="file_size" widget="float" digits="[12,2]"/>
         <field name="scan_quality"/>
     </group>
-    <group name="assignment" string="👤 Assignment & Priority">
+    <group name="assignment" string="👤 Assignment &amp; Priority">
         <field name="priority" widget="priority"/>
         <field name="assigned_user_id" widget="many2one_avatar_user"/>
         <field name="retrieval_work_order_id"/>
@@ -243,22 +242,22 @@
 
 <!-- Enhanced Action Window -->
     <record id="action_scan_retrieval_item" model="ir.actions.act_window">
-<field name="name">📄 Scan Retrieval Items</field>
+        <field name="name">📄 Scan Retrieval Items</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">scan.retrieval.item</field>
-<field name="view_mode">kanban,tree,form</field>
-<field name="search_view_id" ref="scan_retrieval_item_view_search"/>
-<field name="context">{
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="scan_retrieval_item_view_search"/>
+        <field name="context">{
             'search_default_my_items': 1,
             'search_default_in_progress': 1
         }</field>
         <field name="help" type="html">
-<p class="o_view_nocontent_smiling_face">
+            <p class="o_view_nocontent_smiling_face">
                 📄 Create your first scan retrieval item!
-</p>
-<p>
-    <b>Document Scanning & Retrieval System:</b>
-    <br/>
+            </p>
+            <p>
+                <b>Document Scanning &amp; Retrieval System:</b>
+                <br/>
                 • 📄 Complete document scanning workflow management<br/>
                 • 🔍 Advanced barcode recognition and tracking<br/>
                 • ⚡ Priority-based processing with user assignment<br/>

@@ -72,18 +72,17 @@
         <field name="name">pickup.route.view.tree</field>
         <field name="model">pickup.route</field>
         <field name="arch" type="xml">
-<tree decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'" decoration-danger="priority == 'urgent'">
+            <tree decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'" decoration-danger="priority == 'urgent'">
                 <field name="name"/>
-<field name="route_date"/>
-<field name="driver_id"/>
-<field name="vehicle_id"/>
-<field name="total_stops"/>
-<field name="estimated_duration" widget="float_time"/>
-<field name="actual_duration" widget="float_time"/>
-<field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'"/>
-<field name="priority" widget="priority"/>
-<field name="company_id" groups="base.group_multi_company"/>
-
+                <field name="route_date"/>
+                <field name="driver_id"/>
+                <field name="vehicle_id"/>
+                <field name="total_stops"/>
+                <field name="estimated_duration" widget="float_time"/>
+                <field name="actual_duration" widget="float_time"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'"/>
+                <field name="priority" widget="priority"/>
+                <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
     </record>
@@ -136,7 +135,7 @@
     <field name="start_location_id"/>
     <field name="end_location_id"/>
 </group>
-<group string="Timing & Capacity">
+<group string="Timing &amp; Capacity">
     <field name="planned_start_time" widget="float_time"/>
     <field name="actual_start_time" widget="float_time" attrs="{'readonly': [('state', 'in', ['draft', 'planned'])]}"/>
     <field name="estimated_duration" widget="float_time"/>
@@ -267,23 +266,23 @@
 
 <!-- Enhanced Action for Pickup Routes -->
     <record id="action_pickup_route" model="ir.actions.act_window">
-<field name="name">Pickup Routes</field>
+        <field name="name">Pickup Routes</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">pickup.route</field>
-<field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[]</field>
-<field name="context">{
+        <field name="context">{
             'default_user_id': uid,
             'search_default_active': 1,
             'search_default_today': 1
         }</field>
         <field name="help" type="html">
-<p class="o_view_nocontent_smiling_face">
+            <p class="o_view_nocontent_smiling_face">
                 🚚 Create your first Pickup Route!
-</p>
-<p>
-    <b>Advanced Pickup Route Management:</b>
-    <br/>
+            </p>
+            <p>
+                <b>Advanced Pickup Route Management:</b>
+                <br/>
                 • 📍 Intelligent route planning and optimization<br/>
                 • 👨‍💼 Driver and vehicle assignment with capacity tracking<br/>
                 • ⏱️ Real-time tracking and ETA calculations<br/>

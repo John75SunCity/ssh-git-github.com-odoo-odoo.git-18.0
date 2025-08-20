@@ -8,24 +8,22 @@
         <field name="name">work.order.shredding.view.tree</field>
         <field name="model">work.order.shredding</field>
         <field name="arch" type="xml">
-<tree string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
-    <header>
-        <button name="action_bulk_confirm" string="Bulk Confirm" type="object" class="btn-primary"/>
-        <button name="action_bulk_start" string="Bulk Start" type="object" class="btn-warning"/>
-    </header>
-    <field name="priority" widget="priority"/>
-
+            <tree string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
+                <header>
+                    <button name="action_bulk_confirm" string="Bulk Confirm" type="object" class="btn-primary"/>
+                    <button name="action_bulk_start" string="Bulk Start" type="object" class="btn-warning"/>
+                </header>
+                <field name="priority" widget="priority"/>
                 <field name="name"/>
-<field name="partner_id"/>
-<field name="coordinator_id"/>
-<field name="scheduled_date"/>
-<field name="container_count" string="Containers"/>
-<field name="total_weight" string="Weight (lbs)" sum="Total Weight"/>
-<field name="estimated_duration" widget="timesheet_uom"/>
-<field name="state" widget="badge" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'"/>
-<field name="completion_percentage" widget="progressbar"/>
-<field name="company_id" groups="base.group_multi_company"/>
-
+                <field name="partner_id"/>
+                <field name="coordinator_id"/>
+                <field name="scheduled_date"/>
+                <field name="container_count" string="Containers"/>
+                <field name="total_weight" string="Weight (lbs)" sum="Total Weight"/>
+                <field name="estimated_duration" widget="timesheet_uom"/>
+                <field name="state" widget="badge" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'"/>
+                <field name="completion_percentage" widget="progressbar"/>
+                <field name="company_id" groups="base.group_multi_company"/>
             </tree>
         </field>
     </record>
@@ -48,20 +46,20 @@
         <button name="action_reset_to_draft" string="Reset to Draft" type="object" states="cancelled"/>
         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
     </header>
-                
+
                 <sheet>
 <div class="oe_button_box" name="button_box">
     <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-archive">
-        <field string="Containers" name="container_count" widget="statinfo"/>
+        <field name="container_count" string="Containers" widget="statinfo"/>
     </button>
     <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
-        <field string="Documents" name="document_count" widget="statinfo"/>
+        <field name="document_count" string="Documents" widget="statinfo"/>
     </button>
     <button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate">
-        <field string="Certificates" name="certificate_count" widget="statinfo"/>
+        <field name="certificate_count" string="Certificates" widget="statinfo"/>
     </button>
     <button class="oe_stat_button" type="object" name="action_view_audit_logs" icon="fa-history">
-        <field string="Audit Logs" name="audit_log_count" widget="statinfo"/>
+        <field name="audit_log_count" string="Audit Logs" widget="statinfo"/>
     </button>
 </div>
 
@@ -92,7 +90,7 @@
     <field name="deadline_date"/>
     <field name="active"/>
 </group>
-<group name="progress_info" string="⚡ Progress & Status">
+<group name="progress_info" string="⚡ Progress &amp; Status">
     <field name="started_date" readonly="1"/>
     <field name="completed_date" readonly="1"/>
     <field name="estimated_duration"/>
@@ -103,7 +101,7 @@
 </group>
 
 <notebook>
-<page name="containers" string="📦 Containers & Items">
+<page name="containers" string="📦 Containers &amp; Items">
     <field name="container_ids">
         <tree editable="bottom" decoration-muted="is_shredded">
             <field name="name"/>
@@ -123,7 +121,7 @@
     </group>
 </page>
 
-<page name="equipment" string="🔧 Equipment & Resources">
+<page name="equipment" string="🔧 Equipment &amp; Resources">
     <group>
         <group name="equipment_info" string="Shredding Equipment">
             <field name="shredding_equipment_id"/>
@@ -168,7 +166,7 @@
     </field>
 </page>
 
-<page name="timeline" string="⏱️ Timeline & Tracking">
+<page name="timeline" string="⏱️ Timeline &amp; Tracking">
     <field name="timeline_ids">
         <tree create="false" delete="false">
             <field name="timestamp"/>
@@ -180,7 +178,7 @@
     </field>
 </page>
 
-<page name="notes" string="📝 Notes & Instructions">
+<page name="notes" string="📝 Notes &amp; Instructions">
     <group>
         <field name="description" placeholder="Special instructions for this shredding work order..."/>
     </group>
@@ -326,17 +324,17 @@
 <!-- WORK ORDER SHREDDING - ACTIONS -->
 <!-- ============================================================================ -->
     <record id="action_work_order_shredding" model="ir.actions.act_window">
-<field name="name">Shredding Work Orders</field>
+        <field name="name">Shredding Work Orders</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">work.order.shredding</field>
-<field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
         <field name="domain">[]</field>
-<field name="context">{'search_default_in_progress': 1}</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-Click to create a new Shredding Work Order.
-</p>
-<p>
+                Click to create a new Shredding Work Order.
+            </p>
+            <p>
                 Shredding Work Orders manage the secure destruction of documents and materials
                 in compliance with NAID standards. Track containers, equipment, progress,
                 and generate compliance certificates automatically.

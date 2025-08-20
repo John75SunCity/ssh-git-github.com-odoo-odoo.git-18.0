@@ -15,11 +15,11 @@
 <menuitem id="menu_records_operations" name="Operations" parent="menu_records_management_root" sequence="10" groups="records_management.group_records_user"/>
 
 <!-- Records Operations -->
-<menuitem id="menu_records_containers" name="Storage Containers" parent="menu_records_operations" action="action_records_container" sequence="10" groups="records_management.group_records_user"/>
+<menuitem id="menu_records_containers" name="Containers" parent="menu_records_operations" action="action_records_container" sequence="10" groups="records_management.group_records_user"/>
 
-<menuitem id="menu_records_documents" name="Documents" parent="menu_records_operations" action="action_records_document" sequence="20" groups="records_management.group_records_user"/>
+<menuitem id="menu_records_documents" name="Files" parent="menu_records_operations" action="action_records_document" sequence="20" groups="records_management.group_records_user"/>
 
-<menuitem id="menu_records_boxes" name="Records Boxes" parent="menu_records_operations" action="action_records_box" sequence="25" groups="records_management.group_records_user"/>
+<menuitem id="menu_records_boxes" name="Scans PDF" parent="menu_records_operations" action="action_records_scan" sequence="25" groups="records_management.group_records_user"/>
 
 <!-- Service Operations -->
 <menuitem id="menu_pickup_requests" name="Pickup Requests" parent="menu_records_operations" action="action_pickup_request" sequence="30" groups="records_management.group_records_user"/>
@@ -69,10 +69,10 @@
 <menuitem id="menu_chain_custody" name="Chain of Custody" parent="menu_records_compliance" action="action_chain_of_custody" sequence="40" groups="records_management.group_records_user"/>
 
 <!-- ========================================== -->
-<!-- BILLING & FINANCE MENU (Level 1) -->
+<!-- BILLING &amp; FINANCE MENU (Level 1) -->
 <!-- ========================================== -->
 
-<menuitem id="menu_records_billing" name="Billing & Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager"/>
+<menuitem id="menu_records_billing" name="Billing &amp; Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager"/>
 
 <menuitem id="menu_billing_config" name="Billing Configuration" parent="menu_records_billing" action="action_records_billing_config" sequence="10" groups="records_management.group_records_manager"/>
 
@@ -99,54 +99,25 @@
 <!-- ========================================== -->
 <!-- CONFIGURATION MENU (Level 1) -->
 <!-- ========================================== -->
-        
 <menuitem id="menu_records_configuration" name="Configuration" parent="menu_records_management_root" sequence="90" groups="records_management.group_records_manager"/>
-
-
-<!-- Master Data Sub-Menu -->
-<menuitem id="menu_records_master_data" name="Master Data" parent="menu_records_configuration" sequence="10" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_records_location" name="Storage Locations" parent="menu_records_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_records_document_type" name="Document Types" parent="menu_records_master_data" action="action_records_document_type" sequence="20" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_records_tags" name="Classification Tags" parent="menu_records_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_records_departments" name="Records Departments" parent="menu_records_master_data" action="action_records_department" sequence="40" groups="records_management.group_records_manager"/>
-
-
-<!-- Products Sub-Menu -->
-<menuitem id="menu_records_products" name="Products & Services" parent="menu_records_configuration" sequence="20" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_records_products_list" name="Service Products" parent="menu_records_products" action="product.product_template_action" sequence="10" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_records_product_variants" name="Product Variants" parent="menu_records_products" action="product.product_normal_action" sequence="20" groups="records_management.group_records_manager"/>
-
-
-<!-- Security & Access Sub-Menu -->
-<menuitem id="menu_records_security" name="Security & Access" parent="menu_records_configuration" sequence="30" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_bin_key_management" name="Bin Key Management" parent="menu_records_security" action="action_bin_key_management" sequence="10" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_bin_keys" name="Physical Bin Keys" parent="menu_records_security" action="action_bin_key" sequence="20" groups="records_management.group_records_manager"/>
-
-
-<!-- System Configuration Sub-Menu -->
-<menuitem id="menu_system_config" name="System Configuration" parent="menu_records_configuration" sequence="40" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_rm_module_configurator" name="RM Module Configurator" parent="menu_system_config" action="action_rm_module_configurator" sequence="10" groups="records_management.group_records_manager"/>
-
-
-<menuitem id="menu_field_label_customization" name="Field Label Customization" parent="menu_system_config" action="action_field_label_customization" sequence="20" groups="records_management.group_records_manager"/>
+        <!-- Master Data Sub-Menu -->
+        <menuitem id="menu_records_master_data" name="Master Data" parent="menu_records_configuration" sequence="10" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_location" name="Storage Locations" parent="menu_records_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_document_type" name="Document Types" parent="menu_records_master_data" action="action_records_document_type" sequence="20" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_tags" name="Classification Tags" parent="menu_records_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_departments" name="Records Departments" parent="menu_records_master_data" action="action_records_department" sequence="40" groups="records_management.group_records_manager"/>
+        <!-- Products Sub-Menu -->
+        <menuitem id="menu_records_products" name="Products &amp; Services" parent="menu_records_configuration" sequence="20" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_products_list" name="Service Products" parent="menu_records_products" action="product.product_template_action" sequence="10" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_records_product_variants" name="Product Variants" parent="menu_records_products" action="product.product_normal_action" sequence="20" groups="records_management.group_records_manager"/>
+        <!-- Security &amp; Access Sub-Menu -->
+        <menuitem id="menu_records_security" name="Security &amp; Access" parent="menu_records_configuration" sequence="30" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_bin_key_management" name="Bin Key Management" parent="menu_records_security" action="action_bin_key_management" sequence="10" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_bin_keys" name="Physical Bin Keys" parent="menu_records_security" action="action_bin_key" sequence="20" groups="records_management.group_records_manager"/>
+        <!-- System Configuration Sub-Menu -->
+        <menuitem id="menu_system_config" name="System Configuration" parent="menu_records_configuration" sequence="40" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_rm_module_configurator" name="RM Module Configurator" parent="menu_system_config" action="action_rm_module_configurator" sequence="10" groups="records_management.group_records_manager"/>
+        <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="menu_system_config" action="action_field_label_customization" sequence="20" groups="records_management.group_records_manager"/>
 
 
     </data>
