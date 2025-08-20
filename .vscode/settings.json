@@ -52,7 +52,10 @@
     "python.analysis.diagnosticMode": "workspace",
     "python.analysis.stubPath": "./typings",
     "python.analysis.extraPaths": [
+        "/home/odoo/src/odoo",
+        "/home/odoo/src/user",
         "./records_management",
+        "./records_management_fsm",
         "./addons",
         "./typings"
     ],

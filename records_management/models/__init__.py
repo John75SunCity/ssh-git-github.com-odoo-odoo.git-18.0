@@ -115,6 +115,7 @@ from . import records_retrieval_work_order
 from . import work_order_retrieval
 
 # Document retrieval support models (separate files following Odoo standards)
+from . import retrieval_item_base  # ABSTRACT BASE - must be imported first
 from . import document_retrieval_item
 from . import document_retrieval_team
 # from . import document_retrieval_pricing # This file does not exist

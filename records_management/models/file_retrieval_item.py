@@ -4,7 +4,7 @@ from odoo.exceptions import UserError
 class FileRetrievalItem(models.Model):
     _name = 'file.retrieval.item'
     _description = 'File Retrieval Item'
-    _inherit = 'retrieval.item.base'
+    _inherit = ['retrieval.item.base']  # Now inherits from the new base model
     _rec_name = 'display_name'
 
     # File-specific fields

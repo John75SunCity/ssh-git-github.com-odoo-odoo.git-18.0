@@ -4,33 +4,33 @@ from odoo.exceptions import UserError
 
 class ScanRetrievalItem(models.Model):
     _name = 'scan.retrieval.item'
-    _description = 'Document Scan Retrieval Item'
-    _inherit = 'retrieval.item.base'
+    _description = 'Scan Retrieval Item'
+    _inherit = ['retrieval.item.base']  # Now inherits from the new base model
     _rec_name = 'display_name'
-    
+
     # Scan-specific fields
     document_id = fields.Many2one('records.document', string='Document to Scan')
     file_retrieval_item_id = fields.Many2one('file.retrieval.item', string='Related File Retrieval')
-    
+
     scan_required = fields.Boolean(string='Scan Required', default=True)
     scan_completed = fields.Boolean(string='Scan Completed')
     scan_start_time = fields.Datetime(string='Scan Start Time', readonly=True)
     scan_completion_time = fields.Datetime(string='Scan Completion Time', readonly=True)
-    
+
     digital_format = fields.Selection([
         ('pdf', 'PDF'),
         ('tiff', 'TIFF'),
         ('jpg', 'JPEG'),
         ('png', 'PNG')
     ], string='Digital Format', default='pdf')
-    
+
     scan_quality = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High'),
         ('archive', 'Archive Quality')
     ], string='Scan Quality', default='high')
-    
+
     status = fields.Selection([
         ('pending', 'Pending'),
         ('file_retrieved', 'File Retrieved'),
