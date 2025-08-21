@@ -409,3 +409,4 @@ from . import records_storage_box
 from . import records_request
 from . import records_request_line
 from . import records_request_type
+from . import records_billing_contact_role
