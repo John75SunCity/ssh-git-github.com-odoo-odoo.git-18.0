@@ -104,3 +104,6 @@ expected_invoices.txt
 !requirements.txt
 development-tools/PHASE_2_ENHANCEMENT_ROADMAP.md
 records_management/models/advanced_billing_line.py
+
+# Odoo source code - should not be committed to the custom module repo
+/odoo/
