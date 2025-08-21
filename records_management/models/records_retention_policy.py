@@ -9,6 +9,15 @@ class RecordsRetentionPolicy(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, name'
 
+    retention_unit = fields.Selection([
+        ('days', 'Days'),
+        ('weeks', 'Weeks'),
+        ('months', 'Months'),
+        ('years', 'Years'),
+        ('indefinite', 'Indefinite')
+    ], string="Retention Unit", default='years', required=True, tracking=True)
+    retention_period = fields.Integer(string="Retention Period", default=7, tracking=True)
+
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
 
     # ============================================================================
