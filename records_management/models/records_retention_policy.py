@@ -9,6 +9,8 @@ class RecordsRetentionPolicy(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, name'
 
+    display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
+
     retention_unit = fields.Selection([
         ('days', 'Days'),
         ('weeks', 'Weeks'),
@@ -70,6 +72,11 @@ class RecordsRetentionPolicy(models.Model):
     last_review_date = fields.Date(string="Last Review Date", readonly=True)
     next_review_date = fields.Date(string="Next Review Date", compute='_compute_next_review_date', store=True)
 
+    _sql_constraints = [
+        ('name_company_uniq', 'unique (name, company_id)', 'Policy Name must be unique per company!'),
+        ('code_company_uniq', 'unique (code, company_id)', 'Policy Code must be unique per company!'),
+    ]
+
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
@@ -80,9 +87,26 @@ class RecordsRetentionPolicy(models.Model):
                 vals['code'] = self.env['ir.sequence'].next_by_code('records.retention.policy') or _('New')
         return super().create(vals_list)
 
+    def copy(self, default=None):
+        self.ensure_one()
+        default = dict(default or {})
+        default.update({
+            'name': _('%s (Copy)') % self.name,
+            'code': _('New'),
+            'state': 'draft',
+            'version_ids': [],
+            'last_review_date': False,
+        })
+        return super().copy(default)
+
     # ============================================================================
     # COMPUTE & ONCHANGE METHODS
     # ============================================================================
+    @api.depends('name', 'code')
+    def _compute_display_name(self):
+        for policy in self:
+            policy.display_name = f"[{policy.code}] {policy.name}" if policy.code and policy.code != _('New') else policy.name
+
     @api.depends('rule_ids', 'version_ids')
     def _compute_counts(self):
         for policy in self:
@@ -103,6 +127,11 @@ class RecordsRetentionPolicy(models.Model):
                 policy.next_review_date = policy.last_review_date + relativedelta(months=months_map[policy.review_frequency])
             else:
                 policy.next_review_date = False
+
+    @api.onchange('retention_unit')
+    def _onchange_retention_unit(self):
+        if self.retention_unit == 'indefinite':
+            self.retention_period = 0
 
     # ============================================================================
     # ACTION METHODS
