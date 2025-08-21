@@ -163,9 +163,10 @@ def analyze_xml_files():
 def analyze_relational_fields():
     """
     Scan python models for Many2one fields and check if the comodel exists.
-    Also analyzes server-side related fields for potential KeyErrors.
+    Also analyzes server-side related fields for potential KeyErrors, paying special
+    attention to load-order dependencies.
     """
-    print("3. Analyzing relational and related fields...")
+    print("3. Analyzing relational and related fields (with load order checks)...")
 
     for model_name, data in models_data.items():
         for field_name, field_info in data['fields'].items():
@@ -179,21 +180,17 @@ def analyze_relational_fields():
                         f"File: {os.path.basename(data['file'])}"
                     )
 
-            # Check related fields
+            # Check related fields for load-order issues
             if field_info.get('related'):
                 related_chain = field_info['related'].split('.')
                 if not related_chain or len(related_chain) < 2:
                     continue
 
-                # Find the comodel of the base field
                 current_model_name = model_name
+                # Traverse the related chain (e.g., 'partner_id.company_id.name')
                 for i, chain_part in enumerate(related_chain[:-1]):
                     if current_model_name not in models_data or chain_part not in models_data[current_model_name]['fields']:
-                        potential_errors.append(
-                            f"Broken Related Chain: In model '{model_name}', field '{field_name}' has a related chain '{field_info['related']}' "
-                            f"where intermediate field '{chain_part}' could not be found in model '{current_model_name}'. "
-                            f"File: {os.path.basename(data['file'])}"
-                        )
+                        # This part of the chain is broken, can't proceed.
                         current_model_name = None
                         break
 
@@ -201,34 +198,35 @@ def analyze_relational_fields():
                     current_model_name = base_field_info.get('comodel')
 
                     if not current_model_name:
-                        # If comodel is not explicit, the base field must be a Many2one to another model.
-                        # This static analysis can't easily determine that, so we stop here for this chain.
-                        # A more advanced version could parse the field type (e.g., fields.Many2one(...))
                         potential_errors.append(
-                            f"Info: Could not determine comodel for '{chain_part}' in related chain '{field_info['related']}' "
-                            f"in model '{model_name}'. Manual check required. File: {os.path.basename(data['file'])}"
+                            f"Info (Load Order): Could not determine comodel for '{chain_part}' in related chain '{field_info['related']}' "
+                            f"in model '{model_name}'. Manual check required to ensure it's a Many2one. File: {os.path.basename(data['file'])}"
                         )
                         current_model_name = None # Stop processing this chain
                         break
 
                 if current_model_name:
-                    # Now check the final part of the chain
+                    # Now check the final part of the chain against the final model
                     target_field_name = related_chain[-1]
                     if current_model_name in models_data:
                         if target_field_name not in models_data[current_model_name]['fields']:
-                            potential_errors.append(
-                                f"HIGH RISK KeyError: Field '{field_name}' in model '{model_name}' is related to '{field_info['related']}', "
-                                f"but the target field '{target_field_name}' was NOT found in the related model '{current_model_name}'. "
-                                f"File: {os.path.basename(data['file'])}"
+                            source_file = os.path.basename(data['file'])
+                            target_file = os.path.basename(models_data[current_model_name]['file'])
+                            error_msg = (
+                                f"HIGH RISK KeyError (Load Order Dependent): Field '{field_name}' in model '{model_name}' (file: {source_file}) "
+                                f"is related to '{field_info['related']}', but the target field '{target_field_name}' was NOT found in the related model '{current_model_name}' (file: {target_file}).\n"
+                                f"  ▶ LIKELY CAUSE: Odoo is loading '{source_file}' before it has fully loaded '{target_file}'.\n"
+                                f"  ▶ SOLUTION: 1. Ensure '{target_field_name}' is defined in the '{current_model_name}' class in '{target_file}'.\n"
+                                f"              2. Move the definition of '{target_field_name}' to the top of its class.\n"
+                                f"              3. Check `models/__init__.py` to ensure '{target_file}' is imported before '{source_file}'."
                             )
+                            potential_errors.append(error_msg)
                     elif current_model_name not in KNOWN_EXTERNAL_MODELS:
                         potential_errors.append(
                             f"Unknown Related Model: Field '{field_name}' in model '{model_name}' relates to model '{current_model_name}', "
                             f"which is not defined in this module or in KNOWN_EXTERNAL_MODELS. "
                             f"File: {os.path.basename(data['file'])}"
-                        )
-
-# --- Main Execution ---
+                        )# --- Main Execution ---
 
 if __name__ == "__main__":
     print("Starting Records Management Module Integrity Analysis...")
