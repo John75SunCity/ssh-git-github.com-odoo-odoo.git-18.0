@@ -307,3 +307,5 @@ See CHANGELOG.md for detailed version history.
 ---
 
 **Note**: This module requires careful installation order. Install all dependencies first, then the Records Management module. Contact support if you encounter installation issues.
+
+<!-- Trigger rebuild: 2025-08-21 10:43 -->

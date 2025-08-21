@@ -104,7 +104,7 @@
     },
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
-    "python.languageServer": "Pylance",
+    "python.languageServer": "None",
 
     // === ODOO EXTENSION SETTINGS ===
     "odoo.addonsPath": "./records_management,./addons",
