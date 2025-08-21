@@ -17,6 +17,12 @@ class RecordsRetentionPolicy(models.Model):
         ('indefinite', 'Indefinite')
     ], string="Retention Unit", default='years', required=True, tracking=True)
     retention_period = fields.Integer(string="Retention Period", default=7, tracking=True)
+    destruction_method = fields.Selection([
+        ('shred', 'Shredding'),
+        ('pulp', 'Pulping'),
+        ('incinerate', 'Incineration'),
+        ('disintegrate', 'Disintegration'),
+    ], string="Destruction Method", default='shred', tracking=True)
 
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
 
@@ -109,12 +115,12 @@ class RecordsRetentionPolicy(models.Model):
         self.message_post(body=_("Policy activated."))
 
     def action_archive(self):
-        self.write({'state': 'archived', 'active': False})
-        self.message_post(body=_("Policy archived."))
+        self.ensure_one()
+        return super().action_archive()
 
     def action_set_to_draft(self):
-        self.write({'state': 'draft', 'active': True})
-        self.message_post(body=_("Policy set to draft."))
+        self.ensure_one()
+        self.write({'state': 'draft'})
 
     def action_create_new_version(self):
         """Opens a wizard to create a new version of this policy."""
