@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_report_naid_compliance" model="ir.actions.report">
+            <field name="name">NAID Compliance Report</field>
+            <field name="model">naid.compliance</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">records_management.report_naid_compliance_template</field>
+            <field name="report_file">records_management.report_naid_compliance_template</field>
+            <field name="binding_model_id" ref="model_naid_compliance"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <template id="report_naid_compliance_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h2>NAID Compliance Report</h2>
+                            <p><strong>Record:</strong> <span t-field="doc.name"/></p>
+                            <p><strong>Status:</strong> <span t-field="doc.state"/></p>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
