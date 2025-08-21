@@ -1,0 +1,103 @@
+<odoo>
+    <data>
+
+        <!-- Tree View -->
+        <record id="view_records_request_tree" model="ir.ui.view">
+            <field name="name">records.request.tree</field>
+            <field name="model">records.request</field>
+            <field name="arch" type="xml">
+                <tree string="Records Requests">
+                    <field name="name"/>
+                    <field name="request_type_id"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_records_request_form" model="ir.ui.view">
+            <field name="name">records.request.form</field>
+            <field name="model">records.request</field>
+            <field name="arch" type="xml">
+                <form string="Records Request">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,in_progress,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name" readonly="1"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="request_type_id"/>
+                                <field name="partner_id"/>
+                                <field name="destruction_address_id"/>
+                            </group>
+                            <group>
+                                <field name="user_id"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Request Lines">
+                                <field name="request_line_ids">
+                                    <tree editable="bottom">
+                                        <field name="document_id"/>
+                                        <field name="box_id"/>
+                                        <field name="container_id"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_records_request_search" model="ir.ui.view">
+            <field name="name">records.request.search</field>
+            <field name="model">records.request</field>
+            <field name="arch" type="xml">
+                <search string="Search Records Requests">
+                    <field name="name"/>
+                    <field name="request_type_id"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Customer" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_records_request" model="ir.actions.act_window">
+            <field name="name">Records Requests</field>
+            <field name="res_model">records.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new records request.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_records_request"
+                  name="Requests"
+                  parent="records_management.menu_records_management_operations"
+                  action="action_records_request"
+                  sequence="30"/>
+
+    </data>
+</odoo>

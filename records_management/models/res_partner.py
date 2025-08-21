@@ -37,6 +37,8 @@ class ResPartner(models.Model):
         compute='_compute_records_stats',
     )
 
+    destruction_address_id = fields.Many2one('res.partner', string='Destruction Address')
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================

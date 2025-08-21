@@ -403,3 +403,9 @@ from . import pickup_schedule_wizard
 from . import records_bulk_user_import
 from . import scan_retrieval
 from . import transitory_item
+from . import records_destruction_job
+from . import records_series
+from . import records_storage_box
+from . import records_request
+from . import records_request_line
+from . import records_request_type

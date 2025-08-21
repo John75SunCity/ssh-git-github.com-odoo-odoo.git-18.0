@@ -87,19 +87,19 @@
         <field name="name">records.document.view.tree</field>
         <field name="model">records.document</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="destruction_eligible_date &amp;lt;= context_today()" decoration-warning="destruction_eligible_date &amp;lt;= (context_today() + relativedelta(days=30))" decoration-success="permanent_flag == True">
+            <tree decoration-danger="destruction_eligible_date &amp;lt;= context_today()" decoration-warning="destruction_eligible_date &amp;lt;= (context_today() + relativedelta(days=30))" decoration-success="is_permanent == True">
                 <field name="name" string="📄 Document"/>
                 <field name="document_type_id" string="📂 Type"/>
                 <field name="partner_id" string="👤 Customer"/>
                 <field name="container_id" string="📦 Container"/>
-                <field name="permanent_flag" string="🛡️ Permanent" widget="boolean"/>
+                <field name="is_permanent" string="🛡️ Permanent" widget="boolean"/>
                 <field name="retention_policy_id" string="📅 Retention Policy"/>
                 <field name="destruction_eligible_date" string="💥 Destruction Date"/>
                 <field name="state" string="🎯 Status" widget="badge"/>
                 <button name="action_view_chain_of_custody" type="object" string="Chain" icon="fa-link" class="btn-link"/>
-                <button name="action_mark_permanent" type="object" string="Mark Permanent" icon="fa-shield" class="btn-link" invisible="permanent_flag" groups="records_management.group_records_user"/>
-                <button name="action_unmark_permanent" type="object" string="Remove Permanent" icon="fa-shield" class="btn-link" invisible="not permanent_flag" groups="base.group_system"/>
-                <button name="action_schedule_destruction" type="object" string="Destroy" icon="fa-trash" class="btn-link" invisible="not destruction_eligible_date or permanent_flag"/>
+                <button name="action_mark_permanent" type="object" string="Mark Permanent" icon="fa-shield" class="btn-link" invisible="is_permanent" groups="records_management.group_records_user"/>
+                <button name="action_unmark_permanent" type="object" string="Remove Permanent" icon="fa-shield" class="btn-link" invisible="not is_permanent" groups="base.group_system"/>
+                <button name="action_schedule_destruction" type="object" string="Destroy" icon="fa-trash" class="btn-link" invisible="not destruction_eligible_date or is_permanent"/>
             </tree>
         </field>
     </record>
@@ -113,9 +113,9 @@
                 <header>
                     <button name="action_view_chain_of_custody" type="object" string="🔗 View Chain of Custody" class="btn-primary"/>
                     <button name="action_scan_document" type="object" string="📷 Scan/Image Document" class="btn-secondary"/>
-                    <button name="action_mark_permanent" type="object" string="🛡️ Mark as Permanent" class="btn-success" invisible="permanent_flag" groups="records_management.group_records_user"/>
-                    <button name="action_unmark_permanent" type="object" string="⚠️ Remove Permanent Flag" class="btn-warning" invisible="not permanent_flag" groups="base.group_system"/>
-                    <button name="action_schedule_destruction" type="object" string="💥 Schedule Destruction" class="btn-warning" invisible="not destruction_eligible_date or permanent_flag"/>
+                    <button name="action_mark_permanent" type="object" string="🛡️ Mark as Permanent" class="btn-success" invisible="is_permanent" groups="records_management.group_records_user"/>
+                    <button name="action_unmark_permanent" type="object" string="⚠️ Remove Permanent Flag" class="btn-warning" invisible="not is_permanent" groups="base.group_system"/>
+                    <button name="action_schedule_destruction" type="object" string="💥 Schedule Destruction" class="btn-warning" invisible="not destruction_eligible_date or is_permanent"/>
                     <field name="state" widget="statusbar" statusbar_visible="active,pending_destruction,destroyed"/>
                 </header>
                 <sheet>
@@ -145,9 +145,9 @@
                             <field name="container_id"/>
                         </group>
                         <group string="🔒 Security &amp;amp; Compliance">
-                            <field name="permanent_flag" widget="boolean_toggle"/>
-                            <field name="permanent_flag_set_by" readonly="1" invisible="not permanent_flag"/>
-                            <field name="permanent_flag_set_date" readonly="1" invisible="not permanent_flag"/>
+                            <field name="is_permanent" widget="boolean_toggle"/>
+                            <field name="permanent_user_id" readonly="1" invisible="not is_permanent"/>
+                            <field name="permanent_date" readonly="1" invisible="not is_permanent"/>
                             <field name="retention_policy_id"/>
                             <field name="destruction_eligible_date"/>
                             <field name="state"/>
@@ -264,8 +264,8 @@
                 <filter string="🗑️ Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
 
                 <separator/>
-                <filter string="🛡️ Permanent Records" name="permanent" domain="[('permanent_flag', '=', True)]"/>
-                <filter string="📄 Non-Permanent Records" name="non_permanent" domain="[('permanent_flag', '=', False)]"/>
+                <filter string="🛡️ Permanent Records" name="permanent" domain="[('is_permanent', '=', True)]"/>
+                <filter string="📄 Non-Permanent Records" name="non_permanent" domain="[('is_permanent', '=', False)]"/>
 
                 <separator/>
                 <filter string="⚠️ Destruction Due" name="destruction_due" domain="[('destruction_eligible_date', '&amp;lt;=', context_today())]"/>
