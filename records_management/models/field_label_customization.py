@@ -1,100 +1,88 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
-
+from odoo import models, fields, api
 
 class FieldLabelCustomization(models.Model):
     _name = 'field.label.customization'
     _description = 'Field Label Customization'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'model_name, field_name'
-    _rec_name = 'full_customization_name'
+    _order = 'priority desc, name'
 
-    # ============================================================================
-    # FIELDS
-    # ============================================================================
-    name = fields.Char(string='Name', required=True, tracking=True, help="A descriptive name for this customization rule.")
-    description = fields.Text(string="Description", help="Explain the purpose of this label change.")
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    active = fields.Boolean(string='Active', default=True, help="Only active customizations will be applied.")
-    
-    model_id = fields.Many2one('ir.model', string='Model', required=True, ondelete='cascade',
-                               domain=[('model', 'like', 'records.%')], help="The model to customize.")
-    field_id = fields.Many2one('ir.model.fields', string='Field', required=True, ondelete='cascade',
-                               domain="[('model_id', '=', model_id)]", help="The field to customize.")
-    
-    original_label = fields.Char(string='Original Label', related='field_id.field_description', readonly=True)
-    custom_label = fields.Char(string='Custom Label', required=True, tracking=True)
-    
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('archived', 'Archived'),
-    ], string='Status', default='draft', tracking=True)
+    name = fields.Char('Configuration Name', required=True)
+    description = fields.Text('Description')
+    model_name = fields.Char('Model Name', required=True)
+    field_name = fields.Char('Field Name', required=True)
+    original_label = fields.Char('Original Label', required=True)
+    custom_label = fields.Char('Custom Label', required=True)
+    priority = fields.Integer('Priority', default=1, help="Higher priority configurations override lower ones")
 
-    full_customization_name = fields.Char(string="Full Name", compute='_compute_full_customization_name', store=True)
+    # Industry-specific container label fields
+    label_container_number = fields.Char('Container Number Label', default='Container Number')
+    label_item_description = fields.Char('Item Description Label', default='Item Description')
+    label_content_description = fields.Char('Content Description Label', default='Content Description')
+    label_date_from = fields.Char('Date From Label', default='Date From')
+    label_date_to = fields.Char('Date To Label', default='Date To')
+    label_record_type = fields.Char('Record Type Label', default='Record Type')
+    label_confidentiality = fields.Char('Confidentiality Label', default='Confidentiality')
+    label_project_code = fields.Char('Project Code Label', default='Project Code')
+    label_client_reference = fields.Char('Client Reference Label', default='Client Reference')
+    label_authorized_by = fields.Char('Authorized By Label', default='Authorized By')
+    label_created_by_dept = fields.Char('Created By Department Label', default='Created By Department')
 
-    # ============================================================================
-    # COMPUTED METHODS
-    # ============================================================================
-    @api.depends('model_id.model', 'field_id.name', 'custom_label')
-    def _compute_full_customization_name(self):
-        for record in self:
-            if record.model_id and record.field_id:
-                record.full_customization_name = _(
-                    "[%s] %s -> %s",
-                    record.model_id.model,
-                    record.field_id.name,
-                    record.custom_label
-                )
-            else:
-                record.full_customization_name = record.name or _("New Customization")
-
-    # ============================================================================
-    # CONSTRAINTS
-    # ============================================================================
-    @api.constrains('model_id', 'field_id')
-    def _check_field_exists(self):
-        for record in self:
-            if record.model_id and record.field_id:
-                if record.field_id.model_id != record.model_id:
-                    raise ValidationError(_("The selected field does not belong to the selected model."))
-
-    @api.constrains('custom_label')
-    def _check_custom_label_length(self):
-        for record in self:
-            if record.custom_label and len(record.custom_label) > 100:
-                raise ValidationError(_("Custom label cannot exceed 100 characters."))
-
-    _sql_constraints = [
-        ('unique_model_field', 'unique(model_id, field_id, company_id)', 
-         'A customization for this field already exists for this company.')
-    ]
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_activate(self):
-        """Activates the customization rule."""
-        self.write({'state': 'active'})
-        self.message_post(body=_("Customization activated."))
-
-    def action_archive(self):
-        """Archives the customization rule."""
-        self.write({'state': 'archived', 'active': False})
-        self.message_post(body=_("Customization archived."))
-
-    # ============================================================================
-    # BUSINESS METHODS
-    # ============================================================================
     @api.model
-    def get_custom_labels(self, model_name):
-        """
-        Method to be called by other models to get all active customizations.
-        Returns a dictionary mapping field names to their custom labels.
-        """
-        customizations = self.search([
-            ('model_id.model', '=', model_name),
-            ('state', '=', 'active'),
-            ('company_id', 'in', [self.env.company.id, False])
-        ])
-        return {cust.field_id.name: cust.custom_label for cust in customizations}
+    def get_custom_label(self, model_name, field_name, original_label):
+        """Get the highest priority custom label for a field"""
+        customization = self.search([
+            ('model_name', '=', model_name),
+            ('field_name', '=', field_name)
+        ], order='priority desc', limit=1)
+
+        if customization:
+            return customization.custom_label
+        return original_label
+
+    @api.model
+    def get_container_labels(self):
+        """Get all container-related labels for the current configuration"""
+        # Get the highest priority configuration
+        config = self.search([], order='priority desc', limit=1)
+
+        if config:
+            return {
+                'container_number': config.label_container_number,
+                'item_description': config.label_item_description,
+                'content_description': config.label_content_description,
+                'date_from': config.label_date_from,
+                'date_to': config.label_date_to,
+                'record_type': config.label_record_type,
+                'confidentiality': config.label_confidentiality,
+                'project_code': config.label_project_code,
+                'client_reference': config.label_client_reference,
+                'authorized_by': config.label_authorized_by,
+                'created_by_dept': config.label_created_by_dept,
+            }
+
+        # Return defaults if no configuration exists
+        return {
+            'container_number': 'Container Number',
+            'item_description': 'Item Description',
+            'content_description': 'Content Description',
+            'date_from': 'Date From',
+            'date_to': 'Date To',
+            'record_type': 'Record Type',
+            'confidentiality': 'Confidentiality',
+            'project_code': 'Project Code',
+            'client_reference': 'Client Reference',
+            'authorized_by': 'Authorized By',
+            'created_by_dept': 'Created By Department',
+        }
+
+    @api.constrains('model_name', 'field_name', 'priority')
+    def _check_unique_priority(self):
+        """Ensure no duplicate priorities for the same model/field combination"""
+        for record in self:
+            duplicate = self.search([
+                ('model_name', '=', record.model_name),
+                ('field_name', '=', record.field_name),
+                ('priority', '=', record.priority),
+                ('id', '!=', record.id)
+            ])
+            if duplicate:
+                raise ValueError(f"Priority {record.priority} already exists for {record.model_name}.{record.field_name}")
