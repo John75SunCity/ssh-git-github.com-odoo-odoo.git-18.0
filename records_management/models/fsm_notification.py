@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
+from datetime import timedelta
 
 class FsmNotification(models.Model):
     _name = 'fsm.notification'
@@ -102,8 +103,9 @@ class FsmNotification(models.Model):
     # ============================================================================
     def action_send_now(self):
         self.ensure_one()
-        if self.state not in ['draft', 'scheduled', 'failed']:
-            raise UserError(_("Cannot send notification in '%s' state.", self.state))
+        # Only allow sending from draft or failed state
+        if self.state not in ['draft', 'failed']:
+            raise UserError(_("Cannot send notification in '%s' state.") % self.state)
         self.write({
             'state': 'scheduled',
             'scheduled_datetime': fields.Datetime.now()
@@ -119,7 +121,7 @@ class FsmNotification(models.Model):
     def action_retry(self):
         for record in self:
             if not record.can_retry:
-                raise UserError(_("Cannot retry notification '%s'.", record.name))
+                raise UserError(_("Cannot retry notification '%s'.") % record.name)
             record.write({
                 'state': 'scheduled',
                 'scheduled_datetime': fields.Datetime.now(),
@@ -135,7 +137,7 @@ class FsmNotification(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('fsm.notification') or _('New')
-        return super().create(vals_list)
+        return super(FsmNotification, self).create(vals_list)
 
     # ============================================================================
     # CRON/AUTOMATION METHODS
@@ -175,6 +177,7 @@ class FsmNotification(models.Model):
             ('state', 'in', ['delivered', 'cancelled']),
             ('create_date', '<', cutoff_date)
         ])
+        count = len(old_notifications)
         old_notifications.unlink()
-        return len(old_notifications)
+        return count
 

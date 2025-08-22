@@ -1,6 +1,7 @@
 from odoo import models, fields, api, _
 
 class RecordsAuditLog(models.Model):
+    document_type_id = fields.Many2one('records.document.type', string="Document Type", help="Related document type for this audit log entry.")
     _name = 'records.audit.log'
     _description = 'Records Audit Log'
     _order = 'create_date desc, id desc'
@@ -13,7 +14,7 @@ class RecordsAuditLog(models.Model):
     user_id = fields.Many2one('res.users', string="User", readonly=True, required=True, ondelete='restrict')
     timestamp = fields.Datetime(string="Timestamp", default=fields.Datetime.now, readonly=True, required=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True, required=True)
-    
+
     # ============================================================================
     # LOG DETAILS
     # ============================================================================
@@ -26,22 +27,22 @@ class RecordsAuditLog(models.Model):
         ('access', 'Access/View'),
         ('export', 'Export'),
     ], string="Event Type", readonly=True, required=True)
-    
+
     description = fields.Char(string="Description", readonly=True, required=True, help="A human-readable summary of the event.")
-    
+
     # ============================================================================
     # RELATED DOCUMENT
     # ============================================================================
     res_model = fields.Char(string="Model", readonly=True, help="The technical model name of the affected document.")
     res_id = fields.Integer(string="Record ID", readonly=True, help="The ID of the affected document.")
     res_name = fields.Char(string="Record Name", compute='_compute_res_name', store=False, readonly=True, help="The display name of the affected document.")
-    
+
     # ============================================================================
     # TECHNICAL DETAILS
     # ============================================================================
     ip_address = fields.Char(string="IP Address", readonly=True, help="The IP address from which the action was performed.")
     user_agent = fields.Char(string="User Agent", readonly=True, help="The browser or client used to perform the action.")
-    
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -63,7 +64,7 @@ class RecordsAuditLog(models.Model):
         """
         Creates a new audit log entry. This is the primary method to be called
         from other models to record an auditable event.
-        
+
         :param record: The recordset of the document being acted upon.
         :param event_type: The type of event (from the selection field).
         :param description: A clear, human-readable description of the event.
