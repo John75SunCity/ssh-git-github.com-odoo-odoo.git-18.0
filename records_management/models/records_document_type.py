@@ -53,6 +53,9 @@ class RecordsDocumentType(models.Model):
     document_ids = fields.One2many('records.document', 'document_type_id', string="Documents")
     container_ids = fields.One2many('records.container', 'document_type_id', string="Containers")
 
+    # Add missing inverse for retention rules
+    retention_rule_ids = fields.One2many('records.retention.rule', 'document_type_id', string="Retention Rules")
+
     # ============================================================================
     # FIELDS - Security & Compliance
     # ============================================================================
