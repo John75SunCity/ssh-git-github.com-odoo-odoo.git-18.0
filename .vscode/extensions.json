@@ -1,5 +1,10 @@
 {
     "recommendations": [
-        "mvintg.odoo-file"
+        "mvintg.odoo-file",
+        "github.copilot-chat",
+        "ms-vscode.vscode-websearchforcopilot",
+        "ndestates.grok-integration",
+        "visualstudioexptteam.vscodeintellicode",
+        "ms-azuretools.vscode-docker"
     ]
 }

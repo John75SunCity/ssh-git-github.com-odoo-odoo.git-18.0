@@ -38,7 +38,10 @@
         "donjayamanne.githistory",
         "dotjoshjohnson.xml",
         "mechatroner.rainbow-csv",
-        "msoffice.microsoft-office-add-in-debugger"
+        "msoffice.microsoft-office-add-in-debugger",
+        "ms-vscode.vscode-websearchforcopilot",
+        "ndestates.grok-integration",
+        "VisualStudioExptTeam.vscodeintellicode"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
