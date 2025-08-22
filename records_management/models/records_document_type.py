@@ -116,7 +116,7 @@ class RecordsDocumentType(models.Model):
     is_legal_hold = fields.Boolean(string='Legal Hold')
     legal_hold_reason = fields.Text(string='Legal Hold Reason')
     is_active = fields.Boolean(string='Is Active', default=True)
-    branch_id = fields.Many2one('res.branch', string='Branch')
+    branch_id = fields.Many2one('operating.unit', string='Operating Unit')
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
     next_action_date = fields.Date(string='Next Action Date')
     next_action = fields.Selection([('review', 'Review'), ('destroy', 'Destroy')], string='Next Action')

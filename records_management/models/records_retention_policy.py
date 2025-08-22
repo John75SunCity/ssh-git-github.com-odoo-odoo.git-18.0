@@ -84,7 +84,7 @@ class RecordsRetentionPolicy(models.Model):
     legal_hold_reason = fields.Text(string='Legal Hold Reason')
     is_active = fields.Boolean(string='Is Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    branch_id = fields.Many2one('res.branch', string='Branch')
+    branch_id = fields.Many2one('operating.unit', string='Operating Unit')
     document_ids = fields.One2many('records.document', 'retention_policy_id', string='Documents')
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
     next_action_date = fields.Date(string='Next Action Date')

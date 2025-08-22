@@ -58,8 +58,7 @@ class RecordsRetentionRule(models.Model):
     retention_event = fields.Selection([('creation', 'Creation Date'), ('end_of_year', 'End of Fiscal Year'), ('last_activity', 'Last Activity Date')], string='Retention Event')
     is_legal_hold = fields.Boolean(string='Legal Hold')
     legal_hold_reason = fields.Text(string='Legal Hold Reason')
-    is_active = fields.Boolean(string='Is Active', default=True)
-    branch_id = fields.Many2one('res.branch', string='Branch')
+    branch_id = fields.Many2one('operating.unit', string='Operating Unit')
     document_ids = fields.One2many('records.document', 'retention_rule_id', string='Documents')
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
     next_action_date = fields.Date(string='Next Action Date')
@@ -178,6 +177,18 @@ class RecordsRetentionRule(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
+    @api.depends('document_ids')
+    def _compute_document_count(self):
+        """Efficiently compute the number of documents for each rule."""
+        counts = self.env['records.document'].read_group(
+            [('retention_rule_id', 'in', self.ids)],
+            ['retention_rule_id'],
+            ['retention_rule_id']
+        )
+        count_map = {c['retention_rule_id'][0]: c['retention_rule_id_count'] for c in counts}
+        for rule in self:
+            rule.document_count = count_map.get(rule.id, 0)
+
     @api.depends('policy_id.name', 'name')
     def _compute_display_name(self):
         """Generate display name for the rule."""
@@ -198,7 +209,12 @@ class RecordsRetentionRule(models.Model):
                 if rule.retention_period <= 0:
                     raise ValidationError(_("The retention period must be a positive number."))
             else:
-                # For indefinite, we can standardize the period to 0 for consistency
                 if rule.retention_period != 0:
-                    rule.retention_period = 0
+                    raise ValidationError(_("For indefinite retention, the retention period must be 0."))
 
+    @api.onchange('retention_unit')
+    def _onchange_retention_unit(self):
+        """Reset retention period to 0 when unit is set to indefinite."""
+        if self.retention_unit == 'indefinite':
+            self.retention_period = 0
+                    rule.retention_period = 0

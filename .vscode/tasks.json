@@ -1,342 +1,394 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "Validate Records Management Module",
-            "type": "shell",
-            "command": "python",
-            "args": [
-                "development-tools/syntax-tools/find_syntax_errors.py"
-            ],
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": [
-                "$eslint-stylish"
-            ]
-        },
-        {
-            "label": "Fix Translation Patterns",
-            "type": "shell",
-            "command": "python",
-            "args": [
-                "development-tools/archive/fix_pylint_no_member.py"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Run Comprehensive Field Analysis",
-            "type": "shell",
-            "command": "python",
-            "args": [
-                "development-tools/analysis-reports/comprehensive_field_analysis.py"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Deploy to GitHub (Git Push)",
-            "type": "shell",
-            "command": "git",
-            "args": [
-                "push",
-                "origin",
-                "main"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared"
-            },
-            "dependsOn": "Validate Records Management Module"
-        },
-        {
-            "label": "Git Status Check",
-            "type": "shell",
-            "command": "git",
-            "args": [
-                "status",
-                "--porcelain"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "silent",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Quick Commit with Validation",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "python development-tools/syntax-tools/find_syntax_errors.py && git add . && git commit -m 'fix: Automated syntax and translation fixes'"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Test Container Specifications",
-            "type": "shell",
-            "command": "python",
-            "args": [
-                "testing-workspace/container_dimension_test.py"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Launch Odoo Development Server (Local)",
-            "type": "shell",
-            "command": "python",
-            "args": [
-                "-m",
-                "odoo",
-                "--addons-path=./addons,./records_management",
-                "--database=records_dev",
-                "--dev=all"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "dedicated"
-            },
-            "isBackground": true,
-            "problemMatcher": []
-        },
-        {
-            "label": "Multi-AI: GitHub Copilot + Cybrosys + Odoo Extensions",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "echo '🚀 Starting Multi-AI Validation Workflow...' && echo '✅ GitHub Copilot: Development assistance active' && echo '🔍 Cybrosys Assista: Odoo 18.0 validation ready' && echo '🎯 Odoo Extension Pack: Professional patterns loaded' && echo '📚 Arkademy Training: Advanced learning context active' && python development-tools/syntax-tools/find_syntax_errors.py --odoo-validation"
-            ],
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "AI Chat Mode Test - Complete Odoo Context",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "echo '💬 Testing AI Chat Integration...' && echo '' && echo '🤖 GitHub Copilot Chat Features:' && echo '  - /explain: Explains code with Odoo context' && echo '  - /fix: Fixes issues using extension patterns' && echo '  - /review: Reviews with professional Odoo standards' && echo '  - /optimize: Optimizes using extension best practices' && echo '' && echo '🎯 Available AI Commands:' && echo '  - Ctrl+I: Inline chat with Odoo context' && echo '  - Ctrl+Shift+I: Chat panel with training materials' && echo '  - Right-click: Context menu with extension patterns' && echo '' && echo '📚 Extension Context Active:' && echo '  ✅ Professional Odoo patterns' && echo '  ✅ Training materials reference' && echo '  ✅ Advanced IntelliSense' && echo '  ✅ Framework validation'"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Cybrosys: Odoo 18.0 Compatibility Check",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "echo '🔍 Running Cybrosys Assista Odoo 18.0 validation...' && echo 'Checking records_management module...' && find records_management -name '*.py' -type f | head -5 | xargs -I {} echo 'Validating: {}'"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "GitHub Copilot: Enhanced Development Mode",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "echo '🤖 GitHub Copilot Enhanced Development Mode Active' && echo '' && echo 'Available AI Features with Odoo Extensions:' && echo '  💬 Chat Mode (Ctrl+Shift+I):' && echo '    - /explain: Detailed code explanations with Odoo patterns' && echo '    - /fix: Smart fixes using extension best practices' && echo '    - /review: Professional code reviews with training context' && echo '    - /optimize: Performance optimization with Odoo standards' && echo '' && echo '  ⚡ Inline Chat (Ctrl+I):' && echo '    - Quick questions with immediate Odoo context' && echo '    - Code generation with professional patterns' && echo '    - Real-time suggestions with extension knowledge' && echo '' && echo '  📝 Code Comments & Review:' && echo '    - Right-click any code → \"Copilot: Explain\"' && echo '    - Hover over code for intelligent explanations' && echo '    - Auto-generated comments with Odoo best practices' && echo '' && echo '  🎯 Extension Integration Active:' && echo '    ✅ Odoo Extension Pack patterns' && echo '    ✅ Arkademy training materials' && echo '    ✅ Professional workflow context' && echo '    ✅ Advanced IntelliSense integration' && echo '' && echo 'Ready for enhanced Odoo development with AI assistance!'"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "AI Workflow: Code → Validate → Deploy",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "echo '🔄 Complete AI-Assisted Development Workflow' && echo '1. GitHub Copilot: Code generation and assistance' && python development-tools/syntax-tools/find_syntax_errors.py && echo '2. Cybrosys Assista: Odoo 18.0 validation complete' && echo '3. Ready for Git deployment' && git status --porcelain"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": false
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "shared"
-            },
-            "dependsOrder": "sequence",
-            "problemMatcher": []
-        },
-        {
-            "label": "Ignore Translation False Positives",
-            "type": "shell",
-            "command": "bash",
-            "args": [
-                "-c",
-                "echo '🌐 Validating Translation Patterns - Ignoring False Positives...' && echo '' && echo 'Checking for ACTUAL translation violations (not false positives):' && echo 'Pattern: _(\\'Text\\') % value  ❌ WRONG' && echo 'Pattern: _(\\'Text %s\\', value) ✅ CORRECT' && echo '' && grep -r \"_('.*').*%\" records_management/models/ | grep -v \"_('.*', .*\" | head -5 || echo '✅ No actual translation violations found - All patterns are correct!'"
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "RM System Integrity Checklist",
-            "type": "shell",
-            "command": "echo",
-            "args": [
-                "\n🔄 RM SYSTEM INTEGRITY CHECKLIST - BEFORE COMMITTING:\n\n✅ Models/Fields Added:\n  □ Security access rules (ir.model.access.csv)\n  □ View definitions (XML files)\n  □ RM Module Configurator integration\n  □ models/__init__.py import (correct order)\n\n✅ Functions/Methods Added:\n  □ Visibility toggle in rm.module.configurator\n  □ Appropriate configuration category\n  □ Security permissions updated\n\n✅ Views/Wizards Added:\n  □ Access rules in security CSV\n  □ Configurator visibility controls\n  □ Menu integration if needed\n\n✅ Final Validation:\n  □ Test configurator toggles work\n  □ No broken imports or dependencies\n  □ All interconnected files updated\n\n📋 Quick Commands:\n  - Open configurator: code models/rm_module_configurator.py\n  - Check security: code security/ir.model.access.csv\n  - View imports: code models/__init__.py\n"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "new",
-                "showReuseMessage": false,
-                "clear": true
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Open RM Module Configurator",
-            "type": "shell", 
-            "command": "code",
-            "args": ["models/rm_module_configurator.py"],
-            "group": "build",
-            "presentation": {
-                "echo": false,
-                "reveal": "silent",
-                "focus": true
-            },
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/records_management"
-            }
-        },
-        {
-            "label": "Open Security Access Rules",
-            "type": "shell",
-            "command": "code", 
-            "args": ["security/ir.model.access.csv"],
-            "group": "build",
-            "presentation": {
-                "echo": false,
-                "reveal": "silent",
-                "focus": true
-            },
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/records_management"
-            }
-        },
-        {
-            "label": "Check Model Import Order",
-            "type": "shell",
-            "command": "code",
-            "args": ["models/__init__.py"],
-            "group": "build", 
-            "presentation": {
-                "echo": false,
-                "reveal": "silent",
-                "focus": true
-            },
-            "problemMatcher": [],
-            "options": {
-                "cwd": "${workspaceFolder}/records_management"
-            }
-        },
-        {
-            "label": "Validate RM System Integrity",
-            "type": "shell",
-            "command": "python3",
-            "args": ["-m", "py_compile", "models/rm_module_configurator.py"],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": {
-                "owner": "python",
-                "fileLocation": "relative",
-                "pattern": {
-                    "regexp": "^\\s*File \"(.*)\", line (\\d+).*$",
-                    "file": 1,
-                    "line": 2
-                }
-            },
-            "options": {
-                "cwd": "${workspaceFolder}/records_management"
-            }
-        }
-    ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Validate Records Management Module",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"development-tools/syntax-tools/find_syntax_errors.py"
+			],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": [
+				"$eslint-stylish"
+			]
+		},
+		{
+			"label": "Fix Translation Patterns",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"development-tools/archive/fix_pylint_no_member.py"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Run Comprehensive Field Analysis",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"development-tools/analysis-reports/comprehensive_field_analysis.py"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Deploy to GitHub (Git Push)",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"push",
+				"origin",
+				"main"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"dependsOn": "Validate Records Management Module"
+		},
+		{
+			"label": "Git Status Check",
+			"type": "shell",
+			"command": "git",
+			"args": [
+				"status",
+				"--porcelain"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Quick Commit with Validation",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"python development-tools/syntax-tools/find_syntax_errors.py && git add . && git commit -m 'fix: Automated syntax and translation fixes'"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Test Container Specifications",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"testing-workspace/container_dimension_test.py"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Launch Odoo Development Server (Local)",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"-m",
+				"odoo",
+				"--addons-path=./addons,./records_management",
+				"--database=records_dev",
+				"--dev=all"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Multi-AI: GitHub Copilot + Cybrosys + Odoo Extensions",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo '🚀 Starting Multi-AI Validation Workflow...' && echo '✅ GitHub Copilot: Development assistance active' && echo '🔍 Cybrosys Assista: Odoo 18.0 validation ready' && echo '🎯 Odoo Extension Pack: Professional patterns loaded' && echo '📚 Arkademy Training: Advanced learning context active' && python development-tools/syntax-tools/find_syntax_errors.py --odoo-validation"
+			],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "AI Chat Mode Test - Complete Odoo Context",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo '💬 Testing AI Chat Integration...' && echo '' && echo '🤖 GitHub Copilot Chat Features:' && echo '  - /explain: Explains code with Odoo context' && echo '  - /fix: Fixes issues using extension patterns' && echo '  - /review: Reviews with professional Odoo standards' && echo '  - /optimize: Optimizes using extension best practices' && echo '' && echo '🎯 Available AI Commands:' && echo '  - Ctrl+I: Inline chat with Odoo context' && echo '  - Ctrl+Shift+I: Chat panel with training materials' && echo '  - Right-click: Context menu with extension patterns' && echo '' && echo '📚 Extension Context Active:' && echo '  ✅ Professional Odoo patterns' && echo '  ✅ Training materials reference' && echo '  ✅ Advanced IntelliSense' && echo '  ✅ Framework validation'"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Cybrosys: Odoo 18.0 Compatibility Check",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo '🔍 Running Cybrosys Assista Odoo 18.0 validation...' && echo 'Checking records_management module...' && find records_management -name '*.py' -type f | head -5 | xargs -I {} echo 'Validating: {}'"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "GitHub Copilot: Enhanced Development Mode",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo '🤖 GitHub Copilot Enhanced Development Mode Active' && echo '' && echo 'Available AI Features with Odoo Extensions:' && echo '  💬 Chat Mode (Ctrl+Shift+I):' && echo '    - /explain: Detailed code explanations with Odoo patterns' && echo '    - /fix: Smart fixes using extension best practices' && echo '    - /review: Professional code reviews with training context' && echo '    - /optimize: Performance optimization with Odoo standards' && echo '' && echo '  ⚡ Inline Chat (Ctrl+I):' && echo '    - Quick questions with immediate Odoo context' && echo '    - Code generation with professional patterns' && echo '    - Real-time suggestions with extension knowledge' && echo '' && echo '  📝 Code Comments & Review:' && echo '    - Right-click any code → \"Copilot: Explain\"' && echo '    - Hover over code for intelligent explanations' && echo '    - Auto-generated comments with Odoo best practices' && echo '' && echo '  🎯 Extension Integration Active:' && echo '    ✅ Odoo Extension Pack patterns' && echo '    ✅ Arkademy training materials' && echo '    ✅ Professional workflow context' && echo '    ✅ Advanced IntelliSense integration' && echo '' && echo 'Ready for enhanced Odoo development with AI assistance!'"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "AI Workflow: Code → Validate → Deploy",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo '🔄 Complete AI-Assisted Development Workflow' && echo '1. GitHub Copilot: Code generation and assistance' && python development-tools/syntax-tools/find_syntax_errors.py && echo '2. Cybrosys Assista: Odoo 18.0 validation complete' && echo '3. Ready for Git deployment' && git status --porcelain"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"dependsOrder": "sequence",
+			"problemMatcher": []
+		},
+		{
+			"label": "Ignore Translation False Positives",
+			"type": "shell",
+			"command": "bash",
+			"args": [
+				"-c",
+				"echo '🌐 Validating Translation Patterns - Ignoring False Positives...' && echo '' && echo 'Checking for ACTUAL translation violations (not false positives):' && echo 'Pattern: _(\\'Text\\') % value  ❌ WRONG' && echo 'Pattern: _(\\'Text %s\\', value) ✅ CORRECT' && echo '' && grep -r \"_('.*').*%\" records_management/models/ | grep -v \"_('.*', .*\" | head -5 || echo '✅ No actual translation violations found - All patterns are correct!'"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "RM System Integrity Checklist",
+			"type": "shell",
+			"command": "echo",
+			"args": [
+				"\n🔄 RM SYSTEM INTEGRITY CHECKLIST - BEFORE COMMITTING:\n\n✅ Models/Fields Added:\n  □ Security access rules (ir.model.access.csv)\n  □ View definitions (XML files)\n  □ RM Module Configurator integration\n  □ models/__init__.py import (correct order)\n\n✅ Functions/Methods Added:\n  □ Visibility toggle in rm.module.configurator\n  □ Appropriate configuration category\n  □ Security permissions updated\n\n✅ Views/Wizards Added:\n  □ Access rules in security CSV\n  □ Configurator visibility controls\n  □ Menu integration if needed\n\n✅ Final Validation:\n  □ Test configurator toggles work\n  □ No broken imports or dependencies\n  □ All interconnected files updated\n\n📋 Quick Commands:\n  - Open configurator: code models/rm_module_configurator.py\n  - Check security: code security/ir.model.access.csv\n  - View imports: code models/__init__.py\n"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "new",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Open RM Module Configurator",
+			"type": "shell",
+			"command": "code",
+			"args": [
+				"models/rm_module_configurator.py"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": false,
+				"reveal": "silent",
+				"focus": true
+			},
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}/records_management"
+			}
+		},
+		{
+			"label": "Open Security Access Rules",
+			"type": "shell",
+			"command": "code",
+			"args": [
+				"security/ir.model.access.csv"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": false,
+				"reveal": "silent",
+				"focus": true
+			},
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}/records_management"
+			}
+		},
+		{
+			"label": "Check Model Import Order",
+			"type": "shell",
+			"command": "code",
+			"args": [
+				"models/__init__.py"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": false,
+				"reveal": "silent",
+				"focus": true
+			},
+			"problemMatcher": [],
+			"options": {
+				"cwd": "${workspaceFolder}/records_management"
+			}
+		},
+		{
+			"label": "Validate RM System Integrity",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"-m",
+				"py_compile",
+				"models/rm_module_configurator.py"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": {
+				"owner": "python",
+				"fileLocation": "relative",
+				"pattern": {
+					"regexp": "^\\s*File \"(.*)\", line (\\d+).*$",
+					"file": 1,
+					"line": 2
+				}
+			},
+			"options": {
+				"cwd": "${workspaceFolder}/records_management"
+			}
+		},
+		{
+			"label": "Launch Odoo Development Server (Local)",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"-m",
+				"odoo",
+				"--addons-path=./addons,./records_management",
+				"--database=records_dev",
+				"--dev=all"
+			],
+			"isBackground": true,
+			"group": "build"
+		},
+		{
+			"label": "Launch Odoo Development Server (Local)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"-m",
+				"odoo",
+				"--addons-path=./addons,./records_management",
+				"--database=records_dev",
+				"--dev=all"
+			],
+			"isBackground": true,
+			"group": "build"
+		},
+		{
+			"label": "Launch Odoo Development Server (Local)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"-m",
+				"odoo",
+				"--addons-path=./addons,./records_management",
+				"--database=records_dev",
+				"--dev=all"
+			],
+			"isBackground": true,
+			"group": "build"
+		}
+	]
 }
