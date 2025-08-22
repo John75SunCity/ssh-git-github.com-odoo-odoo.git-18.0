@@ -404,6 +404,7 @@ from . import records_bulk_user_import
 from . import scan_retrieval
 from . import transitory_item
 from . import records_destruction_job
+from . import records_category
 from . import records_series
 from . import records_storage_box
 from . import records_request

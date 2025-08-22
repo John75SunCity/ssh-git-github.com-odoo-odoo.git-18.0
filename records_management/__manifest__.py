@@ -55,8 +55,11 @@
         "website_slides",
         "sale_subscription",
         "sale_renting",
+        # Multi-branch support for res.branch
+        "multi_branch",
     ],
     "data": [
+        "views/records_category_views.xml",
         "data/advanced_billing_demo.xml",
         "data/base_rates_container_access_data.xml",
         "data/document_retrieval_rates_data.xml",

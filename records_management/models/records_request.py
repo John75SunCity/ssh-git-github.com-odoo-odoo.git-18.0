@@ -21,8 +21,9 @@ class RecordsRequest(models.Model):
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     destruction_address_id = fields.Many2one('res.partner', string='Destruction Address', related='partner_id.destruction_address_id', readonly=False)
 
-    @api.model
-    def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('records.request') or _('New')
-        return super(RecordsRequest, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('records.request') or _('New')
+        return super(RecordsRequest, self).create(vals_list)

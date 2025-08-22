@@ -1,3 +1,5 @@
+access_records_category_user,records.category.user,model_records_category,records_management.group_records_user,1,1,1,0
+access_records_category_manager,records.category.manager,model_records_category,records_management.group_records_manager,1,1,1,1
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_advanced_billing_user,advanced.billing.user,model_advanced_billing,records_management.group_records_user,1,1,1,0
 access_approval_history_user,approval.history.user,model_approval_history,records_management.group_records_user,1,1,1,0

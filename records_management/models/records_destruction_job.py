@@ -18,11 +18,12 @@ class RecordsDestructionJob(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
 
-    @api.model
-    def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('records.destruction.job') or _('New')
-        return super(RecordsDestructionJob, self).create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('records.destruction.job') or _('New')
+        return super(RecordsDestructionJob, self).create(vals_list)
 
 class RecordsDestructionLine(models.Model):
     _name = 'records.destruction.line'
