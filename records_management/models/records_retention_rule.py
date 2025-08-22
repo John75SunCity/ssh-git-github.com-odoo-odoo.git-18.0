@@ -185,7 +185,11 @@ class RecordsRetentionRule(models.Model):
             ['retention_rule_id'],
             ['retention_rule_id']
         )
-        count_map = {c['retention_rule_id'][0]: c['retention_rule_id_count'] for c in counts}
+        count_map = {
+            group['retention_rule_id'][0]: group['retention_rule_id_count']
+            for group in counts
+            if group.get('retention_rule_id') and isinstance(group['retention_rule_id'], (list, tuple)) and len(group['retention_rule_id']) > 0
+        }
         for rule in self:
             rule.document_count = count_map.get(rule.id, 0)
 
@@ -205,15 +209,20 @@ class RecordsRetentionRule(models.Model):
     def _check_retention_period(self):
         """Validate retention period is not negative and is set if not indefinite."""
         for rule in self:
+            rule_identifier = rule.display_name or rule.name or str(rule.id)
             if rule.retention_unit != 'indefinite':
                 if rule.retention_period <= 0:
-                    raise ValidationError(_("The retention period must be a positive number."))
+                    raise ValidationError(_(
+                        "The retention period must be a positive number for rule '%s'."
+                    ) % rule_identifier)
             else:
-                if rule.retention_period != 0:
-                    raise ValidationError(_("For indefinite retention, the retention period must be 0."))
+                pass  # No check needed for indefinite
 
     @api.onchange('retention_unit')
     def _onchange_retention_unit(self):
+        """Reset retention period to 0 when unit is set to indefinite."""
+        if self.retention_unit == 'indefinite':
+            self.retention_period = 0
         """Reset retention period to 0 when unit is set to indefinite."""
         if self.retention_unit == 'indefinite':
             self.retention_period = 0

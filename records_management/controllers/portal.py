@@ -44,7 +44,6 @@ class RecordsManagementController(http.Controller):
         Enhanced dashboard with comprehensive business intelligence.
         Provides real-time operational metrics and performance indicators.
         """
-        # Validate user permissions
         if not request.env.user.has_group('records_management.group_records_user'):
             return request.redirect('/web/login?redirect=/records/dashboard')
 
@@ -60,15 +59,19 @@ class RecordsManagementController(http.Controller):
         # Get alerts and notifications
         system_alerts = self._get_system_alerts()
 
+        # Get refresh interval from system parameters or use default
+        refresh_interval = int(request.env['ir.config_parameter'].sudo().get_param(
+            'records_management.dashboard_refresh_interval', 300
+        ))
+
         context = {
             'dashboard_data': dashboard_data,
             'recent_activities': recent_activities,
             'performance_metrics': performance_metrics,
             'system_alerts': system_alerts,
             'user_permissions': self._get_user_dashboard_permissions(),
-            'refresh_interval': 300,  # 5 minutes
+            'refresh_interval': refresh_interval,
         }
-
         return request.render('records_management.enhanced_dashboard', context)
 
     @http.route("/records/dashboard/data", type="json", auth="user", methods=["POST"])
@@ -85,21 +88,21 @@ class RecordsManagementController(http.Controller):
                     'success': True,
                     'data': self._get_dashboard_data()
                 }
-            if data_type == 'metrics':
+            elif data_type == 'metrics':
                 return {
                     'success': True,
                     'data': self._get_performance_metrics()
                 }
-            if data_type == 'activities':
+            elif data_type == 'activities':
                 return {
                     'success': True,
                     'data': self._get_recent_activities()
                 }
-
-            return {
-                'success': False,
-                'error': 'Invalid data type requested'
-            }
+            else:
+                return {
+                    'success': False,
+                    'error': 'Invalid data type requested'
+                }
 
         except Exception as e:
             _logger.error("Error fetching dashboard data: %s", e)
@@ -212,20 +215,29 @@ class RecordsManagementController(http.Controller):
             if action_type == 'change_location':
                 new_location_id = values.get('location_id')
                 if new_location_id:
-                    containers.write({'location_id': int(new_location_id)})
+                    try:
+                        new_location_id_int = int(new_location_id)
+                    except (TypeError, ValueError):
+                        return {'success': False, 'error': 'Invalid location_id provided'}
+                    containers.write({'location_id': new_location_id_int})
                     updated_count = len(containers)
 
                     # Create movement records for audit trail
                     for container in containers:
-                        self._create_movement_record(container, new_location_id)
+                        self._create_movement_record(container, new_location_id_int)
 
             if action_type == 'update_status':
                 new_status = values.get('status')
-                if new_status:
-                    containers.write({'state': new_status})
-                    updated_count = len(containers)
-
             if action_type == 'add_tags':
+                tag_ids = values.get('tag_ids', [])
+                if tag_ids:
+                    # Ensure tag_ids is a list of integers
+                    if not isinstance(tag_ids, list):
+                        tag_ids = [tag_ids]
+                    tag_ids = [int(t) for t in tag_ids if str(t).isdigit()]
+                    if tag_ids:
+                        containers.write({'tag_ids': [(6, 0, tag_ids)]})
+                        updated_count = len(containers)
                 tag_ids = values.get('tag_ids', [])
                 if tag_ids:
                     containers.write({'tag_ids': [(6, 0, tag_ids)]})
@@ -287,7 +299,7 @@ class RecordsManagementController(http.Controller):
                 container.volume or 0,
                 container.weight or 0,
                 container.state or '',
-                container.create_date.strftime('%Y-%m-%d') if container.create_date else ''
+                container.create_date.strftime('%Y-%m-%d') if hasattr(container.create_date, 'strftime') else (container.create_date or '')
             ])
 
         # Create response
@@ -432,13 +444,13 @@ class RecordsManagementController(http.Controller):
 
         return {
             'total_containers': total_containers,
-            'containers_by_type': {item['container_type']: item['__count']
+            'containers_by_type': {(item['container_type'] or 'Unknown'): item['__count']
                                  for item in containers_by_type},
             'total_volume_cf': round(total_volume, 2),
             'pending_pickups': pending_pickups,
             'recent_destructions': recent_destructions,
             'location_utilization': location_utilization,
-            'active_customers': len(Container.search([('active', '=', True)]).mapped('partner_id')),
+            'active_customers': len(set(Container.search([('active', '=', True)]).mapped('partner_id'))),
         }
 
     def _get_recent_activities(self, limit=10):
@@ -563,8 +575,8 @@ class RecordsManagementController(http.Controller):
             return {}
 
         total_containers = len(containers)
-        total_volume = sum(c.volume or 0 for c in containers)
-        total_weight = sum(c.weight or 0 for c in containers)
+        total_volume = float(sum(c.volume or 0 for c in containers))
+        total_weight = float(sum(c.weight or 0 for c in containers))
 
         # Group by container type
         type_breakdown = {}
@@ -601,17 +613,17 @@ class RecordsManagementController(http.Controller):
             'movement_date': datetime.now(),
             'moved_by': request.env.user.id,
             'movement_type': 'location_change',
-            'notes': 'Bulk location update via dashboard'
         })
 
     def _create_audit_log(self, action_type, description):
-        """Create NAID compliance audit log."""
+        """Create NAID audit log entry."""
+        ip_address = getattr(getattr(request, 'httprequest', None), 'remote_addr', None)
         request.env['naid.audit.log'].sudo().create({
             'action_type': action_type,
             'description': description,
             'user_id': request.env.user.id,
             'timestamp': datetime.now(),
-            'ip_address': request.httprequest.remote_addr,
+            'ip_address': ip_address,
         })
 
     def _generate_container_number_suggestions(self, base_number, customer_id):
@@ -690,5 +702,7 @@ class RecordsManagementController(http.Controller):
 
     def _check_compliance_warnings(self):
         """Check for compliance-related warnings."""
+        # Implementation would check for compliance violations
+        return []  # Placeholder
         # Implementation would check for compliance violations
         return []  # Placeholder

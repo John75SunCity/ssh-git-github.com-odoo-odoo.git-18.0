@@ -50,14 +50,24 @@
         'data/user_setup_data.xml',
         'reports/account_move_line_reports.xml',
         'reports/additional_reports.xml',
-        # Add more report files as needed, using 'reports/'
-        # Use glob patterns for views/templates if possible
-        'views/*.xml',
-        'templates/*.xml'
-    ],
-    'demo': [
-        'demo/demo_records.xml'
-    ],
+        'views/records_management_dashboard_view.xml',
+        'views/records_management_dashboard.xml',
+        'views/records_management_menu.xml',
+        'views/records_management_form.xml',
+        'views/records_management_tree.xml',
+        'templates/records_portal_templates.xml',
+        'templates/records_dashboard_templates.xml',
+        'views/records_management_document_view.xml',
+        'views/records_management_shredding_view.xml',
+        'views/records_management_settings_view.xml',
+        'templates/records_management_portal_templates.xml',
+        'templates/records_management_dashboard_templates.xml'
+            'templates/records_management_dashboard_templates.xml'
+        ],
+    # Use glob patterns for views/templates if possible
+        'demo': [
+            'demo/demo_records.xml'
+        ],
     'assets': {
         'web.assets_backend': [
             'records_management/static/src/lib/vis/vis-network.min.js',
