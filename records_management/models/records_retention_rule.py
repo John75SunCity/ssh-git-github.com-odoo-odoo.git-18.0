@@ -217,4 +217,3 @@ class RecordsRetentionRule(models.Model):
         """Reset retention period to 0 when unit is set to indefinite."""
         if self.retention_unit == 'indefinite':
             self.retention_period = 0
-                    rule.retention_period = 0
