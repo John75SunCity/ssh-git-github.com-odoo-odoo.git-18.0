@@ -13,13 +13,13 @@ class RecordsApprovalStep(models.Model):
     name = fields.Char(string="Step Name", required=True, readonly=True)
     sequence = fields.Integer(string='Sequence', default=10, readonly=True)
     company_id = fields.Many2one(related='request_id.company_id', store=True)
-    
+
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    request_id = fields.Many2one('records.approval.request', string="Approval Request", required=True, ondelete='cascade', readonly=True)
+    request_id = fields.Many2one('portal.request', string="Portal Request", required=True, ondelete='cascade', readonly=True)
     workflow_line_id = fields.Many2one('records.approval.workflow.line', string="Workflow Step", readonly=True, help="The workflow template line this step is based on.")
-    
+
     # ============================================================================
     # APPROVAL STATE & DETAILS
     # ============================================================================
@@ -29,14 +29,14 @@ class RecordsApprovalStep(models.Model):
         ('rejected', 'Rejected'),
         ('skipped', 'Skipped'),
     ], string="Status", default='pending', required=True, tracking=True, readonly=True)
-    
+
     approver_id = fields.Many2one('res.users', string="Assigned Approver", readonly=True, help="The user responsible for this approval step.")
     approver_group_id = fields.Many2one('res.groups', string="Assigned Group", readonly=True, help="The group responsible for this approval step.")
-    
+
     approved_by_id = fields.Many2one('res.users', string="Processed By", readonly=True)
     approval_date = fields.Datetime(string="Processed Date", readonly=True)
     comments = fields.Text(string="Approver Comments")
-    
+
     can_approve = fields.Boolean(string="Can Current User Approve?", compute='_compute_can_approve', help="Technical field to control UI visibility of approval buttons.")
 
     # ============================================================================
@@ -61,7 +61,7 @@ class RecordsApprovalStep(models.Model):
         self.ensure_one()
         if not self.can_approve:
             raise UserError(_("You are not authorized to approve this step."))
-        
+
         self.write({
             'state': 'approved',
             'approved_by_id': self.env.user.id,
@@ -74,7 +74,7 @@ class RecordsApprovalStep(models.Model):
         self.ensure_one()
         if not self.can_approve:
             raise UserError(_("You are not authorized to reject this step."))
-            
+
         self.write({
             'state': 'rejected',
             'approved_by_id': self.env.user.id,
@@ -88,7 +88,7 @@ class RecordsApprovalStep(models.Model):
         self.ensure_one()
         if not self.env.user.has_group('records_management.group_records_manager'):
             raise UserError(_("Only a Records Manager can skip an approval step."))
-        
+
         self.write({
             'state': 'skipped',
             'approved_by_id': self.env.user.id,

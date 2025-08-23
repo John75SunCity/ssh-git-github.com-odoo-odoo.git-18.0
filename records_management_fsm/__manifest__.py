@@ -5,9 +5,10 @@
     'summary': 'FSM integration for Records Management',
     'author': 'Your Name',
     'license': 'LGPL-3',
-    'depends': ['records_management', 'industry_fsm'],
+    'depends': ['records_management', 'industry_fsm', 'project'],
     'data': [
-        # Add your views, security, data files here
+        'security/ir.model.access.csv',
+        # Add your views, data files here
     ],
     'installable': True,
     'auto_install': False,

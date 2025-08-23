@@ -32,6 +32,7 @@ class RecordsDocument(models.Model):
     lot_id = fields.Many2one('stock.lot', string="Stock Lot", tracking=True, help="Lot/Serial number associated with this document.")
     temp_inventory_id = fields.Many2one('temp.inventory', string="Temporary Inventory")
     retention_policy_id = fields.Many2one('records.retention.policy', string="Retention Policy", tracking=True)
+    retention_rule_id = fields.Many2one('records.retention.rule', string="Retention Rule", tracking=True)
     series_id = fields.Many2one('records.series', string='Series', tracking=True)
     storage_box_id = fields.Many2one('records.storage.box', string='Storage Box', tracking=True)
     request_id = fields.Many2one('records.request', string='Request', tracking=True)

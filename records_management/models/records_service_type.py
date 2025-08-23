@@ -28,7 +28,6 @@ class RecordsServiceType(models.Model):
     active = fields.Boolean(default=True, tracking=True)
     description = fields.Text(string='Description')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    records_ids = fields.One2many('records.record', 'service_type_id', string='Records')  # assumes records.record model exists
 
     # Optional: workflow state placeholder
     status = fields.Selection([

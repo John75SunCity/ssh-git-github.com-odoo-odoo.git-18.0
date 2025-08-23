@@ -15,10 +15,9 @@
     'license': 'LGPL-3',
     'depends': [
         'base', 'mail', 'web', 'product', 'stock', 'account', 'sale', 'purchase',
-        'portal', 'website', 'point_of_sale', 'sign', 'sms', 'survey',
-        'hr', 'hr_timesheet', 'hr_payroll', 'project', 'maintenance',
-        'sale_management', 'website_sale', 'industry_fsm', 'quality', 'website_slides',
-        'sale_subscription', 'sale_renting', 'multi_branch'
+        'portal', 'website', 'point_of_sale', 'sms', 'survey',
+        'hr', 'project', 'maintenance', 'fleet',
+        'sale_management', 'website_sale'
     ],
     "data": [
         "data/advanced_billing_demo.xml",

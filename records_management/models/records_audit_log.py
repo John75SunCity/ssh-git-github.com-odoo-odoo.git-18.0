@@ -38,6 +38,12 @@ class RecordsAuditLog(models.Model):
     res_name = fields.Char(string="Record Name", compute='_compute_res_name', store=False, readonly=True, help="The display name of the affected document.")
 
     # ============================================================================
+    # RELATED POLICY AND RULE
+    # ============================================================================
+    policy_id = fields.Many2one('records.retention.policy', string="Retention Policy", readonly=True, help="Related retention policy for this audit log entry.")
+    rule_id = fields.Many2one('records.retention.rule', string="Retention Rule", readonly=True, help="Related retention rule for this audit log entry.")
+
+    # ============================================================================
     # TECHNICAL DETAILS
     # ============================================================================
     ip_address = fields.Char(string="IP Address", readonly=True, help="The IP address from which the action was performed.")

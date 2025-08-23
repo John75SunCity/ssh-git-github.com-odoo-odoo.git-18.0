@@ -17,7 +17,7 @@ class RecordsApprovalWorkflow(models.Model):
     # ============================================================================
     # CONFIGURATION
     # ============================================================================
-    res_model_id = fields.Many2one('ir.model', string="Applies To", required=True, tracking=True,
+    res_model_id = fields.Many2one('ir.model', string="Applies To", required=True, tracking=True, ondelete='cascade',
         help="The model this approval workflow applies to (e.g., Destruction Request, Service Request).")
     description = fields.Text(string="Description", help="A detailed explanation of when and how this workflow should be used.")
 

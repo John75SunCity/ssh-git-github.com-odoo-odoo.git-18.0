@@ -66,7 +66,7 @@ class ShreddingTeam(models.Model):
     # ============================================================================
     # PERFORMANCE METRICS (COMPUTED)
     # ============================================================================
-    service_ids = fields.One2many('fsm.order', 'shredding_team_id', string="Assigned Services")
+    service_ids = fields.One2many('project.task', 'shredding_team_id', string="Assigned Services")
     service_count = fields.Integer(string="Total Service Count", compute='_compute_performance_metrics', store=True)
     total_services_completed = fields.Integer(string="Services Completed", compute='_compute_performance_metrics', store=True)
     total_weight_processed = fields.Float(string="Total Weight Processed (kg)", compute='_compute_performance_metrics', store=True)
@@ -90,16 +90,16 @@ class ShreddingTeam(models.Model):
         for team in self:
             team.member_count = len(team.member_ids)
 
-    @api.depends('service_ids.state', 'service_ids.total_weight', 'service_ids.duration', 'max_capacity_per_day')
+    @api.depends('service_ids.stage_id', 'service_ids.weight_processed', 'service_ids.planned_hours', 'max_capacity_per_day')
     def _compute_performance_metrics(self):
         for team in self:
-            completed_services = team.service_ids.filtered(lambda s: s.state == 'done')
+            completed_services = team.service_ids.filtered(lambda s: s.stage_id.is_closed if s.stage_id else False)
             team.service_count = len(team.service_ids)
             team.total_services_completed = len(completed_services)
-            team.total_weight_processed = sum(completed_services.mapped('total_weight'))
+            team.total_weight_processed = sum(completed_services.mapped('weight_processed') or [0.0])
 
             if completed_services:
-                total_duration = sum(completed_services.mapped('duration'))
+                total_duration = sum(completed_services.mapped('planned_hours') or [0.0])
                 team.average_service_time = total_duration / len(completed_services) if completed_services else 0.0
             else:
                 team.average_service_time = 0.0
@@ -144,7 +144,7 @@ class ShreddingTeam(models.Model):
 
     def action_deactivate_team(self):
         self.ensure_one()
-        active_services = self.env['fsm.order'].search_count([('shredding_team_id', '=', self.id), ('stage_id.is_closed', '=', False)])
+        active_services = self.env['project.task'].search_count([('shredding_team_id', '=', self.id), ('stage_id.is_closed', '=', False)])
         if active_services > 0:
             raise UserError(_("Cannot deactivate a team with active services. Please complete or reassign all services first."))
         self.write({"state": "inactive"})
@@ -155,7 +155,7 @@ class ShreddingTeam(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Team Services'),
-            'res_model': 'fsm.order',
+            'res_model': 'project.task',
             'view_mode': 'tree,form,kanban',
             'domain': [('shredding_team_id', '=', self.id)],
             'context': {'default_shredding_team_id': self.id},
