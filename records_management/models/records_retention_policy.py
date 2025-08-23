@@ -258,6 +258,9 @@ class RecordsRetentionPolicy(models.Model):
 
     @api.depends('document_ids')
     def _compute_document_count(self):
+        """Compute the number of documents linked to this policy."""
+        for policy in self:
+            policy.document_count = len(policy.document_ids)
     @api.depends('parent_policy_id')
     def _compute_policy_level(self):
         """Compute policy level (hierarchy depth) with circular reference safeguard."""

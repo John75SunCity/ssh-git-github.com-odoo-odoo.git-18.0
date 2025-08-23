@@ -28,9 +28,9 @@ def check_syntax(file_path):
 
 def main():
     """Find all Python files with syntax errors"""
-    models_dir = Path(
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models"
-    )
+
+    # Use the correct local path for the models directory
+    models_dir = Path(__file__).parent.parent.parent / "records_management" / "models"
 
     if not models_dir.exists():
         print(f"Error: Directory {models_dir} does not exist")
