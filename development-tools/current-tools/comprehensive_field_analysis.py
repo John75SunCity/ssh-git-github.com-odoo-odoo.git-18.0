@@ -222,5 +222,8 @@ def find_missing_fields():
     return missing_by_model
 
 if __name__ == "__main__":
-    os.chdir('/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management')
+    # Use the local records_management directory relative to script location
+    import pathlib
+    script_dir = pathlib.Path(__file__).parent.parent.parent / 'records_management'
+    os.chdir(script_dir)
     missing_fields = find_missing_fields()

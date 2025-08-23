@@ -60,6 +60,7 @@ class RecordsBillingContact(models.Model):
     phone = fields.Char(string='Phone', tracking=True)
     job_title = fields.Char(string='Job Title', tracking=True)
 
+
     # ============================================================================
     # CONFIGURATION & NOTES
     # ============================================================================
@@ -74,6 +75,12 @@ class RecordsBillingContact(models.Model):
         help="If checked, this contact will receive account statements."
     )
     notes = fields.Text(string='Internal Notes')
+
+    # === AUDIT: MISSING FIELDS ===
+    primary_contact = fields.Char(string='Primary Contact')
+    receive_service_invoices = fields.Char(string='Receive Service Invoices')
+    receive_statements = fields.Char(string='Receive Statements')
+    receive_storage_invoices = fields.Char(string='Receive Storage Invoices')
 
     # ============================================================================
     # COMPUTE METHODS

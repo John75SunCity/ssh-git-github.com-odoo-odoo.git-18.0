@@ -4,6 +4,10 @@ from odoo.exceptions import ValidationError, UserError
 
 
 class RecordsLocation(models.Model):
+    # === AUDIT: MISSING FIELDS ===
+    description = fields.Char(string='Description')
+    location_type = fields.Char(string='Location Type')
+    storage_capacity = fields.Char(string='Storage Capacity')
     _name = 'records.location'
     _description = 'Records Storage Location'
     _inherit = ['mail.thread', 'mail.activity.mixin']
