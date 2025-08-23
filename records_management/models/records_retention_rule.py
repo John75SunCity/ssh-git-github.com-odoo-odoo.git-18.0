@@ -160,6 +160,9 @@ class RecordsRetentionRule(models.Model):
             if rule.expiration_date:
                 rule.is_expired = rule.expiration_date < today
                 rule.overdue_days = (today - rule.expiration_date).days if rule.is_expired else 0
+            else:
+                rule.is_expired = False
+                rule.overdue_days = 0
     @api.depends('version')
     def _compute_version_details(self):
         # TODO: Implement logic to determine if this is the latest version of the rule
@@ -177,8 +180,8 @@ class RecordsRetentionRule(models.Model):
     def _check_retention_period(self):
         """Validate retention period is positive and required if not indefinite."""
         for rule in self:
+            if rule.retention_unit != 'indefinite':
                 if rule.retention_period is None or rule.retention_period <= 0:
-                    raise ValidationError(_("Retention period must be a positive number for rule '%s'.") % (rule.display_name or rule.name))
                     raise ValidationError(_("Retention period must be a positive number for rule '%s'.") % (rule.display_name or rule.name))
             else:
                 if rule.retention_period != 0:
