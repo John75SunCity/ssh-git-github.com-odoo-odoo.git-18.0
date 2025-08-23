@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    This XML file defines the report for the Records Permanent Flag Wizard.
+    It includes the report action and the QWeb template for rendering the report.
+    The report provides a summary of the fields that have been marked as permanent
+    through the wizard.
+-->
 <odoo>
+    <!--
+        Report Action for the Records Permanent Flag Wizard.
+        This action defines the report that can be printed from the wizard. It specifies
+        the model, report type, and other parameters for generating the report.
+    -->
     <record id="report_records_permanent_flag_wizard" model="ir.actions.report">
         <field name="name">Records Permanent Flag Wizard</field>
         <field name="model">records.permanent.flag.wizard</field>
@@ -11,6 +22,12 @@
         <field name="binding_type">report</field>
     </record>
 
+    <!--
+        QWeb Template for the Records Permanent Flag Wizard Report.
+        This template defines the structure and content of the report. It iterates
+        through the wizard's records and displays a table of the fields that have
+        been flagged as permanent, showing their name and description.
+    -->
     <template id="report_records_permanent_flag_wizard_view">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
@@ -25,7 +42,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-if="doc.field_ids">
+                            <t t-if="doc.field_ids">
                                 <tr t-foreach="doc.field_ids" t-as="field">
                                     <td>
                                         <span t-out="field.name"/>
@@ -37,8 +54,6 @@
                             </t>
                             </tbody>
                         </table>
-                    </div>
-                </t>
             </t>
         </t>
     </template>
