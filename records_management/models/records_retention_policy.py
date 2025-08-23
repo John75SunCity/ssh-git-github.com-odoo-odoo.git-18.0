@@ -54,7 +54,7 @@ class RecordsRetentionPolicy(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer')
     department_id = fields.Many2one('hr.department', string='Department')
     category_id = fields.Many2one('records.category', string='Category')
-    branch_id = fields.Many2one('operating.unit', string='Operating Unit')
+    branch_id = fields.Many2one('res.company', string='Operating Unit')
     document_ids = fields.One2many('records.document', 'retention_policy_id', string='Documents')
     audit_log_ids = fields.One2many('records.audit.log', 'policy_id', string='Audit Log')
     child_policy_ids = fields.One2many('records.retention.policy', 'parent_policy_id', string='Child Policies')
