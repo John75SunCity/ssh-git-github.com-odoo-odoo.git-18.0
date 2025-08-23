@@ -25,7 +25,8 @@
         "odoo.diag_missing_imports": "none",
         "odoo.ac_filter_model_names": true,
         "odoo.refresh_mode": "adaptive",
-        "odoo.linting.enable": false
+        "odoo.linting.enable": false,
+        "python.languageServer": "None"
     },
     "extensions": {
         "recommendations": [
