@@ -211,6 +211,31 @@
         "editor.autoIndent": "keep"
     },
 
+    // === ODOO SHORTCUTS EXTENSION ===
+    "odoo-shortcuts.openFiles": true,
+    "odoo-shortcuts.sites": [
+        {
+            "label": "Odoo 18.0 Documentation",
+            "url": "https://www.odoo.com/documentation/18.0/"
+        },
+        {
+            "label": "Odoo Developer Documentation",
+            "url": "https://www.odoo.com/documentation/18.0/developer.html"
+        },
+        {
+            "label": "Odoo ORM Documentation", 
+            "url": "https://www.odoo.com/documentation/18.0/developer/reference/backend/orm.html"
+        },
+        {
+            "label": "Odoo Views Documentation",
+            "url": "https://www.odoo.com/documentation/18.0/developer/reference/user_interface/view_records.html"
+        },
+        {
+            "label": "Records Management GitHub",
+            "url": "https://github.com/John75SunCity/ssh-git-github.com-odoo-odoo.git-18.0"
+        }
+    ],
+
     // === FILE ASSOCIATIONS ===
     "files.associations": {
         "*.py": "python",
