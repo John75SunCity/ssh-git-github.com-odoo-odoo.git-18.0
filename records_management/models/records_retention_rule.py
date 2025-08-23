@@ -1,3 +1,4 @@
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -11,7 +12,7 @@ class RecordsRetentionRule(models.Model):
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
-    name = fields.Char(string="Rule Name", required=True, tracking=True)
+    name = fields.Char(string="Rule Name", required=True, tracking=True, index=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     sequence = fields.Integer(string="Sequence", default=10, help="Determines the order of execution for rules within a policy.")
     active = fields.Boolean(string='Active', default=True, tracking=True)
@@ -27,10 +28,29 @@ class RecordsRetentionRule(models.Model):
     # ============================================================================
     policy_id = fields.Many2one('records.retention.policy', string="Policy", required=True, ondelete='cascade', index=True, tracking=True)
     document_type_id = fields.Many2one('records.document.type', string="Document Type", help="Apply this rule only to this type of document. Leave empty to apply to all.")
+    partner_id = fields.Many2one('res.partner', string='Customer')
+    department_id = fields.Many2one('hr.department', string='Department')
+    category_id = fields.Many2one('records.category', string='Category')
+    tag_ids = fields.Many2many('records.tag', string='Tags')
+    country_ids = fields.Many2many('res.country', string='Applicable Countries')
+    state_ids = fields.Many2many('res.country.state', string='Applicable States')
+    branch_company_id = fields.Many2one(
+        'res.company',
+        string='Branch (Subsidiary/Location)',
+        help="Specifies the branch or subsidiary company, distinct from the main company_id."
+    )
+
+    # Hierarchy
+    is_template = fields.Boolean(string='Is Template')
+    template_id = fields.Many2one('records.retention.rule', string='Template')
+    parent_rule_id = fields.Many2one('records.retention.rule', string='Parent Rule', check_company=True)
+    child_rule_ids = fields.One2many('records.retention.rule', 'parent_rule_id', string='Child Rules')
+    rule_level = fields.Integer(string='Rule Level', compute='_compute_rule_level', store=True)
 
     # ============================================================================
     # RETENTION PERIOD
     # ============================================================================
+    retention_type = fields.Selection([('permanent', 'Permanent'), ('temporary', 'Temporary')], string='Retention Type', default='temporary')
     retention_period = fields.Integer(string="Retention Period", tracking=True)
     retention_unit = fields.Selection([
         ('days', 'Days'),
@@ -38,141 +58,62 @@ class RecordsRetentionRule(models.Model):
         ('years', 'Years'),
         ('indefinite', 'Indefinite'),
     ], string="Retention Unit", default='years', required=True, tracking=True)
+    retention_event = fields.Selection([('creation', 'Creation Date'), ('end_of_year', 'End of Fiscal Year'), ('last_activity', 'Last Activity Date')], string='Retention Event')
 
     # ============================================================================
-    # ACTION & STATE
+    # ACTION, STATE & STATUS
     # ============================================================================
     action_on_expiry = fields.Selection([
         ('destroy', 'Schedule for Destruction'),
         ('archive', 'Archive'),
         ('review', 'Flag for Review'),
     ], string="Action on Expiry", default='destroy', required=True, tracking=True)
-
     state = fields.Selection(related='policy_id.state', readonly=True, store=True)
-
-    # New Fields from analysis
-    partner_id = fields.Many2one('res.partner', string='Customer')
-    department_id = fields.Many2one('hr.department', string='Department')
-    category_id = fields.Many2one('records.category', string='Category')
-    retention_type = fields.Selection([('permanent', 'Permanent'), ('temporary', 'Temporary')], string='Retention Type')
-    retention_event = fields.Selection([('creation', 'Creation Date'), ('end_of_year', 'End of Fiscal Year'), ('last_activity', 'Last Activity Date')], string='Retention Event')
-    is_legal_hold = fields.Boolean(string='Legal Hold')
-    legal_hold_reason = fields.Text(string='Legal Hold Reason')
-    branch_id = fields.Many2one('operating.unit', string='Operating Unit')
-    document_ids = fields.One2many('records.document', 'retention_rule_id', string='Documents')
-    document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
     next_action_date = fields.Date(string='Next Action Date')
     next_action = fields.Selection([('review', 'Review'), ('destroy', 'Destroy')], string='Next Action')
-    destruction_approver_ids = fields.Many2many('res.users', string='Destruction Approvers')
-    is_default = fields.Boolean(string='Is Default Rule')
-    audit_log_ids = fields.One2many('records.audit.log', 'rule_id', string='Audit Log')
-    related_regulation = fields.Char(string='Related Regulation')
-    storage_location_id = fields.Many2one('stock.location', string='Storage Location')
-    is_template = fields.Boolean(string='Is Template')
-    template_id = fields.Many2one('records.retention.rule', string='Template')
-    child_rule_ids = fields.One2many('records.retention.rule', 'parent_rule_id', string='Child Rules')
-    parent_rule_id = fields.Many2one('records.retention.rule', string='Parent Rule')
-    rule_level = fields.Integer(string='Rule Level', compute='_compute_rule_level')
-    is_global = fields.Boolean(string='Is Global')
-    country_ids = fields.Many2many('res.country', string='Applicable Countries')
-    state_ids = fields.Many2many('res.country.state', string='Applicable States')
-    tag_ids = fields.Many2many('records.tag', string='Tags')
-    priority = fields.Selection([('0', 'Low'), ('1', 'Medium'), ('2', 'High')], string='Priority')
-    review_cycle = fields.Integer(string='Review Cycle (days)')
-    last_review_date = fields.Date(string='Last Review Date')
-    last_review_by_id = fields.Many2one('res.users', string='Last Reviewed By')
-    next_review_date = fields.Date(string='Next Review Date')
-    next_reviewer_id = fields.Many2one('res.users', string='Next Reviewer')
-    is_approved = fields.Boolean(string='Is Approved')
+    expiration_date = fields.Date(string='Expiration Date', compute='_compute_expiration_details', store=True)
+    is_expired = fields.Boolean(string='Is Expired', compute='_compute_expiration_details')
+    overdue_days = fields.Integer(string='Overdue Days', compute='_compute_expiration_details')
+
+    # Consolidated Status Fields
+    approval_status = fields.Selection([
+        ('draft', 'Draft'),
+        ('pending', 'Pending Approval'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ], string='Approval Status', default='draft', tracking=True)
     approved_by_id = fields.Many2one('res.users', string='Approved By')
     approval_date = fields.Date(string='Approval Date')
     rejection_reason = fields.Text(string='Rejection Reason')
-    is_rejected = fields.Boolean(string='Is Rejected')
-    rejected_by_id = fields.Many2one('res.users', string='Rejected By')
-    rejection_date = fields.Date(string='Rejection Date')
-    is_pending_approval = fields.Boolean(string='Is Pending Approval')
-    is_pending_review = fields.Boolean(string='Is Pending Review')
-    is_pending_destruction = fields.Boolean(string='Is Pending Destruction')
-    is_under_legal_hold = fields.Boolean(string='Under Legal Hold')
-    is_under_review = fields.Boolean(string='Under Review')
-    is_under_destruction = fields.Boolean(string='Under Destruction')
-    is_expired = fields.Boolean(string='Is Expired')
-    expiration_date = fields.Date(string='Expiration Date')
-    is_overdue = fields.Boolean(string='Is Overdue')
-    overdue_days = fields.Integer(string='Overdue Days')
-    is_compliant = fields.Boolean(string='Is Compliant')
-    compliance_status = fields.Selection([('compliant', 'Compliant'), ('non_compliant', 'Non-Compliant'), ('unknown', 'Unknown')], string='Compliance Status')
+
+    version_status = fields.Selection([
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('superseded', 'Superseded'),
+        ('expired', 'Expired'),
+    ], string='Version Status', default='draft', tracking=True)
+    version = fields.Integer(string='Version', default=1)
+    is_latest_version = fields.Boolean(string='Is Latest Version', compute='_compute_version_details')
+
+    compliance_status = fields.Selection([
+        ('compliant', 'Compliant'),
+        ('non_compliant', 'Non-Compliant'),
+        ('unknown', 'Unknown')
+    ], string='Compliance Status', default='unknown')
     compliance_notes = fields.Text(string='Compliance Notes')
     compliance_check_date = fields.Date(string='Compliance Check Date')
     compliance_checker_id = fields.Many2one('res.users', string='Compliance Checker')
-    is_archived = fields.Boolean(string='Is Archived')
-    archived_by_id = fields.Many2one('res.users', string='Archived By')
-    archived_date = fields.Date(string='Archived Date')
-    is_restored = fields.Boolean(string='Is Restored')
-    restored_by_id = fields.Many2one('res.users', string='Restored By')
-    restored_date = fields.Date(string='Restored Date')
-    is_deleted = fields.Boolean(string='Is Deleted')
-    deleted_by_id = fields.Many2one('res.users', string='Deleted By')
-    deleted_date = fields.Date(string='Deleted Date')
-    is_purged = fields.Boolean(string='Is Purged')
-    purged_by_id = fields.Many2one('res.users', string='Purged By')
-    purged_date = fields.Date(string='Purged Date')
-    is_locked = fields.Boolean(string='Is Locked')
-    locked_by_id = fields.Many2one('res.users', string='Locked By')
-    locked_date = fields.Date(string='Locked Date')
-    is_unlocked = fields.Boolean(string='Is Unlocked')
-    unlocked_by_id = fields.Many2one('res.users', string='Unlocked By')
-    unlocked_date = fields.Date(string='Unlocked Date')
-    is_versioned = fields.Boolean(string='Is Versioned')
-    version = fields.Integer(string='Version')
-    is_latest_version = fields.Boolean(string='Is Latest Version')
-    is_major_version = fields.Boolean(string='Is Major Version')
-    is_minor_version = fields.Boolean(string='Is Minor Version')
-    is_draft = fields.Boolean(string='Is Draft')
-    is_published = fields.Boolean(string='Is Published')
-    published_by_id = fields.Many2one('res.users', string='Published By')
-    published_date = fields.Date(string='Published Date')
-    is_unpublished = fields.Boolean(string='Is Unpublished')
-    unpublished_by_id = fields.Many2one('res.users', string='Unpublished By')
-    unpublished_date = fields.Date(string='Unpublished Date')
-    is_superseded = fields.Boolean(string='Is Superseded')
-    superseded_by_id = fields.Many2one('records.retention.rule', string='Superseded By')
-    supersedes_id = fields.Many2one('records.retention.rule', string='Supersedes')
-    is_effective = fields.Boolean(string='Is Effective')
-    effective_date = fields.Date(string='Effective Date')
-    is_ineffective = fields.Boolean(string='Is Ineffective')
-    ineffective_date = fields.Date(string='Ineffective Date')
-    is_current = fields.Boolean(string='Is Current')
-    is_historical = fields.Boolean(string='Is Historical')
-    is_future = fields.Boolean(string='Is Future')
-    is_active_version = fields.Boolean(string='Is Active Version')
-    is_inactive_version = fields.Boolean(string='Is Inactive Version')
-    is_draft_version = fields.Boolean(string='Is Draft Version')
-    is_approved_version = fields.Boolean(string='Is Approved Version')
-    is_rejected_version = fields.Boolean(string='Is Rejected Version')
-    is_pending_approval_version = fields.Boolean(string='Is Pending Approval Version')
-    is_pending_review_version = fields.Boolean(string='Is Pending Review Version')
-    is_under_review_version = fields.Boolean(string='Is Under Review Version')
-    is_expired_version = fields.Boolean(string='Is Expired Version')
-    is_overdue_version = fields.Boolean(string='Is Overdue Version')
-    is_compliant_version = fields.Boolean(string='Is Compliant Version')
-    is_non_compliant_version = fields.Boolean(string='Is Non-Compliant Version')
-    is_unknown_compliance_version = fields.Boolean(string='Is Unknown Compliance Version')
-    is_locked_version = fields.Boolean(string='Is Locked Version')
-    is_unlocked_version = fields.Boolean(string='Is Unlocked Version')
-    is_versioned_version = fields.Boolean(string='Is Versioned Version')
-    is_latest_version_version = fields.Boolean(string='Is Latest Version Version')
-    is_major_version_version = fields.Boolean(string='Is Major Version Version')
-    is_minor_version_version = fields.Boolean(string='Is Minor Version Version')
-    is_draft_version_version = fields.Boolean(string='Is Draft Version Version')
-    is_published_version_version = fields.Boolean(string='Is Published Version Version')
-    is_unpublished_version_version = fields.Boolean(string='Is Unpublished Version Version')
-    is_superseded_version = fields.Boolean(string='Is Superseded Version')
-    is_effective_version = fields.Boolean(string='Is Effective Version')
-    is_ineffective_version = fields.Boolean(string='Is Ineffective Version')
-    is_current_version = fields.Boolean(string='Is Current Version')
-    is_historical_version = fields.Boolean(string='Is Historical Version')
-    is_future_version = fields.Boolean(string='Is Future Version')
+
+    # Legal Hold
+    is_legal_hold = fields.Boolean(string='Legal Hold')
+    legal_hold_reason = fields.Text(string='Legal Hold Reason')
+
+    # Documents and Audit
+    document_ids = fields.One2many('records.document', 'retention_rule_id', string='Documents')
+    document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
+    audit_log_ids = fields.One2many('records.audit.log', 'rule_id', string='Audit Logs')
+    related_regulation = fields.Char(string='Related Regulation')
+    storage_location_id = fields.Many2one('stock.location', string='Storage Location')
 
     # ============================================================================
     # COMPUTE METHODS
@@ -187,8 +128,7 @@ class RecordsRetentionRule(models.Model):
         )
         count_map = {
             group['retention_rule_id'][0]: group['retention_rule_id_count']
-            for group in counts
-            if group.get('retention_rule_id') and isinstance(group['retention_rule_id'], (list, tuple)) and len(group['retention_rule_id']) > 0
+            for group in counts if group['retention_rule_id']
         }
         for rule in self:
             rule.document_count = count_map.get(rule.id, 0)
@@ -202,27 +142,62 @@ class RecordsRetentionRule(models.Model):
             else:
                 rule.display_name = rule.name or _("New Rule")
 
+    @api.depends('parent_rule_id.rule_level')
+    def _compute_rule_level(self):
+        """Compute hierarchy level (depth from root)."""
+        for rule in self:
+            level = 0
+            current = rule
+            while current.parent_rule_id:
+                level += 1
+                current = current.parent_rule_id
+            rule.rule_level = level
+
+    @api.depends('expiration_date')
+    def _compute_expiration_details(self):
+        today = fields.Date.today()
+        for rule in self:
+            if rule.expiration_date:
+                rule.is_expired = rule.expiration_date < today
+                rule.overdue_days = (today - rule.expiration_date).days if rule.is_expired else 0
+    @api.depends('version')
+    def _compute_version_details(self):
+        # TODO: Implement logic to determine if this is the latest version of the rule
+        for rule in self:
+            rule.is_latest_version = True  # Placeholder for real logic
+    @api.depends('version')
+    def _compute_version_details(self):
+        for rule in self:
+            rule.is_latest_version = True  # Placeholder for real logic
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
     @api.constrains('retention_period', 'retention_unit')
     def _check_retention_period(self):
-        """Validate retention period is not negative and is set if not indefinite."""
+        """Validate retention period is positive and required if not indefinite."""
         for rule in self:
-            rule_identifier = rule.display_name or rule.name or str(rule.id)
-            if rule.retention_unit != 'indefinite':
-                if rule.retention_period <= 0:
-                    raise ValidationError(_(
-                        "The retention period must be a positive number for rule '%s'."
-                    ) % rule_identifier)
+                if rule.retention_period is None or rule.retention_period <= 0:
+                    raise ValidationError(_("Retention period must be a positive number for rule '%s'.") % (rule.display_name or rule.name))
+                    raise ValidationError(_("Retention period must be a positive number for rule '%s'.") % (rule.display_name or rule.name))
             else:
-                pass  # No check needed for indefinite
+                if rule.retention_period != 0:
+                    raise ValidationError(_("Retention period should be 0 for indefinite retention in rule '%s'.") % (rule.display_name or rule.name))
 
+    @api.constrains('parent_rule_id')
+    def _check_hierarchy_cycle(self):
+        """Prevent cycles in rule hierarchy."""
+        for rule in self:
+            rule._check_recursion()
+
+    # ============================================================================
+    # ONCHANGE METHODS
+    # ============================================================================
     @api.onchange('retention_unit')
     def _onchange_retention_unit(self):
         """Reset retention period to 0 when unit is set to indefinite."""
         if self.retention_unit == 'indefinite':
             self.retention_period = 0
-        """Reset retention period to 0 when unit is set to indefinite."""
-        if self.retention_unit == 'indefinite':
-            self.retention_period = 0
+        elif self.retention_unit in ['days', 'months', 'years']:
+            # Placeholder for future logic for other units
+            pass

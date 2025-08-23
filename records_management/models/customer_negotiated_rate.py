@@ -116,9 +116,8 @@ class CustomerNegotiatedRate(models.Model):
     @api.depends('rate_type', 'monthly_rate', 'container_type_id')
     def _compute_rate_comparison(self):
         """Compare negotiated rate to the standard base rate."""
-        # This method assumes a 'base.rate' model exists with standard pricing.
-        # The logic may need adjustment based on the actual base rate model structure.
-        base_rate_model = self.env.get('records.base.rate')
+        # Use the correct model name for base rates
+        base_rate_model = self.env.get('base.rate')
         if not base_rate_model:
             self.update({'base_rate_comparison': 0, 'savings_amount': 0, 'savings_percentage': 0})
             return
@@ -170,7 +169,7 @@ class CustomerNegotiatedRate(models.Model):
         if self.partner_id:
             if not self.name or self.name == _('New'):
                 self.name = _('Rate for %s', self.partner_id.name)
-            
+
             billing_profile = self.env['customer.billing.profile'].search([
                 ('partner_id', '=', self.partner_id.id),
                 ('active', '=', True)
@@ -226,7 +225,7 @@ class CustomerNegotiatedRate(models.Model):
         self.ensure_one()
         if self.state != 'submitted':
             raise UserError(_('Only submitted rates can be approved.'))
-        
+
         vals = {
             'state': 'approved',
             'approved_by_id': self.env.user.id,
@@ -234,7 +233,7 @@ class CustomerNegotiatedRate(models.Model):
         }
         self.write(vals)
         self.message_post(body=_("Rate approved by %s.", self.env.user.name))
-        
+
         # Automatically activate if the effective date is today or in the past
         if self.effective_date <= fields.Date.today():
             self.action_activate()

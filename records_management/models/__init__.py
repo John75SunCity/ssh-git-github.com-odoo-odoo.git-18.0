@@ -42,12 +42,14 @@ from . import records_storage_department_user
 
 # Document and policy models
 from . import records_document_type
+
 from . import records_retention_policy
 from . import records_retention_rule
 from . import records_policy_version
 from . import records_approval_workflow
 from . import records_approval_step
 from . import records_approval_workflow_line
+from . import records_service_type
 
 # Container and storage models (in dependency order)
 from . import customer_inventory
