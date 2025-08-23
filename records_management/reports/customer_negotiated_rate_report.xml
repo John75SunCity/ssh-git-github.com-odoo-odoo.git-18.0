@@ -20,7 +20,7 @@
                         <div class="row mt-4 mb-4">
                             <div class="col-6">
                                 <strong>Customer:</strong>
-                                <p t-if="doc.partner_id" t-esc="doc.partner_id.name"/>
+                                <p t-if="doc.partner_id" t-out="doc.partner_id.name"/>
                                 <p t-else="">N/A</p>
                             </div>
                             <div class="col-6">
@@ -59,7 +59,7 @@
                         </table>
 
                         <div class="text-muted mt-4">
-                            Report generated on <span t-esc="time.strftime('%Y-%m-%d %H:%M:%S')"/>.
+                            Report generated on <span t-out="time.strftime('%Y-%m-%d %H:%M:%S')"/>.
                         </div>
                     </div>
                 </t>

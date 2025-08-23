@@ -23,15 +23,15 @@
         <div class="suggestion-item p-2 border-bottom" t-att-data-index="index">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <strong t-esc="suggestion.name"/>
+                    <strong t-out="suggestion.name"/>
                     <t t-if="suggestion.location">
-                        <span class="badge badge-secondary ml-2" t-esc="suggestion.location"/>
+                        <span class="badge badge-secondary ml-2" t-out="suggestion.location"/>
                     </t>
                 </div>
                 <div class="text-right">
                     <small class="text-muted">
                         <t t-if="suggestion.document_count">
-                            <t t-esc="suggestion.document_count"/>
+                            <t t-out="suggestion.document_count"/>
  docs
                         </t>
                     </small>
@@ -40,19 +40,19 @@
             <div class="small text-muted">
                 <t t-if="suggestion.alpha_range">
                     <i class="fa fa-sort-alpha-asc mr-1"></i>
-                    <t t-esc="suggestion.alpha_range"/>
+                    <t t-out="suggestion.alpha_range"/>
                 </t>
                 <t t-if="suggestion.date_range">
                     <i class="fa fa-calendar ml-2 mr-1"></i>
-                    <t t-esc="suggestion.date_range"/>
+                    <t t-out="suggestion.date_range"/>
                 </t>
                 <t t-if="suggestion.content_type">
                     <i class="fa fa-tags ml-2 mr-1"></i>
-                    <t t-esc="suggestion.content_type"/>
+                    <t t-out="suggestion.content_type"/>
                 </t>
             </div>
             <t t-if="suggestion.description">
-                <div class="small text-muted mt-1" t-esc="suggestion.description"/>
+                <div class="small text-muted mt-1" t-out="suggestion.description"/>
             </t>
         </div>
     </t>
@@ -116,16 +116,16 @@
             <h6>
                 <i class="fa fa-info-circle mr-2"></i>Search Results</h6>
             <p class="mb-0">
-                Found <strong t-esc="total"/>
+                Found <strong t-out="total"/>
  recommended containers</strong>
             <t t-if="criteria.file_name">
-                    for file name: <em t-esc="criteria.file_name"/>
+                    for file name: <em t-out="criteria.file_name"/>
             </t>
             <t t-if="criteria.service_date">
-                    with service date: <em t-esc="criteria.service_date"/>
+                    with service date: <em t-out="criteria.service_date"/>
             </t>
             <t t-if="criteria.content_type">
-                    of type: <em t-esc="criteria.content_type"/>
+                    of type: <em t-out="criteria.content_type"/>
             </t>
         </p>
     </div>
@@ -139,18 +139,18 @@
                 <div class="flex-grow-1">
                     <h6 class="card-title mb-1">
                         <i class="fa fa-archive mr-2"></i>
-                        <t t-esc="recommendation.name"/>
+                        <t t-out="recommendation.name"/>
                         <span class="badge badge-success ml-2">
-                            <t t-esc="recommendation.confidence"/>
+                            <t t-out="recommendation.confidence"/>
 % match
                         </span>
                     </h6>
                     <div class="small text-muted mb-2">
                         <i class="fa fa-map-marker mr-1"></i>
-                        <t t-esc="recommendation.location"/>
+                        <t t-out="recommendation.location"/>
                         <t t-if="recommendation.document_count">
                                 |                            <i class="fa fa-files-o ml-2 mr-1"></i>
-                            <t t-esc="recommendation.document_count"/>
+                            <t t-out="recommendation.document_count"/>
  documents
                         </t>
                     </div>
@@ -158,19 +158,19 @@
                         <t t-if="recommendation.alpha_range">
                             <span class="badge badge-light mr-1">
                                 <i class="fa fa-sort-alpha-asc mr-1"></i>
-                                <t t-esc="recommendation.alpha_range"/>
+                                <t t-out="recommendation.alpha_range"/>
                             </span>
                         </t>
                         <t t-if="recommendation.date_range">
                             <span class="badge badge-light mr-1">
                                 <i class="fa fa-calendar mr-1"></i>
-                                <t t-esc="recommendation.date_range"/>
+                                <t t-out="recommendation.date_range"/>
                             </span>
                         </t>
                         <t t-if="recommendation.content_type">
                             <span class="badge badge-light mr-1">
                                 <i class="fa fa-tag mr-1"></i>
-                                <t t-esc="recommendation.content_type"/>
+                                <t t-out="recommendation.content_type"/>
                             </span>
                         </t>
                     </div>
@@ -182,7 +182,7 @@
                             <ul class="list-unstyled small text-success mb-0">
                                 <li t-foreach="recommendation.reasons" t-as="reason">
                                     <i class="fa fa-check mr-1"></i>
-                                    <t t-esc="reason"/>
+                                    <t t-out="reason"/>
                                 </li>
                             </ul>
                         </div>
@@ -190,7 +190,7 @@
                     <t t-if="recommendation.description">
                         <div class="small text-muted mt-2">
                             <strong>Content:</strong>
-                            <t t-esc="recommendation.description"/>
+                            <t t-out="recommendation.description"/>
                         </div>
                     </t>
                 </div>

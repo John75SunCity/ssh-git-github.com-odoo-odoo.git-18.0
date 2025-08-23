@@ -21,7 +21,7 @@
                         </div>
                         <p class="text-muted mt-3">
                             <strong>Quote Date:</strong><br/>
-                            <span t-esc="datetime.datetime.now().strftime('%B %d, %Y')"/>
+                            <span t-out="datetime.datetime.now().strftime('%B %d, %Y')"/>
                         </p>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                                     <tr>
                                         <td><strong>Valid Until:</strong></td>
                                         <td>
-                                            <span t-esc="(datetime.datetime.now() + datetime.timedelta(days=30)).strftime('%B %d, %Y')"/>
+                                            <span t-out="(datetime.datetime.now() + datetime.timedelta(days=30)).strftime('%B %d, %Y')"/>
                                         </td>
                                     </tr>
                                 </table>
@@ -121,13 +121,13 @@
                                                 <small class="text-muted d-block" t-field="line.unit_of_measure"/>
                                             </td>
                                             <td class="text-right">
-                                                <span t-if="not line.special_rate" t-field="line.standard_rate" 
+                                                <span t-if="not line.special_rate" t-field="line.standard_rate"
                                                       t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                                 <span t-if="line.special_rate">
-                                                    <del class="text-muted" t-field="line.standard_rate" 
+                                                    <del class="text-muted" t-field="line.standard_rate"
                                                          t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                                     <br/>
-                                                    <span class="text-success font-weight-bold" t-field="line.special_rate" 
+                                                    <span class="text-success font-weight-bold" t-field="line.special_rate"
                                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                                 </span>
                                             </td>
@@ -142,7 +142,7 @@
                                                 </t>
                                             </td>
                                             <td class="text-right font-weight-bold">
-                                                <span t-field="line.line_total" 
+                                                <span t-field="line.line_total"
                                                       t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                             </td>
                                         </tr>
@@ -187,36 +187,36 @@
                                     <tr>
                                         <td><strong>Subtotal:</strong></td>
                                         <td class="text-right">
-                                            <span t-field="o.subtotal" 
+                                            <span t-field="o.subtotal"
                                                   t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                         </td>
                                     </tr>
                                     <tr t-if="o.total_discount > 0">
                                         <td><strong>Total Discounts:</strong></td>
                                         <td class="text-right text-success">
-                                            -<span t-field="o.total_discount" 
+                                            -<span t-field="o.total_discount"
                                                    t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                         </td>
                                     </tr>
                                     <tr t-if="o.tax_amount > 0">
                                         <td><strong>Tax:</strong></td>
                                         <td class="text-right">
-                                            <span t-field="o.tax_amount" 
+                                            <span t-field="o.tax_amount"
                                                   t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                         </td>
                                     </tr>
                                     <tr class="border-top">
                                         <td><strong class="h5">Total:</strong></td>
                                         <td class="text-right">
-                                            <strong class="h5 text-primary" t-field="o.total_amount" 
+                                            <strong class="h5 text-primary" t-field="o.total_amount"
                                                     t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                         </td>
                                     </tr>
                                 </table>
-                                
+
                                 <div class="alert alert-info mt-3" t-if="o.partner_id.special_rate">
                                     <small>
-                                        <i class="fa fa-info-circle"/> Special customer pricing applied. 
+                                        <i class="fa fa-info-circle"/> Special customer pricing applied.
                                         Standard rates shown with discount.
                                     </small>
                                 </div>
@@ -256,10 +256,10 @@
                         <div class="row mt-3">
                             <div class="col-12">
                                 <p class="text-muted small">
-                                    <strong>NAID AAA Certification:</strong> 
-                                    Sun City Shred is NAID AAA certified for secure destruction services. 
-                                    All services are performed in accordance with NAID AAA standards and regulations. 
-                                    This quote constitutes our agreement to provide services at the specified rates 
+                                    <strong>NAID AAA Certification:</strong>
+                                    Sun City Shred is NAID AAA certified for secure destruction services.
+                                    All services are performed in accordance with NAID AAA standards and regulations.
+                                    This quote constitutes our agreement to provide services at the specified rates
                                     subject to the terms and conditions outlined herein.
                                 </p>
                             </div>
@@ -274,8 +274,8 @@
                             <div class="col-md-8">
                                 <h6>Questions about this quote?</h6>
                                 <p class="mb-0">
-                                    Contact our customer service team for clarification on services, 
-                                    pricing, or scheduling. We're here to help with all your secure 
+                                    Contact our customer service team for clarification on services,
+                                    pricing, or scheduling. We're here to help with all your secure
                                     document management needs.
                                 </p>
                             </div>
@@ -333,13 +333,13 @@
                     <h2>Service Quote</h2>
                     <h4>Sun City Shred - NAID AAA Certified</h4>
                 </div>
-                
+
                 <div class="row mb-3">
                     <div class="col-6">
                         <strong>Customer:</strong> <span t-field="o.partner_id.name"/>
                     </div>
                     <div class="col-6 text-right">
-                        <strong>Date:</strong> <span t-esc="datetime.datetime.now().strftime('%m/%d/%Y')"/>
+                        <strong>Date:</strong> <span t-out="datetime.datetime.now().strftime('%m/%d/%Y')"/>
                     </div>
                 </div>
 
@@ -361,11 +361,11 @@
                                 </td>
                                 <td class="text-center"><span t-field="line.quantity"/></td>
                                 <td class="text-right">
-                                    <span t-field="line.unit_price" 
+                                    <span t-field="line.unit_price"
                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                 </td>
                                 <td class="text-right">
-                                    <span t-field="line.line_total" 
+                                    <span t-field="line.line_total"
                                           t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                                 </td>
                             </tr>
@@ -375,7 +375,7 @@
                         <tr class="table-secondary">
                             <th colspan="3" class="text-right">Total:</th>
                             <th class="text-right">
-                                <span t-field="o.total_amount" 
+                                <span t-field="o.total_amount"
                                       t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
                             </th>
                         </tr>

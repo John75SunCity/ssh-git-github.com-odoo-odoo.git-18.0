@@ -28,10 +28,10 @@
                                 <t t-if="doc.field_ids">
                                 <tr t-foreach="doc.field_ids" t-as="field">
                                     <td>
-                                        <span t-esc="field.name"/>
+                                        <span t-out="field.name"/>
                                     </td>
                                     <td>
-                                        <span t-esc="field.description"/>
+                                        <span t-out="field.description"/>
                                     </td>
                                 </tr>
                             </t>
