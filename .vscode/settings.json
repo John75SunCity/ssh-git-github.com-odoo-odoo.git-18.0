@@ -108,7 +108,7 @@
 
     // === ODOO EXTENSION SETTINGS ===
     "odoo.addonsPath": "./records_management,./addons",
-    "odoo.pythonPath": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/.venv/bin/python",
+    "odoo.pythonPath": "./venv312/bin/python",
     "odoo.disableOdooExtensionWarnings": true,
     "odoo.disableTranslationWarnings": true,
     "odoo.ignoreTranslationFalsePositives": true,
@@ -151,7 +151,9 @@
     "python.formatting.autopep8Args": [],
     "python.formatting.blackArgs": [],
     "python.formatting.yapfArgs": [],
-    "python.defaultInterpreterPath": "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/.venv/bin/python",
+    // === PYTHON INTERPRETER SETTINGS ===
+    "python.defaultInterpreterPath": "./venv312/bin/python",
+    "python.pythonPath": "./venv312/bin/python",
 
     // === DISABLE ALL AUTO-FORMATTERS ===
     "autopep8.args": ["--disable"],
@@ -223,7 +225,7 @@
             "url": "https://www.odoo.com/documentation/18.0/developer.html"
         },
         {
-            "label": "Odoo ORM Documentation", 
+            "label": "Odoo ORM Documentation",
             "url": "https://www.odoo.com/documentation/18.0/developer/reference/backend/orm.html"
         },
         {
