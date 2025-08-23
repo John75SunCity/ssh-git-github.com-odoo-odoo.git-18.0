@@ -9,6 +9,15 @@ class ProjectTask(models.Model):
     # ============================================================================
     # RECORDS MANAGEMENT FIELDS
     # ============================================================================
+    # FSM Partner Integration
+    partner_id = fields.Many2one('res.partner', string='Customer', tracking=True, index=True)
+
+    # Service Item Reference
+    service_item_id = fields.Many2one('service.item', string='Service Item', index=True)
+
+    # Shred Bin Reference
+    shred_bin_id = fields.Many2one('shred.bin', string='Shred Bin', index=True)
+
     work_order_type = fields.Selection([
         ('pickup', 'Pickup'),
         ('retrieval', 'Retrieval'),

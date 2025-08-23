@@ -31,15 +31,15 @@ class DestructionItem(models.Model):
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True, tracking=True)
     partner_id = fields.Many2one(related='records_destruction_id.partner_id', string='Customer', store=True)
-    
+
     # Link to the parent destruction order
     records_destruction_id = fields.Many2one('naid.destruction.record', string='Destruction Record', ondelete='cascade', required=True)
     destruction_record_id = fields.Many2one('naid.destruction.record', string="Destruction Record")
     bale_id = fields.Many2one('paper.bale', string="Paper Bale")
     destruction_id = fields.Many2one('records.destruction', string="Destruction Order")
-    
+
     # Link to the generated certificate
-    naid_certificate_id = fields.Many2one(related='records_destruction_id.naid_certificate_id', string='NAID Certificate', store=True)
+    naid_certificate_id = fields.Many2one(related='records_destruction_id.certificate_id', string='NAID Certificate', store=True)
 
     # ============================================================================
     # ITEM DETAILS
@@ -47,7 +47,7 @@ class DestructionItem(models.Model):
     quantity = fields.Float(string='Quantity', default=1.0, required=True, tracking=True)
     weight = fields.Float(string='Weight (lbs)', tracking=True)
     container_type_id = fields.Many2one('records.container.type', string='Container Type')
-    
+
     # ============================================================================
     # WORKFLOW & STATUS
     # ============================================================================
