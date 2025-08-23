@@ -35,7 +35,7 @@ class ContainerContent(models.Model):
         ondelete='cascade',
         index=True
     )
-    document_type_id = fields.Many2one('document.type', string='Document Type', tracking=True)
+    document_type_id = fields.Many2one('records.document.type', string='Document Type', tracking=True)
     partner_id = fields.Many2one(related='container_id.partner_id', string='Customer', store=True)
     location_id = fields.Many2one(related='container_id.location_id', string='Location', store=True)
     company_id = fields.Many2one(related='container_id.company_id', string='Company', store=True)

@@ -20,7 +20,7 @@ class ShreddingServicePhoto(models.Model):
     # RELATIONSHIP & PHOTO DETAILS
     # ============================================================================
     shredding_service_id = fields.Many2one(
-        'fsm.order',
+        'project.task',
         string="Shredding Service",
         required=True,
         ondelete='cascade',

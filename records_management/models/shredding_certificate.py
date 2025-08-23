@@ -48,7 +48,7 @@ class ShreddingCertificate(models.Model):
     # ============================================================================
     # MATERIALS & TOTALS
     # ============================================================================
-    shredding_service_ids = fields.Many2many('fsm.order', string="Shredding Services")
+    shredding_service_ids = fields.Many2many('project.task', string="Shredding Services")
     total_weight = fields.Float(string="Total Weight (kg)", compute='_compute_totals', store=True)
     total_containers = fields.Integer(string="Total Containers", compute='_compute_totals', store=True)
     service_count = fields.Integer(string="Service Count", compute='_compute_service_count', store=True)
@@ -114,10 +114,10 @@ class ShreddingCertificate(models.Model):
         self.ensure_one()
         if self.state != 'issued':
             raise UserError(_("Only issued certificates can be delivered."))
-        
+
         if self.delivery_method == 'email':
             self._send_certificate_email()
-        
+
         self.write({'state': 'delivered', 'delivered_date': fields.Date.context_today(self)})
         self.message_post(body=_("Certificate marked as delivered via %s.", self.delivery_method))
 
@@ -140,7 +140,7 @@ class ShreddingCertificate(models.Model):
         self.ensure_one()
         if not self.partner_id.email:
             raise UserError(_("Customer email address is required for email delivery."))
-        
+
         template = self.env.ref('records_management.email_template_shredding_certificate', raise_if_not_found=False)
         if template:
             template.send_mail(self.id, force_send=True)

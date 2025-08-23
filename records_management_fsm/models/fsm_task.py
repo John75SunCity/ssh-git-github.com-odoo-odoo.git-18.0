@@ -12,13 +12,6 @@ class ProjectTaskFSMExtension(models.Model):
     # RECORDS MANAGEMENT FSM FIELDS
     # ============================================================================
 
-    # Link to shredding team
-    shredding_team_id = fields.Many2one(
-        'shredding.team',
-        string="Shredding Team",
-        help="The shredding team assigned to this FSM task"
-    )
-
     # Container tracking
     container_ids = fields.Many2many(
         'records.container',

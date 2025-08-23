@@ -78,7 +78,7 @@ class KeyRestrictionChecker(models.Model):
     related_pickup_order_id = fields.Many2one('records.pickup.order', string='Related Pickup Order')
     related_pickup_line_id = fields.Many2one('records.pickup.line', string='Related Pickup Line')
     related_work_order_id = fields.Many2one('project.task', string='Related Work Order')
-    related_fsm_order_id = fields.Many2one('fsm.order', string='Related FSM Order')
+    related_fsm_order_id = fields.Many2one('project.task', string='Related FSM Order')
     related_sale_order_id = fields.Many2one('sale.order', string='Related Sale Order')
     related_invoice_id = fields.Many2one('account.move', string='Related Invoice')
     related_product_id = fields.Many2one('product.product', string='Related Product')

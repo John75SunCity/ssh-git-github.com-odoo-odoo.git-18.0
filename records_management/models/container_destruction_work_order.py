@@ -117,7 +117,7 @@ class ContainerDestructionWorkOrder(models.Model):
     destruction_start_time = fields.Datetime(string='Destruction Start Time', readonly=True)
     destruction_end_time = fields.Datetime(string='Destruction End Time', readonly=True)
     destruction_duration_minutes = fields.Integer(string='Destruction Duration (Minutes)', compute='_compute_destruction_duration')
-    certificate_id = fields.Many2one('destruction.certificate', string='Certificate of Destruction', readonly=True)
+    certificate_id = fields.Many2one('shredding.certificate', string='Certificate of Destruction', readonly=True)
 
     # ============================================================================
     # COMPUTE METHODS
@@ -228,7 +228,7 @@ class ContainerDestructionWorkOrder(models.Model):
         if self.certificate_id:
             raise UserError(_("A certificate has already been generated for this work order."))
 
-        certificate = self.env['destruction.certificate'].create({
+        certificate = self.env['shredding.certificate'].create({
             'work_order_id': self.id,
             'partner_id': self.partner_id.id,
             'destruction_date': self.actual_destruction_date,
@@ -239,7 +239,7 @@ class ContainerDestructionWorkOrder(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': _('Certificate of Destruction'),
-            'res_model': 'destruction.certificate',
+            'res_model': 'shredding.certificate',
             'res_id': certificate.id,
             'view_mode': 'form',
         }

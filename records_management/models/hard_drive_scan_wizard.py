@@ -15,8 +15,8 @@ class HardDriveScanWizard(models.TransientModel):
     # WIZARD FIELDS
     # ============================================================================
     fsm_task_id = fields.Many2one(
-        'project.task', 
-        string="FSM Task", 
+        'project.task',
+        string="FSM Task",
         required=True,
         domain="[('is_fsm', '=', True), ('allow_hard_drive_destruction', '=', True)]",
         help="The Field Service task for hard drive destruction."
@@ -27,13 +27,13 @@ class HardDriveScanWizard(models.TransientModel):
         ('degaussing', 'Degaussing'),
         ('disintegration', 'Disintegration')
     ], string="Destruction Method", required=True, default='shredding')
-    
+
     scan_line_ids = fields.One2many(
-        'hard.drive.scan.wizard.line', 
-        'wizard_id', 
+        'hard.drive.scan.wizard.line',
+        'wizard_id',
         string="Scanned Hard Drives"
     )
-    
+
     # Text area for bulk serial number entry
     serial_numbers_text = fields.Text(
         string="Enter Serial Numbers",
@@ -52,9 +52,9 @@ class HardDriveScanWizard(models.TransientModel):
         serials = [s.strip() for s in self.serial_numbers_text.splitlines() if s.strip()]
         if not serials:
             return
-            
+
         existing_serials = [line.serial_number for line in self.scan_line_ids]
-        
+
         lines_to_create = []
         for serial in serials:
             if serial not in existing_serials:
@@ -62,7 +62,7 @@ class HardDriveScanWizard(models.TransientModel):
 
         if lines_to_create:
             self.env['hard.drive.scan.wizard.line'].create(lines_to_create)
-        
+
         # Clear the text area after processing
         self.serial_numbers_text = False
 
@@ -96,21 +96,21 @@ class HardDriveScanWizard(models.TransientModel):
                 'destruction_date': fields.Datetime.now(),
                 'destruction_technician_id': self.env.user.id,
             })
-            
+
         if not hard_drive_vals_list:
             raise UserError(_("No valid hard drives to process."))
 
         # Create the hard drive records
         hard_drives = self.env['shredding.hard_drive'].create(hard_drive_vals_list)
-        
+
         # Generate Certificate of Destruction
-        certificate = self.env['destruction.certificate'].create({
+        certificate = self.env['shredding.certificate'].create({
             'partner_id': self.partner_id.id,
             'fsm_task_id': self.fsm_task_id.id,
             'destruction_date': fields.Datetime.now(),
             'hard_drive_ids': [(6, 0, hard_drives.ids)],
         })
-        
+
         # Link certificate back to hard drives
         hard_drives.write({'certificate_id': certificate.id, 'state': 'certified'})
 
@@ -126,7 +126,7 @@ class HardDriveScanWizard(models.TransientModel):
             body=body,
             subject=_("Hard Drive Destruction Complete")
         )
-        
+
         # Mark the FSM task as done
         self.fsm_task_id.action_fsm_validate()
 
@@ -135,7 +135,7 @@ class HardDriveScanWizard(models.TransientModel):
             'name': _('Certificate of Destruction'),
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
-            'res_model': 'destruction.certificate',
+            'res_model': 'shredding.certificate',
             'res_id': certificate.id,
             'target': 'current',
         }

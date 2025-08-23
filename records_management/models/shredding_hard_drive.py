@@ -51,7 +51,7 @@ class ShreddingHardDrive(models.Model):
     destruction_technician_id = fields.Many2one('res.users', string="Technician", readonly=True)
 
     certificate_id = fields.Many2one(
-        'destruction.certificate',
+        'shredding.certificate',
         string="Destruction Certificate",
         readonly=True
     )

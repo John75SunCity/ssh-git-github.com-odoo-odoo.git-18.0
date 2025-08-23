@@ -75,7 +75,7 @@ class RecordsDeletionRequest(models.Model):
     customer_authorization = fields.Boolean(string="Customer Authorization Received", default=False, tracking=True)
     naid_compliant = fields.Boolean(string="NAID Compliant Process", default=True)
     chain_of_custody_id = fields.Many2one('naid.custody', string="Chain of Custody")
-    certificate_of_deletion_id = fields.Many2one('records.destruction.certificate', string="Certificate of Deletion", readonly=True)
+    certificate_of_deletion_id = fields.Many2one('shredding.certificate', string="Certificate of Deletion", readonly=True)
     can_approve = fields.Boolean(compute='_compute_can_approve', string="Can Approve")
 
     # ============================================================================

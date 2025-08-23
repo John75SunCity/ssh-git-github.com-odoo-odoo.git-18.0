@@ -19,7 +19,7 @@ class ServiceItem(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
     service_code = fields.Char(string="Service Code", copy=False)
-    
+
     # ============================================================================
     # CATEGORIZATION & TYPE
     # ============================================================================
@@ -28,7 +28,7 @@ class ServiceItem(models.Model):
         ('service', 'Service'),
         ('consumable', 'Consumable'),
     ], string="Category", default='service', required=True, tracking=True)
-    
+
     service_type = fields.Selection([
         ('shredding', 'Shredding'),
         ('storage', 'Storage'),
@@ -91,11 +91,11 @@ class ServiceItem(models.Model):
     # ============================================================================
     # RELATIONSHIPS & ANALYTICS
     # ============================================================================
-    service_request_ids = fields.One2many('fsm.order', 'service_item_id', string="Service Requests")
+    service_request_ids = fields.One2many('project.task', 'service_item_id', string="Service Requests")
     service_request_count = fields.Integer(compute='_compute_service_request_count', string="Service Request Count")
     utilization_rate = fields.Float(string="Utilization Rate (%)", help="Calculated based on usage vs. availability.")
     efficiency_rating = fields.Selection([('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], string="Efficiency Rating")
-    
+
     # ============================================================================
     # CONFIGURATOR VISIBILITY
     # ============================================================================
@@ -224,7 +224,7 @@ class ServiceItem(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("Service Requests"),
-            "res_model": "fsm.order",
+            "res_model": "project.task",
             "view_mode": "tree,form,kanban",
             "domain": [("service_item_id", "=", self.id)],
             "context": {'default_service_item_id': self.id}

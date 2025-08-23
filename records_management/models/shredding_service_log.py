@@ -26,10 +26,10 @@ class ShreddingServiceLog(models.Model):
     # ============================================================================
     # RELATIONSHIPS & CONTEXT
     # ============================================================================
-    shredding_service_id = fields.Many2one('fsm.order', string="Shredding Service", required=True, ondelete='cascade')
+    shredding_service_id = fields.Many2one('project.task', string="Shredding Service", required=True, ondelete='cascade')
     partner_id = fields.Many2one('res.partner', string="Customer", related='shredding_service_id.partner_id', store=True, readonly=True)
-    operator_id = fields.Many2one('res.users', string="Operator", related='shredding_service_id.user_id', store=True, readonly=True)
-    equipment_id = fields.Many2one('maintenance.equipment', string="Equipment", related='shredding_service_id.shredding_equipment_id', store=True, readonly=True)
+    operator_id = fields.Many2one('res.users', string="Operator", tracking=True)
+    equipment_id = fields.Many2one('maintenance.equipment', string="Equipment", tracking=True)
 
     # ============================================================================
     # TIMING & PERFORMANCE
@@ -63,7 +63,7 @@ class ShreddingServiceLog(models.Model):
     def write(self, vals):
         if self.env.context.get('skip_audit'):
             return super().write(vals)
-        
+
         res = super().write(vals)
         for log in self:
             log._create_naid_audit_entry(f"Log updated. Fields changed: {', '.join(vals.keys())}")
@@ -129,7 +129,7 @@ class ShreddingServiceLog(models.Model):
         self.ensure_one()
         if 'naid.audit.log' not in self.env:
             return
-        
+
         self.env['naid.audit.log'].create({
             'event_type': 'shredding_operation',
             'model_name': self._name,

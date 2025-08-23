@@ -14,7 +14,7 @@ class ScanDigitalAsset(models.Model):
     name = fields.Char(string="Asset Name", required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
-    work_order_id = fields.Many2one('fsm.order', string="Work Order", ondelete='cascade', help="The work order that generated this digital asset.")
+    work_order_id = fields.Many2one('project.task', string="Work Order", ondelete='cascade', help="The work order that generated this digital asset.")
 
     # ============================================================================
     # FILE METADATA

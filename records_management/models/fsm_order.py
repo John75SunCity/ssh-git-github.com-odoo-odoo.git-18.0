@@ -2,7 +2,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 class FsmOrder(models.Model):
-    _inherit = 'fsm.order'
+    _inherit = 'project.task'
 
     # ============================================================================
     # SHREDDING SERVICE FIELDS

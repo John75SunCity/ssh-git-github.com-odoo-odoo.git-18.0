@@ -25,6 +25,13 @@ class ProjectTask(models.Model):
 
     container_ids = fields.Many2many('records.container', string="Related Containers")
 
+    # --- Team Assignment ---
+    shredding_team_id = fields.Many2one(
+        'shredding.team',
+        string="Shredding Team",
+        help="The shredding team assigned to this task"
+    )
+
     # --- Scheduling ---
     scheduled_start_time = fields.Datetime(string="Scheduled Start")
     scheduled_end_time = fields.Datetime(string="Scheduled End")

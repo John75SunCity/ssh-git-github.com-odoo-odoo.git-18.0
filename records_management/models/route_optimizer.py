@@ -37,7 +37,7 @@ class RouteOptimizer(models.Model):
     max_stops_per_route = fields.Integer(string="Max Stops per Route", default=20, help="Maximum number of stops allowed in a single route.")
     vehicle_capacity = fields.Float(string="Default Vehicle Capacity (m³)", default=15.0, help="Default capacity for vehicles if not specified on the vehicle itself.")
     starting_location = fields.Char(string="Starting Depot/Location", help="Address or name of the starting point for all routes.")
-    pickup_request_ids = fields.Many2many('fsm.order', 'route_optimizer_fsm_order_rel', 'optimizer_id', 'order_id', string="Pickup Requests", domain="[('stage_id.is_closed', '=', False)]")
+    pickup_request_ids = fields.Many2many('project.task', 'route_optimizer_fsm_order_rel', 'optimizer_id', 'order_id', string="Pickup Requests", domain="[('stage_id.is_closed', '=', False)]")
 
     # ============================================================================
     # EXECUTION & RESULTS
@@ -47,7 +47,7 @@ class RouteOptimizer(models.Model):
     execution_time_seconds = fields.Integer(string="Execution Time (s)", compute='_compute_execution_time', store=True)
     optimization_results = fields.Text(string="Optimization Results (JSON)", readonly=True)
     routes_generated_count = fields.Integer(string="Routes Generated", compute='_compute_routes_generated_count', store=True)
-    
+
     # ============================================================================
     # ANALYTICS & SAVINGS
     # ============================================================================
@@ -133,7 +133,7 @@ class RouteOptimizer(models.Model):
         self.ensure_one()
         if self.status != 'completed':
             raise UserError(_('Can only apply completed optimizations.'))
-        
+
         self._create_optimized_routes()
         self.write({'status': 'applied'})
         self.message_post(body=_('Optimization results applied - routes created.'))
@@ -156,7 +156,7 @@ class RouteOptimizer(models.Model):
         """
         self.ensure_one()
         pickup_requests = self.pickup_request_ids
-        
+
         # Simulate results for demonstration
         results = {
             'routes': [],
@@ -199,7 +199,7 @@ class RouteOptimizer(models.Model):
             raise UserError(_("Could not parse optimization results. Please re-run the optimization."))
 
         FsmRoute = self.env['fsm.route']
-        FsmOrder = self.env['fsm.order']
+        FsmOrder = self.env['project.task']
 
         for route_data in results.get('routes', []):
             route = FsmRoute.create({
@@ -209,7 +209,7 @@ class RouteOptimizer(models.Model):
                 'estimated_duration': route_data.get('time', 0),
                 'state': 'draft',
             })
-            
+
             pickup_ids = route_data.get('stops', [])
             if pickup_ids:
                 orders = FsmOrder.browse(pickup_ids)

@@ -14,7 +14,7 @@ class ShredBin(models.Model):
     barcode = fields.Char(string="Barcode", copy=False)
     active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    
+
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
@@ -34,7 +34,7 @@ class ShredBin(models.Model):
         ('maintenance', 'Maintenance'),
         ('retired', 'Retired'),
     ], string="Status", default='draft', required=True, tracking=True)
-    
+
     # ============================================================================
     # SPECIFICATIONS & DETAILS
     # ============================================================================
@@ -45,7 +45,7 @@ class ShredBin(models.Model):
         ('64', '64 Gallon Bin'),
         ('96', '96 Gallon Bin'),
     ], string="Bin Size", required=True, tracking=True)
-    
+
     capacity_pounds = fields.Float(string="Capacity (lbs)", compute='_compute_capacity_pounds', store=True, help="Estimated weight capacity based on bin size.")
     is_locked = fields.Boolean(string="Is Locked?", default=True)
     description = fields.Text(string="Notes / Description")
@@ -54,7 +54,7 @@ class ShredBin(models.Model):
     # ============================================================================
     # SERVICE & USAGE
     # ============================================================================
-    service_ids = fields.One2many('fsm.order', 'shred_bin_id', string="Service Orders")
+    service_ids = fields.One2many('project.task', 'shred_bin_id', string="Service Orders")
     service_count = fields.Integer(string="Service Count", compute='_compute_service_count', store=True)
     last_service_date = fields.Datetime(string="Last Service Date", readonly=True)
     needs_collection = fields.Boolean(string="Needs Collection", compute='_compute_needs_collection', store=True)
@@ -124,7 +124,7 @@ class ShredBin(models.Model):
         return {
             'name': _('Service Orders'),
             'type': 'ir.actions.act_window',
-            'res_model': 'fsm.order',
+            'res_model': 'project.task',
             'view_mode': 'tree,form,kanban',
             'domain': [('id', 'in', self.service_ids.ids)],
             'context': {'default_shred_bin_id': self.id, 'default_partner_id': self.partner_id.id},
