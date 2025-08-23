@@ -17,7 +17,7 @@ class RecordsDocument(models.Model):
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    responsible_person_id = fields.Many2one('res.user', string='Responsible')
+    responsible_person_id = fields.Many2one('res.users', string='Responsible')
     reference = fields.Char(string="Reference / Barcode", copy=False, tracking=True)
     description = fields.Text(string="Description")
 

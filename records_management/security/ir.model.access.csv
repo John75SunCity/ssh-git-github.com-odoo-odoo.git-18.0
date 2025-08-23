@@ -216,3 +216,4 @@ access_shredding_hard_drive,shredding.hard_drive,model_shredding_hard_drive,base
 access_records_billing_contact_role_manager,records_billing_contact_role_manager,model_records_billing_contact_role,,1,1,1,1
 access_records_service_type_manager,records_service_type_manager,model_records_service_type,,1,1,1,1
 access_customer_negotiated_rate_manager,customer_negotiated_rate_manager,model_customer_negotiated_rate,,1,1,1,1
+access_naid_custody_manager,naid_custody_manager,model_naid_custody,,1,1,1,1
