@@ -1,4 +1,3 @@
-from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, api, _
@@ -204,7 +203,6 @@ class RecordsCustomerBillingProfile(models.Model):
                         record.payment_status = "overdue_15"
                     else:
                         record.payment_status = "current"
-                        record.payment_status = "current"
             else:
                 record.last_payment_date = False
                 record.payment_status = "current"
@@ -231,9 +229,7 @@ class RecordsCustomerBillingProfile(models.Model):
                 ]
                 if record.department_id:
                     domain.append(('department_id', '=', record.department_id.id))
-                else:
                 if self.search(domain, limit=1):
-                    raise ValidationError(_("Customer '%s' already has an active billing profile for this department.") % record.partner_id.name)
                     raise ValidationError(_("Customer '%s' already has an active billing profile for this department.") % record.partner_id.name)
 
     # ============================================================================
@@ -252,7 +248,6 @@ class RecordsCustomerBillingProfile(models.Model):
             "domain": domain,
             "context": {"default_partner_id": self.partner_id.id},
         }
-        }
 
     def action_activate(self):
         """Activate this billing profile."""
@@ -269,6 +264,22 @@ class RecordsCustomerBillingProfile(models.Model):
 
     def action_terminate(self):
         """Terminate this billing profile if no unpaid invoices."""
+        self.ensure_one()
+        unpaid_invoices = self.env["account.move"].search([
+            ("partner_id", "=", self.partner_id.id),
+            ("move_type", "=", "out_invoice"),
+            ("payment_state", "in", ["not_paid", "partial"]),
+        ])
+        if unpaid_invoices:
+            raise UserError(_("Cannot terminate a profile with unpaid invoices."))
+        self.write({"state": "terminated", "active": False})
+        self.message_post(body=_("Billing profile terminated."))
+
+    def action_reset_to_draft(self):
+        """Reset profile to draft state."""
+        self.ensure_one()
+        self.write({"state": "draft"})
+        self.message_post(body=_("Billing profile reset to draft."))
         self.ensure_one()
         unpaid_invoices = self.env["account.move"].search([
             ("partner_id", "=", self.partner_id.id),
