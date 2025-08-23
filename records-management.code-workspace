@@ -26,7 +26,8 @@
         "odoo.ac_filter_model_names": true,
         "odoo.refresh_mode": "adaptive",
         "odoo.linting.enable": false,
-        "python.languageServer": "None"
+        "python.languageServer": "None",
+        "Odoo.selectedProfile": "default"
     },
     "extensions": {
         "recommendations": [

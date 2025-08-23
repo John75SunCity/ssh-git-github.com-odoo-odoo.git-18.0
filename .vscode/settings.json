@@ -174,7 +174,7 @@
 
     // === COMPREHENSIVE FORMATTER DISABLE ===
     "editor.defaultFormatter": null,
-    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreview": true,
     "diffEditor.ignoreTrimWhitespace": true,
     "diffEditor.renderSideBySide": true,
 
