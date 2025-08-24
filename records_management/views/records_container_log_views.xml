@@ -8,7 +8,14 @@
             <field name="model">records.container.log</field>
             <field name="arch" type="xml">
                 <tree string="Records Container Log">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="display_name"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
+                    <field name="container_id"/>
+                    <field name="event_type"/>
+                    <field name="date"/>
+                    <field name="user_id"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +28,15 @@
                 <form string="Records Container Log">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="display_name"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
+                            <field name="container_id"/>
+                            <field name="event_type"/>
+                            <field name="date"/>
+                            <field name="user_id"/>
+                            <field name="notes"/>
                         </group>
                     </sheet>
                 </form>

@@ -7,7 +7,18 @@
             <field name="model">container.retrieval</field>
             <field name="arch" type="xml">
                 <tree string="Container Retrieval">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="container_id"/>
+                    <field name="partner_id"/>
+                    <field name="location_id"/>
+                    <field name="storage_location_id"/>
+                    <field name="status"/>
+                    <field name="priority"/>
+                    <field name="retrieval_date"/>
+                    <field name="retrieved_by_id"/>
+                    <field name="retrieval_cost"/>
+                    <field name="currency_id"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -19,7 +30,22 @@
                 <form string="Container Retrieval">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="user_id"/>
+                            <field name="container_id"/>
+                            <field name="partner_id"/>
+                            <field name="location_id"/>
+                            <field name="storage_location_id"/>
+                            <field name="status"/>
+                            <field name="priority"/>
+                            <field name="estimated_time"/>
+                            <field name="actual_time"/>
+                            <field name="retrieval_date"/>
+                            <field name="retrieved_by_id"/>
+                            <field name="retrieval_cost"/>
+                            <field name="currency_id"/>
+                            <field name="active"/>
                         </group>
                     </sheet>
                 </form>

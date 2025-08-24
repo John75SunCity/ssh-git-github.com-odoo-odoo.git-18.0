@@ -59,7 +59,19 @@ class CustodyTransferEvent(models.Model):
     work_order_id = fields.Many2one(
         'container.access.work.order',
         string='Related Work Order',
-        help="Work order associated with this transfer."
+        help='Work order associated with this transfer.'
+    )
+    from_party_id = fields.Many2one(
+        'res.partner',
+        string='From Party',
+        required=False,
+        help='Party transferring custody.'
+    )
+    to_party_id = fields.Many2one(
+        'res.partner',
+        string='To Party',
+        required=False,
+        help='Party receiving custody.'
     )
     destruction_work_order_id = fields.Many2one('container.destruction.work.order', string="Destruction Work Order")
     partner_id = fields.Many2one(

@@ -8,7 +8,13 @@
             <field name="model">paper.bale.line</field>
             <field name="arch" type="xml">
                 <tree string="Paper Bale Line">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="display_name"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
+                    <field name="bale_id"/>
+                    <field name="weight_lbs"/>
+                    <field name="material_type"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +27,14 @@
                 <form string="Paper Bale Line">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="display_name"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
+                            <field name="bale_id"/>
+                            <field name="weight_lbs"/>
+                            <field name="material_type"/>
+                            <field name="notes"/>
                         </group>
                     </sheet>
                 </form>
