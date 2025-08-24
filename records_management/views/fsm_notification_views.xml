@@ -8,7 +8,15 @@
             <field name="model">fsm.notification</field>
             <field name="arch" type="xml">
                 <tree string="FSM Notification">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="display_name"/>
+                    <field name="partner_id"/>
+                    <field name="notification_type"/>
+                    <field name="subject"/>
+                    <field name="delivery_method"/>
+                    <field name="state"/>
+                    <field name="priority"/>
+                    <field name="scheduled_datetime"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +29,25 @@
                 <form string="FSM Notification">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="display_name"/>
+                            <field name="partner_id"/>
+                            <field name="notification_type"/>
+                            <field name="subject"/>
+                            <field name="message"/>
+                            <field name="delivery_method"/>
+                            <field name="state"/>
+                            <field name="priority"/>
+                            <field name="scheduled_datetime"/>
+                            <field name="sent_datetime"/>
+                            <field name="delivered_datetime"/>
+                            <field name="attempts"/>
+                            <field name="max_attempts"/>
+                            <field name="error_message"/>
+                            <field name="template_id"/>
+                            <field name="custom_data"/>
+                            <field name="can_retry"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +60,10 @@
             <field name="model">fsm.notification</field>
             <field name="arch" type="xml">
                 <search string="Search FSM Notification">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="notification_type"/>
+                    <field name="state"/>
                 </search>
             </field>
         </record>

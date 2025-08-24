@@ -8,7 +8,10 @@
             <field name="model">inventory.adjustment.reason</field>
             <field name="arch" type="xml">
                 <tree string="Inventory Adjustment Reason">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="description"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +24,11 @@
                 <form string="Inventory Adjustment Reason">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="description"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +41,8 @@
             <field name="model">inventory.adjustment.reason</field>
             <field name="arch" type="xml">
                 <search string="Search Inventory Adjustment Reason">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="code"/>
                 </search>
             </field>
         </record>

@@ -1,3 +1,5 @@
+from . import inventory_adjustment_reason
+from . import inventory_item
 from . import inventory_item_retrieval
 from . import inventory_item_destruction
 from . import key_inventory

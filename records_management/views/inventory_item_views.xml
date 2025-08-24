@@ -8,7 +8,11 @@
             <field name="model">inventory.item</field>
             <field name="arch" type="xml">
                 <tree string="Inventory Item">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="product_id"/>
+                    <field name="serial_number"/>
+                    <field name="location_id"/>
+                    <field name="status"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +25,15 @@
                 <form string="Inventory Item">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="product_id"/>
+                            <field name="serial_number"/>
+                            <field name="location_id"/>
+                            <field name="status"/>
+                            <field name="acquisition_date"/>
+                            <field name="notes"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +46,9 @@
             <field name="model">inventory.item</field>
             <field name="arch" type="xml">
                 <search string="Search Inventory Item">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="status"/>
+                    <field name="location_id"/>
                 </search>
             </field>
         </record>
