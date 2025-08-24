@@ -7,7 +7,17 @@
             <field name="model">customer.inventory.line</field>
             <field name="arch" type="xml">
                 <tree string="Customer Inventory Line">
-                    <!-- Add fields here -->
+                    container_id
+                    location_id
+                    file_count
+                    expected_file_count
+                    previous_file_count
+                    verified
+                    verification_date
+                    verified_by_id
+                    has_variance
+                    variance_amount
+                    variance_percentage
                 </tree>
             </field>
         </record>
@@ -19,7 +29,23 @@
                 <form string="Customer Inventory Line">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            inventory_id
+                            container_id
+                            location_id
+                            file_count
+                            expected_file_count
+                            previous_file_count
+                            verified
+                            verification_date
+                            verified_by_id
+                            notes
+                            has_variance
+                            variance_amount
+                            variance_percentage
+                            variance_reason
+                            variance_notes
+                            container_type_id
+                            department_id
                         </group>
                     </sheet>
                 </form>

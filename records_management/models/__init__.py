@@ -1,3 +1,4 @@
+from . import location_group
 from . import inventory_adjustment_reason
 from . import inventory_item
 from . import inventory_item_retrieval

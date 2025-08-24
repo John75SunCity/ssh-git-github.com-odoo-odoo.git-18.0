@@ -8,7 +8,9 @@
             <field name="model">fsm.route</field>
             <field name="arch" type="xml">
                 <tree string="FSM Route">
-                    <!-- Add fields here -->
+                    name
+                    vehicle_id
+                    is_naid_compliant
                 </tree>
             </field>
         </record>
@@ -21,7 +23,9 @@
                 <form string="FSM Route">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            name
+                            vehicle_id
+                            is_naid_compliant
                         </group>
                     </sheet>
                 </form>

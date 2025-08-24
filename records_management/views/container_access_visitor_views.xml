@@ -8,7 +8,15 @@
             <field name="model">container.access.visitor</field>
             <field name="arch" type="xml">
                 <tree string="Container Access Visitor">
-                    <!-- Add fields here -->
+                    name
+                    visitor_type
+                    company_name
+                    identification_type
+                    identification_number
+                    contact_phone
+                    contact_email
+                    company_id
+                    active
                 </tree>
             </field>
         </record>
@@ -21,7 +29,15 @@
                 <form string="Container Access Visitor">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            name
+                            visitor_type
+                            company_name
+                            identification_type
+                            identification_number
+                            contact_phone
+                            contact_email
+                            company_id
+                            active
                         </group>
                     </sheet>
                 </form>

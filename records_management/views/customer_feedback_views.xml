@@ -8,7 +8,12 @@
             <field name="model">customer.feedback</field>
             <field name="arch" type="xml">
                 <tree string="Customer Feedback">
-                    <!-- Add fields here -->
+                    name
+                    company_id
+                    user_id
+                    active
+                    state
+                    priority
                 </tree>
             </field>
         </record>
@@ -21,7 +26,12 @@
                 <form string="Customer Feedback">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            name
+                            company_id
+                            user_id
+                            active
+                            state
+                            priority
                         </group>
                     </sheet>
                 </form>

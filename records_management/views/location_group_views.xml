@@ -8,7 +8,11 @@
             <field name="model">location.group</field>
             <field name="arch" type="xml">
                 <tree string="Location Group">
-                    <!-- Add fields here -->
+                    name
+                    code
+                    manager_id
+                    company_id
+                    active
                 </tree>
             </field>
         </record>
@@ -21,7 +25,12 @@
                 <form string="Location Group">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            name
+                            code
+                            description
+                            manager_id
+                            company_id
+                            active
                         </group>
                     </sheet>
                 </form>
