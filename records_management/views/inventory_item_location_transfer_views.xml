@@ -1,7 +1,21 @@
+<!--
+    Inventory Item Location Transfer Views
+
+    This XML file defines the Odoo views and actions for the `inventory.item.location.transfer` model
+    in the Records Management module. It includes:
+      - Tree view for listing transfers
+      - Form view for editing/creating transfers
+      - Search view for filtering transfers
+      - Window action for accessing the model
+      - (Commented) menu item for navigation
+
+    All fields referenced in the views must exist in the corresponding model.
+    Follows Odoo view and action definition standards.
+-->
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
+        <!--
         <!-- Tree View -->
         <record id="inventory_item_location_transfer_view_tree" model="ir.ui.view">
             <field name="name">inventory.item.location.transfer.view.tree</field>
@@ -29,7 +43,15 @@
                 <form string="Inventory Item Location Transfer">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="item_id"/>
+                            <field name="from_location_id"/>
+                            <field name="to_location_id"/>
+                            <field name="transfer_date"/>
+                            <field name="user_id"/>
+                            <field name="notes"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -42,7 +64,13 @@
             <field name="model">inventory.item.location.transfer</field>
             <field name="arch" type="xml">
                 <search string="Search Inventory Item Location Transfer">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="item_id"/>
+                    <field name="from_location_id"/>
+                    <field name="to_location_id"/>
+                    <field name="transfer_date"/>
+                    <field name="user_id"/>
+                    <filter string="Active" name="active" domain="[('active','=',True)]"/>
                 </search>
             </field>
         </record>
@@ -57,12 +85,11 @@
         <!-- Menu -->
         <!--
         <menuitem
-            id="menu_inventory_item_location_transfer"
-            name="Inventory Item Location Transfer"
-            action="action_inventory_item_location_transfer"
+    </data>
+</odoo>
             parent="REPLACE_WITH_PARENT_MENU_ID"
             sequence="10"/>
         -->
-
+        -->
     </data>
 </odoo>
