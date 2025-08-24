@@ -126,6 +126,7 @@ from . import records_vehicle
 # =============================================================================
 
 # Modern paper recycling system (depends on shredding_service.recycling_bale_id)
+from . import paper_bale  # Core bale model needed by recycling system
 from . import paper_bale_recycling
 from . import paper_load_shipment
 
