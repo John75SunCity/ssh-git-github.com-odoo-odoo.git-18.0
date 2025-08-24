@@ -51,7 +51,9 @@ from . import system_diagram_data
 
 # Core structure models
 from . import records_tag_category
+from . import records_tag  # Added missing records tag model
 from . import records_location
+from . import records_center_location  # Added missing center location model
 from . import records_department
 from . import records_container
 from . import approval_history
@@ -101,6 +103,7 @@ from . import records_digital_scan
 from . import records_container_movement
 from . import records_container_transfer
 from . import records_container_transfer_line
+from . import records_container_log  # Added missing container logging model
 
 # Customer and inventory management
 from . import customer_inventory_report
@@ -181,6 +184,7 @@ from . import bin_key
 # Legacy bale models (for data migration compatibility)
 from . import bale
 from . import paper_bale
+from . import paper_bale_line  # Added missing paper bale line model
 from . import paper_bale_movement
 from . import paper_bale_inspection
 from . import generated_model
@@ -274,6 +278,8 @@ from . import stock_picking
 from . import project_task
 from . import fsm_task
 from . import fsm_route
+from . import fsm_order  # Added missing FSM order model
+from . import fsm_order_extension  # Added missing FSM order extensions
 
 # POS integration
 from . import pos_config
