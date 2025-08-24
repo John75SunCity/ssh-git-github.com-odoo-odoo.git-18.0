@@ -37,6 +37,11 @@ class PaperLoadShipment(models.Model):
     bale_count = fields.Integer(compute='_compute_bale_count', string="Bale Count", store=True)
     total_weight = fields.Float(compute='_compute_total_weight', string="Total Weight (kg)", store=True)
 
+    # Grade-specific counts for truck widget
+    white_count = fields.Integer(compute='_compute_grade_counts', string="White Bales", store=True)
+    mixed_count = fields.Integer(compute='_compute_grade_counts', string="Mixed Bales", store=True)
+    cardboard_count = fields.Integer(compute='_compute_grade_counts', string="Cardboard Bales", store=True)
+
     carrier_id = fields.Many2one('res.partner', string="Carrier", domain="[('is_company', '=', True)]")
     driver_id = fields.Many2one('res.partner', string="Driver", domain="[('is_company', '=', False)]")
 
@@ -65,6 +70,15 @@ class PaperLoadShipment(models.Model):
     def _compute_total_weight(self):
         for shipment in self:
             shipment.total_weight = sum(bale.weight for bale in shipment.bale_ids)
+
+    @api.depends('bale_ids.paper_grade')
+    def _compute_grade_counts(self):
+        """Compute counts by paper grade for truck widget visualization."""
+        for shipment in self:
+            bales = shipment.bale_ids
+            shipment.white_count = len(bales.filtered(lambda b: b.paper_grade == 'wht'))
+            shipment.mixed_count = len(bales.filtered(lambda b: b.paper_grade == 'mix'))
+            shipment.cardboard_count = len(bales.filtered(lambda b: b.paper_grade == 'occ'))
 
     # ============================================================================
     # ORM OVERRIDES
