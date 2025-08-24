@@ -75,6 +75,7 @@ from . import shredding_service
 # =============================================================================
 
 # Document management
+from . import naid_custody
 from . import records_document
 from . import records_digital_scan
 
