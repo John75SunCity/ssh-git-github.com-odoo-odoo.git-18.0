@@ -51,8 +51,8 @@ class InventoryItem(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
 
     @api.model_create_multi
+    def create(self, vals_list):
         for vals in vals_list:
             if not vals.get('name'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('inventory.item') or _('New')
-        return super().create(vals_list)
         return super().create(vals_list)
