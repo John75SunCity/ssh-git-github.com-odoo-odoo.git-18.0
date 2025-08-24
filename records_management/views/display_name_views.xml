@@ -8,7 +8,12 @@
             <field name="model">display_name</field>
             <field name="arch" type="xml">
                 <tree string="Display Name">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="model_name"/>
+                    <field name="pattern"/>
+                    <field name="description"/>
+                    <field name="active"/>
+                    <field name="company_id"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +26,12 @@
                 <form string="Display Name">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="model_name"/>
+                            <field name="pattern"/>
+                            <field name="description"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +44,9 @@
             <field name="model">display_name</field>
             <field name="arch" type="xml">
                 <search string="Search Display Name">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="model_name"/>
+                    <field name="pattern"/>
                 </search>
             </field>
         </record>

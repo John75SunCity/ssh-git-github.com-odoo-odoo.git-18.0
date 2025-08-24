@@ -4,24 +4,46 @@
 
         <!-- Tree View -->
         <record id="records_container_content_view_tree" model="ir.ui.view">
-            <field name="name">records.container.content.view.tree</field>
-            <field name="model">records.container.content</field>
+            <field name="name">container.content.view.tree</field>
+            <field name="model">container.content</field>
             <field name="arch" type="xml">
-                <tree string="Records Container Content">
-                    <!-- Add fields here -->
+                <tree string="Container Content">
+                    <field name="name"/>
+                    <field name="container_id"/>
+                    <field name="document_type_id"/>
+                    <field name="content_type"/>
+                    <field name="state"/>
+                    <field name="confidentiality_level"/>
+                    <field name="document_count"/>
+                    <field name="retention_until"/>
+                    <field name="is_overdue"/>
                 </tree>
             </field>
         </record>
 
         <!-- Form View -->
         <record id="records_container_content_view_form" model="ir.ui.view">
-            <field name="name">records.container.content.view.form</field>
-            <field name="model">records.container.content</field>
+            <field name="name">container.content.view.form</field>
+            <field name="model">container.content</field>
             <field name="arch" type="xml">
-                <form string="Records Container Content">
+                <form string="Container Content">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="container_id"/>
+                            <field name="document_type_id"/>
+                            <field name="content_type"/>
+                            <field name="state"/>
+                            <field name="confidentiality_level"/>
+                            <field name="document_count"/>
+                            <field name="estimated_pages"/>
+                            <field name="weight_kg"/>
+                            <field name="retention_until"/>
+                            <field name="destruction_required"/>
+                            <field name="destruction_method"/>
+                            <field name="description"/>
+                            <field name="notes"/>
+                            <field name="active"/>
                         </group>
                     </sheet>
                 </form>
@@ -30,19 +52,23 @@
 
         <!-- Search View -->
         <record id="records_container_content_view_search" model="ir.ui.view">
-            <field name="name">records.container.content.view.search</field>
-            <field name="model">records.container.content</field>
+            <field name="name">container.content.view.search</field>
+            <field name="model">container.content</field>
             <field name="arch" type="xml">
-                <search string="Search Records Container Content">
-                    <!-- Add search fields here -->
+                <search string="Search Container Content">
+                    <field name="name"/>
+                    <field name="container_id"/>
+                    <field name="document_type_id"/>
+                    <field name="content_type"/>
+                    <field name="state"/>
                 </search>
             </field>
         </record>
 
         <!-- Action -->
         <record id="action_records_container_content" model="ir.actions.act_window">
-            <field name="name">Records Container Content</field>
-            <field name="res_model">records.container.content</field>
+            <field name="name">Container Content</field>
+            <field name="res_model">container.content</field>
             <field name="view_mode">tree,form</field>
         </record>
 

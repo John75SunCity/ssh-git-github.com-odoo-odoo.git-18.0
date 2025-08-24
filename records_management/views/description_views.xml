@@ -7,7 +7,11 @@
             <field name="model">description</field>
             <field name="arch" type="xml">
                 <tree string="Description">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="category"/>
+                    <field name="description"/>
+                    <field name="active"/>
+                    <field name="company_id"/>
                 </tree>
             </field>
         </record>
@@ -19,7 +23,11 @@
                 <form string="Description">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="category"/>
+                            <field name="description"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>

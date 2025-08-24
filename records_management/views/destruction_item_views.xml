@@ -6,7 +6,15 @@
             <field name="model">destruction.item</field>
             <field name="arch" type="xml">
                 <tree string="Destruction Item">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="item_description"/>
+                    <field name="records_destruction_id"/>
+                    <field name="quantity"/>
+                    <field name="weight"/>
+                    <field name="container_type_id"/>
+                    <field name="partner_id"/>
+                    <field name="sequence"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -17,7 +25,15 @@
                 <form string="Destruction Item">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="item_description"/>
+                            <field name="records_destruction_id"/>
+                            <field name="quantity"/>
+                            <field name="weight"/>
+                            <field name="container_type_id"/>
+                            <field name="partner_id"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
                         </group>
                     </sheet>
                 </form>

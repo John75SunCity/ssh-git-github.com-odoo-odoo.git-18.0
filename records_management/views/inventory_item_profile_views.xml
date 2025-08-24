@@ -8,7 +8,12 @@
             <field name="model">inventory.item.profile</field>
             <field name="arch" type="xml">
                 <tree string="Inventory Item Profile">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="item_type"/>
+                    <field name="default_location_id"/>
+                    <field name="retention_period"/>
+                    <field name="active"/>
+                    <field name="company_id"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +26,13 @@
                 <form string="Inventory Item Profile">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="item_type"/>
+                            <field name="default_location_id"/>
+                            <field name="retention_period"/>
+                            <field name="description"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +45,9 @@
             <field name="model">inventory.item.profile</field>
             <field name="arch" type="xml">
                 <search string="Search Inventory Item Profile">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="item_type"/>
+                    <field name="default_location_id"/>
                 </search>
             </field>
         </record>

@@ -8,7 +8,14 @@
             <field name="model">fsm.route.management</field>
             <field name="arch" type="xml">
                 <tree string="FSM Route Management">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="scheduled_date"/>
+                    <field name="start_time" widget="float_time"/>
+                    <field name="end_time" widget="float_time"/>
+                    <field name="driver_id"/>
+                    <field name="user_id"/>
+                    <field name="sequence"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +28,16 @@
                 <form string="FSM Route Management">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="scheduled_date"/>
+                            <field name="start_time" widget="float_time"/>
+                            <field name="end_time" widget="float_time"/>
+                            <field name="estimated_duration"/>
+                            <field name="driver_id"/>
+                            <field name="user_id"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +50,10 @@
             <field name="model">fsm.route.management</field>
             <field name="arch" type="xml">
                 <search string="Search FSM Route Management">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="scheduled_date"/>
+                    <field name="driver_id"/>
+                    <field name="user_id"/>
                 </search>
             </field>
         </record>

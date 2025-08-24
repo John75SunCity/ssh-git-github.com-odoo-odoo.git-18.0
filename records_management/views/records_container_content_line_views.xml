@@ -8,7 +8,14 @@
             <field name="model">records.container.content.line</field>
             <field name="arch" type="xml">
                 <tree string="Records Container Content Line">
-                    <!-- Add fields here -->
+                    <field name="content_id"/>
+                    <field name="name"/>
+                    <field name="document_type"/>
+                    <field name="quantity"/>
+                    <field name="sequence"/>
+                    <field name="notes"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +28,14 @@
                 <form string="Records Container Content Line">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="content_id"/>
+                            <field name="name"/>
+                            <field name="document_type"/>
+                            <field name="quantity"/>
+                            <field name="sequence"/>
+                            <field name="notes"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +48,9 @@
             <field name="model">records.container.content.line</field>
             <field name="arch" type="xml">
                 <search string="Search Records Container Content Line">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="content_id"/>
+                    <field name="document_type"/>
                 </search>
             </field>
         </record>

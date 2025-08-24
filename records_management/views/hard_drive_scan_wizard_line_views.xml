@@ -8,7 +8,8 @@
             <field name="model">hard.drive.scan.wizard.line</field>
             <field name="arch" type="xml">
                 <tree string="Hard Drive Scan Wizard Line">
-                    <!-- Add fields here -->
+                    <field name="wizard_id"/>
+                    <field name="serial_number"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +22,8 @@
                 <form string="Hard Drive Scan Wizard Line">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="wizard_id"/>
+                            <field name="serial_number"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +36,8 @@
             <field name="model">hard.drive.scan.wizard.line</field>
             <field name="arch" type="xml">
                 <search string="Search Hard Drive Scan Wizard Line">
-                    <!-- Add search fields here -->
+                    <field name="serial_number"/>
+                    <field name="wizard_id"/>
                 </search>
             </field>
         </record>

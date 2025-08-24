@@ -8,7 +8,15 @@
             <field name="model">portal.request.line</field>
             <field name="arch" type="xml">
                 <tree string="Portal Request Line">
-                    <!-- Add fields here -->
+                    <field name="request_id"/>
+                    <field name="item_type"/>
+                    <field name="description"/>
+                    <field name="quantity"/>
+                    <field name="status"/>
+                    <field name="sequence"/>
+                    <field name="notes"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +29,15 @@
                 <form string="Portal Request Line">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="request_id"/>
+                            <field name="item_type"/>
+                            <field name="description"/>
+                            <field name="quantity"/>
+                            <field name="status"/>
+                            <field name="sequence"/>
+                            <field name="notes"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +50,10 @@
             <field name="model">portal.request.line</field>
             <field name="arch" type="xml">
                 <search string="Search Portal Request Line">
-                    <!-- Add search fields here -->
+                    <field name="description"/>
+                    <field name="request_id"/>
+                    <field name="item_type"/>
+                    <field name="status"/>
                 </search>
             </field>
         </record>
