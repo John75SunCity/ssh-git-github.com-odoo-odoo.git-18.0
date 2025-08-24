@@ -15,7 +15,7 @@ class PortalInventorySearch {
         this.searchHistory = JSON.parse(localStorage.getItem('portal_search_history') || '[]');
         this.commonQueries = [
             'active boxes',
-            'archived documents', 
+            'archived documents',
             'request destruction',
             'pending pickup',
             'expiring soon',
@@ -35,7 +35,7 @@ class PortalInventorySearch {
         this.setupAutocomplete();
         this.setupAdvancedSearch();
         this.loadSearchSuggestions();
-        
+
         console.log('Portal Inventory Search initialized');
     }
 
@@ -45,7 +45,7 @@ class PortalInventorySearch {
 
         // Debounced search function
         const debouncedSearch = debounce(this.performSearch.bind(this), 300);
-        
+
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.trim();
             if (query.length >= 2) {
@@ -74,8 +74,8 @@ class PortalInventorySearch {
     setupFilters() {
         // Filter change handlers
         const filterElements = [
-            'filter_type', 
-            'filter_status', 
+            'filter_type',
+            'filter_status',
             'filter_location',
             'date_from',
             'date_to'
@@ -146,12 +146,12 @@ class PortalInventorySearch {
     setupAdvancedSearch() {
         const advancedToggle = document.getElementById('advanced_search_toggle');
         const advancedPanel = document.getElementById('advanced_search_panel');
-        
+
         if (advancedToggle && advancedPanel) {
             advancedToggle.addEventListener('click', () => {
                 const isVisible = advancedPanel.style.display !== 'none';
                 advancedPanel.style.display = isVisible ? 'none' : 'block';
-                advancedToggle.innerHTML = isVisible ? 
+                advancedToggle.innerHTML = isVisible ?
                     '<i class="fa fa-chevron-down"></i> Advanced Search' :
                     '<i class="fa fa-chevron-up"></i> Hide Advanced';
             });
@@ -169,24 +169,24 @@ class PortalInventorySearch {
 
     async performSearch(query, addToHistory = false) {
         if (!query || query === this.lastQuery) return;
-        
+
         this.lastQuery = query;
         this.showLoadingState();
 
         try {
             // Parse query for special commands
             const parsedQuery = this.parseSearchQuery(query);
-            
+
             // Build search domain
             const domain = this.buildSearchDomain(parsedQuery);
-            
+
             // Perform RPC search
             const results = await rpc('/web/dataset/search_read', {
                 model: 'records.container',
                 domain: domain,
                 fields: [
-                    'name', 'barcode', 'description', 'state', 'location_id', 
-                    'document_count', 'retention_date', 'partner_id', 'create_date'
+                    'name', 'barcode', 'description', 'state', 'location_id',
+                    'document_count', 'destruction_due_date', 'partner_id', 'create_date'
                 ],
                 limit: 100,
                 sort: 'write_date desc'
@@ -288,7 +288,7 @@ class PortalInventorySearch {
         if (parsedQuery.filters.expiring) {
             const futureDate = new Date();
             futureDate.setDate(futureDate.getDate() + 30);
-            domain.push(['retention_date', '<=', futureDate.toISOString().split('T')[0]]);
+            domain.push(['destruction_due_date', '<=', futureDate.toISOString().split('T')[0]]);
         }
 
         // Always filter by current user's access
@@ -321,7 +321,7 @@ class PortalInventorySearch {
 
     shouldSearchDocuments(query) {
         const documentKeywords = ['document', 'file', 'paper', 'record', 'certificate'];
-        return documentKeywords.some(keyword => 
+        return documentKeywords.some(keyword =>
             query.toLowerCase().includes(keyword)
         );
     }
@@ -339,13 +339,13 @@ class PortalInventorySearch {
 
         try {
             const domain = this.buildFilterDomain(filters);
-            
+
             const results = await rpc('/web/dataset/search_read', {
                 model: 'records.container',
                 domain: domain,
                 fields: [
                     'name', 'barcode', 'description', 'state', 'location_id',
-                    'document_count', 'retention_date', 'partner_id', 'create_date'
+                    'document_count', 'destruction_due_date', 'partner_id', 'create_date'
                 ],
                 limit: 100,
                 sort: 'write_date desc'
@@ -392,13 +392,13 @@ class PortalInventorySearch {
 
         try {
             const domain = this.buildQuickFilterDomain(filter);
-            
+
             const results = await rpc('/web/dataset/search_read', {
                 model: 'records.container',
                 domain: domain,
                 fields: [
                     'name', 'barcode', 'description', 'state', 'location_id',
-                    'document_count', 'retention_date', 'partner_id', 'create_date'
+                    'document_count', 'destruction_due_date', 'partner_id', 'create_date'
                 ],
                 limit: 100,
                 sort: 'write_date desc'
@@ -424,7 +424,7 @@ class PortalInventorySearch {
         if (filter.retention_expiring) {
             const futureDate = new Date();
             futureDate.setDate(futureDate.getDate() + 30);
-            domain.push(['retention_date', '<=', futureDate.toISOString().split('T')[0]]);
+            domain.push(['destruction_due_date', '<=', futureDate.toISOString().split('T')[0]]);
             domain.push(['state', '!=', 'destroyed']);
         }
 
@@ -476,7 +476,7 @@ class PortalInventorySearch {
         row.setAttribute('data-id', box.id);
 
         const statusClass = this.getStatusClass(box.state);
-        const retentionWarning = this.checkRetentionWarning(box.retention_date);
+        const retentionWarning = this.checkRetentionWarning(box.destruction_due_date);
 
         row.innerHTML = `
             <td class="select-cell">
@@ -571,7 +571,7 @@ class PortalInventorySearch {
         ];
 
         return allSuggestions
-            .filter(suggestion => 
+            .filter(suggestion =>
                 suggestion.toLowerCase().includes(query.toLowerCase()) &&
                 suggestion.toLowerCase() !== query.toLowerCase()
             )
@@ -585,7 +585,7 @@ class PortalInventorySearch {
             return;
         }
 
-        dropdown.innerHTML = suggestions.map(suggestion => 
+        dropdown.innerHTML = suggestions.map(suggestion =>
             `<div class="suggestion-item">
                 <i class="fa fa-search text-muted mr-2"></i>
                 ${this.escapeHtml(suggestion)}
@@ -712,7 +712,7 @@ class PortalInventorySearch {
     getStatusClass(state) {
         const statusClasses = {
             'active': 'success',
-            'archived': 'secondary', 
+            'archived': 'secondary',
             'destroyed': 'danger',
             'pending_pickup': 'warning',
             'pending_destruction': 'warning',
@@ -723,11 +723,11 @@ class PortalInventorySearch {
 
     checkRetentionWarning(retentionDate) {
         if (!retentionDate) return false;
-        
+
         const retention = new Date(retentionDate);
         const warning = new Date();
         warning.setDate(warning.getDate() + 30);
-        
+
         return retention <= warning;
     }
 
@@ -745,7 +745,7 @@ class PortalInventorySearch {
     async performAdvancedSearch() {
         const formData = new FormData(document.getElementById('advanced_search_form'));
         const searchParams = {};
-        
+
         for (let [key, value] of formData.entries()) {
             if (value) searchParams[key] = value;
         }
@@ -767,7 +767,7 @@ class PortalInventorySearch {
 // Global functions for template access
 window.portalSearch = {
     searchInstance: null,
-    
+
     init() {
         if (!this.searchInstance) {
             this.searchInstance = new PortalInventorySearch();
