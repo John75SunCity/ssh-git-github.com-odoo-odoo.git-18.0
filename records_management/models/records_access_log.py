@@ -252,11 +252,12 @@ class RecordsAccessLog(models.Model):
     def cleanup_old_logs(self, days=365):
         """Clean up old access logs based on retention policy"""
         _logger.info(_("Starting cleanup of old access logs older than %d days"), days)
-        # The actual cleanup logic should be implemented here.
-        # For example:
-        # cutoff_date = fields.Datetime.subtract(fields.Datetime.now(), days=days)
-        # self.search([('access_date', '<', cutoff_date)]).unlink() # Unlink is blocked, so maybe archive.
-        # self.search([('access_date', '<', cutoff_date)]).write({'active': False})
+        # Implement cleanup logic for old access log entries
+        cutoff_date = fields.Datetime.subtract(fields.Datetime.now(), days=days)
+        old_logs = self.search([('access_date', '<', cutoff_date)])
+        # Archive old logs instead of deleting to preserve audit trail
+        old_logs.write({'active': False})
+        return len(old_logs)
 
     def generate_access_report(self, date_from=None, date_to=None, user_ids=None):
         """Generate comprehensive access report"""

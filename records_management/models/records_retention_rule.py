@@ -163,15 +163,16 @@ class RecordsRetentionRule(models.Model):
             else:
                 rule.is_expired = False
                 rule.overdue_days = 0
-    @api.depends('version')
+
+    @api.depends('version', 'rule_code')
     def _compute_version_details(self):
-        # TODO: Implement logic to determine if this is the latest version of the rule
+        """Determine if this is the latest version of the rule."""
         for rule in self:
-            rule.is_latest_version = True  # Placeholder for real logic
-    @api.depends('version')
-    def _compute_version_details(self):
-        for rule in self:
-            rule.is_latest_version = True  # Placeholder for real logic
+            # Find the highest version for this rule_code
+            latest_version = self.search([
+                ('rule_code', '=', rule.rule_code)
+            ], order='version desc', limit=1)
+            rule.is_latest_version = (rule.id == latest_version.id) if latest_version else True
 
     # ============================================================================
     # CONSTRAINTS

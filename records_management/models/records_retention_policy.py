@@ -1,3 +1,21 @@
+"""
+records_retention_policy.py
+
+This module defines the RecordsRetentionPolicy model for the Odoo Records Management system.
+It manages document retention policies, destruction methods, compliance tracking, versioning,
+and lifecycle management for physical and electronic records. The model supports hierarchical
+policy structures, audit trails, review cycles, and integration with related business objects
+such as document types, departments, and compliance logs.
+
+Key Features:
+- Policy definition and unique code generation
+- Retention period and destruction method management
+- Versioning and status tracking
+- Compliance review and audit logging
+- Relationships to documents, rules, and organizational entities
+- Action methods for workflow transitions and UI integration
+"""
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 from dateutil.relativedelta import relativedelta
@@ -15,7 +33,15 @@ class RecordsRetentionPolicy(models.Model):
 
     # === CORE IDENTIFICATION ===
     name = fields.Char(string="Policy Name", required=True, tracking=True)
-    code = fields.Char(string="Policy Code", required=True, copy=False, readonly=True, default=lambda self: _('New'), tracking=True)
+    DEFAULT_CODE = 'New'
+    code = fields.Char(
+        string="Policy Code",
+        required=True,
+        copy=False,
+        readonly=lambda self: self.state != 'draft',
+        default=DEFAULT_CODE,
+        tracking=True
+    )
     sequence = fields.Integer(string='Sequence', default=10)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     description = fields.Text(string="Description")
@@ -40,7 +66,7 @@ class RecordsRetentionPolicy(models.Model):
         ('disintegrate', 'Disintegration'),
     ], string="Destruction Method", default='shred', tracking=True)
 
-    # === STATE & LIFECYCLE ===
+    # === STATUS & VERSIONING (example of using Selection instead of many booleans) ===
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),
@@ -97,7 +123,6 @@ class RecordsRetentionPolicy(models.Model):
 
     # === POLICY FLAGS & STATUS TRACKING ===
     is_default = fields.Boolean(string='Is Default Policy')
-    is_active = fields.Boolean(string='Is Active', default=True)
     is_legal_hold = fields.Boolean(string='Legal Hold')
     legal_hold_reason = fields.Text(string='Legal Hold Reason')
     is_template = fields.Boolean(string='Is Template')
@@ -191,6 +216,7 @@ class RecordsRetentionPolicy(models.Model):
     supersedes_id = fields.Many2one('records.retention.policy', string='Supersedes')
     effective_date = fields.Date(string='Effective Date')
     ineffective_date = fields.Date(string='Ineffective Date')
+    # Indicates the version number of the policy for tracking changes and versioning history.
     version = fields.Integer(string='Version')
 
     # === SQL CONSTRAINTS ===
@@ -204,8 +230,8 @@ class RecordsRetentionPolicy(models.Model):
     def create(self, vals_list):
         """Auto-generate code if not provided."""
         for vals in vals_list:
-            if vals.get('code', _('New')) == _('New'):
-                vals['code'] = self.env['ir.sequence'].next_by_code('records.retention.policy') or _('New')
+            if vals.get('code', self.DEFAULT_CODE) == self.DEFAULT_CODE:
+                vals['code'] = self.env['ir.sequence'].next_by_code('records.retention.policy') or self.DEFAULT_CODE
         return super().create(vals_list)
 
     def copy(self, default=None):
@@ -214,7 +240,7 @@ class RecordsRetentionPolicy(models.Model):
         default = dict(default or {})
         default.update({
             'name': _('%s (Copy)') % self.name,
-            'code': _('New'),
+            'code': self.DEFAULT_CODE,
             'state': 'draft',
             'version_ids': [],
             'last_review_date': False,
@@ -226,7 +252,7 @@ class RecordsRetentionPolicy(models.Model):
     def _compute_display_name(self):
         """Display name as [CODE] Name if code is set."""
         for policy in self:
-            policy.display_name = f"[{policy.code}] {policy.name}" if policy.code and policy.code != _('New') else policy.name
+            policy.display_name = f"[{policy.code}] {policy.name}" if policy.code and policy.code != self.DEFAULT_CODE else policy.name
 
     @api.depends('rule_ids', 'version_ids')
     def _compute_counts(self):
@@ -263,8 +289,13 @@ class RecordsRetentionPolicy(models.Model):
             policy.document_count = len(policy.document_ids)
     @api.depends('parent_policy_id')
     def _compute_policy_level(self):
-        """Compute policy level (hierarchy depth) with circular reference safeguard."""
+        """Compute policy level (hierarchy depth) with circular reference safeguard and batch caching."""
+        # Cache to avoid redundant traversals in batch
+        cache = {}
         for policy in self:
+            if policy.id in cache:
+                policy.policy_level = cache[policy.id]
+                continue
             visited = set()
             current = policy
             level = 1
@@ -274,43 +305,56 @@ class RecordsRetentionPolicy(models.Model):
                     # Circular reference detected, break to prevent infinite recursion
                     break
                 visited.add(parent_id)
+                if parent_id in cache:
+                    level += cache[parent_id] - 1
+                    break
                 level += 1
                 current = current.parent_policy_id
             policy.policy_level = level
-        """Stub: Compute policy level (hierarchy depth)."""
-        for policy in self:
-            # TODO: Implement actual logic for computing policy hierarchy depth.
-            policy.policy_level = 1 if not policy.parent_policy_id else (policy.parent_policy_id.policy_level or 1) + 1
+            cache[policy.id] = level
 
     @api.depends('retention_period', 'retention_unit')
     def _compute_retention_years(self):
-        """Compute retention period in years."""
+        """Compute retention period in years (as float for precision)."""
         for policy in self:
             if policy.retention_unit == 'years':
                 policy.retention_years = policy.retention_period
             elif policy.retention_unit == 'months':
-                policy.retention_years = policy.retention_period // 12
+                policy.retention_years = policy.retention_period / 12
             elif policy.retention_unit == 'weeks':
-                policy.retention_years = policy.retention_period // 52
+                policy.retention_years = policy.retention_period / 52
             elif policy.retention_unit == 'days':
-                policy.retention_years = policy.retention_period // 365
+                policy.retention_years = policy.retention_period / 365
+            elif policy.retention_unit == 'indefinite':
+                policy.retention_years = None
             else:
                 policy.retention_years = 0
+                _logger = getattr(self.env, 'logger', None)
+                _logger.warning(f"Unsupported retention unit '{policy.retention_unit}' for policy '{policy.name}'. Set retention_years to 0.")
+    # Class-level constant for retention period defaults
+    RETENTION_PERIOD_DEFAULTS = {
+        'days': 30,
+        'weeks': 4,
+        'months': 12,
+        'years': 7,
+    }
+    _retention_period_was_indefinite = fields.Boolean(string='Was Indefinite', default=False, invisible=True)
 
     @api.onchange('retention_unit')
     def _onchange_retention_unit(self):
-        """Set retention period to 0 if indefinite, or restore default if changed back."""
+        """Set retention period to 0 if indefinite, or restore default if changed back from indefinite, but do not override user input."""
         if self.retention_unit == 'indefinite':
             self.retention_period = 0
-        elif self.retention_period == 0:
-            # Restore a sensible default based on the selected unit
-            defaults = {
-                'days': 30,
-                'weeks': 4,
-                'months': 12,
-                'years': 7,
-            }
-            self.retention_period = defaults.get(self.retention_unit, 1)
+            self._retention_period_was_indefinite = True
+        elif self._retention_period_was_indefinite and self.retention_period == 0:
+            # Restore a sensible default only if last set by indefinite and value is 0
+            self.retention_period = self.RETENTION_PERIOD_DEFAULTS.get(self.retention_unit, 1)
+            self._retention_period_was_indefinite = False
+        else:
+            self._retention_period_was_indefinite = False
+            # Only set default if current value is 0 or not set
+            if not self.retention_period:
+                self.retention_period = self.RETENTION_PERIOD_DEFAULTS.get(self.retention_unit, 1)
 
     # === ACTION METHODS ===
     def action_activate(self):
@@ -324,7 +368,8 @@ class RecordsRetentionPolicy(models.Model):
     def action_archive(self):
         """Archive the policy."""
         self.ensure_one()
-        return super().action_archive()
+        self.write({'active': False, 'state': 'archived'})
+        self.message_post(body=_("Policy archived."))
 
     def action_set_to_draft(self):
         """Set policy state to draft."""

@@ -1,11 +1,30 @@
+"""
+scan_retrieval_item.py
+
+This module defines the ScanRetrievalItem model for the Odoo Records Management system.
+It manages the workflow and metadata for scanning requests of physical documents,
+including scan status, quality, digital format, and integration with file retrieval items.
+The model supports actions for starting scans, completing scans, quality approval,
+and requesting rescans, with full audit trail via chatter messages.
+"""
+
 from odoo import models, fields, _
 from odoo.exceptions import UserError
 
 
 class ScanRetrievalItem(models.Model):
+    """
+    ScanRetrievalItem model represents a single scan request for a document within the
+    records management workflow. It tracks the scan process, digital output format,
+    scan quality, and links to related file retrieval items. The model provides
+    business logic for scan lifecycle actions and ensures compliance with
+    document handling procedures.
+    """
+
     _name = 'scan.retrieval.item'
     _description = 'Scan Retrieval Item'
-    _inherit = ['retrieval.item.base']  # Now inherits from the new base model
+    # Inherit from the custom retrieval.item.base model to reuse retrieval item logic
+    _inherit = ['retrieval.item.base']
     _rec_name = 'display_name'
 
     # Scan-specific fields
@@ -38,6 +57,7 @@ class ScanRetrievalItem(models.Model):
             ('quality_check', 'Quality Check'),
             ('delivered', 'Delivered'),
             ('rescan_needed', 'Rescan Needed'),
+            ('completed', 'Completed'),
         ],
         ondelete={
             'file_retrieved': 'set default',
@@ -45,6 +65,7 @@ class ScanRetrievalItem(models.Model):
             'quality_check': 'set default',
             'delivered': 'set default',
             'rescan_needed': 'set default',
+            'completed': 'set default',
         }
     )
 
@@ -52,12 +73,7 @@ class ScanRetrievalItem(models.Model):
     # NOTE: The following block of fields appears to be incorrectly generated
     # and is the source of many errors. Many are standard fields that should not
     # be redefined (e.g., company_id, create_date). This block should be
-    # reviewed and removed or corrected. I have commented it out for now.
-    # ============================================================================
-    # assigned_user_id = fields.Many2one('assigned.user')
-    # ... (rest of the problematic fields) ...
-    # write_uid = fields.Char(string='Write Uid')
-
+    # reviewed and removed or corrected. These have been permanently removed.
     # ============================================================================
     # METHODS
     # ============================================================================
@@ -106,15 +122,21 @@ class ScanRetrievalItem(models.Model):
         )
 
     def action_request_rescan(self):
-        """Request that this item be rescanned due to quality issues"""
+        """Request a rescan for this item"""
         self.ensure_one()
-        if self.status not in ['quality_check']:
+        if self.status != 'quality_check':
             raise UserError(_("Can only request rescan from 'Quality Check' status."))
 
         self.write({
             'status': 'rescan_needed',
             'scan_start_time': False,
             'scan_completion_time': False
+        })
+
+        self.message_post(
+            body=_("Rescan requested for item"),
+            message_type='notification'
+        )
         })
 
         self.message_post(
