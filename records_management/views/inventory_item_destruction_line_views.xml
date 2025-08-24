@@ -8,7 +8,14 @@
             <field name="model">inventory.item.destruction.line</field>
             <field name="arch" type="xml">
                 <tree string="Inventory Item Destruction Line">
-                    <!-- Add fields here -->
+                    <field name="destruction_id"/>
+                    <field name="item_id"/>
+                    <field name="quantity"/>
+                    <field name="destruction_method"/>
+                    <field name="state"/>
+                    <field name="destruction_date"/>
+                    <field name="responsible_id"/>
+                    <field name="certificate_number"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +28,23 @@
                 <form string="Inventory Item Destruction Line">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <group>
+                                <field name="destruction_id"/>
+                                <field name="item_id"/>
+                                <field name="quantity"/>
+                                <field name="sequence"/>
+                                <field name="location_id"/>
+                            </group>
+                            <group>
+                                <field name="destruction_method"/>
+                                <field name="state"/>
+                                <field name="destruction_date"/>
+                                <field name="responsible_id"/>
+                                <field name="certificate_number"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
                         </group>
                     </sheet>
                 </form>

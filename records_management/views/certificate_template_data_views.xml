@@ -7,7 +7,12 @@
             <field name="model">certificate.template.data</field>
             <field name="arch" type="xml">
                 <tree string="Certificate Template Data">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="template_type"/>
+                    <field name="template_format"/>
+                    <field name="certification_authority"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -19,8 +24,30 @@
                 <form string="Certificate Template Data">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <group>
+                                <field name="name"/>
+                                <field name="template_type"/>
+                                <field name="template_format"/>
+                                <field name="certification_authority"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="logo_image" widget="image"/>
+                                <field name="company_id"/>
+                                <field name="company_address"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page string="Header">
+                                <field name="header_text" widget="html"/>
+                            </page>
+                            <page string="Body Template">
+                                <field name="body_template" widget="html"/>
+                            </page>
+                            <page string="Footer">
+                                <field name="footer_text" widget="html"/>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>

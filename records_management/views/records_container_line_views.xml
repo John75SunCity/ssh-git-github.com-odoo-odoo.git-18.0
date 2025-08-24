@@ -8,7 +8,15 @@
             <field name="model">records.container.line</field>
             <field name="arch" type="xml">
                 <tree string="Records Container Line">
-                    <!-- Add fields here -->
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="container_id"/>
+                    <field name="document_type_id"/>
+                    <field name="quantity"/>
+                    <field name="unit_id"/>
+                    <field name="state"/>
+                    <field name="date_added"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +29,32 @@
                 <form string="Records Container Line">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <group>
+                                <field name="name"/>
+                                <field name="container_id"/>
+                                <field name="document_type_id"/>
+                                <field name="sequence"/>
+                            </group>
+                            <group>
+                                <field name="quantity"/>
+                                <field name="unit_id"/>
+                                <field name="state"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <group string="Additional Information">
+                            <group>
+                                <field name="reference"/>
+                                <field name="barcode"/>
+                                <field name="date_added"/>
+                            </group>
+                            <group>
+                                <field name="date_removed"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field name="notes" nolabel="1"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +67,22 @@
             <field name="model">records.container.line</field>
             <field name="arch" type="xml">
                 <search string="Search Records Container Line">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="container_id"/>
+                    <field name="document_type_id"/>
+                    <field name="reference"/>
+                    <field name="barcode"/>
+                    <filter name="active_filter" string="Active" domain="[('active', '=', True)]"/>
+                    <filter name="inactive_filter" string="Inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <filter name="state_active" string="Active" domain="[('state', '=', 'active')]"/>
+                    <filter name="state_removed" string="Removed" domain="[('state', '=', 'removed')]"/>
+                    <filter name="state_archived" string="Archived" domain="[('state', '=', 'archived')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_container" string="Container" context="{'group_by': 'container_id'}"/>
+                        <filter name="group_document_type" string="Document Type" context="{'group_by': 'document_type_id'}"/>
+                        <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    </group>
                 </search>
             </field>
         </record>

@@ -4,12 +4,15 @@ from . import description
 from . import inventory_item_profile
 from . import portal_request_line
 from . import records_container_content_line
+from . import records_container_line
 from . import pickup_request_line
 from . import location_group
 from . import inventory_adjustment_reason
 from . import inventory_item
 from . import inventory_item_retrieval
+from . import inventory_item_retrieval_line
 from . import inventory_item_destruction
+from . import inventory_item_destruction_line
 from . import key_inventory
 from . import pickup_location
 from . import full_customization_name
@@ -387,6 +390,8 @@ from . import custody_transfer_event
 
 # Certificate template system
 from . import certificate_template_data
+from . import media_type
+from . import naid_operator_certification
 
 # =============================================================================
 # SUB-MODEL EXTENSIONS (Individual models for One2many relationships)

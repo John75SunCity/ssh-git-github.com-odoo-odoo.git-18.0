@@ -7,7 +7,14 @@
             <field name="model">base.rates</field>
             <field name="arch" type="xml">
                 <tree string="Base Rates">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="rate_type"/>
+                    <field name="base_rate"/>
+                    <field name="currency_id"/>
+                    <field name="unit_type"/>
+                    <field name="effective_date"/>
+                    <field name="expiry_date"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -19,7 +26,24 @@
                 <form string="Base Rate">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <group>
+                                <field name="name"/>
+                                <field name="rate_type"/>
+                                <field name="base_rate"/>
+                                <field name="currency_id"/>
+                                <field name="unit_type"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="effective_date"/>
+                                <field name="expiry_date"/>
+                                <field name="minimum_charge"/>
+                                <field name="maximum_charge"/>
+                                <field name="company_id"/>
+                            </group>
+                        </group>
+                        <group string="Description">
+                            <field name="description" nolabel="1"/>
                         </group>
                     </sheet>
                 </form>
