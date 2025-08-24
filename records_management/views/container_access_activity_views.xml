@@ -1,3 +1,16 @@
+<!--
+    Container Access Activity Views
+
+    This XML file defines the Odoo views for the `container.access.activity` model in the Records Management module.
+    It includes:
+      - Tree view for listing container access activities
+      - Form view for detailed activity entry and editing
+      - Search view for filtering and searching activities
+      - Window action for launching the model views
+      - (Commented) menu item for navigation integration
+
+    Fields covered include visitor, container, work order, authorization, timing, location, barcode, description, and issue tracking.
+-->
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
