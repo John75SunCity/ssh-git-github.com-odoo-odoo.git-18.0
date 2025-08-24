@@ -28,8 +28,8 @@ class RecordsContainerTransfer(models.Model):
     # ============================================================================
     # TRANSFER DETAILS
     # ============================================================================
-    from_location_id = fields.Many2one('stock.location', string="From Location", required=True, readonly=True, states={'draft': [('readonly', False)]})
-    to_location_id = fields.Many2one('stock.location', string="To Location", required=True, readonly=True, states={'draft': [('readonly', False)]})
+    from_location_id = fields.Many2one('stock.location', string="From Location", required=True, readonly=True)
+    to_location_id = fields.Many2one('stock.location', string="To Location", required=True, readonly=True)
     scheduled_date = fields.Datetime(string="Scheduled Date", default=fields.Datetime.now, required=True, tracking=True)
     actual_transfer_date = fields.Datetime(string="Actual Transfer Date", readonly=True)
     notes = fields.Text(string="Notes")
@@ -37,7 +37,7 @@ class RecordsContainerTransfer(models.Model):
     # ============================================================================
     # CONTENTS
     # ============================================================================
-    transfer_line_ids = fields.One2many('records.container.transfer.line', 'transfer_id', string="Transfer Lines", readonly=True, states={'draft': [('readonly', False)]})
+    transfer_line_ids = fields.One2many('records.container.transfer.line', 'transfer_id', string="Transfer Lines", readonly=True)
     container_count = fields.Integer(string="Container Count", compute='_compute_container_count', store=True)
 
     # ============================================================================

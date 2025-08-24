@@ -16,9 +16,9 @@ class TempInventoryAudit(models.Model):
     # FIELDS
     # ============================================================================
     inventory_id = fields.Many2one(
-        'records.inventory', 
-        string="Inventory Record", 
-        required=True, 
+        'customer.inventory',
+        string="Inventory Record",
+        required=True,
         ondelete='cascade'
     )
     date = fields.Datetime(string="Date", default=fields.Datetime.now, readonly=True)
@@ -30,7 +30,7 @@ class TempInventoryAudit(models.Model):
         ('confirm', 'Confirmed'),
         ('cancel', 'Cancelled'),
     ], string="Event Type", required=True)
-    
+
     user_id = fields.Many2one('res.users', string="User", default=lambda self: self.env.user, readonly=True)
     details = fields.Text(string="Details")
     ip_address = fields.Char(string='IP Address', readonly=True)

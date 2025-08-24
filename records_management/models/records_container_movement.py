@@ -19,10 +19,10 @@ class RecordsContainerMovement(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    container_id = fields.Many2one('records.container', string="Container", required=True, ondelete='cascade', tracking=True, states={'draft': [('readonly', False)]})
+    container_id = fields.Many2one('records.container', string="Container", required=True, ondelete='cascade', tracking=True)
     partner_id = fields.Many2one(related='container_id.partner_id', string="Customer", store=True, readonly=True)
-    from_location_id = fields.Many2one('stock.location', string="From Location", required=True, tracking=True, states={'draft': [('readonly', False)]})
-    to_location_id = fields.Many2one('stock.location', string="To Location", required=True, tracking=True, states={'draft': [('readonly', False)]})
+    from_location_id = fields.Many2one('stock.location', string="From Location", required=True, tracking=True)
+    to_location_id = fields.Many2one('stock.location', string="To Location", required=True, tracking=True)
     assigned_technician_id = fields.Many2one('res.users', string="Assigned Technician", tracking=True)
     authorized_by_id = fields.Many2one('res.users', string="Authorized By", readonly=True)
 

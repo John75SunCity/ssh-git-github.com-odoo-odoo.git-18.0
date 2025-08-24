@@ -38,7 +38,7 @@ class PickupRoute(models.Model):
         ('urgent', 'Urgent')
     ], string='Priority', default='normal')
     pickup_request_ids = fields.One2many('pickup.request', 'route_id', string='Pickup Requests')
-    route_stop_ids = fields.One2many('route.stop', 'route_id', string='Route Stops')
+    route_stop_ids = fields.One2many('pickup.route.stop', 'route_id', string='Route Stops')
     total_distance = fields.Float(string='Total Distance (km)', compute='_compute_route_metrics', store=True)
     estimated_duration = fields.Float(string='Estimated Duration (hours)', compute='_compute_route_metrics', store=True)
     actual_duration = fields.Float(string='Actual Duration (hours)', compute='_compute_actual_duration', store=True)
@@ -239,7 +239,7 @@ class PickupRoute(models.Model):
 
         # Create stops from pickup requests
         for request in self.pickup_request_ids:
-            self.env['route.stop'].create({
+            self.env['pickup.route.stop'].create({
                 'route_id': self.id,
                 'pickup_request_id': request.id,
                 'sequence': len(self.route_stop_ids) + 1,

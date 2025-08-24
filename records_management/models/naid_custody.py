@@ -59,7 +59,7 @@ class NaidCustody(models.Model):
         ('destruction', 'Destruction'),
         ('audit', 'Audit'),
         ('other', 'Other')
-    ], string="Event Type", default='creation', required=True, tracking=True)
+    ], string="Event Type", default='creation', required=True)
 
     def name_get(self):
         result = []
