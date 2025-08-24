@@ -84,15 +84,3 @@ class NAIDComplianceChecklist(models.Model):
         self.checklist_item_ids.write({'is_checked': False, 'notes': ''})
         self.write({'state': 'draft', 'completed_by_id': False, 'completion_date': False})
         self.message_post(body=_("Checklist has been reset to draft."))
-
-class NAIDComplianceChecklistItem(models.Model):
-    _name = 'naid.compliance.checklist.item'
-    _description = 'NAID Compliance Checklist Item'
-    _order = 'sequence, id'
-
-    checklist_id = fields.Many2one('naid.compliance.checklist', string='Checklist', required=True, ondelete='cascade')
-    name = fields.Char(string='Item Description', required=True)
-    sequence = fields.Integer(string='Sequence', default=10)
-    is_checked = fields.Boolean(string='Checked')
-    notes = fields.Text(string='Notes')
-    is_required = fields.Boolean(string='Is Required', default=True)

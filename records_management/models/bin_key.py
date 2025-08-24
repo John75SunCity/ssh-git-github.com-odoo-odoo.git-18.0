@@ -188,21 +188,3 @@ class BinKey(models.Model):
             for key in self:
                 key._create_history_entry('assign')
         return res
-
-class BinKeyHistory(models.Model):
-    _name = 'bin.key.history'
-    _description = 'Bin Key Assignment History'
-    _order = 'event_date desc'
-
-    key_id = fields.Many2one('bin.key', string='Key', required=True, ondelete='cascade')
-    event_date = fields.Datetime(string='Event Date', required=True, default=fields.Datetime.now)
-    event_type = fields.Selection([
-        ('assign', 'Assigned'),
-        ('return', 'Returned'),
-        ('lost', 'Marked as Lost'),
-        ('retire', 'Retired'),
-        ('create', 'Created')
-    ], string='Event Type', required=True)
-    user_id = fields.Many2one('res.users', string='Responsible User', required=True)
-    partner_id = fields.Many2one('res.partner', string='Assigned Customer')
-    notes = fields.Text(string='Notes')
