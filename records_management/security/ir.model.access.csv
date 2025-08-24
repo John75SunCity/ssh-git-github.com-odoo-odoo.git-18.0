@@ -1,3 +1,5 @@
+access_pickup_request_line_user,pickup.request.line.user,model_pickup_request_line,records_management.group_records_user,1,1,1,0
+access_pickup_request_line_manager,pickup.request.line.manager,model_pickup_request_line,records_management.group_records_manager,1,1,1,1
 access_location_group_user,location.group.user,model_location_group,records_management.group_records_user,1,1,1,0
 access_location_group_manager,location.group.manager,model_location_group,records_management.group_records_manager,1,1,1,1
 access_inventory_adjustment_reason_user,inventory.adjustment.reason.user,model_inventory_adjustment_reason,records_management.group_records_user,1,1,1,0

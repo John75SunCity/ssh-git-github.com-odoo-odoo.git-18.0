@@ -1,3 +1,4 @@
+from . import pickup_request_line
 from . import location_group
 from . import inventory_adjustment_reason
 from . import inventory_item

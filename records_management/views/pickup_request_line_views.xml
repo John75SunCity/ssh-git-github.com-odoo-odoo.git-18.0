@@ -8,7 +8,14 @@
             <field name="model">pickup.request.line</field>
             <field name="arch" type="xml">
                 <tree string="Pickup Request Line">
-                    <!-- Add fields here -->
+                    request_id
+                    container_id
+                    item_description
+                    quantity
+                    sequence
+                    notes
+                    company_id
+                    active
                 </tree>
             </field>
         </record>
@@ -21,7 +28,14 @@
                 <form string="Pickup Request Line">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            request_id
+                            container_id
+                            item_description
+                            quantity
+                            sequence
+                            notes
+                            company_id
+                            active
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +48,9 @@
             <field name="model">pickup.request.line</field>
             <field name="arch" type="xml">
                 <search string="Search Pickup Request Line">
-                    <!-- Add search fields here -->
+                    <field name="item_description"/>
+                    <field name="container_id"/>
+                    <field name="request_id"/>
                 </search>
             </field>
         </record>
