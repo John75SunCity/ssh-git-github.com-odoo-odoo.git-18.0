@@ -127,6 +127,7 @@ from . import paper_load_shipment
 # Advanced billing system (base model first)
 
 from . import advanced_billing
+from . import advanced_billing_line  # Added missing import for advanced.billing.line model
 from . import advanced_billing_service_line
 from . import advanced_billing_storage_line
 from . import inventory_item_location_transfer
