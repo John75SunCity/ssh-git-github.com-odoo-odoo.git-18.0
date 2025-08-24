@@ -1,21 +1,3 @@
-from . import display_name
-from . import inventory_item_type
-from . import description
-from . import inventory_item_profile
-from . import portal_request_line
-from . import records_container_content_line
-from . import records_container_line
-from . import pickup_request_line
-from . import location_group
-from . import inventory_adjustment_reason
-from . import inventory_item
-from . import inventory_item_retrieval
-from . import inventory_item_retrieval_line
-from . import inventory_item_destruction
-from . import inventory_item_destruction_line
-from . import key_inventory
-from . import pickup_location
-from . import full_customization_name
 # -*- coding: utf-8 -*-
 """
 Records Management Models Import Order
@@ -59,6 +41,26 @@ from . import records_container
 from . import approval_history
 from . import records_department_billing_contact
 from . import records_storage_department_user
+
+# Basic utility models
+from . import display_name
+from . import inventory_item_type
+from . import description
+from . import inventory_item_profile
+from . import portal_request_line
+from . import records_container_content_line
+from . import records_container_line
+from . import pickup_request_line
+from . import location_group
+from . import inventory_adjustment_reason
+from . import inventory_item
+from . import inventory_item_retrieval
+from . import inventory_item_retrieval_line
+from . import inventory_item_destruction
+from . import inventory_item_destruction_line
+from . import key_inventory
+from . import pickup_location
+from . import full_customization_name
 
 # Document and policy models
 from . import records_document_type

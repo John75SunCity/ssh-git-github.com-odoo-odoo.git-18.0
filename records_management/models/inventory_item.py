@@ -33,7 +33,7 @@ class InventoryItem(models.Model):
     _description = 'Inventory Item'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char(string='Item Reference', required=True, copy=False, readonly=True, default=_('New'))
+    name = fields.Char(string='Item Reference', required=True, copy=False, readonly=True, default='New')
     product_id = fields.Many2one('product.product', string='Product', required=True)
     serial_number = fields.Char(string='Serial Number')
     location_id = fields.Many2one('records.location', string='Location')
