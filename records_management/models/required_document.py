@@ -15,7 +15,7 @@ class RequiredDocument(models.Model):
     name = fields.Char(string='Document Name', required=True, tracking=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    
+
     # Generic relation to link this to any model (e.g., res.partner, records.destruction)
     res_model = fields.Char(string="Related Model", readonly=True, index=True)
     res_id = fields.Integer(string="Related Record ID", readonly=True, index=True)
@@ -33,7 +33,7 @@ class RequiredDocument(models.Model):
         ('expired', 'Expired'),
         ('rejected', 'Rejected'),
     ], string="Status", default='pending', required=True, tracking=True)
-    
+
     expiration_date = fields.Date(string='Expiration Date', tracking=True)
     is_expired = fields.Boolean(string="Is Expired", compute='_compute_is_expired', store=True)
 

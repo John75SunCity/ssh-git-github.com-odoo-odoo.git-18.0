@@ -1,0 +1,29 @@
+<!--
+    records_management/data/mail_activity_data_todo.xml
+
+    Purpose:
+    Defines a generic "To Do" mail activity type for the Records Management module in Odoo.
+    This activity type is used for customer follow-up and general task tracking across records,
+    providing a standard actionable item for users in the system.
+
+    Usage:
+    - Automatically available for all models supporting mail.activity in the module.
+    - Can be assigned to any record for workflow and reminder purposes.
+    - Uses the "fa-tasks" icon and appears as "To Do" in activity menus.
+
+    Maintainer: Records Management Team
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add a generic To Do activity type for customer follow-up and general tasks -->
+    <record id="mail_activity_data_todo" model="mail.activity.type">
+        <field name="name">To Do</field>
+        <field name="category">default</field>
+        <field name="icon">fa-tasks</field>
+        <field name="res_model_id" eval="False"/>
+        <field name="summary">General To Do</field>
+        <field name="delay_count">0</field>
+        <field name="default_user_id" eval="False"/>
+        <field name="sequence">10</field>
+    </record>
+</odoo>

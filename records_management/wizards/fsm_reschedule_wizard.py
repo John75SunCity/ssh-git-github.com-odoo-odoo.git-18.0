@@ -49,7 +49,7 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
                 if record.task_id.partner_id:
                     # Fix: Use task parameter instead of cell variable
                     nearby_tasks = same_day_tasks.filtered(
-                        lambda task: task.partner_id and task.partner_id.city == record.task_id.partner_id.city
+                        lambda task, record=record: task.partner_id and task.partner_id.city == record.task_id.partner_id.city
                     )
                     if nearby_tasks:
                         impact_notes.append(_("Route optimization possible with %d nearby tasks", len(nearby_tasks)))
@@ -220,12 +220,6 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
                 vals['name'] = self.env['ir.sequence'].next_by_code('fsm.reschedule.wizard') or _('New Reschedule Request')
         return super().create(vals_list)
 
-    def unlink(self):
-        """Prevent deletion of completed reschedule records"""
-        for record in self:
-            if record.state == 'completed':
-                raise UserError(_("Cannot delete completed reschedule records. They are required for audit trail."))
-        return super().unlink()
     def unlink(self):
         """Prevent deletion of completed reschedule records"""
         for record in self:

@@ -29,7 +29,7 @@ class ApprovalHistory(models.Model):
         ('budget', 'Budget Approval'),
         ('policy', 'Policy Approval'),
     ], string="Approval Type", required=True, tracking=True)
-    
+
     approval_status = fields.Selection([
         ('pending', 'Pending'),
         ('approved', 'Approved'),
@@ -37,32 +37,32 @@ class ApprovalHistory(models.Model):
         ('cancelled', 'Cancelled'),
         ('escalated', 'Escalated'),
     ], string="Approval Status", default='pending', required=True, tracking=True)
-    
+
     approved_by_id = fields.Many2one("res.users", string="Approved By", tracking=True)
     approval_amount = fields.Monetary(string="Approval Amount", currency_field="currency_id")
     currency_id = fields.Many2one("res.currency", string="Currency", default=lambda self: self.env.company.currency_id)
-    
+
     # ============================================================================
     # TIMING AND TRACKING FIELDS
     # ============================================================================
     response_time_hours = fields.Float(string="Response Time (Hours)", compute="_compute_response_time", store=True)
     request_date = fields.Datetime(string="Request Date", required=True, default=fields.Datetime.now, tracking=True)
     completed_date = fields.Datetime(string="Completed Date", tracking=True)
-    
+
     # ============================================================================
     # DESCRIPTION AND REFERENCE FIELDS
     # ============================================================================
     description = fields.Text(string="Description")
     approval_notes = fields.Text(string="Approval Notes", tracking=True)
     reference_document = fields.Char(string="Reference Document", index=True)
-    
+
     priority = fields.Selection([
         ('low', 'Low'),
         ('normal', 'Normal'),
         ('high', 'High'),
         ('urgent', 'Urgent'),
     ], string="Priority", default='normal', tracking=True)
-    
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -79,7 +79,7 @@ class ApprovalHistory(models.Model):
     activity_ids = fields.One2many("mail.activity", "res_id", string="Activities")
     message_follower_ids = fields.One2many("mail.followers", "res_id", string="Followers")
     message_ids = fields.One2many("mail.message", "res_id", string="Messages")
-    
+
     context = fields.Char(string="Context")
 
     # ============================================================================
@@ -115,7 +115,7 @@ class ApprovalHistory(models.Model):
         self.ensure_one()
         if self.approval_status != "pending":
             raise UserError(_("Only pending approvals can be approved"))
-        
+
         self.write({
             'approval_status': 'approved',
             'state': 'approved',
@@ -129,7 +129,7 @@ class ApprovalHistory(models.Model):
         self.ensure_one()
         if self.approval_status != "pending":
             raise UserError(_("Only pending approvals can be rejected"))
-        
+
         self.write({
             'approval_status': 'rejected',
             'state': 'rejected',
@@ -142,7 +142,7 @@ class ApprovalHistory(models.Model):
         self.ensure_one()
         if self.approval_status in ["approved", "rejected"]:
             raise UserError(_("Cannot cancel completed approvals"))
-        
+
         self.write({
             'approval_status': 'cancelled',
             'state': 'cancelled',
@@ -154,7 +154,7 @@ class ApprovalHistory(models.Model):
         self.ensure_one()
         if self.approval_status == "pending":
             raise UserError(_("Approval is already pending"))
-        
+
         self.write({
             'approval_status': 'pending',
             'state': 'submitted',
@@ -170,7 +170,7 @@ class ApprovalHistory(models.Model):
             'approval_status': 'escalated',
             'priority': 'urgent',
         })
-        
+
         # Create activity for manager
         manager = self.env.user.employee_id.parent_id.user_id if self.env.user.employee_id.parent_id else False
         if manager:
@@ -180,7 +180,7 @@ class ApprovalHistory(models.Model):
                 summary=_("Escalated Approval Required"),
                 note=_("This approval has been escalated and requires immediate attention.")
             )
-        
+
         self.message_post(body=_("Approval escalated by %s", self.env.user.name))
 
     # ============================================================================
@@ -207,9 +207,9 @@ class ApprovalHistory(models.Model):
             domain.append(('request_date', '>=', date_from))
         if date_to:
             domain.append(('request_date', '<=', date_to))
-        
+
         approvals = self.search(domain)
-        
+
         return {
             'total_approvals': len(approvals),
             'approved_count': len(approvals.filtered(lambda r: r.approval_status == 'approved')),
@@ -223,7 +223,7 @@ class ApprovalHistory(models.Model):
         """Enhanced search by name, type, or reference"""
         args = args or []
         domain = []
-        
+
         if name:
             domain = [
                 '|', '|', '|',
@@ -232,7 +232,7 @@ class ApprovalHistory(models.Model):
                 ('reference_document', operator, name),
                 ('description', operator, name)
             ]
-        
+
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
 
     # ============================================================================

@@ -106,7 +106,7 @@ class NaidComplianceAlert(models.Model):
         manager_group = self.env.ref('records_management.group_records_manager', raise_if_not_found=False)
         if not manager_group:
             raise UserError(_("The 'Records Manager' security group could not be found."))
-        
+
         # Find a manager who is not the current user
         manager_users = manager_group.users.filtered(lambda u: u.id != self.env.user.id)
         if not manager_users:
@@ -148,7 +148,7 @@ class NaidComplianceAlert(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('naid.compliance.alert') or _('New')
         alerts = super().create(vals_list)
-        
+
         # Notify managers for critical alerts
         manager_group = self.env.ref('records_management.group_records_manager', raise_if_not_found=False)
         for alert in alerts.filtered(lambda a: a.severity == 'critical'):

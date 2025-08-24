@@ -20,7 +20,8 @@
         'sale_management', 'website_sale'
     ],
     "data": [
-        "data/advanced_billing_demo.xml",
+    "data/mail_activity_data_todo.xml",
+    "data/advanced_billing_demo.xml",
         "data/base_rates_container_access_data.xml",
         "data/document_retrieval_rates_data.xml",
         "data/feedback_survey_data.xml",

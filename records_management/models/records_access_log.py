@@ -124,7 +124,7 @@ class RecordsAccessLog(models.Model):
             record.write({'state': 'suspicious'})
             record.message_post(body=_("Access flagged as suspicious for investigation."))
             try:
-                activity_type_id = self.env.ref('mail.mail_activity_data_todo').id
+                activity_type_id = self.env.ref('mail.mail_activity_data_call').id
                 manager_group = self.env.ref('records_management.group_records_manager', raise_if_not_found=False)
                 user_id = manager_group.users[0].id if manager_group and manager_group.users else self.env.user.id
 
@@ -163,7 +163,7 @@ class RecordsAccessLog(models.Model):
             self.write({"audit_trail_id": audit_log.id})
             self.message_post(body=_("Audit trail created: %s") % audit_log.name)
         except Exception as e:
-            raise UserError(_("Could not create audit trail entry: %s") % e)
+            raise UserError(_("Could not create audit trail entry: %s") % e) from e
 
     # ============================================================================
     # VALIDATION METHODS
