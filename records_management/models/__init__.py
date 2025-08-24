@@ -222,8 +222,7 @@ from . import records_access_log
 # BILLING AND FINANCIAL MODELS
 # =============================================================================
 
-# Core billing system (removed duplicate billing.py import - using records_billing.py instead)
-# from . import billing  # REMOVED: Duplicate model name 'records.billing' with records_billing.py
+# Core billing system
 from . import records_billing_service
 
 # Advanced billing features
