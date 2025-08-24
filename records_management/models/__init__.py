@@ -130,13 +130,15 @@ from . import paper_bale_recycling
 from . import paper_load_shipment
 
 # Advanced billing system (line models first to avoid circular dependency)
-from . import advanced_billing_line  # MUST be imported before advanced_billing
+# Note: We need to be careful about circular imports here
+from . import inventory_item_location_transfer
+from . import records_advanced_billing_period
+
+# Import billing line models first, then main billing model
 from . import advanced_billing_service_line
 from . import advanced_billing_storage_line
+from . import advanced_billing_line  # MUST be imported before advanced_billing
 from . import advanced_billing  # Main billing model imports after line models
-from . import inventory_item_location_transfer
-# Note: advanced_billing_line and sublines imported above to avoid circular dependency
-from . import records_advanced_billing_period
 
 # Work orders
 from . import work_order_shredding
