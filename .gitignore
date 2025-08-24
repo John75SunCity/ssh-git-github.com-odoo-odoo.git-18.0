@@ -1,7 +1,7 @@
 # ============================================================================
 # ODOO RECORDS MANAGEMENT - ENTERPRISE MODULE ISOLATION
 # ============================================================================
-# This .gitignore ensures ONLY records_management module is recognized by Odoo
+# This .gitignore ensures ONLY records_management and records_management_fsm module is recognized by Odoo
 # All other content is treated as development/backup resources
 
 # ============================================================================
@@ -86,6 +86,8 @@ static/lib/
 *.md
 !records_management/README.md
 !records_management/**/README.md
+!records_management_fsm/README.md
+!records_management_fsm/**/README.md
 development-tools/*.md
 development-tools/**/*.md
 *_REPORT.md
