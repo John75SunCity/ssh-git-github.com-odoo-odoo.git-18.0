@@ -8,7 +8,11 @@
             <field name="model">full_customization_name</field>
             <field name="arch" type="xml">
                 <tree string="Full Customization Name">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="active"/>
+                    <field name="company_id"/>
+                    <field name="user_id"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +25,11 @@
                 <form string="Full Customization Name">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="user_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +42,8 @@
             <field name="model">full_customization_name</field>
             <field name="arch" type="xml">
                 <search string="Search Full Customization Name">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="description"/>
                 </search>
             </field>
         </record>

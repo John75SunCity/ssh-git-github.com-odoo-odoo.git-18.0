@@ -1,3 +1,5 @@
+from . import pickup_location
+from . import full_customization_name
 # -*- coding: utf-8 -*-
 """
 Records Management Models Import Order
@@ -107,8 +109,13 @@ from . import paper_bale_recycling
 from . import paper_load_shipment
 
 # Advanced billing system (base model first)
+
 from . import advanced_billing
-# Note: advanced_billing_line imported later to avoid circular dependency
+from . import advanced_billing_line
+from . import advanced_billing_service_line
+from . import advanced_billing_storage_line
+from . import inventory_item_location_transfer
+# Note: advanced_billing_line and sublines imported above to avoid circular dependency
 from . import records_advanced_billing_period
 
 # Work orders
@@ -415,6 +422,3 @@ from . import records_request_line
 from . import records_request_type
 from . import records_billing_contact_role
 from . import billing_period
-from . import advanced_billing_line
-from . import advanced_billing_service_line
-from . import advanced_billing_storage_line

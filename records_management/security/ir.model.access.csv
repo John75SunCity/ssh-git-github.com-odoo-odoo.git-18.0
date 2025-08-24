@@ -1,3 +1,9 @@
+access_pickup_location_user,pickup.location.user,model_pickup_location,records_management.group_records_user,1,1,1,0
+access_pickup_location_manager,pickup.location.manager,model_pickup_location,records_management.group_records_manager,1,1,1,1
+access_full_customization_name_user,full.customization.name.user,model_full_customization_name,records_management.group_records_user,1,1,1,0
+access_full_customization_name_manager,full.customization.name.manager,model_full_customization_name,records_management.group_records_manager,1,1,1,1
+access_inventory_item_location_transfer_user,inventory.item.location.transfer.user,model_inventory_item_location_transfer,records_management.group_records_user,1,1,1,0
+access_inventory_item_location_transfer_manager,inventory.item.location.transfer.manager,model_inventory_item_location_transfer,records_management.group_records_manager,1,1,1,1
 access_records_category_user,records.category.user,model_records_category,records_management.group_records_user,1,1,1,0
 access_records_category_manager,records.category.manager,model_records_category,records_management.group_records_manager,1,1,1,1
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink

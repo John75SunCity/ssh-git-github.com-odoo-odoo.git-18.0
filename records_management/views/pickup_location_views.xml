@@ -8,7 +8,15 @@
             <field name="model">pickup.location</field>
             <field name="arch" type="xml">
                 <tree string="Pickup Location">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="address"/>
+                    <field name="city"/>
+                    <field name="state_id"/>
+                    <field name="zip"/>
+                    <field name="country_id"/>
+                    <field name="active"/>
+                    <field name="company_id"/>
+                    <field name="user_id"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +29,16 @@
                 <form string="Pickup Location">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="address"/>
+                            <field name="city"/>
+                            <field name="state_id"/>
+                            <field name="zip"/>
+                            <field name="country_id"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="user_id"/>
+                            <field name="notes"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +51,9 @@
             <field name="model">pickup.location</field>
             <field name="arch" type="xml">
                 <search string="Search Pickup Location">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="address"/>
+                    <field name="city"/>
                 </search>
             </field>
         </record>
