@@ -7,7 +7,13 @@
             <field name="model">container.retrieval.item</field>
             <field name="arch" type="xml">
                 <tree string="Container Retrieval Item">
-                    <!-- Add fields here -->
+                    <field name="display_name"/>
+                    <field name="container_id"/>
+                    <field name="storage_location_id"/>
+                    <field name="estimated_weight"/>
+                    <field name="actual_weight"/>
+                    <field name="dimensions"/>
+                    <field name="status"/>
                 </tree>
             </field>
         </record>
@@ -19,7 +25,13 @@
                 <form string="Container Retrieval Item">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="display_name"/>
+                            <field name="container_id"/>
+                            <field name="storage_location_id"/>
+                            <field name="estimated_weight"/>
+                            <field name="actual_weight"/>
+                            <field name="dimensions"/>
+                            <field name="status"/>
                         </group>
                     </sheet>
                 </form>

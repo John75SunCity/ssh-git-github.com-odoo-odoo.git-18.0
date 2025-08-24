@@ -8,7 +8,10 @@
             <field name="model">inventory.item.destruction</field>
             <field name="arch" type="xml">
                 <tree string="Inventory Item Destruction">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="responsible_id"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +24,14 @@
                 <form string="Inventory Item Destruction">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="responsible_id"/>
+                            <field name="item_ids"/>
+                            <field name="state"/>
+                            <field name="notes"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +44,9 @@
             <field name="model">inventory.item.destruction</field>
             <field name="arch" type="xml">
                 <search string="Search Inventory Item Destruction">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="state"/>
+                    <field name="responsible_id"/>
                 </search>
             </field>
         </record>

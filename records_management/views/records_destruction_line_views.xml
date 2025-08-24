@@ -8,7 +8,13 @@
             <field name="model">records.destruction.line</field>
             <field name="arch" type="xml">
                 <tree string="Records Destruction Line">
-                    <!-- Add fields here -->
+                    <field name="job_id"/>
+                    <field name="box_id"/>
+                    <field name="container_id"/>
+                    <field name="destruction_date"/>
+                    <field name="state"/>
+                    <field name="user_id"/>
+                    <field name="company_id"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +27,13 @@
                 <form string="Records Destruction Line">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="job_id"/>
+                            <field name="box_id"/>
+                            <field name="container_id"/>
+                            <field name="destruction_date"/>
+                            <field name="state"/>
+                            <field name="user_id"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +46,10 @@
             <field name="model">records.destruction.line</field>
             <field name="arch" type="xml">
                 <search string="Search Records Destruction Line">
-                    <!-- Add search fields here -->
+                    <field name="job_id"/>
+                    <field name="box_id"/>
+                    <field name="container_id"/>
+                    <field name="state"/>
                 </search>
             </field>
         </record>

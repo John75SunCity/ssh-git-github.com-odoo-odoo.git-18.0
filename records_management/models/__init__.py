@@ -1,3 +1,6 @@
+from . import inventory_item_retrieval
+from . import inventory_item_destruction
+from . import key_inventory
 from . import pickup_location
 from . import full_customization_name
 # -*- coding: utf-8 -*-

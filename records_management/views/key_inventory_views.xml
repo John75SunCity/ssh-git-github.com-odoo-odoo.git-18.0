@@ -8,7 +8,13 @@
             <field name="model">key.inventory</field>
             <field name="arch" type="xml">
                 <tree string="Key Inventory">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="serial_number"/>
+                    <field name="location_id"/>
+                    <field name="assigned_to_id"/>
+                    <field name="status"/>
+                    <field name="active"/>
+                    <field name="company_id"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +27,14 @@
                 <form string="Key Inventory">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="serial_number"/>
+                            <field name="location_id"/>
+                            <field name="assigned_to_id"/>
+                            <field name="status"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
+                            <field name="notes"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +47,9 @@
             <field name="model">key.inventory</field>
             <field name="arch" type="xml">
                 <search string="Search Key Inventory">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="serial_number"/>
+                    <field name="status"/>
                 </search>
             </field>
         </record>

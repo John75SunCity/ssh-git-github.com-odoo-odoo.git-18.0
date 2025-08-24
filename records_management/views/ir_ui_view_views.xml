@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+ir_ui_view_views.xml
+
+This file defines the Odoo views for the ir.ui.view model within the Records Management module.
+It includes:
+  - Tree view for listing views
+  - Form view for editing individual views
+  - Search view for filtering views
+  - Window action for accessing the views
+  - (Commented) menu item for integration into the module's menu structure
+
+These definitions allow administrators to manage Odoo view records directly from the UI.
+-->
 <odoo>
     <data>
-
         <!-- Tree View -->
         <record id="ir_ui_view_view_tree" model="ir.ui.view">
             <field name="name">ir.ui.view.view.tree</field>
             <field name="model">ir.ui.view</field>
             <field name="arch" type="xml">
                 <tree string="View">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="model"/>
+                    <field name="priority"/>
+                    <field name="active"/>
+                    <field name="type"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +37,12 @@
                 <form string="View">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="model"/>
+                            <field name="arch"/>
+                            <field name="priority"/>
+                            <field name="active"/>
+                            <field name="type"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +55,9 @@
             <field name="model">ir.ui.view</field>
             <field name="arch" type="xml">
                 <search string="Search View">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="model"/>
+                    <field name="type"/>
                 </search>
             </field>
         </record>
@@ -52,9 +75,8 @@
             id="menu_ir_ui_view"
             name="View"
             action="action_ir_ui_view"
-            parent="REPLACE_WITH_PARENT_MENU_ID"
+            parent="TODO_REPLACE_WITH_ACTUAL_PARENT_MENU_ID"
             sequence="10"/>
         -->
-
     </data>
 </odoo>

@@ -9,7 +9,11 @@
                 <form string="Customer Inventory Report Wizard">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="partner_id"/>
+                            <field name="department_id"/>
+                            <field name="inventory_date_from"/>
+                            <field name="inventory_date_to"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>

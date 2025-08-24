@@ -1,3 +1,9 @@
+access_inventory_item_retrieval_user,inventory.item.retrieval.user,model_inventory_item_retrieval,records_management.group_records_user,1,1,1,0
+access_inventory_item_retrieval_manager,inventory.item.retrieval.manager,model_inventory_item_retrieval,records_management.group_records_manager,1,1,1,1
+access_inventory_item_destruction_user,inventory.item.destruction.user,model_inventory_item_destruction,records_management.group_records_user,1,1,1,0
+access_inventory_item_destruction_manager,inventory.item.destruction.manager,model_inventory_item_destruction,records_management.group_records_manager,1,1,1,1
+access_key_inventory_user,key.inventory.user,model_key_inventory,records_management.group_records_user,1,1,1,0
+access_key_inventory_manager,key.inventory.manager,model_key_inventory,records_management.group_records_manager,1,1,1,1
 access_pickup_location_user,pickup.location.user,model_pickup_location,records_management.group_records_user,1,1,1,0
 access_pickup_location_manager,pickup.location.manager,model_pickup_location,records_management.group_records_manager,1,1,1,1
 access_full_customization_name_user,full.customization.name.user,model_full_customization_name,records_management.group_records_user,1,1,1,0

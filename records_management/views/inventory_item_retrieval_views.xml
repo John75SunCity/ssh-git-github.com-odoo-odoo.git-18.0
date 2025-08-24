@@ -1,3 +1,16 @@
+<!--
+inventory_item_retrieval_views.xml
+
+This file defines the Odoo views for the inventory.item.retrieval model within the Records Management module.
+It includes:
+  - Tree view for listing inventory item retrieval records
+  - Form view for editing individual retrievals
+  - Search view for filtering retrievals
+  - Window action for accessing the retrieval records
+  - (Commented) menu item for integration into the module's menu structure
+
+These definitions allow users to manage inventory item retrieval operations directly from the Odoo UI.
+-->
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
@@ -8,7 +21,10 @@
             <field name="model">inventory.item.retrieval</field>
             <field name="arch" type="xml">
                 <tree string="Inventory Item Retrieval">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="retrieval_date"/>
+                    <field name="responsible_id"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +37,14 @@
                 <form string="Inventory Item Retrieval">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="retrieval_date"/>
+                            <field name="responsible_id"/>
+                            <field name="item_ids"/>
+                            <field name="state"/>
+                            <field name="notes" widget="text"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -34,7 +57,9 @@
             <field name="model">inventory.item.retrieval</field>
             <field name="arch" type="xml">
                 <search string="Search Inventory Item Retrieval">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="state"/>
+                    <field name="responsible_id"/>
                 </search>
             </field>
         </record>
@@ -52,7 +77,7 @@
             id="menu_inventory_item_retrieval"
             name="Inventory Item Retrieval"
             action="action_inventory_item_retrieval"
-            parent="REPLACE_WITH_PARENT_MENU_ID"
+            parent="REPLACE_WITH_PARENT_MENU_ID"  <!-- TODO: Replace REPLACE_WITH_PARENT_MENU_ID with the actual parent menu ID -->
             sequence="10"/>
         -->
 
