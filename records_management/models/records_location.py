@@ -33,6 +33,7 @@ class RecordsLocation(models.Model):
     child_count = fields.Integer(string="Child Location Count", compute='_compute_child_count')
     container_ids = fields.One2many('records.container', 'location_id', string="Containers")
     container_count = fields.Integer(string="Container Count", compute='_compute_container_count', store=True)
+    group_id = fields.Many2one('location.group', string='Location Group')
 
     # ============================================================================
     # ADDRESS & COORDINATES
