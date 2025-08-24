@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_billing_period_tree" model="ir.ui.view">
+        <field name="name">billing.period.tree</field>
+        <field name="model">billing.period</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_billing_period_form" model="ir.ui.view">
+        <field name="name">billing.period.form</field>
+        <field name="model">billing.period</field>
+        <field name="arch" type="xml">
+            <form string="Billing Period">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="active"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_billing_period" model="ir.actions.act_window">
+        <field name="name">Billing Periods</field>
+        <field name="res_model">billing.period</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_billing_period_root" name="Billing Periods" parent="records_management.menu_records_billing_root" action="action_billing_period" sequence="10"/>
+</odoo>

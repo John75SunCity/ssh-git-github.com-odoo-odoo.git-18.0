@@ -58,4 +58,33 @@
         </field>
     </record>
 
+    <record id="view_advanced_billing_line_tree" model="ir.ui.view">
+        <field name="name">advanced.billing.line.tree</field>
+        <field name="model">advanced.billing.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="amount"/>
+                <field name="currency_id"/>
+                <field name="billing_id"/>
+            </tree>
+        </field>
+    </record>
+    <record id="view_advanced_billing_line_form" model="ir.ui.view">
+        <field name="name">advanced.billing.line.form</field>
+        <field name="model">advanced.billing.line</field>
+        <field name="arch" type="xml">
+            <form string="Advanced Billing Line">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="amount"/>
+                        <field name="currency_id"/>
+                        <field name="billing_id"/>
+                        <field name="sequence"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 </odoo>

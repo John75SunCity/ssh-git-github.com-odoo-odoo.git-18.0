@@ -217,3 +217,11 @@ access_records_billing_contact_role_manager,records_billing_contact_role_manager
 access_records_service_type_manager,records_service_type_manager,model_records_service_type,,1,1,1,1
 access_customer_negotiated_rate_manager,customer_negotiated_rate_manager,model_customer_negotiated_rate,,1,1,1,1
 access_naid_custody_manager,naid_custody_manager,model_naid_custody,,1,1,1,1
+access_billing_period_user,billing.period.user,model_billing_period,base.group_user,1,0,0,0
+access_billing_period_manager,billing.period.manager,model_billing_period,base.group_system,1,1,1,1
+access_advanced_billing_line_user,advanced.billing.line.user,model_advanced_billing_line,base.group_user,1,0,0,0
+access_advanced_billing_line_manager,advanced.billing.line.manager,model_advanced_billing_line,base.group_system,1,1,1,1
+access_advanced_billing_service_line_user,advanced.billing.service.line.user,model_advanced_billing_service_line,base.group_user,1,0,0,0
+access_advanced_billing_service_line_manager,advanced.billing.service.line.manager,model_advanced_billing_service_line,base.group_system,1,1,1,1
+access_advanced_billing_storage_line_user,advanced.billing.storage.line.user,model_advanced_billing_storage_line,base.group_user,1,0,0,0
+access_advanced_billing_storage_line_manager,advanced.billing.storage.line.manager,model_advanced_billing_storage_line,base.group_system,1,1,1,1
