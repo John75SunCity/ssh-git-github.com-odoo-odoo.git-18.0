@@ -1,7 +1,0 @@
-from odoo import fields, models
-
-class CustomerNegotiatedRates(models.Model):
-    _name = 'customer.negotiated.rates'
-    _description = 'Customer Negotiated Rates'
-
-    name = fields.Char(string='Name', required=True)
