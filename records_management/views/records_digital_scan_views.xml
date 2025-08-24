@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree view for Digital -->
+
+    <!-- Tree view for base.rate -->
+    <record id="records_digital_scan_view_tree" model="ir.ui.view">
+        <field name="name">records.digital.scan.view.tree</field>
+        <field name="model">records.digital.scan</field>
+        <field name="arch" type="xml">
+            <tree string="Digital Scans">
+                <field name="name"/>
+                <field name="document_id"/>
+                <field name="scan_date"/>
+                <field name="file_format"/>
+                <field name="resolution"/>
+                <field name="scan_quality"/>
+                <field name="scanned_by"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view for base.rate -->
+    <record id="records_digital_scan_view_form" model="ir.ui.view">
+        <field name="name">records.digital.scan.view.form</field>
+        <field name="model">records.digital.scan</field>
+        <field name="arch" type="xml">
+            <form string="Digital Scan">
+                <header>
+                    <button name="action_confirm" string="Confirm Scan" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="action_done" string="Mark Complete" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Digital Scan Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="document_id"/>
+                            <field name="scan_date"/>
+                            <field name="scanned_by"/>
+                        </group>
+                        <group>
+                            <field name="file_format"/>
+                            <field name="resolution"/>
+                            <field name="scan_quality"/>
+                            <field name="file_size"/>
+                            <field name="scanner_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" name="description">
+                            <field name="description" placeholder="Description of the digital scan..."/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view for base.rate -->
+    <record id="records_digital_scan_view_search" model="ir.ui.view">
+        <field name="name">records.digital.scan.view.search</field>
+        <field name="model">records.digital.scan</field>
+        <field name="arch" type="xml">
+            <search string="Digital Scans">
+                <field name="name"/>
+                <field name="document_id"/>
+                <field name="scanned_by"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter string="My Scans" name="my_scans" domain="[('scanned_by', '=', uid)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Document" name="group_document" context="{'group_by': 'document_id'}"/>
+                    <filter string="Scanned By" name="group_scanned_by" context="{'group_by': 'scanned_by'}"/>
+                    <filter string="File Format" name="group_format" context="{'group_by': 'file_format'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Tree view for Action -->
+    <record id="action_records_digital_scan" model="ir.actions.act_window">
+        <field name="name">Digital Scans</field>
+        <field name="res_model">records.digital.scan</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_records_digital_scan_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first digital scan!
+            </p>
+            <p>
+                Digital scans allow you to track electronic copies of your physical documents.
+            </p>
+        </field>
+    </record>
+
+    <!-- Tree view for Menu -->
+    <menuitem id="menu_records_digital_scan" name="Digital Scans" action="action_records_digital_scan" parent="records_management.menu_records_management_documents" sequence="30"/>
+
+</odoo>

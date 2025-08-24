@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Shredding Service Photo Views -->
+    
+    <!-- Tree View -->
+    <record id="shredding_service_photo_view_tree" model="ir.ui.view">
+        <field name="name">shredding.service.photo.view.tree</field>
+        <field name="model">shredding.service.photo</field>
+        <field name="arch" type="xml">
+            <tree string="Shredding Service Photos" default_order="shredding_service_id, sequence">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="photo_type"/>
+                <field name="photo_date"/>
+                <field name="witness_name"/>
+                <field name="photo_data" widget="image" width="64" height="64"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="shredding_service_photo_view_form" model="ir.ui.view">
+        <field name="name">shredding.service.photo.view.form</field>
+        <field name="model">shredding.service.photo</field>
+        <field name="arch" type="xml">
+            <form string="Shredding Service Photo">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Photo Description"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="shredding_service_id"/>
+                            <field name="photo_type"/>
+                            <field name="photo_date"/>
+                            <field name="photo_filename"/>
+                        </group>
+                        <group>
+                            <field name="witness_name"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="photo_data" widget="image" class="oe_avatar"/>
+                        </group>
+                        <group>
+                            <field name="witness_signature" widget="image"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="shredding_service_photo_view_search" model="ir.ui.view">
+        <field name="name">shredding.service.photo.view.search</field>
+        <field name="model">shredding.service.photo</field>
+        <field name="arch" type="xml">
+            <search string="Search Shredding Service Photos">
+                <field name="name"/>
+                <field name="shredding_service_id"/>
+                <field name="photo_type"/>
+                <field name="witness_name"/>
+                <separator/>
+                <filter name="filter_before" string="Before Photos" domain="[('photo_type', '=', 'before')]"/>
+                <filter name="filter_after" string="After Photos" domain="[('photo_type', '=', 'after')]"/>
+                <filter name="filter_witnessed" string="Witnessed" domain="[('witness_name', '!=', False)]"/>
+                <filter name="filter_today" string="Today" domain="[('photo_date', '=', today)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_service" string="Service" context="{'group_by': 'shredding_service_id'}"/>
+                    <filter name="group_photo_type" string="Photo Type" context="{'group_by': 'photo_type'}"/>
+                    <filter name="group_date" string="Date" context="{'group_by': 'photo_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_shredding_service_photo" model="ir.actions.act_window">
+        <field name="name">Shredding Service Photos</field>
+        <field name="res_model">shredding.service.photo</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No service photos found!
+            </p>
+            <p>
+                Photos provide visual documentation of shredding services for NAID compliance.
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+        <!-- Portal Request Submission Email Template -->
+        <record id="portal_request_submitted_email" model="mail.template">
+            <field name="name">Portal Request Submitted</field>
+            <field name="model_id" ref="model_portal_request"/>
+            <field name="email_from">${object.env.user.email or 'noreply@suncityshred.com'}</field>
+            <field name="email_to">admin@suncityshred.com</field>
+            <field name="subject">New Portal Submission: ${object.name} - ${object.request_type}</field>
+            <field name="body_html"><![CDATA[
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear Records Management Team,</p>
+                    <p>A new request has been submitted through the customer portal:</p>
+                    
+                    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Request ID:</strong></td>
+                            <td>${object.name}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Customer:</strong></td>
+                            <td>${object.partner_id.name}</td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Request Type:</strong></td>
+                            <td>${object.request_type}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Priority:</strong></td>
+                            <td>${object.priority}</td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Description:</strong></td>
+                            <td>${object.description or 'N/A'}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Submission Date:</strong></td>
+                            <td>${object.create_date}</td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Status:</strong></td>
+                            <td>${object.state}</td>
+                        </tr>
+                    </table>
+                    
+                    <p style="margin-top: 20px;">
+                        <strong>NAID Compliance Note:</strong> This request requires timely processing according to NAID AAA standards.
+                        Please review and assign within 24 hours.
+                    </p>
+                    
+                    <p>
+                        <a href="/web#id=${object.id}&view_type=form&model=portal.request" style="background-color: #007cba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                            Review Request
+                        </a>
+                    </p>
+                    
+                    <p>Best regards,<br/>
+                    Sun City Shred Portal System</p>
+                </div>
+            ]]>        </field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.partner_id.lang}</field>
+        </record>
+
+        <!-- Portal Request Status Update Email Template -->
+        <record id="portal_request_status_update_email" model="mail.template">
+            <field name="name">Portal Request Status Update</field>
+            <field name="model_id" ref="model_portal_request"/>
+            <field name="email_from">noreply@suncityshred.com</field>
+            <field name="email_to">${object.partner_id.email}</field>
+            <field name="subject">Request ${object.name} Status Update - ${object.state.title()}</field>
+            <field name="body_html"><![CDATA[
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear ${object.partner_id.name},</p>
+                    <p>Your request <strong>${object.name}</strong> has been updated:</p>
+                    
+                    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Request Type:</strong></td>
+                            <td>${object.request_type}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Current Status:</strong></td>
+                            <td><span style="
+                                padding: 3px 8px; 
+                                border-radius: 3px; 
+                                color: white;
+                                background-color: ${'#28a745' if object.state == 'completed' else '#ffc107' if object.state == 'in_progress' else '#6c757d'};
+                            ">${object.state.replace('_', ' ').title()}</span></td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Last Updated:</strong></td>
+                            <td>${object.write_date}</td>
+                        </tr>
+                        % if object.assigned_to:
+                        <tr>
+                            <td><strong>Assigned To:</strong></td>
+                            <td>${object.assigned_to.name}</td>
+                        </tr>
+                        % endif
+                    </table>
+                    
+                    % if object.state == 'completed':
+                    <p style="color: #28a745; font-weight: bold;">✓ Your request has been completed successfully!</p>
+                    % elif object.state == 'in_progress':
+                    <p style="color: #ffc107; font-weight: bold;">⏳ Your request is currently being processed.</p>
+                    % endif
+                    
+                    <p>
+                        <a href="/my/requests/${object.id}" style="background-color: #007cba; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                            View Request Details
+                        </a>
+                    </p>
+                    
+                    <p>Thank you for choosing Sun City Shred for your secure document management needs.</p>
+                    
+                    <p>Best regards,<br/>
+                    Sun City Shred Team</p>
+                </div>
+            ]]>        </field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.partner_id.lang}</field>
+        </record>
+
+        <!-- Website Form Submission Email Template -->
+        <record id="website_form_submission_email" model="mail.template">
+            <field name="name">Website Contact Form Submission</field>
+            <field name="model_id" ref="mail.model_mail_mail"/>
+            <field name="email_from">${object.email_from or 'noreply@suncityshred.com'}</field>
+            <field name="email_to">admin@suncityshred.com</field>
+            <field name="subject">New Website Inquiry - ${object.subject or 'Contact Form'}</field>
+            <field name="body_html"><![CDATA[
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear Sales Team,</p>
+                    <p>A new inquiry has been submitted through the website contact form:</p>
+                    
+                    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Name:</strong></td>
+                            <td>${object.author_id.name or 'Anonymous'}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email:</strong></td>
+                            <td>${object.email_from or 'Not provided'}</td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Subject:</strong></td>
+                            <td>${object.subject or 'General Inquiry'}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Message:</strong></td>
+                            <td>${object.body}</td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Submission Time:</strong></td>
+                            <td>${object.date}</td>
+                        </tr>
+                    </table>
+                    
+                    <p style="margin-top: 20px;">
+                        <strong>Action Required:</strong> Please follow up within 24 hours to maintain customer service standards.
+                    </p>
+                    
+                    <p>Best regards,<br/>
+                    Website Contact System</p>
+                </div>
+            ]]>        </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- SMS Template for Portal Request Updates -->
+        <record id="portal_request_sms_notification" model="sms.template">
+            <field name="name">Portal Request SMS Update</field>
+            <field name="model_id" ref="model_portal_request"/>
+            <field name="body">Sun City Shred: Your request ${object.name} is now ${object.state.replace('_', ' ').title()}. View details: ${ctx.get('base_url', '')}/my/requests/${object.id}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+        </record>
+
+        <!-- Pickup Request Confirmation Email -->
+        <record id="pickup_request_confirmation_email" model="mail.template">
+            <field name="name">Pickup Request Confirmation</field>
+            <field name="model_id" ref="model_pickup_request"/>
+            <field name="email_from">noreply@suncityshred.com</field>
+            <field name="email_to">${object.partner_id.email}</field>
+            <field name="subject">Pickup Scheduled: ${object.name} - ${object.pickup_date}</field>
+            <field name="body_html"><![CDATA[
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear ${object.partner_id.name},</p>
+                    <p>Your pickup request has been confirmed:</p>
+                    
+                    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Pickup ID:</strong></td>
+                            <td>${object.name}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scheduled Date:</strong></td>
+                            <td>${object.pickup_date}</td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Time Window:</strong></td>
+                            <td>${object.time_window or 'Standard business hours'}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Location:</strong></td>
+                            <td>${object.pickup_location}</td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Service Type:</strong></td>
+                            <td>${object.service_type}</td>
+                        </tr>
+                    </table>
+                    
+                    <p style="color: #007cba; font-weight: bold;">
+                        ✓ Pickup confirmed! Our team will arrive during the scheduled time window.
+                    </p>
+                    
+                    <p><strong>Important:</strong> Please ensure materials are properly prepared and accessible for pickup.</p>
+                    
+                    <p>
+                        <a href="/my/pickups/${object.id}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                            View Pickup Details
+                        </a>
+                    </p>
+                    
+                    <p>Thank you for choosing Sun City Shred.</p>
+                    
+                    <p>Best regards,<br/>
+                    Sun City Shred Operations Team</p>
+                </div>
+            ]]>        </field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.partner_id.lang}</field>
+        </record>
+
+        <!-- NAID Compliance Audit Notification -->
+        <record id="naid_audit_notification_email" model="mail.template">
+            <field name="name">NAID Compliance Audit Notification</field>
+            <field name="model_id" ref="model_naid_audit_log"/>
+            <field name="email_from">compliance@suncityshred.com</field>
+            <field name="email_to">${object.partner_id.email}</field>
+            <field name="subject">NAID Audit Scheduled: ${object.name} - ${object.audit_date}</field>
+            <field name="body_html"><![CDATA[
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear ${object.partner_id.name},</p>
+                    <p>This is to notify you of a scheduled NAID compliance audit:</p>
+                    
+                    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Audit ID:</strong></td>
+                            <td>${object.name}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Audit Date:</strong></td>
+                            <td>${object.audit_date}</td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Audit Type:</strong></td>
+                            <td>${object.audit_type}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Scope:</strong></td>
+                            <td>${object.scope}</td>
+                        </tr>
+                        <tr style="background-color: #f5f5f5;">
+                            <td><strong>Auditor:</strong></td>
+                            <td>${object.auditor_id.name}</td>
+                        </tr>
+                    </table>
+                    
+                    <p style="color: #dc3545; font-weight: bold;">
+                        🔒 NAID AAA Compliance: This audit ensures adherence to NAID AAA certification standards.
+                    </p>
+                    
+                    <p><strong>Preparation Required:</strong> Please have all relevant documentation and personnel available.</p>
+                    
+                    <p>
+                        <a href="/my/audits/${object.id}" style="background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                            View Audit Details
+                        </a>
+                    </p>
+                    
+                    <p>For questions regarding this audit, please contact our compliance team.</p>
+                    
+                    <p>Best regards,<br/>
+                    NAID Compliance Team<br/>
+                    Sun City Shred</p>
+                </div>
+            ]]>        </field>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">${object.partner_id.lang}</field>
+        </record>
+
+        <!-- Enhanced Portal Notification Templates -->
+        
+        <!-- Customer Welcome Email Template -->
+        <record id="customer_welcome_email" model="mail.template">
+            <field name="name">Customer Welcome Email</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="email_from">welcome@suncityshred.com</field>
+            <field name="email_to">${object.email}</field>
+            <field name="subject">Welcome to Sun City Shred - Your Secure Records Management Partner</field>
+            <field name="body_html"><![CDATA[
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background: linear-gradient(135deg, #007cba, #005a8a); color: white; padding: 30px; text-align: center;">
+                        <h1 style="margin: 0; font-size: 28px;">Welcome to Sun City Shred!</h1>
+                        <p style="margin: 10px 0 0 0; font-size: 16px;">Your trusted partner in secure document management</p>
+                    </div>
+                    
+                    <div style="padding: 30px;">
+                        <p>Dear ${object.name},</p>
+                        <p>Welcome to Sun City Shred! We're excited to partner with you for all your secure document storage and destruction needs.</p>
+                        
+                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h3 style="color: #007cba; margin-top: 0;">Your Portal Access</h3>
+                            <p>You now have access to our customer portal where you can:</p>
+                            <ul style="color: #495057;">
+                                <li>Submit pickup and service requests</li>
+                                <li>Track your document inventory</li>
+                                <li>View destruction certificates</li>
+                                <li>Monitor compliance status</li>
+                                <li>Download invoices and reports</li>
+                            </ul>
+                            <p style="text-align: center; margin-top: 20px;">
+                                <a href="/web/login" style="background-color: #007cba; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                                    Access Your Portal
+                                </a>
+                            </p>
+                        </div>
+                        
+                        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <h4 style="color: #856404; margin-top: 0;">🔒 NAID AAA Certified</h4>
+                            <p style="color: #856404; margin-bottom: 0;">Your documents are protected by our NAID AAA certification, ensuring the highest standards of security and compliance.</p>
+                        </div>
+                        
+                        <h3 style="color: #007cba;">Next Steps</h3>
+                        <ol>
+                            <li>Log in to your portal using your credentials</li>
+                            <li>Complete your company profile</li>
+                            <li>Set up your preferred communication preferences</li>
+                            <li>Schedule your first service if needed</li>
+                        </ol>
+                        
+                        <p>If you have any questions, our team is here to help:</p>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>📧 Email: support@suncityshred.com</li>
+                            <li>📞 Phone: (555) 123-SHRED</li>
+                            <li>🌐 Portal: <a href="/web/login">Customer Portal</a></li>
+                        </ul>
+                        
+                        <p>Thank you for choosing Sun City Shred for your secure document management needs.</p>
+                        
+                        <p style="margin-top: 30px;">Best regards,<br/>
+                        <strong>The Sun City Shred Team</strong></p>
+                    </div>
+                    
+                    <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 3px solid #007cba;">
+                        <p style="color: #6c757d; font-size: 12px; margin: 0;">
+                            Sun City Shred | Secure Document Management | NAID AAA Certified<br/>
+                            This email was sent to ${object.email}. 
+                            <a href="/web/unsubscribe" style="color: #007cba;">Unsubscribe</a>
+                        </p>
+                    </div>
+                </div>
+            ]]></field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.lang}</field>
+        </record>
+
+        <!-- Service Completion Notification -->
+        <record id="service_completion_email" model="mail.template">
+            <field name="name">Service Completion Notification</field>
+            <field name="model_id" ref="model_portal_request"/>
+            <field name="email_from">operations@suncityshred.com</field>
+            <field name="email_to">${object.partner_id.email}</field>
+            <field name="subject">Service Completed: ${object.name} - Certificate Available</field>
+            <field name="body_html"><![CDATA[
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #28a745; color: white; padding: 20px; text-align: center;">
+                        <h2 style="margin: 0;">✅ Service Completed Successfully</h2>
+                    </div>
+                    
+                    <div style="padding: 25px;">
+                        <p>Dear ${object.partner_id.name},</p>
+                        <p>We're pleased to inform you that your service request has been completed successfully.</p>
+                        
+                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h3 style="color: #28a745; margin-top: 0;">Service Summary</h3>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;"><strong>Request ID:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">${object.name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;"><strong>Service Type:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">${object.request_type}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;"><strong>Completion Date:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">${object.completion_date or object.write_date}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;"><strong>Technician:</strong></td>
+                                    <td style="padding: 8px;">${object.assigned_to.name if object.assigned_to else 'Sun City Shred Team'}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        % if object.request_type in ['destruction', 'shredding']:
+                        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <h4 style="color: #856404; margin-top: 0;">🏆 NAID Destruction Certificate</h4>
+                            <p style="color: #856404; margin-bottom: 10px;">Your destruction certificate is now available for download. This certificate provides legal proof of secure destruction according to NAID AAA standards.</p>
+                            <p style="text-align: center;">
+                                <a href="/my/certificates/${object.id}" style="background-color: #ffc107; color: #212529; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                                    Download Certificate
+                                </a>
+                            </p>
+                        </div>
+                        % endif
+                        
+                        <div style="margin: 25px 0;">
+                            <h4 style="color: #007cba;">What's Next?</h4>
+                            <ul>
+                                <li>Review the service details in your portal</li>
+                                <li>Download any certificates or reports</li>
+                                <li>Schedule additional services if needed</li>
+                                <li>Provide feedback on our service quality</li>
+                            </ul>
+                        </div>
+                        
+                        <p style="text-align: center; margin: 30px 0;">
+                            <a href="/my/requests/${object.id}" style="background-color: #007cba; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                                View Full Details
+                            </a>
+                            <a href="/my/feedback/new?request_id=${object.id}" style="background-color: #6c757d; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-left: 10px;">
+                                Leave Feedback
+                            </a>
+                        </p>
+                        
+                        <p>Thank you for choosing Sun City Shred. We appreciate your business and trust in our secure services.</p>
+                        
+                        <p style="margin-top: 25px;">Best regards,<br/>
+                        <strong>Sun City Shred Operations Team</strong></p>
+                    </div>
+                </div>
+            ]]></field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.partner_id.lang}</field>
+        </record>
+
+        <!-- Emergency Notification Template -->
+        <record id="emergency_notification_email" model="mail.template">
+            <field name="name">Emergency Notification</field>
+            <field name="model_id" ref="model_portal_request"/>
+            <field name="email_from">emergency@suncityshred.com</field>
+            <field name="email_to">${object.partner_id.email}</field>
+            <field name="subject">🚨 URGENT: ${object.name} - Immediate Attention Required</field>
+            <field name="body_html"><![CDATA[
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #dc3545; color: white; padding: 20px; text-align: center;">
+                        <h1 style="margin: 0; font-size: 24px;">🚨 URGENT NOTIFICATION</h1>
+                        <p style="margin: 10px 0 0 0; font-size: 16px;">Immediate attention required for your request</p>
+                    </div>
+                    
+                    <div style="padding: 25px;">
+                        <p style="color: #dc3545; font-weight: bold; font-size: 18px;">URGENT: ${object.partner_id.name}</p>
+                        <p>This is an emergency notification regarding your service request:</p>
+                        
+                        <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h3 style="color: #721c24; margin-top: 0;">⚠️ Emergency Details</h3>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #f5c6cb;"><strong>Request ID:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #f5c6cb; color: #721c24;">${object.name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #f5c6cb;"><strong>Issue Type:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #f5c6cb; color: #721c24;">${object.request_type}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #f5c6cb;"><strong>Priority Level:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #f5c6cb; color: #721c24; font-weight: bold;">HIGH</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;"><strong>Alert Time:</strong></td>
+                                    <td style="padding: 8px; color: #721c24;">${object.write_date}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <h4 style="color: #856404; margin-top: 0;">📞 Immediate Action Required</h4>
+                            <p style="color: #856404;">Please contact our emergency response team immediately:</p>
+                            <ul style="color: #856404;">
+                                <li><strong>Emergency Hotline:</strong> (555) 123-HELP</li>
+                                <li><strong>Email:</strong> emergency@suncityshred.com</li>
+                                <li><strong>Reference ID:</strong> ${object.name}</li>
+                            </ul>
+                        </div>
+                        
+                        <p style="color: #dc3545; font-weight: bold;">
+                            This notification requires immediate response. Do not delay in contacting our emergency team.
+                        </p>
+                        
+                        <p style="text-align: center; margin: 30px 0;">
+                            <a href="tel:5551234357" style="background-color: #dc3545; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-size: 18px; font-weight: bold;">
+                                📞 CALL NOW: (555) 123-HELP
+                            </a>
+                        </p>
+                        
+                        <p>Our emergency response team is available 24/7 to assist you.</p>
+                        
+                        <p style="margin-top: 25px;">Emergency Response Team<br/>
+                        <strong>Sun City Shred</strong></p>
+                    </div>
+                </div>
+            ]]></field>
+            <field name="auto_delete" eval="False"/>
+            <field name="lang">${object.partner_id.lang}</field>
+        </record>
+
+        <!-- Scheduled Maintenance Notification -->
+        <record id="maintenance_notification_email" model="mail.template">
+            <field name="name">Scheduled Maintenance Notification</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="email_from">maintenance@suncityshred.com</field>
+            <field name="email_to">${object.email}</field>
+            <field name="subject">Scheduled Maintenance Notice - Portal Access</field>
+            <field name="body_html"><![CDATA[
+                <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
+                    <div style="background-color: #ffc107; color: #212529; padding: 20px; text-align: center;">
+                        <h2 style="margin: 0;">🔧 Scheduled Maintenance Notice</h2>
+                    </div>
+                    
+                    <div style="padding: 25px;">
+                        <p>Dear ${object.name},</p>
+                        <p>We will be performing scheduled maintenance on our customer portal system to improve performance and security.</p>
+                        
+                        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h3 style="color: #856404; margin-top: 0;">📅 Maintenance Schedule</h3>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #ffeaa7;"><strong>Start Time:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #ffeaa7;">Sunday, 2:00 AM EST</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #ffeaa7;"><strong>End Time:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #ffeaa7;">Sunday, 6:00 AM EST</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #ffeaa7;"><strong>Duration:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #ffeaa7;">Approximately 4 hours</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;"><strong>Services Affected:</strong></td>
+                                    <td style="padding: 8px;">Customer Portal, Online Requests</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <h4 style="color: #007cba;">What to Expect:</h4>
+                        <ul>
+                            <li>Customer portal will be temporarily unavailable</li>
+                            <li>Online request submissions will be suspended</li>
+                            <li>Email notifications will continue to function</li>
+                            <li>Emergency services remain available 24/7</li>
+                        </ul>
+                        
+                        <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <h4 style="color: #0c5460; margin-top: 0;">✨ Improvements Include:</h4>
+                            <ul style="color: #0c5460; margin-bottom: 0;">
+                                <li>Enhanced security features</li>
+                                <li>Faster page loading times</li>
+                                <li>Improved mobile responsiveness</li>
+                                <li>Better reporting capabilities</li>
+                            </ul>
+                        </div>
+                        
+                        <h4 style="color: #dc3545;">Emergency Contact</h4>
+                        <p>If you have an urgent need during maintenance hours, please contact:</p>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>📞 Emergency Line: (555) 123-HELP</li>
+                            <li>📧 Emergency Email: emergency@suncityshred.com</li>
+                        </ul>
+                        
+                        <p>We apologize for any inconvenience and thank you for your patience as we work to improve your experience.</p>
+                        
+                        <p style="margin-top: 25px;">Best regards,<br/>
+                        <strong>IT Maintenance Team</strong><br/>
+                        Sun City Shred</p>
+                    </div>
+                </div>
+            ]]></field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.lang}</field>
+        </record>
+
+    </data>
+</odoo>

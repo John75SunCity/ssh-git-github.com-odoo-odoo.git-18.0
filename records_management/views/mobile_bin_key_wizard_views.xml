@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<!-- Form view for Mobile Bin Key Wizard -->
+    <record id="mobile_bin_key_wizard_view_form" model="ir.ui.view">
+        <field name="name">mobile.bin.key.wizard.view.form</field>
+        <field name="model">mobile.bin.key.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Mobile Bin Key Management">
+                <div class="o_form_sheet" style="max-width: 100%; padding: 10px;">
+
+<!-- Header section -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info" role="alert">
+                                <h4 class="alert-heading">🔑 Mobile Key Management</h4>
+                                <p>Quick access for field technicians to manage bin keys and services</p>
+                            </div>
+                        </div>
+                    </div>
+
+<!-- Action selection -->
+                    <group string="🎯 Select Action">
+                        <field name="action_type" widget="radio" options="{'horizontal': false}"/>
+                    </group>
+
+<!-- Customer selection -->
+<group string="🏢 Customer Company" invisible="action_type == False">
+                        <field name="customer_company_id" options="{'no_create_edit': True}" placeholder="Search for customer company..."/>
+                    </group>
+
+<!-- Contact selection for existing operations -->
+<group string="👤 Contact Selection" invisible="action_type not in ['update_existing', 'create_unlock_service'] or not customer_company_id">
+    <field name="contact_id" options="{'no_create_edit': True}" required="action_type in ['update_existing', 'create_unlock_service']" placeholder="Search for contact..."/>
+
+                    </group>
+
+<!-- New contact creation -->
+<group string="➕ Create New Contact" invisible="action_type != 'issue_new' or not customer_company_id">
+                        <field name="create_new_contact"/>
+<field name="contact_name" required="create_new_contact == True" invisible="create_new_contact == False" placeholder="Enter contact name..."/>
+<field name="contact_email" invisible="create_new_contact == False" placeholder="email@company.com"/>
+<field name="contact_phone" invisible="create_new_contact == False" placeholder="(555) 123-4567"/>
+<field name="contact_mobile" invisible="create_new_contact == False" placeholder="(555) 987-6543"/>
+<field name="contact_title" invisible="create_new_contact == False" placeholder="Job title or position"/>
+
+                    </group>
+
+<!-- Key assignment details -->
+<group string="🔑 Key Assignment Details" invisible="not show_key_assignment">
+                        <field name="issue_location" placeholder="Where is the key being issued? (e.g., loading dock, main office)"/>
+                        <field name="bin_locations" placeholder="List the bin locations this key provides access to..."/>
+                        <field name="emergency_contact"/>
+                        <field name="key_notes" placeholder="Additional notes about this key assignment..."/>
+                    </group>
+
+<!-- Unlock service details -->
+<group string="🔓 Unlock Service Details" invisible="not show_unlock_service">
+    <field name="unlock_reason" required="action_type == 'create_unlock_service'"/>
+
+                        <field name="unlock_reason_description" placeholder="Describe why the unlock was needed..."/>
+<field name="unlock_bin_location" required="action_type == 'create_unlock_service'" placeholder="Specific bin location that was unlocked"/>
+
+                        <field name="items_retrieved" placeholder="Describe any items retrieved from the bin..."/>
+                        <field name="unlock_charge"/>
+                        <field name="billable"/>
+                    </group>
+
+<!-- Service documentation -->
+<group string="📸 Service Documentation" invisible="action_type not in ['create_unlock_service']">
+                        <field name="photo_ids" widget="many2many_binary" options="{'accepted_file_extensions': '.jpg,.jpeg,.png,.gif'}"/>
+                        <field name="service_notes" placeholder="Additional notes about the service..."/>
+                    </group>
+
+<!-- Key lookup results -->
+<div invisible="not show_lookup_results">
+                        <separator string="🔍 Key Holders Lookup"/>
+                        <field name="key_lookup_results" widget="html" readonly="1"/>
+                    </div>
+
+<!-- Hidden visibility control fields -->
+                    <field name="show_contact_creation" invisible="1"/>
+                    <field name="show_key_assignment" invisible="1"/>
+                    <field name="show_unlock_service" invisible="1"/>
+                    <field name="show_lookup_results" invisible="1"/>
+
+                </div>
+
+<!-- Footer buttons -->
+                <footer>
+                    <div class="row">
+                        <div class="col-6">
+                            <button string="❌ Cancel" class="btn btn-secondary btn-block" special="cancel"/>
+                        </div>
+                        <div class="col-6">
+<button string="✅ Execute" class="btn btn-primary btn-block" name="action_execute" type="object" invisible="action_type == 'quick_lookup'"/>
+<button string="🔄 Refresh Lookup" class="btn btn-info btn-block" name="action_execute" type="object" invisible="action_type != 'quick_lookup'"/>
+
+                        </div>
+                    </div>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!-- Action for mobile wizard -->
+    <record id="action_mobile_bin_key_wizard" model="ir.actions.act_window">
+        <field name="name">Mobile Key Management</field>
+        <field name="res_model">mobile.bin.key.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+
+<!-- Menu item -->
+<menuitem id="menu_mobile_bin_key_wizard" name="📱 Mobile Key Manager" parent="records_management.menu_records_management_root" action="action_mobile_bin_key_wizard" sequence="5" groups="records_management.group_records_user"/>
+
+
+<!-- Quick access shortcut -->
+    <record id="action_mobile_key_shortcut" model="ir.actions.server">
+        <field name="name">🔑 Quick Key Access</field>
+        <field name="model_id" ref="model_mobile_bin_key_wizard"/>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Mobile Key Management',
+    'res_model': 'mobile.bin.key.wizard',
+    'view_mode': 'form',
+    'target': 'new',
+    'context': {'default_action_type': 'issue_new'}
+}
+        </field>
+    </record>
+
+<!-- Tree view for Enhanced -->
+    <record id="res_partner_view_tree" model="ir.ui.view">
+        <field name="name">res.partner.view.tree</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="has_bin_key" string="🔑" widget="boolean_toggle"/>
+                <field name="is_emergency_key_contact" string="🚨" widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Form view for Enhanced -->
+    <record id="res_partner_view_form" model="ir.ui.view">
+        <field name="name">res.partner.view.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Tree view for Add -->
+            <div name="button_box" position="inside">
+                <button name="action_view_bin_keys" type="object" class="oe_stat_button" icon="fa-key" attrs="{'invisible': [('has_bin_key', '=', False)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="active_bin_key_count"/>
+                        </span>
+                        <span class="o_stat_text">Bin Keys</span>
+                    </div>
+                </button>
+
+                <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="unlock_service_count"/>
+                        </span>
+                        <span class="o_stat_text">Unlock Services</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Tree view for Add -->
+            <h1 position="after">
+                <div class="o_row" attrs="{'invisible': [('has_bin_key', '=', False)]}">
+                    <span class="badge badge-success">🔑 Has Bin Key</span>
+                    <span class="badge badge-danger" attrs="{'invisible': [('is_emergency_key_contact', '=', False)]}">
+                        🚨 Emergency Contact
+                    </span>
+                </div>
+            </h1>
+
+            <!-- Tree view for Add -->
+            <page string="Internal Notes" position="after">
+                <page string="🔑 Bin Key Management" attrs="{'invisible': [('is_company', '=', True)]}">
+
+                    <!-- Tree view for Quick -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="alert alert-info" role="alert" attrs="{'invisible': [('has_bin_key', '=', True)]}">
+                                <h4 class="alert-heading">No Active Bin Key</h4>
+                                <p>This contact does not currently have an active bin key assigned.</p>
+                                <button name="action_issue_new_key" string="🔑 Issue New Key" type="object" class="btn btn-primary btn-sm"/>
+                            </div>
+
+                            <div class="alert alert-success" role="alert" attrs="{'invisible': [('has_bin_key', '=', False)]}">
+                                <h4 class="alert-heading">Active Bin Key</h4>
+                                <p>This contact has an active bin key assigned.</p>
+                                <div class="btn-group" role="group">
+                                    <button name="action_view_active_key" string="👀 View Key Details" type="object" class="btn btn-info btn-sm"/>
+                                    <button name="action_return_key" string="🔄 Return Key" type="object" class="btn btn-warning btn-sm"/>
+                                    <button name="action_report_lost_key" string="⚠️ Report Lost" type="object" class="btn btn-danger btn-sm"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tree view for Key -->
+                    <group string="Key Status Summary">
+                        <group>
+                            <field name="has_bin_key" readonly="1"/>
+                            <field name="active_bin_key_count" readonly="1"/>
+                            <field name="key_issue_date" readonly="1"/>
+                            <field name="is_emergency_key_contact"/>
+                        </group>
+                        <group>
+                            <field name="total_bin_keys_issued" readonly="1"/>
+                            <field name="unlock_service_count" readonly="1"/>
+                            <field name="total_unlock_charges" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Tree view for Key -->
+                    <separator string="🗂️ Key Assignment History"/>
+                    <field name="bin_key_history_ids" readonly="1">
+                        <tree>
+                            <field name="key_number"/>
+                            <field name="status" widget="badge" decoration-success="status == 'issued'" decoration-info="status == 'returned'" decoration-warning="status == 'lost'" decoration-danger="status == 'replaced'"/>
+                            <field name="issue_date"/>
+                            <field name="return_date"/>
+                            <field name="issue_location"/>
+                            <field name="emergency_contact" widget="boolean_toggle"/>
+                        </tree>
+                    </field>
+
+                    <!-- Tree view for Unlock -->
+                    <separator string="🔓 Unlock Service History" attrs="{'invisible': [('unlock_service_count', '=', 0)]}"/>
+                    <field name="unlock_service_history_ids" readonly="1" attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
+                        <tree>
+                            <field name="service_number"/>
+                            <field name="service_date"/>
+                            <field name="bin_location"/>
+                            <field name="unlock_reason"/>
+                            <field name="charge_amount"/>
+                            <field name="billable" widget="boolean_toggle"/>
+                            <field name="invoice_created" widget="boolean_toggle"/>
+                        </tree>
+                    </field>
+
+                </page>
+            </page>
+
+        </field>
+    </record>
+
+    <!-- Kanban view for Enhanced -->
+    <record id="res_partner_view_kanban" model="ir.ui.view">
+        <field name="name">res.partner.view.kanban</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+
+            <!-- Kanban view for Add -->
+            <field name="country_id" position="after">
+                <field name="has_bin_key"/>
+                <field name="is_emergency_key_contact"/>
+                <field name="active_bin_key_count"/>
+            </field>
+
+            <!-- Kanban view for Add -->
+            <div class="oe_kanban_details" position="before">
+                <div class="o_kanban_tags_section" t-if="record.has_bin_key.raw_value or record.is_emergency_key_contact.raw_value">
+                    <span t-if="record.has_bin_key.raw_value" class="badge badge-success">🔑 Key</span>
+                    <span t-if="record.is_emergency_key_contact.raw_value" class="badge badge-danger">🚨 Emergency</span>
+                </div>
+            </div>
+
+        </field>
+    </record>
+
+    <!-- Tree view for Quick -->
+    <record id="action_quick_key_assignment" model="ir.actions.act_window">
+        <field name="name">Quick Key Assignment</field>
+        <field name="res_model">mobile.bin.key.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_action_type': 'issue_new', 'default_contact_id': active_id}</field>
+    </record>
+
+    <!-- Tree view for Add -->
+    <record id="action_partner_key_assignment" model="ir.actions.act_window">
+        <field name="name">Assign Bin Key</field>
+        <field name="res_model">mobile.bin.key.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_action_type': 'update_existing', 'default_contact_id': active_id}</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">form,list</field>
+    </record>
+
+    <!-- Search view for Partner -->
+    <record id="res_partner_view_search" model="ir.ui.view">
+        <field name="name">res.partner.view.search</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+
+            <!-- Tree view for Add -->
+            <filter name="customer" position="after">
+                <separator/>
+                <filter name="has_bin_key" string="Has Bin Key" domain="[('has_bin_key', '=', True)]"/>
+                <filter name="emergency_contacts" string="Emergency Contacts" domain="[('is_emergency_key_contact', '=', True)]"/>
+                <filter name="no_bin_key" string="No Bin Key" domain="[('has_bin_key', '=', False)]"/>
+            </filter>
+
+            <!-- Search view for Add -->
+            <field name="category_id" position="after">
+                <field name="key_issue_date"/>
+                <field name="active_bin_key_count"/>
+            </field>
+
+        </field>
+    </record>
+
+</odoo>

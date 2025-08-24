@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View maintenance.team form -->
+    <record id="view_maintenance_team_form" model="ir.ui.view">
+        <field name="name">view.maintenance.team.form</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.team list -->
+    <record id="view_maintenance_team_list" model="ir.ui.view">
+        <field name="name">view.maintenance.team.list</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.team search -->
+    <record id="view_maintenance_team_search" model="ir.ui.view">
+        <field name="name">view.maintenance.team.search</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.team kanban -->
+    <record id="view_maintenance_team_kanban" model="ir.ui.view">
+        <field name="name">view.maintenance.team.kanban</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.team graph -->
+    <record id="view_maintenance_team_graph" model="ir.ui.view">
+        <field name="name">view.maintenance.team.graph</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.team pivot -->
+    <record id="view_maintenance_team_pivot" model="ir.ui.view">
+        <field name="name">view.maintenance.team.pivot</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.team calendar -->
+    <record id="view_maintenance_team_calendar" model="ir.ui.view">
+        <field name="name">view.maintenance.team.calendar</field>
+        <field name="model">maintenance.team</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

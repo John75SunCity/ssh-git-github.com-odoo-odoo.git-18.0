@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- Enhanced Kanban view for Pickup Routes -->
+<record id="pickup_route_view_kanban" model="ir.ui.view">
+    <field name="name">pickup.route.view.kanban</field>
+    <field name="model">pickup.route</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="state" class="o_kanban_pickup_route">
+            <field name="name"/>
+            <field name="route_date"/>
+            <field name="driver_id"/>
+            <field name="vehicle_id"/>
+            <field name="state"/>
+            <field name="priority"/>
+            <field name="estimated_duration"/>
+            <field name="actual_duration"/>
+            <field name="total_distance"/>
+            <field name="completion_percentage"/>
+            <field name="efficiency_score"/>
+            <field name="request_count"/>
+            <field name="color"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.color.raw_value ? 'oe_kanban_color_' + record.color.raw_value : ''}">
+                        <div class="o_kanban_card_header">
+                            <strong>🚚                                <field name="name"/>
+                            </strong>
+                            <span class="float-end">
+                                <field name="priority" widget="priority"/>
+                            </span>
+                            <div class="text-muted">👤                                <field name="driver_id"/>
+                            </div>
+                        </div>
+                        <div class="o_kanban_card_content">
+                            <div class="mb-2">
+                                <strong>📅 Date:</strong>
+                                <field name="route_date" widget="date"/>
+                                <br/>
+                                <strong>🚗 Vehicle:</strong>
+                                <field name="vehicle_id"/>
+                                <br/>
+                                <strong>📍 Stops:</strong>
+                                <field name="total_stops"/>
+                                <br/>
+                                <strong>⏱️ Est. Duration:</strong>
+                                <field name="estimated_duration"/>
+ hrs
+                            </div>
+                            <div t-if="record.priority.raw_value == 'urgent'">
+                                <span class="badge badge-danger">🚨 Urgent Route</span>
+                            </div>
+                            <div t-if="record.state.raw_value == 'completed'">
+                                <span class="badge badge-success">✅ Completed</span>
+                            </div>
+                        </div>
+                        <div class="o_kanban_card_footer">
+                            <div class="text-muted small">
+                                <i class="fa fa-clock-o"/>
+ Last updated: <field name="write_date" widget="relative"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+<!-- Enhanced Tree view for Pickup Routes -->
+    <record id="pickup_route_view_tree" model="ir.ui.view">
+        <field name="name">pickup.route.view.tree</field>
+        <field name="model">pickup.route</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'" decoration-danger="priority == 'urgent'">
+                <field name="name"/>
+                <field name="route_date"/>
+                <field name="driver_id"/>
+                <field name="vehicle_id"/>
+                <field name="total_stops"/>
+                <field name="estimated_duration" widget="float_time"/>
+                <field name="actual_duration" widget="float_time"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'"/>
+                <field name="priority" widget="priority"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Enhanced Form view for Pickup Routes -->
+    <record id="pickup_route_view_form" model="ir.ui.view">
+        <field name="name">pickup.route.view.form</field>
+        <field name="model">pickup.route</field>
+        <field name="arch" type="xml">
+            <form string="Pickup Route">
+<header>
+    <button name="action_plan_route" type="object" string="Plan Route" class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+    <button name="action_start_route" type="object" string="Start Route" class="btn-primary" attrs="{'invisible': [('state', '!=', 'planned')]}"/>
+    <button name="action_complete_route" type="object" string="Complete Route" class="btn-success" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
+    <button name="action_cancel_route" type="object" string="Cancel Route" class="btn-secondary" attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])]}"/>
+    <field name="state" widget="statusbar" statusbar_visible="draft,planned,in_progress,completed"/>
+</header>
+                <sheet>
+<div class="oe_button_box" name="button_box">
+    <button name="action_view_pickup_requests" type="object" class="oe_stat_button" icon="fa-truck">
+        <field name="pickup_count" widget="statbutton" string="Pickups"/>
+    </button>
+    <button name="action_view_route_map" type="object" class="oe_stat_button" icon="fa-map">
+        <div class="o_field_widget o_stat_info">
+            <span class="o_stat_value">Map</span>
+            <span class="o_stat_text">View Route</span>
+        </div>
+    </button>
+</div>
+<widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+<field name="name" placeholder="Route Name..."/>
+
+                        </h1>
+<div class="o_row">
+    <field name="priority" widget="priority"/>
+    <field name="color" widget="color_picker"/>
+
+</div>
+</div>
+<group>
+<group string="Route Information">
+    <field name="route_date" required="1"/>
+    <field name="driver_id" required="1"/>
+    <field name="vehicle_id" required="1"/>
+    <field name="route_type"/>
+    <field name="start_location_id"/>
+    <field name="end_location_id"/>
+</group>
+<group string="Timing &amp; Capacity">
+    <field name="planned_start_time" widget="float_time"/>
+    <field name="actual_start_time" widget="float_time" attrs="{'readonly': [('state', 'in', ['draft', 'planned'])]}"/>
+    <field name="estimated_duration" widget="float_time"/>
+    <field name="actual_duration" widget="float_time" attrs="{'readonly': [('state', '!=', 'completed')]}"/>
+    <field name="max_capacity"/>
+    <field name="current_load"/>
+</group>
+</group>
+<notebook>
+<page string="Pickup Stops" name="pickup_stops">
+    <field name="pickup_request_ids">
+        <tree decoration-info="state == 'confirmed'" decoration-success="state == 'completed'" decoration-warning="priority == 'high'">
+            <field name="sequence" widget="handle"/>
+            <field name="name"/>
+            <field name="partner_id"/>
+            <field name="pickup_address"/>
+            <field name="estimated_pickup_time" widget="float_time"/>
+            <field name="actual_pickup_time" widget="float_time"/>
+            <field name="container_count"/>
+            <field name="priority" widget="priority"/>
+            <field name="state" widget="badge"/>
+        </tree>
+    </field>
+</page>
+<page string="Route Details" name="route_details">
+    <group>
+        <group string="Route Planning">
+            <field name="total_distance"/>
+            <field name="estimated_duration" widget="float_time"/>
+            <field name="actual_duration" widget="float_time"/>
+            <field name="request_count"/>
+        </group>
+        <group string="Performance Metrics">
+            <field name="completion_percentage" widget="progressbar"/>
+            <field name="efficiency_score"/>
+            <field name="planned_start_time"/>
+            <field name="actual_start_time"/>
+        </group>
+    </group>
+    <separator string="Route Notes"/>
+    <field name="notes" nolabel="1" placeholder="Add route notes, special instructions, or observations..."/>
+</page>
+<page string="Tracking &amp; Compliance" name="tracking">
+    <group>
+        <group string="Status Tracking">
+            <field name="completion_percentage" widget="progressbar"/>
+            <field name="last_update_time"/>
+            <field name="current_location"/>
+            <field name="eta_next_stop"/>
+        </group>
+        <group string="Compliance">
+            <field name="naid_compliance_required"/>
+            <field name="audit_trail_complete"/>
+            <field name="signatures_collected"/>
+            <field name="certificates_generated"/>
+        </group>
+    </group>
+</page>
+<page string="History &amp; Analytics" name="history">
+    <group string="System Information">
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="user_id"/>
+        <field name="create_date"/>
+        <field name="write_date"/>
+        <field name="active"/>
+    </group>
+</page>
+</notebook>
+                </sheet>
+<div class="oe_chatter">
+    <field name="message_follower_ids"/>
+    <field name="activity_ids"/>
+    <field name="message_ids"/>
+</div>
+            </form>
+        </field>
+    </record>
+
+<!-- Enhanced Search view for Pickup Routes -->
+    <record id="pickup_route_view_search" model="ir.ui.view">
+        <field name="name">pickup.route.view.search</field>
+        <field name="model">pickup.route</field>
+        <field name="arch" type="xml">
+            <search>
+<field name="name"/>
+<field name="driver_id"/>
+<field name="vehicle_id"/>
+<field name="route_date"/>
+
+<!-- State-based filters -->
+<filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="Planned" name="planned" domain="[('state', '=', 'planned')]"/>
+<filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+<filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+
+<separator/>
+<!-- Priority and date filters -->
+<filter string="Urgent Priority" name="urgent_priority" domain="[('priority', '=', 'urgent')]"/>
+<filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
+<filter string="Today's Routes" name="today" domain="[('route_date', '=', context_today())]"/>
+<filter string="This Week" name="this_week" domain="[('route_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('route_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+<filter string="Overdue" name="overdue" domain="[('route_date', '&lt;', context_today()), ('state', 'not in', ['completed', 'cancelled'])]"/>
+
+<separator/>
+<filter string="Active Routes" name="active" domain="[('active', '=', True)]"/>
+<filter string="NAID Compliance Required" name="naid_required" domain="[('naid_compliance_required', '=', True)]"/>
+
+<separator/>
+<filter string="My Routes" name="my_routes" domain="[('user_id', '=', uid)]"/>
+<filter string="My Driving Routes" name="my_driving" domain="[('driver_id.user_id', '=', uid)]"/>
+
+<group expand="0" string="Group By">
+    <filter string="Driver" name="driver" context="{'group_by': 'driver_id'}"/>
+    <filter string="Vehicle" name="vehicle" context="{'group_by': 'vehicle_id'}"/>
+    <filter string="Status" name="state" context="{'group_by': 'state'}"/>
+    <filter string="Priority" name="priority" context="{'group_by': 'priority'}"/>
+    <filter string="Route Type" name="route_type" context="{'group_by': 'route_type'}"/>
+    <filter string="Company" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+    <separator/>
+    <filter string="Route Date" name="route_date" context="{'group_by': 'route_date:day'}"/>
+    <filter string="Route Week" name="route_week" context="{'group_by': 'route_date:week'}"/>
+    <filter string="Route Month" name="route_month" context="{'group_by': 'route_date:month'}"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+<!-- Enhanced Action for Pickup Routes -->
+    <record id="action_pickup_route" model="ir.actions.act_window">
+        <field name="name">Pickup Routes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pickup.route</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{
+            'default_user_id': uid,
+            'search_default_active': 1,
+            'search_default_today': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                🚚 Create your first Pickup Route!
+            </p>
+            <p>
+                <b>Advanced Pickup Route Management:</b>
+                <br/>
+                • 📍 Intelligent route planning and optimization<br/>
+                • 👨‍💼 Driver and vehicle assignment with capacity tracking<br/>
+                • ⏱️ Real-time tracking and ETA calculations<br/>
+                • 📊 Performance analytics and fuel consumption monitoring<br/>
+                • 🗺️ GPS integration with live location updates<br/>
+                • 📋 NAID compliance and audit trail management<br/>
+                • 📱 Mobile-friendly interface for drivers<br/>
+                • 🔔 Automated notifications and status updates<br/>
+                • 📈 Customer satisfaction tracking and reporting<br/>
+                • 🚛 Multi-stop route coordination with time optimization
+            </p>
+        </field>
+    </record>
+
+</odoo>

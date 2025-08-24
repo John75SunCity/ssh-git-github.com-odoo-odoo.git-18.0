@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_paper_load_shipment" model="ir.actions.report">
+        <field name="name">Paper Load Shipment</field>
+        <field name="model">paper.load.shipment</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">records_management.report_paper_load_shipment_view</field>
+        <field name="report_file">records_management.report_paper_load_shipment</field>
+        <field name="print_report_name">"(Paper Load Shipment Report) %s" % (object.name or 'N/A')</field>
+        <field name="binding_model_id" ref="model_paper_load_shipment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_paper_load_shipment_view">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Paper Load Shipment Report</h2>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="doc.field_ids">
+                                <tr t-foreach="doc.field_ids" t-as="field">
+                                    <td>
+                                        <span t-esc="field.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="field.description"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

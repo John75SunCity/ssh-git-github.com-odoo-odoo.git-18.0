@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_stock_picking_records_extension" model="ir.actions.report">
+        <field name="name">Stock Picking Records Extension</field>
+        <field name="model">stock.picking.records.extension</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">records_management.report_stock_picking_records_extension_view</field>
+        <field name="report_file">records_management.report_stock_picking_records_extension</field>
+        <field name="print_report_name">"(Stock Picking Records Extension Report) %s" % (object.name or 'N/A')</field>
+        <field name="binding_model_id" ref="model_stock_picking_records_extension"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_stock_picking_records_extension_view">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Stock Picking Records Extension Report</h2>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="doc.field_ids">
+                                <tr t-foreach="doc.field_ids" t-as="field">
+                                    <td>
+                                        <span t-esc="field.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="field.description"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

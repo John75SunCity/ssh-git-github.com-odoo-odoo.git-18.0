@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_visitor_log">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Visitor Log</h2>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Visit Date</th>
+                            <th>Purpose</th>
+                            <th>Host</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="docs" t-as="visitor">
+                            <td><span t-field="visitor.name"/></td>
+                            <td><span t-field="visitor.visit_date" t-options="{'widget': 'datetime'}"/></td>
+                            <td><span t-field="visitor.purpose"/></td>
+                            <td><span t-field="visitor.host_id.name"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+    <record id="action_report_visitor_log" model="ir.actions.report">
+        <field name="name">Visitor Log</field>
+        <field name="model">visitor.log</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_visitor_log</field>
+        <field name="binding_model_id" ref="records_management.model_visitor_log"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_visitor" model="ir.actions.report">
+        <field name="name">Visitor</field>
+        <field name="model">visitor</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">records_management.report_visitor_view</field>
+        <field name="report_file">records_management.report_visitor</field>
+        <field name="print_report_name">"(Visitor Report) %s" % (object.name or 'N/A')</field>
+        <field name="binding_model_id" ref="model_visitor"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_visitor_view">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Visitor Report</h2>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="doc.field_ids">
+                                <tr t-foreach="doc.field_ids" t-as="field">
+                                    <td>
+                                        <span t-esc="field.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="field.description"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

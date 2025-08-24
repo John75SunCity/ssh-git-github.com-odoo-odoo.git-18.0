@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree view for Department -->
+    
+    <!-- Tree view for Menu -->
+    <menuitem id="menu_department_billing_contacts" 
+              name="Department Billing Contacts" 
+              parent="menu_records_configuration"
+              action="action_department_billing_contacts"
+              sequence="26"
+              groups="records_management.group_records_manager"/>
+
+</odoo>

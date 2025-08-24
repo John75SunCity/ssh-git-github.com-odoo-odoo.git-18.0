@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <!--
+        Container Search Widget Template
+        This template defines the structure for the container search widget. It includes an
+        input field for users to type a container or box number and a dropdown area
+        where search suggestions will be dynamically loaded.
+    -->
+    <t t-name="ContainerSearchWidget">
+        <div class="container-search-widget">
+            <div class="input-group">
+                <input type="text" class="form-control container-search-input" placeholder="Type container/box number (e.g., 45...)"/>
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i class="fa fa-search"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="search-suggestions d-none">
+                <!-- Suggestions will be populated here -->
+            </div>
+        </div>
+    </t>
+
+    <!--
+        Container Suggestion Item Template
+        This template renders a single suggestion item in the container search results.
+        It displays key information about a container, such as its name, location,
+        document count, alpha/date ranges, and content type, making it easy for users
+        to identify the correct container.
+    -->
+    <t t-name="ContainerSuggestionItem">
+        <div class="suggestion-item p-2 border-bottom" t-att-data-index="index">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong t-out="suggestion.name"/>
+                    <t t-if="suggestion.location">
+                        <span class="badge badge-secondary ml-2" t-out="suggestion.location"/>
+                    </t>
+                </div>
+                <div class="text-right">
+                    <small class="text-muted">
+                        <t t-if="suggestion.document_count">
+                            <t t-out="suggestion.document_count"/>
+ docs
+                        </t>
+                    </small>
+                </div>
+            </div>
+            <div class="small text-muted">
+                <t t-if="suggestion.alpha_range">
+                    <i class="fa fa-sort-alpha-asc mr-1"></i>
+                    <t t-out="suggestion.alpha_range"/>
+                </t>
+                <t t-if="suggestion.date_range">
+                    <i class="fa fa-calendar ml-2 mr-1"></i>
+                    <t t-out="suggestion.date_range"/>
+                </t>
+                <t t-if="suggestion.content_type">
+                    <i class="fa fa-tags ml-2 mr-1"></i>
+                    <t t-out="suggestion.content_type"/>
+                </t>
+            </div>
+            <t t-if="suggestion.description">
+                <div class="small text-muted mt-1" t-out="suggestion.description"/>
+            </t>
+        </div>
+    </t>
+
+    <!--
+        File Search Widget Template
+        This template provides an advanced interface for the "Intelligent File Search" feature.
+        It allows users to search for files based on criteria like file name (e.g., a person's name),
+        service date, and content type. The widget is designed to help users find the most
+        relevant containers for storing a new file.
+    -->
+    <t t-name="FileSearchWidget">
+        <div class="file-search-widget">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fa fa-search mr-2"></i>Intelligent File Search
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="fileName">File Name (e.g., John Doe)</label>
+                                <input type="text" class="form-control file-name-input" placeholder="Enter person/company name"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="serviceDate">Service Date</label>
+                                <input type="date" class="form-control service-date-input"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="contentType">Content Type</label>
+                                <select class="form-control content-type-select">
+                                    <option value="">Any Type</option>
+                                    <option value="medical">Medical Records</option>
+                                    <option value="financial">Financial Documents</option>
+                                    <option value="legal">Legal Files</option>
+                                    <option value="personnel">Personnel Files</option>
+                                    <option value="contracts">Contracts</option>
+                                    <option value="invoices">Invoices</option>
+                                    <option value="tax_documents">Tax Documents</option>
+                                    <option value="insurance">Insurance Records</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary search-files-btn">
+                            <i class="fa fa-magic mr-2"></i>Find Recommended Containers
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="search-recommendations mt-3">
+                <!-- Recommendations will be populated here -->
+            </div>
+        </div>
+    </t>
+
+    <!--
+        File Search Summary Template
+        This template is used to display a summary of the intelligent file search results.
+        It shows the total number of recommended containers found and echoes the search
+        criteria used (file name, service date, content type).
+    -->
+    <t t-name="FileSearchSummary">
+        <div class="alert alert-info">
+            <h6>
+                <i class="fa fa-info-circle mr-2"></i>Search Results</h6>
+            <p class="mb-0">
+Found <strong t-out="total"/> recommended containers
+            <t t-if="criteria.file_name">
+                    for file name: <em t-out="criteria.file_name"/>
+            </t>
+            <t t-if="criteria.service_date">
+                    with service date: <em t-out="criteria.service_date"/>
+            </t>
+            <t t-if="criteria.content_type">
+                    of type: <em t-out="criteria.content_type"/>
+            </t>
+        </p>
+    </div>
+</t>
+
+<!--
+    Container Recommendation Item Template
+    This template renders a single container recommendation card. It's used to display
+    containers suggested by the intelligent file search. It includes a confidence score,
+    metadata, and the reasons for the recommendation, providing a rich and informative
+    user experience.
+-->
+<t t-name="ContainerRecommendationItem">
+    <div class="card mb-2 recommended-container" t-att-data-index="index" style="cursor: pointer;">
+        <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <h6 class="card-title mb-1">
+                        <i class="fa fa-archive mr-2"></i>
+                        <t t-out="recommendation.name"/>
+                        <span class="badge badge-success ml-2">
+                            <t t-out="recommendation.confidence"/>
+% match
+                        </span>
+                    </h6>
+                    <div class="small text-muted mb-2">
+                        <i class="fa fa-map-marker mr-1"></i>
+                        <t t-out="recommendation.location"/>
+                        <t t-if="recommendation.document_count">
+                        <t t-if="recommendation.document_count">
+                            | <i class="fa fa-files-o ml-2 mr-1"></i>
+                            <t t-out="recommendation.document_count"/>
+ documents
+                        </t>
+                    <div class="small">
+                        <t t-if="recommendation.alpha_range">
+                            <span class="badge badge-light mr-1">
+                                <i class="fa fa-sort-alpha-asc mr-1"></i>
+                                <t t-out="recommendation.alpha_range"/>
+                            </span>
+                        </t>
+                        <t t-if="recommendation.date_range">
+                            <span class="badge badge-light mr-1">
+                                <i class="fa fa-calendar mr-1"></i>
+                                <t t-out="recommendation.date_range"/>
+                            </span>
+                        </t>
+                        <t t-if="recommendation.content_type">
+                            <span class="badge badge-light mr-1">
+                                <i class="fa fa-tag mr-1"></i>
+                                <t t-out="recommendation.content_type"/>
+                            </span>
+                        </t>
+                    </div>
+                    <t t-if="recommendation.reasons and recommendation.reasons.length">
+                        <div class="mt-2">
+                            <small class="text-success">
+                                <strong>Why this container:</strong>
+                            </small>
+                            <ul class="list-unstyled small text-success mb-0">
+                                <li t-foreach="recommendation.reasons" t-as="reason">
+                                    <i class="fa fa-check mr-1"></i>
+                                    <t t-out="reason"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </t>
+                    <t t-if="recommendation.description">
+                        <div class="small text-muted mt-2">
+                            <strong>Content:</strong>
+                            <t t-out="recommendation.description"/>
+                        </div>
+                    </t>
+                </div>
+                <div class="ml-2">
+                    <i class="fa fa-mouse-pointer text-muted"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</t>
+
+<!--
+    Portal Search Widget Template
+    This template defines a global search widget for the customer portal. It provides
+    a simple, powerful search bar for users to find their files and containers quickly.
+    It includes a placeholder for type-ahead suggestions and a helpful tip to guide users.
+-->
+<t t-name="PortalSearchWidget">
+    <div class="portal-search-container">
+        <form class="portal-search-form">
+            <div class="input-group input-group-lg">
+                <input type="text" class="form-control portal-search-input" placeholder="Search your files and containers..."/>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="search-suggestions position-absolute w-100 bg-white border d-none" style="z-index: 1000;">
+                <!-- Portal suggestions will be populated here -->
+            </div>
+        </form>
+        <div class="mt-2">
+            <small class="text-muted">
+                <i class="fa fa-lightbulb-o mr-1"></i>
+                    Try searching by container number (e.g., "4589") or file name (e.g., "John Doe")
+            </small>
+        </div>
+    </div>
+</t>
+
+</templates>

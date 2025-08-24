@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_naid_audit_log" model="ir.actions.report">
+        <field name="name">Naid Audit Log</field>
+        <field name="model">naid.audit.log</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">records_management.report_naid_audit_log_view</field>
+        <field name="report_file">records_management.report_naid_audit_log</field>
+        <field name="binding_model_id" ref="model_naid_audit_log"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_naid_audit_log_view">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>NAID Audit Log Report</h2>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="doc.field_ids">
+                                    <t t-foreach="doc.field_ids" t-as="field">
+                                        <tr>
+                                            <td>
+                                                <span t-out="field.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-out="field.description"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <tr>
+                                        <td colspan="2">No fields available.</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

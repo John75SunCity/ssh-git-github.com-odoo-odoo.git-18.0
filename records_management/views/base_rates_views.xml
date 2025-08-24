@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="base_rates_view_tree" model="ir.ui.view">
+            <field name="name">base.rates.view.tree</field>
+            <field name="model">base.rates</field>
+            <field name="arch" type="xml">
+                <tree string="Base Rates">
+                    <!-- Add fields here -->
+                </tree>
+            </field>
+        </record>
+
+        <record id="base_rates_view_form" model="ir.ui.view">
+            <field name="name">base.rates.view.form</field>
+            <field name="model">base.rates</field>
+            <field name="arch" type="xml">
+                <form string="Base Rate">
+                    <sheet>
+                        <group>
+                            <!-- Add fields here -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_base_rates" model="ir.actions.act_window">
+            <field name="name">Base Rates</field>
+            <field name="res_model">base.rates</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

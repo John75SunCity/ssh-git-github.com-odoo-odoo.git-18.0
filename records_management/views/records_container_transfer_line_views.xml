@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- View records.container.transfer.line View List -->
+    <record id="view_records_container_transfer_line_list" model="ir.ui.view">
+        <field name="name">view.records.container.transfer.line.list</field>
+        <field name="model">records.container.transfer.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- View records.container.transfer.line form -->
+    <record id="view_records_container_transfer_line_form" model="ir.ui.view">
+        <field name="name">view.records.container.transfer.line.form</field>
+        <field name="model">records.container.transfer.line</field>
+        <field name="arch" type="xml">
+            <form string="Records Container Transfer Line">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- View records.container.transfer.line search -->
+    <record id="view_records_container_transfer_line_search" model="ir.ui.view">
+        <field name="name">view.records.container.transfer.line.search</field>
+        <field name="model">records.container.transfer.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action records.container.transfer.line -->
+    <record id="action_records_container_transfer_line" model="ir.actions.act_window">
+        <field name="name">Records Container Transfer Line</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">records.container.transfer.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new Records Container Transfer Line.
+            </p>
+        </field>
+    </record>
+
+</odoo>

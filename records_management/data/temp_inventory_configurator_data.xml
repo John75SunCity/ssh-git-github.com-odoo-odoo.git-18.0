@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Temporary Inventory Feature Configuration -->
+        <record id="config_enable_temp_inventory" model="rm.module.configurator">
+            <field name="name">Enable Temporary Inventory</field>
+            <field name="category">feature_toggles</field>
+            <field name="config_key">enable_temp_inventory</field>
+            <field name="visible">True</field>
+            <field name="required">False</field>
+            <field name="readonly">False</field>
+            <field name="target_model">temp.inventory</field>
+            <field name="help_text">Enable or disable the temporary inventory management feature. When enabled, users can create and manage temporary inventory records for staging, quarantine, and processing areas.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Temporary Inventory Movement Feature Configuration -->
+        <record id="config_enable_temp_inventory_movements" model="rm.module.configurator">
+            <field name="name">Enable Temporary Inventory Movements</field>
+            <field name="category">feature_toggles</field>
+            <field name="config_key">enable_temp_inventory_movements</field>
+            <field name="visible">True</field>
+            <field name="required">False</field>
+            <field name="readonly">False</field>
+            <field name="target_model">temp.inventory.movement</field>
+            <field name="help_text">Enable tracking of temporary inventory movements. This provides complete audit trail for items moving in and out of temporary storage areas.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Temporary Inventory Audit Trail Configuration -->
+        <record id="config_enable_temp_inventory_audit" model="rm.module.configurator">
+            <field name="name">Enable Temporary Inventory Audit Trail</field>
+            <field name="category">compliance_features</field>
+            <field name="config_key">enable_temp_inventory_audit</field>
+            <field name="visible">True</field>
+            <field name="required">False</field>
+            <field name="readonly">False</field>
+            <field name="target_model">temp.inventory.audit</field>
+            <field name="help_text">Enable comprehensive audit trail for temporary inventory changes. Required for compliance with NAID and other regulatory standards.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+    </data>
+</odoo>

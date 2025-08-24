@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View product.product form -->
+    <record id="view_product_product_form" model="ir.ui.view">
+        <field name="name">view.product.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View product.product list -->
+    <record id="view_product_product_list" model="ir.ui.view">
+        <field name="name">view.product.product.list</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View product.product search -->
+    <record id="view_product_product_search" model="ir.ui.view">
+        <field name="name">view.product.product.search</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View product.product kanban -->
+    <record id="view_product_product_kanban" model="ir.ui.view">
+        <field name="name">view.product.product.kanban</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View product.product graph -->
+    <record id="view_product_product_graph" model="ir.ui.view">
+        <field name="name">view.product.product.graph</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View product.product pivot -->
+    <record id="view_product_product_pivot" model="ir.ui.view">
+        <field name="name">view.product.product.pivot</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View product.product calendar -->
+    <record id="view_product_product_calendar" model="ir.ui.view">
+        <field name="name">view.product.product.calendar</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

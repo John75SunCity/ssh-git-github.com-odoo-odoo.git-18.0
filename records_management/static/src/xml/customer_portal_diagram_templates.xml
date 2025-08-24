@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <!-- Customer Portal Diagram View Template -->
+    <t t-name="CustomerPortalDiagramTemplate">
+        <div class="o_customer_portal_diagram_view">
+            <!-- Control Panel -->
+            <div class="o_diagram_control_panel mb-3">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control o_search_input" placeholder="Search people, departments..."/>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary o_search_button" type="button">
+                                    <i class="fa fa-search"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control o_layout_select">
+                            <option value="hierarchical">Hierarchical</option>
+                            <option value="network">Network</option>
+                            <option value="circular">Circular</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="btn-group w-100">
+                            <button class="btn btn-secondary o_refresh_diagram" title="Refresh">
+                                <i class="fa fa-refresh"/>
+                            </button>
+                            <button class="btn btn-info o_export_diagram" title="Export">
+                                <i class="fa fa-download"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Diagram Container -->
+            <div class="o_diagram_container" style="height: 600px; border: 1px solid #ddd; background: #f8f9fa;">
+                <!-- vis.js network will be rendered here -->
+            </div>
+
+            <!-- Legend -->
+            <div class="o_diagram_legend mt-3">
+                <small class="text-muted">
+                    <strong>Legend:</strong>
+                    <span class="badge" style="background-color: #FFD700;">Companies</span>
+                    <span class="badge" style="background-color: #90EE90;">Departments</span>
+                    <span class="badge" style="background-color: #87CEEB;">Internal Users</span>
+                    <span class="badge" style="background-color: #FF69B4;">Portal Users</span>
+                    <span class="badge" style="background-color: #FF6B6B;">You</span>
+                </small>
+            </div>
+        </div>
+    </t>
+
+    <!-- Portal Diagram Statistics Template -->
+    <t t-name="PortalDiagramStatsTemplate">
+        <div class="o_portal_diagram_stats">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="text-primary">
+                                <i class="fa fa-building"/>
+                            </h5>
+                            <h4 t-esc="stats.companies"/>
+                            <small class="text-muted">Companies</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="text-success">
+                                <i class="fa fa-sitemap"/>
+                            </h5>
+                            <h4 t-esc="stats.departments"/>
+                            <small class="text-muted">Departments</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="text-info">
+                                <i class="fa fa-users"/>
+                            </h5>
+                            <h4 t-esc="stats.users"/>
+                            <small class="text-muted">People</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="text-warning">
+                                <i class="fa fa-link"/>
+                            </h5>
+                            <h4 t-esc="stats.total_edges"/>
+                            <small class="text-muted">Connections</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Node Details Template -->
+    <t t-name="PortalDiagramNodeDetailsTemplate">
+        <div class="o_portal_diagram_node_details">
+            <div class="row">
+                <div class="col-md-12">
+                    <h6>
+                        <i t-att-class="node.icon || 'fa fa-circle'"/>
+                        <t t-esc="node.label"/>
+                    </h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <td>
+                                <strong>Type:</strong>
+                            </td>
+                            <td t-esc="node.group"/>
+                        </tr>
+                        <tr t-if="node.title">
+                            <td>
+                                <strong>Description:</strong>
+                            </td>
+                            <td t-esc="node.title"/>
+                        </tr>
+                        <tr t-if="node.group === 'user'">
+                            <td>
+                                <strong>Status:</strong>
+                            </td>
+                            <td>
+                                <span class="badge badge-success">Active</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div t-if="node.group === 'user' and show_messaging" class="alert alert-info">
+                        <i class="fa fa-envelope"/>
+                        <strong>Messaging:</strong> Double-click this user to send a message.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Search Results Template -->
+    <t t-name="PortalDiagramSearchResultsTemplate">
+        <div class="o_portal_diagram_search_results">
+            <div class="list-group">
+                <t t-foreach="results" t-as="result">
+                    <div class="list-group-item list-group-item-action" t-att-data-node-id="result.id">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1" t-esc="result.label"/>
+                            <small class="text-muted" t-esc="result.group"/>
+                        </div>
+                        <p class="mb-1 text-muted" t-esc="result.title"/>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <!-- Help Template -->
+    <t t-name="PortalDiagramHelpTemplate">
+        <div class="o_portal_diagram_help">
+            <h6>How to Use Your Organization Diagram</h6>
+
+            <div class="mb-3">
+                <h6>Navigation</h6>
+                <ul>
+                    <li>
+                        <strong>Pan:</strong> Click and drag to move around</li>
+                    <li>
+                        <strong>Zoom:</strong> Use mouse wheel to zoom in/out</li>
+                    <li>
+                        <strong>Select:</strong> Click on people or departments to see details</li>
+                    <li>
+                        <strong>Message:</strong> Double-click on colleagues to send messages</li>
+                </ul>
+            </div>
+
+            <div class="mb-3">
+                <h6>What You'll See</h6>
+                <ul>
+                    <li>
+                        <strong>Companies:</strong> Golden boxes showing your organization</li>
+                    <li>
+                        <strong>Departments:</strong> Green circles for different departments</li>
+                    <li>
+                        <strong>Colleagues:</strong> Blue dots for internal team members</li>
+                    <li>
+                        <strong>You:</strong> Red dot highlighting your position</li>
+                </ul>
+            </div>
+
+            <div class="mb-3">
+                <h6>Features</h6>
+                <ul>
+                    <li>
+                        <strong>Search:</strong> Find specific people or departments quickly</li>
+                    <li>
+                        <strong>Layout Options:</strong> Switch between different view styles</li>
+                    <li>
+                        <strong>Direct Messaging:</strong> Communicate with colleagues directly</li>
+                    <li>
+                        <strong>Export:</strong> Save the diagram for offline reference</li>
+                </ul>
+            </div>
+        </div>
+    </t>
+
+</templates>

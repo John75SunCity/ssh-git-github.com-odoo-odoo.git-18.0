@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Document Lifecycle Report -->
+    <template id="report_document_lifecycle">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <h2>Document Lifecycle Report for <span t-field="o.name"/>
+                    </h2>
+                    <p>Creation: <span t-field="o.create_date"/>
+                    </p>
+                    <p>Retention End: <span t-field="o.retention_end_date"/>
+                    </p>
+                    <p>Status: <span t-field="o.state"/>
+                    </p>
+                    <p>Destruction: <span t-field="o.destruction_date" t-if="o.destruction_date"/>
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_document_lifecycle" model="ir.actions.report">
+        <field name="name">Document Lifecycle Report</field>
+        <field name="model">records.document</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_document_lifecycle</field>
+        <field name="report_file">records_management.report_document_lifecycle</field>
+        <field name="binding_model_id" ref="records_management.model_records_document"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Pickup Schedule Report -->
+    <template id="report_pickup_schedule">
+        <t t-call="web.html_container">
+            <div class="page">
+                <h2>Pickup Schedule Report</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Partner</th>
+                            <th>Items</th>
+                            <th>Driver</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                                                        <tr>
+                                    <td><strong>Name:</strong></td>
+                                    <td><span t-esc="doc.name or 'N/A'"/></td>
+                                </tr>
+                                <tr t-if="doc.create_date">
+                                    <td><strong>Created:</strong></td>
+                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
+                                </tr>
+                                <tr t-if="doc.user_id">
+                                    <td><strong>Created by:</strong></td>
+                                    <td><span t-esc="doc.user_id.name"/></td>
+                                </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <record id="action_report_pickup_schedule" model="ir.actions.report">
+        <field name="name">Pickup Schedule Report</field>
+        <field name="model">pickup.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_pickup_schedule</field>
+        <field name="report_file">records_management.report_pickup_schedule</field>
+        <field name="binding_model_id" ref="records_management.model_pickup_request"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Shredding Service Report -->
+    <template id="report_shredding_service">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <h2>Shredding Service Report</h2>
+                    <p>Date: <span t-field="o.service_date"/>
+                    </p>
+                    <p>Type: <span t-field="o.service_type"/>
+                    </p>
+                    <p>Volume: <span t-field="o.total_weight"/>
+ lbs</p>
+                    <p>Certificate Issued: <span t-field="o.certificate_issued"/>
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_shredding_service" model="ir.actions.report">
+        <field name="name">Shredding Service Report</field>
+        <field name="model">shredding.service</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_shredding_service</field>
+        <field name="report_file">records_management.report_shredding_service</field>
+        <field name="binding_model_id" ref="records_management.model_shredding_service"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Management Dashboard -->
+    <template id="report_management_dashboard">
+        <t t-call="web.html_container">
+            <div class="page">
+                <h2>Management Dashboard</h2>
+                <p>Total Boxes: <span t-esc="docs.get('total_boxes', 0)"/>
+                </p>
+                <p>Shredded This Month: <span t-esc="docs.get('monthly_shredded', 0)"/>
+                </p>
+                <p>Revenue: $<span t-esc="docs.get('monthly_revenue', 0)"/>
+                </p>
+            </div>
+        </t>
+    </template>
+
+    <record id="action_report_management_dashboard" model="ir.actions.report">
+        <field name="name">Management Dashboard</field>
+        <field name="model">records.management.dashboard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_management_dashboard</field>
+        <field name="report_file">records_management.report_management_dashboard</field>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

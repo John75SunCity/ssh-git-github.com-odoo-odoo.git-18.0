@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<record id="action_billing_contact" model="ir.actions.act_window">
+        <field name="name">Billing Contacts</field>
+        <field name="res_model">records.billing.contact</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first billing contact!
+            </p>
+            <p>
+                Billing contacts receive invoices, statements, and other billing communications.
+            </p>
+        </field>
+    </record>
+
+<record id="action_customer_billing_profile" model="ir.actions.act_window">
+        <field name="name">Customer Billing Profiles</field>
+        <field name="res_model">customer.billing.profile</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_customer_billing_profile_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first customer billing profile!
+            </p>
+            <p>
+                Billing profiles define how customers are billed for storage and services.
+                You can configure billing cycles, advance billing, prepaid options, and automation settings.
+            </p>
+        </field>
+    </record>
+
+<record id="action_records_advanced_billing_period" model="ir.actions.act_window">
+        <field name="name">Records Advanced Billing Period</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">records.advanced.billing.period</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                There is no examples click here to add new Records Advanced Billing Period.
+            </p>
+        </field>
+    </record>
+
+<record id="action_records_billing_contact" model="ir.actions.act_window">
+<field name="name">Billing Contacts</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">records.billing.contact</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+<field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+Click to create a new billing contact.
+</p>
+<p>
+                Billing contacts are used to manage who receives invoices, statements,
+                and other billing communications for each customer account.
+            </p>
+        </field>
+    </record>
+
+<record id="action_records_billing_service" model="ir.actions.act_window">
+            <field name="name">Generate Billing</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">records.billing.service</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+<record id="action_records_customer_billing_profile" model="ir.actions.act_window">
+            <field name="name">Customer Billing Profiles</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">customer.billing.profile</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+<record id="records_advanced_billing_period_view_form" model="ir.ui.view">
+        <field name="name">records.advanced.billing.period.view.form</field>
+        <field name="model">records.advanced.billing.period</field>
+        <field name="arch" type="xml">
+            <form string="Records Advanced Billing Period">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+<record id="records_advanced_billing_period_view_search" model="ir.ui.view">
+        <field name="name">records.advanced.billing.period.view.search</field>
+        <field name="model">records.advanced.billing.period</field>
+        <field name="arch" type="xml">
+            <search>
+                <group expand="1" string="Group By">
+                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+<record id="records_advanced_billing_period_view_tree" model="ir.ui.view">
+        <field name="name">records.advanced.billing.period.view.tree</field>
+        <field name="model">records.advanced.billing.period</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+<record id="records_billing_contact_view_form" model="ir.ui.view">
+        <field name="name">records.billing.contact.view.form</field>
+        <field name="model">records.billing.contact</field>
+        <field name="arch" type="xml">
+<form string="Billing Contact">
+                <sheet>
+<div class="oe_button_box" name="button_box">
+    <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+        <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+    </button>
+</div>
+                    
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+<field name="name" placeholder="Contact Name..."/>
+
+                        </h1>
+                    </div>
+<group>
+    <group string="Contact Information">
+        <field name="billing_profile_id" required="1"/>
+        <field name="email"/>
+        <field name="phone"/>
+        <field name="mobile"/>
+        <field name="job_title"/>
+        <field name="department"/>
+    </group>
+    <group string="Contact Settings">
+        <field name="sequence"/>
+        <field name="primary_contact"/>
+        <field name="contact_priority"/>
+        <field name="active"/>
+    </group>
+</group>
+
+<notebook>
+    <page string="Invoice Preferences">
+        <group>
+            <group string="Invoice Types">
+                <field name="receive_storage_invoices"/>
+                <field name="receive_service_invoices"/>
+                <field name="receive_statements"/>
+                <field name="receive_overdue_notices"/>
+            </group>
+            <group string="Delivery Preferences">
+                <field name="invoice_delivery_method"/>
+                <field name="invoice_format"/>
+                <field name="consolidated_invoicing"/>
+            </group>
+        </group>
+    </page>
+
+    <page string="Communication">
+        <group>
+            <group string="Email Settings">
+                <field name="email_notifications"/>
+                <field name="notification_frequency"/>
+            </group>
+            <group string="SMS Settings">
+                <field name="sms_notifications"/>
+                <field name="urgent_notifications_only"/>
+            </group>
+        </group>
+        <group string="Additional Information">
+            <field name="notes" nolabel="1" placeholder="Internal notes about this contact..."/>
+        </group>
+    </page>
+
+    <page string="Services" attrs="{'invisible': [('billing_service_ids', '=', [])]}">
+        <field name="billing_service_ids">
+            <tree editable="bottom">
+                <field name="name"/>
+                <field name="service_type"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </page>
+</notebook>
+                </sheet>
+<div class="oe_chatter">
+    <field name="message_follower_ids"/>
+    <field name="activity_ids"/>
+    <field name="message_ids"/>
+</div>
+            </form>
+        </field>
+    </record>
+
+<record id="records_billing_contact_view_search" model="ir.ui.view">
+        <field name="name">records.billing.contact.view.search</field>
+        <field name="model">records.billing.contact</field>
+        <field name="arch" type="xml">
+            <search>
+<field name="name"/>
+<field name="email"/>
+<field name="job_title"/>
+<field name="department"/>
+<field name="billing_profile_id"/>
+
+<filter name="active" string="Active" domain="[('active','=',True)]"/>
+<filter name="inactive" string="Inactive" domain="[('active','=',False)]"/>
+<separator/>
+<filter name="primary" string="Primary Contacts" domain="[('primary_contact','=',True)]"/>
+<filter name="high_priority" string="High Priority" domain="[('contact_priority','=','high')]"/>
+<separator/>
+<filter name="receive_storage" string="Storage Invoices" domain="[('receive_storage_invoices','=',True)]"/>
+<filter name="receive_service" string="Service Invoices" domain="[('receive_service_invoices','=',True)]"/>
+<filter name="receive_statements" string="Statements" domain="[('receive_statements','=',True)]"/>
+                
+                <group expand="1" string="Group By">
+<filter string="Billing Profile" name="billing_profile" domain="[]" context="{'group_by':'billing_profile_id'}"/>
+<filter string="Priority" name="priority" domain="[]" context="{'group_by':'contact_priority'}"/>
+<filter string="Job Title" name="job_title" domain="[]" context="{'group_by':'job_title'}"/>
+<filter string="Department" name="department" domain="[]" context="{'group_by':'department'}"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+<record id="records_billing_contact_view_tree" model="ir.ui.view">
+        <field name="name">records.billing.contact.view.tree</field>
+        <field name="model">records.billing.contact</field>
+        <field name="arch" type="xml">
+            <tree>
+<field name="sequence" widget="handle"/>
+
+                <field name="name"/>
+<field name="email"/>
+<field name="job_title"/>
+<field name="billing_profile_id"/>
+<field name="primary_contact"/>
+<field name="contact_priority"/>
+<field name="receive_storage_invoices"/>
+<field name="receive_service_invoices"/>
+<field name="active"/>
+
+            </tree>
+        </field>
+    </record>
+
+<record id="records_billing_service_view_form" model="ir.ui.view">
+    <field name="name">records.billing.service.view.form</field>
+            <field name="model">records.billing.service</field>
+            <field name="arch" type="xml">
+                <form string="Billing Generation Service">
+                    <sheet>
+                        <group>
+                            <div class="oe_title">
+                                <h1>Generate Billing</h1>
+                                <p>Generate monthly billing for all customers or specific customer billing.</p>
+                            </div>
+                        </group>
+                        
+                        <footer>
+                            <button name="generate_monthly_billing" type="object" string="Generate Monthly Billing" class="oe_highlight"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+<record id="records_billing_service_view_kanban" model="ir.ui.view">
+    <field name="name">records.billing.service.view.kanban</field>
+    <field name="model">records.billing.service</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="service_type" class="o_kanban_small_column" sample="1">
+            <field name="name"/>
+            <field name="service_code"/>
+            <field name="base_rate"/>
+            <field name="currency_id"/>
+            <field name="state"/>
+            <field name="partner_id"/>
+            <field name="billing_frequency"/>
+            <field name="color"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+                        <div class="ribbon ribbon-top-right" attrs="{'invisible': [('state', '!=', 'inactive')]}">
+                            <span class="bg-danger">Inactive</span>
+                        </div>
+
+                        <div class="o_kanban_record_top">
+                            <div class="o_kanban_record_headings">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <small class="o_kanban_record_subtitle text-muted">
+                                    <field name="service_code"/>
+                                </small>
+                            </div>
+                            <div class="o_kanban_manage_button_section">
+                                <a class="o_kanban_manage_toggle_button" href="#" tabindex="-1" aria-label="Manage">
+                                    <i class="fa fa-ellipsis-v" role="img" aria-label="Selection" title="Selection"/>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="o_kanban_record_body">
+                            <div class="o_kanban_record_details">
+                                <div class="o_kanban_tags_section">
+                                    <span class="o_kanban_tag">
+                                        <field name="billing_frequency"/>
+                                    </span>
+                                </div>
+                                <ul>
+                                    <li t-if="record.partner_id.value">
+                                        <strong>Customer: </strong>
+                                        <field name="partner_id"/>
+                                    </li>
+                                    <li>
+                                        <strong>Rate: </strong>
+                                        <field name="base_rate" widget="monetary"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="o_kanban_record_bottom">
+                            <div class="oe_kanban_bottom_left">
+                                <field name="state" widget="label_selection" options="{'classes': {'draft': 'secondary', 'active': 'success', 'inactive': 'warning'}}"/>
+                            </div>
+                            <div class="oe_kanban_bottom_right">
+                                <field name="activity_ids" widget="kanban_activity"/>
+                            </div>
+                        </div>
+
+                        <div class="o_kanban_manage_section">
+                            <h5>Actions</h5>
+                            <div>
+                                <a name="action_activate_service" type="object" tabindex="-1">Activate</a>
+                            </div>
+                            <div>
+                                <a name="action_view_billing_history" type="object" tabindex="-1">View Billing History</a>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+<record id="records_billing_service_view_search" model="ir.ui.view">
+        <field name="name">records.billing.service.view.search</field>
+        <field name="model">records.billing.service</field>
+        <field name="arch" type="xml">
+<search string="Billing Services">
+    <field name="name" string="Service" filter_domain="['|', ('name', 'ilike', self), ('service_code', 'ilike', self)]"/>
+    <field name="service_type"/>
+    <field name="partner_id"/>
+    <field name="service_category"/>
+
+    <filter string="Active" name="active_services" domain="[('state', '=', 'active')]"/>
+    <filter string="Draft" name="draft_services" domain="[('state', '=', 'draft')]"/>
+    <filter string="Inactive" name="inactive_services" domain="[('state', '=', 'inactive')]"/>
+
+    <separator/>
+    <filter string="Requires Approval" name="requires_approval" domain="[('requires_approval', '=', True)]"/>
+    <filter string="Auto Billing Enabled" name="auto_billing" domain="[('auto_billing_enabled', '=', True)]"/>
+    <filter string="Taxable" name="taxable" domain="[('taxable', '=', True)]"/>
+
+    <separator/>
+    <filter string="Archived" name="archived" domain="[('active', '=', False)]"/>
+                
+                <group expand="1" string="Group By">
+<filter string="Service Type" name="group_service_type" domain="[]" context="{'group_by': 'service_type'}"/>
+<filter string="Service Category" name="group_service_category" domain="[]" context="{'group_by': 'service_category'}"/>
+<filter string="Billing Frequency" name="group_billing_frequency" domain="[]" context="{'group_by': 'billing_frequency'}"/>
+<filter string="Customer" name="group_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+<filter string="State" name="group_state" domain="[]" context="{'group_by': 'state'}"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+<record id="records_billing_service_view_tree" model="ir.ui.view">
+        <field name="name">records.billing.service.view.tree</field>
+        <field name="model">records.billing.service</field>
+        <field name="arch" type="xml">
+<tree string="Billing Services" sample="1" decoration-info="state=='draft'" decoration-success="state=='active'" decoration-muted="state=='inactive'">
+                <field name="name"/>
+<field name="service_code"/>
+<field name="service_type"/>
+<field name="billing_frequency"/>
+<field name="base_rate" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+<field name="unit_of_measure"/>
+<field name="partner_id"/>
+<field name="state"/>
+<field name="active"/>
+<field name="currency_id" invisible="1"/>
+<field name="company_id" invisible="1"/>
+
+            </tree>
+        </field>
+    </record>
+
+<record id="records_customer_billing_profile_view_form" model="ir.ui.view">
+    <field name="name">customer.billing.profile.view.form</field>
+            <field name="model">customer.billing.profile</field>
+            <field name="arch" type="xml">
+                <form string="Customer Billing Profile">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="toggle_active" type="object" class="oe_stat_button" string="Archive" fa="fa-archive">
+                                <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="partner_id"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        
+                        <notebook>
+                            <page string="Storage Billing">
+                                <group>
+                                    <group>
+                                        <field name="storage_billing_cycle"/>
+                                        <field name="storage_bill_in_advance"/>
+                                        <field name="storage_advance_months" attrs="{'invisible': [('storage_bill_in_advance','=',False)]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="billing_day"/>
+                                        <field name="auto_generate_storage_invoices"/>
+                                    </group>
+                                </group>
+                                
+                                <group string="Prepaid Storage" attrs="{'invisible': [('storage_billing_cycle','!=','prepaid')]}">
+                                    <group>
+                                        <field name="prepaid_enabled"/>
+                                        <field name="prepaid_months" attrs="{'invisible': [('prepaid_enabled','=',False)]}"/>
+                                        <field name="prepaid_discount_percent" attrs="{'invisible': [('prepaid_enabled','=',False)]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="prepaid_balance" attrs="{'invisible': [('prepaid_enabled','=',False)]}"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Service Billing">
+                                <group>
+                                    <group>
+                                        <field name="service_billing_cycle"/>
+                                        <field name="auto_generate_service_invoices"/>
+                                    </group>
+                                    <group>
+                                        <field name="invoice_due_days"/>
+                                        <field name="auto_send_invoices"/>
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            <page string="Payment Terms">
+                                <group>
+                                    <field name="payment_term_id"/>
+                                </group>
+                            </page>
+                            
+                            <page string="Billing Contacts">
+                                <field name="billing_contact_ids">
+                                    <tree editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="email"/>
+                                        <field name="phone"/>
+                                        <field name="receive_storage_invoices"/>
+                                        <field name="receive_service_invoices"/>
+                                        <field name="receive_statements"/>
+                                        <field name="primary_contact"/>
+                                        <field name="active"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+<record id="records_customer_billing_profile_view_search" model="ir.ui.view">
+        <field name="name">customer.billing.profile.view.search</field>
+        <field name="model">customer.billing.profile</field>
+        <field name="arch" type="xml">
+            <search string="Search Billing Profiles">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="storage_billing_cycle"/>
+                <field name="service_billing_cycle"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Suspended" name="suspended" domain="[('state', '=', 'suspended')]"/>
+                <separator/>
+                <filter string="Monthly Storage" name="monthly_storage" domain="[('storage_billing_cycle', '=', 'monthly')]"/>
+                <filter string="Quarterly Storage" name="quarterly_storage" domain="[('storage_billing_cycle', '=', 'quarterly')]"/>
+                <filter string="Prepaid" name="prepaid" domain="[('prepaid_enabled', '=', True)]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Storage Billing Cycle" name="group_storage_cycle" context="{'group_by': 'storage_billing_cycle'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+<record id="records_customer_billing_profile_view_tree" model="ir.ui.view">
+    <field name="name">customer.billing.profile.view.tree</field>
+            <field name="model">customer.billing.profile</field>
+            <field name="arch" type="xml">
+                <tree string="Customer Billing Profiles">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="storage_billing_cycle"/>
+                    <field name="service_billing_cycle"/>
+                    <field name="storage_bill_in_advance"/>
+                    <field name="billing_day"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+</odoo>

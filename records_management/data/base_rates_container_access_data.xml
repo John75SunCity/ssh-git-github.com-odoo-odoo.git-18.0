@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+
+        <!-- Container Access/Search Fees -->
+        <record id="base_rate_container_access" model="base.rates">
+            <field name="name">Container Access Fee</field>
+            <field name="service_type">container_access</field>
+            <field name="external_per_bin_rate">3.50</field>
+            <field name="description">Fee charged for each container accessed during file search, regardless of whether file is found</field>
+            <field name="effective_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
+            <field name="state">confirmed</field>
+            <field name="is_current">True</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- File Not Found Search Fee -->
+        <record id="base_rate_not_found_search" model="base.rates">
+            <field name="name">File Not Found Fee</field>
+            <field name="service_type">not_found_search</field>
+            <field name="managed_retrieval_rate">3.50</field>
+            <field name="description">Additional fee when file is not found after extensive search (covers administrative time and documentation)</field>
+            <field name="effective_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
+            <field name="state">confirmed</field>
+            <field name="is_current">True</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Delivery/Pickup Base Rate -->
+        <record id="base_rate_delivery_pickup" model="base.rates">
+            <field name="name">Standard Delivery/Pickup Fee</field>
+            <field name="service_type">delivery</field>
+            <field name="pickup_rate">25.00</field>
+            <field name="description">Standard delivery and pickup service fee for document retrieval orders</field>
+            <field name="effective_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
+            <field name="state">confirmed</field>
+            <field name="is_current">True</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Document Retrieval Base Rate -->
+        <record id="base_rate_document_retrieval" model="base.rates">
+            <field name="name">Document Retrieval Fee</field>
+            <field name="service_type">retrieval</field>
+            <field name="managed_retrieval_rate">3.50</field>
+            <field name="description">Standard fee for retrieving individual documents or files from storage</field>
+            <field name="effective_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
+            <field name="state">confirmed</field>
+            <field name="is_current">True</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>

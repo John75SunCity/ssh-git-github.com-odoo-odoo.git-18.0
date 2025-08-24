@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_account_move_line" model="ir.actions.report">
+        <field name="name">Account Move Line Report</field>
+        <field name="model">account.move.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_account_move_line_view</field>
+        <field name="print_report_name">(object.move_id.name or 'Account Move Line') + ' Report'</field>
+        <field name="binding_model_id" ref="account.model_account_move_line"/>
+        <field name="binding_type">report</field>
+        <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
+    </record>
+
+    <template id="report_account_move_line_view" inherit_id="web.external_layout">
+        <xpath expr="//div[@class='page']" position="replace">
+            <div class="page">
+                <h2 t-esc="doc.move_id.name or 'Account Move Line Report'"/>
+                <p>Date: <span t-esc="doc.date" t-options="{'widget': 'date'}"/></p>
+                <table class="table table-condensed table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th>Label</th>
+                            <th>Debit</th>
+                            <th>Credit</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-if="not docs">
+                            <td colspan="5" class="text-center">No account move lines found.</td>
+                        </tr>
+                        <tr t-foreach="docs" t-as="line">
+                            <td><span t-esc="line.account_id.name"/></td>
+                            <td><span t-esc="line.name"/></td>
+                            <td><span t-esc="line.debit" t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/></td>
+                            <td><span t-esc="line.credit" t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/></td>
+                            <td><span t-esc="line.balance" t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"><strong>Total</strong></td>
+                            <td><strong t-esc="sum(line.debit for line in docs)" t-options="{'widget': 'monetary'}"/></td>
+                            <td><strong t-esc="sum(line.credit for line in docs)" t-options="{'widget': 'monetary'}"/></td>
+                            <td><strong t-esc="sum(line.balance for line in docs)" t-options="{'widget': 'monetary'}"/></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,825 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<data>
+
+<!-- ============================================================================ -->
+<!-- SYSTEM FLOWCHART WIZARD - WELCOME STEP VIEW -->
+<!-- ============================================================================ -->
+<record id="system_flowchart_wizard_view_welcome" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.welcome</field>
+    <field name="model">system.flowchart.wizard</field>
+    <field name="arch" type="xml">
+        <form string="System Flowchart - Welcome">
+            <header>
+                <button name="action_next_step" string="Get Started" type="object" class="btn-primary"/>
+
+<field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete"/>
+</header>
+<sheet>
+<div class="oe_title">
+    <h1>
+<i class="fa fa-sitemap text-primary me-2"/>
+                                Welcome to System Architecture Flowchart
+</h1>
+<h2 class="text-muted">Interactive Records Management System Visualization</h2>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="alert alert-info">
+<h4>
+    <i class="fa fa-info-circle me-2"/>
+Interactive System Visualization</h4>
+<p class="mb-3">
+                                        This advanced tool provides a comprehensive, interactive visual representation of your complete 
+                                        Records Management System architecture, including:
+</p>
+<ul class="mb-0">
+    <li>
+        <strong>System Components:</strong> Core models, relationships, and data flows with real-time updates</li>
+    <li>
+        <strong>User Access Control:</strong> Color-coded access rights and permission visualization</li>
+    <li>
+        <strong>Company Structure:</strong> Multi-tenant organizational hierarchy and department assignments</li>
+    <li>
+        <strong>NAID Compliance View:</strong> Complete compliance framework with audit trail visualization</li>
+    <li>
+        <strong>Integration Points:</strong> FSM, Portal, and third-party system connections</li>
+</ul>
+</div>
+
+<h3 class="mb-3">Key Features</h3>
+<div class="row g-3">
+    <div class="col-md-6">
+<div class="card h-100">
+    <div class="card-body">
+        <h5 class="card-title">
+            <i class="fa fa-search text-info me-2"/>
+                                                    Interactive Search
+        </h5>
+        <p class="card-text">Advanced search with real-time filtering, regex support, and intelligent suggestions for users, companies, models, and relationships.</p>
+    </div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card h-100">
+    <div class="card-body">
+        <h5 class="card-title">
+            <i class="fa fa-eye text-success me-2"/>
+                                                    Access Visualization
+        </h5>
+        <p class="card-text">Comprehensive security audit with green/red indicators, permission matrices, and department-level access control visualization.</p>
+    </div>
+</div>
+</div>
+<div class="col-md-6">
+    <div class="card h-100">
+        <div class="card-body">
+            <h5 class="card-title">
+                <i class="fa fa-download text-warning me-2"/>
+                                                    Export Options
+            </h5>
+            <p class="card-text">Professional documentation exports in PNG, PDF, SVG, and interactive HTML formats with customizable layouts and branding.</p>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card h-100">
+    <div class="card-body">
+        <h5 class="card-title">
+            <i class="fa fa-graduation-cap text-primary me-2"/>
+                                                    Guided Tutorial
+        </h5>
+        <p class="card-text">Interactive step-by-step tutorial with contextual help, feature highlights, and best practice recommendations.</p>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-lg-4">
+<div class="card">
+<div class="card-body text-center">
+<img src="/records_management/static/description/flowchart_preview.png" alt="Interactive System Flowchart Preview" class="img-fluid rounded shadow-sm mb-3" style="max-height: 300px; width: auto;"/>
+<h6 class="text-muted">Interactive System Diagram Preview</h6>
+<p class="small text-muted">Real-time visualization with drag-and-drop navigation</p>
+</div>
+</div>
+
+<!-- RM Module Configurator Integration -->
+<div class="card mt-3">
+<div class="card-header">
+<h6>
+    <i class="fa fa-cogs me-2"/>
+Configuration Status</h6>
+</div>
+<div class="card-body">
+<field name="rm_configurator_enabled" readonly="1" widget="boolean"/>
+<label for="rm_configurator_enabled" class="ms-2">RM Module Configurator</label>
+<div class="mt-2">
+    <small class="text-muted">
+                                                Advanced configuration options available through RM Module Configurator integration.
+    </small>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Quick Stats Preview -->
+<div class="row mt-4">
+<div class="col-12">
+<div class="card">
+<div class="card-header">
+<h6>
+    <i class="fa fa-chart-bar me-2"/>
+System Overview</h6>
+</div>
+<div class="card-body">
+<div class="row text-center">
+    <div class="col-md-3">
+        <div class="border-end pe-3">
+            <h4 class="text-primary">
+                <field name="total_models" readonly="1"/>
+            </h4>
+            <small class="text-muted">Core Models</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border-end pe-3">
+            <h4 class="text-info">
+                <field name="total_users" readonly="1"/>
+            </h4>
+            <small class="text-muted">Active Users</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border-end pe-3">
+            <h4 class="text-success">
+                <field name="total_companies" readonly="1"/>
+            </h4>
+            <small class="text-muted">Companies</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <h4 class="text-warning">
+            <field name="total_relationships" readonly="1"/>
+        </h4>
+        <small class="text-muted">Relationships</small>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</sheet>
+</form>
+</field>
+</record>
+
+<!-- ============================================================================ -->
+<!-- SYSTEM FLOWCHART WIZARD - CONFIGURATION STEP VIEW -->
+<!-- ============================================================================ -->
+<record id="system_flowchart_wizard_view_configure" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.configure</field>
+    <field name="model">system.flowchart.wizard</field>
+    <field name="arch" type="xml">
+        <form string="System Flowchart - Configure">
+            <header>
+                <button name="action_previous_step" string="Back" type="object"/>
+                <button name="action_next_step" string="Preview" type="object" class="btn-primary"/>
+                <button name="action_apply_scenario" string="Apply Scenario" type="object" class="btn-secondary"/>
+
+<field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete"/>
+</header>
+<sheet>
+<div class="oe_title">
+    <h1>Configure Your Flowchart View</h1>
+<h2 class="text-muted">Select analysis type and visualization preferences</h2>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <group string="Analysis Configuration">
+            <field name="search_scenario" widget="radio" required="1"/>
+            <field name="layout_style"/>
+            <field name="color_scheme"/>
+
+<field name="zoom_level"/>
+
+</group>
+<group string="Focus Targets">
+    <field name="target_user" attrs="{'invisible': [('search_scenario', '!=', 'user_access')], 'required': [('search_scenario', '=', 'user_access')]}" domain="[('active', '=', True)]"/>
+    <field name="target_company" attrs="{'invisible': [('search_scenario', '!=', 'company_structure')], 'required': [('search_scenario', '=', 'company_structure')]}"/>
+    <field name="target_model" attrs="{'invisible': [('search_scenario', '!=', 'model_relationships')]}" domain="[('model', 'like', 'records.%')]"/>
+</group>
+</div>
+<div class="col-lg-6">
+<group string="Export Settings">
+    <field name="export_format"/>
+
+<field name="export_quality" attrs="{'invisible': [('export_format', 'in', ['html', 'json'])]}"/>
+<field name="include_metadata"/>
+<field name="export_timestamp"/>
+
+</group>
+<group string="Advanced Options">
+    <field name="performance_mode"/>
+    <field name="max_nodes" attrs="{'invisible': [('performance_mode', '=', False)]}"/>
+    <field name="cache_results"/>
+
+</group>
+</div>
+</div>
+
+<notebook>
+<page string="Display Components" name="display_options">
+    <group>
+<group string="Core Components">
+    <field name="show_models"/>
+    <field name="show_users"/>
+    <field name="show_access_rights"/>
+    <field name="show_companies"/>
+
+<field name="show_departments"/>
+</group>
+<group string="Advanced Components">
+<field name="show_relationships"/>
+<field name="show_computed_fields"/>
+<field name="show_workflows"/>
+<field name="show_security_rules"/>
+<field name="show_audit_trails"/>
+</group>
+</group>
+
+<group string="Visualization Options">
+<field name="node_size"/>
+<field name="edge_style"/>
+<field name="label_position"/>
+<field name="animation_enabled"/>
+
+                                </group>
+</page>
+
+<page string="Tutorial &amp; Help" name="tutorial_settings">
+<group>
+    <group string="Tutorial Configuration">
+        <field name="show_tutorial"/>
+        <field name="tutorial_step" attrs="{'invisible': [('show_tutorial', '=', False)]}"/>
+
+<field name="tutorial_auto_advance"/>
+<field name="tutorial_highlights"/>
+</group>
+<group string="Help Options">
+<field name="show_tooltips"/>
+<field name="show_context_help"/>
+<field name="help_position"/>
+
+</group>
+</group>
+</page>
+<page string="Scenario Descriptions" name="scenario_help">
+    <div class="row">
+<div class="col-lg-6">
+    <div class="card mb-3">
+        <div class="card-header">
+            <h6>📊 System Overview</h6>
+        </div>
+        <div class="card-body">
+            <p>Complete system architecture with all components and relationships. Best for understanding the overall system structure and identifying integration points.</p>
+            <small class="text-muted">Recommended for: System administrators, architects, and new team members</small>
+        </div>
+    </div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h6>🔐 User Access Analysis</h6>
+    </div>
+    <div class="card-body">
+        <p>Focus on user access rights and permissions with color-coded indicators. Perfect for security audits, compliance reviews, and access management.</p>
+        <small class="text-muted">Recommended for: Security officers, compliance managers, and HR administrators</small>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h6>🏢 Company Structure</h6>
+    </div>
+    <div class="card-body">
+        <p>Company and department hierarchies with user assignments and data flow visualization. Ideal for organizational analysis and multi-tenant management.</p>
+        <small class="text-muted">Recommended for: Operations managers, department heads, and organizational analysts</small>
+    </div>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="card mb-3">
+    <div class="card-header">
+        <h6>🔗 Model Relationships</h6>
+    </div>
+    <div class="card-body">
+        <p>Core data models and their field relationships with dependency analysis. Great for technical documentation, system design, and integration planning.</p>
+        <small class="text-muted">Recommended for: Developers, technical analysts, and integration specialists</small>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h6>✅ Compliance Audit View</h6>
+    </div>
+    <div class="card-body">
+        <p>NAID compliance framework and audit trail visualization with chain of custody tracking. Essential for compliance reporting and certification processes.</p>
+        <small class="text-muted">Recommended for: Compliance officers, auditors, and quality assurance teams</small>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h6>⚙️ Custom Configuration</h6>
+    </div>
+    <div class="card-body">
+        <p>Flexible configuration based on your specific requirements. Use the display options to create custom views tailored to your analysis needs.</p>
+        <small class="text-muted">Recommended for: Power users, consultants, and specialized analysis requirements</small>
+    </div>
+</div>
+</div>
+</div>
+</page>
+</notebook>
+</sheet>
+</form>
+</field>
+</record>
+
+<!-- ============================================================================ -->
+<!-- SYSTEM FLOWCHART WIZARD - PREVIEW STEP VIEW -->
+<!-- ============================================================================ -->
+<record id="system_flowchart_wizard_view_preview" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.preview</field>
+    <field name="model">system.flowchart.wizard</field>
+    <field name="arch" type="xml">
+        <form string="System Flowchart - Preview">
+            <header>
+                <button name="action_previous_step" string="Back" type="object"/>
+
+<button name="action_open_flowchart" string="Generate Flowchart" type="object" class="btn-primary"/>
+<button name="action_save_configuration" string="Save Config" type="object" class="btn-secondary"/>
+<field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete"/>
+</header>
+<sheet>
+<div class="oe_title">
+    <h1>Preview Your Configuration</h1>
+<h2 class="text-muted">Review settings and generate your interactive flowchart</h2>
+</div>
+
+<div class="row">
+<div class="col-lg-6">
+    <div class="card">
+        <div class="card-header">
+<h5>
+    <i class="fa fa-cog me-2"/>
+Configuration Summary</h5>
+</div>
+<div class="card-body">
+<dl class="row">
+<dt class="col-sm-5">Analysis Type:</dt>
+<dd class="col-sm-7">
+    <field name="search_scenario" readonly="1"/>
+</dd>
+
+<dt class="col-sm-5">Layout Style:</dt>
+<dd class="col-sm-7">
+    <field name="layout_style" readonly="1"/>
+</dd>
+
+<dt class="col-sm-5">Color Scheme:</dt>
+<dd class="col-sm-7">
+    <field name="color_scheme" readonly="1"/>
+</dd>
+
+<dt class="col-sm-5">Export Format:</dt>
+<dd class="col-sm-7">
+    <field name="export_format" readonly="1"/>
+</dd>
+<dt class="col-sm-5">Performance:</dt>
+<dd class="col-sm-7">
+    <field name="performance_mode" readonly="1" widget="boolean"/>
+    <span attrs="{'invisible': [('performance_mode', '=', False)]}" class="ms-2">
+                                                    (Max <field name="max_nodes" readonly="1"/>
+ nodes)
+    </span>
+</dd>
+</dl>
+
+<div class="mt-3" attrs="{'invisible': [('target_user', '=', False), ('target_company', '=', False), ('target_model', '=', False)]}">
+    <h6>Focus Targets:</h6>
+    <field name="target_user" readonly="1" attrs="{'invisible': [('target_user', '=', False)]}"/>
+    <field name="target_company" readonly="1" attrs="{'invisible': [('target_company', '=', False)]}"/>
+
+<field name="target_model" readonly="1" attrs="{'invisible': [('target_model', '=', False)]}"/>
+</div>
+
+<!-- Configuration Validation -->
+<div class="mt-3">
+<h6>Validation Status:</h6>
+<div class="d-flex align-items-center">
+    <field name="config_valid" readonly="1" widget="boolean"/>
+    <span class="ms-2" attrs="{'invisible': [('config_valid', '=', False)]}">
+        <i class="fa fa-check-circle text-success"/>
+ Configuration Valid
+    </span>
+    <span class="ms-2 text-danger" attrs="{'invisible': [('config_valid', '=', True)]}">
+        <i class="fa fa-exclamation-triangle"/>
+ Please review configuration
+    </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="card">
+    <div class="card-header">
+<h5>
+    <i class="fa fa-eye me-2"/>
+Expected Output</h5>
+</div>
+<div class="card-body">
+<field name="preview_data" readonly="1" widget="text" placeholder="Configuration preview will appear here..."/>
+
+
+<div class="mt-3">
+    <h6>Component Display:</h6>
+    <div class="row g-2">
+        <div class="col-6">
+            <div class="d-flex align-items-center">
+                <field name="show_models" readonly="1" widget="boolean_toggle" size="small"/>
+                <label for="show_models" class="ms-2 small">Models</label>
+            </div>
+</div>
+<div class="col-6">
+    <div class="d-flex align-items-center">
+        <field name="show_users" readonly="1" widget="boolean_toggle" size="small"/>
+        <label for="show_users" class="ms-2 small">Users</label>
+</div>
+</div>
+<div class="col-6">
+    <div class="d-flex align-items-center">
+        <field name="show_access_rights" readonly="1" widget="boolean_toggle" size="small"/>
+        <label for="show_access_rights" class="ms-2 small">Access Rights</label>
+    </div>
+</div>
+<div class="col-6">
+    <div class="d-flex align-items-center">
+        <field name="show_companies" readonly="1" widget="boolean_toggle" size="small"/>
+        <label for="show_companies" class="ms-2 small">Companies</label>
+</div>
+</div>
+<div class="col-6">
+    <div class="d-flex align-items-center">
+        <field name="show_relationships" readonly="1" widget="boolean_toggle" size="small"/>
+        <label for="show_relationships" class="ms-2 small">Relationships</label>
+    </div>
+</div>
+<div class="col-6">
+    <div class="d-flex align-items-center">
+        <field name="show_workflows" readonly="1" widget="boolean_toggle" size="small"/>
+        <label for="show_workflows" class="ms-2 small">Workflows</label>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Performance Estimate -->
+<div class="mt-3">
+    <h6>Performance Estimate:</h6>
+    <div class="progress mb-2">
+        <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+            <span class="small">Estimated Load Time: <field name="estimated_load_time" readonly="1"/>
+s</span>
+        </div>
+    </div>
+    <small class="text-muted">Based on configuration complexity and system resources</small>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Advanced Configuration Display -->
+<div class="row mt-3" attrs="{'invisible': [('generated_config', '=', False)]}">
+<div class="col-12">
+<div class="card">
+<div class="card-header d-flex justify-content-between align-items-center">
+<h6>
+    <i class="fa fa-code me-2"/>
+Generated Configuration (Advanced)</h6>
+<button type="button" class="btn btn-sm btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('generated_config').value)">
+    <i class="fa fa-copy"/>
+ Copy
+</button>
+</div>
+<div class="card-body">
+<field name="generated_config" readonly="1" widget="ace" ace_mode="json" height="250" id="generated_config"/>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-3">
+<div class="col-12">
+<div class="card">
+<div class="card-header">
+<h6>
+    <i class="fa fa-bolt me-2"/>
+Quick Actions</h6>
+</div>
+<div class="card-body">
+<div class="btn-group" role="group">
+    <button name="action_load_preset" string="Load Preset" type="object" class="btn btn-outline-primary"/>
+    <button name="action_save_preset" string="Save as Preset" type="object" class="btn btn-outline-secondary"/>
+    <button name="action_export_config" string="Export Config" type="object" class="btn btn-outline-info"/>
+    <button name="action_validate_config" string="Validate" type="object" class="btn btn-outline-success"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</sheet>
+</form>
+</field>
+</record>
+
+<!-- ============================================================================ -->
+<!-- SYSTEM FLOWCHART WIZARD - COMPLETE STEP VIEW -->
+<!-- ============================================================================ -->
+<record id="system_flowchart_wizard_view_complete" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.complete</field>
+    <field name="model">system.flowchart.wizard</field>
+    <field name="arch" type="xml">
+        <form string="System Flowchart - Complete">
+            <header>
+<button name="action_open_flowchart" string="Open Interactive Flowchart" type="object" class="btn-primary btn-lg"/>
+<button name="action_export_flowchart" string="Export Documentation" type="object" class="btn-secondary"/>
+<button name="action_reset_wizard" string="Create Another" type="object" class="btn-outline-primary"/>
+<field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete"/>
+</header>
+<sheet>
+<div class="text-center mb-4">
+    <div class="oe_title">
+        <h1>
+<i class="fa fa-check-circle text-success me-3"/>
+                                    Flowchart Ready!
+</h1>
+<h2 class="text-muted">Your interactive system visualization is configured and ready to launch</h2>
+</div>
+</div>
+
+<div class="alert alert-success text-center mb-4">
+    <h4>
+        <i class="fa fa-rocket me-2"/>
+Configuration Complete</h4>
+    <p class="mb-0">
+                                Your interactive system flowchart has been successfully configured with your selected options. 
+                                Click "Open Interactive Flowchart" to start exploring your Records Management System architecture.
+    </p>
+</div>
+
+<!-- Usage Instructions -->
+<div class="row mb-4">
+    <div class="col-lg-4 text-center">
+        <div class="card h-100">
+            <div class="card-body">
+                <i class="fa fa-mouse-pointer fa-4x text-primary mb-3"/>
+                <h5>Navigate &amp; Interact</h5>
+                <p class="card-text">Click and drag to pan around the diagram. Use mouse wheel or touchpad to zoom in and out. Click on nodes for detailed information.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 text-center">
+        <div class="card h-100">
+            <div class="card-body">
+                <i class="fa fa-search fa-4x text-info mb-3"/>
+                <h5>Search &amp; Filter</h5>
+                <p class="card-text">Use the powerful search bar to find specific components. Apply filters to focus on particular aspects of your system architecture.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 text-center">
+        <div class="card h-100">
+            <div class="card-body">
+                <i class="fa fa-download fa-4x text-success mb-3"/>
+                <h5>Export &amp; Share</h5>
+                <p class="card-text">Export your diagrams in multiple formats for documentation, presentations, or sharing with stakeholders.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Configuration Summary -->
+<div class="row mb-4">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h6>
+                    <i class="fa fa-info-circle me-2"/>
+Final Configuration</h6>
+            </div>
+<div class="card-body">
+    <dl class="row small">
+        <dt class="col-sm-5">Analysis Type:</dt>
+        <dd class="col-sm-7">
+            <field name="search_scenario" readonly="1"/>
+        </dd>
+
+        <dt class="col-sm-5">Layout Style:</dt>
+        <dd class="col-sm-7">
+            <field name="layout_style" readonly="1"/>
+        </dd>
+
+        <dt class="col-sm-5">Export Format:</dt>
+        <dd class="col-sm-7">
+            <field name="export_format" readonly="1"/>
+        </dd>
+
+<dt class="col-sm-5">Components:</dt>
+<dd class="col-sm-7">
+    <field name="enabled_components_count" readonly="1"/>
+ enabled</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="col-lg-6">
+<div class="card">
+    <div class="card-header">
+        <h6>
+            <i class="fa fa-clock me-2"/>
+Session Information</h6>
+    </div>
+<div class="card-body">
+    <dl class="row small">
+        <dt class="col-sm-5">Created:</dt>
+        <dd class="col-sm-7">
+            <field name="create_date" readonly="1"/>
+        </dd>
+
+        <dt class="col-sm-5">Generated By:</dt>
+        <dd class="col-sm-7">
+            <field name="create_uid" readonly="1"/>
+        </dd>
+
+        <dt class="col-sm-5">Company:</dt>
+        <dd class="col-sm-7">
+            <field name="company_id" readonly="1"/>
+        </dd>
+
+        <dt class="col-sm-5">Session ID:</dt>
+        <dd class="col-sm-7">
+            <field name="name" readonly="1"/>
+        </dd>
+    </dl>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Tutorial Notice -->
+<div class="row" attrs="{'invisible': [('show_tutorial', '=', False)]}">
+    <div class="col-12">
+        <div class="alert alert-info">
+<h6>
+    <i class="fa fa-graduation-cap me-2"/>
+Interactive Tutorial Enabled</h6>
+<p class="mb-2">
+                                        The guided tutorial will automatically start when you open the flowchart. It will walk you through 
+                                        all the features and help you get the most out of your system visualization.
+</p>
+<div class="form-check">
+    <field name="tutorial_auto_start" widget="boolean"/>
+    <label for="tutorial_auto_start" class="form-check-label ms-2">
+                                            Auto-start tutorial on flowchart launch
+    </label>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Action Buttons Row -->
+<div class="row mt-4">
+<div class="col-12 text-center">
+<div class="btn-group btn-group-lg" role="group">
+<button name="action_open_flowchart" string="🚀 Launch Flowchart" type="object" class="btn btn-primary"/>
+<button name="action_schedule_export" string="📋 Schedule Export" type="object" class="btn btn-info"/>
+<button name="action_share_config" string="🔗 Share Configuration" type="object" class="btn btn-secondary"/>
+</div>
+</div>
+</div>
+</sheet>
+</form>
+</field>
+</record>
+
+<!-- ============================================================================ -->
+<!-- MAIN WIZARD FORM VIEW (DYNAMIC STEP SWITCHING) -->
+<!-- ============================================================================ -->
+<record id="system_flowchart_wizard_view_form" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.form</field>
+    <field name="model">system.flowchart.wizard</field>
+    <field name="arch" type="xml">
+<form string="System Architecture Flowchart Configuration">
+    <header>
+<button name="action_previous_step" string="← Back" type="object" attrs="{'invisible': [('step', '=', 'welcome')]}" class="btn btn-secondary"/>
+<button name="action_next_step" string="Next →" type="object" attrs="{'invisible': [('step', 'in', ['complete', 'preview'])]}" class="btn btn-primary"/>
+<button name="action_open_flowchart" string="🚀 Generate Flowchart" type="object" attrs="{'invisible': [('step', '!=', 'preview')]}" class="btn btn-success btn-lg"/>
+<button name="action_open_flowchart" string="📊 Open Flowchart" type="object" attrs="{'invisible': [('step', '!=', 'complete')]}" class="btn btn-primary btn-lg"/>
+<field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete" statusbar_colors='{"welcome":"blue","configure":"orange","preview":"yellow","complete":"green"}'/>
+</header>
+<sheet>
+<!-- Dynamic Content Based on Step -->
+<div attrs="{'invisible': [('step', '!=', 'welcome')]}">
+<div class="text-center mb-3">
+    <h1>
+        <i class="fa fa-sitemap text-primary me-2"/>
+System Architecture Flowchart</h1>
+    <p class="lead text-muted">Interactive visualization of your Records Management System</p>
+</div>
+</div>
+
+<div attrs="{'invisible': [('step', '!=', 'configure')]}">
+<div class="mb-3">
+    <h2>Configuration Options</h2>
+    <p class="text-muted">Customize your flowchart visualization</p>
+</div>
+<group>
+    <field name="search_scenario"/>
+    <field name="layout_style"/>
+    <field name="color_scheme"/>
+</group>
+</div>
+
+<div attrs="{'invisible': [('step', '!=', 'preview')]}">
+<div class="mb-3">
+    <h2>Configuration Preview</h2>
+    <p class="text-muted">Review your settings before generating the flowchart</p>
+</div>
+<group>
+<field name="preview_data" readonly="1" widget="text" height="150"/>
+<field name="config_valid" readonly="1"/>
+</group>
+</div>
+
+<div attrs="{'invisible': [('step', '!=', 'complete')]}">
+<div class="alert alert-success text-center">
+    <h3>
+        <i class="fa fa-check-circle me-2"/>
+Ready to Launch!</h3>
+    <p class="mb-0">Your interactive flowchart configuration is complete and ready to use.</p>
+</div>
+</div>
+</sheet>
+</form>
+</field>
+</record>
+
+<!-- ============================================================================ -->
+<!-- WINDOW ACTIONS -->
+<!-- ============================================================================ -->
+<record id="action_system_flowchart_wizard" model="ir.actions.act_window">
+<field name="name">System Architecture Flowchart</field>
+<field name="res_model">system.flowchart.wizard</field>
+<field name="view_mode">form</field>
+<field name="target">new</field>
+<field name="view_id" ref="system_flowchart_wizard_view_form"/>
+<field name="context">{
+                'default_step': 'welcome',
+                'default_search_scenario': 'system_overview',
+                'default_layout_style': 'hierarchical',
+                'default_color_scheme': 'professional',
+                'default_export_format': 'png'
+            }</field>
+</record>
+
+<!-- Alternative Action for Direct Advanced Configuration -->
+<record id="action_system_flowchart_wizard_advanced" model="ir.actions.act_window">
+<field name="name">Advanced Flowchart Configuration</field>
+<field name="res_model">system.flowchart.wizard</field>
+<field name="view_mode">form</field>
+<field name="target">new</field>
+<field name="view_id" ref="system_flowchart_wizard_view_configure"/>
+<field name="context">{
+                'default_step': 'configure',
+                'default_search_scenario': 'custom',
+                'default_show_tutorial': False
+            }</field>
+</record>
+
+<!-- ============================================================================ -->
+<!-- MENU ITEMS -->
+<!-- ============================================================================ -->
+<menuitem id="menu_system_flowchart_wizard" name="📊 System Flowchart" parent="menu_records_management_root" action="action_system_flowchart_wizard" sequence="15" groups="records_management.group_records_manager"/>
+
+<menuitem id="menu_system_flowchart_wizard_advanced" name="⚙️ Advanced Flowchart Config" parent="menu_records_configuration" action="action_system_flowchart_wizard_advanced" sequence="35" groups="records_management.group_records_manager"/>
+
+
+</data>
+</odoo>

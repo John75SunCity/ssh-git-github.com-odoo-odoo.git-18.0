@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+
+<!-- Enhanced Kanban View -->
+<record id="scan_retrieval_item_view_kanban" model="ir.ui.view">
+    <field name="name">scan.retrieval.item.view.kanban</field>
+    <field name="model">scan.retrieval.item</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="state" class="o_kanban_scan_retrieval_dashboard">
+            <field name="name"/>
+            <field name="state"/>
+            <field name="barcode"/>
+            <field name="document_type"/>
+            <field name="scan_date"/>
+            <field name="retrieval_work_order_id"/>
+            <field name="priority"/>
+            <field name="assigned_user_id"/>
+            <field name="company_id"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div class="oe_kanban_card oe_kanban_global_click">
+                        <div class="o_kanban_card_header">
+                            <div class="o_kanban_card_header_title">
+                                <div class="o_primary">
+                                    <strong>📄                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_secondary">
+                                        🏷️                                    <field name="document_type"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_manage_button_section">
+                                <a class="o_kanban_manage_toggle_button" href="#">
+                                    <i class="fa fa-ellipsis-v" title="Manage"/>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="o_kanban_card_content">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div t-if="record.barcode.raw_value">
+                                        <i class="fa fa-barcode"/>
+                                        <field name="barcode"/>
+                                    </div>
+                                    <div t-if="record.scan_date.raw_value">
+                                        <i class="fa fa-calendar"/>
+ Scanned: <field name="scan_date"/>
+                                    </div>
+                                    <div t-if="record.assigned_user_id.raw_value">
+                                        <i class="fa fa-user"/>
+                                        <field name="assigned_user_id"/>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <span class="badge badge-primary" t-if="record.priority.raw_value == 'high'">
+                                            ⚡ High Priority
+                                    </span>
+                                    <span class="badge badge-info" t-if="record.priority.raw_value == 'medium'">
+                                            📋 Medium
+                                    </span>
+                                    <span class="badge badge-secondary" t-if="record.priority.raw_value == 'low'">
+                                            📝 Low
+                                    </span>
+                                    <div t-if="record.retrieval_work_order_id.raw_value">
+                                        <small>🔗 Work Order Linked</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+<!-- Enhanced Tree View -->
+    <record id="scan_retrieval_item_view_tree" model="ir.ui.view">
+        <field name="name">scan.retrieval.item.view.tree</field>
+        <field name="model">scan.retrieval.item</field>
+        <field name="arch" type="xml">
+<tree decoration-info="state == 'draft'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-danger="priority == 'high'">
+                <field name="name"/>
+                <field name="barcode"/>
+                <field name="document_type"/>
+                <field name="scan_date"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'"/>
+                <field name="priority" widget="priority"/>
+                <field name="assigned_user_id" widget="many2one_avatar_user"/>
+                <field name="retrieval_work_order_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Enhanced Form View -->
+    <record id="scan_retrieval_item_view_form" model="ir.ui.view">
+        <field name="name">scan.retrieval.item.view.form</field>
+        <field name="model">scan.retrieval.item</field>
+        <field name="arch" type="xml">
+            <form string="Scan Retrieval Item">
+<header>
+    <button name="action_start_processing" string="Start Processing" type="object" class="btn-primary" states="draft"/>
+    <button name="action_complete" string="Complete" type="object" class="btn-success" states="in_progress"/>
+    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary" states="draft,in_progress"/>
+    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
+</header>
+                <sheet>
+<div class="oe_button_box" name="button_box">
+    <button name="action_view_work_order" type="object" class="oe_stat_button" icon="fa-tasks" attrs="{'invisible': [('retrieval_work_order_id', '=', False)]}">
+        <div class="o_field_widget o_stat_info">
+            <span class="o_stat_text">Work Order</span>
+        </div>
+    </button>
+</div>
+
+<widget name="web_ribbon" text="High Priority" bg_color="bg-danger" attrs="{'invisible': [('priority', '!=', 'high')]}"/>
+
+                    <div class="oe_title">
+<label for="name" class="oe_edit_only"/>
+
+                        <h1>
+<field name="name" placeholder="e.g., DOC-SCAN-001"/>
+
+                        </h1>
+                    </div>
+<group>
+    <group name="main_info" string="📄 Document Information">
+        <field name="barcode" widget="barcode"/>
+        <field name="document_type"/>
+        <field name="document_description"/>
+        <field name="scan_date"/>
+        <field name="file_size" widget="float" digits="[12,2]"/>
+        <field name="scan_quality"/>
+    </group>
+    <group name="assignment" string="👤 Assignment &amp; Priority">
+        <field name="priority" widget="priority"/>
+        <field name="assigned_user_id" widget="many2one_avatar_user"/>
+        <field name="retrieval_work_order_id"/>
+        <field name="expected_completion_date"/>
+        <field name="actual_completion_date" attrs="{'readonly': [('state', '!=', 'completed')]}"/>
+    </group>
+</group>
+
+<group name="metadata" string="🏢 System Information">
+    <group>
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="create_uid" readonly="1"/>
+        <field name="create_date" readonly="1"/>
+    </group>
+    <group>
+        <field name="write_uid" readonly="1"/>
+        <field name="write_date" readonly="1"/>
+        <field name="active"/>
+    </group>
+</group>
+
+<notebook>
+    <page string="📝 Processing Notes" name="notes">
+        <field name="processing_notes" placeholder="Add processing notes, scan issues, or special instructions..."/>
+    </page>
+    <page string="📎 Attachments" name="attachments">
+        <field name="scanned_document_attachment" widget="binary"/>
+        <field name="additional_attachments" widget="many2many_binary"/>
+    </page>
+    <page string="📊 Quality Control" name="quality">
+        <group>
+            <group>
+                <field name="quality_check_passed"/>
+                <field name="quality_score" widget="progressbar"/>
+                <field name="resolution_dpi"/>
+            </group>
+            <group>
+                <field name="color_depth"/>
+                <field name="compression_type"/>
+                <field name="ocr_confidence" widget="progressbar"/>
+            </group>
+        </group>
+        <field name="quality_notes" placeholder="Quality control notes and observations..."/>
+    </page>
+</notebook>
+                </sheet>
+<div class="oe_chatter">
+    <field name="message_follower_ids" groups="base.group_user"/>
+    <field name="activity_ids"/>
+    <field name="message_ids"/>
+</div>
+            </form>
+        </field>
+    </record>
+
+<!-- Enhanced Search View -->
+    <record id="scan_retrieval_item_view_search" model="ir.ui.view">
+        <field name="name">scan.retrieval.item.view.search</field>
+        <field name="model">scan.retrieval.item</field>
+        <field name="arch" type="xml">
+            <search>
+<field name="name" string="Name/Barcode" filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+<field name="document_type"/>
+<field name="assigned_user_id"/>
+<field name="retrieval_work_order_id"/>
+<field name="company_id" groups="base.group_multi_company"/>
+
+<separator/>
+<filter string="📝 Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="⚡ In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+<filter string="✅ Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+
+<separator/>
+<filter string="🔥 High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
+<filter string="📋 Medium Priority" name="medium_priority" domain="[('priority', '=', 'medium')]"/>
+<filter string="📝 Low Priority" name="low_priority" domain="[('priority', '=', 'low')]"/>
+
+<separator/>
+<filter string="👤 My Items" name="my_items" domain="[('assigned_user_id', '=', uid)]"/>
+<filter string="📋 Unassigned" name="unassigned" domain="[('assigned_user_id', '=', False)]"/>
+<filter string="✅ Quality Passed" name="quality_passed" domain="[('quality_check_passed', '=', True)]"/>
+
+<separator/>
+<filter string="📅 Scanned Today" name="scanned_today" domain="[('scan_date', '&gt;=', context_today())]"/>
+<filter string="📆 Scanned This Week" name="scanned_this_week" domain="[('scan_date', '&gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+<filter string="🗓️ Scanned This Month" name="scanned_this_month" domain="[('scan_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+
+<separator/>
+<filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today()), ('state', 'not in', ['completed', 'cancelled'])]"/>
+<filter string="🚨 Due Today" name="due_today" domain="[('expected_completion_date', '=', context_today())]"/>
+
+<group expand="0" string="📊 Group By">
+    <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+    <filter string="Document Type" name="group_by_document_type" context="{'group_by': 'document_type'}"/>
+    <filter string="Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
+    <filter string="Assigned User" name="group_by_user" context="{'group_by': 'assigned_user_id'}"/>
+    <filter string="Work Order" name="group_by_work_order" context="{'group_by': 'retrieval_work_order_id'}"/>
+    <filter string="Scan Date" name="group_by_scan_date" context="{'group_by': 'scan_date:month'}"/>
+    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+<!-- Enhanced Action Window -->
+    <record id="action_scan_retrieval_item" model="ir.actions.act_window">
+        <field name="name">📄 Scan Retrieval Items</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">scan.retrieval.item</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="scan_retrieval_item_view_search"/>
+        <field name="context">{
+            'search_default_my_items': 1,
+            'search_default_in_progress': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                📄 Create your first scan retrieval item!
+            </p>
+            <p>
+                <b>Document Scanning &amp; Retrieval System:</b>
+                <br/>
+                • 📄 Complete document scanning workflow management<br/>
+                • 🔍 Advanced barcode recognition and tracking<br/>
+                • ⚡ Priority-based processing with user assignment<br/>
+                • 📊 Quality control with automated validation<br/>
+                • 🔗 Integration with work orders and FSM<br/>
+                • 📈 Real-time progress tracking and analytics<br/>
+                • 💾 Secure document storage with version control<br/>
+                • 📋 Comprehensive audit trails and compliance<br/>
+                • 🚀 AI-ready OCR and content analysis capabilities
+            </p>
+        </field>
+    </record>
+
+</data>
+</odoo>

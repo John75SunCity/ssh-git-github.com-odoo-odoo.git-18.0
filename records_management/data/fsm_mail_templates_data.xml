@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+        <!-- Email Template for Day of Service Notification -->
+        <record id="mail_template_fsm_day_of_service" model="mail.template">
+            <field name="name">FSM: Day of Service Notification</field>
+            <field name="model_id" ref="industry_fsm.model_fsm_task"/>
+            <field name="subject">Your Service is Scheduled for Today</field>
+            <field name="email_from">"${object.company_id.email}"</field>
+            <field name="email_to">"${object.partner_id.email}"</field>
+            <field name="body_html"><![CDATA[
+<p>Dear ${object.partner_id.name},</p>
+<p>This is a reminder that your service (${object.name}) is scheduled for today, ${object.schedule_date}.</p>
+<p>Our team will be on-site to perform the requested services. If you have any questions, please contact us.</p>
+<p>Thank you,<br/>
+${object.company_id.name}</p>
+]]>            </field>
+        </record>
+
+        <!-- Email Template for Driver Nearby Notification -->
+        <record id="mail_template_fsm_driver_nearby" model="mail.template">
+            <field name="name">FSM: Driver Nearby Notification</field>
+            <field name="model_id" ref="industry_fsm.model_fsm_task"/>
+            <field name="subject">Your Driver is Nearby</field>
+            <field name="email_from">"${object.company_id.email}"</field>
+            <field name="email_to">"${object.partner_id.email}"</field>
+            <field name="body_html"><![CDATA[
+<p>Dear ${object.partner_id.name},</p>
+<p>Our driver is nearby and will be arriving shortly for your service (${object.name}).</p>
+<p>Please be prepared for our arrival.</p>
+<p>Thank you,<br/>
+${object.company_id.name}</p>
+]]>            </field>
+        </record>
+
+        <!-- Enhanced FSM Templates -->
+
+        <!-- Route Optimization Complete Notification -->
+        <record id="mail_template_fsm_route_optimized" model="mail.template">
+            <field name="name">FSM: Route Optimization Complete</field>
+            <field name="model_id" ref="model_pickup_route"/>
+            <field name="subject">Route ${object.name} - Optimization Complete</field>
+            <field name="email_from">dispatch@suncityshred.com</field>
+            <field name="email_to">${object.driver_id.work_email}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif; margin: 0; padding: 20px;">
+                    <div style="background-color: #28a745; color: white; padding: 15px; border-radius: 8px 8px 0 0;">
+                        <h2 style="margin: 0;">🚛 Route Optimization Complete</h2>
+                    </div>
+                    
+                    <div style="border: 1px solid #28a745; border-top: none; padding: 20px; border-radius: 0 0 8px 8px;">
+                        <p>Hello ${object.driver_id.name},</p>
+                        <p>Your route <strong>${object.name}</strong> has been optimized and is ready for execution.</p>
+                        
+                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                            <h4 style="color: #28a745; margin-top: 0;">📋 Route Summary</h4>
+                            <ul style="margin: 0; padding-left: 20px;">
+                                <li><strong>Total Stops:</strong> ${len(object.pickup_request_ids)} locations</li>
+                                <li><strong>Estimated Duration:</strong> ${object.estimated_duration} hours</li>
+                                <li><strong>Total Distance:</strong> ${object.total_distance} miles</li>
+                                <li><strong>Vehicle:</strong> ${object.vehicle_id.name if object.vehicle_id else 'To be assigned'}</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; border-radius: 5px; margin: 15px 0;">
+                            <p style="margin: 0; color: #856404;"><strong>⏰ Departure Time:</strong> ${object.start_time}</p>
+                        </div>
+                        
+                        <p>Please review the optimized route and contact dispatch if you have any questions.</p>
+                        
+                        <p style="text-align: center; margin: 20px 0;">
+                            <a href="/fsm/route/${object.id}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                                View Route Details
+                            </a>
+                        </p>
+                        
+                        <p>Safe travels!<br/>
+                        <strong>Dispatch Team</strong></p>
+                    </div>
+                </div>
+            ]]></field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- Service Completion Notification -->
+        <record id="mail_template_fsm_service_complete" model="mail.template">
+            <field name="name">FSM: Service Completion</field>
+            <field name="model_id" ref="industry_fsm.model_fsm_task"/>
+            <field name="subject">Service Complete: ${object.name}</field>
+            <field name="email_from">service@suncityshred.com</field>
+            <field name="email_to">${object.partner_id.email}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif; margin: 0; padding: 20px;">
+                    <div style="background-color: #007cba; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+                        <h1 style="margin: 0;">✅ Service Completed Successfully</h1>
+                    </div>
+                    
+                    <div style="border: 1px solid #007cba; border-top: none; padding: 25px; border-radius: 0 0 8px 8px;">
+                        <p>Dear ${object.partner_id.name},</p>
+                        <p>We're pleased to inform you that your service has been completed successfully.</p>
+                        
+                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h3 style="color: #007cba; margin-top: 0;">🔍 Service Details</h3>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;"><strong>Service:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">${object.name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;"><strong>Technician:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">${object.user_id.name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;"><strong>Completion Time:</strong></td>
+                                    <td style="padding: 8px; border-bottom: 1px solid #dee2e6;">${object.date_end or 'Just completed'}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;"><strong>Duration:</strong></td>
+                                    <td style="padding: 8px;">${object.effective_hours} hours</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        % if object.description:
+                        <div style="background-color: #e7f3ff; border: 1px solid #b3d9ff; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                            <h4 style="color: #0066cc; margin-top: 0;">📝 Service Notes</h4>
+                            <p style="margin-bottom: 0; color: #0066cc;">${object.description}</p>
+                        </div>
+                        % endif
+                        
+                        <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                            <h4 style="color: #155724; margin-top: 0;">📋 Next Steps</h4>
+                            <ul style="color: #155724; margin-bottom: 0;">
+                                <li>Service documentation will be available in your portal</li>
+                                <li>Invoice will be processed according to your billing schedule</li>
+                                <li>Certificates (if applicable) will be generated within 24 hours</li>
+                                <li>Please contact us if you have any questions</li>
+                            </ul>
+                        </div>
+                        
+                        <p style="text-align: center; margin: 25px 0;">
+                            <a href="/my/fsm" style="background-color: #007cba; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                                View Service Details
+                            </a>
+                            <a href="/my/feedback/new?service_id=${object.id}" style="background-color: #6c757d; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-left: 10px;">
+                                Leave Feedback
+                            </a>
+                        </p>
+                        
+                        <p>Thank you for choosing Sun City Shred for your secure document management needs.</p>
+                        
+                        <p style="margin-top: 25px;">Best regards,<br/>
+                        <strong>Field Service Team</strong><br/>
+                        Sun City Shred</p>
+                    </div>
+                </div>
+            ]]></field>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.partner_id.lang}</field>
+        </record>
+
+        <!-- Equipment Maintenance Alert -->
+        <record id="mail_template_fsm_equipment_maintenance" model="mail.template">
+            <field name="name">FSM: Equipment Maintenance Due</field>
+            <field name="model_id" ref="model_shredding_equipment"/>
+            <field name="subject">🔧 Equipment Maintenance Required: ${object.name}</field>
+            <field name="email_from">maintenance@suncityshred.com</field>
+            <field name="email_to">${object.responsible_user_id.email}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif; margin: 0; padding: 20px;">
+                    <div style="background-color: #ffc107; color: #212529; padding: 15px; text-align: center; border-radius: 8px 8px 0 0;">
+                        <h2 style="margin: 0;">🔧 Equipment Maintenance Alert</h2>
+                    </div>
+                    
+                    <div style="border: 1px solid #ffc107; border-top: none; padding: 20px; border-radius: 0 0 8px 8px;">
+                        <p>Hello ${object.responsible_user_id.name},</p>
+                        <p>Equipment <strong>${object.name}</strong> requires scheduled maintenance.</p>
+                        
+                        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                            <h4 style="color: #856404; margin-top: 0;">⚠️ Maintenance Details</h4>
+                            <ul style="color: #856404; margin-bottom: 0;">
+                                <li><strong>Equipment:</strong> ${object.name} (${object.equipment_type})</li>
+                                <li><strong>Last Maintenance:</strong> ${object.last_maintenance_date or 'Never'}</li>
+                                <li><strong>Due Date:</strong> ${object.next_maintenance_date}</li>
+                                <li><strong>Priority:</strong> ${object.maintenance_priority or 'Standard'}</li>
+                            </ul>
+                        </div>
+                        
+                        % if object.maintenance_notes:
+                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                            <h4 style="color: #495057; margin-top: 0;">📋 Maintenance Notes</h4>
+                            <p style="color: #495057; margin-bottom: 0;">${object.maintenance_notes}</p>
+                        </div>
+                        % endif
+                        
+                        <p>Please schedule the maintenance to ensure continued NAID compliance and optimal performance.</p>
+                        
+                        <p style="text-align: center; margin: 20px 0;">
+                            <a href="/fsm/equipment/${object.id}" style="background-color: #ffc107; color: #212529; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                                View Equipment Details
+                            </a>
+                        </p>
+                        
+                        <p>Equipment Maintenance Team<br/>
+                        Sun City Shred</p>
+                    </div>
+                </div>
+            ]]></field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- Vehicle Inspection Reminder -->
+        <record id="mail_template_fsm_vehicle_inspection" model="mail.template">
+            <field name="name">FSM: Vehicle Inspection Due</field>
+            <field name="model_id" ref="model_records_vehicle"/>
+            <field name="subject">🚛 Vehicle Inspection Required: ${object.name}</field>
+            <field name="email_from">fleet@suncityshred.com</field>
+            <field name="email_to">${object.driver_id.work_email if object.driver_id else 'fleet@suncityshred.com'}</field>
+            <field name="body_html"><![CDATA[
+                <div style="font-family: Arial, sans-serif; margin: 0; padding: 20px;">
+                    <div style="background-color: #dc3545; color: white; padding: 15px; text-align: center; border-radius: 8px 8px 0 0;">
+                        <h2 style="margin: 0;">🚛 Vehicle Inspection Due</h2>
+                    </div>
+                    
+                    <div style="border: 1px solid #dc3545; border-top: none; padding: 20px; border-radius: 0 0 8px 8px;">
+                        <p>Hello ${object.driver_id.name if object.driver_id else 'Fleet Manager'},</p>
+                        <p>Vehicle <strong>${object.name}</strong> requires inspection.</p>
+                        
+                        <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                            <h4 style="color: #721c24; margin-top: 0;">🔍 Inspection Details</h4>
+                            <table style="width: 100%; color: #721c24;">
+                                <tr>
+                                    <td><strong>Vehicle:</strong></td>
+                                    <td>${object.name}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>License Plate:</strong></td>
+                                    <td>${object.license_plate or 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Last Inspection:</strong></td>
+                                    <td>${object.last_inspection_date or 'Never'}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Due Date:</strong></td>
+                                    <td>${object.next_inspection_date}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; border-radius: 5px; margin: 15px 0;">
+                            <p style="margin: 0; color: #856404;"><strong>⚠️ Important:</strong> Vehicle cannot be used for customer services until inspection is completed.</p>
+                        </div>
+                        
+                        <p>Please schedule the inspection immediately to maintain service availability.</p>
+                        
+                        <p style="text-align: center; margin: 20px 0;">
+                            <a href="/fsm/vehicle/${object.id}" style="background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                                View Vehicle Details
+                            </a>
+                        </p>
+                        
+                        <p>Fleet Management Team<br/>
+                        Sun City Shred</p>
+                    </div>
+                </div>
+            ]]></field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+
+        <!-- SMS Templates for FSM -->
+        <record id="sms_template_fsm_arrival" model="sms.template">
+            <field name="name">FSM: Driver Arrival</field>
+            <field name="model_id" ref="industry_fsm.model_fsm_task"/>
+            <field name="body">Sun City Shred: Your technician ${object.user_id.name} has arrived for service ${object.name}. ETA: 5 minutes.</field>
+        </record>
+
+        <record id="sms_template_fsm_complete" model="sms.template">
+            <field name="name">FSM: Service Complete</field>
+            <field name="model_id" ref="industry_fsm.model_fsm_task"/>
+            <field name="body">Sun City Shred: Service ${object.name} completed successfully. Certificate available at: ${ctx.get('base_url', '')}/my/fsm</field>
+        </record>
+
+    </data>
+</odoo>

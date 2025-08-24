@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_customer_negotiated_rate" model="ir.actions.report">
+        <field name="name">Customer Negotiated Rate</field>
+        <field name="model">customer.negotiated.rate</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_customer_negotiated_rate_view</field>
+        <field name="print_report_name">f'Negotiated Rate - {object.name}'</field>
+        <field name="binding_model_id" ref="model_customer_negotiated_rate"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_customer_negotiated_rate_view">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Customer Negotiated Rate: <span t-field="doc.name"/></h2>
+
+                        <div class="row mt-4 mb-4">
+                            <div class="col-6">
+                                <strong>Customer:</strong>
+                                <p t-if="doc.partner_id" t-out="doc.partner_id.name"/>
+                                <p t-else="">N/A</p>
+                            </div>
+                            <div class="col-6">
+                                <strong>Date:</strong>
+                                <p t-field="doc.date" t-options="{'widget': 'date'}"/><br/>
+                            </div>
+                        </div>
+
+                        <h3>Negotiated Rate Items</h3>
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Item/Service</th>
+                                    <th class="text-left">Description</th>
+                                    <th class="text-right">Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="not doc.field_ids">
+                                    <tr>
+                                        <td colspan="3">No negotiated rate items found for this record.</td>
+                                    </tr>
+                                </t>
+                                <tr t-foreach="doc.field_ids" t-as="line">
+                                    <td>
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.description"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.rate" t-options="{'widget': 'monetary', 'display_currency': doc.partner_id.company_id.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="text-muted mt-4">
+                            Report generated on <span t-out="time.strftime('%Y-%m-%d %H:%M:%S')"/>.
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

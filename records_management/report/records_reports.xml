@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Container Content Report -->
+    <record id="report_container_contents" model="ir.actions.report">
+        <field name="name">Container Contents</field>
+        <field name="model">records.container</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_box_contents_document</field>
+        <field name="report_file">records_management.report_container_contents</field>
+        <field name="binding_model_id" ref="model_records_container"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_box_contents_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="box">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Box Contents: <span t-field="box.name"/>
+                        </h2>
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Box Information:</strong>
+                                <p>
+                                    Location: <span t-field="box.location_id"/>
+                                <br/>
+                                    Status: <span t-field="box.state"/>
+                            <br/>
+                                    Responsible: <span t-field="box.user_id"/>
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <strong>Capacity:</strong>
+                        <p>
+                                    Maximum: <span t-field="box.capacity"/>
+ documents<br/>
+                                    Current: <span t-field="box.document_count"/>
+ documents<br/>
+                                    Utilization: <span t-field="box.used_capacity" t-options='{"widget": "percentage"}'/>
+        </p>
+    </div>
+</div>
+
+<h3>Document Inventory</h3>
+<table class="table table-sm table-bordered">
+    <thead>
+        <tr>
+            <th>Reference</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Partner</th>
+            <th>Retention Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <t t-foreach="box.document_ids" t-as="doc">
+            <tr>
+                <td>
+                    <span t-field="doc.name"/>
+                </td>
+                <td>
+                    <span t-field="doc.document_type_id"/>
+                </td>
+                <td>
+                    <span t-field="doc.date"/>
+                </td>
+                <td>
+                    <span t-field="doc.partner_id"/>
+                </td>
+                <td>
+                    <span t-field="doc.retention_date"/>
+                </td>
+                <td>
+                    <span t-field="doc.state"/>
+                </td>
+            </tr>
+        </t>
+        <tr t-if="not box.document_ids">
+            <td colspan="6" class="text-center">No documents found in this box</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="mt32">
+    <p>Report generated on <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+    </p>
+</div>
+</div>
+</t>
+</t>
+</t>
+</template>
+</odoo>

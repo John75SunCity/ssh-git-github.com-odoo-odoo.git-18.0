@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree View -->
+        <record id="fsm_route_management_view_tree" model="ir.ui.view">
+            <field name="name">fsm.route.management.view.tree</field>
+            <field name="model">fsm.route.management</field>
+            <field name="arch" type="xml">
+                <tree string="FSM Route Management">
+                    <!-- Add fields here -->
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="fsm_route_management_view_form" model="ir.ui.view">
+            <field name="name">fsm.route.management.view.form</field>
+            <field name="model">fsm.route.management</field>
+            <field name="arch" type="xml">
+                <form string="FSM Route Management">
+                    <sheet>
+                        <group>
+                            <!-- Add fields here -->
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="fsm_route_management_view_search" model="ir.ui.view">
+            <field name="name">fsm.route.management.view.search</field>
+            <field name="model">fsm.route.management</field>
+            <field name="arch" type="xml">
+                <search string="Search FSM Route Management">
+                    <!-- Add search fields here -->
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_fsm_route_management" model="ir.actions.act_window">
+            <field name="name">FSM Route Management</field>
+            <field name="res_model">fsm.route.management</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu -->
+        <!--
+        <menuitem
+            id="menu_fsm_route_management"
+            name="FSM Route Management"
+            action="action_fsm_route_management"
+            parent="REPLACE_WITH_PARENT_MENU_ID"
+            sequence="10"/>
+        -->
+
+    </data>
+</odoo>

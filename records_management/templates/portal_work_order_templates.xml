@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Work Orders Portal Templates -->
+    
+    <!-- Main work orders list template -->
+    <template id="portal_my_work_orders" name="My Work Orders">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Work Orders</t>
+            </t>
+            
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fa fa-tasks"/> My Work Orders
+                                    <span class="badge badge-primary ml-2">
+                                        <t t-esc="len(work_orders)"/>
+                                    </span>
+                                </h3>
+                            </div>
+                            
+                            <div class="card-body">
+                                <t t-if="not work_orders">
+                                    <div class="alert alert-info text-center">
+                                        <strong>No work orders found.</strong>
+                                        <br/>
+                                        Contact us to schedule services.
+                                    </div>
+                                </t>
+                                
+                                <t t-else="">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Reference</th>
+                                                    <th>Type</th>
+                                                    <th>Status</th>
+                                                    <th>Scheduled Date</th>
+                                                    <th>Priority</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="work_orders" t-as="wo">
+                                                    <tr>
+                                                        <td>
+                                                            <strong t-esc="wo['record'].name"/>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge badge-info" t-esc="wo['type']"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-attf-class="badge badge-#{wo['record'].state == 'completed' and 'success' or wo['record'].state == 'cancelled' and 'danger' or 'warning'}">
+                                                                <t t-esc="wo['record'].state.replace('_', ' ').title()"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <t t-if="wo['record'].scheduled_date">
+                                                                <t t-esc="wo['record'].scheduled_date" t-options='{"widget": "datetime"}'/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <em class="text-muted">Not scheduled</em>
+                                                            </t>
+                                                        </td>
+                                                        <td>
+                                                            <t t-set="priority_class" t-value="'low' if wo['record'].priority == '0' else ('high' if wo['record'].priority in ['3', '4'] else 'normal')"/>
+                                                            <span t-attf-class="badge badge-#{priority_class == 'high' and 'danger' or priority_class == 'normal' and 'warning' or 'secondary'}">
+                                                                <t t-esc="dict(wo['record']._fields['priority'].selection)[wo['record'].priority]"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <a t-attf-href="/my/work_order/#{wo['model']}/#{wo['record'].id}" 
+                                                               class="btn btn-sm btn-primary">
+                                                                <i class="fa fa-eye"/> View
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <!-- Pagination -->
+                                    <t t-call="portal.pager"/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Work order detail template -->
+    <template id="portal_work_order_detail" name="Work Order Detail">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h3 class="card-title mb-0">
+                                    <t t-esc="work_order_type"/> Work Order
+                                    <strong t-esc="work_order.name"/>
+                                </h3>
+                                <div>
+                                    <span t-attf-class="badge badge-lg badge-#{work_order.state == 'completed' and 'success' or work_order.state == 'cancelled' and 'danger' or 'warning'}">
+                                        <t t-esc="work_order.state.replace('_', ' ').title()"/>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body">
+                                <!-- Basic Information -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <h5>Work Order Information</h5>
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td><strong>Reference:</strong></td>
+                                                <td t-esc="work_order.name"/>
+                                            </tr>
+                                            <tr t-if="work_order.scheduled_date">
+                                                <td><strong>Scheduled:</strong></td>
+                                                <td t-esc="work_order.scheduled_date" t-options='{"widget": "datetime"}'/>
+                                            </tr>
+                                            <tr t-if="work_order.priority">
+                                                <td><strong>Priority:</strong></td>
+                                                <td>
+                                                    <span t-attf-class="badge badge-#{work_order.priority in ['3', '4'] and 'danger' or work_order.priority == '2' and 'warning' or 'secondary'}">
+                                                        <t t-esc="dict(work_order._fields['priority'].selection)[work_order.priority]"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            <tr t-if="work_order.description">
+                                                <td><strong>Description:</strong></td>
+                                                <td t-esc="work_order.description"/>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <h5>Contact Information</h5>
+                                        <table class="table table-borderless">
+                                            <tr t-if="work_order.assigned_technician">
+                                                <td><strong>Technician:</strong></td>
+                                                <td t-esc="work_order.assigned_technician.name"/>
+                                            </tr>
+                                            <tr t-if="work_order.phone">
+                                                <td><strong>Contact Phone:</strong></td>
+                                                <td>
+                                                    <a t-attf-href="tel:#{work_order.phone}" t-esc="work_order.phone"/>
+                                                </td>
+                                            </tr>
+                                            <tr t-if="work_order.email">
+                                                <td><strong>Contact Email:</strong></td>
+                                                <td>
+                                                    <a t-attf-href="mailto:#{work_order.email}" t-esc="work_order.email"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Container Information (for container-related work orders) -->
+                                <div t-if="show_containers and work_order.container_ids" class="mb-4">
+                                    <h5>Containers</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Container</th>
+                                                    <th>Location</th>
+                                                    <th>Status</th>
+                                                    <th>Last Update</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="work_order.container_ids" t-as="container">
+                                                    <tr>
+                                                        <td t-esc="container.name"/>
+                                                        <td t-esc="container.current_location_id.name"/>
+                                                        <td>
+                                                            <span class="badge badge-info" t-esc="container.state"/>
+                                                        </td>
+                                                        <td t-esc="container.write_date" t-options='{"widget": "datetime"}'/>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Progress and Status Updates -->
+                                <div class="mb-4">
+                                    <h5>Progress Updates</h5>
+                                    <div class="timeline">
+                                        <t t-foreach="work_order.message_ids.filtered(lambda m: m.message_type == 'notification')" t-as="message">
+                                            <div class="timeline-item">
+                                                <div class="timeline-marker bg-primary"></div>
+                                                <div class="timeline-content">
+                                                    <h6 class="timeline-title" t-esc="message.subject or 'Status Update'"/>
+                                                    <p t-esc="message.body"/>
+                                                    <small class="text-muted">
+                                                        <t t-esc="message.date" t-options='{"widget": "datetime"}'/>
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="mb-4">
+                                    <h5>Actions</h5>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-outline-primary" onclick="window.print()">
+                                            <i class="fa fa-print"/> Print Details
+                                        </button>
+                                        <a href="/my/work_orders" class="btn btn-secondary">
+                                            <i class="fa fa-arrow-left"/> Back to List
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Coordinators list template -->
+    <template id="portal_my_coordinators" name="My Work Order Coordinators">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fa fa-sitemap"/> Work Order Coordinators
+                                    <span class="badge badge-primary ml-2">
+                                        <t t-esc="len(coordinators)"/>
+                                    </span>
+                                </h3>
+                            </div>
+                            
+                            <div class="card-body">
+                                <t t-if="not coordinators">
+                                    <div class="alert alert-info text-center">
+                                        <strong>No coordinators found.</strong>
+                                    </div>
+                                </t>
+                                
+                                <t t-else="">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Reference</th>
+                                                    <th>Type</th>
+                                                    <th>Progress</th>
+                                                    <th>Work Orders</th>
+                                                    <th>Scheduled Date</th>
+                                                    <th>Priority</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="coordinators" t-as="coordinator">
+                                                    <tr>
+                                                        <td>
+                                                            <strong t-esc="coordinator.name"/>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge badge-info" t-esc="coordinator.coordination_type.replace('_', ' ').title()"/>
+                                                        </td>
+                                                        <td>
+                                                            <div class="progress" style="height: 20px;">
+                                                                <div class="progress-bar" role="progressbar" 
+                                                                     t-attf-style="width: #{coordinator.coordination_progress}%"
+                                                                     t-attf-aria-valuenow="#{coordinator.coordination_progress}">
+                                                                    <t t-esc="'%.0f%%' % coordinator.coordination_progress"/>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge badge-secondary">
+                                                                <t t-esc="coordinator.completed_work_orders"/>/<t t-esc="coordinator.total_work_orders"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <t t-esc="coordinator.scheduled_date" t-options='{"widget": "datetime"}'/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-attf-class="badge badge-#{coordinator.priority in ['3', '4'] and 'danger' or coordinator.priority == '2' and 'warning' or 'secondary'}">
+                                                                <t t-esc="dict(coordinator._fields['priority'].selection)[coordinator.priority]"/>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal breadcrumbs -->
+    <template id="portal_breadcrumbs_work_orders" inherit_id="portal.portal_breadcrumbs">
+        <xpath expr="//ol[hasclass('breadcrumb')]" position="inside">
+            <li t-if="page_name == 'work_orders'" class="breadcrumb-item active">Work Orders</li>
+            <li t-if="page_name == 'work_order_detail'" class="breadcrumb-item">
+                <a href="/my/work_orders">Work Orders</a>
+            </li>
+            <li t-if="page_name == 'work_order_detail'" class="breadcrumb-item active">
+                <t t-esc="work_order_type"/>
+            </li>
+            <li t-if="page_name == 'coordinators'" class="breadcrumb-item active">Coordinators</li>
+        </xpath>
+    </template>
+
+    <!-- Portal sidebar menu -->
+    <template id="portal_my_home_menu_work_orders" inherit_id="portal.portal_my_home" customize_show="True">
+        <xpath expr="//div[hasclass('o_portal_my_home')]" position="inside">
+            <div class="col-lg-6">
+                <a href="/my/work_orders" class="list-group-item list-group-item-action d-flex align-items-center p-3">
+                    <div class="mr-3">
+                        <i class="fa fa-tasks fa-2x text-primary"/>
+                    </div>
+                    <div class="flex-grow-1">
+                        <strong>Work Orders</strong>
+                        <br/>
+                        <span class="text-muted">View and track your service requests</span>
+                    </div>
+                    <div>
+                        <span class="badge badge-pill badge-primary">
+                            <t t-esc="work_order_count or 0"/>
+                        </span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <a href="/my/coordinators" class="list-group-item list-group-item-action d-flex align-items-center p-3">
+                    <div class="mr-3">
+                        <i class="fa fa-sitemap fa-2x text-info"/>
+                    </div>
+                    <div class="flex-grow-1">
+                        <strong>Coordinators</strong>
+                        <br/>
+                        <span class="text-muted">Multi-service coordination status</span>
+                    </div>
+                    <div>
+                        <span class="badge badge-pill badge-info">
+                            <t t-esc="coordinator_count or 0"/>
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>

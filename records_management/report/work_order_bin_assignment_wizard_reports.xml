@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_work_order_bin_assignment">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Work Order Bin Assignment</h2>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Work Order</th>
+                            <th>Bin</th>
+                            <th>Assigned By</th>
+                            <th>Assigned Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="docs" t-as="assignment">
+                            <td><span t-field="assignment.work_order_id.name"/></td>
+                            <td><span t-field="assignment.bin_id.name"/></td>
+                            <td><span t-field="assignment.assigned_by_id.name"/></td>
+                            <td><span t-field="assignment.assigned_date" t-options="{'widget': 'datetime'}"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+    <record id="action_report_work_order_bin_assignment" model="ir.actions.report">
+        <field name="name">Work Order Bin Assignment</field>
+        <field name="model">work.order.bin.assignment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_work_order_bin_assignment</field>
+        <field name="binding_model_id" ref="records_management.model_work_order_bin_assignment"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_work_order_bin_assignment_wizard" model="ir.actions.report">
+        <field name="name">Work Order Bin Assignment Wizard</field>
+        <field name="model">work.order.bin.assignment.wizard</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">records_management.report_work_order_bin_assignment_wizard_view</field>
+        <field name="report_file">records_management.report_work_order_bin_assignment_wizard</field>
+        <field name="print_report_name">"(Work Order Bin Assignment Wizard Report) %s" % (object.name or 'N/A')</field>
+        <field name="binding_model_id" ref="model_work_order_bin_assignment_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_work_order_bin_assignment_wizard_view">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Work Order Bin Assignment Wizard Report</h2>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-if="doc.field_ids">
+                                <tr t-foreach="doc.field_ids" t-as="field">
+                                    <td>
+                                        <span t-esc="field.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="field.description"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

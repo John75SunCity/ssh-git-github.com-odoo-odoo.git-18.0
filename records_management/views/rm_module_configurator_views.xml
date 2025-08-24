@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- Enhanced Tree View with Status Indicators -->
+    <record id="rm_module_configurator_view_tree" model="ir.ui.view">
+        <field name="name">rm.module.configurator.view.tree</field>
+        <field name="model">rm.module.configurator</field>
+        <field name="arch" type="xml">
+<tree decoration-info="active == True" decoration-muted="active == False" decoration-success="boolean_value == True" decoration-warning="boolean_value == False">
+                <field name="name" string="🔧 Configuration Name"/>
+                <field name="category" widget="badge"/>
+                <field name="config_key" string="🔑 Key"/>
+                <field name="description" string="📝 Description"/>
+                <field name="boolean_value" widget="boolean_toggle" string="✅ Enabled"/>
+                <field name="text_value" string="📋 Value" optional="hide"/>
+                <field name="priority" widget="priority"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user" string="👤 Owner" optional="hide"/>
+                <field name="create_date" string="📅 Created" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+<!-- Comprehensive Form View with Categorized Sections -->
+    <record id="rm_module_configurator_view_form" model="ir.ui.view">
+        <field name="name">rm.module.configurator.view.form</field>
+        <field name="model">rm.module.configurator</field>
+        <field name="arch" type="xml">
+<form string="⚙️ RM Module Configurator">
+    <header>
+        <button name="action_activate_config" string="✅ Activate" type="object" class="btn-primary" attrs="{'invisible': [('active', '=', True)]}"/>
+        <button name="action_deactivate_config" string="⏸️ Deactivate" type="object" class="btn-secondary" attrs="{'invisible': [('active', '=', False)]}"/>
+        <button name="action_reset_to_default" string="🔄 Reset Default" type="object" class="btn-warning" confirm="Reset this configuration to default values?"/>
+        <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
+    </header>
+                <sheet>
+<div class="oe_button_box" name="button_box">
+    <button class="oe_stat_button" type="object" name="action_view_related_configs" icon="fa-cogs" attrs="{'invisible': [('category', '=', False)]}">
+        <field name="related_configs_count" widget="statinfo" string="Related"/>
+    </button>
+</div>
+
+<widget name="web_ribbon" title="🔒 System Configuration" bg_color="bg-info" attrs="{'invisible': [('is_system_config', '=', False)]}"/>
+
+                    <div class="oe_title">
+<label for="name" class="oe_edit_only" string="Configuration Name"/>
+
+                        <h1>
+<field name="name" placeholder="e.g., Enable Advanced Portal Features"/>
+
+                        </h1>
+<label for="description" class="oe_edit_only" string="Description"/>
+<h3>
+    <field name="description" placeholder="Detailed description of this configuration option"/>
+</h3>
+                    </div>
+<group>
+    <group string="🔧 Basic Configuration">
+        <field name="config_key" string="🔑 Configuration Key"/>
+        <field name="category" string="📂 Category" widget="selection"/>
+        <field name="priority" widget="priority" string="⚡ Priority"/>
+        <field name="is_system_config" string="🔒 System Config" readonly="1"/>
+    </group>
+    <group string="👤 Ownership &amp; Access">
+        <field name="company_id" groups="base.group_multi_company"/>
+        <field name="user_id" string="👤 Configuration Owner"/>
+        <field name="department_id" string="🏢 Department" attrs="{'invisible': [('category', '!=', 'department_specific')]}"/>
+    </group>
+</group>
+
+<notebook>
+    <page string="💼 Configuration Values" name="values">
+        <group>
+            <group string="✅ Boolean Configuration" attrs="{'invisible': [('config_type', '!=', 'boolean')]}">
+                <field name="boolean_value" widget="boolean_toggle" string="Enable Feature"/>
+                <field name="default_boolean" string="🔄 Default Value" readonly="1"/>
+            </group>
+            <group string="📝 Text Configuration" attrs="{'invisible': [('config_type', '!=', 'text')]}">
+                <field name="text_value" string="Configuration Value"/>
+                <field name="default_text" string="🔄 Default Value" readonly="1"/>
+            </group>
+        </group>
+
+        <group string="🔢 Numeric Configuration" attrs="{'invisible': [('config_type', '!=', 'numeric')]}">
+            <field name="numeric_value" string="Numeric Value"/>
+            <field name="default_numeric" string="🔄 Default Value" readonly="1"/>
+            <field name="min_value" string="⬇️ Minimum"/>
+            <field name="max_value" string="⬆️ Maximum"/>
+        </group>
+    </page>
+
+    <page string="📋 Selection Options" name="selection" attrs="{'invisible': [('config_type', '!=', 'selection')]}">
+        <field name="selection_options" widget="text" string="Available Options (JSON format)"/>
+        <field name="selection_value" string="Selected Value"/>
+        <field name="default_selection" string="🔄 Default Selection" readonly="1"/>
+    </page>
+
+    <page string="🔗 Dependencies &amp; Impact" name="dependencies">
+        <group>
+            <group string="📦 Dependencies">
+                <field name="depends_on_configs" widget="many2many_tags" string="Depends On"/>
+                <field name="conflicts_with_configs" widget="many2many_tags" string="Conflicts With"/>
+            </group>
+            <group string="📊 Impact Analysis">
+                <field name="affects_ui" string="🎨 Affects UI" readonly="1"/>
+                <field name="affects_workflow" string="🔄 Affects Workflow" readonly="1"/>
+                <field name="requires_restart" string="🔄 Requires Restart" readonly="1"/>
+            </group>
+        </group>
+    </page>
+
+    <page string="📚 Documentation" name="documentation">
+        <group>
+            <field name="help_text" widget="html" string="📖 Help Documentation"/>
+            <field name="configuration_notes" widget="text" string="📝 Internal Notes"/>
+        </group>
+    </page>
+
+    <page string="📈 Usage Analytics" name="analytics">
+        <group>
+            <group string="📊 Usage Statistics">
+                <field name="last_modified" string="🕒 Last Modified" readonly="1"/>
+                <field name="modification_count" string="🔢 Times Modified" readonly="1"/>
+                <field name="last_user_id" string="👤 Last Modified By" readonly="1"/>
+            </group>
+            <group string="📈 Performance Impact">
+                <field name="performance_impact" widget="selection" string="⚡ Performance Impact" readonly="1"/>
+                <field name="memory_usage_kb" string="💾 Memory Usage (KB)" readonly="1"/>
+            </group>
+        </group>
+    </page>
+</notebook>
+                </sheet>
+<div class="oe_chatter">
+    <field name="message_follower_ids" widget="mail_followers"/>
+    <field name="activity_ids" widget="mail_activity"/>
+    <field name="message_ids" widget="mail_thread"/>
+</div>
+            </form>
+        </field>
+    </record>
+
+<!-- Advanced Search View with Dashboard Capabilities -->
+    <record id="rm_module_configurator_view_search" model="ir.ui.view">
+        <field name="name">rm.module.configurator.view.search</field>
+        <field name="model">rm.module.configurator</field>
+        <field name="arch" type="xml">
+<search string="🔍 Configuration Search">
+    <field name="name" string="🔧 Name" filter_domain="[('name', 'ilike', self)]"/>
+    <field name="config_key" string="🔑 Key" filter_domain="[('config_key', 'ilike', self)]"/>
+    <field name="category" string="📂 Category"/>
+    <field name="description" string="📝 Description" filter_domain="[('description', 'ilike', self)]"/>
+    <field name="company_id" groups="base.group_multi_company"/>
+    <field name="user_id" string="👤 Owner"/>
+
+    <separator/>
+
+    <filter string="✅ Active" name="filter_active" domain="[('active', '=', True)]"/>
+    <filter string="⏸️ Inactive" name="filter_inactive" domain="[('active', '=', False)]"/>
+    <filter string="🔴 Disabled Features" name="filter_disabled" domain="[('boolean_value', '=', False)]"/>
+    <filter string="🟢 Enabled Features" name="filter_enabled" domain="[('boolean_value', '=', True)]"/>
+
+    <separator/>
+
+    <filter string="🎨 UI Configurations" name="filter_ui" domain="[('category', 'in', ['ui_customization', 'field_visibility'])]"/>
+    <filter string="🔧 Feature Toggles" name="filter_features" domain="[('category', '=', 'feature_toggles')]"/>
+    <filter string="🔒 Security Settings" name="filter_security" domain="[('category', '=', 'security_settings')]"/>
+    <filter string="💰 Billing Options" name="filter_billing" domain="[('category', '=', 'billing_options')]"/>
+    <filter string="📱 Mobile Features" name="filter_mobile" domain="[('category', '=', 'mobile_features')]"/>
+    <filter string="📊 Reporting Options" name="filter_reporting" domain="[('category', '=', 'reporting_options')]"/>
+    <filter string="🔗 Integrations" name="filter_integrations" domain="[('category', '=', 'integration_settings')]"/>
+    <filter string="⚖️ Compliance" name="filter_compliance" domain="[('category', '=', 'compliance_features')]"/>
+
+    <separator/>
+
+    <filter string="⚡ High Priority" name="filter_high_priority" domain="[('priority', '=', '3')]"/>
+    <filter string="🔒 System Configs" name="filter_system" domain="[('is_system_config', '=', True)]"/>
+    <filter string="👤 My Configurations" name="filter_my_configs" domain="[('user_id', '=', uid)]"/>
+    <filter string="🏢 My Company" name="filter_my_company" domain="[('company_id', '=', company_id)]"/>
+
+    <separator/>
+
+    <filter string="📅 Recent" name="filter_recent" domain="[('create_date', '>=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+    <filter string="🕒 Recently Modified" name="filter_recently_modified" domain="[('last_modified', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+
+    <group expand="0" string="📊 Group By">
+        <filter string="📂 Category" name="group_by_category" context="{'group_by': 'category'}"/>
+        <filter string="🏢 Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+        <filter string="👤 Owner" name="group_by_user" context="{'group_by': 'user_id'}"/>
+        <filter string="⚡ Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
+        <filter string="🔧 Configuration Type" name="group_by_type" context="{'group_by': 'config_type'}"/>
+        <filter string="✅ Status" name="group_by_status" context="{'group_by': 'active'}"/>
+        <filter string="📅 Creation Date" name="group_by_create_date" context="{'group_by': 'create_date:month'}"/>
+    </group>
+</search>
+        </field>
+    </record>
+
+<!-- Kanban View for Dashboard -->
+<record id="rm_module_configurator_view_kanban" model="ir.ui.view">
+    <field name="name">rm.module.configurator.view.kanban</field>
+    <field name="model">rm.module.configurator</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="category" class="o_kanban_dashboard">
+            <field name="name"/>
+            <field name="category"/>
+            <field name="config_key"/>
+            <field name="boolean_value"/>
+            <field name="active"/>
+            <field name="priority"/>
+            <field name="user_id"/>
+            <field name="company_id"/>
+            <field name="is_system_config"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div class="oe_kanban_card oe_kanban_global_click">
+                        <div class="o_kanban_record_top">
+                            <div class="o_kanban_record_headings">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <small class="o_kanban_record_subtitle text-muted">
+                                        🔑                                    <field name="config_key"/>
+                                </small>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <span class="badge badge-pill" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'">
+                                            <t t-if="record.active.raw_value">✅ Active</t>
+                                            <t t-else="">⏸️ Inactive</t>
+                                        </span>
+                                        <span class="badge badge-pill badge-info" t-if="record.boolean_value.raw_value">
+                                                🟢 Enabled
+                                        </span>
+                                        <span class="badge badge-pill badge-warning" t-if="!record.boolean_value.raw_value">
+                                                🔴 Disabled
+                                        </span>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="badge badge-danger" t-if="record.priority.raw_value == '3'">
+                                                ⚡ High
+                                        </span>
+                                        <span class="badge badge-warning" t-if="record.priority.raw_value == '2'">
+                                                📋 Medium
+                                        </span>
+                                        <span class="badge badge-info" t-if="record.priority.raw_value == '1'">
+                                                📝 Low
+                                        </span>
+                                    </div>
+                                </div>
+                                <div t-if="record.is_system_config.raw_value" class="mt-2">
+                                    <small class="text-warning">🔒 System Configuration</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o_kanban_record_bottom">
+                            <div class="oe_kanban_bottom_left">
+                                <div t-if="record.user_id.raw_value">
+                                        👤                                    <field name="user_id"/>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_bottom_right">
+                                <div t-if="record.company_id.raw_value" groups="base.group_multi_company">
+                                        🏢                                    <field name="company_id"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+<!-- Enhanced Action Window -->
+    <record id="action_rm_module_configurator" model="ir.actions.act_window">
+<field name="name">⚙️ Records Management Configurator</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">rm.module.configurator</field>
+<field name="view_mode">kanban,tree,form</field>
+<field name="search_view_id" ref="rm_module_configurator_view_search"/>
+        <field name="domain">[]</field>
+<field name="context">{
+            'search_default_filter_active': 1,
+            'search_default_group_by_category': 1
+        }</field>
+        <field name="help" type="html">
+<p class="o_view_nocontent_smiling_face">
+                ⚙️ Welcome to the Records Management Configurator!
+</p>
+<p>
+    <b>🎯 Centralized Configuration Management:</b>
+    <br/>
+                • 🔧    <b>Feature Toggles:</b> Enable/disable optional functionality across the system<br/>
+                • 🎨<b>UI Customization:</b> Control field visibility and interface elements<br/>
+                • 🔒<b>Security Settings:</b> Configure access controls and permissions<br/>
+                • 💰<b>Billing Options:</b> Manage financial and billing configurations<br/>
+                • 📱<b>Mobile Features:</b> Control mobile app and FSM functionality<br/>
+                • 📊<b>Reporting:</b> Configure analytics and report generation<br/>
+                • 🔗<b>Integrations:</b> Manage external system connections<br/>
+                • ⚖️<b>Compliance:</b> NAID and regulatory compliance controls<br/>
+                • 🏢<b>Department-Specific:</b> Multi-tenant configuration management
+</p>
+<p>
+<i>🚀 This centralized configurator ensures consistent system behavior and provides granular control over all Records Management features.</i>
+            </p>
+        </field>
+    </record>
+
+<!-- Dashboard Action -->
+<record id="action_rm_module_configurator_dashboard" model="ir.actions.act_window">
+    <field name="name">📊 Configuration Dashboard</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">rm.module.configurator</field>
+    <field name="view_mode">kanban</field>
+    <field name="view_id" ref="rm_module_configurator_view_kanban"/>
+    <field name="search_view_id" ref="rm_module_configurator_view_search"/>
+    <field name="context">{
+            'search_default_filter_active': 1,
+            'search_default_group_by_category': 1
+        }</field>
+</record>
+
+</odoo>
