@@ -137,11 +137,5 @@ class ScanRetrievalItem(models.Model):
             body=_("Rescan requested for item"),
             message_type='notification'
         )
-        })
-
-        self.message_post(
-            body=_("Rescan requested for item"),
-            message_type='notification'
-        )
 
 

@@ -127,12 +127,11 @@ from . import records_vehicle
 from . import paper_bale_recycling
 from . import paper_load_shipment
 
-# Advanced billing system (base model first)
-
-from . import advanced_billing
-from . import advanced_billing_line  # Added missing import for advanced.billing.line model
+# Advanced billing system (line models first to avoid circular dependency)
+from . import advanced_billing_line  # MUST be imported before advanced_billing
 from . import advanced_billing_service_line
 from . import advanced_billing_storage_line
+from . import advanced_billing  # Main billing model imports after line models
 from . import inventory_item_location_transfer
 # Note: advanced_billing_line and sublines imported above to avoid circular dependency
 from . import records_advanced_billing_period
