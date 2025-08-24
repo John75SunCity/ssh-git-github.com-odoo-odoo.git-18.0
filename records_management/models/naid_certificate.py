@@ -22,19 +22,18 @@ class NaidCertificate(models.Model):
     certificate_number = fields.Char(string='Certificate Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, readonly=True, states={'draft': [('readonly', False)]})
-    
+
     # FSM & Operational Links
     fsm_task_id = fields.Many2one('project.task', string='FSM Work Order', readonly=True, states={'draft': [('readonly', False)]}, help="Link to the Field Service task for this destruction.")
     technician_user_id = fields.Many2one('res.users', string='Technician', related='fsm_task_id.user_id', store=True, readonly=True)
-    custody_id = fields.Many2one('naid.custody', string='Chain of Custody', readonly=True, states={'draft': [('readonly', False)]})
 
     # Link to the source of the destruction
     res_model = fields.Char(string='Related Document Model', readonly=True)
     res_id = fields.Integer(string='Related Document ID', readonly=True)
-    
+
     destruction_date = fields.Datetime(string='Destruction Date', required=True, readonly=True, states={'draft': [('readonly', False)]})
     issue_date = fields.Datetime(string='Issue Date', readonly=True)
-    
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('issued', 'Issued'),
@@ -71,7 +70,7 @@ class NaidCertificate(models.Model):
             self.destruction_date = self.fsm_task_id.date_end or fields.Datetime.now()
             self.res_model = 'project.task'
             self.res_id = self.fsm_task_id.id
-            
+
             # Automatically link related containers/boxes if they are on the task
             if hasattr(self.fsm_task_id, 'container_ids'):
                 self.container_ids = [(6, 0, self.fsm_task_id.container_ids.ids)]
@@ -105,11 +104,11 @@ class NaidCertificate(models.Model):
         self.ensure_one()
         if self.state != 'issued':
             raise UserError(_("Only issued certificates can be sent."))
-        
+
         template = self.env.ref('records_management.email_template_naid_certificate', raise_if_not_found=False)
         if not template:
             raise UserError(_("The email template for NAID Certificates could not be found."))
-            
+
         template.send_mail(self.id, force_send=True)
         self.write({'state': 'sent'})
         self.message_post(body=_("Certificate sent to customer via email."))

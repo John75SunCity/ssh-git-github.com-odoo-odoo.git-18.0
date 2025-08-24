@@ -75,7 +75,6 @@ class RecordsRetentionPolicy(models.Model):
 
     # === RELATIONSHIPS ===
     rule_ids = fields.One2many('records.retention.rule', 'policy_id', string="Retention Rules")
-    version_ids = fields.One2many('records.policy.version', 'policy_id', string="Version History")
     document_type_id = fields.Many2one('records.document.type', string='Document Type')
     partner_id = fields.Many2one('res.partner', string='Customer')
     department_id = fields.Many2one('hr.department', string='Department')
@@ -94,9 +93,7 @@ class RecordsRetentionPolicy(models.Model):
 
     # === COMPUTED COUNTS & STATS ===
     rule_count = fields.Integer(string="Rule Count", compute='_compute_counts')
-    version_count = fields.Integer(string="Version Count", compute='_compute_counts')
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
-    current_version_id = fields.Many2one('records.policy.version', string="Current Active Version", compute='_compute_current_version', store=True)
     policy_level = fields.Integer(string='Policy Level', compute='_compute_policy_level')
 
     # === REVIEW & COMPLIANCE ===

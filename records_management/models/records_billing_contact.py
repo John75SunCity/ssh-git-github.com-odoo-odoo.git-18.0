@@ -36,8 +36,7 @@ class RecordsBillingContact(models.Model):
         ondelete='cascade',
         help="The customer this billing contact is associated with."
     )
-    billing_profile_id = fields.Many2one('customer.billing.profile', string="Billing Profile")
-    profile_id = fields.Many2one('records.billing.profile', string="Billing Profile")
+    billing_profile_id = fields.Many2one('records.billing.profile', string="Billing Profile")
     company_id = fields.Many2one(
         'res.company',
         string='Company',

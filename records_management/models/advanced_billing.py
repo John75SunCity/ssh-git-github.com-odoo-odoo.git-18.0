@@ -102,22 +102,22 @@ class AdvancedBilling(models.Model):
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', required=True, tracking=True)
 
-    # Line relationships
-    line_ids = fields.One2many(
-        'advanced.billing.line',
-        'billing_id',
-        string='Billing Lines'
-    )
-    service_line_ids = fields.One2many(
-        'advanced.billing.service.line',
-        'billing_id',
-        string='Service Lines'
-    )
-    storage_line_ids = fields.One2many(
-        'advanced.billing.storage.line',
-        'billing_id',
-        string='Storage Lines'
-    )
+    # Line relationships (Temporarily commented out to break circular dependency)
+    # line_ids = fields.One2many(
+    #     'advanced.billing.line',
+    #     'billing_id',
+    #     string='Billing Lines'
+    # )
+    # service_line_ids = fields.One2many(
+    #     'advanced.billing.service.line',
+    #     'billing_id',
+    #     string='Service Lines'
+    # )
+    # storage_line_ids = fields.One2many(
+    #     'advanced.billing.storage.line',
+    #     'billing_id',
+    #     string='Storage Lines'
+    # )
 
     # Financial fields
     total_amount = fields.Monetary(

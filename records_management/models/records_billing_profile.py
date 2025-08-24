@@ -38,8 +38,6 @@ class RecordsBillingProfile(models.Model):
     # CONTACTS & COMMUNICATION
     # ============================================================================
     billing_contact_ids = fields.One2many('records.billing.contact', 'profile_id', string="Billing Contacts")
-    primary_contact_id = fields.Many2one('records.billing.contact', string="Primary Contact", compute='_compute_primary_contact', store=True)
-    invoice_email = fields.Char(string="Invoice Email", related='primary_contact_id.email', readonly=False, store=True)
     send_reminders = fields.Boolean(string="Send Payment Reminders", default=True)
     email_invoices = fields.Boolean(string="Email Invoices Automatically", default=True)
 

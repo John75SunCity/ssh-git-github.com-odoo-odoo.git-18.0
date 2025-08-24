@@ -4,6 +4,7 @@ location, and company association. It supports audit trails and activity trackin
 """
 
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 class KeyInventory(models.Model):
     """Model for managing key inventory records.

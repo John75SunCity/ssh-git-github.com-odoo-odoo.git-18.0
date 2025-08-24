@@ -76,7 +76,6 @@ class RecordsDocumentType(models.Model):
     # ============================================================================
     # FIELDS - Retention & Destruction
     # ============================================================================
-    retention_policy_id = fields.Many2one('records.retention.policy', string="Retention Policy")
     default_retention_years = fields.Integer(string="Default Retention (Years)", default=7, help="Default retention period if no policy is set.")
     requires_legal_hold = fields.Boolean(string="Subject to Legal Hold", help="If checked, documents of this type can be placed on legal hold.")
     destruction_method = fields.Selection([
