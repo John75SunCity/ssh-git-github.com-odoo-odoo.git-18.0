@@ -7,7 +7,7 @@
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
                 <tree string="Chain of Custody">
-                    <!-- Add fields here -->
+                    <field name="name"/>
                 </tree>
             </field>
         </record>
@@ -19,7 +19,7 @@
                 <form string="Chain of Custody">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
                         </group>
                     </sheet>
                 </form>

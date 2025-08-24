@@ -8,7 +8,13 @@
             <field name="model">media.type</field>
             <field name="arch" type="xml">
                 <tree string="Media Type">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="category"/>
+                    <field name="retention_period"/>
+                    <field name="destruction_method"/>
+                    <field name="is_electronic"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -21,7 +27,14 @@
                 <form string="Media Type">
                     <sheet>
                         <group>
-                            <!-- Add fields here -->
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="category"/>
+                            <field name="retention_period"/>
+                            <field name="destruction_method"/>
+                            <field name="is_electronic"/>
+                            <field name="requires_special_handling"/>
+                            <field name="active"/>
                         </group>
                     </sheet>
                 </form>

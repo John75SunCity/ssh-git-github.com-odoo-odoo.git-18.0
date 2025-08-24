@@ -7,8 +7,15 @@
             <field name="name">file.retrieval.view.tree</field>
             <field name="model">file.retrieval</field>
             <field name="arch" type="xml">
-                <tree string="File Retrieval">
-                    <!-- Add fields here -->
+                <tree string="File Retrieval" decoration-warning="status == 'searching'" decoration-info="status == 'located'" decoration-success="status == 'delivered'">
+                    <field name="name"/>
+                    <field name="requested_file_name"/>
+                    <field name="partner_id"/>
+                    <field name="status"/>
+                    <field name="priority"/>
+                    <field name="user_id"/>
+                    <field name="discovery_date"/>
+                    <field name="containers_accessed_count"/>
                 </tree>
             </field>
         </record>
@@ -20,9 +27,59 @@
             <field name="arch" type="xml">
                 <form string="File Retrieval">
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="action" name="action_start_search" string="Start Search"
+                                    attrs="{'invisible': [('status', '!=', 'pending')]}"
+                                    class="oe_stat_button" icon="fa-play"/>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="display_name" readonly="1"/>
+                            </h1>
+                        </div>
                         <group>
-                            <!-- Add fields here -->
+                            <group name="main_info">
+                                <field name="name"/>
+                                <field name="requested_file_name"/>
+                                <field name="partner_id"/>
+                                <field name="user_id"/>
+                                <field name="status"/>
+                                <field name="priority"/>
+                            </group>
+                            <group name="details">
+                                <field name="document_id"/>
+                                <field name="container_id"/>
+                                <field name="barcode"/>
+                                <field name="company_id"/>
+                                <field name="active"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page string="Search Details" name="search">
+                                <group>
+                                    <group name="discovery">
+                                        <field name="file_discovered"/>
+                                        <field name="discovery_date" attrs="{'invisible': [('file_discovered', '=', False)]}"/>
+                                        <field name="discovery_container_id" attrs="{'invisible': [('file_discovered', '=', False)]}"/>
+                                    </group>
+                                    <group name="condition">
+                                        <field name="condition_before"/>
+                                        <field name="condition_after"/>
+                                    </group>
+                                </group>
+                                <separator string="Searched Containers"/>
+                                <field name="searched_container_ids" nolabel="1"/>
+                            </page>
+                            <page string="Search Attempts" name="attempts">
+                                <field name="search_attempt_ids" nolabel="1"/>
+                            </page>
+                            <page string="Not Found" name="not_found" attrs="{'invisible': [('status', '!=', 'not_found')]}">
+                                <group>
+                                    <field name="not_found_reason"/>
+                                    <field name="not_found_notes"/>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -34,7 +91,27 @@
             <field name="model">file.retrieval</field>
             <field name="arch" type="xml">
                 <search string="Search File Retrieval">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="requested_file_name"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="container_id"/>
+                    <field name="status"/>
+                    <field name="priority"/>
+                    <filter string="Pending" name="pending" domain="[('status', '=', 'pending')]"/>
+                    <filter string="Searching" name="searching" domain="[('status', '=', 'searching')]"/>
+                    <filter string="Located" name="located" domain="[('status', '=', 'located')]"/>
+                    <filter string="Not Found" name="not_found" domain="[('status', '=', 'not_found')]"/>
+                    <separator/>
+                    <filter string="High Priority" name="high_priority" domain="[('priority', 'in', ['2', '3'])]"/>
+                    <filter string="File Discovered" name="discovered" domain="[('file_discovered', '=', True)]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="group_status" domain="[]" context="{'group_by': 'status'}"/>
+                        <filter string="Customer" name="group_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Assigned User" name="group_user" domain="[]" context="{'group_by': 'user_id'}"/>
+                        <filter string="Priority" name="group_priority" domain="[]" context="{'group_by': 'priority'}"/>
+                    </group>
                 </search>
             </field>
         </record>

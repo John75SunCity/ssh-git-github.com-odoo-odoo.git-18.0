@@ -7,7 +7,14 @@
             <field name="model">customer.category</field>
             <field name="arch" type="xml">
                 <tree string="Customer Category">
-                    <!-- Add fields here -->
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="default_billing_model"/>
+                    <field name="priority_level"/>
+                    <field name="sla_hours"/>
+                    <field name="customer_count"/>
+                    <field name="active"/>
+                    <field name="company_id"/>
                 </tree>
             </field>
         </record>
@@ -18,9 +25,35 @@
             <field name="arch" type="xml">
                 <form string="Customer Category">
                     <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Category Name..."/>
+                            </h1>
+                        </div>
                         <group>
-                            <!-- Add fields here -->
+                            <group name="main_info">
+                                <field name="description"/>
+                                <field name="company_id"/>
+                                <field name="active"/>
+                            </group>
+                            <group name="configuration">
+                                <field name="default_billing_model"/>
+                                <field name="priority_level"/>
+                                <field name="sla_hours"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page string="Customers" name="customers">
+                                <field name="partner_ids" nolabel="1">
+                                    <tree string="Customers">
+                                        <field name="name"/>
+                                        <field name="email"/>
+                                        <field name="phone"/>
+                                        <field name="is_company"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>

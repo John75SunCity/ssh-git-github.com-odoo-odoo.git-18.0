@@ -7,8 +7,15 @@
             <field name="name">naid.operator.certification.view.tree</field>
             <field name="model">naid.operator.certification</field>
             <field name="arch" type="xml">
-                <tree string="NAID Operator Certification">
-                    <!-- Add fields here -->
+                <tree string="NAID Operator Certification" decoration-warning="status == 'expired'" decoration-danger="status == 'revoked'">
+                    <field name="name"/>
+                    <field name="operator_id"/>
+                    <field name="certification_type"/>
+                    <field name="certificate_number"/>
+                    <field name="issue_date"/>
+                    <field name="expiry_date"/>
+                    <field name="status"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -20,9 +27,43 @@
             <field name="arch" type="xml">
                 <form string="NAID Operator Certification">
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" name="action_renew_certification" string="Renew"
+                                    attrs="{'invisible': [('status', 'not in', ['expired', 'active'])]}"
+                                    class="oe_stat_button" icon="fa-refresh"/>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Certification Name..."/>
+                            </h1>
+                        </div>
                         <group>
-                            <!-- Add fields here -->
+                            <group name="basic_info">
+                                <field name="operator_id"/>
+                                <field name="certification_type"/>
+                                <field name="certificate_number"/>
+                                <field name="status"/>
+                                <field name="active"/>
+                            </group>
+                            <group name="dates">
+                                <field name="issue_date"/>
+                                <field name="expiry_date"/>
+                                <field name="issuing_authority"/>
+                                <field name="company_id"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page string="Details" name="details">
+                                <group>
+                                    <field name="scope_of_certification" nolabel="1" placeholder="Enter scope of certification..."/>
+                                </group>
+                                <separator string="Notes"/>
+                                <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                            </page>
+                            <page string="Documents" name="documents">
+                                <field name="attachment_ids" nolabel="1"/>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -34,7 +75,24 @@
             <field name="model">naid.operator.certification</field>
             <field name="arch" type="xml">
                 <search string="Search NAID Operator Certification">
-                    <!-- Add search fields here -->
+                    <field name="name"/>
+                    <field name="operator_id"/>
+                    <field name="certification_type"/>
+                    <field name="certificate_number"/>
+                    <field name="issuing_authority"/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Expired" name="expired" domain="[('status', '=', 'expired')]"/>
+                    <filter string="Active Status" name="active_status" domain="[('status', '=', 'active')]"/>
+                    <separator/>
+                    <filter string="NAID AAA" name="naid_aaa" domain="[('certification_type', '=', 'aaa')]"/>
+                    <filter string="Hard Drive Destruction" name="hard_drive" domain="[('certification_type', '=', 'hard_drive')]"/>
+                    <separator/>
+                    <group expand="0" string="Group By">
+                        <filter string="Operator" name="group_operator" domain="[]" context="{'group_by': 'operator_id'}"/>
+                        <filter string="Certification Type" name="group_type" domain="[]" context="{'group_by': 'certification_type'}"/>
+                        <filter string="Status" name="group_status" domain="[]" context="{'group_by': 'status'}"/>
+                        <filter string="Expiry Date" name="group_expiry" domain="[]" context="{'group_by': 'expiry_date'}"/>
+                    </group>
                 </search>
             </field>
         </record>

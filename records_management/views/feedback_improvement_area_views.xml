@@ -7,8 +7,12 @@
             <field name="name">feedback.improvement.area.view.tree</field>
             <field name="model">feedback.improvement.area</field>
             <field name="arch" type="xml">
-                <tree string="Feedback Improvement Area">
-                    <!-- Add fields here -->
+                <tree string="Feedback Improvement Area" decoration-info="state == 'under_review'" decoration-success="state == 'closed'">
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="state"/>
+                    <field name="feedback_count"/>
+                    <field name="active"/>
                 </tree>
             </field>
         </record>
@@ -20,9 +24,42 @@
             <field name="arch" type="xml">
                 <form string="Feedback Improvement Area">
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" name="action_view_related_feedback" string="Feedback"
+                                    class="oe_stat_button" icon="fa-comments">
+                                <field name="feedback_count" widget="statinfo" string="Feedback"/>
+                            </button>
+                            <button type="object" name="action_create_improvement_plan" string="Create Plan"
+                                    class="oe_stat_button" icon="fa-plus-circle"/>
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Improvement Area Name..."/>
+                            </h1>
+                        </div>
                         <group>
-                            <!-- Add fields here -->
+                            <group name="basic_info">
+                                <field name="state"/>
+                                <field name="active"/>
+                                <field name="color" widget="color"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page string="Description" name="description">
+                                <field name="description" nolabel="1" placeholder="Describe this improvement area..."/>
+                            </page>
+                            <page string="Related Feedback" name="feedback">
+                                <field name="feedback_ids" nolabel="1">
+                                    <tree string="Feedback">
+                                        <field name="name"/>
+                                        <field name="rating"/>
+                                        <field name="sentiment_category"/>
+                                        <field name="priority"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
