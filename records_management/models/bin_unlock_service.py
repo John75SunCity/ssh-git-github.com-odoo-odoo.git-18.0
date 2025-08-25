@@ -118,7 +118,7 @@ class BinUnlockService(models.Model):
     )
     key_id = fields.Many2one('bin.key', string='Key Used', help="The key used for the unlock operation")
     bin_location = fields.Char(string='Bin Location', related='bin_id.customer_location', readonly=True)
-    key_serial_number = fields.Char(string='Key Serial Number', related='key_id.serial_number', readonly=True)
+    key_serial_number = fields.Char(string='Key Serial Number', related='key_id.key_code', readonly=True)
 
     # ============================================================================
     # OPERATIONAL DETAILS
