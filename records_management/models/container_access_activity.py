@@ -18,7 +18,7 @@ from odoo.exceptions import UserError, ValidationError
 class ContainerAccessActivity(models.Model):
     """
     Container Access Activity Management
-    
+
     Tracks individual container access events for audit compliance, security
     monitoring, and operational oversight. Essential for NAID AAA compliance
     and maintaining detailed chain of custody records.
@@ -145,8 +145,9 @@ class ContainerAccessActivity(models.Model):
         help="Barcode of the accessed container"
     )
 
-    container_type = fields.Selection(
-        related="container_id.container_type",
+    # Use related Char from container type record to avoid missing selection target
+    container_type = fields.Char(
+        related="container_id.container_type_id.name",
         readonly=True,
         store=True,
         string="Container Type",
@@ -433,7 +434,7 @@ class ContainerAccessActivity(models.Model):
             # Set default activity name
             if not self.name or self.name == _("New Activity"):
                 self.name = _("Access: %s", self.container_id.name)
-            
+
             # Set access level based on container
             if hasattr(self.container_id, 'access_level'):
                 self.access_level_required = self.container_id.access_level
@@ -497,7 +498,7 @@ class ContainerAccessActivity(models.Model):
             raise UserError(_("Please provide activity findings before completing"))
 
         completion_time = fields.Datetime.now()
-        
+
         if self.approval_required:
             self.write({
                 'status': 'pending_approval',
@@ -555,7 +556,7 @@ class ContainerAccessActivity(models.Model):
     def action_create_follow_up(self):
         """Create follow-up activity"""
         self.ensure_one()
-        
+
         follow_up_vals = {
             'name': _("Follow-up: %s", self.name),
             'container_id': self.container_id.id,
@@ -564,9 +565,9 @@ class ContainerAccessActivity(models.Model):
             'description': _("Follow-up to activity %s", self.name),
             'priority': 'high',
         }
-        
+
         follow_up = self.create(follow_up_vals)
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('Follow-up Activity'),
@@ -583,8 +584,8 @@ class ContainerAccessActivity(models.Model):
     def _check_approval(self):
         """Validate approval requirements"""
         for record in self:
-            if (record.approval_required and 
-                record.status == 'completed' and 
+            if (record.approval_required and
+                record.status == 'completed' and
                 not record.approved):
                 raise ValidationError(_(
                     "Activity requiring approval must be approved before completion"
@@ -625,23 +626,23 @@ class ContainerAccessActivity(models.Model):
     def _check_access_permissions(self):
         """Check if user has permission for the required access level"""
         self.ensure_one()
-        
+
         user_groups = self.env.user.groups_id.mapped('name')
-        
+
         access_requirements = {
             'standard': ['Records User'],
             'restricted': ['Records User', 'Records Manager'],
             'confidential': ['Records Manager'],
             'secure_vault': ['Records Manager', 'Compliance Officer']
         }
-        
+
         required_groups = access_requirements.get(self.access_level_required, [])
         return any(group in user_groups for group in required_groups)
 
     def _create_audit_log(self, action_type):
         """Create NAID audit log entry"""
         self.ensure_one()
-        
+
         if 'naid.audit.log' in self.env:
             audit_vals = {
                 'action_type': action_type,
@@ -659,7 +660,7 @@ class ContainerAccessActivity(models.Model):
     def _create_chain_of_custody(self):
         """Create chain of custody record"""
         self.ensure_one()
-        
+
         if 'chain.of.custody' in self.env:
             custody_vals = {
                 'name': _("Container Access: %s", self.name),
@@ -676,7 +677,7 @@ class ContainerAccessActivity(models.Model):
     def get_activity_summary(self):
         """Get activity summary for reporting"""
         self.ensure_one()
-        
+
         return {
             'activity_reference': self.name,
             'container': self.container_id.name,
@@ -700,7 +701,7 @@ class ContainerAccessActivity(models.Model):
             domain.append(('activity_time', '<=', date_to))
 
         activities = self.search(domain)
-        
+
         stats = {
             'total_activities': len(activities),
             'completed_activities': len(activities.filtered(lambda a: a.status in ['completed', 'approved'])),
