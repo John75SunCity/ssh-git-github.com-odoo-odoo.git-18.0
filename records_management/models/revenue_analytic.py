@@ -24,7 +24,6 @@ class RevenueAnalytic(models.Model):
     # ============================================================================
     # PERIOD & CONFIGURATION
     # ============================================================================
-    config_id = fields.Many2one('revenue.analytic.config', string="Configuration", ondelete='restrict')
     period_start = fields.Date(string='Period Start', required=True, tracking=True)
     period_end = fields.Date(string='Period End', required=True, tracking=True)
 
@@ -35,7 +34,7 @@ class RevenueAnalytic(models.Model):
     projected_revenue = fields.Monetary(string="Projected Revenue", currency_field='currency_id', tracking=True)
     actual_costs = fields.Monetary(string='Actual Costs', currency_field='currency_id', tracking=True)
     profit_margin = fields.Float(string="Profit Margin (%)", compute='_compute_profit_margin', store=True, aggregator="avg")
-    
+
     # ============================================================================
     # CUSTOMER METRICS
     # ============================================================================
@@ -77,11 +76,11 @@ class RevenueAnalytic(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Analytics can only be calculated from a draft state."))
-        
+
         # In a real implementation, this would query account.move.line, usage records, etc.
         # to populate total_revenue, actual_costs, and customer_count.
         # For demonstration, we'll just update the state.
-        
+
         self.write({'state': 'calculated'})
         self.message_post(body=_("Revenue analytics calculated."))
 

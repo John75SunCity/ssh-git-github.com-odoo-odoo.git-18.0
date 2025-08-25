@@ -42,7 +42,7 @@ class CustomerNegotiatedRate(models.Model):
     # RELATIONSHIPS
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    billing_profile_id = fields.Many2one('customer.billing.profile', string='Billing Profile', domain="[('partner_id', '=', partner_id)]")
+    billing_profile_id = fields.Many2one('advanced.billing', string='Billing Profile', domain="[('partner_id', '=', partner_id)]")
 
     # ============================================================================
     # RATE CONFIGURATION

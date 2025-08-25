@@ -15,8 +15,8 @@ class ShreddingRate(models.Model):
     name = fields.Char(string='Rate Name', required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     partner_id = fields.Many2one('res.partner', string="Customer", help="Specify a customer for a negotiated rate. Leave empty for a base rate.")
-    service_id = fields.Many2one('billing.service', string="Service", required=True, help="The shredding service this rate applies to.")
-    
+    service_id = fields.Many2one('shredding.service', string="Service", required=True, help="The shredding service this rate applies to.")
+
     # ============================================================================
     # RATE & PRICING FIELDS
     # ============================================================================
@@ -76,35 +76,35 @@ class ShreddingRate(models.Model):
     def get_effective_rate(self, partner_id=None, date=None):
         """
         Get the effective rate for a customer and date
-        
+
         Args:
             partner_id: Customer ID (optional)
             date: Effective date (optional, defaults to today)
-            
+
         Returns:
             float: The effective rate
         """
         if not date:
             date = fields.Date.today()
-            
+
         domain = [
             ('service_id', '=', self.service_id.id),
             ('state', '=', 'active'),
             '|', ('start_date', '<=', date), ('start_date', '=', False),
             '|', ('end_date', '>=', date), ('end_date', '=', False)
         ]
-        
+
         # First try to find customer-specific rate
         if partner_id:
             customer_domain = domain + [('partner_id', '=', partner_id)]
             customer_rate = self.search(customer_domain, limit=1)
             if customer_rate:
                 return customer_rate.rate
-        
+
         # Fall back to base rate (no customer specified)
         base_domain = domain + [('partner_id', '=', False)]
         base_rate = self.search(base_domain, limit=1)
         if base_rate:
             return base_rate.rate
-            
+
         return 0.0

@@ -26,7 +26,7 @@ class ContainerAccessVisitor(models.Model):
         ('vendor', 'Vendor'),
         ('other', 'Other')
     ], string='Visitor Type', required=True, tracking=True)
-    
+
     company_name = fields.Char(string='Company Name')
     identification_type = fields.Selection([
         ('drivers_license', "Driver's License"),
@@ -34,7 +34,7 @@ class ContainerAccessVisitor(models.Model):
         ('id_card', 'ID Card'),
         ('employee_badge', 'Employee Badge')
     ], string='Identification Type', required=True)
-    
+
     identification_number = fields.Char(string='Identification Number', required=True)
     contact_phone = fields.Char(string='Phone Number')
     contact_email = fields.Char(string='Email Address')
@@ -59,7 +59,7 @@ class ContainerAccessVisitor(models.Model):
     # RELATIONSHIP FIELDS
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Related Partner')
-    work_order_id = fields.Many2one('work.order', string='Related Work Order')
+    work_order_id = fields.Many2one('container.access.work.order', string='Related Work Order')
     container_ids = fields.Many2many('records.container', string='Accessed Containers')
     access_activity_ids = fields.One2many('container.access.activity', 'visitor_id', string='Access Activities')
 
@@ -72,7 +72,7 @@ class ContainerAccessVisitor(models.Model):
         ('restricted', 'Restricted'),
         ('confidential', 'Confidential')
     ], string='Security Clearance', default='basic')
-    
+
     badge_number = fields.Char(string='Visitor Badge Number')
     status = fields.Selection([
         ('scheduled', 'Scheduled'),
