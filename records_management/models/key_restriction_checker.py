@@ -57,7 +57,7 @@ class KeyRestrictionChecker(models.Model):
     # New Fields from analysis
     related_user_id = fields.Many2one('res.users', string='Related User')
     related_partner_id = fields.Many2one('res.partner', string='Related Customer')
-    related_bin_id = fields.Many2one('records.bin', string='Related Bin')
+    related_bin_id = fields.Many2one('shred.bin', string='Related Bin')
     related_key_id = fields.Many2one('records.key', string='Related Key')
     related_document_id = fields.Many2one('records.document', string='Related Document')
     related_container_id = fields.Many2one('records.container', string='Related Container')

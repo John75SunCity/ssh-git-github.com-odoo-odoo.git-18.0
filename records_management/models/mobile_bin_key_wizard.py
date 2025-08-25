@@ -27,7 +27,7 @@ class MobileBinKeyWizard(models.TransientModel):
     mobile_session_id = fields.Char(string='Mobile Session ID')
     device_info = fields.Char(string='Device Info')
 
-    bin_key_id = fields.Many2one('records.bin.key', string='Bin Key')
+    bin_key_id = fields.Many2one('bin.key', string='Bin Key')
     bin_location_id = fields.Many2one('records.location', string='Bin Location')
     bin_number = fields.Char(string='Bin Number')
     key_code = fields.Char(string='Key Code')

@@ -17,7 +17,7 @@ from odoo.exceptions import UserError, ValidationError
 class BinUnlockService(models.Model):
     """
     Bin Unlock Service Management
-    
+
     Handles the workflow for unlocking physical bins, including scheduling,
     technician assignment, authorization, and billing. Ensures a secure
     and auditable process for all bin access operations.
@@ -110,14 +110,14 @@ class BinUnlockService(models.Model):
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
     bin_id = fields.Many2one(
-        'records.bin',
+        'shred.bin',
         string='Bin',
         required=True,
         domain="[('partner_id', '=', partner_id)]",
         help="The physical bin to be unlocked"
     )
     key_id = fields.Many2one('bin.key', string='Key Used', help="The key used for the unlock operation")
-    bin_location = fields.Char(string='Bin Location', related='bin_id.location_id.name', readonly=True)
+    bin_location = fields.Char(string='Bin Location', related='bin_id.customer_location', readonly=True)
     key_serial_number = fields.Char(string='Key Serial Number', related='key_id.serial_number', readonly=True)
 
     # ============================================================================
@@ -303,7 +303,7 @@ class BinUnlockService(models.Model):
         self.ensure_one()
         if self.state != 'completed':
             raise UserError(_("A service certificate can only be generated for completed services."))
-        
+
         # This would typically call a report action
         # For a wizard-based approach:
         return {
