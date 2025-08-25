@@ -138,7 +138,7 @@ class ContainerDestructionWorkOrder(models.Model):
             containers = record.container_ids
             record.container_count = len(containers)
             record.total_cubic_feet = sum(containers.mapped('cubic_feet'))
-            record.estimated_weight_lbs = sum(containers.mapped('estimated_weight'))
+            record.estimated_weight_lbs = sum(containers.mapped('weight'))
 
     @api.depends('container_count', 'destruction_method')
     def _compute_estimated_duration(self):

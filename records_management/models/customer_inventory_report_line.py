@@ -42,7 +42,7 @@ class CustomerInventoryReportLine(models.Model):
     container_type = fields.Selection(related='container_id.container_type_id.name', string='Container Type')
     container_barcode = fields.Char(related='container_id.barcode', string='Barcode')
     container_volume_cf = fields.Float(related='container_id.cubic_feet', string='Volume (cf)')
-    container_weight_lbs = fields.Float(related='container_id.estimated_weight', string='Weight (lbs)')
+    container_weight_lbs = fields.Float(related='container_id.weight', string='Weight (lbs)')
     document_type_id = fields.Many2one('records.document.type', string='Document Type')
     document_type = fields.Char(string="Document Type Name", related='document_type_id.name')
     document_count = fields.Integer(string='Document Count')

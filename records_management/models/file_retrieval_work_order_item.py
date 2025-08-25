@@ -18,22 +18,22 @@ class FileRetrievalWorkOrderItem(models.Model):
     sequence = fields.Integer(string="Sequence", default=10)
     company_id = fields.Many2one('res.company', string='Company', related='work_order_id.company_id', store=True)
     active = fields.Boolean(string='Active', default=True)
-    
+
     work_order_id = fields.Many2one('file.retrieval.work.order', string='Work Order', required=True, ondelete='cascade')
     partner_id = fields.Many2one('res.partner', string='Customer', related='work_order_id.partner_id', store=True)
-    
+
     file_name = fields.Char(string="File Name", required=True)
     estimated_pages = fields.Integer(string="Estimated Pages")
     actual_pages = fields.Integer(string="Actual Pages")
-    
+
     file_type = fields.Selection([('document', 'Document'), ('folder', 'Folder'), ('other', 'Other')], string="File Type")
     file_format = fields.Selection([('paper', 'Paper'), ('digital', 'Digital')], string="File Format")
-    
+
     container_id = fields.Many2one('records.container', string="Container")
-    container_location = fields.Char(string="Location in Container", related='container_id.storage_location_id.name', readonly=True)
+    container_location = fields.Char(string="Location in Container", related='container_id.location_id.name', readonly=True)
     location_notes = fields.Text(string="Location Notes")
     file_position = fields.Char(string="Position in Container")
-    
+
     status = fields.Selection([
         ('pending', 'Pending'),
         ('locating', 'Locating'),
@@ -45,13 +45,13 @@ class FileRetrievalWorkOrderItem(models.Model):
         ('not_found', 'Not Found'),
         ('damaged', 'Damaged'),
     ], string='Status', default='pending', tracking=True)
-    
+
     condition = fields.Selection([('good', 'Good'), ('fair', 'Fair'), ('poor', 'Poor'), ('damaged', 'Damaged')], string="Condition")
     quality_notes = fields.Text(string="Quality Notes")
     quality_approved = fields.Boolean(string="Quality Approved")
     quality_approved_by_id = fields.Many2one('res.users', string="Approved By")
     quality_approved_date = fields.Datetime(string="Approved Date")
-    
+
     date_located = fields.Datetime(string="Date Located")
     date_retrieved = fields.Datetime(string="Date Retrieved")
     date_quality_checked = fields.Datetime(string="Date Quality Checked")

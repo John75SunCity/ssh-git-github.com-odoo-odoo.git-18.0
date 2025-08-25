@@ -17,7 +17,7 @@ class RetrievalItemBase(models.AbstractModel):
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    
+
     # ============================================================================
     # USER ASSIGNMENT AND TRACKING
     # ============================================================================
@@ -29,7 +29,7 @@ class RetrievalItemBase(models.AbstractModel):
         ('2', 'High'),
         ('3', 'Very High')
     ], string='Priority', default='1', tracking=True)
-    
+
     # ============================================================================
     # STATUS AND WORKFLOW
     # ============================================================================
@@ -42,41 +42,41 @@ class RetrievalItemBase(models.AbstractModel):
         ('not_found', 'Not Found'),
         ('cancelled', 'Cancelled')
     ], string='Status', default='pending', tracking=True, required=True)
-    
+
     state = fields.Selection(related='status', string='State')
-    
+
     # ============================================================================
     # PARTNER AND CUSTOMER INFORMATION
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Customer', tracking=True)
-    
+
     # ============================================================================
     # LOCATION AND CONTAINER TRACKING
     # ============================================================================
     location_id = fields.Many2one('records.location', string='Current Location')
     container_id = fields.Many2one('records.container', string='Container')
     current_location = fields.Char(string='Current Location Description')
-    
+
     # ============================================================================
     # DESCRIPTIONS AND NOTES
     # ============================================================================
     description = fields.Text(string='Item Description')
     notes = fields.Text(string='Notes')
     handling_instructions = fields.Text(string='Handling Instructions')
-    
+
     # ============================================================================
     # BARCODE AND IDENTIFICATION
     # ============================================================================
     barcode = fields.Char(string='Barcode/ID')
     tracking_number = fields.Char(string='Tracking Number')
-    
+
     # ============================================================================
     # TIMING FIELDS
     # ============================================================================
     retrieval_date = fields.Datetime(string='Retrieved Date')
     estimated_time = fields.Float(string='Estimated Time (hours)')
     actual_time = fields.Float(string='Actual Time (hours)')
-    
+
     # ============================================================================
     # SECURITY AND ACCESS
     # ============================================================================
@@ -86,10 +86,10 @@ class RetrievalItemBase(models.AbstractModel):
         ('confidential', 'Confidential'),
         ('restricted', 'Restricted')
     ], string='Security Level', default='internal')
-    
+
     access_authorized_by_id = fields.Many2one('res.users', string='Access Authorized By')
     authorization_date = fields.Datetime(string='Authorization Date')
-    
+
     # ============================================================================
     # CONDITION TRACKING
     # ============================================================================
@@ -100,7 +100,7 @@ class RetrievalItemBase(models.AbstractModel):
         ('poor', 'Poor'),
         ('damaged', 'Damaged')
     ], string='Condition Before')
-    
+
     condition_after = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),
@@ -108,9 +108,9 @@ class RetrievalItemBase(models.AbstractModel):
         ('poor', 'Poor'),
         ('damaged', 'Damaged')
     ], string='Condition After')
-    
+
     condition_notes = fields.Text(string='Condition Notes')
-    
+
     # ============================================================================
     # SPECIAL HANDLING
     # ============================================================================
@@ -118,14 +118,14 @@ class RetrievalItemBase(models.AbstractModel):
     fragile = fields.Boolean(string='Fragile Item')
     quality_checked = fields.Boolean(string='Quality Checked')
     quality_issues = fields.Text(string='Quality Issues')
-    
+
     # ============================================================================
     # MEASUREMENTS
     # ============================================================================
     estimated_weight = fields.Float(string='Estimated Weight (kg)')
     actual_weight = fields.Float(string='Actual Weight (kg)')
     dimensions = fields.Char(string='Dimensions (LxWxH)')
-    
+
     # ============================================================================
     # NOT FOUND HANDLING
     # ============================================================================
@@ -137,9 +137,9 @@ class RetrievalItemBase(models.AbstractModel):
         ('access_denied', 'Access Denied'),
         ('other', 'Other Reason')
     ], string='Not Found Reason')
-    
+
     not_found_notes = fields.Text(string='Not Found Notes')
-    
+
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
@@ -153,7 +153,7 @@ class RetrievalItemBase(models.AbstractModel):
             status_display = dict(item._fields['status'].selection).get(item.status, item.status)
             parts.append(f"({status_display})")
             item.display_name = " ".join(parts)
-    
+
     # ============================================================================
     # ONCHANGE METHODS
     # ============================================================================
@@ -162,15 +162,15 @@ class RetrievalItemBase(models.AbstractModel):
         """Update location when container changes"""
         if self.container_id:
             self.current_location = self.container_id.current_location
-            self.location_id = self.container_id.storage_location_id
-    
+            self.location_id = self.container_id.location_id
+
     @api.onchange('status')
     def _onchange_status(self):
         """Handle status changes"""
         if self.status == 'retrieved' and not self.retrieval_date:
             self.retrieval_date = fields.Datetime.now()
             self.retrieved_by_id = self.env.user.id
-    
+
     # ============================================================================
     # CONSTRAINT METHODS
     # ============================================================================
@@ -180,7 +180,7 @@ class RetrievalItemBase(models.AbstractModel):
         for item in self:
             if item.status != 'cancelled' and not item.partner_id:
                 raise ValidationError(_("Customer is required for retrieval items."))
-    
+
     @api.constrains('estimated_time', 'actual_time')
     def _check_time_values(self):
         """Validate time values are positive"""
@@ -189,7 +189,7 @@ class RetrievalItemBase(models.AbstractModel):
                 raise ValidationError(_("Estimated time must be positive."))
             if item.actual_time and item.actual_time < 0:
                 raise ValidationError(_("Actual time must be positive."))
-    
+
     # ============================================================================
     # STATUS UPDATE METHODS
     # ============================================================================
@@ -199,44 +199,44 @@ class RetrievalItemBase(models.AbstractModel):
         vals = {'status': new_status}
         if extra_vals:
             vals.update(extra_vals)
-        
+
         self.write(vals)
-        
+
         if message_body:
             self.message_post(body=message_body, message_type='notification')
-        
+
         return True
-    
+
     def action_start_search(self):
         """Start the search process"""
         self.ensure_one()
         if self.status != 'pending':
             raise UserError(_("Only pending items can start the search process."))
-        
+
         self._update_status(
             'searching',
             _("Search process started"),
             {'user_id': self.env.user.id}
         )
-    
+
     def action_mark_located(self):
         """Mark item as located"""
         self.ensure_one()
         if self.status not in ['pending', 'searching']:
             raise UserError(_("Item must be pending or searching to be marked as located."))
-        
+
         self._update_status(
             'located',
             _("Item has been located"),
             {'retrieval_date': fields.Datetime.now()}
         )
-    
+
     def action_mark_retrieved(self):
         """Mark item as retrieved"""
         self.ensure_one()
         if self.status != 'located':
             raise UserError(_("Item must be located before it can be retrieved."))
-        
+
         self._update_status(
             'retrieved',
             _("Item has been retrieved"),
@@ -245,24 +245,24 @@ class RetrievalItemBase(models.AbstractModel):
                 'retrieved_by_id': self.env.user.id
             }
         )
-    
+
     def action_mark_completed(self):
         """Mark item as completed"""
         self.ensure_one()
         if self.status != 'retrieved':
             raise UserError(_("Item must be retrieved before it can be completed."))
-        
+
         self._update_status(
             'completed',
             _("Item processing completed")
         )
-    
+
     def action_mark_not_found(self, reason='not_in_container', notes=''):
         """Mark item as not found"""
         self.ensure_one()
         if self.status not in ['pending', 'searching']:
             raise UserError(_("Only pending or searching items can be marked as not found."))
-        
+
         self._update_status(
             'not_found',
             _("Item marked as not found"),
@@ -271,18 +271,18 @@ class RetrievalItemBase(models.AbstractModel):
                 'not_found_notes': notes or _("Item not found after search.")
             }
         )
-    
+
     def action_cancel(self):
         """Cancel the retrieval item"""
         self.ensure_one()
         if self.status in ['completed', 'not_found']:
             raise UserError(_("Cannot cancel completed or not found items."))
-        
+
         self._update_status(
             'cancelled',
             _("Item has been cancelled")
         )
-    
+
     # ============================================================================
     # SEARCH AND UTILITY METHODS
     # ============================================================================
@@ -290,15 +290,15 @@ class RetrievalItemBase(models.AbstractModel):
         """Search items by status"""
         if not status_list:
             status_list = ['pending', 'searching', 'located']
-        
+
         domain = [('status', 'in', status_list)]
         return self.search(domain, order='priority desc, create_date desc')
-    
+
     def find_by_partner(self, partner_id, limit=None):
         """Search items by partner"""
         domain = [('partner_id', '=', partner_id)]
         return self.search(domain, limit=limit, order='create_date desc')
-    
+
     def get_high_priority_items(self, partner_id=None):
         """Get high and very high priority items"""
         domain = [
@@ -307,9 +307,9 @@ class RetrievalItemBase(models.AbstractModel):
         ]
         if partner_id:
             domain.append(('partner_id', '=', partner_id))
-        
+
         return self.search(domain, order='priority desc, create_date desc')
-    
+
     # ============================================================================
     # AUDIT AND LOGGING
     # ============================================================================
@@ -324,7 +324,7 @@ class RetrievalItemBase(models.AbstractModel):
             message_type='notification'
         )
         return True
-    
+
     # ============================================================================
     # UTILITY METHODS
     # ============================================================================
@@ -341,7 +341,7 @@ class RetrievalItemBase(models.AbstractModel):
             'cancelled': 'dark'
         }
         return color_map.get(self.status, 'secondary')
-    
+
     def get_priority_color(self):
         """Get color for priority display"""
         self.ensure_one()

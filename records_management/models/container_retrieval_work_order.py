@@ -107,7 +107,7 @@ class ContainerRetrievalWorkOrder(models.Model):
             containers = record.container_ids
             record.container_count = len(containers)
             record.total_volume = sum(containers.mapped('cubic_feet'))
-            record.total_weight = sum(containers.mapped('estimated_weight'))
+            record.total_weight = sum(containers.mapped('weight'))
 
     @api.depends('scheduled_delivery_date')
     def _compute_delivery_window(self):

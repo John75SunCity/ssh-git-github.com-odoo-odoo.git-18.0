@@ -25,7 +25,7 @@ class DocumentSearchAttempt(models.Model):
     # Core Search Details
     container_id = fields.Many2one('records.container', string='Container Searched', required=True, tracking=True)
     partner_id = fields.Many2one('res.partner', string='Customer', related='container_id.partner_id', store=True)
-    location_id = fields.Many2one('records.location', string='Location', related='container_id.storage_location_id', store=True)
+    location_id = fields.Many2one('records.location', string='Location', related='container_id.location_id', store=True)
     searched_by_id = fields.Many2one('res.users', string='Searched By', required=True, default=lambda self: self.env.user)
     search_date = fields.Datetime(string='Search Date', required=True, default=fields.Datetime.now)
     search_duration = fields.Float(string='Search Duration (minutes)')

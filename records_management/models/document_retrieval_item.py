@@ -319,7 +319,7 @@ class DocumentRetrievalItem(models.Model):
     def _onchange_container_id(self):
         if self.container_id:
             self.current_location = self.container_id.current_location
-            self.storage_location_id = self.container_id.storage_location_id
+            self.storage_location_id = self.container_id.location_id
 
     @api.onchange('document_id')
     def _onchange_document_id(self):

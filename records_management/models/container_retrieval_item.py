@@ -10,7 +10,7 @@ class ContainerRetrievalItem(models.Model):
 
     # Container-specific fields
     container_id = fields.Many2one('records.container', string='Container', required=True, ondelete='restrict')
-    storage_location_id = fields.Many2one('records.location', string='Storage Location', related='container_id.storage_location_id', readonly=True)
+    storage_location_id = fields.Many2one('records.location', string='Storage Location', related='container_id.location_id', readonly=True)
     estimated_weight = fields.Float(string='Estimated Weight (kg)', related='container_id.weight', readonly=True)
     actual_weight = fields.Float(string='Actual Weight (kg)')
     dimensions = fields.Char(string='Dimensions (LxWxH)', related='container_id.dimensions', readonly=True)
