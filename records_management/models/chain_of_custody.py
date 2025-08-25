@@ -78,14 +78,14 @@ class ChainOfCustody(models.Model):
 
     # Custody Parties
     from_custodian_id = fields.Many2one(
-        'res.users',
+        comodel_name='res.users',
         string='From Custodian',
         tracking=True,
         help="Previous custodian releasing custody"
     )
 
     to_custodian_id = fields.Many2one(
-        'res.users',
+        comodel_name='res.users',
         string='To Custodian',
         required=True,
         tracking=True,
@@ -93,14 +93,14 @@ class ChainOfCustody(models.Model):
     )
 
     witness_id = fields.Many2one(
-        'res.users',
+        comodel_name='res.users',
         string='Witness',
         tracking=True,
         help="Witness to the custody transfer"
     )
 
     department_id = fields.Many2one(
-        'records.department',
+        comodel_name='records.department',
         string='Department',
         tracking=True,
         help="Department responsible for custody"
@@ -108,14 +108,14 @@ class ChainOfCustody(models.Model):
 
     # Location Tracking
     from_location_id = fields.Many2one(
-        'records.location',
+        comodel_name='records.location',
         string='From Location',
         tracking=True,
         help="Previous location"
     )
 
     to_location_id = fields.Many2one(
-        'records.location',
+        comodel_name='records.location',
         string='To Location',
         required=True,
         tracking=True,
@@ -129,7 +129,7 @@ class ChainOfCustody(models.Model):
 
     # Related Records
     container_id = fields.Many2one(
-        'records.container',
+        comodel_name='records.container',
         string='Container',
         ondelete='cascade',
         index=True,
@@ -137,7 +137,7 @@ class ChainOfCustody(models.Model):
     )
 
     document_id = fields.Many2one(
-        'records.document',
+        comodel_name='records.document',
         string='Document',
         ondelete='cascade',
         index=True,
@@ -145,14 +145,14 @@ class ChainOfCustody(models.Model):
     )
 
     request_id = fields.Many2one(
-        'portal.request',
+        comodel_name='portal.request',
         string='Related Request',
         ondelete='set null',
         help="Request that triggered this custody transfer"
     )
 
     destruction_certificate_id = fields.Many2one(
-        'destruction.certificate',
+        comodel_name='destruction.certificate',
         string='Destruction Certificate',
         ondelete='set null',
         help="Certificate if this was a destruction transfer"
@@ -204,7 +204,7 @@ class ChainOfCustody(models.Model):
     )
 
     authorized_by_id = fields.Many2one(
-        'res.users',
+        comodel_name='res.users',
         string='Authorized By',
         help="User who authorized this transfer"
     )
@@ -249,7 +249,7 @@ class ChainOfCustody(models.Model):
     )
 
     verified_by_id = fields.Many2one(
-        'res.users',
+        comodel_name='res.users',
         string='Verified By',
         help="User who verified this transfer"
     )
@@ -261,8 +261,8 @@ class ChainOfCustody(models.Model):
 
     # Audit Information
     audit_log_ids = fields.One2many(
-        'naid.audit.log',
-        'custody_id',
+        comodel_name='naid.audit.log',
+        inverse_name='custody_id',
         string='Audit Logs',
         help="Related audit log entries"
     )
@@ -281,14 +281,14 @@ class ChainOfCustody(models.Model):
     )
 
     next_transfer_id = fields.Many2one(
-        'chain.of.custody',
+        comodel_name='chain.of.custody',
         string='Next Transfer',
         compute='_compute_next_transfer',
         help="Next custody transfer in the chain"
     )
 
     previous_transfer_id = fields.Many2one(
-        'chain.of.custody',
+        comodel_name='chain.of.custody',
         string='Previous Transfer',
         compute='_compute_previous_transfer',
         help="Previous custody transfer in the chain"
@@ -548,23 +548,21 @@ class ChainOfCustody(models.Model):
         return certificate
 
     # Override Methods
-    @api.model
-    def create(self, vals):
-        """Override create to add audit logging."""
-        record = super().create(vals)
-
-        # Create audit log
-        self.env['naid.audit.log'].create({
-            'event_type': 'custody_created',
-            'description': f"New custody record created: {record.display_name}",
-            'user_id': self.env.user.id,
-            'custody_id': record.id,
-            'container_id': record.container_id.id if record.container_id else False,
-            'document_id': record.document_id.id if record.document_id else False,
-        })
-
-        _logger.info(f"Created custody record: {record.display_name}")
-        return record
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to add audit logging. Batch compatible."""
+        records = super().create(vals_list)
+        for record in records:
+            self.env['naid.audit.log'].create({
+                'event_type': 'custody_created',
+                'description': f"New custody record created: {record.display_name}",
+                'user_id': self.env.user.id,
+                'custody_id': record.id,
+                'container_id': record.container_id.id if record.container_id else False,
+                'document_id': record.document_id.id if record.document_id else False,
+            })
+            _logger.info(f"Created custody record: {record.display_name}")
+        return records
 
     def write(self, vals):
         """Override write to add audit logging."""
