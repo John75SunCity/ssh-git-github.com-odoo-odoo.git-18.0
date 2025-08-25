@@ -15,13 +15,13 @@ class PortalFeedbackAnalytic(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string='Period Name', required=True, readonly=True, states={'draft': [('readonly', False)]})
+    name = fields.Char(string='Period Name', required=True, readonly=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
 
-    period_start = fields.Date(string='Period Start Date', required=True, readonly=True, states={'draft': [('readonly', False)]})
-    period_end = fields.Date(string='Period End Date', required=True, readonly=True, states={'draft': [('readonly', False)]})
-    
+    period_start = fields.Date(string='Period Start Date', required=True, readonly=True)
+    period_end = fields.Date(string='Period End Date', required=True, readonly=True)
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('generating', 'Generating'),
@@ -34,18 +34,18 @@ class PortalFeedbackAnalytic(models.Model):
     positive_feedback_count = fields.Integer(string='Positive Feedback', readonly=True)
     neutral_feedback_count = fields.Integer(string='Neutral Feedback', readonly=True)
     negative_feedback_count = fields.Integer(string='Negative Feedback', readonly=True)
-    
+
     average_rating = fields.Float(string='Average Rating (1-5)', readonly=True, digits=(3, 2))
     customer_satisfaction_index = fields.Float(string='CSI (%)', readonly=True, digits=(5, 2), help="Customer Satisfaction Index")
     nps_score = fields.Float(string='NPS', readonly=True, help="Net Promoter Score")
-    
+
     average_response_time = fields.Float(string='Avg. Response Time (Hours)', readonly=True, digits=(16, 2))
     average_resolution_time = fields.Float(string='Avg. Resolution Time (Hours)', readonly=True, digits=(16, 2))
-    
+
     sla_compliance_rate = fields.Float(string='SLA Compliance (%)', readonly=True, digits=(5, 2))
     escalation_rate = fields.Float(string='Escalation Rate (%)', readonly=True, digits=(5, 2))
     first_contact_resolution_rate = fields.Float(string='FCR (%)', readonly=True, digits=(5, 2), help="First Contact Resolution Rate")
-    
+
     improvement_trend = fields.Selection([
         ('improving', 'Improving'),
         ('declining', 'Declining'),
@@ -83,7 +83,7 @@ class PortalFeedbackAnalytic(models.Model):
     # ============================================================================
     def _compute_analytics(self):
         self.ensure_one()
-        
+
         domain = [
             ("create_date", ">=", self.period_start),
             ("create_date", "<=", self.period_end),
@@ -104,13 +104,13 @@ class PortalFeedbackAnalytic(models.Model):
 
         # Rating metrics
         self._compute_rating_metrics(feedback_records, vals)
-        
+
         # Time metrics
         self._compute_time_metrics(feedback_records, vals)
 
         # SLA metrics
         self._compute_sla_metrics(feedback_records, vals)
-        
+
         self.write(vals)
 
     def _compute_rating_metrics(self, feedback_records, vals):
@@ -121,12 +121,12 @@ class PortalFeedbackAnalytic(models.Model):
 
         ratings = [int(f.rating) for f in rated_feedback if f.rating.isdigit()]
         vals['average_rating'] = sum(ratings) / len(ratings) if ratings else 0.0
-        
+
         # NPS Score
         promoters = len([r for r in ratings if r >= 9])
         detractors = len([r for r in ratings if r <= 6])
         vals['nps_score'] = ((promoters - detractors) / len(ratings) * 100) if ratings else 0.0
-        
+
         # CSI
         satisfaction_ratio = (vals['positive_feedback_count'] + (vals['neutral_feedback_count'] * 0.5)) / vals['total_feedback_count']
         vals['customer_satisfaction_index'] = satisfaction_ratio * 100

@@ -18,7 +18,7 @@ class ShreddingPicklistItem(models.Model):
         ('picked', 'Picked'),
         ('verified', 'Verified'),
         ('not_found', 'Not Found'),
-    ], string="Status", default='pending', required=True, tracking=True)
+    ], string="Status", default='pending', required=True)
 
     # ============================================================================
     # ITEM & LOCATION
