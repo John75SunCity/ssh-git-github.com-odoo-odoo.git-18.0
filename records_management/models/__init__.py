@@ -19,6 +19,11 @@ from . import shredding_hard_drive
 from . import pickup_request_item
 from . import shredding_picklist_item
 from . import inventory_item_profile
+# Advanced billing models (parent before children)
+from . import advanced_billing
+from . import advanced_billing_line
+from . import advanced_billing_service_line
+from . import advanced_billing_storage_line
 from . import unlock_service_part
 from . import signed_document_audit
 from . import discount_rule
@@ -198,3 +203,4 @@ from . import records_request_type
 from . import records_retention_policy
 from . import records_document_type
 from . import records_category
+from . import billing_period
