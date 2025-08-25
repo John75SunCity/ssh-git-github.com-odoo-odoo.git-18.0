@@ -398,6 +398,15 @@
 				"development-tools/analysis-reports/comprehensive_field_analysis.py"
 			],
 			"group": "test"
+		},
+		{
+			"label": "Run Related Field Audit (python3)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"development-tools/related_field_audit.py"
+			],
+			"group": "test"
 		}
 	]
 }
