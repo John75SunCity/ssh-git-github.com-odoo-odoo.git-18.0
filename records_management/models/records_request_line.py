@@ -7,7 +7,7 @@ class RecordsRequestLine(models.Model):
 
     request_id = fields.Many2one('records.request', string='Request', required=True, ondelete='cascade')
     document_id = fields.Many2one('records.document', string='Document')
-    box_id = fields.Many2one('records.box', string='Box')
+    box_id = fields.Many2one('records.container', string='Container')
     container_id = fields.Many2one('records.container', string='Container')
     company_id = fields.Many2one('res.company', string='Company', related='request_id.company_id', store=True, readonly=True)
     partner_id = fields.Many2one('res.partner', string='Customer', related='request_id.partner_id', store=True, readonly=True)

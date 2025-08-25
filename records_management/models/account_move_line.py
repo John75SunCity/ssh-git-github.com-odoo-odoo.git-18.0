@@ -224,7 +224,7 @@ class AccountMoveLine(models.Model):
     # BILLING CONFIGURATION AND RATES
     # ============================================================================
     billing_config_id = fields.Many2one(
-        "records.billing.config",
+        "advanced.billing",
         string="Billing Configuration",
         help="Billing configuration used for this line"
     )
