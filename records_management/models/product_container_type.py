@@ -27,7 +27,7 @@ class ProductContainerType(models.Model):
     width_inches = fields.Float(string="Width (in)")
     height_inches = fields.Float(string="Height (in)")
     dimensions_display = fields.Char(string="Dimensions", compute='_compute_dimensions_display', store=True)
-    
+
     # --- Categorization ---
     usage_category = fields.Selection([
         ('general', 'General Documents'),
@@ -93,7 +93,7 @@ class ProductContainerType(models.Model):
     def _compute_dimensions_display(self):
         for record in self:
             if record.length_inches and record.width_inches and record.height_inches:
-                record.dimensions_display = _('%.1f" L x %.1f" W x %.1f" H') % (record.length_inches, record.width_inches, record.height_inches)
+                record.dimensions_display = _('%0.1f" L x %0.1f" W x %0.1f" H', record.length_inches, record.width_inches, record.height_inches)
             else:
                 record.dimensions_display = _('N/A')
 
@@ -106,7 +106,7 @@ class ProductContainerType(models.Model):
             domain = [('container_type_id', '=', record_type.id)]
             all_containers = container_obj.search(domain)
             active_containers = all_containers.filtered('active')
-            
+
             record_type.container_count = len(all_containers)
             record_type.active_containers = len(active_containers)
             record_type.monthly_revenue = record_type.active_containers * record_type.base_monthly_rate
@@ -119,7 +119,7 @@ class ProductContainerType(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Containers - %s') % self.name,
+            'name': _('Containers - %s', self.name),
             'res_model': 'records.container',
             'view_mode': 'tree,form,kanban',
             'domain': [('container_type_id', '=', self.id)],

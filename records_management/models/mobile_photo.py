@@ -138,7 +138,7 @@ class MobilePhoto(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Photo: %s') % self.name,
+            'name': _('Photo: %s', self.name),
             'res_model': 'mobile.photo',
             'res_id': self.id,
             'view_mode': 'form',
@@ -153,7 +153,7 @@ class MobilePhoto(models.Model):
 
         return {
             'type': 'ir.actions.act_window',
-            'name': _('FSM Task: %s') % self.fsm_task_id.name,
+            'name': _('FSM Task: %s', self.fsm_task_id.name),
             'res_model': 'project.task',
             'res_id': self.fsm_task_id.id,
             'view_mode': 'form',
@@ -168,7 +168,7 @@ class MobilePhoto(models.Model):
 
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Work Order: %s') % self.work_order_reference.name,
+            'name': _('Work Order: %s', self.work_order_reference.name),
             'res_model': self.work_order_reference._name,
             'res_id': self.work_order_reference.id,
             'view_mode': 'form',
@@ -182,7 +182,7 @@ class MobilePhoto(models.Model):
         """Get formatted GPS coordinates string."""
         self.ensure_one()
         if self.has_gps:
-            return _("Lat: %s, Lon: %s") % (self.gps_latitude, self.gps_longitude)
+            return _("Lat: %s, Lon: %s", self.gps_latitude, self.gps_longitude)
         return _("No GPS coordinates available")
 
     def get_related_entity_name(self):

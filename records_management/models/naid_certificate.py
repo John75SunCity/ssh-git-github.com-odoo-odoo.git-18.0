@@ -21,17 +21,17 @@ class NaidCertificate(models.Model):
     name = fields.Char(string='Reference', related='certificate_number', store=True)
     certificate_number = fields.Char(string='Certificate Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, readonly=True, states={'draft': [('readonly', False)]})
+    partner_id = fields.Many2one('res.partner', string='Customer', required=True, readonly=True)
 
     # FSM & Operational Links
-    fsm_task_id = fields.Many2one('project.task', string='FSM Work Order', readonly=True, states={'draft': [('readonly', False)]}, help="Link to the Field Service task for this destruction.")
+    fsm_task_id = fields.Many2one('project.task', string='FSM Work Order', readonly=True, help="Link to the Field Service task for this destruction.")
     technician_user_id = fields.Many2one('res.users', string='Technician', related='fsm_task_id.user_id', store=True, readonly=True)
 
     # Link to the source of the destruction
     res_model = fields.Char(string='Related Document Model', readonly=True)
     res_id = fields.Integer(string='Related Document ID', readonly=True)
 
-    destruction_date = fields.Datetime(string='Destruction Date', required=True, readonly=True, states={'draft': [('readonly', False)]})
+    destruction_date = fields.Datetime(string='Destruction Date', required=True, readonly=True)
     issue_date = fields.Datetime(string='Issue Date', readonly=True)
 
     state = fields.Selection([

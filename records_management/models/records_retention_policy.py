@@ -236,7 +236,7 @@ class RecordsRetentionPolicy(models.Model):
         self.ensure_one()
         default = dict(default or {})
         default.update({
-            'name': _('%s (Copy)') % self.name,
+            'name': _('%s (Copy)', self.name),
             'code': self.DEFAULT_CODE,
             'state': 'draft',
             'version_ids': [],

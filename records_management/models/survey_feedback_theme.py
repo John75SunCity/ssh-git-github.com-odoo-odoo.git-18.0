@@ -10,7 +10,7 @@ class SurveyFeedbackTheme(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(
-        string='Theme Name', 
+        string='Theme Name',
         required=True,
         help="The name of the feedback theme (e.g., Service Quality, Billing, Portal Usability)."
     )
@@ -19,24 +19,24 @@ class SurveyFeedbackTheme(models.Model):
         help="A detailed description of what this feedback theme covers."
     )
     active = fields.Boolean(
-        string='Active', 
+        string='Active',
         default=True,
         help="Uncheck this box to hide the theme without deleting it."
     )
     company_id = fields.Many2one(
-        'res.company', 
-        string='Company', 
-        default=lambda self: self.env.company, 
-        required=True, 
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        required=True,
         readonly=True
     )
     feedback_ids = fields.One2many(
-        'customer.feedback', 
-        'theme_id', 
+        'customer.feedback',
+        'theme_id',
         string="Associated Feedback"
     )
     feedback_count = fields.Integer(
-        string="Feedback Count", 
+        string="Feedback Count",
         compute='_compute_feedback_count',
         store=True
     )
@@ -58,7 +58,7 @@ class SurveyFeedbackTheme(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Feedback for %s') % self.name,
+            'name': _('Feedback for %s', self.name),
             'res_model': 'customer.feedback',
             'view_mode': 'tree,form,kanban',
             'domain': [('theme_id', '=', self.id)],

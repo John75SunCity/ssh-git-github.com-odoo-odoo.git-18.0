@@ -82,7 +82,7 @@ class ShreddingHardDrive(models.Model):
                 ('id', '!=', record.id)
             ]
             if self.search_count(domain) > 0:
-                raise ValidationError(_('The serial number has already been scanned for this task: %s') % record.serial_number)
+                raise ValidationError(_('The serial number has already been scanned for this task: %s', record.serial_number))
 
     @api.model_create_multi
     def create(self, vals_list):

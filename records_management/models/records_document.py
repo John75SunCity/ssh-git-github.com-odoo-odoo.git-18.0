@@ -128,7 +128,7 @@ class RecordsDocument(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.document') or _('New')
         docs = super().create(vals_list)
         for doc in docs:
-            doc.message_post(body=_('Document "%s" created') % doc.name)
+            doc.message_post(body=_('Document "%s" created', doc.name))
         return docs
 
     def write(self, vals):

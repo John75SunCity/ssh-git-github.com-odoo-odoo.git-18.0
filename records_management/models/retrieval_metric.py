@@ -183,6 +183,6 @@ class RetrievalMetric(models.Model):
             for record in self:
                 state_label = dict(record._fields['state'].selection).get(record.state)
                 if state_label:
-                    record.message_post(body=_('State changed to %s') % state_label)
+                    record.message_post(body=_('State changed to %s', state_label))
         return res
 
