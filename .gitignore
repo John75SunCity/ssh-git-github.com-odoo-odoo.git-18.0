@@ -105,7 +105,41 @@ expected_invoices.txt
 *.txt
 !requirements.txt
 development-tools/PHASE_2_ENHANCEMENT_ROADMAP.md
-records_management/models/advanced_billing_line.py
+
+# Do NOT ignore real model files
+!records_management/models/advanced_billing_line.py
+
+# Ignore common phantom/backup artifacts that may reappear after VS Code reloads
+# Backup folders and files
+backup/
+backup/**
+*.bak
+*.backup
+*.backup_*
+*.back*
+*.orig
+*.rej
+
+# Editor temp/lock files
+*.swp
+*.swo
+.DS_Store
+.Trash/**
+
+# Python caches
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# VS Code workspace artifacts
+.vscode/
+*.code-workspace
+*.code-workspace.backup
+
+# OS/Index caches
+.Spotlight-V100
+.fseventsd
 
 # Odoo source code - should not be committed to the custom module repo
 /odoo/
