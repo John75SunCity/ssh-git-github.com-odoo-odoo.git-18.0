@@ -17,7 +17,17 @@ class SystemDiagramData(models.Model):
     # ============================================================================
     name = fields.Char(string="Diagram Name", required=True, default="System Architecture Diagram")
     search_query = fields.Char(string="Search Query")
-    search_type = fields.Selection([], string="Search Type") # Example, define options as needed
+    search_type = fields.Selection(
+        [
+            ('all', 'All Data'),
+            ('models', 'Models Only'),
+            ('access', 'Access/Users Only'),
+            ('relationships', 'Model Relationships'),
+            ('company', 'Company/Departments'),
+        ],
+        string="Search Type",
+        default='all',
+    )
     show_access_only = fields.Boolean(string="Show Access Rights Only")
 
     generation_time = fields.Float(string='Generation Time (seconds)', readonly=True)
