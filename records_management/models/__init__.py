@@ -127,6 +127,7 @@ from . import stock_move_smsvalidation
 from . import paper_bale_movement
 from . import barcode_pricing_tier
 from . import full_customization_name
+from . import project_task
 from . import service_item
 from . import work_order_retrieval
 from . import fsm_notification

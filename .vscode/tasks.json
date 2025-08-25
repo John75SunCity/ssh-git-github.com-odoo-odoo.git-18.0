@@ -389,6 +389,15 @@
 			],
 			"isBackground": true,
 			"group": "build"
+		},
+		{
+			"label": "Run Comprehensive Field Analysis (python3)",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"development-tools/analysis-reports/comprehensive_field_analysis.py"
+			],
+			"group": "test"
 		}
 	]
 }
