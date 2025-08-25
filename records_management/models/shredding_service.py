@@ -1,7 +1,345 @@
-from odoo import fields, models
+"""Odoo model for managing shredding services in the Records Management module.
+
+This model represents a shredding service, which can be linked to document destruction
+operations, certificates, and compliance workflows with NAID AAA compliance.
+"""
+
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class ShreddingService(models.Model):
+    """Represents a shredding service for document destruction with NAID AAA compliance.
+
+    This model manages shredding services including on-site and off-site destruction,
+    certificate generation, and compliance tracking.
+    """
+
     _name = 'shredding.service'
     _description = 'Shredding Service'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'name, id desc'
+    _rec_name = 'name'
 
-    name = fields.Char(string='Name', required=True)
+    # Basic Information
+    name = fields.Char(
+        string='Service Name',
+        required=True,
+        tracking=True,
+        help="Name of the shredding service"
+    )
+
+    active = fields.Boolean(
+        string='Active',
+        default=True,
+        tracking=True,
+        help="Uncheck to archive this service"
+    )
+
+    service_type = fields.Selection([
+        ('onsite', 'On-Site Shredding'),
+        ('offsite', 'Off-Site Shredding'),
+        ('mobile', 'Mobile Shredding'),
+        ('bulk', 'Bulk Destruction'),
+        ('hard_drive', 'Hard Drive Destruction'),
+        ('electronic', 'Electronic Media Destruction')
+    ], string='Service Type', required=True, tracking=True)
+
+    description = fields.Text(
+        string='Description',
+        help="Detailed description of the shredding service"
+    )
+
+    # Compliance & Certification
+    naid_compliant = fields.Boolean(
+        string='NAID AAA Compliant',
+        default=True,
+        tracking=True,
+        help="Whether this service meets NAID AAA compliance standards"
+    )
+
+    certificate_template_id = fields.Many2one(
+        'ir.ui.view',
+        string='Certificate Template',
+        domain=[('type', '=', 'qweb')],
+        help="Template used for generating destruction certificates"
+    )
+
+    # Pricing & Service Details
+    base_price = fields.Float(
+        string='Base Price',
+        digits='Product Price',
+        tracking=True,
+        help="Base price for this shredding service"
+    )
+
+    price_per_container = fields.Float(
+        string='Price per Container',
+        digits='Product Price',
+        help="Additional price per container"
+    )
+
+    price_per_kg = fields.Float(
+        string='Price per KG',
+        digits='Product Price',
+        help="Price per kilogram of shredded material"
+    )
+
+    # Service Provider Information
+    provider_id = fields.Many2one(
+        'res.partner',
+        string='Service Provider',
+        domain=[('supplier_rank', '>', 0)],
+        tracking=True,
+        help="Partner providing this shredding service"
+    )
+
+    contact_person = fields.Char(
+        string='Contact Person',
+        help="Primary contact for this service"
+    )
+
+    contact_phone = fields.Char(
+        string='Contact Phone',
+        help="Phone number for service coordination"
+    )
+
+    contact_email = fields.Char(
+        string='Contact Email',
+        help="Email for service coordination"
+    )
+
+    # Operational Details
+    lead_time_days = fields.Integer(
+        string='Lead Time (Days)',
+        default=1,
+        help="Standard lead time for scheduling this service"
+    )
+
+    availability = fields.Selection([
+        ('24_7', '24/7 Available'),
+        ('business_hours', 'Business Hours Only'),
+        ('scheduled', 'Scheduled Only'),
+        ('emergency', 'Emergency Only')
+    ], string='Availability', default='business_hours')
+
+    # Geographic Coverage
+    service_area = fields.Text(
+        string='Service Area',
+        help="Geographic areas covered by this service"
+    )
+
+    # Equipment & Capacity
+    equipment_type = fields.Char(
+        string='Equipment Type',
+        help="Type of shredding equipment used"
+    )
+
+    max_capacity_per_day = fields.Float(
+        string='Max Capacity per Day (KG)',
+        help="Maximum daily capacity in kilograms"
+    )
+
+    # Security Features
+    security_level = fields.Selection([
+        ('1', 'Level 1 - Strip Cut'),
+        ('2', 'Level 2 - Cross Cut'),
+        ('3', 'Level 3 - Micro Cut'),
+        ('4', 'Level 4 - Ultra Micro Cut'),
+        ('5', 'Level 5 - High Security'),
+        ('6', 'Level 6 - Top Secret')
+    ], string='Security Level', help="DIN 66399 security level")
+
+    chain_of_custody = fields.Boolean(
+        string='Chain of Custody Tracking',
+        default=True,
+        help="Whether this service includes chain of custody tracking"
+    )
+
+    witness_destruction = fields.Boolean(
+        string='Witness Destruction Available',
+        default=False,
+        help="Whether customer can witness the destruction process"
+    )
+
+    # Related Records
+    destruction_request_ids = fields.One2many(
+        'portal.request',
+        'shredding_service_id',
+        string='Destruction Requests',
+        help="Destruction requests using this service"
+    )
+
+    certificate_ids = fields.One2many(
+        'destruction.certificate',
+        'shredding_service_id',
+        string='Certificates',
+        help="Destruction certificates generated for this service"
+    )
+
+    # Computed Fields
+    total_requests = fields.Integer(
+        string='Total Requests',
+        compute='_compute_totals',
+        store=True,
+        help="Total number of destruction requests"
+    )
+
+    total_certificates = fields.Integer(
+        string='Total Certificates',
+        compute='_compute_totals',
+        store=True,
+        help="Total number of certificates issued"
+    )
+
+    last_used_date = fields.Datetime(
+        string='Last Used',
+        compute='_compute_last_used_date',
+        store=True,
+        help="Date this service was last used"
+    )
+
+    # Status and Notes
+    notes = fields.Text(
+        string='Internal Notes',
+        help="Internal notes about this shredding service"
+    )
+
+    # Computed Methods
+    @api.depends('destruction_request_ids', 'certificate_ids')
+    def _compute_totals(self):
+        """Compute total requests and certificates."""
+        for record in self:
+            record.total_requests = len(record.destruction_request_ids)
+            record.total_certificates = len(record.certificate_ids)
+
+    @api.depends('destruction_request_ids.create_date')
+    def _compute_last_used_date(self):
+        """Compute the last time this service was used."""
+        for record in self:
+            if record.destruction_request_ids:
+                record.last_used_date = max(record.destruction_request_ids.mapped('create_date'))
+            else:
+                record.last_used_date = False
+
+    # Validation
+    @api.constrains('base_price', 'price_per_container', 'price_per_kg')
+    def _check_prices(self):
+        """Validate that at least one price is set."""
+        for record in self:
+            if not any([record.base_price, record.price_per_container, record.price_per_kg]):
+                raise ValidationError(_("At least one pricing field must be set."))
+
+    @api.constrains('lead_time_days')
+    def _check_lead_time(self):
+        """Validate lead time is positive."""
+        for record in self:
+            if record.lead_time_days < 0:
+                raise ValidationError(_("Lead time must be positive."))
+
+    @api.constrains('max_capacity_per_day')
+    def _check_capacity(self):
+        """Validate capacity is positive if set."""
+        for record in self:
+            if record.max_capacity_per_day and record.max_capacity_per_day <= 0:
+                raise ValidationError(_("Capacity must be positive if specified."))
+
+    # Business Methods
+    def calculate_service_cost(self, container_count=0, weight_kg=0):
+        """Calculate total cost for this service.
+
+        Args:
+            container_count (int): Number of containers
+            weight_kg (float): Weight in kilograms
+
+        Returns:
+            float: Total calculated cost
+        """
+        self.ensure_one()
+        total_cost = self.base_price or 0.0
+        total_cost += (container_count * (self.price_per_container or 0.0))
+        total_cost += (weight_kg * (self.price_per_kg or 0.0))
+        return total_cost
+
+    def schedule_service(self, requested_date):
+        """Check if service can be scheduled on requested date.
+
+        Args:
+            requested_date (datetime): Requested service date
+
+        Returns:
+            dict: Result with availability and suggested dates
+        """
+        self.ensure_one()
+        # This would integrate with scheduling logic
+        return {
+            'available': True,
+            'suggested_date': requested_date,
+            'lead_time_met': True
+        }
+
+    def generate_certificate(self, destruction_data):
+        """Generate destruction certificate for completed service.
+
+        Args:
+            destruction_data (dict): Data about the destruction process
+
+        Returns:
+            recordset: Created certificate record
+        """
+        self.ensure_one()
+        if not self.certificate_template_id:
+            raise ValidationError(_("No certificate template configured for this service."))
+
+        # Create certificate record
+        certificate_vals = {
+            'shredding_service_id': self.id,
+            'service_date': destruction_data.get('service_date'),
+            'material_type': destruction_data.get('material_type'),
+            'quantity': destruction_data.get('quantity'),
+            'security_level': self.security_level,
+            'naid_compliant': self.naid_compliant,
+        }
+
+        return self.env['destruction.certificate'].create(certificate_vals)
+
+    # Action Methods
+    def action_view_requests(self):
+        """Action to view related destruction requests."""
+        action = self.env.ref('records_management.action_portal_request').read()[0]
+        action['domain'] = [('shredding_service_id', '=', self.id)]
+        action['context'] = {'default_shredding_service_id': self.id}
+        return action
+
+    def action_view_certificates(self):
+        """Action to view related certificates."""
+        action = self.env.ref('records_management.action_destruction_certificate').read()[0]
+        action['domain'] = [('shredding_service_id', '=', self.id)]
+        action['context'] = {'default_shredding_service_id': self.id}
+        return action
+
+    # Override Methods
+    @api.model
+    def create(self, vals):
+        """Override create to add logging."""
+        record = super().create(vals)
+        _logger.info(f"Created shredding service: {record.name}")
+        return record
+
+    def write(self, vals):
+        """Override write to add logging."""
+        result = super().write(vals)
+        if 'active' in vals and not vals['active']:
+            _logger.info(f"Archived shredding service: {self.name}")
+        return result
+
+    def unlink(self):
+        """Override unlink to prevent deletion of used services."""
+        for record in self:
+            if record.destruction_request_ids:
+                raise ValidationError(_(
+                    "Cannot delete shredding service '%s' as it has related destruction requests."
+                ) % record.name)
+        return super().unlink()

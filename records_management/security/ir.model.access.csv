@@ -268,3 +268,4 @@ access_advanced_billing_service_line_user,advanced.billing.service.line.user,mod
 access_advanced_billing_service_line_manager,advanced.billing.service.line.manager,model_advanced_billing_service_line,base.group_system,1,1,1,1
 access_advanced_billing_storage_line_user,advanced.billing.storage.line.user,model_advanced_billing_storage_line,base.group_user,1,0,0,0
 access_advanced_billing_storage_line_manager,advanced.billing.storage.line.manager,model_advanced_billing_storage_line,base.group_system,1,1,1,1
+access_shredding_service_manager,shredding_service_manager,model_shredding_service,,1,1,1,1
