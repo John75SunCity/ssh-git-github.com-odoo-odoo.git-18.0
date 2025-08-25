@@ -8,13 +8,13 @@ class FsmRescheduleWizard(models.TransientModel):
     # ============================================================================
     # WIZARD FIELDS
     # ============================================================================
-    task_id = fields.Many2one('fsm.task', string='FSM Task', required=True, readonly=True)
-    
+    task_id = fields.Many2one('project.task', string='FSM Task', required=True, readonly=True)
+
     current_scheduled_date_start = fields.Datetime(string="Current Start Time", related='task_id.scheduled_date_start', readonly=True)
-    
+
     new_scheduled_date_start = fields.Datetime(string="New Scheduled Start Time", required=True)
     new_scheduled_date_end = fields.Datetime(string="New Scheduled End Time", required=True)
-    
+
     reschedule_reason = fields.Selection([
         ('customer_request', 'Customer Request'),
         ('technician_unavailable', 'Technician Unavailable'),
@@ -22,12 +22,12 @@ class FsmRescheduleWizard(models.TransientModel):
         ('logistical_delay', 'Logistical Delay'),
         ('other', 'Other')
     ], string="Reason for Reschedule", required=True)
-    
+
     reason_details = fields.Text(string="Reason Details")
-    
+
     notify_customer = fields.Boolean(string="Notify Customer", default=True)
     customer_notification_message = fields.Text(string="Message to Customer", help="This message will be sent to the customer if 'Notify Customer' is checked.")
-    
+
     internal_notes = fields.Text(string="Internal Notes", help="Internal notes for logging and auditing purposes.")
 
     # ============================================================================
@@ -50,16 +50,16 @@ class FsmRescheduleWizard(models.TransientModel):
         Main action to apply the reschedule to the FSM task.
         """
         self.ensure_one()
-        
+
         original_date_str = self.task_id.scheduled_date_start.strftime('%Y-%m-%d %H:%M') if self.task_id.scheduled_date_start else _('N/A')
         new_date_str = self.new_scheduled_date_start.strftime('%Y-%m-%d %H:%M')
-        
+
         # Update the FSM task
         self.task_id.write({
             'scheduled_date_start': self.new_scheduled_date_start,
             'scheduled_date_end': self.new_scheduled_date_end,
         })
-        
+
         # Post a message on the task's chatter
         reason_label = dict(self._fields['reschedule_reason'].selection).get(self.reschedule_reason)
         body = _(
@@ -70,13 +70,13 @@ class FsmRescheduleWizard(models.TransientModel):
         )
         if self.internal_notes:
             body += _("<br/><strong>Internal Notes:</strong> %s", self.internal_notes)
-        
+
         self.task_id.message_post(body=body)
-        
+
         # Create a notification for the customer if requested
         if self.notify_customer:
             self._create_customer_notification()
-            
+
         return {'type': 'ir.actions.act_window_close'}
 
     # ============================================================================
@@ -89,7 +89,7 @@ class FsmRescheduleWizard(models.TransientModel):
         """
         self.ensure_one()
         notification_manager = self.env['fsm.notification.manager']
-        
+
         subject = _("Your Service Task '%s' has been Rescheduled", self.task_id.name)
         message = self.customer_notification_message or _(
             "<p>Dear %s,</p>"
@@ -100,12 +100,12 @@ class FsmRescheduleWizard(models.TransientModel):
             self.task_id.name,
             self.new_scheduled_date_start.strftime('%A, %B %d, %Y at %I:%M %p')
         )
-        
+
         custom_vals = {
             'subject': subject,
             'message': message,
         }
-        
+
         notification_manager.create_and_send_notification(
             related_record=self.task_id,
             notification_type='custom', # Or a new 'reschedule_alert' type

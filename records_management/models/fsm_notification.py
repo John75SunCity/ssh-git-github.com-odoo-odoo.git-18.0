@@ -17,7 +17,7 @@ class FsmNotification(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
 
     # Related Document Links
-    task_id = fields.Many2one('fsm.task', string='FSM Task', ondelete='cascade')
+    task_id = fields.Many2one('project.task', string='FSM Task', ondelete='cascade')
     pickup_request_id = fields.Many2one('fsm.pickup.request', string='Pickup Request', ondelete='cascade')
     route_id = fields.Many2one('fsm.route', string='FSM Route', ondelete='cascade')
 

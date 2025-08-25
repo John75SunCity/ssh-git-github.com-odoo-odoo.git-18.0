@@ -37,7 +37,7 @@ class FsmNotificationManager(models.Model):
 
         # Link the related document
         if related_record:
-            if related_record._name == 'fsm.task':
+            if related_record._name == 'project.task':
                 vals['task_id'] = related_record.id
             elif related_record._name == 'fsm.pickup.request':
                 vals['pickup_request_id'] = related_record.id

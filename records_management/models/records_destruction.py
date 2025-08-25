@@ -50,7 +50,7 @@ class RecordsDestruction(models.Model):
         ('pulverization', 'Pulverization'),
         ('degaussing', 'Degaussing'),
     ], string='Destruction Method', tracking=True)
-    
+
     partner_id = fields.Many2one(
         'res.partner',
         string='Customer',
@@ -64,7 +64,7 @@ class RecordsDestruction(models.Model):
         tracking=True
     )
     compliance_id = fields.Many2one(
-        'naid.compliance',
+        'naid.compliance.checklist',
         string='NAID Compliance Record'
     )
     naid_compliant = fields.Boolean(
@@ -192,7 +192,7 @@ class RecordsDestruction(models.Model):
         self.ensure_one()
         if self.state != 'completed':
             raise UserError(_('Can only generate certificates for completed destructions'))
-        
+
         # Create NAID certificate if not exists
         if not self.certificate_generated:
             certificate_vals = {

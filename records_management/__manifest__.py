@@ -16,7 +16,7 @@
     'depends': [
         'base', 'mail', 'web', 'product', 'stock', 'account', 'sale', 'purchase',
         'portal', 'website', 'point_of_sale', 'sms', 'survey',
-        'hr', 'project', 'maintenance', 'fleet',
+        'hr', 'project', 'maintenance', 'fleet', 'crm',
         'sale_management', 'website_sale'
     ],
     "data": [
