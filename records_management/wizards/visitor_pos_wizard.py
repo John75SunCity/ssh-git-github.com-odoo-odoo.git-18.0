@@ -92,7 +92,10 @@ class VisitorPosWizard(models.TransientModel):
 
         if not pos_session:
             raise UserError(
-                _("No active POS session found for '%s'. Please open a session.") % self.pos_config_id.name
+                _(
+                    "No active POS session found for '%s'. Please open a session.",
+                    self.pos_config_id.name,
+                )
             )
 
         customer = self.partner_id
@@ -141,12 +144,5 @@ class VisitorPosWizard(models.TransientModel):
         }
         new_partner = self.env["res.partner"].create(partner_vals)
         self.visitor_id.partner_id = new_partner.id  # Link back to visitor
-        # Post messages on related records (TransientModel has no chatter)
-        try:
-            if self.visitor_id:
-                self.visitor_id.message_post(body=_("Created new customer: %s") % new_partner.name)
-            new_partner.message_post(body=_("Created from visitor: %s") % (self.visitor_id.name or ""))
-        except Exception:
-            # Silently ignore if chatter not available on related records
-            pass
+        self.message_post(body=_("Created new customer: %s", new_partner.name))
         return new_partner

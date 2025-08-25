@@ -48,8 +48,7 @@ class CustomerInventoryReportLine(models.Model):
     document_count = fields.Integer(string='Document Count')
     storage_date = fields.Date(string='Storage Start Date', related='container_id.create_date', store=True)
     last_access_date = fields.Date(string='Last Access', related='container_id.last_access_date')
-    # Align with container model field name
-    retention_date = fields.Date(string='Retention Date', related='container_id.destruction_due_date')
+    retention_date = fields.Date(string='Retention Date', related='container_id.retention_date')
 
     # ============================================================================
     # VERIFICATION & STATUS

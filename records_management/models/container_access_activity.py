@@ -145,9 +145,8 @@ class ContainerAccessActivity(models.Model):
         help="Barcode of the accessed container"
     )
 
-    # Use related Char from container type record to avoid missing selection target
-    container_type = fields.Char(
-        related="container_id.container_type_id.name",
+    container_type = fields.Selection(
+        related="container_id.container_type",
         readonly=True,
         store=True,
         string="Container Type",
