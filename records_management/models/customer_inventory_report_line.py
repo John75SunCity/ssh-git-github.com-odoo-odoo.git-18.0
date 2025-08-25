@@ -39,7 +39,8 @@ class CustomerInventoryReportLine(models.Model):
     # ============================================================================
     container_id = fields.Many2one('records.container', string='Container', required=True)
     location_id = fields.Many2one(related='container_id.location_id', string='Location', store=True)
-    container_type = fields.Selection(related='container_id.container_type_id.name', string='Container Type')
+    # Use a Char related to the container type name (the target is Char)
+    container_type = fields.Char(related='container_id.container_type_id.name', string='Container Type', store=True)
     container_barcode = fields.Char(related='container_id.barcode', string='Barcode')
     container_volume_cf = fields.Float(related='container_id.cubic_feet', string='Volume (cf)')
     container_weight_lbs = fields.Float(related='container_id.weight', string='Weight (lbs)')
@@ -48,7 +49,8 @@ class CustomerInventoryReportLine(models.Model):
     document_count = fields.Integer(string='Document Count')
     storage_date = fields.Date(string='Storage Start Date', related='container_id.create_date', store=True)
     last_access_date = fields.Date(string='Last Access', related='container_id.last_access_date')
-    retention_date = fields.Date(string='Retention Date', related='container_id.retention_date')
+    # Align to container model field name
+    retention_date = fields.Date(string='Retention/Destruction Due Date', related='container_id.destruction_due_date', store=True)
 
     # ============================================================================
     # VERIFICATION & STATUS
@@ -116,7 +118,8 @@ class CustomerInventoryReportLine(models.Model):
         """Update fields when container changes"""
         if self.container_id:
             self.name = _("Inventory Line: %s", self.container_id.name or self.container_id.barcode)
-            self.document_count = self.container_id.file_count
+            # Align with container's computed count
+            self.document_count = self.container_id.document_count
             if self.container_id.document_ids:
                 first_doc = self.container_id.document_ids[0]
                 if first_doc.document_type_id:
@@ -148,7 +151,7 @@ class CustomerInventoryReportLine(models.Model):
         self.ensure_one()
         if not self.container_id:
             raise UserError(_("No container linked to update from."))
-        actual_count = self.container_id.file_count
+        actual_count = self.container_id.document_count
         if actual_count != self.document_count:
             old_count = self.document_count
             self.document_count = actual_count

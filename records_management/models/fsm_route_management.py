@@ -59,7 +59,8 @@ class FsmRouteManagement(models.Model):
     # Configuration
     max_stops_per_route = fields.Integer(string="Max Stops", default=50)
     max_driving_hours = fields.Float(string="Max Driving Hours", default=8.0)
-    service_area_ids = fields.Many2many('fsm.service.area', string="Service Areas")
+    # Use existing geographic areas model; no custom fsm.service.area model exists
+    service_area_ids = fields.Many2many('res.country.state', string="Service Areas")
 
     route_notes = fields.Text(string="Internal Notes")
     customer_instructions = fields.Text(string="Instructions for Customers")

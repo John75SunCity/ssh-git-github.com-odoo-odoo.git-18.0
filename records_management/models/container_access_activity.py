@@ -145,8 +145,9 @@ class ContainerAccessActivity(models.Model):
         help="Barcode of the accessed container"
     )
 
-    container_type = fields.Selection(
-        related="container_id.container_type",
+    # Reflect the container type name from the linked container's type
+    container_type = fields.Char(
+        related="container_id.container_type_id.name",
         readonly=True,
         store=True,
         string="Container Type",
@@ -713,7 +714,8 @@ class ContainerAccessActivity(models.Model):
         # Activity type breakdown
         for activity_type in activities.mapped('activity_type'):
             if activity_type:
-                type_activities = activities.filtered(lambda a: a.activity_type == activity_type)
+                # capture loop var in default arg to avoid late-binding
+                type_activities = activities.filtered(lambda a, activity_type=activity_type: a.activity_type == activity_type)
                 stats['by_type'][activity_type] = {
                     'count': len(type_activities),
                     'issues_rate': len(type_activities.filtered('issues_found')) / len(type_activities) * 100
@@ -722,7 +724,8 @@ class ContainerAccessActivity(models.Model):
         # Container type breakdown
         for container_type in activities.mapped('container_type'):
             if container_type:
-                type_activities = activities.filtered(lambda a: a.container_type == container_type)
+                # capture loop var in default arg to avoid late-binding
+                type_activities = activities.filtered(lambda a, container_type=container_type: a.container_type == container_type)
                 stats['by_container_type'][container_type] = {
                     'count': len(type_activities),
                     'avg_duration': sum(type_activities.mapped('duration_minutes')) / len(type_activities)
