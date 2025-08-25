@@ -100,6 +100,9 @@ from . import photo
 from . import paper_bale_line
 from . import pickup_request_line
 from . import container_access_activity
+from . import container_access_photo
+from . import container_access_document
+from . import container_access_report
 from . import naid_compliance_alert
 from . import customer_portal_diagram
 from . import records_location_inspection
