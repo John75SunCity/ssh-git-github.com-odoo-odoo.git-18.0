@@ -4,7 +4,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
 class RecordsBillingProfile(models.Model):
-    _name = 'records.billing.profile'
+    _name = 'advanced.billing.profile'
     _description = 'Records Billing Profile'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'partner_id, name'
@@ -37,7 +37,7 @@ class RecordsBillingProfile(models.Model):
     # ============================================================================
     # CONTACTS & COMMUNICATION
     # ============================================================================
-    billing_contact_ids = fields.One2many('records.billing.contact', 'profile_id', string="Billing Contacts")
+    billing_contact_ids = fields.One2many('advanced.billing.contact', 'profile_id', string="Billing Contacts")
     send_reminders = fields.Boolean(string="Send Payment Reminders", default=True)
     email_invoices = fields.Boolean(string="Email Invoices Automatically", default=True)
 

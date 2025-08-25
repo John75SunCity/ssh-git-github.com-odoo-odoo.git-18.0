@@ -18,7 +18,7 @@ class RecordsBillingContact(models.Model):
     """
     Represents a specific contact for billing-related matters for a customer.
     """
-    _name = 'records.billing.contact'
+    _name = 'advanced.billing.contact'
     _description = 'Records Billing Contact'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'partner_id, sequence, name'
@@ -36,7 +36,7 @@ class RecordsBillingContact(models.Model):
         ondelete='cascade',
         help="The customer this billing contact is associated with."
     )
-    billing_profile_id = fields.Many2one('records.billing.profile', string="Billing Profile")
+    billing_profile_id = fields.Many2one('advanced.billing.profile', string="Billing Profile")
     company_id = fields.Many2one(
         'res.company',
         string='Company',

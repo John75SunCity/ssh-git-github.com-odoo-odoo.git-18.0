@@ -163,6 +163,7 @@ class AdvancedBilling(models.Model):
     email = fields.Char(string='Email', related='partner_id.email', readonly=False)
     phone = fields.Char(string='Phone', related='partner_id.phone', readonly=False)
     primary_contact = fields.Char(string='Primary Contact')
+    billing_profile_id = fields.Many2one('advanced.billing.profile', string='Billing Profile')
 
     # Prepaid configuration
     prepaid_enabled = fields.Boolean(string='Prepaid Enabled')

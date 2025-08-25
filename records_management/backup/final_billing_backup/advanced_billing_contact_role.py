@@ -10,7 +10,7 @@ from odoo import models, fields
 
 class RecordsBillingContactRole(models.Model):
     """Role definition for billing contacts (single model per file)."""
-    _name = 'records.billing.contact.role'
+    _name = 'advanced.billing.contact.role'
     _description = 'Records Billing Contact Role'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, name'
