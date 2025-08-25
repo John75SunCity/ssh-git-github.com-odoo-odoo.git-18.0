@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-25T22:51:27.823436Z
+Generated: 2025-08-25T23:08:10.304485Z
 
 ## validate_imports.py
 
@@ -162,6 +162,12 @@ Exit code: 0
 
 <details><summary>stdout (tail)</summary>
 
+
+
+❌ Model 'fleet.vehicle' referenced but not defined:
+
+   • shredding_team.py:57 (Many2many)
+
    • work_order_shredding.py:44 (Many2one)
 
    • container_destruction_work_order.py:110 (Many2one)
@@ -185,12 +191,6 @@ Exit code: 0
 ❌ Model 'maintenance.request' referenced but not defined:
 
    • service_item.py:88 (One2many)
-
-
-
-❌ Model 'scan.item' referenced but not defined:
-
-   • scan_retrieval_work_order.py:45 (One2many)
 
 
 
@@ -232,7 +232,7 @@ Exit code: 0
 
 
 
-🚨 SECURITY ISSUES: 22 models missing security access rules:
+🚨 SECURITY ISSUES: 23 models missing security access rules:
 
    ❌  -  (in document_search_attempt.py)
 
@@ -244,7 +244,7 @@ Exit code: 0
 
    ❌ res.users (in records_chain_of_custody.py)
 
-   ❌ ... and 17 more models
+   ❌ ... and 18 more models
 
 
 
@@ -254,13 +254,21 @@ AUDIT SUMMARY
 
 ================================================================================
 
-📊 Total models: 237
+📊 Total models: 238
 
-📊 Total field references: 142
+📊 Total field references: 140
 
 🚨 Critical issues found: 33
 
 ⚠️  Issues found that may cause loading order problems
+
+</details>
+
+<details><summary>stderr (tail)</summary>
+
+/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/comprehensive_loading_order_audit.py:57: SyntaxWarning: invalid escape sequence '\.'
+
+  'field_type': pattern.split('\.')[1].split('\\(')[0]
 
 </details>
 
