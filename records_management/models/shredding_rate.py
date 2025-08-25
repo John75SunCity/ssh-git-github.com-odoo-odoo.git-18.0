@@ -22,7 +22,7 @@ class ShreddingRate(models.Model):
     # ============================================================================
     rate = fields.Float(string="Rate", digits='Product Price', required=True, tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency', related='company_id.currency_id', readonly=True)
-    uom_id = fields.Many2one('uom.uom', string="Unit of Measure", related='service_id.uom_id', readonly=True, help="Unit of Measure for the service.")
+    uom_id = fields.Many2one('uom.uom', string="Unit of Measure", help="Unit of Measure for the service.")
 
     # ============================================================================
     # STATUS & LIFECYCLE FIELDS

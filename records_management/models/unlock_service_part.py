@@ -14,12 +14,12 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     sequence = fields.Integer(string="Sequence", default=10)
-    name = fields.Char(string="Description", related='product_id.name', store=True)
+    name = fields.Char(string="Description", related='product_id.name')
 
     service_history_id = fields.Many2one('unlock.service.history', string="Service History", required=True, ondelete='cascade')
     partner_id = fields.Many2one('res.partner', string="Customer", related='service_history_id.partner_id', store=True)
     technician_id = fields.Many2one('res.users', string="Technician", related='service_history_id.technician_id', store=True)
-    
+
     product_id = fields.Many2one('product.product', string="Product", required=True, domain="[('type', '=', 'product')]")
     product_category_id = fields.Many2one('product.category', string="Product Category", related='product_id.categ_id', store=True)
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure", related='product_id.uom_id')
@@ -27,11 +27,11 @@ class UnlockServicePart(models.Model):
     quantity_planned = fields.Float(string="Planned Quantity", default=1.0)
     quantity_used = fields.Float(string="Used Quantity")
     quantity = fields.Float(string="Final Quantity", compute='_compute_quantity', store=True)
-    
+
     unit_cost = fields.Float(string="Unit Cost", related='product_id.standard_price')
     unit_price = fields.Float(string="Unit Price", related='product_id.lst_price')
     markup_percentage = fields.Float(string="Markup (%)", default=20.0)
-    
+
     currency_id = fields.Many2one('res.currency', string="Currency", related='company_id.currency_id')
     service_price = fields.Monetary(string="Service Price", compute='_compute_service_price', store=True)
     total_cost = fields.Monetary(string="Total Cost", compute='_compute_total_amounts', store=True)
@@ -49,15 +49,15 @@ class UnlockServicePart(models.Model):
     is_critical = fields.Boolean(string="Critical Part")
     is_warranty_covered = fields.Boolean(string="Warranty Covered")
     warranty_date = fields.Date(string="Warranty End Date")
-    
+
     vendor_id = fields.Many2one('res.partner', string="Vendor")
     procurement_date = fields.Date(string="Procurement Date")
     batch_number = fields.Char(string="Batch/Serial Number")
     expiry_date = fields.Date(string="Expiry Date")
-    
+
     usage_notes = fields.Text(string="Usage Notes")
     replacement_reason = fields.Text(string="Reason for Replacement")
-    
+
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
 
