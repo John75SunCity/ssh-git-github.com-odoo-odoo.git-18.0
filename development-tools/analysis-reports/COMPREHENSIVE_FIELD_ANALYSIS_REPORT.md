@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-25T20:06:52.353450Z
+Generated: 2025-08-25T22:51:27.823436Z
 
 ## validate_imports.py
 
@@ -8,11 +8,11 @@ Exit code: 0
 
 ## validate_xml.py
 
-Exit code: 1
+Exit code: 0
 
 <details><summary>stdout (tail)</summary>
 
-ERROR: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/wizard_template_reports.xml: junk after document element: line 35, column 0
+OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/wizard_template_reports.xml
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/load_report_templates.xml
 
@@ -42,7 +42,7 @@ OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/rec
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/stock_lot_attribute_reports.xml
 
-ERROR: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/work_order_shredding_reports.xml: junk after document element: line 37, column 0
+OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/work_order_shredding_reports.xml
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/bin_key_reports.xml
 
@@ -102,15 +102,15 @@ OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/rec
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/shredding_service_log_reports.xml
 
-ERROR: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/shred_bin_reports.xml: mismatched tag: line 45, column 22
+OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/shred_bin_reports.xml
 
-ERROR: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/maintenance_team_report.xml: mismatched tag: line 24, column 30
+OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/maintenance_team_report.xml
 
-ERROR: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/naid_audit_log_reports.xml: mismatched tag: line 45, column 18
+OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/naid_audit_log_reports.xml
 
-ERROR: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/records_audit_log_reports.xml: mismatched tag: line 36, column 26
+OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/records_audit_log_reports.xml
 
-ERROR: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management_fsm/views/fsm_task_views.xml: mismatched tag: line 68, column 10
+OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management_fsm/views/fsm_task_views.xml
 
 </details>
 
@@ -261,14 +261,6 @@ AUDIT SUMMARY
 🚨 Critical issues found: 33
 
 ⚠️  Issues found that may cause loading order problems
-
-</details>
-
-<details><summary>stderr (tail)</summary>
-
-/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/comprehensive_loading_order_audit.py:57: SyntaxWarning: invalid escape sequence '\.'
-
-  'field_type': pattern.split('\.')[1].split('\\(')[0]
 
 </details>
 

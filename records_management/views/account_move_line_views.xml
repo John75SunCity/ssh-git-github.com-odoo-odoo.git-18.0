@@ -13,7 +13,6 @@
 
     This file is part of the enterprise-grade Records Management module for Odoo 18.0.
 -->
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
     <!-- Account Move Line Form View Extension for Records Management -->

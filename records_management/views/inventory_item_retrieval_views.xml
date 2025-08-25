@@ -11,7 +11,6 @@ It includes:
 
 These definitions allow users to manage inventory item retrieval operations directly from the Odoo UI.
 -->
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
 
@@ -77,7 +76,7 @@ These definitions allow users to manage inventory item retrieval operations dire
             id="menu_inventory_item_retrieval"
             name="Inventory Item Retrieval"
             action="action_inventory_item_retrieval"
-            parent="REPLACE_WITH_PARENT_MENU_ID"  <!-- TODO: Replace REPLACE_WITH_PARENT_MENU_ID with the actual parent menu ID -->
+            parent="REPLACE_WITH_PARENT_MENU_ID"
             sequence="10"/>
         -->
 

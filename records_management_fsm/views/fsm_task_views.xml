@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-                <record id="fsm_task_service_line_view_form" model="ir.ui.view">
+    <record id="fsm_task_service_line_view_form" model="ir.ui.view">
             <field name="name">fsm.task.service.line.view.form</field>
             <field name="model">fsm.task.service.line</field>
             <field name="arch" type="xml">
@@ -50,25 +50,8 @@
             </field>
         </record>
 
-        <!-- Tree View for fsm.task.service.line -->
-        <record id="fsm_task_service_line_view_tree" model="ir.ui.view">
-            <field name="name">fsm.task.service.line.view.tree</field>
-            <field name="model">fsm.task.service.line</field>
-            <field name="arch" type="xml">
-                <tree string="Service Lines">
-                    <field name="sequence" widget="handle"/>
-                    <field name="name"/>
-                    <field name="service_type"/>
-                    <field name="state"/>
-                    <field name="quantity"/>
-                    <field name="total_price" widget="monetary"/>
-                </tree>
-            </field>
-        </record>
-        </record>
-
-        <!-- Tree View for fsm.task.service.line -->
-        <record id="fsm_task_service_line_view_tree" model="ir.ui.view">
+    <!-- Tree View for fsm.task.service.line -->
+    <record id="fsm_task_service_line_view_tree" model="ir.ui.view">
             <field name="name">fsm.task.service.line.view.tree</field>
             <field name="model">fsm.task.service.line</field>
             <field name="arch" type="xml">

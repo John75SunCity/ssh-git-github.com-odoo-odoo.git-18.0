@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="report_work_order_coordinator">
-        <t t-call="web.external_layout">
-            <div class="page">
-                <h2>Work Order Coordinator Report</h2>
-                <table class="table table-condensed">
-                    <thead>
-                        <tr>
-                            <th>Work Order</th>
-                            <th>Coordinator</th>
-                            <th>Status</th>
-                            <th>Assigned Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr t-foreach="docs" t-as="coordinator">
-                            <td><span t-field="coordinator.work_order_id.name"/></td>
-                            <td><span t-field="coordinator.coordinator_id.name"/></td>
-                            <td><span t-field="coordinator.state"/></td>
-                            <td><span t-field="coordinator.assigned_date" t-options="{'widget': 'datetime'}"/></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </t>
-    </template>
-    <record id="action_report_work_order_coordinator" model="ir.actions.report">
-        <field name="name">Work Order Coordinator</field>
-        <field name="model">work.order.coordinator</field>
-        <field name="report_type">qweb-pdf</field>
-        <field name="report_name">records_management.report_work_order_coordinator</field>
-        <field name="binding_model_id" ref="records_management.model_work_order_coordinator"/>
-        <field name="binding_type">report</field>
-    </record>
-</odoo>
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
+    <!-- Single consolidated report definition for Work Order Coordinator -->
     <record id="report_work_order_coordinator" model="ir.actions.report">
         <field name="name">Work Order Coordinator</field>
         <field name="model">work.order.coordinator</field>
@@ -43,7 +8,7 @@
         <field name="report_name">records_management.report_work_order_coordinator_view</field>
         <field name="report_file">records_management.report_work_order_coordinator</field>
         <field name="print_report_name">"(Work Order Coordinator Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_work_order_coordinator"/>
+        <field name="binding_model_id" ref="records_management.model_work_order_coordinator"/>
         <field name="binding_type">report</field>
     </record>
 
@@ -56,21 +21,19 @@
                         <table class="table table-condensed">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th>Work Order</th>
+                                    <th>Coordinator</th>
+                                    <th>Status</th>
+                                    <th>Assigned Date</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
+                                <tr>
+                                    <td><span t-field="doc.work_order_id.name"/></td>
+                                    <td><span t-field="doc.coordinator_id.name"/></td>
+                                    <td><span t-field="doc.state"/></td>
+                                    <td><span t-field="doc.assigned_date" t-options="{'widget': 'datetime'}"/></td>
                                 </tr>
-                            </t>
                             </tbody>
                         </table>
                     </div>
@@ -78,5 +41,4 @@
             </t>
         </t>
     </template>
-
 </odoo>

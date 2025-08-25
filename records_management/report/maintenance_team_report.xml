@@ -17,6 +17,7 @@
                         <h2>Title</h2>
                         <h2 t-out="doc.name or 'Maintenance Team Report'"/>
                         <table class="table table-condensed">
+                            <thead>
                                 <tr>
                                     <th>Name</th>
                                     <th>Description</th>

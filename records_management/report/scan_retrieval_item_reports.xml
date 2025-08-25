@@ -41,17 +41,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <tr t-foreach="doc.field_ids" t-as="field">
-                                <td>
-                                    <span t-out="field.name"/>
-                                </td>
-                                <td>
-                                    <span t-out="field.description"/>
-                                </td>
-                            </tr>
+                                <tr t-foreach="doc.field_ids" t-as="field">
+                                    <td>
+                                        <span t-esc="field.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="field.description"/>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </t>
             </t>
         </t>
     </template>

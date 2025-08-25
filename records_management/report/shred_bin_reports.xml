@@ -37,11 +37,12 @@
                             <tbody>
                                 <t t-if="doc.field_ids">
                                     <tr t-foreach="doc.field_ids" t-as="field">
-                                        <td t-out="field.name"/>
-                                        <td t-out="field.description"/>
+                                        <td><span t-esc="field.name"/></td>
+                                        <td><span t-esc="field.description"/></td>
                                     </tr>
                                 </t>
                             </tbody>
+                        </table>
                     </div>
                 </t>
             </t>

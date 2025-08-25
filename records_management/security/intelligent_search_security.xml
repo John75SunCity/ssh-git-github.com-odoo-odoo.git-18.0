@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <data>
 
@@ -12,7 +11,7 @@
             <field name="name">Container Search Access Rule</field>
             <field name="model_id" ref="model_records_container"/>
             <field name="domain_force">[
-                '|', 
+                '|',
                 ('partner_id', '=', False),
                 '|',
                 ('partner_id.user_ids', 'in', user.id),
@@ -44,7 +43,7 @@
             <field name="name">Document Search Access Rule</field>
             <field name="model_id" ref="model_records_document"/>
             <field name="domain_force">[
-                '|', 
+                '|',
                 ('partner_id', '=', False),
                 '|',
                 ('partner_id.user_ids', 'in', user.id),
@@ -82,14 +81,14 @@
             <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
-</record>
+    </record>
 
-<!-- =============================================================== -->
-<!-- FIELD CUSTOMIZATION PROTECTION RULES -->
-<!-- =============================================================== -->
+    <!-- =============================================================== -->
+    <!-- FIELD CUSTOMIZATION PROTECTION RULES -->
+    <!-- =============================================================== -->
 
-<!-- Field Label Customization Rules (Admin Only for Protected Fields) -->
-<record id="field_label_customization_admin_rule" model="ir.rule">
+    <!-- Field Label Customization Rules (Admin Only for Protected Fields) -->
+    <record id="field_label_customization_admin_rule" model="ir.rule">
     <field name="name">Field Label Customization Admin Rule</field>
     <field name="model_id" ref="model_field_label_customization"/>
     <!-- Allow all records to be visible (no restriction) -->
@@ -99,10 +98,10 @@
     <field name="perm_write" eval="True"/>
     <field name="perm_create" eval="True"/>
     <field name="perm_unlink" eval="True"/>
-</record>
+    </record>
 
-<!-- Regular users can only view field customizations -->
-<record id="field_label_customization_user_rule" model="ir.rule">
+    <!-- Regular users can only view field customizations -->
+    <record id="field_label_customization_user_rule" model="ir.rule">
     <field name="name">Field Label Customization User Rule</field>
     <field name="model_id" ref="model_field_label_customization"/>
     <field name="domain_force">[
@@ -115,14 +114,14 @@
 <field name="perm_write" eval="False"/>
 <field name="perm_create" eval="False"/>
 <field name="perm_unlink" eval="False"/>
-</record>
+    </record>
 
-<!-- =============================================================== -->
-<!-- PORTAL REQUEST SEARCH INTEGRATION RULES -->
-<!-- =============================================================== -->
+    <!-- =============================================================== -->
+    <!-- PORTAL REQUEST SEARCH INTEGRATION RULES -->
+    <!-- =============================================================== -->
 
-<!-- Portal Request Rules (Customer Can See Own Requests) -->
-<record id="portal_request_portal_rule" model="ir.rule">
+    <!-- Portal Request Rules (Customer Can See Own Requests) -->
+    <record id="portal_request_portal_rule" model="ir.rule">
     <field name="name">Portal Request Portal Access</field>
     <field name="model_id" ref="model_portal_request"/>
     <field name="domain_force">[
@@ -133,10 +132,10 @@
 <field name="perm_write" eval="True"/>
 <field name="perm_create" eval="True"/>
 <field name="perm_unlink" eval="False"/>
-</record>
+    </record>
 
-<!-- Customer Feedback Rules (Customer Can See Own Feedback) -->
-<record id="customer_feedback_portal_rule" model="ir.rule">
+    <!-- Customer Feedback Rules (Customer Can See Own Feedback) -->
+    <record id="customer_feedback_portal_rule" model="ir.rule">
     <field name="name">Customer Feedback Portal Access</field>
     <field name="model_id" ref="model_customer_feedback"/>
     <field name="domain_force">[
@@ -147,32 +146,27 @@
 <field name="perm_write" eval="True"/>
 <field name="perm_create" eval="True"/>
 <field name="perm_unlink" eval="False"/>
-</record>
+        </record>
 
-<!-- =============================================================== -->
-<!-- SEARCH PERFORMANCE MONITORING RULES -->
-<!-- =============================================================== -->
+        <!-- =============================================================== -->
+        <!-- SEARCH PERFORMANCE MONITORING RULES -->
+        <!-- =============================================================== -->
 
-<!-- System Configuration Parameters (System Admin Only) -->
-<record id="search_config_params_rule" model="ir.rule">
-<field name="name">Search Config Parameters Rule</field>
-<field name="model_id" ref="base.model_ir_config_parameter"/>
-<field name="domain_force">[
+        <!-- System Configuration Parameters (System Admin Only) -->
+        <record id="search_config_params_rule" model="ir.rule">
+            <field name="name">Search Config Parameters Rule</field>
+            <field name="model_id" ref="base.model_ir_config_parameter"/>
+            <field name="domain_force">[
                 '|',
                 ('key', 'not like', 'records_management.search.%'),
                 (1, '=', 1)
-]</field>
-<field name="groups" eval="[(4, ref('base.group_system'))]"/>
-<field name="perm_read" eval="True"/>
-<field name="perm_write" eval="True"/>
-<field name="perm_create" eval="True"/>
-<field name="perm_unlink" eval="True"/>
+            ]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
 
-</record>
-
-</data>
-</odoo>
-</record>
-
-</data>
+    </data>
 </odoo>

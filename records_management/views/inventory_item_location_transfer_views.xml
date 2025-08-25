@@ -12,10 +12,8 @@
     All fields referenced in the views must exist in the corresponding model.
     Follows Odoo view and action definition standards.
 -->
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!--
         <!-- Tree View -->
         <record id="inventory_item_location_transfer_view_tree" model="ir.ui.view">
             <field name="name">inventory.item.location.transfer.view.tree</field>
@@ -82,14 +80,19 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- Menu -->
-        <!--
-        <menuitem
-    </data>
-</odoo>
-            parent="REPLACE_WITH_PARENT_MENU_ID"
-            sequence="10"/>
-        -->
+        <!-- Action -->
+        <record id="action_inventory_item_location_transfer" model="ir.actions.act_window">
+            <field name="name">Inventory Item Location Transfer</field>
+            <field name="res_model">inventory.item.location.transfer</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu (optional - provide a real parent ID when enabling)
+        <menuitem id="menu_inventory_item_location_transfer"
+                  name="Inventory Item Location Transfer"
+                  parent="REPLACE_WITH_PARENT_MENU_ID"
+                  action="action_inventory_item_location_transfer"
+                  sequence="10"/>
         -->
     </data>
 </odoo>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- PDF Visitor Log Report -->
     <template id="report_visitor_log">
         <t t-call="web.external_layout">
             <div class="page">
@@ -33,9 +34,8 @@
         <field name="binding_model_id" ref="records_management.model_visitor_log"/>
         <field name="binding_type">report</field>
     </record>
-</odoo>
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
+
+    <!-- HTML Visitor Report -->
     <record id="report_visitor" model="ir.actions.report">
         <field name="name">Visitor</field>
         <field name="model">visitor</field>
@@ -62,15 +62,15 @@
                             </thead>
                             <tbody>
                                 <t t-if="doc.field_ids">
-                                <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
-                                </tr>
-                            </t>
+                                    <tr t-foreach="doc.field_ids" t-as="field">
+                                        <td>
+                                            <span t-esc="field.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="field.description"/>
+                                        </td>
+                                    </tr>
+                                </t>
                             </tbody>
                         </table>
                     </div>
@@ -78,5 +78,4 @@
             </t>
         </t>
     </template>
-
 </odoo>
