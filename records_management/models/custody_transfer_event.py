@@ -75,9 +75,9 @@ class CustodyTransferEvent(models.Model):
     )
     destruction_work_order_id = fields.Many2one('container.destruction.work.order', string="Destruction Work Order")
     partner_id = fields.Many2one(
-        related='custody_record_id.partner_id',
-        store=True,
-        string='Customer'
+        'res.partner',
+        string='Customer',
+        help='Customer associated with this custody transfer event'
     )
 
     # ============================================================================

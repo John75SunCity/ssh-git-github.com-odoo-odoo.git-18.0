@@ -321,12 +321,13 @@ class ShreddingService(models.Model):
         return action
 
     # Override Methods
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to add logging."""
-        record = super().create(vals)
-        _logger.info(f"Created shredding service: {record.name}")
-        return record
+        records = super().create(vals_list)
+        for record in records:
+            _logger.info(f"Created shredding service: {record.name}")
+        return records
 
     def write(self, vals):
         """Override write to add logging."""
