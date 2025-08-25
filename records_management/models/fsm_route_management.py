@@ -54,7 +54,7 @@ class FsmRouteManagement(models.Model):
         ('cancelled', 'Cancelled')
     ], string="Status", default='draft', tracking=True)
 
-    pickup_request_ids = fields.One2many('fsm.pickup.request', 'route_id', string="Pickup Requests")
+    pickup_request_ids = fields.One2many('pickup.request', 'route_id', string="Pickup Requests")
 
     # Configuration
     max_stops_per_route = fields.Integer(string="Max Stops", default=50)

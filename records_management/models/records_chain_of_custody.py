@@ -54,7 +54,7 @@ class RecordsChainOfCustody(models.Model):
     activity_ids = fields.One2many('mail.activity')
     message_follower_ids = fields.One2many('mail.followers')
     message_ids = fields.One2many('mail.message')
-    compliance_id = fields.Many2one('naid.compliance')
+    compliance_id = fields.Many2one('naid.compliance.checklist')
     display_name = fields.Char()
     transfer_summary = fields.Char()
     now_dt = fields.Datetime()

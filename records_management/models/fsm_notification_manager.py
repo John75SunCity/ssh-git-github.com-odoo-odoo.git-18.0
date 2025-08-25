@@ -39,7 +39,7 @@ class FsmNotificationManager(models.Model):
         if related_record:
             if related_record._name == 'project.task':
                 vals['task_id'] = related_record.id
-            elif related_record._name == 'fsm.pickup.request':
+            elif related_record._name == 'pickup.request':
                 vals['pickup_request_id'] = related_record.id
             elif related_record._name == 'fsm.route':
                 vals['route_id'] = related_record.id

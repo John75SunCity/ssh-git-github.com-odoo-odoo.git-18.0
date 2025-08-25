@@ -14,36 +14,41 @@ class MobilePhoto(models.Model):
     name = fields.Char(string="Photo Name", required=True, default=lambda self: _('New Photo'))
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string="Active", default=True)
-    
+
     # Relational fields to link photos to operations
     wizard_id = fields.Many2one('mobile.bin.key.wizard', string="Related Wizard")
-    
+
     # Work Order and FSM Integration
-    fsm_task_id = fields.Many2one('project.task', string="FSM Task", 
+    fsm_task_id = fields.Many2one('project.task', string="FSM Task",
                                   domain=[('is_fsm', '=', True)],
                                   help="Related Field Service Management task")
-    work_order_id = fields.Many2one('records.work.order', string="Work Order",
-                                    help="Related work order for this photo")
-    
+    work_order_reference = fields.Reference([
+        ('container.destruction.work.order', 'Container Destruction Work Order'),
+        ('container.retrieval.work.order', 'Container Retrieval Work Order'),
+        ('container.access.work.order', 'Container Access Work Order'),
+        ('work.order.shredding', 'Shredding Work Order'),
+        ('project.task', 'Project Task/FSM Task')
+    ], string="Work Order", help="Related work order for this photo")
+
     # Business Entity Relationships
     container_id = fields.Many2one('records.container', string="Container",
                                    help="Related container for this photo")
-    destruction_request_id = fields.Many2one('destruction.request', string="Destruction Request",
+    destruction_request_id = fields.Many2one('records.destruction', string="Destruction Request",
                                              help="Related destruction request")
     pickup_request_id = fields.Many2one('pickup.request', string="Pickup Request",
                                         help="Related pickup request")
     partner_id = fields.Many2one('res.partner', string="Customer",
                                  help="Customer related to this photo")
-    
+
     # Auto-computed from relationships
-    project_id = fields.Many2one('project.project', string="Project", 
+    project_id = fields.Many2one('project.project', string="Project",
                                  related='fsm_task_id.project_id', store=True)
-    
+
     # Photo Data
     photo_data = fields.Binary(string="Photo", required=True, attachment=True)
     photo_filename = fields.Char(string="Filename")
     photo_date = fields.Datetime(string="Date Taken", default=fields.Datetime.now)
-    
+
     # Geolocation
     gps_latitude = fields.Float(string="GPS Latitude", digits=(10, 7))
     gps_longitude = fields.Float(string="GPS Longitude", digits=(10, 7))
@@ -84,20 +89,17 @@ class MobilePhoto(models.Model):
         """Auto-populate related fields when FSM task is selected."""
         if self.fsm_task_id:
             self.partner_id = self.fsm_task_id.partner_id
-            # Try to find related work order
-            work_order = self.env['records.work.order'].search([
-                ('fsm_task_id', '=', self.fsm_task_id.id)
-            ], limit=1)
-            if work_order:
-                self.work_order_id = work_order
+            # Set FSM task as work order reference
+            self.work_order_reference = self.fsm_task_id
 
-    @api.onchange('work_order_id')
-    def _onchange_work_order_id(self):
+    @api.onchange('work_order_reference')
+    def _onchange_work_order_reference(self):
         """Auto-populate related fields when work order is selected."""
-        if self.work_order_id:
-            self.partner_id = self.work_order_id.partner_id
-            if hasattr(self.work_order_id, 'fsm_task_id'):
-                self.fsm_task_id = self.work_order_id.fsm_task_id
+        if self.work_order_reference:
+            if hasattr(self.work_order_reference, 'partner_id'):
+                self.partner_id = self.work_order_reference.partner_id
+            if hasattr(self.work_order_reference, 'fsm_task_id'):
+                self.fsm_task_id = self.work_order_reference.fsm_task_id
 
     @api.onchange('container_id')
     def _onchange_container_id(self):
@@ -148,7 +150,7 @@ class MobilePhoto(models.Model):
         self.ensure_one()
         if not self.fsm_task_id:
             raise UserError(_('No FSM task linked to this photo.'))
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('FSM Task: %s') % self.fsm_task_id.name,
@@ -161,14 +163,14 @@ class MobilePhoto(models.Model):
     def action_view_related_work_order(self):
         """Open related work order."""
         self.ensure_one()
-        if not self.work_order_id:
+        if not self.work_order_reference:
             raise UserError(_('No work order linked to this photo.'))
-        
+
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Work Order: %s') % self.work_order_id.name,
-            'res_model': 'records.work.order',
-            'res_id': self.work_order_id.id,
+            'name': _('Work Order: %s') % self.work_order_reference.name,
+            'res_model': self.work_order_reference._name,
+            'res_id': self.work_order_reference.id,
             'view_mode': 'form',
             'target': 'current',
         }
@@ -188,8 +190,8 @@ class MobilePhoto(models.Model):
         self.ensure_one()
         if self.fsm_task_id:
             return f"FSM Task: {self.fsm_task_id.name}"
-        elif self.work_order_id:
-            return f"Work Order: {self.work_order_id.name}"
+        elif self.work_order_reference:
+            return f"Work Order: {self.work_order_reference.name}"
         elif self.container_id:
             return f"Container: {self.container_id.name}"
         elif self.destruction_request_id:
@@ -213,7 +215,7 @@ class MobilePhoto(models.Model):
             'resolution': mobile_data.get('resolution'),
             'wizard_id': mobile_data.get('wizard_id'),
             'fsm_task_id': mobile_data.get('fsm_task_id'),
-            'work_order_id': mobile_data.get('work_order_id'),
+            'work_order_reference': mobile_data.get('work_order_reference'),
             'container_id': mobile_data.get('container_id'),
             'destruction_request_id': mobile_data.get('destruction_request_id'),
             'pickup_request_id': mobile_data.get('pickup_request_id'),
@@ -229,7 +231,7 @@ class MobilePhoto(models.Model):
         task = self.env['project.task'].browse(task_id)
         if not task.exists() or not task.is_fsm:
             raise UserError(_('Invalid FSM task.'))
-        
+
         self.write({
             'fsm_task_id': task_id,
             'partner_id': task.partner_id.id,
@@ -242,17 +244,17 @@ class MobilePhoto(models.Model):
         work_order = self.env['records.work.order'].browse(work_order_id)
         if not work_order.exists():
             raise UserError(_('Invalid work order.'))
-        
+
         vals = {
             'work_order_id': work_order_id,
             'partner_id': work_order.partner_id.id,
         }
-        
+
         # Also link FSM task if work order has one
         if hasattr(work_order, 'fsm_task_id') and work_order.fsm_task_id:
             vals['fsm_task_id'] = work_order.fsm_task_id.id
             vals['project_id'] = work_order.fsm_task_id.project_id.id
-        
+
         self.write(vals)
 
     # ============================================================================
@@ -265,12 +267,12 @@ class MobilePhoto(models.Model):
             name = record.photo_filename or record.name or _('Unnamed Photo')
             if record.photo_date:
                 name = f"{name} ({record.photo_date.strftime('%Y-%m-%d')})"
-            
+
             # Add related entity info
             related_entity = record.get_related_entity_name()
             if related_entity != _("No related entity"):
                 name = f"{name} - {related_entity}"
-                
+
             result.append((record.id, name))
         return result
 
@@ -288,7 +290,7 @@ class MobilePhoto(models.Model):
     def get_compliance_photos(self, entity_type=None, entity_id=None):
         """Get compliance photos, optionally filtered by entity."""
         domain = [('is_compliance_photo', '=', True)]
-        
+
         if entity_type and entity_id:
             if entity_type == 'fsm_task':
                 domain.append(('fsm_task_id', '=', entity_id))
@@ -298,6 +300,6 @@ class MobilePhoto(models.Model):
                 domain.append(('container_id', '=', entity_id))
             elif entity_type == 'destruction_request':
                 domain.append(('destruction_request_id', '=', entity_id))
-        
+
         return self.search(domain)
 

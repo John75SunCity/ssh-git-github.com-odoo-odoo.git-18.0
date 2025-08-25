@@ -12,7 +12,7 @@ class PaperBaleLine(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
-    bale_id = fields.Many2one('records_management.bale', string='Bale', required=True, ondelete='cascade')
+    bale_id = fields.Many2one('paper.bale', string='Bale')
     weight_lbs = fields.Float(string='Weight (lbs)')
     material_type = fields.Selection([
         ('white_paper', 'White Paper'),

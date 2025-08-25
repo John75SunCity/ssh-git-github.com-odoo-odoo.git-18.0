@@ -37,7 +37,7 @@ class WorkOrderCoordinator(models.Model):
     container_retrieval_ids = fields.One2many('container.retrieval.work.order', 'coordinator_id', string="Container Retrievals")
     file_retrieval_ids = fields.One2many('file.retrieval.work.order', 'coordinator_id', string="File Retrievals")
     scan_retrieval_ids = fields.One2many('scan.retrieval.work.order', 'coordinator_id', string="Scan Retrievals")
-    destruction_ids = fields.One2many('destruction.order', 'coordinator_id', string="Destruction Orders")
+    destruction_ids = fields.One2many('records.destruction', 'coordinator_id', string="Destruction Orders")
 
     # Coordination Metrics
     total_work_orders = fields.Integer(string="Total Work Orders", compute='_compute_coordination_metrics', store=True)
