@@ -17,48 +17,113 @@ class RecordsChainOfCustody(models.Model):
     # ============================================================================
     name = fields.Char()
     sequence = fields.Integer()
-    company_id = fields.Many2one()
-    user_id = fields.Many2one()
+    company_id = fields.Many2one(comodel_name='res.company', string='Company')
+    user_id = fields.Many2one(comodel_name='res.users', string='Responsible')
     active = fields.Boolean()
-    customer_id = fields.Many2one()
-    partner_id = fields.Many2one()
-    document_id = fields.Many2one()
-    container_id = fields.Many2one()
-    related_work_order_id = fields.Many2one()
-    custody_event = fields.Selection()
+    customer_id = fields.Many2one(comodel_name='res.partner', string='Customer')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Partner')
+    document_id = fields.Many2one(comodel_name='records.document', string='Document')
+    container_id = fields.Many2one(comodel_name='records.container', string='Container')
+    related_work_order_id = fields.Many2one(comodel_name='project.task', string='Work Order')
+    custody_event = fields.Selection(
+        selection=[
+            ("transfer", "Transfer"),
+            ("transferred", "Transferred"),
+            ("received", "Received"),
+            ("returned", "Returned"),
+            ("destroyed", "Destroyed"),
+            ("created", "Created"),
+            ("verified", "Verified"),
+        ],
+        string="Custody Event",
+        default="transfer",
+    )
     custody_date = fields.Datetime()
     description = fields.Text()
-    custody_from_id = fields.Many2one()
-    custody_to_id = fields.Many2one()
-    transfer_reason = fields.Selection()
+    custody_from_id = fields.Many2one(comodel_name='res.users', string='From Custodian')
+    custody_to_id = fields.Many2one(comodel_name='res.users', string='To Custodian')
+    transfer_reason = fields.Selection(
+        selection=[
+            ("routine", "Routine"),
+            ("service", "Service"),
+            ("audit", "Audit"),
+            ("legal", "Legal"),
+            ("other", "Other"),
+        ],
+        string="Transfer Reason",
+        default="routine",
+    )
     supervisor_approval = fields.Boolean()
-    supervisor_id = fields.Many2one()
-    priority = fields.Selection()
-    request_type = fields.Selection()
+    supervisor_id = fields.Many2one(comodel_name='res.users', string='Supervisor')
+    priority = fields.Selection(
+        selection=[
+            ("low", "Low"),
+            ("normal", "Normal"),
+            ("high", "High"),
+            ("urgent", "Urgent"),
+            ("critical", "Critical"),
+        ],
+        string="Priority",
+        default="normal",
+    )
+    request_type = fields.Selection(
+        selection=[
+            ("document", "Document"),
+            ("container", "Container"),
+            ("service", "Service"),
+            ("other", "Other"),
+        ],
+        string="Request Type",
+        default="document",
+    )
     custody_signature = fields.Binary()
     signature_date = fields.Datetime()
-    witness_id = fields.Many2one()
+    witness_id = fields.Many2one(comodel_name='res.users', string='Witness')
     verification_code = fields.Char()
-    chain_integrity = fields.Selection()
-    location_from_id = fields.Many2one()
-    location_to_id = fields.Many2one()
-    physical_condition = fields.Selection()
+    chain_integrity = fields.Selection(
+        selection=[
+            ("verified", "Verified"),
+            ("broken", "Broken"),
+        ],
+        string="Chain Integrity",
+        default="verified",
+    )
+    location_from_id = fields.Many2one(comodel_name='records.location', string='From Location')
+    location_to_id = fields.Many2one(comodel_name='records.location', string='To Location')
+    physical_condition = fields.Selection(
+        selection=[
+            ("intact", "Intact"),
+            ("sealed", "Sealed"),
+            ("opened", "Opened"),
+            ("damaged", "Damaged"),
+        ],
+        string="Physical Condition",
+        default="intact",
+    )
     container_seal = fields.Char()
-    state = fields.Selection()
+    state = fields.Selection(
+        selection=[
+            ("draft", "Draft"),
+            ("confirmed", "Confirmed"),
+            ("in_progress", "In Progress"),
+            ("completed", "Completed"),
+            ("verified", "Verified"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
     key = fields.Char(string='Metadata Key')
     value = fields.Char()
     notes = fields.Text(string='Internal Notes')
     external_reference = fields.Char()
     transfer_date = fields.Datetime(string='Transfer Date')
     verified = fields.Boolean(string='Verified')
-    activity_ids = fields.One2many('mail.activity')
-    message_follower_ids = fields.One2many('mail.followers')
-    message_ids = fields.One2many('mail.message')
+    # Chatter and activities are provided by mail.thread/mail.activity.mixin
     compliance_id = fields.Many2one('naid.compliance.checklist')
     display_name = fields.Char()
     transfer_summary = fields.Char()
-    now_dt = fields.Datetime()
-    event_dt = fields.Datetime()
     now_dt = fields.Datetime()
     event_dt = fields.Datetime()
     days_since_event = fields.Integer()
