@@ -363,7 +363,7 @@ class DocumentRetrievalItem(models.Model):
                 raise UserError(_("Only pending items can be located."))
             item._update_status(
                 "located",
-                _("Item located by %s", self.env.user.name),
+                _("Item located by %s") % self.env.user.name,
                 {"retrieval_date": fields.Datetime.now(), "retrieved_by_id": self.env.user.id}
             )
 
@@ -373,7 +373,7 @@ class DocumentRetrievalItem(models.Model):
                 raise UserError(_("Item must be located before retrieval."))
             item._update_status(
                 "retrieved",
-                _("Item retrieved by %s", self.env.user.name),
+                _("Item retrieved by %s") % self.env.user.name,
                 {"retrieval_date": fields.Datetime.now(), "retrieved_by_id": self.env.user.id}
             )
 
@@ -381,18 +381,18 @@ class DocumentRetrievalItem(models.Model):
         for item in self:
             if item.status != "retrieved":
                 raise UserError(_("Item must be retrieved before packaging."))
-            item._update_status("packaged", _("Item packaged by %s", self.env.user.name))
+            item._update_status("packaged", _("Item packaged by %s") % self.env.user.name)
 
     def action_deliver_item(self):
         for item in self:
             if item.status != "packaged":
                 raise UserError(_("Item must be packaged before delivery."))
-            item._update_status("delivered", _("Item delivered by %s", self.env.user.name))
+            item._update_status("delivered", _("Item delivered by %s") % self.env.user.name)
             if item.status != "delivered":
                 raise UserError(_("Item must be delivered before return."))
             item._update_status(
                 "returned",
-                _("Item returned by %s", self.env.user.name),
+                _("Item returned by %s") % self.env.user.name,
                 {"return_date": fields.Date.today()}
             )
 
@@ -405,7 +405,7 @@ class DocumentRetrievalItem(models.Model):
                 raise UserError(_("Only pending items can start the search process."))
             item._update_status(
                 "searching",
-                _("Search started by %s for file: %s", self.env.user.name, item.requested_file_name or item.name)
+                _("Search started by %s for file: %s") % (self.env.user.name, item.requested_file_name or item.name)
             )
 
     def action_record_container_search(self, container_id, found=False, notes=""):
@@ -437,11 +437,12 @@ class DocumentRetrievalItem(models.Model):
         for item in self:
             reason_display = dict(item._fields["not_found_reason"].selection).get(reason, reason)
             message = _(
-                "File marked as NOT FOUND by %s. Searched %s containers (%s unsuccessful). Reason: %s",
+                "File marked as NOT FOUND by %s. Searched %s containers (%s unsuccessful). Reason: %s"
+            ) % (
                 self.env.user.name,
                 item.containers_accessed_count,
                 item.containers_not_found_count,
-                reason_display
+                reason_display,
             )
 
             item._update_status(
@@ -469,7 +470,7 @@ class DocumentRetrievalItem(models.Model):
             self.document_id = document.id
 
         self.message_post(
-            body=_("File barcoded by %s with barcode: %s", self.env.user.name, barcode),
+            body=_("File barcoded by %s with barcode: %s") % (self.env.user.name, barcode),
             message_type="notification",
         )
 
