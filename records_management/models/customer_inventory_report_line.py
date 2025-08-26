@@ -11,6 +11,7 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
+from datetime import datetime as py_datetime
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -48,7 +49,8 @@ class CustomerInventoryReportLine(models.Model):
     document_type_id = fields.Many2one('records.document.type', string='Document Type')
     document_type = fields.Char(string="Document Type Name", related='document_type_id.name')
     document_count = fields.Integer(string='Document Count')
-    storage_date = fields.Date(string='Storage Start Date', related='container_id.create_date', store=True)
+    # create_date on comodel is Datetime; related field type must match
+    storage_date = fields.Datetime(string='Storage Start Date', related='container_id.create_date', store=True, readonly=True)
     last_access_date = fields.Date(string='Last Access', related='container_id.last_access_date')
     # Align to container model field name
     retention_date = fields.Date(string='Retention/Destruction Due Date', related='container_id.destruction_due_date', store=True)
@@ -98,8 +100,11 @@ class CustomerInventoryReportLine(models.Model):
         """Calculate number of months in storage"""
         for line in self:
             if line.storage_date and line.report_date:
-                years = line.report_date.year - line.storage_date.year
-                months = line.report_date.month - line.storage_date.month
+                # storage_date is Datetime; compare by calendar month using date part
+                sd_year = (line.storage_date.date().year if isinstance(line.storage_date, py_datetime) else line.storage_date.year)
+                sd_month = (line.storage_date.date().month if isinstance(line.storage_date, py_datetime) else line.storage_date.month)
+                years = line.report_date.year - sd_year
+                months = line.report_date.month - sd_month
                 total_months = years * 12 + months
                 line.storage_months = max(total_months, 0)
             else:
@@ -118,7 +123,7 @@ class CustomerInventoryReportLine(models.Model):
     def _onchange_container_id(self):
         """Update fields when container changes"""
         if self.container_id:
-            self.name = _("Inventory Line: %s", self.container_id.name or self.container_id.barcode)
+            self.name = _("Inventory Line: %s") % (self.container_id.name or self.container_id.barcode)
             # Align with container's computed count
             self.document_count = self.container_id.document_count
             if self.container_id.document_ids:
@@ -145,7 +150,7 @@ class CustomerInventoryReportLine(models.Model):
             'verification_date': fields.Date.today(),
             'verified_by_id': self.env.user.id
         })
-        self.message_post(body=_("Document count verified: %s documents.", self.document_count))
+    self.message_post(body=_("Document count verified: %s documents.") % self.document_count)
 
     def action_update_from_container(self):
         """Update line data from current container state"""
@@ -157,7 +162,7 @@ class CustomerInventoryReportLine(models.Model):
             old_count = self.document_count
             self.document_count = actual_count
             self.document_count_verified = False
-            self.message_post(body=_("Document count updated from %s to %s (requires verification).", old_count, actual_count))
+            self.message_post(body=_("Document count updated from %s to %s (requires verification).") % (old_count, actual_count))
 
     def action_view_container(self):
         """View the related container"""
@@ -204,8 +209,11 @@ class CustomerInventoryReportLine(models.Model):
     def _check_date_sequence(self):
         """Validate storage date is before report date"""
         for line in self:
-            if line.storage_date and line.report_date and line.storage_date > line.report_date:
-                raise ValidationError(_("Storage date cannot be after report date."))
+            if line.storage_date and line.report_date:
+                # Convert datetime to date for safe comparison with Date field
+                sd = line.storage_date.date() if isinstance(line.storage_date, py_datetime) else line.storage_date
+                if sd > line.report_date:
+                    raise ValidationError(_("Storage date cannot be after report date."))
 
     # ============================================================================
     # ORM OVERRIDES
@@ -225,7 +233,7 @@ class CustomerInventoryReportLine(models.Model):
         if 'document_count' in vals:
             for line in self:
                 if not line.document_count_verified:
-                    line.message_post(body=_("Document count changed to %s (verification required).", line.document_count))
+                    line.message_post(body=_("Document count changed to %s (verification required).") % line.document_count)
         return res
 
     def name_get(self):

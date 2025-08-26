@@ -21,9 +21,11 @@ Integrity checklist when changing models/fields
 - Validate views reference real model fields (avoid view-only `arch` nodes in analysis).
 
 Development workflow (use VS Code tasks)
+IMPORTANT RUNTIME POLICY: Do not run the local Odoo server in this workspace.
 - Validate syntax: “Validate Records Management Module” → runs `development-tools/syntax-tools/find_syntax_errors.py`.
 - Analyze references: “Run Comprehensive Field Analysis” and `development-tools/comprehensive_loading_order_audit.py`.
-- Ship changes: “Deploy to GitHub (Git Push)” (depends on validation). For local run, use “Launch Odoo Development Server (Local)”.
+- Ship changes: “Deploy to GitHub (Git Push)” (depends on validation).
+- Functional checks: Use remote environments (e.g., Odoo.sh/staging) only. The “Launch Odoo Development Server (Local)” tasks are disabled by policy.
 - Quick guardrail: run “RM System Integrity Checklist” before committing.
 
 Odoo-aware parsing standards (for scripts and audits)
