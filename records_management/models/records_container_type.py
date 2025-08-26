@@ -108,7 +108,7 @@ class RecordsContainerType(models.Model):
     def action_view_containers(self):
         self.ensure_one()
         return {
-            'name': _('Containers of Type: %s', self.name),
+            'name': _('Containers of Type: %s') % self.name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.container',
             'view_mode': 'tree,form,kanban',

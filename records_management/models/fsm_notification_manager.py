@@ -64,14 +64,14 @@ class FsmNotificationManager(models.Model):
         message = "<p>Dear Customer,</p><p>This is a notification from our FSM service.</p>"
 
         if notification_type == 'appointment_reminder' and record:
-            subject = _("Appointment Reminder for %s", record.name)
-            message = _("<p>This is a reminder for your upcoming service appointment for <strong>%s</strong> scheduled on %s.</p>", record.name, record.scheduled_date_start)
+            subject = _("Appointment Reminder for %s") % record.name
+            message = _("<p>This is a reminder for your upcoming service appointment for <strong>%s</strong> scheduled on %s.</p>") % (record.name, record.scheduled_date_start)
         elif notification_type == 'service_completion' and record:
-            subject = _("Service Completed: %s", record.name)
-            message = _("<p>Your service for <strong>%s</strong> has been successfully completed.</p>", record.name)
+            subject = _("Service Completed: %s") % record.name
+            message = _("<p>Your service for <strong>%s</strong> has been successfully completed.</p>") % record.name
         elif notification_type == 'delay_alert' and record:
-            subject = _("Service Delay Alert: %s", record.name)
-            message = _("<p>We are experiencing a delay for your service <strong>%s</strong>. We apologize for any inconvenience.</p>", record.name)
+            subject = _("Service Delay Alert: %s") % record.name
+            message = _("<p>We are experiencing a delay for your service <strong>%s</strong>. We apologize for any inconvenience.</p>") % record.name
 
         return {'subject': subject, 'message': message}
 
@@ -124,7 +124,7 @@ class FsmNotificationManager(models.Model):
             'sent_datetime': fields.Datetime.now(),
             'attempts': notification.attempts + 1
         })
-        notification.message_post(body=_("Notification sent via %s.", notification.delivery_method))
+        notification.message_post(body=_("Notification sent via %s.") % notification.delivery_method)
 
     @api.model
     def _cleanup_old_notifications(self, days=90):

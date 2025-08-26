@@ -126,7 +126,7 @@ class RouteOptimizer(models.Model):
             self.message_post(body=_('Route optimization completed successfully.'))
         except Exception as e:
             self.write({'status': 'failed'})
-            self.message_post(body=_('Route optimization failed: %s', str(e)))
+            self.message_post(body=_('Route optimization failed: %s') % str(e))
             raise
 
     def action_apply_optimization(self):
@@ -203,7 +203,7 @@ class RouteOptimizer(models.Model):
 
         for route_data in results.get('routes', []):
             route = FsmRoute.create({
-                'name': _('Optimized Route %s - %s', route_data['route_number'], self.optimization_date.strftime('%Y-%m-%d')),
+                'name': _('Optimized Route %s - %s') % (route_data['route_number'], self.optimization_date.strftime('%Y-%m-%d')),
                 'date': self.optimization_date,
                 'estimated_distance': route_data.get('distance', 0),
                 'estimated_duration': route_data.get('time', 0),

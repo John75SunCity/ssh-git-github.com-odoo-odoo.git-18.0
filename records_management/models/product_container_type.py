@@ -93,7 +93,7 @@ class ProductContainerType(models.Model):
     def _compute_dimensions_display(self):
         for record in self:
             if record.length_inches and record.width_inches and record.height_inches:
-                record.dimensions_display = _('%0.1f" L x %0.1f" W x %0.1f" H', record.length_inches, record.width_inches, record.height_inches)
+                record.dimensions_display = _('%0.1f" L x %0.1f" W x %0.1f" H') % (record.length_inches, record.width_inches, record.height_inches)
             else:
                 record.dimensions_display = _('N/A')
 
@@ -119,7 +119,7 @@ class ProductContainerType(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Containers - %s', self.name),
+            'name': _('Containers - %s') % self.name,
             'res_model': 'records.container',
             'view_mode': 'tree,form,kanban',
             'domain': [('container_type_id', '=', self.id)],

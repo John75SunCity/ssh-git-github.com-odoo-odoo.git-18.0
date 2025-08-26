@@ -28,7 +28,7 @@ _logger = logging.getLogger(__name__)
 class FieldLabelPortalController(CustomerPortal):
     """
     Portal controller for field label customization
-    
+
     Provides API endpoints for retrieving custom field labels and configurations
     for portal users, enabling customer-specific field naming conventions.
     """
@@ -37,11 +37,11 @@ class FieldLabelPortalController(CustomerPortal):
     def get_field_labels(self, customer_id=None, department_id=None):
         """
         API endpoint to get custom field labels for a customer/department
-        
+
         Args:
             customer_id (int, optional): Customer ID for label context
             department_id (int, optional): Department ID for specific context
-            
+
         Returns:
             dict: Success status and field labels or error message
         """
@@ -73,17 +73,17 @@ class FieldLabelPortalController(CustomerPortal):
             return {'error': _('Access denied')}
         except Exception as e:
             _logger.error("Error in get_field_labels: %s", str(e))
-            return {'error': _('Failed to retrieve field labels: %s', str(e))}
+            return {'error': _('Failed to retrieve field labels: %s') % str(e)}
 
     @http.route(['/portal/field-labels/transitory-config'], type='json', auth="user", methods=['POST'], website=True)
     def get_transitory_field_config(self, customer_id=None, department_id=None):
         """
         Get complete field configuration for transitory items including labels
-        
+
         Args:
             customer_id (int, optional): Customer ID for configuration context
             department_id (int, optional): Department ID for specific context
-            
+
         Returns:
             dict: Complete field configuration with labels and settings
         """
@@ -122,18 +122,18 @@ class FieldLabelPortalController(CustomerPortal):
             return {'error': _('Access denied')}
         except Exception as e:
             _logger.error("Error in get_transitory_field_config: %s", str(e))
-            return {'error': _('Failed to retrieve field configuration: %s', str(e))}
+            return {'error': _('Failed to retrieve field configuration: %s') % str(e)}
 
     @http.route(['/portal/field-labels/validate'], type='json', auth="user", methods=['POST'], website=True)
     def validate_field_values(self, field_values, customer_id=None, department_id=None):
         """
         Validate field values against customer-specific rules
-        
+
         Args:
             field_values (dict): Field values to validate
             customer_id (int, optional): Customer context
             department_id (int, optional): Department context
-            
+
         Returns:
             dict: Validation results with errors and warnings
         """
@@ -159,7 +159,7 @@ class FieldLabelPortalController(CustomerPortal):
 
             for field_name, field_value in field_values.items():
                 field_config = config.get(field_name, {})
-                
+
                 # Required field validation
                 if field_config.get('required', False) and not field_value:
                     validation_results['errors'][field_name] = _('This field is required')
@@ -180,7 +180,7 @@ class FieldLabelPortalController(CustomerPortal):
 
         except Exception as e:
             _logger.error("Error in validate_field_values: %s", str(e))
-            return {'error': _('Validation failed: %s', str(e))}
+            return {'error': _('Validation failed: %s') % str(e)}
 
     # ============================================================================
     # HELPER METHODS
@@ -189,10 +189,10 @@ class FieldLabelPortalController(CustomerPortal):
     def _resolve_customer_id(self, provided_customer_id):
         """
         Resolve customer ID from provided value or current user context
-        
+
         Args:
             provided_customer_id (int, optional): Explicitly provided customer ID
-            
+
         Returns:
             int: Resolved customer ID or None
         """
@@ -201,23 +201,23 @@ class FieldLabelPortalController(CustomerPortal):
 
         # Try to get from current user's partner context
         user_partner = request.env.user.partner_id
-        
+
         if user_partner.is_company:
             return user_partner.id
         elif user_partner.parent_id:
             return user_partner.parent_id.id
-            
+
         return None
 
     def _apply_department_overrides(self, base_config, department_id, customer_id):
         """
         Apply department-specific configuration overrides
-        
+
         Args:
             base_config (dict): Base customer configuration
             department_id (int): Department ID for overrides
             customer_id (int): Customer context
-            
+
         Returns:
             dict: Configuration with department overrides applied
         """
@@ -249,11 +249,11 @@ class FieldLabelPortalController(CustomerPortal):
     def _validate_field_pattern(self, value, pattern):
         """
         Validate field value against pattern
-        
+
         Args:
             value (str): Field value to validate
             pattern (str): Validation pattern
-            
+
         Returns:
             bool: True if value matches pattern
         """
@@ -268,7 +268,7 @@ class FieldLabelPortalController(CustomerPortal):
 class FieldLabelAdminController(http.Controller):
     """
     Administrative controller for field label management
-    
+
     Provides management interface for Records Management administrators
     to preview and configure field label customizations.
     """
@@ -277,11 +277,11 @@ class FieldLabelAdminController(http.Controller):
     def preview_field_labels(self, customer_id=None, department_id=None):
         """
         Preview field labels for admin users
-        
+
         Args:
             customer_id (int, optional): Customer ID for preview context
             department_id (int, optional): Department ID for preview context
-            
+
         Returns:
             dict: Field labels and configuration preview
         """
@@ -321,17 +321,17 @@ class FieldLabelAdminController(http.Controller):
             return {'error': _('Access denied')}
         except Exception as e:
             _logger.error("Error in preview_field_labels: %s", str(e))
-            return {'error': _('Preview failed: %s', str(e))}
+            return {'error': _('Preview failed: %s') % str(e)}
 
     @http.route(['/records/admin/field-labels/apply-preset'], type='json', auth="user", methods=['POST'], website=True)
     def apply_label_preset(self, config_id, preset_name):
         """
         Apply a preset to a field label configuration
-        
+
         Args:
             config_id (int): Field label configuration ID
             preset_name (str): Name of preset to apply
-            
+
         Returns:
             dict: Success status and message
         """
@@ -357,17 +357,17 @@ class FieldLabelAdminController(http.Controller):
 
             # Apply selected preset
             if preset_name not in preset_methods:
-                return {'error': _('Unknown preset: %s', preset_name)}
+                return {'error': _('Unknown preset: %s') % preset_name}
 
             preset_methods[preset_name]()
 
             # Log the action
-            _logger.info("Applied %s preset to configuration %d by user %s", 
+            _logger.info("Applied %s preset to configuration %d by user %s",
                         preset_name, config_id, request.env.user.name)
 
             return {
                 'success': True,
-                'message': _('%s preset applied successfully', preset_name.title()),
+                'message': _('%s preset applied successfully') % preset_name.title(),
                 'preset_applied': preset_name,
                 'config_id': config_id
             }
@@ -377,16 +377,16 @@ class FieldLabelAdminController(http.Controller):
             return {'error': _('Access denied')}
         except Exception as e:
             _logger.error("Error applying preset %s: %s", preset_name, str(e))
-            return {'error': _('Failed to apply preset: %s', str(e))}
+            return {'error': _('Failed to apply preset: %s') % str(e)}
 
     @http.route(['/records/admin/field-labels/bulk-update'], type='json', auth="user", methods=['POST'], website=True)
     def bulk_update_labels(self, updates):
         """
         Bulk update multiple field label configurations
-        
+
         Args:
             updates (list): List of update dictionaries with config_id and changes
-            
+
         Returns:
             dict: Bulk update results
         """
@@ -410,13 +410,13 @@ class FieldLabelAdminController(http.Controller):
                     changes = update_data.get('changes', {})
 
                     if not config_id or not changes:
-                        results['errors'].append(_('Invalid update data for config ID: %s', config_id))
+                        results['errors'].append(_('Invalid update data for config ID: %s') % config_id)
                         results['failed'] += 1
                         continue
 
                     config = request.env['field.label.customization'].browse(config_id)
                     if not config.exists():
-                        results['errors'].append(_('Configuration not found: %s', config_id))
+                        results['errors'].append(_('Configuration not found: %s') % config_id)
                         results['failed'] += 1
                         continue
 
@@ -424,7 +424,7 @@ class FieldLabelAdminController(http.Controller):
                     results['updated'] += 1
 
                 except Exception as e:
-                    results['errors'].append(_('Failed to update config %s: %s', 
+                    results['errors'].append(_('Failed to update config %s: %s') % (
                                            update_data.get('config_id'), str(e)))
                     results['failed'] += 1
 
@@ -435,17 +435,17 @@ class FieldLabelAdminController(http.Controller):
 
         except Exception as e:
             _logger.error("Error in bulk_update_labels: %s", str(e))
-            return {'error': _('Bulk update failed: %s', str(e))}
+            return {'error': _('Bulk update failed: %s') % str(e)}
 
     @http.route(['/records/admin/field-labels/export'], type='http', auth="user", methods=['GET'], website=True)
     def export_label_configuration(self, customer_id=None, format='csv'):
         """
         Export field label configuration
-        
+
         Args:
             customer_id (int, optional): Customer ID to filter export
             format (str): Export format (csv, xlsx)
-            
+
         Returns:
             Response: File download response
         """

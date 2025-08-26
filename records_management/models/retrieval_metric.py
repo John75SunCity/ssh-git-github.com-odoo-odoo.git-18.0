@@ -103,7 +103,7 @@ class RetrievalMetric(models.Model):
         for record in self:
             metric_label = dict(record._fields['metric_type'].selection).get(record.metric_type, '')
             unit_label = dict(record._fields['metric_unit'].selection).get(record.metric_unit, '')
-            record.display_name = _('%s: %.2f %s', metric_label, record.metric_value, unit_label)
+            record.display_name = _('%s: %.2f %s') % (metric_label, record.metric_value, unit_label)
 
     @api.depends('start_time', 'end_time')
     def _compute_duration(self):
@@ -183,6 +183,6 @@ class RetrievalMetric(models.Model):
             for record in self:
                 state_label = dict(record._fields['state'].selection).get(record.state)
                 if state_label:
-                    record.message_post(body=_('State changed to %s', state_label))
+                    record.message_post(body=_('State changed to %s') % state_label)
         return res
 

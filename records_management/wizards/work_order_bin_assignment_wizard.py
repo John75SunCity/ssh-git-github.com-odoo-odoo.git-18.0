@@ -28,7 +28,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     name = fields.Char(
         string='Assignment Name',
         required=True,
-        default=lambda self: _('Bin Assignment - %s', fields.Date.today()),
+        default=lambda self: _('Bin Assignment - %s') % fields.Date.today(),
         tracking=True,
         help='Name for this bin assignment operation'
     )
@@ -183,11 +183,9 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         for wizard in self:
             if wizard.selected_bin_ids and wizard.work_order_ids:
                 if wizard.available_capacity < wizard.total_capacity_needed:
-                    raise UserError(_(
-                        'Insufficient bin capacity. Available: %(available).2f CF, '
-                        'Needed: %(needed).2f CF',
-                        available=wizard.available_capacity,
-                        needed=wizard.total_capacity_needed
+                    raise UserError(_('Insufficient bin capacity. Available: %.2f CF, Needed: %.2f CF') % (
+                        wizard.available_capacity,
+                        wizard.total_capacity_needed
                     ))
 
     def _validate_assignment_rules(self):
@@ -208,8 +206,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         ])
 
         if existing_assignments:
-            raise UserError(_(
-                'Some selected bins are already assigned to other active work orders: %s',
+            raise UserError(_('Some selected bins are already assigned to other active work orders: %s') % (
                 ', '.join(existing_assignments.mapped('name'))
             ))
 
@@ -252,7 +249,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
 
         for location in work_order_locations:
             location_bins = self.available_bin_ids.filtered(
-                lambda b: b.location_id == location
+                lambda b, _loc_id=location.id: b.location_id.id == _loc_id
             )[:self.max_bins_per_order]
 
             assigned_bins |= location_bins
@@ -273,7 +270,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
 
             # Find best bin for this order
             suitable_bins = self.available_bin_ids.filtered(
-                lambda b: b.available_capacity_cf >= order.estimated_volume_cf
+                lambda b, _needed_cf=order.estimated_volume_cf: b.available_capacity_cf >= _needed_cf
             )
 
             if suitable_bins:
@@ -360,13 +357,13 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     def _create_naid_audit_log(self, work_order, assigned_bins):
         """Create NAID compliance audit log for bin assignment"""
         self.env['naid.audit.log'].create({
-            'name': _('Bin Assignment: %s', work_order.name),
+            'name': _('Bin Assignment: %s') % work_order.name,
             'activity_type': 'bin_assignment',
             'work_order_id': work_order.id,
             'container_ids': [(6, 0, assigned_bins.ids)],
             'performed_by': self.env.user.id,
             'activity_date': fields.Datetime.now(),
-            'description': _('Assigned %d bins to work order %s via wizard',
+            'description': _('Assigned %d bins to work order %s via wizard') % (
                            len(assigned_bins), work_order.name),
             'compliance_level': 'standard'
         })
@@ -384,8 +381,8 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
 
     def _show_success_message(self, assignment_count):
         """Show success message after assignment"""
-        message = _('Successfully assigned %d bins to %d work orders',
-                   assignment_count, len(self.work_order_ids))
+        message = _('Successfully assigned %d bins to %d work orders') % (
+            assignment_count, len(self.work_order_ids))
 
         return {
             'type': 'ir.actions.client',

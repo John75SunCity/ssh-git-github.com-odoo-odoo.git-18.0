@@ -31,7 +31,7 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
     name = fields.Char(
         string="Conversion Name",
         required=True,
-        default=lambda self: _("Container Type Conversion - %s", fields.Date.today()),
+        default=lambda self: _("Container Type Conversion - %s") % fields.Date.today(),
         help="Name for this conversion operation"
     )
 
@@ -141,10 +141,10 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
                 continue
 
             domain = [('container_type', '=', wizard.source_container_type)]
-            
+
             if wizard.partner_id:
                 domain.append(('partner_id', '=', wizard.partner_id.id))
-            
+
             if wizard.location_id:
                 domain.append(('location_id', '=', wizard.location_id.id))
 
@@ -175,23 +175,23 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
         """Generate validation warnings for conversion"""
         for wizard in self:
             warnings = []
-            
+
             if wizard.source_container_type == wizard.target_container_type:
                 warnings.append("Source and target types are the same - no conversion needed")
-            
+
             if wizard.source_container_type and wizard.target_container_type:
                 specs = wizard._get_container_specifications()
                 source_spec = specs.get(wizard.source_container_type, {})
                 target_spec = specs.get(wizard.target_container_type, {})
-                
+
                 # Volume capacity warnings
                 if source_spec.get('volume', 0) > target_spec.get('volume', 0):
                     warnings.append("Converting to smaller volume container - documents may not fit")
-                
+
                 # Weight capacity warnings
                 if source_spec.get('max_weight', 0) > target_spec.get('max_weight', 0):
                     warnings.append("Converting to lower weight capacity - may exceed limits")
-                
+
                 # Cost impact warnings
                 if wizard.estimated_cost_impact > 1000:
                     warnings.append("High cost impact - review pricing implications")
@@ -245,12 +245,12 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
     def _get_containers_to_convert(self):
         """Get containers that match conversion criteria"""
         self.ensure_one()
-        
+
         domain = [('container_type', '=', self.source_container_type)]
-        
+
         if self.partner_id:
             domain.append(('partner_id', '=', self.partner_id.id))
-        
+
         if self.location_id:
             domain.append(('location_id', '=', self.location_id.id))
 
@@ -263,20 +263,20 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
     def _create_naid_audit_log(self, containers):
         """Create NAID audit log for container type conversion"""
         self.ensure_one()
-        
+
         log_vals = {
-            'name': _("Container Type Conversion: %s", self.name),
+            'name': _("Container Type Conversion: %s") % self.name,
             'event_type': 'container_conversion',
             'event_date': fields.Datetime.now(),
             'user_id': self.env.user.id,
-            'description': _("Converted %d containers from %s to %s", 
-                           len(containers), 
-                           self.source_container_type, 
+            'description': _("Converted %d containers from %s to %s") % (
+                           len(containers),
+                           self.source_container_type,
                            self.target_container_type),
             'reason': self.reason,
             'affected_containers': [(6, 0, containers.ids)]
         }
-        
+
         return self.env['naid.audit.log'].create(log_vals)
 
     # ============================================================================
@@ -286,12 +286,12 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
         """Preview containers that will be converted"""
 
         self.ensure_one()
-        
+
         if not self.source_container_type:
             raise UserError(_("Please select a source container type"))
 
         containers = self._get_containers_to_convert()
-        
+
         return {
             'name': _("Containers to Convert"),
             'type': 'ir.actions.act_window',
@@ -308,29 +308,31 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
         """Execute the container type conversion"""
 
         self.ensure_one()
-        
+
         # Validation
         if not self.source_container_type or not self.target_container_type:
             raise UserError(_("Please select both source and target container types"))
-        
+
         if self.source_container_type == self.target_container_type:
             raise UserError(_("Source and target container types cannot be the same"))
-        
+
         if not self.reason:
             raise UserError(_("Please provide a reason for this conversion"))
 
         # Get containers to convert
         containers = self._get_containers_to_convert()
-        
+
         if not containers:
             raise UserError(_("No containers found matching the specified criteria"))
 
         # Check for validation warnings
         if self.validation_warnings and not self.force_conversion:
-            raise UserError(_(
-                "Validation warnings found:\n%s\n\nPlease review and check 'Force Conversion' to proceed.",
-                self.validation_warnings
-            ))
+            raise UserError(
+                _(
+                    "Validation warnings found:\n%s\n\nPlease review and check 'Force Conversion' to proceed."
+                )
+                % self.validation_warnings
+            )
 
         # Perform conversion
         specs = self._get_container_specifications()
@@ -351,10 +353,12 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
         # Update container histories
         for container in containers:
             container.message_post(
-                body=_("Container type converted from %s to %s. Reason: %s", 
-                      self.source_container_type, 
-                      self.target_container_type,
-                      self.reason)
+                body=_("Container type converted from %s to %s. Reason: %s")
+                % (
+                    self.source_container_type,
+                    self.target_container_type,
+                    self.reason,
+                )
             )
 
         return {
@@ -362,10 +366,8 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
             'tag': 'display_notification',
             'params': {
                 'title': _("Conversion Complete"),
-                'message': _("%d containers successfully converted from %s to %s", 
-                           len(containers),
-                           self.source_container_type, 
-                           self.target_container_type),
+                'message': _("%d containers successfully converted from %s to %s")
+                           % (len(containers), self.source_container_type, self.target_container_type),
                 'type': 'success',
             },
         }
@@ -385,13 +387,13 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
         if self.source_container_type:
             # Clear container selection when criteria change
             self.container_ids = [(5, 0, 0)]
-            
+
             # Update domain for container selection
             domain = [('container_type', '=', self.source_container_type)]
-            
+
             if self.partner_id:
                 domain.append(('partner_id', '=', self.partner_id.id))
-            
+
             if self.location_id:
                 domain.append(('location_id', '=', self.location_id.id))
 
@@ -404,7 +406,7 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
             specs = self._get_container_specifications()
             source_spec = specs.get(self.source_container_type, {})
             target_spec = specs.get(self.target_container_type, {})
-            
+
             if self.source_container_type == self.target_container_type:
                 return {
                     'warning': {
@@ -412,11 +414,11 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
                         'message': _("Source and target container types are the same. Please select different types for conversion.")
                     }
                 }
-            
+
             # Provide helpful information about the conversion
             volume_change = target_spec.get('volume', 0) - source_spec.get('volume', 0)
             cost_change = target_spec.get('monthly_rate', 0) - source_spec.get('monthly_rate', 0)
-            
+
             if volume_change < 0:
                 return {
                     'warning': {
@@ -424,12 +426,15 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
                         'message': _("Converting to a smaller container type. Ensure documents will fit in the new container size.")
                     }
                 }
-            
+
             if cost_change != 0:
-                cost_direction = _("increase" if cost_change > 0 else "decrease")
+                cost_direction = _("increase") if cost_change > 0 else _("decrease")
                 return {
                     'warning': {
                         'title': _("Cost Impact"),
-                        'message': _("Converting container type will cause a monthly cost %s of %.2f. Review pricing details.", (cost_direction), abs(cost_change))
+                        'message': _(
+                            "Converting container type will cause a monthly cost %s of %.2f. Review pricing details."
+                        )
+                        % (cost_direction, abs(cost_change)),
                     }
                 }

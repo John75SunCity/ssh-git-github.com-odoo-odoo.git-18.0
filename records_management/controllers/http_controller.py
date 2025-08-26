@@ -140,7 +140,7 @@ class RecordsManagementController(http.Controller):
         """
         try:
             audit_vals = {
-                'name': _("Customer Portal Action: %s", action_type),
+                'name': _("Customer Portal Action: %s") % action_type,
                 'action_type': action_type,
                 'partner_id': partner_id,
                 'user_id': request.env.user.id,
@@ -200,7 +200,7 @@ class RecordsManagementController(http.Controller):
 
             # Create pickup request
             pickup_vals = {
-                'name': _("Portal Pickup Request - %s", partner.name),
+                'name': _("Portal Pickup Request - %s") % partner.name,
                 'partner_id': partner.id,
                 'request_type': 'pickup',
                 'priority': 'normal',
@@ -227,12 +227,12 @@ class RecordsManagementController(http.Controller):
                 'pickup_request_submitted',
                 partner.id,
                 item_ids,
-                _("Portal pickup request created: %s", pickup_request.name)
+                _("Portal pickup request created: %s") % pickup_request.name
             )
 
             # Send notification to operations team
             pickup_request.message_post(
-                body=_("New pickup request submitted via customer portal by %s", current_user.name),
+                body=_("New pickup request submitted via customer portal by %s") % current_user.name,
                 message_type='notification'
             )
 
@@ -424,7 +424,7 @@ class RecordsManagementController(http.Controller):
 
         # Build domain for customer requests
         domain = [('partner_id', '=', partner.id)]
-        
+
         if search_term:
             domain.extend(['|', '|',
                 ('name', 'ilike', search_term),
@@ -519,7 +519,7 @@ class RecordsManagementController(http.Controller):
             self._create_naid_audit_log(
                 'request_cancelled',
                 partner.id,
-                notes=_("Request cancelled by customer: %s", customer_request.name)
+                notes=_("Request cancelled by customer: %s") % customer_request.name
             )
 
             return request.redirect('/my/requests?success=request_cancelled')
@@ -538,7 +538,7 @@ class RecordsManagementController(http.Controller):
         if request.httprequest.method == 'POST':
             try:
                 feedback_vals = {
-                    'name': post.get('subject', _('Feedback from %s', partner.name)),
+                    'name': post.get('subject', _("Feedback from %s") % partner.name),
                     'partner_id': partner.id,
                     'rating': post.get('rating'),
                     'comments': post.get('comments', ''),
@@ -552,7 +552,7 @@ class RecordsManagementController(http.Controller):
                 self._create_naid_audit_log(
                     'feedback_submitted',
                     partner.id,
-                    notes=_("Customer feedback submitted: %s", feedback.name)
+                    notes=_("Customer feedback submitted: %s") % feedback.name
                 )
 
                 return request.redirect('/my/feedback?success=feedback_submitted')

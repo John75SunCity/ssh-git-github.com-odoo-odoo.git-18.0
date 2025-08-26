@@ -430,12 +430,13 @@ class CustomBoxVolumeCalculator(models.TransientModel):
 
         # Update FSM task with calculation results
         task_description = self.fsm_task_id.description or ''
-        calculation_summary = _(
+        calculation_summary = (_(
             '\n\n=== Volume Calculation ===\n'
             'Custom Box: %s x %s x %s = %s CF\n'
             'Recommended: %s (%s boxes)\n'
             'Estimated Price: $%s\n'
-            'Calculated by: %s on %s',
+            'Calculated by: %s on %s'
+        ) % (
             self.length_inches or self.length_cm,
             self.width_inches or self.width_cm,
             self.height_inches or self.height_cm,
@@ -445,7 +446,7 @@ class CustomBoxVolumeCalculator(models.TransientModel):
             self.standard_box_price,
             self.user_id.name,
             self.calculation_date.strftime('%Y-%m-%d %H:%M')
-        )
+        ))
 
         self.fsm_task_id.write({
             'description': task_description + calculation_summary
@@ -466,9 +467,9 @@ class CustomBoxVolumeCalculator(models.TransientModel):
 
         # Create audit log entry
         self.env['naid.audit.log'].create({
-            'name': _('Volume Calculation: %s', self.name),
+            'name': _('Volume Calculation: %s') % self.name,
             'event_type': 'volume_calculation',
-            'description': _('Custom box volume calculation performed by %s', self.user_id.name),
+            'description': _('Custom box volume calculation performed by %s') % self.user_id.name,
             'user_id': self.user_id.id,
             'company_id': self.company_id.id,
             'details': {
