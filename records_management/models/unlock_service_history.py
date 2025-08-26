@@ -119,11 +119,10 @@ class UnlockServiceHistory(models.Model):
             raise UserError(_("This service is not billable."))
         if self.invoice_id:
             raise UserError(_("An invoice already exists for this service."))
-
-    invoice_vals = self._prepare_invoice_values()
-    invoice = self.env['account.move'].create(invoice_vals)
-    self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
-    self.message_post(body=_("Invoice %s created.") % (invoice.name or ''))
+        invoice_vals = self._prepare_invoice_values()
+        invoice = self.env['account.move'].create(invoice_vals)
+        self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
+        self.message_post(body=_("Invoice %s created.") % (invoice.name or ''))
 
         return {
             'type': 'ir.actions.act_window',

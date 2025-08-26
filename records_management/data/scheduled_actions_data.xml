@@ -149,4 +149,24 @@ REPORT_SCHEDULE = {
             <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=32)).replace(day=1).strftime('%Y-%m-%d 09:00:00')"/>
         </record>
     </data>
-</odoo>
+
+    <!-- Daily recompute for Signed Document dynamic fields -->
+    <record id="ir_cron_signed_document_recompute" model="ir.cron">
+        <field name="name">Recompute Signed Document Dynamic Fields</field>
+        <field name="model_id" ref="records_management.model_signed_document"/>
+        <field name="state">code</field>
+        <field name="code">
+# Recompute time-based stored fields on signed documents
+try:
+    env['signed.document'].cron_recompute_dynamic_fields()
+    log(_('Signed document dynamic fields recomputed.'))
+except Exception as e:
+    log(_("Error during signed document recompute: %s") % str(e))
+        </field>
+        <field name="active">True</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 02:30:00')"/>
+    </record>
+
+    </odoo>
