@@ -67,8 +67,8 @@ class RecordsApprovalStep(models.Model):
             'approved_by_id': self.env.user.id,
             'approval_date': fields.Datetime.now(),
         })
-        self.request_id._process_next_step()
-        self.message_post(body=_("Step approved by %s.", self.env.user.name))
+    self.request_id._process_next_step()
+    self.message_post(body=_("Step approved by %s.") % self.env.user.name)
 
     def action_reject(self):
         self.ensure_one()
@@ -80,8 +80,8 @@ class RecordsApprovalStep(models.Model):
             'approved_by_id': self.env.user.id,
             'approval_date': fields.Datetime.now(),
         })
-        self.request_id.write({'state': 'rejected'})
-        self.message_post(body=_("Step rejected by %s. Reason: %s", self.env.user.name, self.comments or _("No reason provided.")))
+    self.request_id.write({'state': 'rejected'})
+    self.message_post(body=_("Step rejected by %s. Reason: %s") % (self.env.user.name, self.comments or _("No reason provided.")))
 
     def action_skip(self):
         """Allows a manager to skip an optional step."""
@@ -94,5 +94,5 @@ class RecordsApprovalStep(models.Model):
             'approved_by_id': self.env.user.id,
             'approval_date': fields.Datetime.now(),
         })
-        self.request_id._process_next_step()
-        self.message_post(body=_("Step skipped by %s.", self.env.user.name))
+    self.request_id._process_next_step()
+    self.message_post(body=_("Step skipped by %s.") % self.env.user.name)

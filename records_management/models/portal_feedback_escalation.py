@@ -17,9 +17,9 @@ class PortalFeedbackEscalation(models.Model):
     escalation_date = fields.Datetime(string='Escalation Date', default=fields.Datetime.now, required=True, readonly=True)
     escalated_by_id = fields.Many2one('res.users', string='Escalated By', default=lambda self: self.env.user, required=True, tracking=True)
     escalated_to_id = fields.Many2one('res.users', string='Assigned To', tracking=True)
-    
+
     escalation_reason = fields.Text(string='Reason for Escalation', required=True)
-    
+
     escalation_level = fields.Selection([
         ('level_1', 'Level 1'),
         ('level_2', 'Level 2'),
@@ -43,10 +43,11 @@ class PortalFeedbackEscalation(models.Model):
         for record in records:
             if record.name == _('New'):
                 record.name = self.env['ir.sequence'].next_by_code('portal.feedback.escalation') or _('New')
-            
+
             # Post a message on the original feedback record
             log_body = _(
-                "Feedback escalated to %s by %s.<br/>Reason: %s",
+                "Feedback escalated to %s by %s.<br/>Reason: %s"
+            ) % (
                 record.escalated_to_id.name if record.escalated_to_id else 'the appropriate team',
                 record.escalated_by_id.name,
                 record.escalation_reason
@@ -59,8 +60,8 @@ class PortalFeedbackEscalation(models.Model):
         self.ensure_one()
         if self.state != "pending":
             raise UserError(_("Only pending escalations can be acknowledged."))
-        self.write({"state": "acknowledged"})
-        self.message_post(body=_("Escalation has been acknowledged by %s.", self.env.user.name))
+    self.write({"state": "acknowledged"})
+    self.message_post(body=_("Escalation has been acknowledged by %s.") % self.env.user.name)
 
     def action_start_progress(self):
         """Start working on the escalation."""
@@ -77,7 +78,7 @@ class PortalFeedbackEscalation(models.Model):
             raise UserError(_("Only acknowledged or in-progress escalations can be resolved."))
         self.write({"state": "resolved"})
         self.message_post(body=_("Escalation has been marked as resolved."))
-        
+
     def action_cancel(self):
         """Cancel the escalation."""
         self.ensure_one()

@@ -83,6 +83,6 @@ class TransitoryItem(models.Model):
         self.ensure_one()
         if self.related_model and self.related_record_id:
             if self.related_model not in self.env:
-                raise UserError(_("The model '%s' does not exist.", self.related_model))
+                raise UserError(_("The model '%s' does not exist.") % self.related_model)
             return self.env[self.related_model].browse(self.related_record_id)
         return self.env[self.related_model]  # Returns empty recordset

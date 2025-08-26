@@ -65,11 +65,10 @@ class FsmRescheduleWizard(models.TransientModel):
         body = _(
             "Task has been rescheduled from <strong>%s</strong> to <strong>%s</strong>.<br/>"
             "<strong>Reason:</strong> %s<br/>"
-            "<strong>Details:</strong> %s",
-            original_date_str, new_date_str, reason_label, self.reason_details or _('No details provided.')
-        )
+            "<strong>Details:</strong> %s"
+        ) % (original_date_str, new_date_str, reason_label, self.reason_details or _('No details provided.'))
         if self.internal_notes:
-            body += _("<br/><strong>Internal Notes:</strong> %s", self.internal_notes)
+            body += _("<br/><strong>Internal Notes:</strong> %s") % self.internal_notes
 
         self.task_id.message_post(body=body)
 
@@ -90,15 +89,18 @@ class FsmRescheduleWizard(models.TransientModel):
         self.ensure_one()
         notification_manager = self.env['fsm.notification.manager']
 
-        subject = _("Your Service Task '%s' has been Rescheduled", self.task_id.name)
-        message = self.customer_notification_message or _(
-            "<p>Dear %s,</p>"
-            "<p>Please be advised that your service task <strong>%s</strong> has been rescheduled.</p>"
-            "<p>Your new appointment is scheduled for: <strong>%s</strong>.</p>"
-            "<p>We apologize for any inconvenience this may cause.</p>",
-            self.task_id.partner_id.name,
-            self.task_id.name,
-            self.new_scheduled_date_start.strftime('%A, %B %d, %Y at %I:%M %p')
+        subject = _("Your Service Task '%s' has been Rescheduled") % self.task_id.name
+        message = self.customer_notification_message or (
+            _(
+                "<p>Dear %s,</p>"
+                "<p>Please be advised that your service task <strong>%s</strong> has been rescheduled.</p>"
+                "<p>Your new appointment is scheduled for: <strong>%s</strong>.</p>"
+                "<p>We apologize for any inconvenience this may cause.</p>"
+            ) % (
+                self.task_id.partner_id.name,
+                self.task_id.name,
+                self.new_scheduled_date_start.strftime('%A, %B %d, %Y at %I:%M %p')
+            )
         )
 
         custom_vals = {
@@ -108,7 +110,7 @@ class FsmRescheduleWizard(models.TransientModel):
 
         notification_manager.create_and_send_notification(
             related_record=self.task_id,
-            notification_type='custom', # Or a new 'reschedule_alert' type
+            notification_type='custom',  # Or a new 'reschedule_alert' type
             partner_id=self.task_id.partner_id,
             **custom_vals
         )

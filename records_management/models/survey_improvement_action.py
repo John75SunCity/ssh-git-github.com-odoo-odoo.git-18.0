@@ -11,8 +11,8 @@ class SurveyImprovementAction(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(
-        string='Action Title', 
-        required=True, 
+        string='Action Title',
+        required=True,
         tracking=True,
         help="A concise title for the improvement action."
     )
@@ -27,7 +27,7 @@ class SurveyImprovementAction(models.Model):
         ('done', 'Done'),
         ('cancelled', 'Cancelled')
     ], string='Status', default='new', required=True, tracking=True, copy=False)
-    
+
     priority = fields.Selection([
         ('0', 'Low'),
         ('1', 'Medium'),
@@ -36,29 +36,29 @@ class SurveyImprovementAction(models.Model):
     ], string='Priority', default='1', index=True)
 
     user_id = fields.Many2one(
-        'res.users', 
-        string='Assigned To', 
-        default=lambda self: self.env.user, 
+        'res.users',
+        string='Assigned To',
+        default=lambda self: self.env.user,
         tracking=True,
         help="The user responsible for implementing this action."
     )
     feedback_id = fields.Many2one(
-        'customer.feedback', 
+        'customer.feedback',
         string="Related Feedback",
         ondelete='set null',
         help="The customer feedback that prompted this action."
     )
     deadline = fields.Date(string='Deadline', tracking=True)
-    
+
     company_id = fields.Many2one(
-        'res.company', 
-        string='Company', 
-        default=lambda self: self.env.company, 
-        required=True, 
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        required=True,
         readonly=True
     )
     active = fields.Boolean(string='Active', default=True)
-    
+
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
@@ -77,9 +77,9 @@ class SurveyImprovementAction(models.Model):
             new_state_val = vals.get('state')
             state_field = self._fields['state']
             new_state_label = dict(state_field.selection).get(new_state_val, new_state_val)
-            
-            self.message_post(body=_("Status changed from %s to %s.", old_state, new_state_label))
-        
+
+            self.message_post(body=_("Status changed from %s to %s.") % (old_state, new_state_label))
+
         return super().write(vals)
 
     # ============================================================================
