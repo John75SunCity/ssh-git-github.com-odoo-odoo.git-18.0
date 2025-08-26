@@ -58,7 +58,7 @@ class SurveyFeedbackTheme(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Feedback for %s', self.name),
+            'name': _('Feedback for %s') % self.name,
             'res_model': 'customer.feedback',
             'view_mode': 'tree,form,kanban',
             'domain': [('theme_id', '=', self.id)],

@@ -61,7 +61,7 @@ class UnlockServiceHistory(models.Model):
         for record in self:
             service_type_display = dict(record._fields['service_type'].selection).get(record.service_type, '')
             customer_name = record.partner_id.name or _("Unknown")
-            record.display_name = f"{record.name} - {service_type_display} ({customer_name})"
+            record.display_name = _("%s - %s (%s)") % (record.name, service_type_display, customer_name)
 
     @api.depends('start_time', 'end_time')
     def _compute_duration(self):
@@ -120,10 +120,10 @@ class UnlockServiceHistory(models.Model):
         if self.invoice_id:
             raise UserError(_("An invoice already exists for this service."))
 
-        invoice_vals = self._prepare_invoice_values()
-        invoice = self.env['account.move'].create(invoice_vals)
-        self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
-        self.message_post(body=_("Invoice %s created.", invoice.name))
+    invoice_vals = self._prepare_invoice_values()
+    invoice = self.env['account.move'].create(invoice_vals)
+    self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
+    self.message_post(body=_("Invoice %s created.") % (invoice.name or ''))
 
         return {
             'type': 'ir.actions.act_window',
@@ -154,7 +154,7 @@ class UnlockServiceHistory(models.Model):
         for part in self.parts_used_ids:
             invoice_lines.append((0, 0, {
                 'product_id': part.product_id.id,
-                'name': f"{part.product_id.name} ({self.name})",
+                'name': "%s (%s)" % (part.product_id.name, self.name),
                 'quantity': part.quantity,
                 'price_unit': part.service_price,
             }))

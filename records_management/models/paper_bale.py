@@ -76,7 +76,7 @@ class PaperBale(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Inspections for %s', self.name),
+            'name': _('Inspections for %s') % self.name,
             'res_model': 'paper.bale.inspection',
             'view_mode': 'tree,form',
             'domain': [('bale_id', '=', self.id)],
@@ -87,7 +87,7 @@ class PaperBale(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Movements for %s', self.name),
+            'name': _('Movements for %s') % self.name,
             'res_model': 'paper.bale.movement',
             'view_mode': 'tree,form',
             'domain': [('bale_id', '=', self.id)],

@@ -31,7 +31,7 @@ class SignedDocument(models.Model):
         ('pickup_confirmation', 'Pickup Confirmation'),
         ('other', 'Other')
     ], string="Document Type", required=True, default='other')
-    
+
     pdf_document = fields.Binary(string="Signed PDF", attachment=True, required=True)
     pdf_filename = fields.Char(string="PDF Filename")
     original_document = fields.Binary(string="Original Document", attachment=True)
@@ -48,7 +48,7 @@ class SignedDocument(models.Model):
         ('rejected', 'Rejected'),
         ('archived', 'Archived')
     ], string="Status", default='draft', required=True, tracking=True)
-    
+
     signature_date = fields.Datetime(string="Signature Date", readonly=True)
     signatory_name = fields.Char(string="Signatory Name", tracking=True)
     signatory_email = fields.Char(string="Signatory Email", tracking=True)
@@ -140,9 +140,9 @@ class SignedDocument(models.Model):
         self.ensure_one()
         if self.state != "signed":
             raise UserError(_("Only signed documents can be verified."))
-        
+
         verification_result = self._perform_signature_verification()
-        
+
         if verification_result:
             self.write({
                 "state": "verified",
@@ -224,7 +224,7 @@ class SignedDocument(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('signed.document') or _('New')
-        
+
         documents = super().create(vals_list)
         documents._create_audit_log("document_created")
         return documents
@@ -234,7 +234,7 @@ class SignedDocument(models.Model):
         res = super().write(vals)
         if "state" in vals:
             for record in self:
-                details = _('State changed from %s to %s', old_states.get(record, 'N/A'), record.state)
+                details = _('State changed from %s to %s') % (old_states.get(record, 'N/A'), record.state)
                 self.with_context(old_state=old_states.get(record))._create_audit_log(
                     "state_changed",
                     details=details
