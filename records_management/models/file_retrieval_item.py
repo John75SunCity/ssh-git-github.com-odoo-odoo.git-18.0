@@ -61,6 +61,6 @@ class FileRetrievalItem(models.Model):
                 'status': 'located',
                 'discovery_container_id': container.id,
             })
-            self.message_post(body=_("File located in container %s", (container.name,)))
+            self.message_post(body=_("File located in container %s") % container.name)
         else:
-            self.message_post(body=_("Container %s searched. File not found", (container.name,)))
+            self.message_post(body=_("Container %s searched. File not found") % container.name)

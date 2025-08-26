@@ -172,7 +172,7 @@ class RecordsDeletionRequest(models.Model):
         if not self.scheduled_deletion_date:
             raise UserError(_("Please set a scheduled deletion date."))
         self.write({'state': 'scheduled'})
-        self.message_post(body=_("Deletion scheduled for %s.", self.scheduled_deletion_date))
+    self.message_post(body=_("Deletion scheduled for %s") % self.scheduled_deletion_date)
 
     def action_start_deletion(self):
         self.ensure_one()

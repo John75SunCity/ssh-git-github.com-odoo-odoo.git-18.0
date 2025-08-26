@@ -69,9 +69,9 @@ class FileRetrievalWorkOrder(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.partner_id and record.item_count:
-                record.display_name = _("%s - %s (%s files)", record.name, record.partner_id.name, record.item_count)
+                record.display_name = _("%s - %s (%s files)") % (record.name, record.partner_id.name, record.item_count)
             elif record.partner_id:
-                record.display_name = _("%s - %s", record.name, record.partner_id.name)
+                record.display_name = _("%s - %s") % (record.name, record.partner_id.name)
             else:
                 record.display_name = record.name or _("New File Retrieval")
 
@@ -137,8 +137,8 @@ class FileRetrievalWorkOrder(models.Model):
         if self.state != 'draft':
             raise UserError(_("Only draft work orders can be confirmed."))
         self.write({'state': 'confirmed'})
-        self.message_post(body=_("File retrieval work order confirmed for %s.", self.partner_id.name), message_type='notification')
-        return True
+    self.message_post(body=_("File retrieval work order confirmed for %s") % self.partner_id.name, message_type='notification')
+    return True
 
     def action_start_locating(self):
         self.ensure_one()
@@ -175,7 +175,7 @@ class FileRetrievalWorkOrder(models.Model):
     def _create_naid_audit_log(self, event_type):
         """Create NAID audit log for work order events"""
         if self.env["ir.module.module"].search([
-            ("name", "=", "records_management"), 
+            ("name", "=", "records_management"),
             ("state", "=", "installed")
         ]):
             self.env["naid.audit.log"].create({
@@ -183,7 +183,7 @@ class FileRetrievalWorkOrder(models.Model):
                 "model_name": self._name,
                 "record_id": self.id,
                 "partner_id": self.partner_id.id,
-                "description": _("Work order: %s", self.name),
+                "description": _("Work order: %s") % self.name,
                 "user_id": self.env.user.id,
                 "timestamp": fields.Datetime.now()
             })

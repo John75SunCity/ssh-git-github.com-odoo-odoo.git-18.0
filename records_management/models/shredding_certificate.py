@@ -117,9 +117,8 @@ class ShreddingCertificate(models.Model):
 
         if self.delivery_method == 'email':
             self._send_certificate_email()
-
-        self.write({'state': 'delivered', 'delivered_date': fields.Date.context_today(self)})
-        self.message_post(body=_("Certificate marked as delivered via %s.", self.delivery_method))
+    self.write({'state': 'delivered', 'delivered_date': fields.Date.context_today(self)})
+    self.message_post(body=_("Certificate marked as delivered via %s") % self.delivery_method)
 
     def action_archive_certificate(self):
         self.write({'state': 'archived', 'active': False})
@@ -144,6 +143,6 @@ class ShreddingCertificate(models.Model):
         template = self.env.ref('records_management.email_template_shredding_certificate', raise_if_not_found=False)
         if template:
             template.send_mail(self.id, force_send=True)
-            self.message_post(body=_("Certificate sent to %s", self.partner_id.email))
+            self.message_post(body=_("Certificate sent to %s") % self.partner_id.email)
         else:
             raise UserError(_("Email template for shredding certificate not found."))
