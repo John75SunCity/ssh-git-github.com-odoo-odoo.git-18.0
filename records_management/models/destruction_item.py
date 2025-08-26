@@ -71,7 +71,7 @@ class DestructionItem(models.Model):
             if record.item_description:
                 record.name = record.item_description
             else:
-                record.name = _("Item #%s", record.id or 0)
+                record.name = _("Item #%s") % (record.id or 0)
 
     # ============================================================================
     # ACTION METHODS
@@ -80,7 +80,7 @@ class DestructionItem(models.Model):
         """Mark item as destroyed with a timestamp."""
         for record in self:
             if record.state in ['destroyed', 'verified']:
-                raise UserError(_("Item '%s' is already marked as destroyed or verified.", record.name))
+                raise UserError(_("Item '%s' is already marked as destroyed or verified.") % record.name)
             record.write({
                 'state': 'destroyed',
                 'date_destroyed': fields.Datetime.now(),
@@ -91,13 +91,13 @@ class DestructionItem(models.Model):
         """Verify destruction completion."""
         for record in self:
             if record.state != 'destroyed':
-                raise UserError(_("Can only verify items that are in the 'Destroyed' state. Item '%s' is in state '%s'.", record.name, record.state))
+                raise UserError(_("Can only verify items that are in the 'Destroyed' state. Item '%s' is in state '%s'.") % (record.name, record.state))
             record.write({
                 'state': 'verified',
                 'date_verified': fields.Datetime.now(),
                 'verified_by_id': self.env.user.id,
             })
-            record.message_post(body=_("Destruction verified by %s.", self.env.user.name))
+            record.message_post(body=_("Destruction verified by %s.") % self.env.user.name)
 
     # ============================================================================
     # OVERRIDE METHODS

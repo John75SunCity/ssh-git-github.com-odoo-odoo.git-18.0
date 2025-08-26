@@ -90,7 +90,7 @@ class RecordsBulkUserImport(models.Model):
                 'state': 'error',
                 'log': f"An error occurred during import:\n{e}\n\n" + "\n".join(log_lines)
             })
-            raise UserError(_("An error occurred during the import process. Please check the log for details. Error: %s", e))
+            raise UserError(_("An error occurred during the import process. Please check the log for details. Error: %s") % e) from e
 
         return {
             'type': 'ir.actions.act_window',

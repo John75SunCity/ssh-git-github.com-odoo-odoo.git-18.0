@@ -274,5 +274,5 @@ class BarcodePricingTier(models.Model):
                 tier_level = vals.get('tier_level', 'custom')
                 product_name = self.env['product.product'].browse(vals.get('product_id')).name if vals.get('product_id') else 'Product'
                 level_name = dict(self._fields['tier_level'].selection).get(tier_level, 'Custom').capitalize()
-                vals['name'] = _("%s - %s Tier", product_name, level_name)
+                vals['name'] = _("%s - %s Tier") % (product_name, level_name)
         return super().create(vals_list)

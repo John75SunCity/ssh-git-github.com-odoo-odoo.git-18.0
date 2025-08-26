@@ -205,7 +205,7 @@ class RecordsDestruction(models.Model):
         # Create NAID certificate if not exists
         if not self.certificate_generated:
             certificate_vals = {
-                'name': _('Destruction Certificate - %s', self.name),
+                'name': _('Destruction Certificate - %s') % self.name,
                 'partner_id': self.partner_id.id,
                 'destruction_date': self.destruction_date,
                 'destruction_method': self.destruction_method,

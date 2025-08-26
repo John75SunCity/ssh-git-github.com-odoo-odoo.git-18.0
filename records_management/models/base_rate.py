@@ -252,7 +252,12 @@ class BaseRate(models.Model):
         """Override create to set a default name if not provided."""
         for vals in vals_list:
             if not vals.get('name'):
-                vals['name'] = _('Base Rates for %s', self.env['res.company'].browse(vals.get('company_id')).name)
+                company_name = None
+                if vals.get('company_id'):
+                    company = self.env['res.company'].browse(vals.get('company_id'))
+                    company_name = company.name if company else None
+                company_name = company_name or (self.env.company.name if self.env.company else '')
+                vals['name'] = _('Base Rates for %s') % company_name
         return super().create(vals_list)
 
 

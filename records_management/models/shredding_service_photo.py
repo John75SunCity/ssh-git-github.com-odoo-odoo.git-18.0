@@ -50,7 +50,10 @@ class ShreddingServicePhoto(models.Model):
     def _compute_name(self):
         for record in self:
             if record.shredding_service_id and record.photo_type:
-                record.name = _("Photo for %s (%s)", record.shredding_service_id.name, dict(record._fields['photo_type'].selection).get(record.photo_type))
+                record.name = _("Photo for %s (%s)") % (
+                    record.shredding_service_id.name,
+                    dict(record._fields['photo_type'].selection).get(record.photo_type)
+                )
             else:
                 record.name = _("New Photo")
 

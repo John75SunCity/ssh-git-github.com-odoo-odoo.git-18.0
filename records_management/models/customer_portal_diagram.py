@@ -76,7 +76,7 @@ class CustomerPortalDiagram(models.Model):
 
             # Apply filtering if any search criteria is provided
             # Note: A full implementation would filter nodes/edges here based on search_query
-            
+
             record.diagram_data = json.dumps({'nodes': nodes, 'edges': edges})
 
     @api.depends('diagram_data')
@@ -111,7 +111,7 @@ class CustomerPortalDiagram(models.Model):
             nodes.append({
                 'id': f'partner_{partner.id}',
                 'label': partner.name,
-                'title': _("Customer: %s", partner.name),
+                'title': _("Customer: %s") % partner.name,
                 'group': 'partner',
                 'level': 0,
                 'shape': 'box',
@@ -123,13 +123,13 @@ class CustomerPortalDiagram(models.Model):
         domain = [('partner_id', 'in', partners.ids)]
         if self.search_department_id:
             domain.append(('id', '=', self.search_department_id.id))
-        
+
         departments = self.env['records.department'].search(domain)
         for dept in departments:
             nodes.append({
                 'id': f'dept_{dept.id}',
                 'label': dept.name,
-                'title': _("Department: %s\nCustomer: %s", dept.name, dept.partner_id.name),
+                'title': _("Department: %s\nCustomer: %s") % (dept.name, dept.partner_id.name),
                 'group': 'department',
                 'level': 1,
                 'shape': 'ellipse',
@@ -153,12 +153,12 @@ class CustomerPortalDiagram(models.Model):
             nodes.append({
                 'id': f'user_{user.id}',
                 'label': user.name,
-                'title': _("User: %s", user.name),
+                'title': _("User: %s") % user.name,
                 'group': 'user',
                 'level': 2,
                 'shape': 'circle',
             })
-            
+
             # Link user to a department or directly to the partner
             if department:
                 edges.append({'from': f'dept_{department.id}', 'to': f'user_{user.id}'})
@@ -183,7 +183,7 @@ class CustomerPortalDiagram(models.Model):
         self.ensure_one()
         if not self.diagram_data:
             raise UserError(_("No diagram data to export."))
-        
+
         return {
             'type': 'ir.actions.act_url',
             'url': f'/web/content/customer.portal.diagram/{self.id}/diagram_data?download=true',

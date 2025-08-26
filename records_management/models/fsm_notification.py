@@ -77,7 +77,7 @@ class FsmNotification(models.Model):
         for record in self:
             if record.partner_id and record.notification_type:
                 type_label = dict(record._fields['notification_type'].selection).get(record.notification_type, record.notification_type)
-                record.display_name = _("%s - %s (%s)", record.name, type_label, record.partner_id.name)
+                record.display_name = _("%s - %s (%s)") % (record.name, type_label, record.partner_id.name)
             else:
                 record.display_name = record.name or _("New Notification")
 

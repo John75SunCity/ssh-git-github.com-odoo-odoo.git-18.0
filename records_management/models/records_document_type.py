@@ -262,7 +262,7 @@ class RecordsDocumentType(models.Model):
                 vals["encryption_required"] = True
         records = super().create(vals_list)
         for record in records:
-            record.message_post(body=_("Document type '%s' created.", record.name))
+            record.message_post(body=_("Document type '%s' created.") % record.name)
         return records
 
     def write(self, vals):
@@ -278,9 +278,9 @@ class RecordsDocumentType(models.Model):
     def unlink(self):
         for record in self:
             if record.document_ids:
-                raise UserError(_("Cannot delete document type '%s' as it is used by %d documents. Please archive it instead.", record.name, record.document_count))
+                raise UserError(_("Cannot delete document type '%s' as it is used by %d documents. Please archive it instead.") % (record.name, record.document_count))
             if record.child_type_ids:
-                raise UserError(_("Cannot delete document type '%s' as it has child types. Please reassign them first.", record.name))
+                raise UserError(_("Cannot delete document type '%s' as it has child types. Please reassign them first.") % record.name)
         return super().unlink()
 
     # ============================================================================
@@ -304,7 +304,7 @@ class RecordsDocumentType(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Documents for %s", self.name),
+            "name": _("Documents for %s") % self.name,
             "res_model": "records.document",
             "view_mode": "tree,form,kanban",
             "domain": [("document_type_id", "=", self.id)],
@@ -348,7 +348,7 @@ class RecordsDocumentType(models.Model):
     def _check_security_consistency(self):
         for record in self:
             if record.confidentiality_level in ["restricted", "top_secret"] and not record.encryption_required:
-                raise ValidationError(_("Documents with '%s' confidentiality must have encryption required.", record.confidentiality_level))
+                raise ValidationError(_("Documents with '%s' confidentiality must have encryption required.") % record.confidentiality_level)
 
     def _validate_state_transition(self, new_state):
         self.ensure_one()
@@ -359,11 +359,11 @@ class RecordsDocumentType(models.Model):
             'archived': ['active'],
         }
         if self.state in valid_transitions and new_state not in valid_transitions.get(self.state, []):
-            raise UserError(_("Invalid state transition from '%s' to '%s'.", self.state, new_state))
+            raise UserError(_("Invalid state transition from '%s' to '%s'.") % (self.state, new_state))
 
     def _handle_retention_changes(self):
         for record in self:
             if record.document_count > 0:
-                message = _("Retention policy change for document type '%s' affects %d existing documents.", record.name, record.document_count)
+                message = _("Retention policy change for document type '%s' affects %d existing documents.") % (record.name, record.document_count)
                 record.message_post(body=message)
                 _logger.warning(message)

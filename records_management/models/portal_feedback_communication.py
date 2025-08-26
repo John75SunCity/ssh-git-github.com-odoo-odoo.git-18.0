@@ -30,7 +30,7 @@ class PortalFeedbackCommunication(models.Model):
     ], string='Direction', default='outbound', tracking=True)
 
     message = fields.Html(string='Message Content', required=True)
-    
+
     sender_id = fields.Many2one('res.users', string='Sender (Internal)', default=lambda self: self.env.user)
     recipient_id = fields.Many2one('res.partner', string='Recipient (Customer)')
 
@@ -56,10 +56,9 @@ class PortalFeedbackCommunication(models.Model):
         """Mark communication as sent and post to feedback chatter."""
         self.ensure_one()
         self.write({'state': 'sent'})
-        
-        log_body = _("Communication Sent: <strong>%s</strong><br/>%s", self.subject, self.message)
+        log_body = _("Communication Sent: <strong>%s</strong><br/>%s") % (self.subject, self.message)
         self.feedback_id.message_post(body=log_body, subtype_xmlid='mail.mt_comment')
-        
+
         # Optionally, send an actual email here if it's an outbound email
         if self.communication_type == 'email' and self.direction == 'outbound':
             # Logic to send email using mail.mail model
@@ -70,7 +69,7 @@ class PortalFeedbackCommunication(models.Model):
         self.ensure_one()
         if not self.response_required:
             raise UserError(_("This communication was not marked as requiring a response."))
-            
+
         self.write({
             'state': 'responded',
             'is_responded': True,

@@ -155,7 +155,7 @@ class ScanRetrievalWorkOrder(models.Model):
             if record.partner_id:
                 parts.append(record.partner_id.name)
             if record.total_pages_to_scan > 0:
-                parts.append(_("(%s pages)", record.total_pages_to_scan))
+                parts.append(_("(%s pages)") % record.total_pages_to_scan)
             record.display_name = " - ".join(filter(None, parts))
 
     @api.depends('scan_item_ids', 'scan_item_ids.page_count')
@@ -284,12 +284,10 @@ class ScanRetrievalWorkOrder(models.Model):
         self.ensure_one()
         if self.state != 'ready_for_delivery':
             raise UserError(_("Can only deliver from the 'Ready for Delivery' state."))
-
-        # Placeholder for delivery logic
-        delivery_method_str = dict(self._fields['delivery_method'].selection).get(self.delivery_method)
-        self.message_post(body=_("Delivering files via %s.", delivery_method_str))
-
-        self.write({'state': 'delivered'})
+    # Placeholder for delivery logic
+    delivery_method_str = dict(self._fields['delivery_method'].selection).get(self.delivery_method)
+    self.message_post(body=_("Delivering files via %s.") % delivery_method_str)
+    self.write({'state': 'delivered'})
 
     def action_complete(self):
         """Transition delivered → completed, set completion timestamp, and post a note.

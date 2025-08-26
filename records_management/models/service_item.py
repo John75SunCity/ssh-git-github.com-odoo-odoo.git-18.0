@@ -198,7 +198,7 @@ class ServiceItem(models.Model):
                 'view_mode': 'form',
                 'target': 'new',
                 'context': {
-                    'default_name': _('Maintenance for %s', self.name),
+                    'default_name': _('Maintenance for %s') % self.name,
                     'default_equipment_id': self.id,
                     'default_maintenance_type': 'corrective' if self.is_maintenance_due else 'preventive',
                 }
@@ -246,7 +246,7 @@ class ServiceItem(models.Model):
             if user:
                 item.activity_schedule(
                     activity_type_id=activity_type.id,
-                    summary=_("Maintenance Due: %s", item.display_name),
+                    summary=_("Maintenance Due: %s") % item.display_name,
                     note=_("Preventive maintenance is due for this item."),
                     user_id=user.id,
                     date_deadline=fields.Date.today(),

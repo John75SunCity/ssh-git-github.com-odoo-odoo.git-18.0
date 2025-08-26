@@ -18,7 +18,7 @@ from odoo.exceptions import UserError, ValidationError
 class ContainerAccessWorkOrder(models.Model):
     """
     Container Access Work Order Management
-    
+
     Handles the entire lifecycle of a container access request, from submission
     and approval to scheduling, execution, and final documentation. This model
 
@@ -235,7 +235,7 @@ class ContainerAccessWorkOrder(models.Model):
                 parts.append(record.partner_id.name)
             if record.container_count > 0:
                 access_type_display = dict(record._fields['access_type'].selection).get(record.access_type, '')
-                parts.append(_("(%s containers - %s)", record.container_count, access_type_display))
+                parts.append(_("(%s containers - %s)") % (record.container_count, access_type_display))
             record.display_name = " - ".join(parts)
 
     @api.depends('container_ids')
@@ -299,7 +299,7 @@ class ContainerAccessWorkOrder(models.Model):
             raise UserError(_("Please set a scheduled start time before scheduling."))
         self.write({'state': 'scheduled'})
         self.message_post(
-            body=_("Access session scheduled for %s", self.scheduled_access_date.strftime('%Y-%m-%d %H:%M')),
+            body=_("Access session scheduled for %s") % self.scheduled_access_date.strftime('%Y-%m-%d %H:%M'),
             message_type='notification'
         )
 
