@@ -150,6 +150,7 @@ class CustomerInventoryReportLine(models.Model):
             'verification_date': fields.Date.today(),
             'verified_by_id': self.env.user.id
         })
+    # Log verification in chatter
     self.message_post(body=_("Document count verified: %s documents.") % self.document_count)
 
     def action_update_from_container(self):
