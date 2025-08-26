@@ -76,20 +76,20 @@ class FsmTaskServiceLine(models.Model):
         if self.customer_approved:
             raise UserError(_("This service has already been approved."))
         self.write({'state': 'pending_approval'})
-        self.task_id.message_post(body=_("Approval requested for additional service: %s", self.service_name))
+    self.task_id.message_post(body=_("Approval requested for additional service: %s") % self.service_name)
         # Add logic here to send an email or notification for approval
         return True
 
     def action_approve_service(self):
         self.ensure_one()
         self.write({'state': 'approved', 'customer_approved': True})
-        self.task_id.message_post(body=_("Additional service approved: %s", self.service_name))
+    self.task_id.message_post(body=_("Additional service approved: %s") % self.service_name)
         return True
 
     def action_reject_service(self):
         self.ensure_one()
         self.write({'state': 'rejected'})
-        self.task_id.message_post(body=_("Additional service rejected: %s", self.service_name))
+    self.task_id.message_post(body=_("Additional service rejected: %s") % self.service_name)
         return True
 
     # ============================================================================
@@ -109,7 +109,7 @@ class FsmTaskServiceLine(models.Model):
                 old_state_label = dict(record._fields['state'].selection).get(record.state)
                 new_state_label = dict(record._fields['state'].selection).get(vals['state'])
                 if old_state_label != new_state_label:
-                    record.message_post(body=_("Service '%s' status changed from %s to %s", record.service_name, old_state_label, new_state_label))
+                    record.message_post(body=_("Service '%s' status changed from %s to %s") % (record.service_name, old_state_label, new_state_label))
         return super().write(vals)
 
 

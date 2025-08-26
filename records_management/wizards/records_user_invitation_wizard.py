@@ -10,12 +10,12 @@ class RecordsUserInvitationWizard(models.TransientModel):
     # FIELDS
     # ============================================================================
     user_ids = fields.Many2many(
-        'res.users', 
-        string="Users to Invite", 
+        'res.users',
+        string="Users to Invite",
         required=True,
         help="Select users to grant portal access and send an invitation."
     )
-    
+
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
@@ -35,7 +35,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
 
         # Use the core Odoo portal wizard to handle the invitation logic
         portal_wizard = self.env['portal.wizard'].create({})
-        
+
         for user in internal_users:
             portal_wizard_user = self.env['portal.wizard.user'].create({
                 'wizard_id': portal_wizard.id,
@@ -51,7 +51,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
             'name': _('Portal Invitation Sent'),
             'event_type': 'access_grant',
             'user_id': self.env.user.id,
-            'description': _('Invited %s users to the portal.', len(internal_users)),
+            'description': _('Invited %s users to the portal.') % len(internal_users),
         })
 
         return {'type': 'ir.actions.act_window_close'}

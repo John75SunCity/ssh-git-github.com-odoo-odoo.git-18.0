@@ -99,7 +99,7 @@ class RevenueForecastingReport(models.AbstractModel):
                 "doc_ids": docids,
                 "doc_model": "account.move",
                 "docs": self._default_revenue_data(),
-                "error": _("Error generating report: %s", str(e)),
+                "error": _("Error generating report: %s") % str(e),
                 "date_from": (
                     date_from.strftime("%Y-%m-%d")
                     if "date_from" in locals()

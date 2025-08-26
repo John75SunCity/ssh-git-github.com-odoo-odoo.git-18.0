@@ -410,7 +410,7 @@ class ContainerAccessActivity(models.Model):
             if activity.container_id:
                 parts.append(activity.container_id.name)
             if activity.visitor_id:
-                parts.append(_("by %s", activity.visitor_id.name))
+                parts.append(_("by %s") % activity.visitor_id.name)
 
             activity.display_name = " - ".join(parts) if parts else _("New Activity")
 
@@ -433,7 +433,7 @@ class ContainerAccessActivity(models.Model):
         if self.container_id:
             # Set default activity name
             if not self.name or self.name == _("New Activity"):
-                self.name = _("Access: %s", self.container_id.name)
+                self.name = _("Access: %s") % self.container_id.name
 
             # Set access level based on container
             if hasattr(self.container_id, 'access_level'):
@@ -483,9 +483,8 @@ class ContainerAccessActivity(models.Model):
             'activity_time': fields.Datetime.now(),
             'access_granted_time': fields.Datetime.now()
         })
-
-        self._create_audit_log('activity_started')
-        self.message_post(body=_("Activity started by %s", self.visitor_id.name))
+    self._create_audit_log('activity_started')
+    self.message_post(body=_("Activity started by %s") % self.visitor_id.name)
 
     def action_complete_activity(self):
         """Complete the activity"""
@@ -535,9 +534,8 @@ class ContainerAccessActivity(models.Model):
             'approved_by_id': self.env.user.employee_id.id if self.env.user.employee_id else False,
             'approval_date': fields.Datetime.now()
         })
-
-        self._create_audit_log('activity_approved')
-        self.message_post(body=_("Activity approved by %s", self.env.user.name))
+    self._create_audit_log('activity_approved')
+    self.message_post(body=_("Activity approved by %s") % self.env.user.name)
 
     def action_cancel_activity(self):
         """Cancel the activity"""
@@ -549,20 +547,19 @@ class ContainerAccessActivity(models.Model):
             'status': 'cancelled',
             'access_revoked_time': fields.Datetime.now()
         })
-
-        self._create_audit_log('activity_cancelled')
-        self.message_post(body=_("Activity cancelled"))
+    self._create_audit_log('activity_cancelled')
+    self.message_post(body=_("Activity cancelled"))
 
     def action_create_follow_up(self):
         """Create follow-up activity"""
         self.ensure_one()
 
         follow_up_vals = {
-            'name': _("Follow-up: %s", self.name),
+            'name': _("Follow-up: %s") % self.name,
             'container_id': self.container_id.id,
             'visitor_id': self.visitor_id.id,
             'activity_type': self.activity_type,
-            'description': _("Follow-up to activity %s", self.name),
+            'description': _("Follow-up to activity %s") % self.name,
             'priority': 'high',
         }
 
@@ -648,7 +645,7 @@ class ContainerAccessActivity(models.Model):
                 'action_type': action_type,
                 'user_id': self.env.user.id,
                 'timestamp': fields.Datetime.now(),
-                'description': _("Container access activity: %s", action_type),
+                'description': _("Container access activity: %s") % action_type,
                 'container_id': self.container_id.id,
                 'access_activity_id': self.id,
                 'visitor_id': self.visitor_id.id if self.visitor_id else False,
@@ -663,7 +660,7 @@ class ContainerAccessActivity(models.Model):
 
         if 'chain.of.custody' in self.env:
             custody_vals = {
-                'name': _("Container Access: %s", self.name),
+                'name': _("Container Access: %s") % self.name,
                 'event_type': 'container_access',
                 'responsible_user_id': self.visitor_id.user_id.id if self.visitor_id.user_id else self.env.user.id,
                 'event_date': self.activity_time,
@@ -742,7 +739,7 @@ class ContainerAccessActivity(models.Model):
         for vals in vals_list:
             if not vals.get('name') or vals['name'] == _("New Activity"):
                 sequence = self.env['ir.sequence'].next_by_code('container.access.activity')
-                vals['name'] = sequence or _('Activity %s', fields.Datetime.now().strftime('%Y%m%d-%H%M%S'))
+                vals['name'] = sequence or _('Activity %s') % fields.Datetime.now().strftime('%Y%m%d-%H%M%S')
 
         activities = super().create(vals_list)
 
@@ -758,7 +755,7 @@ class ContainerAccessActivity(models.Model):
         if 'status' in vals:
             for activity in self:
                 status_label = dict(activity._fields['status'].selection)[activity.status]
-                activity.message_post(body=_("Status changed to %s", status_label))
+                activity.message_post(body=_("Status changed to %s") % status_label)
 
         return result
 
