@@ -32,16 +32,16 @@ try:
         # For each customer, create a sale order for the storage fee product
         for customer, qty in customer_items.items():
             if qty > 0:
-                env['sale.order'].create({
+        env['sale.order'].create({
                     'partner_id': customer.id,
                     'order_line': [(0, 0, {
                         'product_id': product.id,
                         'product_uom_qty': qty,
-                        'name': _('Monthly Storage Fee for %s items', qty),
+            'name': _("Monthly Storage Fee for %s items") % qty,
                     })],
                 })
 except Exception as e:
-    log(_('Error computing monthly storage fees: %s', str(e)))
+    log(_("Error computing monthly storage fees: %s") % str(e))
             </field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
@@ -60,7 +60,7 @@ try:
     env['customer.inventory.report'].generate_monthly_reports()
     log(_('Monthly customer inventory reports generated successfully.'))
 except Exception as e:
-    log(_('Error generating monthly inventory reports: %s', str(e)))
+    log(_("Error generating monthly inventory reports: %s") % str(e))
             </field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
