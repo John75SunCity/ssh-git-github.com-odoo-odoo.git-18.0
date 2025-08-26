@@ -174,9 +174,8 @@ class MobileBinKeyWizard(models.TransientModel):
 
         if not existing_keys:
             self.key_lookup_results = _(
-                "<p class='text-muted'>No active keys found for %s</p>",
-                self.customer_company_id.name,
-            )
+                "<p class='text-muted'>No active keys found for %s</p>"
+            ) % self.customer_company_id.name
             return
 
         # Build HTML results

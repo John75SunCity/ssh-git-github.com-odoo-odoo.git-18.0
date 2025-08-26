@@ -170,7 +170,7 @@ class BarcodeGenerationHistory(models.Model):
             "generation_date": fields.Datetime.now(),
             "barcode_generated": generated_barcode,
         })
-        self.message_post(body=_("Barcode generated: %s", generated_barcode))
+    self.message_post(body=_("Barcode generated: %s") % generated_barcode)
 
     def action_print(self):
         """Mark as printed and increment print count."""
@@ -183,7 +183,7 @@ class BarcodeGenerationHistory(models.Model):
             "printed_date": fields.Datetime.now(),
             "print_count": self.print_count + 1,
         })
-        self.message_post(body=_("Barcode printed. Total prints: %s", self.print_count))
+    self.message_post(body=_("Barcode printed. Total prints: %s") % self.print_count)
 
         # This would typically return a report action to print the barcode label
         # return self.env.ref('records_management.action_report_barcode_label').report_action(self)

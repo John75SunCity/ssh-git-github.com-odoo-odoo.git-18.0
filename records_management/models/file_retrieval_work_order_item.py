@@ -83,7 +83,7 @@ class FileRetrievalWorkOrderItem(models.Model):
                     ('id', '!=', record.id)
                 ]
                 if self.search_count(domain) > 0:
-                    raise ValidationError(_("Item reference '%s' must be unique per work order.", record.name))
+                    raise ValidationError(_("Item reference '%s' must be unique per work order.") % record.name)
 
     # ============================================================================
     # COMPUTED METHODS

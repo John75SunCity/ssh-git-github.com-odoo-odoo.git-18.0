@@ -128,7 +128,7 @@ class RecordsDocument(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.document') or _('New')
         docs = super().create(vals_list)
         for doc in docs:
-            doc.message_post(body=_('Document "%s" created', doc.name))
+            doc.message_post(body=_('Document "%s" created') % doc.name)
         return docs
 
     def write(self, vals):
@@ -332,11 +332,11 @@ class RecordsDocument(models.Model):
         self.ensure_one()
         if self.state not in ['in_storage', 'archived']:
             raise UserError(
-                _("Cannot reset document to draft from its current state: %s. Only documents that are in storage or archived can be reset.", self.state)
+                _("Cannot reset document to draft from its current state: %s. Only documents that are in storage or archived can be reset.") % self.state
             )
         self.write({'state': 'draft'})
         self.message_post(
-            body=_("Document state reset to Draft by %s", self.env.user.name),
+            body=_("Document state reset to Draft by %s") % self.env.user.name,
             subject=_("Document Reset to Draft")
         )
         # Return a client action to notify the user
@@ -345,7 +345,7 @@ class RecordsDocument(models.Model):
             'tag': 'display_notification',
             'params': {
                 'title': _("Success"),
-                'message': _("Document %s has been reset to Draft", self.display_name),
+                'message': _("Document %s has been reset to Draft") % self.display_name,
                 'sticky': False,
             }
         }

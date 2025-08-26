@@ -25,7 +25,7 @@ class NaidDestructionRecord(models.Model):
     destruction_date = fields.Date(string='Destruction Date', required=True, tracking=True, index=True)
     certificate_id = fields.Many2one('naid.certificate', string='NAID Certificate', tracking=True)
     items_destroyed = fields.Integer(string='Items Destroyed', compute='_compute_items_destroyed', store=True)
-    
+
     method = fields.Selection([
         ('shredding', 'Paper Shredding'),
         ('hard_drive', 'Hard Drive Destruction'),
@@ -34,12 +34,12 @@ class NaidDestructionRecord(models.Model):
         ('disintegration', 'Disintegration'),
         ('other', 'Other Method')
     ], string='Destruction Method', required=True, tracking=True)
-    
+
     responsible_user_id = fields.Many2one('res.users', string='Responsible Technician', required=True, tracking=True)
     notes = fields.Text(string='Destruction Notes')
     witness_ids = fields.Many2many('res.users', string='Witnesses', help='Users who witnessed the destruction process')
     destruction_item_ids = fields.One2many('destruction.item', 'destruction_record_id', string='Destruction Items')
-    
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('scheduled', 'Scheduled'),
@@ -62,24 +62,24 @@ class NaidDestructionRecord(models.Model):
         ('level_5', 'Level 5 - NSA/CSS'),
         ('level_6', 'Level 6 - EAL4+')
     ], string='Security Level', required=True)
-    
+
     equipment_used = fields.Char(string='Equipment Used')
     temperature = fields.Float(string='Temperature (°F)', help='Temperature during destruction process')
     humidity = fields.Float(string='Humidity (%)', help='Humidity during destruction process')
-    
+
     # ============================================================================
     # WEIGHT AND VOLUME TRACKING
     # ============================================================================
     total_weight = fields.Float(string='Total Weight (lbs)', compute='_compute_totals', store=True, digits=(12, 2))
     total_volume = fields.Float(string='Total Volume (CF)', compute='_compute_totals', store=True, digits=(12, 3))
-    
+
     # ============================================================================
     # TIMING FIELDS
     # ============================================================================
     start_time = fields.Datetime(string='Start Time')
     end_time = fields.Datetime(string='End Time')
     duration = fields.Float(string='Duration (hours)', compute='_compute_duration', store=True)
-    
+
     # ============================================================================
     # CERTIFICATION FIELDS
     # ============================================================================
@@ -128,16 +128,16 @@ class NaidDestructionRecord(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_('Can only schedule draft destruction records'))
-        
+
         self.write({'state': 'scheduled'})
-        self.message_post(body=_('Destruction scheduled for %s', self.destruction_date))
+    self.message_post(body=_('Destruction scheduled for %s') % self.destruction_date)
 
     def action_start_destruction(self):
         """Start the destruction process"""
         self.ensure_one()
         if self.state != 'scheduled':
             raise UserError(_('Can only start scheduled destructions'))
-        
+
         self.write({
             'state': 'in_progress',
             'start_time': fields.Datetime.now()
@@ -149,10 +149,10 @@ class NaidDestructionRecord(models.Model):
         self.ensure_one()
         if self.state != 'in_progress':
             raise UserError(_('Can only complete in-progress destructions'))
-        
+
         if not self.destruction_item_ids:
             raise UserError(_('Cannot complete destruction without items'))
-        
+
         self.write({
             'state': 'completed',
             'end_time': fields.Datetime.now()
@@ -164,12 +164,12 @@ class NaidDestructionRecord(models.Model):
         self.ensure_one()
         if self.state != 'completed':
             raise UserError(_('Can only generate certificates for completed destructions'))
-        
+
         # Generate certificate number
         if not self.certificate_number:
             sequence = self.env['ir.sequence'].next_by_code('naid.certificate') or 'CERT-NEW'
             self.certificate_number = sequence
-        
+
         # Create certificate record
         certificate_vals = {
             'name': self.certificate_number,
@@ -178,17 +178,15 @@ class NaidDestructionRecord(models.Model):
             'issue_date': fields.Date.today(),
             'issued_by': self.env.user.id,
         }
-        
+
         certificate = self.env['naid.certificate'].create(certificate_vals)
-        
         self.write({
             'state': 'certified',
             'certificate_id': certificate.id,
             'certificate_issued_date': fields.Date.today(),
             'certificate_issued_by': self.env.user.id
         })
-        
-        self.message_post(body=_('NAID Certificate generated: %s', self.certificate_number))
+        self.message_post(body=_('NAID Certificate generated: %s') % self.certificate_number)
         return certificate
 
     def action_cancel_destruction(self):
@@ -196,7 +194,7 @@ class NaidDestructionRecord(models.Model):
         self.ensure_one()
         if self.state in ('completed', 'certified'):
             raise UserError(_('Cannot cancel completed or certified destructions'))
-        
+
         self.write({'state': 'cancelled'})
         self.message_post(body=_('Destruction cancelled'))
 
@@ -274,22 +272,22 @@ class NaidDestructionRecord(models.Model):
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('naid.destruction.record') or 'DEST-NEW'
-        
+
         records = super().create(vals_list)
-        
+
         for record in records:
             record._create_audit_log('created')
-            
+
         return records
 
     def write(self, vals):
         """Override write to create audit logs for state changes"""
         result = super().write(vals)
-        
+
         if 'state' in vals:
             for record in self:
                 record._create_audit_log(f"state_changed_to_{vals['state']}")
-                
+
         return result
 
     def unlink(self):
@@ -298,5 +296,5 @@ class NaidDestructionRecord(models.Model):
             if record.state == 'certified':
                 raise UserError(_('Cannot delete certified destruction records'))
             record._create_audit_log('deleted')
-            
+
         return super().unlink()
