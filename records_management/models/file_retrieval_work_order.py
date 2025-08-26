@@ -137,8 +137,8 @@ class FileRetrievalWorkOrder(models.Model):
         if self.state != 'draft':
             raise UserError(_("Only draft work orders can be confirmed."))
         self.write({'state': 'confirmed'})
-    self.message_post(body=_("File retrieval work order confirmed for %s") % self.partner_id.name, message_type='notification')
-    return True
+        self.message_post(body=_("File retrieval work order confirmed for %s") % self.partner_id.name, message_type='notification')
+        return True
 
     def action_start_locating(self):
         self.ensure_one()
