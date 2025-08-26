@@ -90,7 +90,7 @@ class CustomerInventoryReportLine(models.Model):
             if line.container_id:
                 parts.append(line.container_id.name or line.container_id.barcode or _('Unknown Container'))
             if line.document_count:
-                parts.append(_("(%s docs)", line.document_count))
+                parts.append(_("(%s docs)") % line.document_count)
             if line.document_type:
                 parts.append(line.document_type)
             line.display_name = " - ".join(filter(None, parts)) or _("New Line")
@@ -150,8 +150,8 @@ class CustomerInventoryReportLine(models.Model):
             'verification_date': fields.Date.today(),
             'verified_by_id': self.env.user.id
         })
-    # Log verification in chatter
-    self.message_post(body=_("Document count verified: %s documents.") % self.document_count)
+        # Log verification in chatter
+        self.message_post(body=_("Document count verified: %s documents.") % self.document_count)
 
     def action_update_from_container(self):
         """Update line data from current container state"""
