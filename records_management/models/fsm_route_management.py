@@ -120,7 +120,7 @@ class FsmRouteManagement(models.Model):
                 if vals["state"] != record.state:
                     old_state = dict(record._fields["state"].selection).get(record.state, record.state)
                     new_state = dict(record._fields["state"].selection).get(vals["state"], vals["state"])
-                    record.message_post(body=_("Route status changed from %s to %s", old_state, new_state))
+                    record.message_post(body=_("Route status changed from %s to %s") % (old_state, new_state))
         return super().write(vals)
 
     # ============================================================================
@@ -137,7 +137,7 @@ class FsmRouteManagement(models.Model):
             "actual_start_time": fields.Datetime.now()
         })
         self.pickup_request_ids.write({"state": "in_progress"})
-        self.message_post(body=_("Route started by %s at %s", self.driver_id.name, fields.Datetime.now()))
+    self.message_post(body=_("Route started by %s at %s") % (self.driver_id.name, fields.Datetime.now()))
 
     def action_complete_route(self):
         self.ensure_one()
@@ -146,7 +146,7 @@ class FsmRouteManagement(models.Model):
             "actual_end_time": fields.Datetime.now()
         })
         completed_pickups = self.pickup_request_ids.filtered(lambda r: r.state == "completed")
-        self.message_post(body=_("%s out of %s pickups successful", len(completed_pickups), len(self.pickup_request_ids)))
+    self.message_post(body=_("%s out of %s pickups successful") % (len(completed_pickups), len(self.pickup_request_ids)))
 
     # ============================================================================
     # HELPER METHODS

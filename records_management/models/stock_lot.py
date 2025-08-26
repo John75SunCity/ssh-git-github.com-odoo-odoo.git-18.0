@@ -64,17 +64,16 @@ class StockLot(models.Model):
         """Mark lot as eligible for destruction."""
         self.ensure_one()
         if self.retention_date and self.retention_date > fields.Date.today():
-            raise UserError(_("This box cannot be marked for destruction until its retention period expires on %s.", self.retention_date))
-
-        self.write({"destruction_eligible": True})
-        self.message_post(body=_("Lot marked as eligible for destruction by %s.", self.env.user.name))
-        return True
+            raise UserError(_("This box cannot be marked for destruction until its retention period expires on %s.") % self.retention_date)
+    self.write({"destruction_eligible": True})
+    self.message_post(body=_("Lot marked as eligible for destruction by %s.") % self.env.user.name)
+    return True
 
     def action_view_documents(self):
         """Opens a view to see all documents within this box."""
         self.ensure_one()
         return {
-            'name': _('Documents in Box %s', self.name),
+            'name': _('Documents in Box %s') % self.name,
             'type': 'ir.actions.act_window',
             'res_model': 'records.document',
             'view_mode': 'tree,form',

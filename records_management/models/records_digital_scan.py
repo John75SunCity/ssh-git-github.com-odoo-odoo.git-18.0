@@ -74,9 +74,9 @@ class RecordsDigitalScan(models.Model):
         for record in self:
             info_parts = []
             if record.resolution:
-                info_parts.append(_("%s DPI", record.resolution))
+                info_parts.append(_("%s DPI") % record.resolution)
             if record.file_size:
-                info_parts.append(_("%.2f MB", record.file_size))
+                info_parts.append(_("%.2f MB") % record.file_size)
             record.scan_info = " - ".join(info_parts) if info_parts else _("No scan info")
 
     @api.constrains('file_size', 'resolution')
@@ -98,21 +98,24 @@ class RecordsDigitalScan(models.Model):
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft scans can be confirmed."))
-        self.write({"state": "confirmed"})
-        self.message_post(body=_("Digital scan confirmed by %s.", self.env.user.name))
+    self.write({"state": "confirmed"})
+    self.message_post(body=_("Digital scan confirmed by %s.") % self.env.user.name)
+    return True
 
     def action_done(self):
         """Mark the digital scan as completed."""
         self.ensure_one()
         if self.state != "confirmed":
             raise UserError(_("Only confirmed scans can be marked as done."))
-        self.write({"state": "done"})
-        self.message_post(body=_("Digital scan completed by %s.", self.env.user.name))
+    self.write({"state": "done"})
+    self.message_post(body=_("Digital scan completed by %s.") % self.env.user.name)
+    return True
 
     def action_reset_to_draft(self):
         """Reset the scan to the draft state."""
         self.ensure_one()
         if self.state == 'done':
             raise UserError(_("Cannot reset a completed scan to draft."))
-        self.write({"state": "draft"})
-        self.message_post(body=_("Digital scan reset to draft by %s.", self.env.user.name))
+    self.write({"state": "draft"})
+    self.message_post(body=_("Digital scan reset to draft by %s.") % self.env.user.name)
+    return True

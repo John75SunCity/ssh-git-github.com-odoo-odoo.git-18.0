@@ -136,22 +136,25 @@ class PortalRequest(models.Model):
     # ============================================================================
     def action_submit(self):
         self.ensure_one()
-        self.write({'state': 'submitted', 'requested_date': fields.Datetime.now()})
-        self.message_post(body=_("Request submitted by %s.", self.env.user.name))
+    self.write({'state': 'submitted', 'requested_date': fields.Datetime.now()})
+    self.message_post(body=_("Request submitted by %s.") % self.env.user.name)
+    return True
 
     def action_approve(self):
         self.ensure_one()
         if self.state != 'submitted':
             raise UserError(_("Only submitted requests can be approved."))
-        self.write({'state': 'approved'})
-        self.message_post(body=_("Request approved by %s.", self.env.user.name))
-        self._create_work_order()
+    self.write({'state': 'approved'})
+    self.message_post(body=_("Request approved by %s.") % self.env.user.name)
+    self._create_work_order()
+    return True
 
     def action_reject(self):
         # This would typically open a wizard to ask for a rejection reason
         self.ensure_one()
-        self.write({'state': 'rejected'})
-        self.message_post(body=_("Request rejected by %s.", self.env.user.name))
+    self.write({'state': 'rejected'})
+    self.message_post(body=_("Request rejected by %s.") % self.env.user.name)
+    return True
 
     def action_start_progress(self):
         self.ensure_one()
@@ -195,7 +198,7 @@ class PortalRequest(models.Model):
                 raise UserError(_("FSM Project not found. Please ensure the Field Service module is installed correctly."))
 
             task_vals = {
-                'name': _("Request: %s", self.name),
+                'name': _("Request: %s") % self.name,
                 'project_id': fsm_project.id,
                 'partner_id': self.partner_id.id,
                 'user_ids': [(6, 0, [self.user_id.id])] if self.user_id else [],
@@ -204,5 +207,5 @@ class PortalRequest(models.Model):
             }
             task = self.env['project.task'].create(task_vals)
             self.work_order_id = task.id
-            self.message_post(body=_("Work Order %s created.", task.name))
+            self.message_post(body=_("Work Order %s created.") % task.name)
 

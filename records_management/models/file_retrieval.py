@@ -102,8 +102,9 @@ class FileRetrieval(models.Model):
         self.ensure_one()
         if self.status != 'pending':
             raise UserError(_("Only pending files can start search process."))
-        self.write({'status': 'searching'})
-        self.message_post(body=_("Search started for file: %s", self.requested_file_name))
+    self.write({'status': 'searching'})
+    self.message_post(body=_("Search started for file: %s") % self.requested_file_name)
+    return True
 
     def action_record_search(self, container_id, found=False, notes=""):
         """Record a search attempt in a container"""
@@ -117,7 +118,8 @@ class FileRetrieval(models.Model):
             'searched_by_id': self.env.user.id,
             'search_date': fields.Datetime.now(),
             'found': found,
-            'notes': notes,
+            'search_notes': notes,
+            'requested_file_name': self.requested_file_name,
         })
 
         if found:

@@ -1,6 +1,6 @@
 {
   "summary": {
-    "timestamp": "2025-08-26T01:45:31.539851+00:00",
+    "timestamp": "2025-08-26T04:41:17.169741+00:00",
     "tools": [
       {
         "tool": "validate_imports.py",
@@ -33,7 +33,7 @@
     {
       "tool": "validate_imports.py",
       "cmd": [
-        "/opt/homebrew/opt/python@3.12/bin/python3.12",
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
         "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/validate_imports.py"
       ],
       "code": 0,
@@ -43,7 +43,7 @@
     {
       "tool": "validate_xml.py",
       "cmd": [
-        "/opt/homebrew/opt/python@3.12/bin/python3.12",
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
         "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/validate_xml.py"
       ],
       "code": 0,
@@ -53,7 +53,7 @@
     {
       "tool": "analyze_module_integrity.py",
       "cmd": [
-        "/opt/homebrew/opt/python@3.12/bin/python3.12",
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
         "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/analyze_module_integrity.py"
       ],
       "code": 0,
@@ -63,17 +63,17 @@
     {
       "tool": "comprehensive_loading_order_audit.py",
       "cmd": [
-        "/opt/homebrew/opt/python@3.12/bin/python3.12",
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
         "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/comprehensive_loading_order_audit.py"
       ],
       "code": 0,
-      "stdout": "================================================================================\nCOMPREHENSIVE LOADING ORDER AND MODEL REFERENCE AUDIT\n================================================================================\n\n📊 Found 242 model definitions\n📊 Found 139 unique model references in fields\n\n🚨 CRITICAL: 8 model references to non-existent models:\n\n❌ Model 'hr.department' referenced but not defined:\n   • records_document_type.py:114 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • records_retention_policy.py:80 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • records_retention_rule.py:32 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • ... and 2 more references\n\n❌ Model 'product.product' referenced but not defined:\n   • unlock_service_part.py:23 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • records_usage_tracking.py:47 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • product_container_type.py:17 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • ... and 2 more references\n\n❌ Model 'product.category' referenced but not defined:\n   • unlock_service_part.py:24 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n\n❌ Model 'uom.uom' referenced but not defined:\n   • unlock_service_part.py:25 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • naid_certificate_item.py:10 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • records_container_line.py:13 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • ... and 2 more references\n\n❌ Model 'sale.order' referenced but not defined:\n   • key_restriction_checker.py:65 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n\n❌ Model 'fleet.vehicle' referenced but not defined:\n   • shredding_team.py:57 (Many2many\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • work_order_shredding.py:44 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • container_destruction_work_order.py:110 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • ... and 5 more references\n\n❌ Model 'crm.team' referenced but not defined:\n   • customer_feedback.py:50 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n\n❌ Model 'maintenance.request' referenced but not defined:\n   • service_item.py:88 (One2many\\([\\'\"]([^\\'\"]+)[\\'\"])\n\n📊 Found 4 model inheritance relationships\n\n✅ All inheritance relationships are valid\n\n📊 Found 42 domain references with field access\n⚠️  Domain field references (may need validation):\n   • route_optimizer.py:40 - stage_id.is_closed\n   • records_container.py:53 - , tracking=True)\n    location_id = fields.Many2one(\n   • records_container.py:54 - )\n    container_type_id = fields.Many2one(\n   • unlock_service_part.py:23 - )\n    product_category_id = fields.Many2one(\n   • barcode_product.py:405 - , record.barcode), (\n   • ... and 37 more domain references\n\n🚨 SECURITY ISSUES: 24 models missing security access rules:\n   ❌  -  (in document_search_attempt.py)\n   ❌ records.request.line (in records_request_line.py)\n   ❌ [%s] %s (in records_tag.py)\n   ❌ res.currency (in advanced_billing_storage_line.py)\n   ❌ res.users (in records_chain_of_custody.py)\n   ❌ ... and 19 more models\n\n================================================================================\nAUDIT SUMMARY\n================================================================================\n📊 Total models: 242\n📊 Total field references: 139\n🚨 Critical issues found: 32\n⚠️  Issues found that may cause loading order problems\n",
+      "stdout": "================================================================================\nCOMPREHENSIVE LOADING ORDER AND MODEL REFERENCE AUDIT\n================================================================================\n\n📊 Found 242 model definitions\n📊 Found 139 unique model references in fields\n\n🚨 CRITICAL: 8 model references to non-existent models:\n\n❌ Model 'hr.department' referenced but not defined:\n   • records_document_type.py:114 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • records_retention_policy.py:80 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • records_retention_rule.py:32 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • ... and 2 more references\n\n❌ Model 'product.product' referenced but not defined:\n   • unlock_service_part.py:23 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • records_usage_tracking.py:47 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • product_container_type.py:17 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • ... and 2 more references\n\n❌ Model 'product.category' referenced but not defined:\n   • unlock_service_part.py:24 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n\n❌ Model 'uom.uom' referenced but not defined:\n   • unlock_service_part.py:25 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • naid_certificate_item.py:10 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • records_container_line.py:13 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • ... and 2 more references\n\n❌ Model 'sale.order' referenced but not defined:\n   • key_restriction_checker.py:65 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n\n❌ Model 'fleet.vehicle' referenced but not defined:\n   • shredding_team.py:57 (Many2many\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • work_order_shredding.py:44 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • container_destruction_work_order.py:110 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n   • ... and 5 more references\n\n❌ Model 'crm.team' referenced but not defined:\n   • customer_feedback.py:50 (Many2one\\([\\'\"]([^\\'\"]+)[\\'\"])\n\n❌ Model 'maintenance.request' referenced but not defined:\n   • service_item.py:88 (One2many\\([\\'\"]([^\\'\"]+)[\\'\"])\n\n📊 Found 5 model inheritance relationships\n\n✅ All inheritance relationships are valid\n\n📊 Found 42 domain references with field access\n⚠️  Domain field references (may need validation):\n   • route_optimizer.py:40 - stage_id.is_closed\n   • records_container.py:53 - , tracking=True)\n    location_id = fields.Many2one(\n   • records_container.py:54 - )\n    container_type_id = fields.Many2one(\n   • unlock_service_part.py:23 - )\n    product_category_id = fields.Many2one(\n   • barcode_product.py:405 - , record.barcode), (\n   • ... and 37 more domain references\n\n🚨 SECURITY ISSUES: 24 models missing security access rules:\n   ❌  -  (in document_search_attempt.py)\n   ❌ records.request.line (in records_request_line.py)\n   ❌ [%s] %s (in records_tag.py)\n   ❌ res.currency (in advanced_billing_storage_line.py)\n   ❌ res.users (in records_chain_of_custody.py)\n   ❌ ... and 19 more models\n\n================================================================================\nAUDIT SUMMARY\n================================================================================\n📊 Total models: 242\n📊 Total field references: 139\n🚨 Critical issues found: 32\n⚠️  Issues found that may cause loading order problems\n",
       "stderr": ""
     },
     {
       "tool": "related_field_audit.py",
       "cmd": [
-        "/opt/homebrew/opt/python@3.12/bin/python3.12",
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
         "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/related_field_audit.py"
       ],
       "code": 0,
@@ -83,7 +83,7 @@
     {
       "tool": "verify_comodels_and_inverses.py",
       "cmd": [
-        "/opt/homebrew/opt/python@3.12/bin/python3.12",
+        "/Library/Developer/CommandLineTools/usr/bin/python3",
         "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/verify_comodels_and_inverses.py"
       ],
       "code": 0,

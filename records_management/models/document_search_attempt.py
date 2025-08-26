@@ -72,7 +72,7 @@ class DocumentSearchAttempt(models.Model):
                 parts.append(attempt.name)
 
             if attempt.container_id:
-                parts.append(_("in %s", attempt.container_id.name))
+                parts.append(_("in %s") % attempt.container_id.name)
 
             status = _("Found") if attempt.found else _("Not Found")
             parts.append(f"[{status}]")
@@ -97,10 +97,10 @@ class DocumentSearchAttempt(models.Model):
             raise UserError(_("Can only complete searches that are in progress."))
         if not self.search_notes:
             raise UserError(_("Please provide search notes before completing."))
-
         status_msg = _("found") if self.found else _("not found")
         self.write({'state': 'completed'})
-        self.message_post(body=_("Search completed. Document was %s.", status_msg))
+        self.message_post(body=_("Search completed. Document was %s.") % status_msg)
+        return True
 
     # ============================================================================
     # ORM METHODS
@@ -118,6 +118,6 @@ class DocumentSearchAttempt(models.Model):
             for attempt in self:
                 state_label = dict(attempt._fields['state'].selection).get(attempt.state)
                 if state_label:
-                    attempt.message_post(body=_("Status changed to %s", state_label))
+                    attempt.message_post(body=_("Status changed to %s") % state_label)
         return res
 
