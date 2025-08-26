@@ -95,9 +95,9 @@ class ContainerRetrievalWorkOrder(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.partner_id and record.container_count:
-                record.display_name = _("%s - %s (%s containers)", record.name, record.partner_id.name, record.container_count)
+                record.display_name = ("%s - %s (%s containers)" % (record.name, record.partner_id.name, record.container_count))
             elif record.partner_id:
-                record.display_name = _("%s - %s", record.name, record.partner_id.name)
+                record.display_name = ("%s - %s" % (record.name, record.partner_id.name))
             else:
                 record.display_name = record.name or _("New Container Retrieval")
 
@@ -171,7 +171,7 @@ class ContainerRetrievalWorkOrder(models.Model):
         if not self.container_ids:
             raise UserError(_("At least one container must be selected for retrieval."))
         self.write({'state': 'confirmed'})
-        self.message_post(body=_("Container retrieval work order confirmed for %s.", self.partner_id.name))
+    self.message_post(body=_("Container retrieval work order confirmed for %s.") % self.partner_id.name)
 
     def action_schedule(self):
         self.ensure_one()
@@ -180,7 +180,7 @@ class ContainerRetrievalWorkOrder(models.Model):
         if not self.vehicle_id or not self.driver_id:
             raise UserError(_("Vehicle and driver must be assigned before scheduling."))
         self.write({'state': 'scheduled'})
-        self.message_post(body=_("Work order scheduled for delivery on %s.", self.scheduled_delivery_date.strftime('%Y-%m-%d')))
+    self.message_post(body=_("Work order scheduled for delivery on %s.") % self.scheduled_delivery_date.strftime('%Y-%m-%d'))
 
     def action_start_transit(self):
         self.ensure_one()
@@ -188,7 +188,7 @@ class ContainerRetrievalWorkOrder(models.Model):
             raise UserError(_("Only scheduled work orders can be started."))
         self.write({'state': 'in_transit', 'actual_pickup_date': fields.Datetime.now()})
         self.container_ids.write({'location_status': 'in_transit'})
-        self.message_post(body=_("Containers picked up and in transit to %s.", self.partner_id.name))
+    self.message_post(body=_("Containers picked up and in transit to %s.") % self.partner_id.name)
 
     def action_confirm_delivery(self):
         self.ensure_one()
@@ -196,7 +196,7 @@ class ContainerRetrievalWorkOrder(models.Model):
             raise UserError(_("Only work orders in transit can be marked as delivered."))
         self.write({'state': 'delivered', 'actual_delivery_date': fields.Datetime.now()})
         self.container_ids.write({'location_status': 'at_customer'})
-        self.message_post(body=_("Containers successfully delivered to %s.", self.partner_id.name))
+    self.message_post(body=_("Containers successfully delivered to %s.") % self.partner_id.name)
 
     def action_complete(self):
         self.ensure_one()

@@ -72,7 +72,7 @@ class ShreddingPicklistItem(models.Model):
             'picked_by_id': self.env.user.id,
             'picked_date': fields.Datetime.now()
         })
-        self.batch_id.message_post(body=_('Item %s marked as picked', self.display_name))
+    self.batch_id.message_post(body=_('Item %s marked as picked') % self.display_name)
 
     def action_mark_verified(self):
         self.ensure_one()
@@ -83,12 +83,12 @@ class ShreddingPicklistItem(models.Model):
             'verified_by_id': self.env.user.id,
             'verified_date': fields.Datetime.now()
         })
-        self.batch_id.message_post(body=_('Item %s marked as verified', self.display_name))
+    self.batch_id.message_post(body=_('Item %s marked as verified') % self.display_name)
 
     def action_mark_not_found(self):
         self.ensure_one()
         self.write({'status': 'not_found'})
-        self.batch_id.message_post(body=_('Item %s marked as not found', self.display_name))
+    self.batch_id.message_post(body=_('Item %s marked as not found') % self.display_name)
 
     def action_reset_to_pending(self):
         self.ensure_one()
@@ -99,5 +99,5 @@ class ShreddingPicklistItem(models.Model):
             'verified_by_id': False,
             'verified_date': False,
         })
-        self.batch_id.message_post(body=_('Item %s reset to pending', self.display_name))
+    self.batch_id.message_post(body=_('Item %s reset to pending') % self.display_name)
 
