@@ -137,7 +137,8 @@ class FsmRouteManagement(models.Model):
             "actual_start_time": fields.Datetime.now()
         })
         self.pickup_request_ids.write({"state": "in_progress"})
-    self.message_post(body=_("Route started by %s at %s") % (self.driver_id.name, fields.Datetime.now()))
+        # Post chatter message within method scope (avoid class-level side effects)
+        self.message_post(body=_("Route started by %s at %s") % (self.driver_id.name, fields.Datetime.now()))
 
     def action_complete_route(self):
         self.ensure_one()
@@ -146,7 +147,8 @@ class FsmRouteManagement(models.Model):
             "actual_end_time": fields.Datetime.now()
         })
         completed_pickups = self.pickup_request_ids.filtered(lambda r: r.state == "completed")
-    self.message_post(body=_("%s out of %s pickups successful") % (len(completed_pickups), len(self.pickup_request_ids)))
+        # Post summary in chatter
+        self.message_post(body=_("%s out of %s pickups successful") % (len(completed_pickups), len(self.pickup_request_ids)))
 
     # ============================================================================
     # HELPER METHODS
@@ -178,7 +180,8 @@ class FsmRouteManagement(models.Model):
         for record in self:
             if len(record.pickup_request_ids) > record.max_stops_per_route:
                 raise ValidationError(
-                    _("Route exceeds maximum stops limit (%s/%s)",
-                    len(record.pickup_request_ids), record.max_stops_per_route)
+                    _("Route exceeds maximum stops limit (%s/%s)") % (
+                        len(record.pickup_request_ids), record.max_stops_per_route
+                    )
                 )
 

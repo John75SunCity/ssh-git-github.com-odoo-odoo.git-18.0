@@ -2,6 +2,67 @@
 
 This repo is an enterprise Odoo 18 module: `records_management` (NAID AAA compliant DMS). Use these concise rules to be productive and avoid Odoo-specific pitfalls.
 
+## Odoo Coding Guidelines (Enforced for this Repo)
+
+Follow Odoo’s official coding standards, distilled into actionable rules for this project. When existing files in this stable repo differ, preserve the current local style to minimize diffs; only refactor style if most of the file is under active revision.
+
+- Module and directories
+    - Standard addon layout: `models/`, `controllers/`, `views/`, `data/`, `security/`, `report/`, `static/`, `wizard/`, `tests/`.
+    - One model per file in `models/`. Name files after the main model (e.g., `plant_order.py`), put inherited models in their own file.
+    - Security split: `security/ir.model.access.csv` for ACLs, `<module>_groups.xml` for groups, `<model>_security.xml` for rules.
+    - Views split by model and suffixed `_views.xml`; templates in `<model>_templates.xml`; optional `<module>_menus.xml` for top menus.
+
+- XML conventions
+    - Prefer `<record>` notation with attributes ordered: `id`, `model`, then fields (`name`, value/eval, then others).
+    - Use consistent XML IDs:
+        - Views: `{model_name}_view_{form|kanban|list|search|...}` and `name` as dotted path.
+        - Actions: `{model_name}_action[_detail]`; window actions may suffix `_action_view_{type}`.
+        - Menus: `{model_name}_menu[_do_stuff]`.
+        - Groups: `{module_name}_group_{user|manager|...}`.
+        - Rules: `{model_name}_rule_{concerned_group}`.
+    - Inheriting views: reuse original XML id; set `name` with `.inherit.<details>` suffix; use `mode="primary"` only for primary overrides.
+    - Use `<data noupdate="1">` only when data must not be updated; otherwise place records directly under `<odoo>`.
+
+- Python standards
+    - PEP8 with common relaxations: allow E501/E301/E302 where appropriate.
+    - Imports order: stdlib → `odoo` core → addons; sort alphabetically within groups. Example:
+        - `from odoo import Command, _, api, fields, models` (ASCII order).
+    - Prefer readability: meaningful names, list/dict comprehensions where clearer, `setdefault` for grouping, iterate directly on dicts.
+    - Avoid `.clone()`; use `dict(x)` / `list(x)`.
+
+- Programming in Odoo
+    - Use `filtered`, `mapped`, `sorted` on records; propagate context via `with_context` (be cautious with default_* side effects).
+    - Think extendable: split logic into small overridable helpers; avoid hardcoded complex flows that force full overrides.
+    - Never call `cr.commit()` unless you created and manage an explicit cursor (exceptional cases only, with comments).
+    - Translations: pass static strings to `_()`.
+        - Project override (enforced here): use percent interpolation after `_` to match the codebase and tooling: `_("Text %s") % value`. Do NOT call `_()` with arguments.
+
+- Naming conventions and model layout
+    - Model names are singular: `res.partner`, `sale.order`. Transient models: `<base_model>.<action>`; report models: `<base_model>.report.<action>`.
+    - Field suffixes: `Many2one` → `_id`; `One2many`/`Many2many` → `_ids`.
+    - Method name patterns: `_compute_<field>`, `_search_<field>`, `_default_<field>`, `_selection_<field>`, `_onchange_<field>`, `_check_<name>`, object actions start with `action_` and should call `self.ensure_one()`.
+    - Model section order: private attrs → defaults → fields → compute/inverse/search (same order as fields) → selections → constraints/onchange → CRUD → actions → business methods.
+
+- Security, integrity, and cross-file updates (mandatory)
+    - Always update `models/__init__.py`, `security/ir.model.access.csv` (add user + manager ACLs), and create/update views and menus when adding models/fields.
+    - Always specify `comodel_name` in relations and proper `inverse_name` pairs. Keep `Selection` fields with explicit choices and defaults.
+    - Avoid `tracking=True` on Boolean; track on state/selection/char instead. Use related fields with `store=True` only when dependencies are correct and needed.
+
+- JS / SCSS quick notes
+    - `static/` structure: libs in `static/lib`, sources in `static/src/{js,scss,xml,css}`; tests in `static/tests`.
+    - JS: prefer strict mode, no minified libs in repo, camelCase classes.
+    - SCSS: 4-space indent, ≤80 cols guideline, meaningful whitespace; prefer module-prefixed classes `o_<module>_*`; order CSS properties from layout to visuals; use SCSS variables for design-system, CSS variables for contextual tweaks.
+
+- Stable vs master
+    - Stable: preserve existing style and minimize diffs.
+    - Master: apply guidelines to modified regions; consider a move-then-change commit when refactoring entire files.
+
+Project-specific guardrails (recap)
+- One model per file; prefer `_inherit` over new micro-models.
+- Mandatory inverse/model integrity, and configurator toggles in `rm.module.configurator` for any new feature.
+- i18n policy: `_("...")` with `%` interpolation after translation.
+- Do not run local Odoo server in this workspace; use provided validation tasks and remote environments.
+
 Architecture and boundaries
 - Classic Odoo addon layout: `models/`, `controllers/`, `views/`, `report/` (singular), `security/`, `data/`, `static/`, `wizards/`, `templates/`.
 - One model per file in `models/`; keep public behavior and imports stable. Example: `models/chain_of_custody.py` defines `_name = 'chain.of.custody'` only.
