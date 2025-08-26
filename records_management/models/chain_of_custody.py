@@ -152,7 +152,7 @@ class ChainOfCustody(models.Model):
     )
 
     destruction_certificate_id = fields.Many2one(
-        comodel_name='destruction.certificate',
+        comodel_name='naid.certificate',
         string='Destruction Certificate',
         ondelete='set null',
         help="Certificate if this was a destruction transfer"
@@ -526,23 +526,31 @@ class ChainOfCustody(models.Model):
 
     # Integration Methods
     def create_destruction_record(self):
-        """Create destruction certificate for final transfer."""
+        """Create NAID destruction certificate for final transfer."""
         if not self.is_final_transfer or self.transfer_type != 'destruction':
             raise UserError(_("This is not a destruction transfer."))
 
+        # Determine customer/partner for certificate
+        partner = False
+        if self.document_id and getattr(self.document_id, 'partner_id', False):
+            partner = self.document_id.partner_id.id
+        elif self.container_id and getattr(self.container_id, 'partner_id', False):
+            partner = self.container_id.partner_id.id
+        elif self.department_id and getattr(self.department_id, 'partner_id', False):
+            partner = self.department_id.partner_id.id
+
+        if not partner:
+            raise UserError(_("Unable to determine customer for destruction certificate."))
+
         certificate_vals = {
-            'name': f"Destruction Certificate - {self.display_name}",
+            'partner_id': partner,
             'destruction_date': self.transfer_date,
-            'custodian_id': self.to_custodian_id.id,
-            'location_id': self.to_location_id.id,
-            'container_id': self.container_id.id if self.container_id else False,
-            'document_id': self.document_id.id if self.document_id else False,
-            'custody_chain_id': self.id,
-            'naid_compliant': self.naid_compliant,
-            'security_level': self.security_level,
+            'res_model': 'chain.of.custody',
+            'res_id': self.id,
+            # Optional linkage of containers/boxes done by user later if needed
         }
 
-        certificate = self.env['destruction.certificate'].create(certificate_vals)
+        certificate = self.env['naid.certificate'].create(certificate_vals)
         self.destruction_certificate_id = certificate.id
 
         return certificate

@@ -82,7 +82,12 @@ class PortalRequest(models.Model):
     # ============================================================================
     work_order_id = fields.Many2one('project.task', string='Work Order', readonly=True)
     attachment_count = fields.Integer(compute='_compute_attachment_count', string='Attachments')
-    
+    shredding_service_id = fields.Many2one(
+        'shredding.service',
+        string='Shredding Service',
+        help='Selected shredding service for this request'
+    )
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
@@ -105,8 +110,8 @@ class PortalRequest(models.Model):
     def _compute_is_overdue(self):
         for record in self:
             record.is_overdue = (
-                record.deadline and 
-                record.deadline < fields.Datetime.now() and 
+                record.deadline and
+                record.deadline < fields.Datetime.now() and
                 record.state not in ('completed', 'cancelled', 'rejected')
             )
 
@@ -188,7 +193,7 @@ class PortalRequest(models.Model):
             fsm_project = self.env.ref('industry_fsm.fsm_project', raise_if_not_found=False)
             if not fsm_project:
                 raise UserError(_("FSM Project not found. Please ensure the Field Service module is installed correctly."))
-            
+
             task_vals = {
                 'name': _("Request: %s", self.name),
                 'project_id': fsm_project.id,

@@ -39,8 +39,9 @@ from . import naid_risk_assessment
 from . import portal_feedback_escalation
 from . import revenue_analytic
 from . import key_restriction_checker
-# Note: records_department_billing_contact file does not define a module; skip import to avoid import errors
 from . import key_inventory
+from . import records_department_billing_contact
+from . import records_department_billing_approval
 from . import temp_inventory_audit
 from . import container_retrieval
 from . import invoice_generation_log
@@ -69,6 +70,7 @@ from . import transitory_field_config
 from . import shredding_service_photo
 from . import barcode_models_enhanced
 from . import customer_inventory
+from . import customer_inventory_report_model
 from . import bin_unlock_service
 from . import records_location_report_wizard
 from . import survey_improvement_action

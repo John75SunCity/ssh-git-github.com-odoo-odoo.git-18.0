@@ -43,6 +43,13 @@ class NAIDAuditLog(models.Model):
     # Inverse field for the One2many in project.task
     task_id = fields.Many2one('project.task', string='Related Task', ondelete='cascade', index=True)
     document_id = fields.Many2one('records.document', string="Document")
+    custody_id = fields.Many2one(
+        comodel_name='chain.of.custody',
+        string='Chain of Custody',
+        ondelete='set null',
+        index=True,
+        help='Related chain of custody record for this audit entry.'
+    )
 
     # ============================================================================
     # COMPUTE METHODS

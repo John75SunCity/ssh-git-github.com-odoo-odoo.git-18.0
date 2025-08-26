@@ -26,6 +26,7 @@ COMMANDS = [
     [sys.executable, str(TOOLS / "analyze_module_integrity.py")],
     [sys.executable, str(TOOLS / "comprehensive_loading_order_audit.py")],
     [sys.executable, str(TOOLS / "related_field_audit.py")],
+    [sys.executable, str(TOOLS / "verify_comodels_and_inverses.py")],
 ]
 
 

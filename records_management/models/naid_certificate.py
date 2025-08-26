@@ -23,6 +23,14 @@ class NaidCertificate(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, readonly=True)
 
+    # Inverse link back to shredding service (used in shredding.service.certificate_ids)
+    shredding_service_id = fields.Many2one(
+        comodel_name='shredding.service',
+        string='Shredding Service',
+        readonly=True,
+        help='Shredding service that produced this certificate.'
+    )
+
     # FSM & Operational Links
     fsm_task_id = fields.Many2one('project.task', string='FSM Work Order', readonly=True, help="Link to the Field Service task for this destruction.")
     technician_user_id = fields.Many2one('res.users', string='Technician', related='fsm_task_id.user_id', store=True, readonly=True)

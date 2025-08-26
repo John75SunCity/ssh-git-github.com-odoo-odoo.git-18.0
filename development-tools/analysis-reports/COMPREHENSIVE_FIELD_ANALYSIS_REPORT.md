@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-25T23:08:10.304485Z
+Generated: 2025-08-26T00:25:17.373116Z
 
 ## validate_imports.py
 
@@ -162,6 +162,18 @@ Exit code: 0
 
 <details><summary>stdout (tail)</summary>
 
+   • naid_certificate_item.py:10 (Many2one)
+
+   • records_container_line.py:13 (Many2one)
+
+   • ... and 2 more references
+
+
+
+❌ Model 'sale.order' referenced but not defined:
+
+   • key_restriction_checker.py:65 (Many2one)
+
 
 
 ❌ Model 'fleet.vehicle' referenced but not defined:
@@ -182,21 +194,9 @@ Exit code: 0
 
 
 
-❌ Model 'records.department.billing.contact' referenced but not defined:
-
-   • records_department.py:26 (One2many)
-
-
-
 ❌ Model 'maintenance.request' referenced but not defined:
 
    • service_item.py:88 (One2many)
-
-
-
-❌ Model 'customer.inventory.report' referenced but not defined:
-
-   • customer_inventory_report_line.py:33 (Many2one)
 
 
 
@@ -232,7 +232,7 @@ Exit code: 0
 
 
 
-🚨 SECURITY ISSUES: 23 models missing security access rules:
+🚨 SECURITY ISSUES: 24 models missing security access rules:
 
    ❌  -  (in document_search_attempt.py)
 
@@ -244,7 +244,7 @@ Exit code: 0
 
    ❌ res.users (in records_chain_of_custody.py)
 
-   ❌ ... and 18 more models
+   ❌ ... and 19 more models
 
 
 
@@ -254,11 +254,11 @@ AUDIT SUMMARY
 
 ================================================================================
 
-📊 Total models: 238
+📊 Total models: 242
 
 📊 Total field references: 140
 
-🚨 Critical issues found: 33
+🚨 Critical issues found: 32
 
 ⚠️  Issues found that may cause loading order problems
 
@@ -370,13 +370,33 @@ document_type_id (unknown):
 
 ================================================================================
 
-SUMMARY: Found 0 potential issues in 208 related fields
+SUMMARY: Found 0 potential issues in 210 related fields
 
 ================================================================================
 
 
 
 No issues found! All related fields appear correct.
+
+</details>
+
+## verify_comodels_and_inverses.py
+
+Exit code: 0
+
+<details><summary>stdout (tail)</summary>
+
+=== Comodels & Inverses Audit ===
+
+Scanned models dir: records_management/models
+
+
+
+No unknown comodels detected.
+
+
+
+No missing inverses detected for local comodels.
 
 </details>
 

@@ -173,7 +173,7 @@ class ShreddingService(models.Model):
     )
 
     certificate_ids = fields.One2many(
-        'destruction.certificate',
+        'naid.certificate',
         'shredding_service_id',
         string='Certificates',
         help="Destruction certificates generated for this service"
@@ -293,17 +293,21 @@ class ShreddingService(models.Model):
         if not self.certificate_template_id:
             raise ValidationError(_("No certificate template configured for this service."))
 
-        # Create certificate record
+        # Validate required data
+        partner_id = destruction_data.get('partner_id')
+        if not partner_id:
+            raise ValidationError(_("Customer (partner_id) is required to generate a certificate."))
+
+        # Map provided data into NAID certificate fields
         certificate_vals = {
+            'partner_id': partner_id,
+            'destruction_date': destruction_data.get('service_date') or fields.Datetime.now(),
+            'res_model': 'shredding.service',
+            'res_id': self.id,
             'shredding_service_id': self.id,
-            'service_date': destruction_data.get('service_date'),
-            'material_type': destruction_data.get('material_type'),
-            'quantity': destruction_data.get('quantity'),
-            'security_level': self.security_level,
-            'naid_compliant': self.naid_compliant,
         }
 
-        return self.env['destruction.certificate'].create(certificate_vals)
+        return self.env['naid.certificate'].create(certificate_vals)
 
     # Action Methods
     def action_view_requests(self):
@@ -315,7 +319,7 @@ class ShreddingService(models.Model):
 
     def action_view_certificates(self):
         """Action to view related certificates."""
-        action = self.env.ref('records_management.action_destruction_certificate').read()[0]
+        action = self.env.ref('records_management.action_naid_certificate').read()[0]
         action['domain'] = [('shredding_service_id', '=', self.id)]
         action['context'] = {'default_shredding_service_id': self.id}
         return action
@@ -326,14 +330,14 @@ class ShreddingService(models.Model):
         """Override create to add logging."""
         records = super().create(vals_list)
         for record in records:
-            _logger.info(f"Created shredding service: {record.name}")
+            _logger.info("Created shredding service: %s", record.name)
         return records
 
     def write(self, vals):
         """Override write to add logging."""
         result = super().write(vals)
         if 'active' in vals and not vals['active']:
-            _logger.info(f"Archived shredding service: {self.name}")
+            _logger.info("Archived shredding service: %s", self.name)
         return result
 
     def unlink(self):
