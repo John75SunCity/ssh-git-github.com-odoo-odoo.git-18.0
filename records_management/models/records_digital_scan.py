@@ -98,24 +98,24 @@ class RecordsDigitalScan(models.Model):
         self.ensure_one()
         if self.state != "draft":
             raise UserError(_("Only draft scans can be confirmed."))
-    self.write({"state": "confirmed"})
-    self.message_post(body=_("Digital scan confirmed by %s.") % self.env.user.name)
-    return True
+        self.write({"state": "confirmed"})
+        self.message_post(body=_("Digital scan confirmed by %s.") % self.env.user.name)
+        return True
 
     def action_done(self):
         """Mark the digital scan as completed."""
         self.ensure_one()
         if self.state != "confirmed":
             raise UserError(_("Only confirmed scans can be marked as done."))
-    self.write({"state": "done"})
-    self.message_post(body=_("Digital scan completed by %s.") % self.env.user.name)
-    return True
+        self.write({"state": "done"})
+        self.message_post(body=_("Digital scan completed by %s.") % self.env.user.name)
+        return True
 
     def action_reset_to_draft(self):
         """Reset the scan to the draft state."""
         self.ensure_one()
         if self.state == 'done':
             raise UserError(_("Cannot reset a completed scan to draft."))
-    self.write({"state": "draft"})
-    self.message_post(body=_("Digital scan reset to draft by %s.") % self.env.user.name)
-    return True
+        self.write({"state": "draft"})
+        self.message_post(body=_("Digital scan reset to draft by %s.") % self.env.user.name)
+        return True

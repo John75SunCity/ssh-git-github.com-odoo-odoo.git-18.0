@@ -136,25 +136,25 @@ class PortalRequest(models.Model):
     # ============================================================================
     def action_submit(self):
         self.ensure_one()
-    self.write({'state': 'submitted', 'requested_date': fields.Datetime.now()})
-    self.message_post(body=_("Request submitted by %s.") % self.env.user.name)
-    return True
+        self.write({'state': 'submitted', 'requested_date': fields.Datetime.now()})
+        self.message_post(body=_("Request submitted by %s.") % self.env.user.name)
+        return True
 
     def action_approve(self):
         self.ensure_one()
         if self.state != 'submitted':
             raise UserError(_("Only submitted requests can be approved."))
-    self.write({'state': 'approved'})
-    self.message_post(body=_("Request approved by %s.") % self.env.user.name)
-    self._create_work_order()
-    return True
+        self.write({'state': 'approved'})
+        self.message_post(body=_("Request approved by %s.") % self.env.user.name)
+        self._create_work_order()
+        return True
 
     def action_reject(self):
         # This would typically open a wizard to ask for a rejection reason
         self.ensure_one()
-    self.write({'state': 'rejected'})
-    self.message_post(body=_("Request rejected by %s.") % self.env.user.name)
-    return True
+        self.write({'state': 'rejected'})
+        self.message_post(body=_("Request rejected by %s.") % self.env.user.name)
+        return True
 
     def action_start_progress(self):
         self.ensure_one()
