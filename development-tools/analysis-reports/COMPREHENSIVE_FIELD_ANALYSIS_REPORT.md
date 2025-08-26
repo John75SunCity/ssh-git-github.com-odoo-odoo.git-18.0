@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-26T00:25:17.373116Z
+Generated: 2025-08-26T01:45:31.539851+00:00
 
 ## validate_imports.py
 
@@ -162,9 +162,9 @@ Exit code: 0
 
 <details><summary>stdout (tail)</summary>
 
-   • naid_certificate_item.py:10 (Many2one)
+   • naid_certificate_item.py:10 (Many2one\([\'"]([^\'"]+)[\'"])
 
-   • records_container_line.py:13 (Many2one)
+   • records_container_line.py:13 (Many2one\([\'"]([^\'"]+)[\'"])
 
    • ... and 2 more references
 
@@ -172,17 +172,17 @@ Exit code: 0
 
 ❌ Model 'sale.order' referenced but not defined:
 
-   • key_restriction_checker.py:65 (Many2one)
+   • key_restriction_checker.py:65 (Many2one\([\'"]([^\'"]+)[\'"])
 
 
 
 ❌ Model 'fleet.vehicle' referenced but not defined:
 
-   • shredding_team.py:57 (Many2many)
+   • shredding_team.py:57 (Many2many\([\'"]([^\'"]+)[\'"])
 
-   • work_order_shredding.py:44 (Many2one)
+   • work_order_shredding.py:44 (Many2one\([\'"]([^\'"]+)[\'"])
 
-   • container_destruction_work_order.py:110 (Many2one)
+   • container_destruction_work_order.py:110 (Many2one\([\'"]([^\'"]+)[\'"])
 
    • ... and 5 more references
 
@@ -190,13 +190,13 @@ Exit code: 0
 
 ❌ Model 'crm.team' referenced but not defined:
 
-   • customer_feedback.py:50 (Many2one)
+   • customer_feedback.py:50 (Many2one\([\'"]([^\'"]+)[\'"])
 
 
 
 ❌ Model 'maintenance.request' referenced but not defined:
 
-   • service_item.py:88 (One2many)
+   • service_item.py:88 (One2many\([\'"]([^\'"]+)[\'"])
 
 
 
@@ -256,19 +256,11 @@ AUDIT SUMMARY
 
 📊 Total models: 242
 
-📊 Total field references: 140
+📊 Total field references: 139
 
 🚨 Critical issues found: 32
 
 ⚠️  Issues found that may cause loading order problems
-
-</details>
-
-<details><summary>stderr (tail)</summary>
-
-/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/development-tools/comprehensive_loading_order_audit.py:57: SyntaxWarning: invalid escape sequence '\.'
-
-  'field_type': pattern.split('\.')[1].split('\\(')[0]
 
 </details>
 

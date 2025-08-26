@@ -30,7 +30,8 @@ class CustomerInventoryReportLine(models.Model):
     user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
-    report_id = fields.Many2one('customer.inventory.report', string='Inventory Report', required=True, ondelete='cascade')
+    # Explicit comodel_name per project convention
+    report_id = fields.Many2one(comodel_name='customer.inventory.report', string='Inventory Report', required=True, ondelete='cascade')
     partner_id = fields.Many2one(related='report_id.partner_id', string='Customer', store=True)
     report_date = fields.Date(related='report_id.report_date', string='Report Date', store=True)
 

@@ -12,7 +12,7 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -62,7 +62,7 @@ def main():
 
     # Aggregate quick summary
     summary = {
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "tools": [
             {"tool": r["tool"], "code": r["code"]} for r in results
         ],

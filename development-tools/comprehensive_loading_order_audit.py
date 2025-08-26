@@ -54,7 +54,8 @@ def find_field_references():
                     references[model_ref].append({
                         'file': file_path,
                         'line': content[:match.start()].count('\n') + 1,
-                        'field_type': pattern.split('\.')[1].split('\\(')[0]
+                        # Avoid invalid escape warnings by splitting on literal backslash-dot
+                        'field_type': pattern.split('\\.')[1].split('\\\\(')[0]
                     })
 
         except Exception as e:
