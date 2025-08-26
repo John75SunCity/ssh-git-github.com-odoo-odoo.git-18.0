@@ -73,6 +73,7 @@ class ShreddingPicklistItem(models.Model):
             'picked_date': fields.Datetime.now()
         })
     self.batch_id.message_post(body=_('Item %s marked as picked') % self.display_name)
+    return True
 
     def action_mark_verified(self):
         self.ensure_one()
@@ -84,11 +85,13 @@ class ShreddingPicklistItem(models.Model):
             'verified_date': fields.Datetime.now()
         })
     self.batch_id.message_post(body=_('Item %s marked as verified') % self.display_name)
+    return True
 
     def action_mark_not_found(self):
         self.ensure_one()
         self.write({'status': 'not_found'})
     self.batch_id.message_post(body=_('Item %s marked as not found') % self.display_name)
+    return True
 
     def action_reset_to_pending(self):
         self.ensure_one()
@@ -100,4 +103,5 @@ class ShreddingPicklistItem(models.Model):
             'verified_date': False,
         })
     self.batch_id.message_post(body=_('Item %s reset to pending') % self.display_name)
+    return True
 

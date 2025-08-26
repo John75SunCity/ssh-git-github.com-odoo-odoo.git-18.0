@@ -122,7 +122,7 @@ class ApprovalHistory(models.Model):
             'approved_by_id': self.env.user.id,
             'completed_date': fields.Datetime.now(),
         })
-    self.message_post(body=_("Approval granted by %s") % self.env.user.name)
+        self.message_post(body=_("Approval granted by %s") % self.env.user.name)
 
     def action_reject(self):
         """Reject the request"""
@@ -135,7 +135,7 @@ class ApprovalHistory(models.Model):
             'state': 'rejected',
             'completed_date': fields.Datetime.now(),
         })
-    self.message_post(body=_("Approval rejected by %s") % self.env.user.name)
+        self.message_post(body=_("Approval rejected by %s") % self.env.user.name)
 
     def action_cancel(self):
         """Cancel the request"""
@@ -147,7 +147,7 @@ class ApprovalHistory(models.Model):
             'approval_status': 'cancelled',
             'state': 'cancelled',
         })
-    self.message_post(body=_("Approval cancelled by %s") % self.env.user.name)
+        self.message_post(body=_("Approval cancelled by %s") % self.env.user.name)
 
     def action_reset_to_pending(self):
         """Reset approval to pending status"""
@@ -161,7 +161,7 @@ class ApprovalHistory(models.Model):
             'approved_by_id': False,
             'completed_date': False,
         })
-    self.message_post(body=_("Approval reset to pending by %s") % self.env.user.name)
+        self.message_post(body=_("Approval reset to pending by %s") % self.env.user.name)
 
     def action_escalate(self):
         """Escalate approval to higher authority"""
@@ -181,7 +181,7 @@ class ApprovalHistory(models.Model):
                 note=_("This approval has been escalated and requires immediate attention.")
             )
 
-    self.message_post(body=_("Approval escalated by %s") % self.env.user.name)
+        self.message_post(body=_("Approval escalated by %s") % self.env.user.name)
 
     # ============================================================================
     # BUSINESS METHODS
