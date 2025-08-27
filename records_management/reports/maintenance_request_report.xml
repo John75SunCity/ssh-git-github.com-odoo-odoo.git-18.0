@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Maintenance Request Report Action -->
+    <record id="report_maintenance_request_cost" model="ir.actions.report">
+        <field name="name">Maintenance Request with Cost Details</field>
+        <field name="model">maintenance.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">records_management.report_maintenance_request_cost_view</field>
+        <field name="report_file">records_management.report_maintenance_request_cost</field>
+        <field name="print_report_name">'Maintenance Request - %s' % object.name</field>
+        <field name="binding_model_id" ref="maintenance.model_maintenance_request"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Maintenance Request Cost Report Template -->
+    <template id="report_maintenance_request_cost_view">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h2 class="text-center mb-3">
+                                    <strong>Maintenance Request Report</strong>
+                                </h2>
+                                <div class="text-center mb-3">
+                                    <span class="badge badge-info" t-field="doc.stage_id"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Request Information -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td><strong>Request Number:</strong></td>
+                                        <td><span t-field="doc.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Request Date:</strong></td>
+                                        <td><span t-field="doc.request_date"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Equipment:</strong></td>
+                                        <td><span t-field="doc.equipment_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Priority:</strong></td>
+                                        <td>
+                                            <span t-if="doc.priority == '0'" class="badge badge-secondary">Very Low</span>
+                                            <span t-if="doc.priority == '1'" class="badge badge-info">Low</span>
+                                            <span t-if="doc.priority == '2'" class="badge badge-warning">Normal</span>
+                                            <span t-if="doc.priority == '3'" class="badge badge-danger">High</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td><strong>Requested by:</strong></td>
+                                        <td><span t-field="doc.user_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Assigned to:</strong></td>
+                                        <td><span t-field="doc.owner_user_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Records Container:</strong></td>
+                                        <td><span t-field="doc.records_container_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Completion Date:</strong></td>
+                                        <td><span t-field="doc.close_date"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Description Section -->
+                        <div class="row mb-4" t-if="doc.description">
+                            <div class="col-12">
+                                <h4>Description</h4>
+                                <div class="border p-3 bg-light">
+                                    <span t-field="doc.description"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cost Breakdown Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h4>Cost Analysis</h4>
+                                <table class="table table-bordered">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th>Cost Category</th>
+                                            <th class="text-right">Amount</th>
+                                            <th>Currency</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Labor Cost</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="doc.labor_cost"
+                                                      t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </td>
+                                            <td><span t-field="doc.currency_id.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Parts Cost</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="doc.parts_cost"
+                                                      t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </td>
+                                            <td><span t-field="doc.currency_id.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>External Services</strong></td>
+                                            <td class="text-right">
+                                                <span t-field="doc.external_cost"
+                                                      t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                            </td>
+                                            <td><span t-field="doc.currency_id.name"/></td>
+                                        </tr>
+                                        <tr class="table-warning">
+                                            <td><strong>Total Cost</strong></td>
+                                            <td class="text-right">
+                                                <strong>
+                                                    <span t-field="doc.cost"
+                                                          t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                </strong>
+                                            </td>
+                                            <td><span t-field="doc.currency_id.name"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Equipment Details Section -->
+                        <div class="row mb-4" t-if="doc.equipment_id">
+                            <div class="col-12">
+                                <h4>Equipment Information</h4>
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td class="col-3"><strong>Equipment Name:</strong></td>
+                                        <td><span t-field="doc.equipment_id.name"/></td>
+                                    </tr>
+                                    <tr t-if="doc.equipment_id.category_id">
+                                        <td><strong>Category:</strong></td>
+                                        <td><span t-field="doc.equipment_id.category_id.name"/></td>
+                                    </tr>
+                                    <tr t-if="doc.equipment_id.partner_id">
+                                        <td><strong>Vendor:</strong></td>
+                                        <td><span t-field="doc.equipment_id.partner_id.name"/></td>
+                                    </tr>
+                                    <tr t-if="doc.equipment_id.location">
+                                        <td><strong>Location:</strong></td>
+                                        <td><span t-field="doc.equipment_id.location"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Footer with Generation Info -->
+                        <div class="row mt-5">
+                            <div class="col-12 text-center text-muted">
+                                <small>
+                                    Report generated on <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                                    by Records Management System
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

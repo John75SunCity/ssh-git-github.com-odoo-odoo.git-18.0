@@ -3,6 +3,7 @@ from . import res_partner
 # Base models must be imported before their children
 from . import retrieval_item_base
 from . import container_retrieval_item
+from . import maintenance_request
 from . import base_rate
 from . import base_rates
 from . import route_optimizer

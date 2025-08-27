@@ -2,6 +2,7 @@
 """
 Comprehensive validation script for @api.depends across all models.
 Checks that all referenced fields in @api.depends actually exist.
+Handles inheritance properly by resolving inherited fields.
 """
 
 import os
@@ -29,12 +30,24 @@ def extract_model_fields(file_path):
             field_name = match.group(1)
             fields[field_name] = True
 
-        # Also check for inherited fields and computed fields
-        inherit_pattern = r"_inherit\s*=\s*\[?['\"]([^'\"]+)['\"]"
-        inherit_match = re.search(inherit_pattern, content)
+        # Also check for inherited models - handle both single and multiple inheritance
+        inherit_patterns = [
+            r"_inherit\s*=\s*['\"]([^'\"]+)['\"]",  # Single inheritance
+        ]
         inherited_models = []
-        if inherit_match:
-            inherited_models.append(inherit_match.group(1))
+
+        # Handle multiple inheritance in list format
+        multi_inherit_match = re.search(r"_inherit\s*=\s*\[(.*?)\]", content, re.DOTALL)
+        if multi_inherit_match:
+            inherit_content = multi_inherit_match.group(1)
+            inherit_items = re.findall(r"['\"]([^'\"]+)['\"]", inherit_content)
+            inherited_models.extend(inherit_items)
+        else:
+            # Single inheritance
+            for pattern in inherit_patterns:
+                inherit_match = re.search(pattern, content)
+                if inherit_match:
+                    inherited_models.append(inherit_match.group(1))
 
         return model_name, fields, inherited_models
     except Exception as e:
@@ -47,9 +60,10 @@ def extract_api_depends(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        depends_pattern = r"@api\.depends\(['\"]([^'\"]+)['\"](?:,\s*['\"]([^'\"]+)['\"])*\)"
         depends = []
 
+        # Single line @api.depends
+        depends_pattern = r"@api\.depends\(['\"]([^'\"]+)['\"](?:,\s*['\"]([^'\"]+)['\"])*\)"
         for match in re.finditer(depends_pattern, content):
             # Get the full match to extract all dependencies
             full_match = match.group(0)
@@ -69,41 +83,29 @@ def extract_api_depends(file_path):
         print(f"Error extracting depends from {file_path}: {e}")
         return []
 
-def validate_field_reference(field_ref, model_fields, all_models):
-    """Validate that a field reference exists."""
-    if '.' not in field_ref:
-        # Direct field reference
-        return field_ref in model_fields
-
-    # Related field reference like 'partner_id.name'
-    parts = field_ref.split('.')
-
-    # Check if the base field exists in current model
-    base_field = parts[0]
-    if base_field not in model_fields:
-        return False, f"Base field '{base_field}' not found"
-
-    # For related fields, we assume they exist since we'd need to check
-    # the comodel which requires more complex analysis
-    return True, "Related field (assumed valid)"
-
 def resolve_inherited_fields(all_models):
     """Resolve inherited fields for all models"""
-    for model_name, model_info in all_models.items():
-        resolved_fields = dict(model_info['fields'])
+    def get_all_fields_recursive(model_name, visited=None):
+        """Recursively get all fields including inherited ones"""
+        if visited is None:
+            visited = set()
+
+        if model_name in visited or model_name not in all_models:
+            return {}
+
+        visited.add(model_name)
+        model_info = all_models[model_name]
+        all_fields = dict(model_info['fields'])
 
         # Add fields from inherited models
         for inherited_model in model_info['inherited']:
-            if inherited_model in all_models:
-                inherited_fields = all_models[inherited_model]['fields']
-                resolved_fields.update(inherited_fields)
-                # Recursively resolve inherited fields
-                for nested_inherited in all_models[inherited_model]['inherited']:
-                    if nested_inherited in all_models:
-                        nested_fields = all_models[nested_inherited]['fields']
-                        resolved_fields.update(nested_fields)
+            inherited_fields = get_all_fields_recursive(inherited_model, visited)
+            all_fields.update(inherited_fields)
 
-        model_info['all_fields'] = resolved_fields
+        return all_fields
+
+    for model_name, model_info in all_models.items():
+        model_info['all_fields'] = get_all_fields_recursive(model_name)
 
     return all_models
 
@@ -118,7 +120,7 @@ def main():
     all_models = {}
     issues = []
 
-    print("=== @api.depends Validation ===\n")
+    print("=== @api.depends Validation (Enhanced with Inheritance) ===\n")
 
     # First pass: collect all models and their fields
     for filename in os.listdir(records_mgmt_path):
@@ -155,6 +157,8 @@ def main():
 
             if depends_list:
                 print(f"\n📋 {model_name} ({filename}):")
+                if inherited:
+                    print(f"   Inherits from: {inherited}")
 
                 for dep in depends_list:
                     # Skip empty dependencies
@@ -169,11 +173,13 @@ def main():
                                 'model': model_name,
                                 'file': filename,
                                 'dependency': dep,
-                                'issue': f"Field '{dep}' not found in model '{model_name}'"
+                                'issue': f"Field '{dep}' not found in model '{model_name}' (including inherited fields)"
                             })
                             print(f"   ❌ {dep} - Field not found")
                         else:
-                            print(f"   ✅ {dep}")
+                            # Check if it's inherited
+                            source = "direct" if dep in fields else "inherited"
+                            print(f"   ✅ {dep} ({source})")
                     else:
                         # Related field - check base field exists
                         base_field = dep.split('.')[0]
@@ -182,17 +188,13 @@ def main():
                                 'model': model_name,
                                 'file': filename,
                                 'dependency': dep,
-                                'issue': f"Base field '{base_field}' not found in model '{model_name}'"
+                                'issue': f"Base field '{base_field}' not found in model '{model_name}' (including inherited fields)"
                             })
                             print(f"   ❌ {dep} - Base field '{base_field}' not found")
                         else:
-                            print(f"   ✅ {dep}")
-                                'dependency': dep,
-                                'issue': f"Base field '{base_field}' not found in model '{model_name}'"
-                            })
-                            print(f"   ❌ {dep} - Base field '{base_field}' not found")
-                        else:
-                            print(f"   ✅ {dep}")
+                            # Check if base field is inherited
+                            source = "direct" if base_field in fields else "inherited"
+                            print(f"   ✅ {dep} (base field {source})")
 
     # Report issues
     print(f"\n=== Summary ===")

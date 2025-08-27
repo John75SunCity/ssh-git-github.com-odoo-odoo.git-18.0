@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- View maintenance.request form -->
+    <record id="view_maintenance_request_form" model="ir.ui.view">
+        <field name="name">view.maintenance.request.form</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.request list -->
+    <record id="view_maintenance_request_list" model="ir.ui.view">
+        <field name="name">view.maintenance.request.list</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.request search -->
+    <record id="view_maintenance_request_search" model="ir.ui.view">
+        <field name="name">view.maintenance.request.search</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.request kanban -->
+    <record id="view_maintenance_request_kanban" model="ir.ui.view">
+        <field name="name">view.maintenance.request.kanban</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.request graph -->
+    <record id="view_maintenance_request_graph" model="ir.ui.view">
+        <field name="name">view.maintenance.request.graph</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.request pivot -->
+    <record id="view_maintenance_request_pivot" model="ir.ui.view">
+        <field name="name">view.maintenance.request.pivot</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- View maintenance.request calendar -->
+    <record id="view_maintenance_request_calendar" model="ir.ui.view">
+        <field name="name">view.maintenance.request.calendar</field>
+        <field name="model">maintenance.request</field>
+        <field name="inherit_id" ref=""/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='']" position="after">
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
