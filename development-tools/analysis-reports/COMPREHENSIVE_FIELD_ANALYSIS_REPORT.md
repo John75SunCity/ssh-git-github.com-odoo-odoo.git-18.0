@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-27T07:12:51.751855+00:00
+Generated: 2025-08-27T18:22:06.178691+00:00
 
 ## validate_imports.py
 
@@ -8,7 +8,7 @@ Exit code: 0
 
 ## validate_xml.py
 
-Exit code: 0
+Exit code: 1
 
 <details><summary>stdout (tail)</summary>
 
@@ -232,19 +232,19 @@ Exit code: 0
 
 
 
-🚨 SECURITY ISSUES: 24 models missing security access rules:
+🚨 SECURITY ISSUES: 28 models missing security access rules:
 
    ❌  -  (in document_search_attempt.py)
+
+   ❌ res.currency (in advanced_billing_service_line.py)
+
+   ❌ res.company (in full_customization_name.py)
 
    ❌ records.request.line (in records_request_line.py)
 
    ❌ [%s] %s (in records_tag.py)
 
-   ❌ res.currency (in advanced_billing_service_line.py)
-
-   ❌ res.users (in records_chain_of_custody.py)
-
-   ❌ ... and 19 more models
+   ❌ ... and 23 more models
 
 
 
@@ -254,11 +254,11 @@ AUDIT SUMMARY
 
 ================================================================================
 
-📊 Total models: 242
+📊 Total models: 247
 
-📊 Total field references: 139
+📊 Total field references: 137
 
-🚨 Critical issues found: 32
+🚨 Critical issues found: 36
 
 ⚠️  Issues found that may cause loading order problems
 
@@ -269,8 +269,6 @@ AUDIT SUMMARY
 Exit code: 0
 
 <details><summary>stdout (tail)</summary>
-
-
 
 partner_id (res.partner):
 
@@ -342,6 +340,8 @@ move_id (stock.move):
 
   ✅ OK: picking_id = related='move_id.picking_id'
 
+  ✅ OK: picking_id = related='move_id.picking_id'
+
 
 
 report_id (customer.inventory.report):
@@ -362,7 +362,7 @@ document_type_id (unknown):
 
 ================================================================================
 
-SUMMARY: Found 0 potential issues in 208 related fields
+SUMMARY: Found 0 potential issues in 209 related fields
 
 ================================================================================
 

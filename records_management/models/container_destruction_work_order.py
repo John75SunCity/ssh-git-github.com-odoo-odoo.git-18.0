@@ -132,13 +132,18 @@ class ContainerDestructionWorkOrder(models.Model):
             else:
                 record.display_name = record.name or _("New Container Destruction")
 
-    @api.depends('container_ids')
+    @api.depends('container_ids.container_type_id.average_weight_lbs')
     def _compute_container_metrics(self):
         for record in self:
             containers = record.container_ids
             record.container_count = len(containers)
             record.total_cubic_feet = sum(containers.mapped('cubic_feet'))
-            record.estimated_weight_lbs = sum(containers.mapped('weight'))
+            # Use estimated weights from container type definitions (per user requirement)
+            estimated_weight = 0.0
+            for container in containers:
+                if container.container_type_id and container.container_type_id.average_weight_lbs:
+                    estimated_weight += container.container_type_id.average_weight_lbs
+            record.estimated_weight_lbs = estimated_weight
 
     @api.depends('container_count', 'destruction_method')
     def _compute_estimated_duration(self):

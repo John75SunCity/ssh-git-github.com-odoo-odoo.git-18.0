@@ -70,14 +70,26 @@ class ProjectTask(models.Model):
 
     # Optimized computed field
     total_weight = fields.Float(string='Total Weight', compute='_compute_total_weight', store=True)  # Store for performance
+    container_count = fields.Integer(string='Container Count', compute='_compute_container_count', store=True)
 
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('timesheet_ids.unit_amount')  # Optimize dependencies - use actual timesheet field
+    @api.depends('container_ids.container_type_id.average_weight_lbs')
     def _compute_total_weight(self):
+        """Compute total estimated weight based on container type averages."""
         for task in self:
-            task.total_weight = sum(task.timesheet_ids.mapped('unit_amount'))  # Use unit_amount (hours) field
+            # Use estimated weights from container type definitions (per user requirement)
+            estimated_weight = 0.0
+            for container in task.container_ids:
+                if container.container_type_id and container.container_type_id.average_weight_lbs:
+                    estimated_weight += container.container_type_id.average_weight_lbs
+            task.total_weight = estimated_weight
+
+    @api.depends('container_ids')
+    def _compute_container_count(self):
+        for task in self:
+            task.container_count = len(task.container_ids)
 
     @api.depends('work_order_type')
     def _compute_certificate_required(self):

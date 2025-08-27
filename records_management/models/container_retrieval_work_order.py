@@ -101,13 +101,18 @@ class ContainerRetrievalWorkOrder(models.Model):
             else:
                 record.display_name = record.name or _("New Container Retrieval")
 
-    @api.depends('container_ids')
+    @api.depends('container_ids.container_type_id.average_weight_lbs')
     def _compute_container_metrics(self):
         for record in self:
             containers = record.container_ids
             record.container_count = len(containers)
             record.total_volume = sum(containers.mapped('cubic_feet'))
-            record.total_weight = sum(containers.mapped('weight'))
+            # Use estimated weights from container type definitions (per user requirement)
+            estimated_weight = 0.0
+            for container in containers:
+                if container.container_type_id and container.container_type_id.average_weight_lbs:
+                    estimated_weight += container.container_type_id.average_weight_lbs
+            record.total_weight = estimated_weight
 
     @api.depends('scheduled_delivery_date')
     def _compute_delivery_window(self):
