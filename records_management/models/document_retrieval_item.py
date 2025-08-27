@@ -233,13 +233,13 @@ class DocumentRetrievalItem(models.Model):
             access_rate = access_rate or 3.50
             item.container_access_cost = item.containers_not_found_count * access_rate
 
-    @api.depends('retrieval_cost', 'container_access_cost', 'work_order_id.delivery_required', 'status', 'partner_id')
+    @api.depends('retrieval_cost', 'container_access_cost', 'work_order_id.delivery_method', 'status', 'partner_id')
     def _compute_total_cost(self):
         for item in self:
             total = item.retrieval_cost + item.container_access_cost
             partner = item.partner_id
 
-            if item.work_order_id and item.work_order_id.delivery_required and partner:
+            if item.work_order_id and item.work_order_id.delivery_method == 'physical' and partner:
                 delivery_fee = 0.0
                 negotiated_delivery = self.env["customer.negotiated.rates"].search([
                     ("partner_id", "=", partner.id),

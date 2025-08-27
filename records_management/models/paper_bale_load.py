@@ -75,12 +75,12 @@ class Load(models.Model):
             load.total_bales = len(load.paper_bale_ids)
             load.total_weight = sum(b.weight for b in load.paper_bale_ids)
 
-    @api.depends('paper_bale_ids', 'paper_bale_ids.weight', 'paper_bale_ids.paper_type')
+    @api.depends('paper_bale_ids', 'paper_bale_ids.weight', 'paper_bale_ids.paper_grade')
     def _compute_weight_by_type(self):
         for load in self:
-            load.total_weight_wht = sum(b.weight for b in load.paper_bale_ids if b.paper_type == 'wht')
-            load.total_weight_mix = sum(b.weight for b in load.paper_bale_ids if b.paper_type == 'mix')
-            load.total_weight_occ = sum(b.weight for b in load.paper_bale_ids if b.paper_type == 'occ')
+            load.total_weight_wht = sum(b.weight for b in load.paper_bale_ids if b.paper_grade == 'wht')
+            load.total_weight_mix = sum(b.weight for b in load.paper_bale_ids if b.paper_grade == 'mix')
+            load.total_weight_occ = sum(b.weight for b in load.paper_bale_ids if b.paper_grade == 'occ')
 
     # ============================================================================
     # ACTION METHODS

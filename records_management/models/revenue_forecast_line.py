@@ -100,11 +100,11 @@ class RevenueForecastLine(models.Model):
                 parts.append(period_dict.get(record.period_type, record.period_type))
             record.name = " - ".join(parts) if parts else _("New Forecast Line")
 
-    @api.depends('name', 'forecasted_amount', 'currency_id.symbol')
+    @api.depends('name', 'forecasted_amount', 'currency_id.name')
     def _compute_display_name(self):
         for record in self:
             if record.forecasted_amount:
-                amount_str = f"{record.currency_id.symbol} {record.forecasted_amount:,.2f}"
+                amount_str = f"{record.currency_id.name} {record.forecasted_amount:,.2f}"
                 record.display_name = f"{record.name} ({amount_str})"
             else:
                 record.display_name = record.name or _("New Forecast Line")

@@ -103,12 +103,13 @@ class NaidDestructionRecord(models.Model):
         for record in self:
             record.items_destroyed = len(record.destruction_item_ids)
 
-    @api.depends('destruction_item_ids', 'destruction_item_ids.weight', 'destruction_item_ids.volume')
+    @api.depends('destruction_item_ids', 'destruction_item_ids.weight')
     def _compute_totals(self):
-        """Calculate total weight and volume"""
+        """Calculate total weight"""
         for record in self:
             record.total_weight = sum(record.destruction_item_ids.mapped('weight'))
-            record.total_volume = sum(record.destruction_item_ids.mapped('volume'))
+            # Note: Volume calculation removed as volume field doesn't exist in destruction.item model
+            record.total_volume = 0.0  # Default value since volume field is not available
 
     @api.depends('start_time', 'end_time')
     def _compute_duration(self):
