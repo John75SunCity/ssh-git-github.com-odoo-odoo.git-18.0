@@ -26,7 +26,7 @@ class BaseRate(models.Model):
     # ============================================================================
     name = fields.Char(string='Rate Name', required=True, tracking=True, default="Default Base Rates")
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user, tracking=True)
+    user_id = fields.Many2one('res.users', string='Rate Manager', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True, tracking=True, help="Indicates if this rate card is currently active.")
     effective_date = fields.Date(string='Effective Date', default=fields.Date.context_today, required=True, tracking=True)
     expiration_date = fields.Date(string='Expiration Date', tracking=True)

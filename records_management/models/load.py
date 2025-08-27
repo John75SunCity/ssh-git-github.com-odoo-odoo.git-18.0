@@ -15,7 +15,9 @@ class Load(models.Model):
     name = fields.Char(string='Load Number', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
+    priority = fields.Selection([('normal', 'Normal'), ('high', 'High')], string='Priority', default='normal')
+    user_id = fields.Many2one('res.users', string='Load Coordinator', default=lambda self: self.env.user)
+    notes = fields.Text(string='Notes')
 
     state = fields.Selection([
         ('draft', 'Draft'),

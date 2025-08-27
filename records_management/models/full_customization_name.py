@@ -13,4 +13,4 @@ class FullCustomizationName(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     create_date = fields.Datetime(string='Created On', readonly=True)
     write_date = fields.Datetime(string='Last Updated', readonly=True)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', string='Customization Owner', default=lambda self: self.env.user)

@@ -16,7 +16,7 @@ class StockMoveSMSValidation(models.Model):
     name = fields.Char(string="Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
     move_id = fields.Many2one('stock.move', string="Stock Move", required=True, readonly=True, ondelete='cascade')
     picking_id = fields.Many2one(related='move_id.picking_id', string="Transfer", store=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Responsible User", required=True, readonly=True, help="User who must validate this move.")
+    user_id = fields.Many2one('res.users', string="Validator User", required=True, readonly=True, help="User who must validate this move.")
     sms_code = fields.Char(string="SMS Code", readonly=True, copy=False)
     is_validated = fields.Boolean(string="Validated", default=False, readonly=True, copy=False)
     validation_date = fields.Datetime(string="Validation Date", readonly=True, copy=False)
