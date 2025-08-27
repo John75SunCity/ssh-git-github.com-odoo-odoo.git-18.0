@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Payment Split Line Views -->
-    
+
     <!-- Tree View -->
     <record id="payment_split_line_view_tree" model="ir.ui.view">
-        <field name="name">payment.allocation.line.view.tree</field>
-        <field name="model">payment.allocation.line</field>
+        <field name="name">payment.split.line.view.tree</field>
+        <field name="model">payment.split.line</field>
         <field name="arch" type="xml">
-            <tree string="Payment Split Lines" default_order="payment_id, allocation_order">
-                <field name="allocation_order" widget="handle"/>
+            <tree string="Payment Split Lines" default_order="split_id, sequence">
+                <field name="sequence" widget="handle"/>
+                <field name="split_id"/>
                 <field name="name"/>
-                <field name="service_type"/>
-                <field name="allocated_amount" sum="Total Allocated"/>
-                <field name="allocation_percentage"/>
-                <field name="billing_period"/>
+                <field name="amount" sum="Total Amount"/>
+                <field name="partner_id"/>
+                <field name="invoice_id"/>
+                <field name="processed" widget="boolean_toggle"/>
                 <field name="currency_id" invisible="1"/>
             </tree>
         </field>
@@ -21,8 +22,8 @@
 
     <!-- Form View -->
     <record id="payment_split_line_view_form" model="ir.ui.view">
-        <field name="name">payment.allocation.line.view.form</field>
-        <field name="model">payment.allocation.line</field>
+        <field name="name">payment.split.line.view.form</field>
+        <field name="model">payment.split.line</field>
         <field name="arch" type="xml">
             <form string="Payment Split Line">
                 <sheet>
@@ -33,19 +34,21 @@
                     </div>
                     <group>
                         <group>
-                            <field name="payment_id"/>
-                            <field name="service_type"/>
-                            <field name="allocated_amount"/>
-                            <field name="allocation_percentage"/>
+                            <field name="split_id" required="1"/>
+                            <field name="sequence"/>
+                            <field name="amount" widget="monetary"/>
                             <field name="currency_id" invisible="1"/>
                         </group>
                         <group>
-                            <field name="billing_period"/>
-                            <field name="allocation_order"/>
+                            <field name="partner_id"/>
                             <field name="invoice_id"/>
-                            <field name="service_id"/>
+                            <field name="processed" readonly="1"/>
+                            <field name="processing_date" invisible="not processed"/>
                         </group>
                     </group>
+
+                    <separator string="Notes"/>
+                    <field name="notes" widget="text" placeholder="Additional notes about this payment split..."/>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
@@ -58,22 +61,23 @@
 
     <!-- Search View -->
     <record id="payment_split_line_view_search" model="ir.ui.view">
-        <field name="name">payment.allocation.line.view.search</field>
-        <field name="model">payment.allocation.line</field>
+        <field name="name">payment.split.line.view.search</field>
+        <field name="model">payment.split.line</field>
         <field name="arch" type="xml">
             <search string="Search Payment Split Lines">
                 <field name="name"/>
-                <field name="payment_id"/>
-                <field name="service_type"/>
-                <field name="billing_period"/>
+                <field name="split_id"/>
+                <field name="partner_id"/>
+                <field name="invoice_id"/>
                 <separator/>
-                <filter name="filter_current_period" string="Current Period" domain="[('billing_period', '=', 'current')]"/>
-                <filter name="filter_high_allocation" string="High Allocation" domain="[('allocation_percentage', '>', 50)]"/>
+                <filter name="filter_processed" string="Processed" domain="[('processed', '=', True)]"/>
+                <filter name="filter_pending" string="Pending" domain="[('processed', '=', False)]"/>
+                <filter name="filter_high_amount" string="High Amount" domain="[('amount', '>', 1000)]"/>
                 <separator/>
                 <group expand="0" string="Group By">
-                    <filter name="group_service_type" string="Service Type" context="{'group_by': 'service_type'}"/>
-                    <filter name="group_billing_period" string="Billing Period" context="{'group_by': 'billing_period'}"/>
-                    <filter name="group_payment" string="Payment" context="{'group_by': 'payment_id'}"/>
+                    <filter name="group_split" string="Payment Split" context="{'group_by': 'split_id'}"/>
+                    <filter name="group_partner" string="Partner" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_processed" string="Processing Status" context="{'group_by': 'processed'}"/>
                 </group>
             </search>
         </field>
@@ -82,7 +86,7 @@
     <!-- Action -->
     <record id="action_payment_split_line" model="ir.actions.act_window">
         <field name="name">Payment Split Lines</field>
-        <field name="res_model">payment.allocation.line</field>
+        <field name="res_model">payment.split.line</field>
         <field name="view_mode">tree,form</field>
         <field name="context">{}</field>
         <field name="help" type="html">
