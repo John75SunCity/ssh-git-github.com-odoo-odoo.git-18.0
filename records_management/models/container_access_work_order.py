@@ -260,12 +260,12 @@ class ContainerAccessWorkOrder(models.Model):
             else:
                 record.actual_duration_hours = 0.0
 
-    @api.depends('access_activity_ids', 'access_activity_ids.item_modified')
+    @api.depends('access_activity_ids', 'access_activity_ids.documents_created')
     def _compute_access_metrics(self):
         for record in self:
             activities = record.access_activity_ids
             record.items_accessed_count = len(activities)
-            record.items_modified_count = len(activities.filtered('item_modified'))
+            record.items_modified_count = len(activities.filtered('documents_created'))
 
     @api.depends('access_activity_ids', 'visitor_ids', 'chain_of_custody_maintained')
     def _compute_audit_trail_complete(self):
