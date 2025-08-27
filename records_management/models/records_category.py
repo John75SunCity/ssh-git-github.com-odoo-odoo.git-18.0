@@ -12,6 +12,7 @@ class RecordsCategory(models.Model):
     name = fields.Char(string='Name', required=True)
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+    parent_path = fields.Char(index=True)
     complete_name = fields.Char(
         'Complete Name', compute='_compute_complete_name',
         recursive=True, store=True)
