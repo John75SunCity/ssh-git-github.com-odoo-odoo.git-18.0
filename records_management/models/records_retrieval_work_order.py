@@ -11,7 +11,12 @@ class RecordsRetrievalWorkOrder(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Work Order', required=True, readonly=True)
-    state = fields.Selection()
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Customer')
     company_id = fields.Many2one('res.company', string='Company')
     user_id = fields.Many2one('res.users', string='Assigned To')
