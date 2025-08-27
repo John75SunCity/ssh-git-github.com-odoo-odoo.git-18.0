@@ -257,13 +257,13 @@ class NaidDestructionRecord(models.Model):
     def _create_audit_log(self, action):
         """Create NAID audit log entry"""
         self.env['naid.audit.log'].create({
-            'name': f"Destruction {action}: {self.name}",
+            'name': "Destruction %s: %s" % (action, self.name),
             'model_name': self._name,
             'record_id': self.id,
             'action': action,
             'user_id': self.env.user.id,
             'timestamp': fields.Datetime.now(),
-            'details': f"Destruction record {self.name} - {action}"
+            'details': "Destruction record %s - %s" % (self.name, action)
         })
 
     @api.model_create_multi
@@ -286,7 +286,7 @@ class NaidDestructionRecord(models.Model):
 
         if 'state' in vals:
             for record in self:
-                record._create_audit_log(f"state_changed_to_{vals['state']}")
+                record._create_audit_log("state_changed_to_%s" % vals['state'])
 
         return result
 
