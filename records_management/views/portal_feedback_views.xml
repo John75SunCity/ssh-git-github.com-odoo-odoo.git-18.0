@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Tree view for PORTAL -->
-    
+
     <!-- Kanban view for Kanban -->
     <record id="portal_feedback_view_kanban" model="ir.ui.view">
         <field name="name">portal.feedback.view.kanban</field>
         <field name="model">portal.feedback</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="satisfaction_level" quick_create="false" class="o_kanban_small_column">
+            <kanban default_group_by="state" quick_create="false" class="o_kanban_small_column">
                 <field name="name"/>
-                <field name="satisfaction_level"/>
+                <field name="state"/>
                 <field name="partner_id"/>
                 <field name="feedback_type"/>
-                <field name="overall_rating"/>
-                <field name="service_quality_rating"/>
-                <field name="response_time_rating"/>
-                <field name="submission_date"/>
-                <field name="status"/>
+                <field name="rating"/>
+                <field name="sentiment_category"/>
                 <field name="priority"/>
-                <field name="assigned_to"/>
+                <field name="assigned_to_id"/>
                 <field name="activity_state"/>
                 <progressbar field="activity_state" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
                 <templates>
@@ -27,7 +24,7 @@
                             <div class="o_kanban_record_top">
                                 <strong><field name="name"/></strong>
                                 <span class="float-end">
-                                    <field name="status" widget="label_selection" options="{'classes': {'new': 'primary', 'reviewed': 'info', 'responded': 'success', 'escalated': 'warning', 'closed': 'secondary'}}"/>
+                                    <field name="state" widget="label_selection" options="{'classes': {'new': 'primary', 'in_progress': 'info', 'resolved': 'success', 'closed': 'secondary'}}"/>
                                 </span>
                                 <div class="text-muted">
                                     👤 <field name="partner_id"/> | <field name="feedback_type"/>
@@ -35,11 +32,12 @@
                             </div>
                             <div class="o_kanban_record_body">
                                 <div class="mb-2">
-                                    <strong>Rating:</strong> <field name="overall_rating" widget="priority" readonly="1"/> (<field name="overall_rating"/>/5)
+                                    <strong>Rating:</strong> <field name="rating"/>
+                                    <span class="text-muted">(<field name="sentiment_category"/>)</span>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6"><small>Service: <field name="service_quality_rating"/>/5</small></div>
-                                    <div class="col-6"><small>Response: <field name="response_time_rating"/>/5</small></div>
+                                    <div class="col-6"><small>Priority: <field name="priority"/></small></div>
+                                    <div class="col-6"><small>Assigned: <field name="assigned_to_id"/></small></div>
                                 </div>
                                 <div t-if="record.priority.raw_value == 'high'" class="mt-2">
                                     <span class="badge badge-danger">🔥 High Priority</span>
@@ -47,9 +45,9 @@
                                 <field name="activity_ids" widget="kanban_activity"/>
                             </div>
                             <div class="o_kanban_record_bottom">
-                                <span class="badge badge-pill badge-info">📅 <field name="submission_date" widget="date"/></span>
+                                <span class="badge badge-pill badge-info">📅 <field name="create_date" widget="date"/></span>
                                 <div class="oe_kanban_bottom_right">
-                                    <img t-att-src="kanban_image('res.users', 'avatar_128', record.assigned_to.raw_value)" t-att-title="record.assigned_to.value" class="oe_kanban_avatar o_image_24_cover" t-if="record.assigned_to.raw_value"/>
+                                    <img t-att-src="kanban_image('res.users', 'avatar_128', record.assigned_to_id.raw_value)" t-att-title="record.assigned_to_id.value" class="oe_kanban_avatar o_image_24_cover" t-if="record.assigned_to_id.raw_value"/>
                                     <field name="activity_state" widget="kanban_activity"/>
                                 </div>
                             </div>
@@ -65,7 +63,7 @@
         <field name="name">portal.feedback.view.tree</field>
         <field name="model">portal.feedback</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="status=='responded'" decoration-muted="status=='closed'" multi_edit="1">
+            <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
                 <header>
                     <button name="action_mark_reviewed" type="object" string="Mark Reviewed"/>
                     <button name="action_respond" type="object" string="Respond"/>
@@ -73,16 +71,15 @@
                     <button name="action_close" type="object" string="Close"/>
                 </header>
                 <field name="name"/>
-                <field name="submission_date" widget="date"/>
+                <field name="create_date" widget="date"/>
                 <field name="partner_id"/>
                 <field name="feedback_type"/>
-                <field name="overall_rating" widget="priority"/>
-                <field name="service_quality_rating"/>
-                <field name="response_time_rating"/>
-                <field name="satisfaction_level"/>
+                <field name="rating" widget="priority"/>
+                <field name="sentiment_category"/>
+                <field name="sentiment_score"/>
                 <field name="priority" widget="priority"/>
-                <field name="status" widget="badge"/>
-                <field name="assigned_to" widget="many2one_avatar_user"/>
+                <field name="state" widget="badge"/>
+                <field name="assigned_to_id" widget="many2one_avatar_user"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
             </tree>
         </field>
@@ -96,10 +93,10 @@
             <form>
                 <header>
                     <button name="action_mark_reviewed" type="object" string="Mark as Reviewed" states="new" class="btn-primary"/>
-                    <button name="action_respond" type="object" string="Respond" states="new,reviewed" class="btn-success"/>
-                    <button name="action_escalate" type="object" string="Escalate" states="new,reviewed" class="btn-warning"/>
-                    <button name="action_close" type="object" string="Close" states="responded,escalated" class="btn-secondary"/>
-                    <field name="status" widget="statusbar" statusbar_visible="new,reviewed,responded,closed"/>
+                    <button name="action_respond" type="object" string="Respond" states="new,in_progress" class="btn-success"/>
+                    <button name="action_escalate" type="object" string="Escalate" states="new,in_progress" class="btn-warning"/>
+                    <button name="action_close" type="object" string="Close" states="resolved" class="btn-secondary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,in_progress,resolved,closed"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -109,7 +106,7 @@
                             </div>
                         </button>
                     </div>
-                    
+
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
@@ -118,40 +115,38 @@
                         <group>
                             <field name="partner_id"/>
                             <field name="feedback_type"/>
-                            <field name="submission_date"/>
+                            <field name="subject"/>
                             <field name="priority"/>
-                            <field name="assigned_to"/>
+                            <field name="assigned_to_id"/>
                         </group>
                         <group>
-                            <field name="overall_rating" widget="priority"/>
-                            <field name="service_quality_rating"/>
-                            <field name="response_time_rating"/>
-                            <field name="staff_friendliness_rating"/>
-                            <field name="satisfaction_level"/>
+                            <field name="rating" widget="priority"/>
+                            <field name="sentiment_category"/>
+                            <field name="sentiment_score"/>
+                            <field name="active"/>
+                            <field name="company_id"/>
                         </group>
                     </group>
-
                     <notebook>
                         <page string="Feedback Details">
                             <group>
-                                <field name="comments" nolabel="1" placeholder="Customer feedback comments..."/>
-                                <field name="internal_notes" groups="base.group_user" placeholder="Internal notes (not visible to customer)..."/>
-                            </group>
-                        </page>
-                        <page string="Response &amp;amp; Resolution">
-                            <group>
-                                <field name="response_text" placeholder="Response to customer..."/>
-                                <field name="resolution_notes" placeholder="Resolution details..."/>
-                                <field name="follow_up_required"/>
-                                <field name="follow_up_date" attrs="{'invisible': [('follow_up_required', '=', False)]}"/>
+                                <field name="description" nolabel="1" placeholder="Customer feedback details..."/>
                             </group>
                         </page>
                         <page string="Analysis">
                             <group>
                                 <field name="sentiment_score"/>
                                 <field name="sentiment_category"/>
-                                <field name="improvement_areas" widget="many2many_tags"/>
-                                <field name="escalation_reason" attrs="{'invisible': [('status', '!=', 'escalated')]}"/>
+                                <field name="resolution_date"/>
+                                <field name="first_response_date"/>
+                                <field name="interaction_count"/>
+                            </group>
+                        </page>
+                        <page string="Relations">
+                            <group>
+                                <field name="resolution_ids"/>
+                                <field name="communication_ids"/>
+                                <field name="escalation_ids"/>
                             </group>
                         </page>
                     </notebook>
@@ -174,22 +169,22 @@
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="feedback_type"/>
-                <field name="assigned_to"/>
-                
-                <filter string="New" name="new" domain="[('status', '=', 'new')]"/>
+                <field name="assigned_to_id"/>
+
+                <filter string="New" name="new" domain="[('state', '=', 'new')]"/>
                 <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-                <filter string="Low Satisfaction" name="low_satisfaction" domain="[('satisfaction_level', 'in', ['very_dissatisfied', 'dissatisfied'])]"/>
-                <filter string="Needs Response" name="needs_response" domain="[('status', 'in', ['new', 'reviewed'])]"/>
-                
+                <filter string="Negative Sentiment" name="negative_sentiment" domain="[('sentiment_category', '=', 'negative')]"/>
+                <filter string="Needs Response" name="needs_response" domain="[('state', 'in', ['new', 'in_progress'])]"/>
+
                 <separator/>
-                <filter string="My Assignments" name="my_assignments" domain="[('assigned_to', '=', uid)]"/>
-                
+                <filter string="My Assignments" name="my_assignments" domain="[('assigned_to_id', '=', uid)]"/>
+
                 <group expand="0" string="Group By">
-                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
                     <filter string="Priority" name="group_priority" context="{'group_by': 'priority'}"/>
                     <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
-                    <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to'}"/>
-                    <filter string="Date" name="group_date" context="{'group_by': 'submission_date'}"/>
+                    <filter string="Assigned To" name="group_assigned" context="{'group_by': 'assigned_to_id'}"/>
+                    <filter string="Sentiment" name="group_sentiment" context="{'group_by': 'sentiment_category'}"/>
                 </group>
             </search>
         </field>
@@ -200,7 +195,7 @@
         <field name="name">Customer Feedback</field>
         <field name="res_model">portal.feedback</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="search_view_id" ref="view_portal_feedback_search"/>
+        <field name="search_view_id" ref="portal_feedback_view_search"/>
         <field name="context">{'search_default_needs_response': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -211,10 +206,10 @@
     </record>
 
     <!-- Tree view for Menu -->
-    <menuitem id="menu_portal_feedback" 
-              name="Customer Feedback" 
-              parent="records_management.menu_portal_root" 
-              action="action_portal_feedback" 
+    <menuitem id="menu_portal_feedback"
+              name="Customer Feedback"
+              parent="records_management.menu_portal_root"
+              action="action_portal_feedback"
               sequence="20"/>
 
 </odoo>
