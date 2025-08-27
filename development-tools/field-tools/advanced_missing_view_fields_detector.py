@@ -677,9 +677,7 @@ class MissingViewFieldsDetector:
 
 def main():
     """Main execution function"""
-    records_management_path = (
-        "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0/records_management"
-    )
+    records_management_path = "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management"
 
     detector = MissingViewFieldsDetector(records_management_path)
     report = detector.run_complete_analysis()
