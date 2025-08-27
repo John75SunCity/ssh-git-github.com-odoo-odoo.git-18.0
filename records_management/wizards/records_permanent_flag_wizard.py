@@ -17,7 +17,6 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
     # Core fields
     name = fields.Char(string="Flag Name", default="Permanent Flag Wizard")
-    record_ids = fields.Many2many("records.container", string="Records to Flag")
     permanent_flag = fields.Boolean(string="Mark as Permanent", default=True)
 
     # ============================================================================
@@ -43,8 +42,20 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     # ============================================================================
     # SELECTION CRITERIA
     # ============================================================================
-    container_ids = fields.Many2many("records.container", string="Containers")
-    document_ids = fields.Many2many("records.document", string="Selected Documents")
+    container_ids = fields.Many2many(
+        "records.container",
+        "records_perm_flag_wizard_container_rel",
+        "wizard_id",
+        "container_id",
+        string="Containers"
+    )
+    document_ids = fields.Many2many(
+        "records.document",
+        "records_perm_flag_wizard_document_rel",
+        "wizard_id",
+        "document_id",
+        string="Selected Documents"
+    )
     document_count = fields.Integer(
         string="Document Count", compute="_compute_document_count"
     )

@@ -20,7 +20,7 @@ class RateChangeConfirmationWizard(models.TransientModel):
     _description = 'Rate Change Confirmation Wizard'
 
     # Reference to forecast
-    forecast_id = fields.Many2one('revenue.forecaster', string='Forecast Reference', required=True)
+    forecast_id = fields.Many2one('revenue.forecast', string='Forecast Reference', required=True)
 
     # Summary information
     revenue_impact = fields.Float(string='Annual Revenue Impact ($)', readonly=True)

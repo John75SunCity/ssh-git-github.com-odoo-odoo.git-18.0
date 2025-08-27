@@ -38,7 +38,8 @@ class RecordsRetentionPolicy(models.Model):
         string="Policy Code",
         required=True,
         copy=False,
-        readonly=lambda self: self.state != 'draft',
+        readonly=True,
+        states={'draft': [('readonly', False)]},
         default=DEFAULT_CODE,
         tracking=True
     )
@@ -335,7 +336,7 @@ class RecordsRetentionPolicy(models.Model):
         'months': 12,
         'years': 7,
     }
-    _retention_period_was_indefinite = fields.Boolean(string='Was Indefinite', default=False, invisible=True)
+    _retention_period_was_indefinite = fields.Boolean(string='Was Indefinite', default=False)
 
     @api.onchange('retention_unit')
     def _onchange_retention_unit(self):
