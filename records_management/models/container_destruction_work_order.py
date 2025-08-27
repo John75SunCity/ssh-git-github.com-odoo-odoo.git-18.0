@@ -156,11 +156,11 @@ class ContainerDestructionWorkOrder(models.Model):
             else:
                 record.estimated_duration_hours = 0.0
 
-    @api.depends('custody_transfer_ids.event_type')
+    @api.depends('custody_transfer_ids.transfer_type')
     def _compute_custody_complete(self):
         for record in self:
-            required_events = ['pickup', 'transport', 'facility_receipt', 'destruction']
-            documented_events = record.custody_transfer_ids.mapped('event_type')
+            required_events = ['pickup', 'destruction']
+            documented_events = record.custody_transfer_ids.mapped('transfer_type')
             record.custody_complete = all(event in documented_events for event in required_events)
 
     @api.depends('destruction_start_time', 'destruction_end_time')
