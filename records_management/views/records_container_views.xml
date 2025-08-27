@@ -102,7 +102,7 @@
                 </header>
                 <field name="name" string="📦 Container ID"/>
                 <field name="container_type_id" string="📦 Container Type"/>
-                <field name="billing_rate" string="💰 Rate/Mo" widget="monetary"/>
+                <field name="weight" string="⚖️ Weight"/>
                 <field name="partner_id" string="👤 Customer"/>
                 <field name="department_id" string="🏢 Department"/>
                 <field name="location_id" string="📍 Location"/>
@@ -142,7 +142,7 @@
                         <group string="📦 Container Information">
                             <field name="name" placeholder="e.g., CONT-2024-001"/>
                             <field name="container_type_id" required="1"/>
-                            <field name="billing_rate" readonly="1" widget="monetary"/>
+                            <field name="weight"/>
                             <field name="partner_id"/>
                             <field name="department_id"/>
                             <field name="barcode" placeholder="Auto-generated on save"/>

@@ -92,11 +92,7 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-<button class="oe_stat_button" type="action" icon="fa-tasks" attrs="{'invisible': [('related_tasks_count', '=', 0)]}" context="{'default_portal_request_id': id}">
-    <div class="o_stat_info">
-        <field name="related_tasks_count" widget="statinfo" string="Tasks"/>
-    </div>
-</button>
+<!-- Task button removed - related_tasks_count field doesn't exist -->
                         <button class="oe_stat_button" type="object" name="action_view_related_documents" icon="fa-file-text-o">
                             <div class="o_stat_info">
                                 <span class="o_stat_text">Documents</span>
@@ -119,38 +115,26 @@
                             <field name="priority"/>
                         </group>
                         <group>
-<field name="user_id"/>
-
-                            <field name="due_date"/>
+                            <field name="user_id"/>
+                            <field name="deadline"/>
                             <field name="estimated_hours"/>
                             <field name="actual_hours"/>
-<field name="active"/>
-<field name="company_id" groups="base.group_multi_company"/>
-
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
 
                     <notebook>
                         <page string="Request Details">
                             <field name="description" nolabel="1" placeholder="Request description and details..."/>
-                            <group>
-                                <field name="special_instructions" placeholder="Special handling instructions..."/>
-                                <field name="customer_contact_info"/>
-                            </group>
                         </page>
-                        <page string="Processing Notes">
-                            <group>
-                                <field name="processing_notes" placeholder="Internal processing notes..."/>
-                                <field name="completion_notes" placeholder="Completion summary and notes..."/>
-                                <field name="customer_feedback" placeholder="Customer feedback on completed request..."/>
-                            </group>
-                        </page>
-<page string="Signatures &amp; Approvals">
+                        <page string="Compliance &amp; Signatures">
                             <group>
                                 <field name="customer_signature" widget="signature"/>
-                                <field name="staff_signature" widget="signature"/>
-                                <field name="requires_approval"/>
-                                <field name="approval_status" attrs="{'invisible': [('requires_approval', '=', False)]}"/>
+                                <field name="customer_signature_date"/>
+                                <field name="technician_signature" widget="signature"/>
+                                <field name="technician_signature_date"/>
+                                <field name="requires_naid_compliance"/>
                             </group>
                         </page>
                     </notebook>
@@ -180,11 +164,11 @@
 <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
 <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
 <filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]"/>
-                
+
 <!-- Priority and date filters -->
-                <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-<filter string="Overdue" name="overdue" domain="[('due_date', '&lt;', context_today())]"/>
-<filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="High Priority" name="high_priority" domain="[('priority', '=', '2')]"/>
+                <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
 
 
                 <separator/>
@@ -270,16 +254,10 @@
             </header>
             <sheet>
                 <div class="oe_button_box" name="button_box">
-                    <button class="oe_stat_button" type="action" icon="fa-tasks" attrs="{'invisible': [('related_tasks_count', '=', 0)]}" context="{'default_portal_request_id': id}">
+                    <button class="oe_stat_button" type="object" name="action_view_attachments" icon="fa-file-text-o">
                         <div class="o_stat_info">
-                            <field name="related_tasks_count" class="o_stat_value"/>
-                            <span class="o_stat_text">Tasks</span>
-                        </div>
-                    </button>
-                    <button class="oe_stat_button" type="action" icon="fa-comments" attrs="{'invisible': [('message_count', '=', 0)]}">
-                        <div class="o_stat_info">
-                            <field name="message_count" class="o_stat_value"/>
-                            <span class="o_stat_text">Messages</span>
+                            <field name="attachment_count" class="o_stat_value"/>
+                            <span class="o_stat_text">Attachments</span>
                         </div>
                     </button>
                 </div>
@@ -300,7 +278,6 @@
                     </group>
                     <group>
                         <field name="user_id" options="{'no_create': True, 'no_create_edit': True}"/>
-                        <field name="assigned_to" options="{'no_create': True, 'no_create_edit': True}" attrs="{'invisible': [('state', 'in', ['draft'])]}"/>
                         <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                         <field name="active"/>
                     </group>
@@ -311,17 +288,14 @@
                         <group>
                             <group>
                                 <field name="description" placeholder="Detailed description of the request..."/>
-                                <field name="special_instructions" placeholder="Special handling instructions..."/>
                             </group>
                             <group>
-                                <field name="estimated_completion"/>
-                                <field name="actual_completion" attrs="{'invisible': [('state', '!=', 'approved')]}"/>
-                                <field name="urgency_level"/>
+                                <field name="estimated_hours"/>
+                                <field name="actual_hours" attrs="{'invisible': [('state', 'not in', ['completed'])]}"/>
+                                <field name="estimated_cost"/>
+                                <field name="actual_cost" attrs="{'invisible': [('state', 'not in', ['completed'])]}"/>
                             </group>
                         </group>
-                    </page>
-                    <page string="📎 Attachments &amp; Documents">
-                        <field name="attachment_ids" widget="many2many_binary"/>
                     </page>
                     <page string="🔒 Compliance &amp; Audit">
                         <group>
@@ -332,8 +306,8 @@
                                 <field name="write_uid" readonly="1"/>
                             </group>
                             <group string="NAID Compliance">
-                                <field name="naid_audit_required"/>
-                                <field name="chain_of_custody_id" attrs="{'invisible': [('naid_audit_required', '=', False)]}"/>
+                                <field name="requires_naid_compliance"/>
+                                <field name="billing_status"/>
                             </group>
                         </group>
                     </page>
@@ -488,10 +462,10 @@
 </record>
 
 <!-- Enhanced Menu Structure -->
-    <menuitem id="portal_request_menu" 
-              name="Portal Requests" 
-              parent="menu_records_management_root" 
-              action="portal_request_action" 
+    <menuitem id="portal_request_menu"
+              name="Portal Requests"
+              parent="menu_records_management_root"
+              action="portal_request_action"
               sequence="10"
               groups="records_management.group_records_manager"/>
 

@@ -11,14 +11,14 @@
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="service_type"/>
-                    <filter string="Strip-Cut" name="shredding_method_strip_cut" domain="[('shredding_method', '=', 'strip_cut')]"/>
-                    <filter string="On-Site" name="service_type_on_site" domain="[('service_type', '=', 'on_site')]"/>
-                    <filter string="Off-Site" name="service_type_off_site" domain="[('service_type', '=', 'off_site')]"/>
+                    <filter string="Strip-Cut" name="shredding_security_level" domain="[('security_level', '=', 'level_1')]"/>
+                    <filter string="On-Site" name="service_type_on_site" domain="[('service_type', '=', 'onsite')]"/>
+                    <filter string="Off-Site" name="service_type_off_site" domain="[('service_type', '=', 'offsite')]"/>
                     <separator/>
                     <group expand="0" string="Group By">
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
-                        <filter string="Shredding Method" name="group_by_shredding_method" context="{'group_by': 'shredding_method'}"/>
+                        <filter string="Security Level" name="group_by_security_level" context="{'group_by': 'security_level'}"/>
                         <filter string="Customer" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
                     </group>
                 </search>
@@ -32,38 +32,33 @@
         <field name="name">shredding.service.view.kanban</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
-<kanban default_group_by="state" class="o_kanban_shredding_dashboard">
+            <kanban default_group_by="service_type" class="o_kanban_shredding_dashboard">
                 <field name="name"/>
-                <field name="partner_id"/>
+                <field name="provider_id"/>
                 <field name="service_type"/>
-<field name="state"/>
-
-                <field name="scheduled_date"/>
-                <field name="destruction_method"/>
-                <field name="naid_compliance_level"/>
-                <field name="certificate_required"/>
-                <field name="witness_required"/>
+                <field name="naid_compliant"/>
+                <field name="chain_of_custody"/>
+                <field name="witness_destruction"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
                                 <strong>💥 <field name="name"/></strong>
-                                <div class="text-muted">👤 <field name="partner_id"/></div>
+                                <div class="text-muted">🏢 <field name="provider_id"/></div>
                             </div>
                             <div class="o_kanban_card_content">
                                 <div class="mb-2">
                                     <strong>Type:</strong> <field name="service_type"/><br/>
-                                    <strong>Method:</strong> <field name="destruction_method"/><br/>
-                                    <strong>Date:</strong> <field name="scheduled_date" widget="date"/>
+                                    <strong>Lead Time:</strong> <field name="lead_time_days"/> days
                                 </div>
                                 <div class="badges">
-                                    <span class="badge badge-primary" t-if="record.naid_compliance_level.raw_value">
-                                        🏅 <field name="naid_compliance_level"/>
+                                    <span class="badge badge-primary" t-if="record.naid_compliant.raw_value">
+                                        🏅 NAID Compliant
                                     </span>
-                                    <span class="badge badge-warning" t-if="record.certificate_required.raw_value">
-                                        📜 Certificate Required
+                                    <span class="badge badge-warning" t-if="record.chain_of_custody.raw_value">
+                                        📜 Chain of Custody
                                     </span>
-                                    <span class="badge badge-info" t-if="record.witness_required.raw_value">
+                                    <span class="badge badge-info" t-if="record.witness_destruction.raw_value">
                                         👁️ Witness Required
                                     </span>
                                 </div>
@@ -80,18 +75,16 @@
         <field name="name">shredding.service.view.tree</field>
         <field name="model">shredding.service</field>
         <field name="arch" type="xml">
-<tree decoration-warning="state=='scheduled'" decoration-success="state=='completed'" decoration-danger="state=='cancelled'">
+            <tree>
                 <field name="name"/>
-                <field name="partner_id"/>
+                <field name="provider_id"/>
                 <field name="service_type"/>
-                <field name="destruction_method"/>
-                <field name="scheduled_date" widget="date"/>
-                <field name="naid_compliance_level"/>
-<field name="state" widget="badge"/>
-
-                <field name="certificate_required" widget="boolean_toggle"/>
-                <field name="witness_required" widget="boolean_toggle"/>
-                <field name="total_weight"/>
+                <field name="security_level"/>
+                <field name="lead_time_days"/>
+                <field name="naid_compliant" widget="boolean_toggle"/>
+                <field name="chain_of_custody" widget="boolean_toggle"/>
+                <field name="witness_destruction" widget="boolean_toggle"/>
+                <field name="base_price"/>
             </tree>
         </field>
     </record>
@@ -126,7 +119,7 @@
                             </div>
                         </button>
                     </div>
-                    
+
                     <div class="oe_title">
                         <h1><field name="name"/></h1>
                     </div>
@@ -205,18 +198,18 @@
                 <field name="partner_id"/>
                 <field name="service_type"/>
                 <field name="destruction_method"/>
-                
+
 <filter string="Scheduled" name="scheduled" domain="[('state', '=', 'scheduled')]"/>
 <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
 
                 <filter string="Certificate Required" name="cert_required" domain="[('certificate_required', '=', True)]"/>
                 <filter string="Witness Required" name="witness_required" domain="[('witness_required', '=', True)]"/>
-                
+
                 <separator/>
-<filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), 
+<filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
                                 ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
 
-                
+
                 <group expand="0" string="Group By">
 <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
 
