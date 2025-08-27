@@ -55,7 +55,7 @@ class ContainerAccessWorkOrder(models.Model):
     )
     user_id = fields.Many2one(
         'res.users',
-        string='Responsible User',
+        string='Work Order Coordinator',
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for coordinating this work order."

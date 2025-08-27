@@ -49,7 +49,7 @@ class BarcodeProduct(models.Model):
     )
     user_id = fields.Many2one(
         'res.users',
-        string='Responsible User',
+        string='Product Manager',
         default=lambda self: self.env.user,
         tracking=True
     )

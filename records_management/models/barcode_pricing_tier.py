@@ -46,7 +46,7 @@ class BarcodePricingTier(models.Model):
     )
     user_id = fields.Many2one(
         'res.users',
-        string='Responsible User',
+        string='Pricing Manager',
         default=lambda self: self.env.user,
         tracking=True
     )

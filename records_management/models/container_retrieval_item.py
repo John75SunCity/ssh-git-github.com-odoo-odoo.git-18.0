@@ -21,16 +21,18 @@ class ContainerRetrievalItem(models.Model):
         ('returned', 'Returned')
     ], ondelete={'locating': 'set default', 'delivered': 'set default', 'returned': 'set default'})
 
-    @api.depends('container_id', 'work_order_id.name')
+    @api.depends('container_id', 'name', 'status')
     def _compute_display_name(self):
         for item in self:
             name_parts = []
-            if item.work_order_id:
-                name_parts.append(f"[{item.work_order_id.name}]")
+            if item.name:
+                name_parts.append(item.name)
             if item.container_id:
-                name_parts.append(item.container_id.name)
+                name_parts.append(f"[{item.container_id.name}]")
             else:
                 name_parts.append(_("New Container Retrieval"))
+            status_display = dict(item._fields['status'].selection).get(item.status, item.status)
+            name_parts.append(f"({status_display})")
             item.display_name = " - ".join(name_parts)
 
     # Container-specific methods
