@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="inventory_item_retrieval_line_view_tree" model="ir.ui.view">
+            <field name="name">inventory.item.retrieval.line.tree</field>
+            <field name="model">inventory.item.retrieval.line</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state=='pending'"
+                      decoration-success="state=='retrieved'"
+                      decoration-muted="state=='not_found'"
+                      editable="bottom">
+                    <field name="sequence" widget="handle"/>
+                    <field name="retrieval_id"/>
+                    <field name="item_id"/>
+                    <field name="quantity"/>
+                    <field name="location_id"/>
+                    <field name="state" widget="badge"/>
+                    <field name="retrieval_date"/>
+                    <field name="responsible_id"/>
+                    <field name="notes"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="inventory_item_retrieval_line_view_form" model="ir.ui.view">
+            <field name="name">inventory.item.retrieval.line.form</field>
+            <field name="model">inventory.item.retrieval.line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group name="retrieval_info">
+                                <field name="retrieval_id"/>
+                                <field name="item_id"/>
+                                <field name="quantity"/>
+                                <field name="location_id"/>
+                                <field name="sequence"/>
+                            </group>
+                            <group name="status_info">
+                                <field name="state"/>
+                                <field name="retrieval_date"/>
+                                <field name="responsible_id"/>
+                            </group>
+                        </group>
+                        <group name="notes_group" string="Notes">
+                            <field name="notes" nolabel="1" placeholder="Additional retrieval notes..."/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="inventory_item_retrieval_line_view_search" model="ir.ui.view">
+            <field name="name">inventory.item.retrieval.line.search</field>
+            <field name="model">inventory.item.retrieval.line</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="retrieval_id"/>
+                    <field name="item_id"/>
+                    <field name="location_id"/>
+                    <field name="responsible_id"/>
+
+                    <filter name="pending" string="Pending" domain="[('state','=','pending')]"/>
+                    <filter name="retrieved" string="Retrieved" domain="[('state','=','retrieved')]"/>
+                    <filter name="not_found" string="Not Found" domain="[('state','=','not_found')]"/>
+
+                    <separator/>
+                    <filter name="my_retrievals" string="My Retrievals" domain="[('responsible_id','=',uid)]"/>
+                    <filter name="today" string="Today" domain="[('retrieval_date','>=',datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_retrieval" string="Retrieval" context="{'group_by':'retrieval_id'}"/>
+                        <filter name="group_by_location" string="Location" context="{'group_by':'location_id'}"/>
+                        <filter name="group_by_state" string="Status" context="{'group_by':'state'}"/>
+                        <filter name="group_by_responsible" string="Retrieved By" context="{'group_by':'responsible_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="inventory_item_retrieval_line_action" model="ir.actions.act_window">
+            <field name="name">Inventory Retrieval Lines</field>
+            <field name="res_model">inventory.item.retrieval.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_pending': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new retrieval line!
+                </p>
+                <p>
+                    Track individual items within inventory retrieval requests.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_inventory_item_retrieval_line"
+                  name="Retrieval Lines"
+                  parent="records_management.menu_inventory"
+                  action="inventory_item_retrieval_line_action"
+                  sequence="25"/>
+
+    </data>
+</odoo>

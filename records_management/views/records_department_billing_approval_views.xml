@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
+            <field name="name">records.department.billing.approval.tree</field>
+            <field name="model">records.department.billing.approval</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="billing_contact_id"/>
+                    <field name="approval_date"/>
+                    <field name="service_description"/>
+                    <field name="vendor"/>
+                    <field name="charge_amount" widget="monetary"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="approval_notes"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="records_department_billing_approval_view_form" model="ir.ui.view">
+            <field name="name">records.department.billing.approval.form</field>
+            <field name="model">records.department.billing.approval</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group name="billing_info">
+                                <field name="billing_contact_id"/>
+                                <field name="approval_date"/>
+                                <field name="service_description"/>
+                                <field name="vendor"/>
+                            </group>
+                            <group name="financial_info">
+                                <field name="charge_amount" widget="monetary"/>
+                                <field name="currency_id"/>
+                            </group>
+                        </group>
+                        <group name="notes_group" string="Notes">
+                            <field name="approval_notes" nolabel="1" placeholder="Additional approval notes..."/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="records_department_billing_approval_view_search" model="ir.ui.view">
+            <field name="name">records.department.billing.approval.search</field>
+            <field name="model">records.department.billing.approval</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="billing_contact_id"/>
+                    <field name="service_description"/>
+                    <field name="vendor"/>
+                    <field name="approval_date"/>
+
+                    <filter name="today" string="Today"
+                            domain="[('approval_date','>=',datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                                     ('approval_date','&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:59:59'))]"/>
+                    <filter name="this_week" string="This Week"
+                            domain="[('approval_date','>=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="this_month" string="This Month"
+                            domain="[('approval_date','>=',datetime.datetime.now().strftime('%Y-%m-01'))]"/>
+
+                    <separator/>
+                    <filter name="high_value" string="High Value (>$1000)" domain="[('charge_amount','>',1000)]"/>
+                    <filter name="medium_value" string="Medium Value ($100-1000)" domain="[('charge_amount','>=',100),('charge_amount','<=',1000)]"/>
+                    <filter name="low_value" string="Low Value (<$100)" domain="[('charge_amount','<',100)]"/>
+
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_contact" string="Billing Contact" context="{'group_by':'billing_contact_id'}"/>
+                        <filter name="group_by_vendor" string="Vendor" context="{'group_by':'vendor'}"/>
+                        <filter name="group_by_month" string="Month" context="{'group_by':'approval_date:month'}"/>
+                        <filter name="group_by_week" string="Week" context="{'group_by':'approval_date:week'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Kanban View -->
+        <record id="records_department_billing_approval_view_kanban" model="ir.ui.view">
+            <field name="name">records.department.billing.approval.kanban</field>
+            <field name="model">records.department.billing.approval</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="id"/>
+                    <field name="billing_contact_id"/>
+                    <field name="approval_date"/>
+                    <field name="service_description"/>
+                    <field name="vendor"/>
+                    <field name="charge_amount"/>
+                    <field name="currency_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top mb16">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="service_description"/>
+                                        </strong>
+                                        <div class="o_kanban_record_subtitle">
+                                            <field name="vendor"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_dropdown_kanban dropdown">
+                                        <a class="dropdown-toggle o-no-caret btn" role="button" data-toggle="dropdown" href="#">
+                                            <span class="fa fa-ellipsis-v" role="img" aria-label="Dropdown"/>
+                                        </a>
+                                        <div class="dropdown-menu" role="menu">
+                                            <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                            <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <field name="billing_contact_id"/>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <strong>
+                                                <field name="charge_amount" widget="monetary"/>
+                                            </strong>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_bottom mt8">
+                                        <div class="oe_kanban_bottom_left">
+                                            <field name="approval_date" widget="date"/>
+                                        </div>
+                                        <div class="oe_kanban_bottom_right">
+                                            <t t-if="record.charge_amount.raw_value > 1000">
+                                                <span class="badge badge-pill badge-danger">High Value</span>
+                                            </t>
+                                            <t t-elif="record.charge_amount.raw_value >= 100">
+                                                <span class="badge badge-pill badge-warning">Medium Value</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge badge-pill badge-success">Low Value</span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="records_department_billing_approval_action" model="ir.actions.act_window">
+            <field name="name">Department Billing Approvals</field>
+            <field name="res_model">records.department.billing.approval</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'search_default_this_month': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new billing approval!
+                </p>
+                <p>
+                    Track and manage department billing approvals for services and charges.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_records_department_billing_approval"
+                  name="Billing Approvals"
+                  parent="records_management.menu_billing"
+                  action="records_department_billing_approval_action"
+                  sequence="20"/>
+
+    </data>
+</odoo>
