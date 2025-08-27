@@ -74,10 +74,10 @@ class ProjectTask(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('timesheet_ids.hours_planned')  # Optimize dependencies
+    @api.depends('timesheet_ids.unit_amount')  # Optimize dependencies - use actual timesheet field
     def _compute_total_weight(self):
         for task in self:
-            task.total_weight = sum(task.timesheet_ids.mapped('hours_planned'))  # Efficient sum
+            task.total_weight = sum(task.timesheet_ids.mapped('unit_amount'))  # Use unit_amount (hours) field
 
     @api.depends('work_order_type')
     def _compute_certificate_required(self):
