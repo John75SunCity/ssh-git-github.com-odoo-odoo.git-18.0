@@ -8,13 +8,12 @@
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
             <tree string="Document Types">
+                <field name="sequence"/>
                 <field name="name"/>
-                <field name="security_classification"/>
-                <field name="risk_level"/>
-                <field name="compliance_status"/>
-                <field name="audit_required"/>
+                <field name="code"/>
+                <field name="category"/>
+                <field name="state"/>
                 <field name="active"/>
-                <field name="document_count"/>
             </tree>
         </field>
     </record>
@@ -26,13 +25,11 @@
         <field name="arch" type="xml">
             <form string="Document Type">
                 <header>
-                    <field name="compliance_status" widget="statusbar" statusbar_visible="pending,under_review,approved,rejected"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,deprecated,archived"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_type_documents" icon="fa-file-text-o">
-                            <field string="Documents" name="document_count" widget="statinfo"/>
-                        </button>
+                        <!-- Document count button removed - field not available in model -->
                     </div>
                     <div class="oe_title">
                         <h1>
@@ -41,51 +38,21 @@
                     </div>
                     <group>
                         <group>
+                            <field name="code"/>
                             <field name="description"/>
+                            <field name="sequence"/>
                             <field name="active"/>
-                            <field name="company_id"/>
                         </group>
                         <group>
-                            <field name="security_classification"/>
-                            <field name="risk_level"/>
-                            <field name="audit_required"/>
-                            <field name="approval_required"/>
+                            <field name="category"/>
+                            <field name="state"/>
+                            <field name="company_id"/>
+                            <field name="parent_type_id"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Compliance" name="compliance">
-                            <group>
-                                <group>
-                                    <field name="regulatory_requirement"/>
-                                    <field name="retention_compliance"/>
-                                    <field name="compliance_notes"/>
-                                </group>
-                                <group>
-                                    <field name="approved_by"/>
-                                    <field name="approval_date"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Analytics" name="analytics">
-                            <group>
-                                <group string="Usage Analytics">
-                                    <field name="document_type_utilization"/>
-                                    <field name="growth_trend_indicator"/>
-                                    <field name="seasonal_pattern_score"/>
-                                </group>
-                                <group string="Classification Analytics">
-                                    <field name="classification_accuracy_score"/>
-                                    <field name="auto_classification_potential"/>
-                                    <field name="type_complexity_rating"/>
-                                </group>
-                            </group>
-                            <group>
-                                <group string="Compliance Analytics">
-                                    <field name="regulatory_compliance_score"/>
-                                    <field name="audit_readiness_level"/>
-                                    <field name="compliance_risk_assessment"/>
-                                </group>
-                            </group>
+                        <page string="Notes" name="notes">
+                            <field name="description" placeholder="Additional notes and description for this document type..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -103,12 +70,10 @@
         <field name="name">records.document.type.view.kanban</field>
         <field name="model">records.document.type</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="security_classification" class="o_kanban_document_type">
+            <kanban default_group_by="category" class="o_kanban_document_type">
                 <field name="name"/>
-                <field name="security_classification"/>
-                <field name="risk_level"/>
-                <field name="compliance_status"/>
-                <field name="document_count"/>
+                <field name="category"/>
+                <field name="state"/>
                 <field name="active"/>
                 <templates>
                     <t t-name="card">
@@ -121,22 +86,18 @@
                                         </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <field name="security_classification"/>
+                                        <field name="category"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="oe_kanban_card_content">
                                 <div>
-                                    <strong>Risk Level:</strong>
-                                    <field name="risk_level"/>
+                                    <strong>Code:</strong>
+                                    <field name="code"/>
                                 </div>
                                 <div>
                                     <strong>Status:</strong>
-                                    <field name="compliance_status"/>
-                                </div>
-                                <div>
-                                    <strong>Documents:</strong>
-                                    <field name="document_count"/>
+                                    <field name="state"/>
                                 </div>
                             </div>
                         </div>
@@ -153,23 +114,20 @@
         <field name="arch" type="xml">
             <search string="Document Types">
                 <field name="name"/>
+                <field name="code"/>
                 <field name="description"/>
-                <field name="security_classification"/>
                 <separator/>
                 <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
                 <separator/>
-                <filter string="Audit Required" name="audit_required" domain="[('audit_required', '=', True)]"/>
-                <filter string="Approval Required" name="approval_required" domain="[('approval_required', '=', True)]"/>
-                <separator/>
-                <filter string="Confidential" name="confidential" domain="[('security_classification', 'in', ['confidential', 'secret'])]"/>
-                <filter string="Retention Compliance" name="retention_compliance" domain="[('retention_compliance', '=', True)]"/>
-                <filter string="Auto Classification Potential" name="auto_classification" domain="[('auto_classification_potential', '&amp;gt;', 0)]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Active Types" name="active_types" domain="[('state', '=', 'active')]"/>
+                <filter string="Deprecated" name="deprecated" domain="[('state', '=', 'deprecated')]"/>
                 <separator/>
                 <group expand="0" string="Group By">
-                    <filter string="Security Classification" name="group_security" context="{'group_by': 'security_classification'}"/>
-                    <filter string="Risk Level" name="group_risk" context="{'group_by': 'risk_level'}"/>
-                    <filter string="Compliance Status" name="group_compliance" context="{'group_by': 'compliance_status'}"/>
+                    <filter string="Category" name="group_category" context="{'group_by': 'category'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
                 </group>
             </search>
         </field>

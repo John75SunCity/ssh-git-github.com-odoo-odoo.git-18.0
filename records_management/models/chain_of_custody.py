@@ -54,6 +54,14 @@ class ChainOfCustody(models.Model):
         help="Uncheck to archive this custody record"
     )
 
+    company_id = fields.Many2one(
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        required=True,
+        help="Company responsible for this custody record"
+    )
+
     # Transfer Information
     transfer_date = fields.Datetime(
         string='Transfer Date',

@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-26T20:39:30.608079+00:00
+Generated: 2025-08-27T07:12:51.751855+00:00
 
 ## validate_imports.py
 
@@ -240,7 +240,7 @@ Exit code: 0
 
    ❌ [%s] %s (in records_tag.py)
 
-   ❌ res.currency (in advanced_billing_storage_line.py)
+   ❌ res.currency (in advanced_billing_service_line.py)
 
    ❌ res.users (in records_chain_of_custody.py)
 
@@ -362,7 +362,7 @@ document_type_id (unknown):
 
 ================================================================================
 
-SUMMARY: Found 0 potential issues in 210 related fields
+SUMMARY: Found 0 potential issues in 208 related fields
 
 ================================================================================
 

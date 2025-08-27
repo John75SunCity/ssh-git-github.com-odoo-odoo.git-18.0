@@ -58,8 +58,20 @@ class NaidCertificate(models.Model):
     certificate_filename = fields.Char(string='Certificate Filename', readonly=True)
 
     destruction_item_ids = fields.One2many('naid.certificate.item', 'certificate_id', string='Destroyed Items')
-    container_ids = fields.Many2many('records.container', string='Destroyed Containers')
-    box_ids = fields.Many2many('records.container', string='Destroyed Containers')
+    container_ids = fields.Many2many(
+        'records.container', 
+        'naid_certificate_container_rel', 
+        'certificate_id', 
+        'container_id', 
+        string='Destroyed Containers'
+    )
+    box_ids = fields.Many2many(
+        'records.container', 
+        'naid_certificate_box_rel', 
+        'certificate_id', 
+        'box_id', 
+        string='Destroyed Boxes'
+    )
     total_weight = fields.Float(string='Total Weight (kg)', compute='_compute_totals', store=True)
     total_items = fields.Integer(string='Total Items', compute='_compute_totals', store=True)
 
