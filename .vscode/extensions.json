@@ -5,6 +5,7 @@
         "ms-vscode.vscode-websearchforcopilot",
         "ndestates.grok-integration",
         "visualstudioexptteam.vscodeintellicode",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "github.copilot"
     ]
 }

@@ -58,7 +58,7 @@ class RecordsContainerTransfer(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('transfer_line_ids')
+    @api.depends('transfer_line_ids', 'transfer_line_ids.container_id')
     def _compute_container_count(self):
         for record in self:
             record.container_count = len(record.transfer_line_ids)
@@ -84,6 +84,8 @@ class RecordsContainerTransfer(models.Model):
             raise UserError(_("Only transfers in progress can be completed."))
 
         for line in self.transfer_line_ids:
+            if not line.container_id:
+                raise UserError(_("All transfer lines must have a valid container assigned before completing the transfer."))
             line.container_id.write({'location_id': self.to_location_id.id})
 
         self.write({
@@ -104,7 +106,10 @@ class RecordsContainerTransfer(models.Model):
     # CONSTRAINTS
     # ============================================================================
     @api.constrains('from_location_id', 'to_location_id')
-    def _check_locations(self):
+    def _check_locations_different(self):
         for record in self:
-            if record.from_location_id == record.to_location_id:
-                raise ValidationError(_("The source and destination locations cannot be the same."))
+            if record.from_location_id and record.to_location_id:
+                if record.from_location_id.id == record.to_location_id.id:
+                    raise ValidationError(_("The source and destination locations cannot be the same."))
+                if record.from_location_id == record.to_location_id:
+                    raise ValidationError(_("The source and destination locations cannot be the same."))
