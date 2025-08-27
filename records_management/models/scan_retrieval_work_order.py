@@ -1,6 +1,6 @@
 """Scan Retrieval Work Order model.
 
-Coordinates scanning work for retrieved physical files into digital assets.
+Coordinates scanning work for retrieved physical files into digital assets for electronic transmission.
 Key capabilities:
 - Lifecycle/state machine: draft → confirmed → scanning → processing → quality_review → ready_for_delivery → delivered → completed/cancelled
 - Scheduling and timing: scheduled start, estimated completion (heuristic per resolution/OCR/enhancement), actual timestamps
@@ -9,7 +9,7 @@ Key capabilities:
   * scan_item_ids (scan.retrieval.item) – items to scan, provides page counts
   * digital_asset_ids (scan.digital.asset) – files produced by this order
   * partner_id (res.partner), portal_request_id (portal.request), scanner_id (maintenance.equipment)
-- Delivery methods: portal, email, secure link
+- Electronic transmission methods: portal, email, secure link, FTP with fees and confirmation tracking
 - Chatter integration via mail.thread + mail.activity.mixin
 - Sequence: scan.retrieval.work.order (assigned at create)
 """
@@ -22,11 +22,11 @@ from datetime import timedelta
 class ScanRetrievalWorkOrder(models.Model):
     """Scan Retrieval Work Order.
 
-    Manages end-to-end execution of a scanning request:
+    Manages end-to-end execution of a scanning request for electronic transmission:
     - Tracks items to scan and resulting digital assets
     - Plans and measures throughput with estimates and progress
     - Enforces state transitions and records key timestamps
-    - Supports multiple delivery methods and naming conventions
+    - Supports multiple electronic transmission methods with fees and confirmation tracking
     """
 
     _name = 'scan.retrieval.work.order'
@@ -104,16 +104,52 @@ class ScanRetrievalWorkOrder(models.Model):
     scanning_station = fields.Char(string="Scanning Station ID")
 
     # ============================================================================
-    # DELIVERY
+    # ELECTRONIC TRANSMISSION
     # ============================================================================
-    delivery_method = fields.Selection([
+    transmission_method = fields.Selection([
         ('portal', 'Customer Portal'),
         ('email', 'Email'),
         ('secure_link', 'Secure Link'),
-    ], string="Delivery Method", default='portal')
-    email_delivery_address = fields.Char(string="Delivery Email Address")
+        ('ftp', 'Secure FTP'),
+    ], string="Transmission Method", default='portal', required=True,
+        help="How the scanned documents will be electronically transmitted to the customer.")
+    email_delivery_address = fields.Char(
+        string="Email Address",
+        help="Email address for electronic delivery of scanned documents."
+    )
+    transmission_fee = fields.Monetary(
+        string="Transmission Fee",
+        currency_field='currency_id',
+        help="Fee charged for electronic transmission of documents."
+    )
+    currency_id = fields.Many2one(
+        'res.currency',
+        string='Currency',
+        default=lambda self: self.env.company.currency_id,
+        required=True
+    )
+    transmission_confirmed = fields.Boolean(
+        string='Transmission Confirmed',
+        default=False,
+        tracking=True,
+        help="Whether the electronic transmission has been confirmed as received."
+    )
+    transmission_confirmation_date = fields.Datetime(
+        string='Transmission Confirmation Date',
+        readonly=True,
+        help="When the transmission was confirmed as received."
+    )
     file_naming_convention = fields.Selection([('default', 'Default'), ('custom', 'Custom')], string="File Naming", default='default')
     custom_naming_pattern = fields.Char(string="Custom Naming Pattern", help="e.g., {customer_name}_{date}_{sequence}")
+    download_link_expires = fields.Datetime(
+        string="Download Link Expires",
+        help="When the secure download link will expire."
+    )
+    access_password_required = fields.Boolean(
+        string="Password Protected",
+        default=False,
+        help="Whether the transmitted files require a password to access."
+    )
 
     # ============================================================================
     # PROGRESS & ANALYTICS
@@ -264,30 +300,53 @@ class ScanRetrievalWorkOrder(models.Model):
         self.write({'state': 'quality_review'})
         self.message_post(body=_("Quality review process started."))
 
-    def action_mark_ready_for_delivery(self):
+    def action_mark_ready_for_transmission(self):
         """Transition quality_review → ready_for_delivery and post a note.
 
         Guard: only allowed from 'quality_review'.
         """
         self.ensure_one()
         if self.state != 'quality_review':
-            raise UserError(_("Can only prepare for delivery after quality review."))
+            raise UserError(_("Can only prepare for transmission after quality review."))
         self.write({'state': 'ready_for_delivery'})
-        self.message_post(body=_("Files are ready for delivery."))
+        self.message_post(body=_("Files are ready for electronic transmission."))
 
-    def action_deliver(self):
-        """Deliver files via the selected method and transition to 'delivered'.
+    def action_transmit(self):
+        """Transmit files electronically via the selected method and transition to 'delivered'.
 
         Guard: only allowed from 'ready_for_delivery'.
-        Notes: Delivery logic placeholder; posts method used to chatter.
+        Notes: Electronic transmission logic placeholder; posts method used to chatter.
         """
         self.ensure_one()
         if self.state != 'ready_for_delivery':
-            raise UserError(_("Can only deliver from the 'Ready for Delivery' state."))
-        # Placeholder for delivery logic
-        delivery_method_str = dict(self._fields['delivery_method'].selection).get(self.delivery_method)
-        self.message_post(body=_("Delivering files via %s.") % delivery_method_str)
+            raise UserError(_("Can only transmit from the 'Ready for Transmission' state."))
+
+        # Validate transmission requirements
+        if self.transmission_method == 'email' and not self.email_delivery_address:
+            raise UserError(_("Email address is required for email transmission."))
+
+        # Set download link expiration for secure links (default 30 days)
+        if self.transmission_method == 'secure_link' and not self.download_link_expires:
+            self.download_link_expires = fields.Datetime.now() + timedelta(days=30)
+
+        # Placeholder for electronic transmission logic
+        transmission_method_str = dict(self._fields['transmission_method'].selection).get(self.transmission_method)
+        self.message_post(body=_("Transmitting files electronically via %s.") % transmission_method_str)
         self.write({'state': 'delivered'})
+
+    def action_confirm_transmission(self):
+        """Confirm that the customer has received the electronic transmission."""
+        self.ensure_one()
+        if self.state != 'delivered':
+            raise UserError(_("Can only confirm transmission for delivered orders."))
+        self.write({
+            'transmission_confirmed': True,
+            'transmission_confirmation_date': fields.Datetime.now()
+        })
+        self.message_post(
+            body=_("Electronic transmission confirmed as received by customer."),
+            message_type='notification'
+        )
 
     def action_complete(self):
         """Transition delivered → completed, set completion timestamp, and post a note.
@@ -296,9 +355,17 @@ class ScanRetrievalWorkOrder(models.Model):
         """
         self.ensure_one()
         if self.state != 'delivered':
-            raise UserError(_("Only delivered work orders can be completed."))
+            raise UserError(_("Only transmitted work orders can be completed."))
+
+        # Optional: Require transmission confirmation before completion
+        if not self.transmission_confirmed:
+            self.message_post(
+                body=_("Note: Work order completed without transmission confirmation from customer."),
+                message_type='comment'
+            )
+
         self.write({'state': 'completed', 'actual_completion_date': fields.Datetime.now()})
-        self.message_post(body=_("Work order completed successfully."))
+        self.message_post(body=_("Electronic transmission work order completed successfully."))
 
     def action_cancel(self):
         """Cancel the work order and post a note.

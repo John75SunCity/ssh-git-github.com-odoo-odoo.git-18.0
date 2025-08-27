@@ -161,6 +161,44 @@ class ContainerAccessWorkOrder(models.Model):
     )
 
     # ============================================================================
+    # CUSTOMER PICKUP DETAILS
+    # ============================================================================
+    pickup_method = fields.Selection([
+        ('warehouse', 'Customer Pickup at Warehouse'),
+        ('scheduled', 'Scheduled Pickup Appointment'),
+        ('escort', 'Escorted Pickup')
+    ], string='Pickup Method', default='warehouse', required=True, tracking=True,
+        help="How the customer will collect their accessed items.")
+    pickup_scheduled_date = fields.Datetime(
+        string='Scheduled Pickup Date',
+        tracking=True,
+        help="When the customer is scheduled to pick up their items."
+    )
+    pickup_contact_name = fields.Char(
+        string='Pickup Contact Name',
+        help="Name of the person who will pick up the items."
+    )
+    pickup_contact_phone = fields.Char(
+        string='Pickup Contact Phone',
+        help="Phone number of the pickup contact."
+    )
+    pickup_instructions = fields.Text(
+        string='Pickup Instructions',
+        help="Special instructions for the pickup process."
+    )
+    pickup_confirmed = fields.Boolean(
+        string='Pickup Confirmed',
+        default=False,
+        tracking=True,
+        help="Whether the customer pickup has been confirmed."
+    )
+    pickup_confirmation_date = fields.Datetime(
+        string='Pickup Confirmation Date',
+        readonly=True,
+        help="When the pickup was confirmed."
+    )
+
+    # ============================================================================
     # SECURITY & PERSONNEL
     # ============================================================================
     requires_escort = fields.Boolean(string='Requires Escort', default=False)
@@ -361,6 +399,35 @@ class ContainerAccessWorkOrder(models.Model):
         self.ensure_one()
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Work order has been cancelled."), message_type='notification')
+
+    def action_confirm_pickup(self):
+        """Confirm that the customer has picked up their items."""
+        self.ensure_one()
+        if self.state not in ['completed', 'documented']:
+            raise UserError(_("Items can only be picked up after access session is completed."))
+        self.write({
+            'pickup_confirmed': True,
+            'pickup_confirmation_date': fields.Datetime.now()
+        })
+        self.message_post(
+            body=_("Customer pickup confirmed for %s items.") % (self.pickup_contact_name or 'customer'),
+            message_type='notification'
+        )
+
+    def action_schedule_pickup(self):
+        """Schedule a pickup appointment with the customer."""
+        self.ensure_one()
+        if not self.pickup_scheduled_date:
+            raise UserError(_("Please set a pickup date before scheduling."))
+        if not self.pickup_contact_name:
+            raise UserError(_("Please specify the pickup contact name."))
+        self.message_post(
+            body=_("Pickup scheduled for %s on %s") % (
+                self.pickup_contact_name,
+                self.pickup_scheduled_date.strftime('%Y-%m-%d %H:%M')
+            ),
+            message_type='notification'
+        )
 
     # ============================================================================
     # BUSINESS & UTILITY METHODS

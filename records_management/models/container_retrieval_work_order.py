@@ -54,6 +54,13 @@ class ContainerRetrievalWorkOrder(models.Model):
     # SCHEDULING & DELIVERY
     # ============================================================================
     scheduled_delivery_date = fields.Datetime(string='Scheduled Delivery', tracking=True)
+    delivery_method = fields.Selection([
+        ('standard', 'Standard Delivery'),
+        ('express', 'Express Delivery'),
+        ('white_glove', 'White Glove Service'),
+        ('customer_pickup', 'Customer Pickup')
+    ], string='Delivery Method', default='standard', required=True, tracking=True,
+        help="Method of delivery for the retrieved containers.")
     delivery_window_start = fields.Datetime(string='Delivery Window Start', compute='_compute_delivery_window', store=True)
     delivery_window_end = fields.Datetime(string='Delivery Window End', compute='_compute_delivery_window', store=True)
     actual_pickup_date = fields.Datetime(string='Actual Pickup Date', readonly=True)
