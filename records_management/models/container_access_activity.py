@@ -483,8 +483,8 @@ class ContainerAccessActivity(models.Model):
             'activity_time': fields.Datetime.now(),
             'access_granted_time': fields.Datetime.now()
         })
-    self._create_audit_log('activity_started')
-    self.message_post(body=_("Activity started by %s") % self.visitor_id.name)
+        self._create_audit_log('activity_started')
+        self.message_post(body=_("Activity started by %s") % self.visitor_id.name)
 
     def action_complete_activity(self):
         """Complete the activity"""
@@ -534,8 +534,8 @@ class ContainerAccessActivity(models.Model):
             'approved_by_id': self.env.user.employee_id.id if self.env.user.employee_id else False,
             'approval_date': fields.Datetime.now()
         })
-    self._create_audit_log('activity_approved')
-    self.message_post(body=_("Activity approved by %s") % self.env.user.name)
+        self._create_audit_log('activity_approved')
+        self.message_post(body=_("Activity approved by %s") % self.env.user.name)
 
     def action_cancel_activity(self):
         """Cancel the activity"""
@@ -547,8 +547,8 @@ class ContainerAccessActivity(models.Model):
             'status': 'cancelled',
             'access_revoked_time': fields.Datetime.now()
         })
-    self._create_audit_log('activity_cancelled')
-    self.message_post(body=_("Activity cancelled"))
+        self._create_audit_log('activity_cancelled')
+        self.message_post(body=_("Activity cancelled"))
 
     def action_create_follow_up(self):
         """Create follow-up activity"""

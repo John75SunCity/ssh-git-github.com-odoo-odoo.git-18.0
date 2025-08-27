@@ -95,7 +95,7 @@ class RequiredDocument(models.Model):
             'verified_by_id': self.env.user.id,
             'verification_date': fields.Datetime.now()
         })
-    self.message_post(body=_("Document verified by %s.") % self.env.user.name)
+        self.message_post(body=_("Document verified by %s.") % self.env.user.name)
 
     def action_reject(self):
         """Mark document as rejected."""

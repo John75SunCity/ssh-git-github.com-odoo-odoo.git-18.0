@@ -92,22 +92,22 @@ class ShredBin(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft bins can be deployed."))
-    self.write({'state': 'deployed'})
-    self.message_post(body=_("Bin deployed by %s.") % self.env.user.name)
+        self.write({'state': 'deployed'})
+        self.message_post(body=_("Bin deployed by %s.") % self.env.user.name)
 
     def action_mark_full(self):
         self.ensure_one()
         if self.state not in ['in_service', 'deployed']:
             raise UserError(_("Only bins in service can be marked as full."))
-    self.write({'state': 'full'})
-    self.message_post(body=_("Bin marked as full by %s.") % self.env.user.name)
+        self.write({'state': 'full'})
+        self.message_post(body=_("Bin marked as full by %s.") % self.env.user.name)
 
     def action_start_collection(self):
         self.ensure_one()
         if self.state != 'full':
             raise UserError(_("Only full bins can be collected."))
-    self.write({'state': 'collecting'})
-    self.message_post(body=_("Bin collection started by %s.") % self.env.user.name)
+        self.write({'state': 'collecting'})
+        self.message_post(body=_("Bin collection started by %s.") % self.env.user.name)
 
     def action_complete_service(self):
         self.ensure_one()

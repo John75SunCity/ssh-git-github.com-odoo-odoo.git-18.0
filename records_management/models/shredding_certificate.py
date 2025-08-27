@@ -117,8 +117,8 @@ class ShreddingCertificate(models.Model):
 
         if self.delivery_method == 'email':
             self._send_certificate_email()
-    self.write({'state': 'delivered', 'delivered_date': fields.Date.context_today(self)})
-    self.message_post(body=_("Certificate marked as delivered via %s") % self.delivery_method)
+        self.write({'state': 'delivered', 'delivered_date': fields.Date.context_today(self)})
+        self.message_post(body=_("Certificate marked as delivered via %s") % self.delivery_method)
 
     def action_archive_certificate(self):
         self.write({'state': 'archived', 'active': False})
