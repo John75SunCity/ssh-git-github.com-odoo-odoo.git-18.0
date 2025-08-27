@@ -14,8 +14,8 @@ class NAIDCustodyEvent(models.Model):
     # ============================================================================
     name = fields.Char(string='Event Reference', compute='_compute_name', store=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user, required=True, tracking=True)
-    
+    user_id = fields.Many2one('res.users', string='Event Recorder', default=lambda self: self.env.user, required=True, tracking=True)
+
     event_type = fields.Selection([
         ('pickup', 'Pickup'),
         ('in_transit', 'In Transit'),
@@ -25,23 +25,23 @@ class NAIDCustodyEvent(models.Model):
         ('exception', 'Exception'),
         ('other', 'Other'),
     ], string='Event Type', required=True, tracking=True)
-    
+
     event_datetime = fields.Datetime(string='Event Timestamp', default=fields.Datetime.now, required=True, tracking=True)
-    
+
     # Polymorphic relationship to link to the primary custody chain document
     custody_id = fields.Many2one('naid.custody', string='Chain of Custody', ondelete='cascade', required=True)
-    
+
     from_location_id = fields.Many2one('records.location', string='From Location')
     to_location_id = fields.Many2one('records.location', string='To Location')
-    
+
     gps_latitude = fields.Float(string='GPS Latitude', digits=(10, 7))
     gps_longitude = fields.Float(string='GPS Longitude', digits=(10, 7))
-    
+
     digital_signature = fields.Binary(string='Digital Signature', copy=False)
     signature_verified = fields.Boolean(string='Signature Verified', readonly=True, copy=False)
-    
+
     photo_documentation = fields.Binary(string='Photo Documentation', attachment=True, copy=False)
-    
+
     description = fields.Text(string='Event Description')
     notes = fields.Text(string='Additional Notes')
 
@@ -120,9 +120,9 @@ class NAIDCustodyEvent(models.Model):
             'event_datetime': fields.Datetime.now(),
         }
         vals.update(kwargs)
-        
+
         event = self.create(vals)
-        
+
         # Post a message on the parent custody chain record
         custody_chain.message_post(
             body=_("New Custody Event Created: <strong>%(event_name)s</strong> (Type: %(event_type)s)") % {

@@ -15,5 +15,5 @@ class PickupLocation(models.Model):
     country_id = fields.Many2one('res.country', string='Country')
     active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', string='Location Manager', default=lambda self: self.env.user)
     notes = fields.Text(string='Notes')

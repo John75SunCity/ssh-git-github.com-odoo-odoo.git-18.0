@@ -16,7 +16,7 @@ class RetrievalMetric(models.Model):
     name = fields.Char(string="Metric Reference", compute='_compute_display_name', store=True)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', string='Metric Recorder', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
 
     # Polymorphic relation to link to any type of retrieval item

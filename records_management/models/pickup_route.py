@@ -14,7 +14,7 @@ class PickupRoute(models.Model):
     # ============================================================================
     name = fields.Char(string='Route Name', required=True, default='New')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', string='Route Driver', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
     route_date = fields.Date(string='Route Date', required=True, default=fields.Date.today)
     planned_start_time = fields.Datetime(string='Planned Start Time')

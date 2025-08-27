@@ -14,7 +14,7 @@ class NaidComplianceActionPlan(models.Model):
     name = fields.Char(string='Action Plan Title', required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
-    
+
     # Link to the source of the action plan (e.g., an alert or checklist)
     res_model = fields.Char(string='Related Model', readonly=True)
     res_id = fields.Integer(string='Related Record ID', readonly=True)
@@ -26,13 +26,13 @@ class NaidComplianceActionPlan(models.Model):
         ('2', 'High'),
         ('3', 'Urgent')
     ], string='Priority', default='1', required=True, tracking=True)
-    
+
     due_date = fields.Date(string='Due Date', required=True, tracking=True)
     start_date = fields.Date(string='Start Date', readonly=True)
     completion_date = fields.Date(string='Completion Date', readonly=True)
-    
-    responsible_user_id = fields.Many2one('res.users', string='Responsible User', required=True, tracking=True, default=lambda self: self.env.user)
-    
+
+    responsible_user_id = fields.Many2one('res.users', string='Plan Manager', required=True, tracking=True, default=lambda self: self.env.user)
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('awaiting_approval', 'Awaiting Approval'),
@@ -41,10 +41,10 @@ class NaidComplianceActionPlan(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', readonly=True, tracking=True)
-    
+
     progress_percentage = fields.Float(string='Progress (%)', compute='_compute_progress_percentage', store=True)
     completion_notes = fields.Text(string='Completion Notes')
-    
+
     estimated_cost = fields.Monetary(string='Estimated Cost', currency_field='currency_id')
     actual_cost = fields.Monetary(string='Actual Cost', currency_field='currency_id')
     currency_id = fields.Many2one('res.currency', related='company_id.currency_id', readonly=True)

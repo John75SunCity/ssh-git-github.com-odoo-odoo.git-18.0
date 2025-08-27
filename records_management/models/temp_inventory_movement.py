@@ -18,38 +18,38 @@ class TempInventoryMovement(models.Model):
     ], string='Status', default='draft', required=True, tracking=True)
 
     product_id = fields.Many2one(
-        'product.product', 
-        string="Product", 
-        required=True, 
+        'product.product',
+        string="Product",
+        required=True,
         domain="[('type', '=', 'product')]",
         help="The product being moved (e.g., a records container)."
     )
     container_id = fields.Many2one(
-        'records.container', 
+        'records.container',
         string="Container",
         help="The specific records container involved in the movement."
     )
     quantity = fields.Float(string="Quantity", required=True, default=1.0)
-    
+
     location_src_id = fields.Many2one('stock.location', string="Source Location", required=True)
     location_dest_id = fields.Many2one('stock.location', string="Destination Location", required=True)
 
     user_id = fields.Many2one(
-        'res.users', 
-        string="Responsible User", 
+        'res.users',
+        string="Movement User",
         default=lambda self: self.env.user,
         required=True
     )
     notes = fields.Text(string='Notes')
-    
+
     company_id = fields.Many2one(
-        'res.company', 
-        string='Company', 
-        default=lambda self: self.env.company, 
-        required=True, 
+        'res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        required=True,
         readonly=True
     )
-    
+
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================

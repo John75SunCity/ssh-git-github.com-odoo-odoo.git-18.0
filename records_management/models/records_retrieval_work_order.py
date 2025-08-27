@@ -20,6 +20,7 @@ class RecordsRetrievalWorkOrder(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer')
     company_id = fields.Many2one('res.company', string='Company')
     user_id = fields.Many2one('res.users', string='Assigned To')
+    completion_date = fields.Datetime(string='Completion Date', help="Date and time when the retrieval was completed")
 
     # Link to retrieval team (for One2many in maintenance.team)
     retrieval_team_id = fields.Many2one('maintenance.team', string='Retrieval Team')
@@ -33,4 +34,10 @@ class RecordsRetrievalWorkOrder(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.retrieval.work.order') or _('New')
         return super().create(vals_list)
+
+    def write(self, vals):
+        """Auto-set completion_date when state changes to completed"""
+        if 'state' in vals and vals['state'] == 'completed':
+            vals['completion_date'] = fields.Datetime.now()
+        return super().write(vals)
 
