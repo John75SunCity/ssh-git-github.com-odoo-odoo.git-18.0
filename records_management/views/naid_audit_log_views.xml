@@ -6,17 +6,15 @@
         <field name="name">naid.audit.log.view.tree</field>
         <field name="model">naid.audit.log</field>
         <field name="arch" type="xml">
-<tree decoration-info="event_level=='info'" decoration-warning="event_level=='warning'" decoration-danger="event_level=='critical'">
-    <field name="event_date" widget="remaining_days"/>
-    <field name="user_id"/>
-    <field name="event_type"/>
-
+            <tree>
+                <field name="create_date" widget="datetime"/>
+                <field name="user_id"/>
+                <field name="action_type"/>
                 <field name="name"/>
-<field name="res_model"/>
-<field name="res_id"/>
-<field name="event_level" optional="show"/>
-<field name="company_id" optional="hide"/>
-
+                <field name="res_model"/>
+                <field name="res_id"/>
+                <field name="naid_compliant" widget="boolean_toggle"/>
+                <field name="company_id" optional="hide"/>
             </tree>
         </field>
     </record>
@@ -34,19 +32,19 @@
     <field name="name" readonly="1"/>
 </h1>
                     </div>
-<group>
-    <group>
-        <field name="event_date"/>
-        <field name="user_id"/>
-        <field name="event_type"/>
-        <field name="event_level"/>
-    </group>
-    <group>
-        <field name="naid_compliance_id"/>
-        <field name="chain_of_custody_id"/>
-        <field name="company_id" groups="base.group_multi_company"/>
-    </group>
-</group>
+                <group>
+                    <group>
+                        <field name="create_date"/>
+                        <field name="user_id"/>
+                        <field name="action_type"/>
+                        <field name="naid_compliant"/>
+                    </group>
+                    <group>
+                        <field name="custody_id"/>
+                        <field name="task_id"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </group>
 <group string="Description">
     <field name="description" nolabel="1" readonly="1"/>
 </group>
@@ -74,23 +72,20 @@
         <field name="model">naid.audit.log</field>
         <field name="arch" type="xml">
             <search>
-<field name="name" string="Description or Event"/>
-<field name="user_id"/>
-<field name="res_model"/>
-<separator/>
-<filter string="Critical" name="level_critical" domain="[('event_level', '=', 'critical')]"/>
-<filter string="Warning" name="level_warning" domain="[('event_level', '=', 'warning')]"/>
-<filter string="Info" name="level_info" domain="[('event_level', '=', 'info')]"/>
-<separator/>
-<filter string="Today" name="filter_today" domain="[('event_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-<filter string="This Week" name="filter_this_week" domain="[('event_date', '&gt;=', (context_today() - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
-<group expand="0" string="Group By">
-    <filter string="User" name="group_by_user" context="{'group_by':'user_id'}"/>
-    <filter string="Event Type" name="group_by_event_type" context="{'group_by':'event_type'}"/>
-    <filter string="Level" name="group_by_level" context="{'group_by':'event_level'}"/>
-    <filter string="Model" name="group_by_model" context="{'group_by':'res_model'}"/>
-    <filter string="Date" name="group_by_date" context="{'group_by':'event_date:day'}"/>
-
+                <field name="name" string="Description or Reference"/>
+                <field name="user_id"/>
+                <field name="res_model"/>
+                <separator/>
+                <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
+                <filter string="Non-Compliant" name="naid_non_compliant" domain="[('naid_compliant', '=', False)]"/>
+                <separator/>
+                <filter string="Today" name="filter_today" domain="[('create_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="filter_this_week" domain="[('create_date', '&gt;=', (context_today() - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="User" name="group_by_user" context="{'group_by':'user_id'}"/>
+                    <filter string="Action Type" name="group_by_action_type" context="{'group_by':'action_type'}"/>
+                    <filter string="Model" name="group_by_model" context="{'group_by':'res_model'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by':'create_date:day'}"/>
                 </group>
             </search>
         </field>

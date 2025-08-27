@@ -46,13 +46,12 @@
 <field name="certificate_number" readonly="1"/>
                         </h1>
                     </div>
-<group>
-    <group>
-        <field name="partner_id" required="1" options="{'no_create': True}" readonly="1" force_save="1"/>
-        <field name="fsm_task_id" options="{'no_create': True}" domain="[('partner_id', '=', partner_id)]" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-        <field name="technician_user_id" readonly="1" force_save="1"/>
-        <field name="custody_id" options="{'no_create': True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-    </group>
+                <group>
+                    <group>
+                        <field name="partner_id" required="1" options="{'no_create': True}" readonly="1" force_save="1"/>
+                        <field name="fsm_task_id" options="{'no_create': True}" domain="[('partner_id', '=', partner_id)]" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="technician_user_id" readonly="1" force_save="1"/>
+                    </group>
     <group>
         <field name="issue_date" readonly="1"/>
         <field name="destruction_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
