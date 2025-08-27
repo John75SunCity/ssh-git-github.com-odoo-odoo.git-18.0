@@ -31,7 +31,7 @@ class CustomerCategory(models.Model):
     name = fields.Char(string='Category Name', required=True, tracking=True)
     description = fields.Text(string='Description')
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
 
     # ============================================================================
     # CONFIGURATION
@@ -41,13 +41,13 @@ class CustomerCategory(models.Model):
         ('prepaid', 'Prepaid'),
         ('contract', 'Contract-Based')
     ], string='Default Billing Model', default='standard', tracking=True)
-    
+
     priority_level = fields.Selection([
         ('0', 'Normal'),
         ('1', 'High'),
         ('2', 'Urgent')
     ], string='Default Priority', default='0', tracking=True)
-    
+
     sla_hours = fields.Integer(
         string='SLA Response Hours',
         help="Default Service Level Agreement response time in hours for customers in this category."

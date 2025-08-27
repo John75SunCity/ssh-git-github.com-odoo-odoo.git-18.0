@@ -35,5 +35,5 @@ class MediaType(models.Model):
     # Properties
     is_electronic = fields.Boolean(string='Electronic Media', default=False)
     requires_special_handling = fields.Boolean(string='Requires Special Handling', default=False)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)

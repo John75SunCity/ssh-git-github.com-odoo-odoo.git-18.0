@@ -25,7 +25,7 @@ class RequiredDocument(models.Model):
     # DOCUMENT DETAILS & LIFECYCLE
     # ============================================================================
     document_type_id = fields.Many2one('records.document.type', string="Document Type", tracking=True)
-    is_required = fields.Boolean(string='Required', default=True, tracking=True)
+    is_required = fields.Boolean(string='Required', default=True)
     state = fields.Selection([
         ('pending', 'Pending'),
         ('submitted', 'Submitted'),

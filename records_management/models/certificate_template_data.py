@@ -37,7 +37,7 @@ class CertificateTemplateData(models.Model):
         default=lambda self: self.env.company,
         tracking=True
     )
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     template_type = fields.Selection([
         ('destruction', 'Certificate of Destruction'),
         ('service', 'Service Confirmation'),

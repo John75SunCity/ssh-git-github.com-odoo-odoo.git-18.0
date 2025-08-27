@@ -13,7 +13,7 @@ class RecordsPromotionalDiscount(models.Model):
     # ============================================================================
     name = fields.Char(string='Promotion Name', required=True, tracking=True)
     promotion_code = fields.Char(string='Promotion Code', copy=False, help="Unique code customers can use to apply the discount.")
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     currency_id = fields.Many2one('res.currency', string='Currency', related='company_id.currency_id', readonly=True)
 

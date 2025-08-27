@@ -12,7 +12,7 @@ class ShredBin(models.Model):
     # ============================================================================
     name = fields.Char(string="Bin Number", required=True, copy=False, help="Unique identifier for the shred bin.")
     barcode = fields.Char(string="Barcode", copy=False)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 
     # ============================================================================

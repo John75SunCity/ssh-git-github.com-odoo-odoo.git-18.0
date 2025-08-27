@@ -13,12 +13,12 @@ class PartnerBinKey(models.Model):
     name = fields.Char(string='Key Reference', compute='_compute_name', store=True)
     key_number = fields.Char(string='Key Number', required=True, tracking=True)
     description = fields.Text(string='Description')
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
-    
+
     partner_id = fields.Many2one('res.partner', string='Assigned Customer', tracking=True)
     assigned_contact_id = fields.Many2one('res.partner', string='Assigned Contact', domain="[('parent_id', '=', partner_id)]", tracking=True)
-    
+
     status = fields.Selection([
         ('available', 'Available'),
         ('assigned', 'Assigned'),
@@ -26,10 +26,10 @@ class PartnerBinKey(models.Model):
         ('returned', 'Returned'),
         ('decommissioned', 'Decommissioned'),
     ], string='Status', default='available', required=True, tracking=True)
-    
+
     issue_date = fields.Date(string='Issue Date', tracking=True)
     return_date = fields.Date(string='Return Date', tracking=True)
-    
+
     notes = fields.Text(string='Notes')
 
     # ============================================================================

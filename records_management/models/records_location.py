@@ -20,7 +20,7 @@ class RecordsLocation(models.Model):
     name = fields.Char(string="Location Name", required=True, tracking=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     code = fields.Char(string="Location Code", required=True, copy=False, readonly=True, default=lambda self: _('New'), tracking=True)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     sequence = fields.Integer(string="Sequence", default=10)
@@ -83,9 +83,9 @@ class RecordsLocation(models.Model):
         ('level_3', 'Level 3 (High)'),
         ('level_4', 'Level 4 (Maximum)'),
     ], string="Security Level", default='level_2', tracking=True)
-    temperature_controlled = fields.Boolean(string="Temperature Controlled", tracking=True)
-    humidity_controlled = fields.Boolean(string="Humidity Controlled", tracking=True)
-    fire_suppression_system = fields.Boolean(string="Fire Suppression System", tracking=True)
+    temperature_controlled = fields.Boolean(string="Temperature Controlled")
+    humidity_controlled = fields.Boolean(string="Humidity Controlled")
+    fire_suppression_system = fields.Boolean(string="Fire Suppression System")
     last_inspection_date = fields.Date(string="Last Inspection Date", readonly=True)
     next_inspection_date = fields.Date(string="Next Inspection Date", tracking=True)
 

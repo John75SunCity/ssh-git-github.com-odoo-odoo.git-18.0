@@ -60,7 +60,7 @@ class ContainerAccessWorkOrder(models.Model):
         tracking=True,
         help="User responsible for coordinating this work order."
     )
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -163,7 +163,7 @@ class ContainerAccessWorkOrder(models.Model):
     # ============================================================================
     # SECURITY & PERSONNEL
     # ============================================================================
-    requires_escort = fields.Boolean(string='Requires Escort', default=False, tracking=True)
+    requires_escort = fields.Boolean(string='Requires Escort', default=False)
     escort_employee_id = fields.Many2one(
         'hr.employee',
         string='Escort Employee',
@@ -214,7 +214,7 @@ class ContainerAccessWorkOrder(models.Model):
     compliance_notes = fields.Text(string='Compliance Notes')
     session_summary = fields.Text(string='Session Summary')
     findings = fields.Text(string='Findings / Observations')
-    follow_up_required = fields.Boolean(string='Follow-up Required', tracking=True)
+    follow_up_required = fields.Boolean(string='Follow-up Required')
     follow_up_notes = fields.Text(string='Follow-up Notes')
 
     # ============================================================================

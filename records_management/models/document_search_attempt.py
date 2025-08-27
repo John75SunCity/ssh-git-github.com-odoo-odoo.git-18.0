@@ -30,7 +30,7 @@ class DocumentSearchAttempt(models.Model):
     search_date = fields.Datetime(string='Search Date', required=True, default=fields.Datetime.now)
     search_duration = fields.Float(string='Search Duration (minutes)')
 
-    found = fields.Boolean(string='Found', default=False, tracking=True)
+    found = fields.Boolean(string='Found', default=False)
     found_date = fields.Datetime(string='Found Date')
 
     requested_file_name = fields.Char(string="Requested File Name")

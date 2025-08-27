@@ -15,7 +15,7 @@ class ServiceItem(models.Model):
     # ============================================================================
     name = fields.Char(string="Service/Item Name", required=True, tracking=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
     service_code = fields.Char(string="Service Code", copy=False)
