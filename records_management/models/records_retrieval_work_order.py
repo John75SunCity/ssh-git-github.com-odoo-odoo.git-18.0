@@ -48,3 +48,41 @@ class RecordsRetrievalWorkOrder(models.Model):
         for record in self:
             record.currency_id = record.company_id.currency_id
 
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_start_progress(self):
+        """Start the retrieval work order"""
+        self.ensure_one()
+        if self.state != 'draft':
+            raise UserError(_("Only draft work orders can be started."))
+        self.write({'state': 'in_progress'})
+        return True
+
+    def action_complete(self):
+        """Complete the retrieval work order"""
+        self.ensure_one()
+        if self.state != 'in_progress':
+            raise UserError(_("Only work orders in progress can be completed."))
+        self.write({
+            'state': 'completed',
+            'completion_date': fields.Datetime.now()
+        })
+        return True
+
+    def action_cancel(self):
+        """Cancel the retrieval work order"""
+        self.ensure_one()
+        if self.state in ['completed']:
+            raise UserError(_("Completed work orders cannot be cancelled."))
+        self.write({'state': 'cancelled'})
+        return True
+
+    def action_reset_to_draft(self):
+        """Reset work order to draft state"""
+        self.ensure_one()
+        if self.state not in ['cancelled']:
+            raise UserError(_("Only cancelled work orders can be reset to draft."))
+        self.write({'state': 'draft'})
+        return True
+

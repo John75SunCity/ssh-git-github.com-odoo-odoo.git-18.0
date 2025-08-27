@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- ============================================================================ -->
+<!-- UNIFIED WORK ORDER DASHBOARD -->
+<!-- ============================================================================ -->
+
+    <!-- Work Order Dashboard Action - All Types -->
+    <record id="action_work_order_dashboard_all" model="ir.actions.client">
+        <field name="name">Work Order Dashboard</field>
+        <field name="tag">work_order_dashboard</field>
+        <field name="target">current</field>
+        <field name="params" eval="{}"/>
+    </record>
+
+    <!-- Records Retrieval Work Orders - Dashboard Action -->
+    <record id="action_dashboard_records_retrieval" model="ir.actions.act_window">
+        <field name="name">Records Retrieval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">records.retrieval.work.order</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+    </record>
+
+    <!-- Container Access Work Orders - Dashboard Action -->
+    <record id="action_dashboard_container_access" model="ir.actions.act_window">
+        <field name="name">Container Access</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">container.access.work.order</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+    </record>
+
+    <!-- Container Retrieval Work Orders - Dashboard Action -->
+    <record id="action_dashboard_container_retrieval" model="ir.actions.act_window">
+        <field name="name">Container Retrieval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">container.retrieval.work.order</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+    </record>
+
+    <!-- Scan Retrieval Work Orders - Dashboard Action -->
+    <record id="action_dashboard_scan_retrieval" model="ir.actions.act_window">
+        <field name="name">Scan Retrieval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">scan.retrieval.work.order</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+    </record>
+
+    <!-- File Retrieval Work Orders - Dashboard Action -->
+    <record id="action_dashboard_file_retrieval" model="ir.actions.act_window">
+        <field name="name">File Retrieval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">file.retrieval.work.order</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+    </record>
+
+    <!-- Container Destruction Work Orders - Dashboard Action -->
+    <record id="action_dashboard_container_destruction" model="ir.actions.act_window">
+        <field name="name">Container Destruction</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">container.destruction.work.order</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+    </record>
+
+    <!-- Shredding Work Orders - Dashboard Action -->
+    <record id="action_dashboard_shredding" model="ir.actions.act_window">
+        <field name="name">Shredding Services</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">work.order.shredding</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_in_progress': 1}</field>
+    </record>
+
+<!-- ============================================================================ -->
+<!-- WORK ORDER TYPES - SIMPLIFIED TREE VIEW (For Dashboard) -->
+<!-- ============================================================================ -->
+
+    <!-- All Work Orders - Unified Tree View -->
+    <record id="work_order_dashboard_view_tree" model="ir.ui.view">
+        <field name="name">work.order.dashboard.view.tree</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <tree string="All Work Orders" create="false" edit="false" decoration-info="stage_id.name=='Draft'" decoration-warning="stage_id.name=='In Progress'" decoration-success="stage_id.name=='Completed'">
+                <field name="name" string="Work Order"/>
+                <field name="project_id" string="Type"/>
+                <field name="partner_id" string="Customer"/>
+                <field name="user_ids" string="Assigned To" widget="many2many_tags"/>
+                <field name="stage_id" string="Status" widget="badge"/>
+                <field name="date_deadline" string="Due Date"/>
+                <field name="priority" widget="priority"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- All Work Orders Action -->
+    <record id="action_all_work_orders_unified" model="ir.actions.act_window">
+        <field name="name">All Work Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_id" ref="work_order_dashboard_view_tree"/>
+        <field name="domain">[('project_id.name', 'ilike', 'work order')]</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                Click to create a new Work Order.
+            </p>
+            <p>
+                This unified view shows all work order types across your Records Management system.
+                Use the filters to focus on specific work order categories or statuses.
+            </p>
+        </field>
+    </record>
+
+<!-- ============================================================================ -->
+<!-- WORK ORDER QUICK ACTIONS MENU -->
+<!-- ============================================================================ -->
+
+    <!-- Quick Create Actions for Different Work Order Types -->
+    <record id="action_quick_create_records_retrieval" model="ir.actions.act_window">
+        <field name="name">New Records Retrieval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">records.retrieval.work.order</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_state': 'draft'}</field>
+    </record>
+
+    <record id="action_quick_create_container_access" model="ir.actions.act_window">
+        <field name="name">New Container Access</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">container.access.work.order</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_state': 'draft'}</field>
+    </record>
+
+    <record id="action_quick_create_scan_retrieval" model="ir.actions.act_window">
+        <field name="name">New Scan Retrieval</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">scan.retrieval.work.order</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_state': 'draft'}</field>
+    </record>
+
+    <record id="action_quick_create_container_destruction" model="ir.actions.act_window">
+        <field name="name">New Container Destruction</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">container.destruction.work.order</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_state': 'draft'}</field>
+    </record>
+
+<!-- ============================================================================ -->
+<!-- PERFORMANCE ANALYTICS ACTIONS -->
+<!-- ============================================================================ -->
+
+    <!-- Work Order Performance Dashboard -->
+    <record id="action_work_order_performance" model="ir.actions.act_window">
+        <field name="name">Work Order Performance</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">work.order.coordinator</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_group_department': 1}</field>
+    </record>
+
+    <!-- Overdue Work Orders -->
+    <record id="action_overdue_work_orders" model="ir.actions.act_window">
+        <field name="name">Overdue Work Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('date_deadline', '&lt;', datetime.datetime.now().strftime('%Y-%m-%d')), ('stage_id.name', '!=', 'Completed')]</field>
+        <field name="context">{'search_default_group_project': 1}</field>
+    </record>
+
+    <!-- Today's Work Orders -->
+    <record id="action_todays_work_orders" model="ir.actions.act_window">
+        <field name="name">Today's Work Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('date_deadline', '=', datetime.datetime.now().strftime('%Y-%m-%d'))]</field>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+
+</odoo>
