@@ -212,11 +212,11 @@ class RecordsSurveyUserInput(models.Model):
                 record.activity_schedule(
                     'mail.mail_activity_data_todo',
                     summary=_('Customer Feedback Follow-up Required'),
-                    note=_(
-                        'Priority: %s\nSentiment: %s\nService: %s') % (record.feedback_priority, record.sentiment_category, record.records_service_type or "General"),
+                    note=_('Priority: %s\nSentiment: %s\nService: %s',
+                           record.feedback_priority, record.sentiment_category, record.records_service_type or "General"),
                     user_id=assignee.id
                 )
-                record.message_post(body=_("Follow-up assigned to %s.") % assignee.name)
+                record.message_post(body=_("Follow-up assigned to %s.", assignee.name))
 
     def action_resolve_followup(self):
         self.write({"state": "resolved", "followup_status": "resolved"})
@@ -228,7 +228,7 @@ class RecordsSurveyUserInput(models.Model):
             raise UserError(_("Customer must be specified to create a feedback record."))
 
         feedback_vals = {
-            "name": _("Survey Feedback: %s") % (self.survey_title or "N/A"),
+            "name": _("Survey Feedback: %s", self.survey_title or "N/A"),
             "partner_id": self.records_partner_id.id,
             "feedback_type": "survey",
             "service_type": self.records_service_type or "general",

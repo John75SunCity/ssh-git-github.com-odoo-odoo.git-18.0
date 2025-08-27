@@ -159,7 +159,7 @@ class ContainerContent(models.Model):
             'state': 'stored',
             'date_stored': fields.Datetime.now()
         })
-    self.message_post(body=_("Content stored in container %s.") % self.container_id.name)
+        self.message_post(body=_("Content stored in container %s.", self.container_id.name))
 
     def action_retrieve(self):
         """Mark content as retrieved."""

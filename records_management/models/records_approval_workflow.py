@@ -38,17 +38,17 @@ class RecordsApprovalWorkflow(models.Model):
         self.ensure_one()
         if not self.approval_line_ids:
             raise ValidationError(_("Cannot activate a workflow with no approval steps defined."))
-    self.write({'state': 'active'})
-    self.message_post(body=_("Workflow activated by %s.") % self.env.user.name)
+        self.write({'state': 'active'})
+        self.message_post(body=_("Workflow activated by %s.", self.env.user.name))
 
     def action_archive(self):
         self.write({'state': 'archived', 'active': False})
-        self.message_post(body=_("Workflow archived by %s.") % self.env.user.name)
+        self.message_post(body=_("Workflow archived by %s.", self.env.user.name))
 
     def action_reset_to_draft(self):
         self.ensure_one()
-    self.write({'state': 'draft'})
-    self.message_post(body=_("Workflow reset to draft by %s.") % self.env.user.name)
+        self.write({'state': 'draft'})
+        self.message_post(body=_("Workflow reset to draft by %s.", self.env.user.name))
 
     group_id = fields.Many2one('res.groups', string="Approver (Group)", help="Any user from this security group can approve this step.")
 
@@ -58,5 +58,10 @@ class RecordsApprovalWorkflow(models.Model):
     required = fields.Boolean(string="Required", default=True, help="If checked, this approval step is mandatory.")
     notifications_enabled = fields.Boolean(string="Send Notifications", default=True, help="If checked, a notification will be sent to the approver(s).")
 
-    # Note: Approval type/user/group constraints likely belong to workflow lines, not the workflow model.
-    # Leaving business logic unchanged; removing incorrect constraint referencing non-existent fields would be risky.
+    @api.constrains('approval_type', 'user_id', 'group_id')
+    def _check_approver(self):
+        for line in self:
+            if line.approval_type == 'user' and not line.user_id:
+                raise ValidationError(_("For the 'Specific User' approval type, you must select an approver."))
+            if line.approval_type == 'group' and not line.group_id:
+                raise ValidationError(_("For the 'Security Group' approval type, you must select a group."))

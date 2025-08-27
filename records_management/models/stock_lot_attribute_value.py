@@ -104,10 +104,9 @@ class StockLotAttributeValue(models.Model):
             for field_type, field_name in value_fields.items():
                 if field_type != attr_type and record[field_name]:
                     raise ValidationError(
-                        _("Attribute '%(attribute)s' expects a '%(expected_type)s' value, but a '%(actual_type)s' value was provided.") % {
-                            'attribute': record.attribute_id.name,
-                            'expected_type': attr_type,
-                            'actual_type': field_type,
-                        }
+                        _("Attribute '%(attribute)s' expects a '%(expected_type)s' value, but a '%(actual_type)s' value was provided.",
+                          attribute=record.attribute_id.name,
+                          expected_type=attr_type,
+                          actual_type=field_type)
                     )
 

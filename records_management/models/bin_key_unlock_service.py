@@ -123,13 +123,13 @@ class BinKeyUnlockService(models.Model):
             'partner_id': self.partner_id.id,
             'invoice_date': fields.Date.today(),
             'invoice_line_ids': [(0, 0, {
-                'name': _("Bin Unlock Service: %s") % self.name,
+                'name': _("Bin Unlock Service: %s", self.name),
                 'quantity': 1,
                 'price_unit': self.unlock_charge,
             })],
         })
         self.write({'invoice_id': invoice.id, 'state': 'billed'})
-        self.message_post(body=_("Invoice created: %s") % invoice.name)
+        self.message_post(body=_("Invoice created: %s", invoice.name))
         return {
             'type': 'ir.actions.act_window',
             'name': _('Customer Invoice'),

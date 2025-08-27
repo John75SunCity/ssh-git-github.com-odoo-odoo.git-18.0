@@ -133,10 +133,10 @@ class MobileBinKeyWizard(models.TransientModel):
 
         self.write({
             'state': 'in_progress',
-            'operation_start_time': fields.Datetime.now(),
+            'operation_start_time': fields.Datetime.now()
         })
-        self._create_audit_log('operation_started')
-        self.message_post(body=_("Mobile operation started by %s.") % self.user_id.name)
+    self._create_audit_log('operation_started')
+    self.message_post(body=_("Mobile operation started by %s.") % self.user_id.name)
         return self._return_mobile_interface()
 
     def action_complete_operation(self):
@@ -206,8 +206,8 @@ class MobileBinKeyWizard(models.TransientModel):
             'approval_date': fields.Datetime.now(),
             'state': 'draft'
         })
-        self._create_audit_log('operation_authorized')
-        self.message_post(body=_("Operation authorized by %s.") % self.env.user.name)
+    self._create_audit_log('operation_authorized')
+    self.message_post(body=_("Operation authorized by %s.") % self.env.user.name)
         return self._return_mobile_interface()
 
     # ============================================================================
@@ -271,11 +271,11 @@ class MobileBinKeyWizard(models.TransientModel):
         if not self.billable or not self.service_charge > 0 or not self.partner_id:
             return
         # Simplified invoice creation. A real implementation would use products.
-        self.env['account.move'].create({
+    self.env['account.move'].create({
             'partner_id': self.partner_id.id,
             'move_type': 'out_invoice',
             'invoice_line_ids': [(0, 0, {
-                'name': _("Mobile Bin Key Service: %s") % self.action_type,
+        'name': _("Mobile Bin Key Service: %s") % self.action_type,
                 'quantity': 1,
                 'price_unit': self.service_charge,
             })]

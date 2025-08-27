@@ -174,7 +174,7 @@ class CustomerFeedback(models.Model):
         if self.state != "new":
             raise UserError(_("Only new feedback can be acknowledged."))
         self.write({"state": "acknowledged"})
-        self.message_post(body=_("Feedback acknowledged by %s.") % self.env.user.name)
+        self.message_post(body=_("Feedback acknowledged by %s.", self.env.user.name))
 
     def action_start_progress(self):
         self.ensure_one()

@@ -73,7 +73,8 @@
           "/workspace",
           "/workspace/records_management",
           "/workspace/addons"
-        ]
+        ],
+        "github.copilot.selectedCompletionModel": "Grok Code Fast 1"
       }
     }
   },

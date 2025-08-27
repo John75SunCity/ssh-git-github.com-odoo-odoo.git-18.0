@@ -128,7 +128,7 @@ class WorkOrderShredding(models.Model):
         if self.state != 'completed':
             raise UserError(_("Only completed work orders can be verified."))
         self.write({'state': 'verified'})
-        self.message_post(body=_("Work order verified by %s.") % self.env.user.name)
+        self.message_post(body=_("Work order verified by %s.", self.env.user.name))
 
     def action_cancel(self):
         self.ensure_one()
@@ -164,7 +164,7 @@ class WorkOrderShredding(models.Model):
             return self.certificate_id
 
         certificate_vals = {
-            'name': _("Certificate for %s") % self.name,
+            'name': _("Certificate for %s", self.name),
             'certificate_type': 'destruction',
             'partner_id': self.partner_id.id,
             'work_order_id': self.id,
@@ -174,7 +174,7 @@ class WorkOrderShredding(models.Model):
         }
         certificate = self.env['naid.certificate'].create(certificate_vals)
         self.certificate_id = certificate
-        self.message_post(body=_("Destruction Certificate %s created.") % certificate.name)
+        self.message_post(body=_("Destruction Certificate %s created.", certificate.name))
         return certificate
 
     # ============================================================================

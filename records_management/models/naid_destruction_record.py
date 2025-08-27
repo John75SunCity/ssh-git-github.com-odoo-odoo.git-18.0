@@ -130,7 +130,7 @@ class NaidDestructionRecord(models.Model):
             raise UserError(_('Can only schedule draft destruction records'))
 
         self.write({'state': 'scheduled'})
-    self.message_post(body=_('Destruction scheduled for %s') % self.destruction_date)
+        self.message_post(body=_('Destruction scheduled for %s', self.destruction_date))
 
     def action_start_destruction(self):
         """Start the destruction process"""
@@ -180,13 +180,15 @@ class NaidDestructionRecord(models.Model):
         }
 
         certificate = self.env['naid.certificate'].create(certificate_vals)
+
         self.write({
             'state': 'certified',
             'certificate_id': certificate.id,
             'certificate_issued_date': fields.Date.today(),
             'certificate_issued_by': self.env.user.id
         })
-        self.message_post(body=_('NAID Certificate generated: %s') % self.certificate_number)
+
+        self.message_post(body=_('NAID Certificate generated: %s', self.certificate_number))
         return certificate
 
     def action_cancel_destruction(self):
@@ -257,13 +259,13 @@ class NaidDestructionRecord(models.Model):
     def _create_audit_log(self, action):
         """Create NAID audit log entry"""
         self.env['naid.audit.log'].create({
-            'name': "Destruction %s: %s" % (action, self.name),
+            'name': f"Destruction {action}: {self.name}",
             'model_name': self._name,
             'record_id': self.id,
             'action': action,
             'user_id': self.env.user.id,
             'timestamp': fields.Datetime.now(),
-            'details': "Destruction record %s - %s" % (self.name, action)
+            'details': f"Destruction record {self.name} - {action}"
         })
 
     @api.model_create_multi
@@ -286,7 +288,7 @@ class NaidDestructionRecord(models.Model):
 
         if 'state' in vals:
             for record in self:
-                record._create_audit_log("state_changed_to_%s" % vals['state'])
+                record._create_audit_log(f"state_changed_to_{vals['state']}")
 
         return result
 

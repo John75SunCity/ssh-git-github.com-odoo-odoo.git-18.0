@@ -195,27 +195,6 @@ class SignedDocument(models.Model):
                 after_state=record.state if before_state else None
             )
 
-        @api.model
-        def cron_recompute_dynamic_fields(self):
-                """Cron entry-point to recompute time-based stored fields.
-
-                Recomputes:
-                    - expiry_date (depends on signature_date, legal_validity_period)
-                    - is_expired (depends on expiry_date and current date)
-                    - signature_age_days (depends on signature_date and current datetime)
-
-                This keeps stored values fresh for searching/sorting.
-                """
-                # Limit to records that are signed/verified/archived to avoid noise in drafts
-                docs = self.search([('state', 'in', ('signed', 'verified', 'archived'))])
-                if not docs:
-                        return
-                # Call compute methods explicitly to refresh stored fields
-                # Order matters: expiry_date -> is_expired -> signature_age_days
-                docs._compute_expiry_date()
-                docs._compute_is_expired()
-                docs._compute_signature_age_days()
-
     # ============================================================================
     # CONSTRAINT METHODS
     # ============================================================================
@@ -255,7 +234,7 @@ class SignedDocument(models.Model):
         res = super().write(vals)
         if "state" in vals:
             for record in self:
-                details = _('State changed from %s to %s') % (old_states.get(record, 'N/A'), record.state)
+                details = _('State changed from %s to %s', old_states.get(record, 'N/A'), record.state)
                 self.with_context(old_state=old_states.get(record))._create_audit_log(
                     "state_changed",
                     details=details

@@ -46,8 +46,7 @@ class PortalFeedbackEscalation(models.Model):
 
             # Post a message on the original feedback record
             log_body = _(
-                "Feedback escalated to %s by %s.<br/>Reason: %s"
-            ) % (
+                "Feedback escalated to %s by %s.<br/>Reason: %s",
                 record.escalated_to_id.name if record.escalated_to_id else 'the appropriate team',
                 record.escalated_by_id.name,
                 record.escalation_reason
@@ -60,16 +59,8 @@ class PortalFeedbackEscalation(models.Model):
         self.ensure_one()
         if self.state != "pending":
             raise UserError(_("Only pending escalations can be acknowledged."))
-    self.write({"state": "acknowledged"})
-    self.message_post(body=_("Escalation has been acknowledged by %s.") % self.env.user.name)
-
-    def action_start_progress(self):
-        """Start working on the escalation."""
-        self.ensure_one()
-        if self.state not in ["pending", "acknowledged"]:
-            raise UserError(_("Can only start progress on pending or acknowledged escalations."))
-        self.write({"state": "in_progress"})
-        self.message_post(body=_("Work has started on this escalation."))
+        self.write({"state": "acknowledged"})
+        self.message_post(body=_("Escalation has been acknowledged by %s.", self.env.user.name))
 
     def action_resolve(self):
         """Mark escalation as resolved."""

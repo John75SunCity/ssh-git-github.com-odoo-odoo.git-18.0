@@ -230,7 +230,7 @@ class BarcodeStorageBox(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Contents of %s') % self.name,
+            'name': _('Contents of %s', self.name),
             'res_model': 'barcode.product',
             'view_mode': 'tree,form',
             'domain': [('id', 'in', self.barcode_product_ids.ids)],
@@ -256,7 +256,7 @@ class BarcodeStorageBox(models.Model):
         """Ensure barcode is unique."""
         for record in self:
             if self.search_count([('barcode', '=', record.barcode), ('id', '!=', record.id)]) > 0:
-                raise ValidationError(_("A box with barcode '%s' already exists.") % record.barcode)
+                raise ValidationError(_("A box with barcode '%s' already exists.", record.barcode))
 
     @api.constrains('capacity')
     def _check_capacity(self):

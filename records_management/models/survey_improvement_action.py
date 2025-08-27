@@ -78,7 +78,7 @@ class SurveyImprovementAction(models.Model):
             state_field = self._fields['state']
             new_state_label = dict(state_field.selection).get(new_state_val, new_state_val)
 
-            self.message_post(body=_("Status changed from %s to %s.") % (old_state, new_state_label))
+            self.message_post(body=_("Status changed from %s to %s.", old_state, new_state_label))
 
         return super().write(vals)
 

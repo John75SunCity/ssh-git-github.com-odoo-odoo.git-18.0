@@ -126,9 +126,9 @@ class ContainerDestructionWorkOrder(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.partner_id and record.container_count:
-                record.display_name = _("%s - %s (%s containers)") % (record.name, record.partner_id.name, record.container_count)
+                record.display_name = _("%s - %s (%s containers)", record.name, record.partner_id.name, record.container_count)
             elif record.partner_id:
-                record.display_name = _("%s - %s") % (record.name, record.partner_id.name)
+                record.display_name = _("%s - %s", record.name, record.partner_id.name)
             else:
                 record.display_name = record.name or _("New Container Destruction")
 
@@ -197,7 +197,7 @@ class ContainerDestructionWorkOrder(models.Model):
         if not self.scheduled_destruction_date:
             raise UserError(_("Please set a scheduled destruction date."))
         self.write({'state': 'scheduled'})
-    self.message_post(body=_("Destruction scheduled for %s") % self.scheduled_destruction_date.strftime('%Y-%m-%d'))
+        self.message_post(body=_("Destruction scheduled for %s", self.scheduled_destruction_date.strftime('%Y-%m-%d')))
 
     def action_start_destruction(self):
         self.ensure_one()
@@ -235,7 +235,7 @@ class ContainerDestructionWorkOrder(models.Model):
             'destruction_method': self.destruction_method,
         })
         self.write({'certificate_id': certificate.id, 'state': 'certified'})
-        self.message_post(body=_("Certificate of Destruction %s generated.") % (certificate.name or ''))
+        self.message_post(body=_("Certificate of Destruction %s generated.", certificate.name))
         return {
             'type': 'ir.actions.act_window',
             'name': _('Certificate of Destruction'),

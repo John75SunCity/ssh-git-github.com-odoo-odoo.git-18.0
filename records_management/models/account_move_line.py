@@ -467,7 +467,7 @@ class AccountMoveLine(models.Model):
             'action_type': 'invoice_line_created',
             'user_id': self.env.user.id,
             'timestamp': fields.Datetime.now(),
-            'description': _("Invoice line created for %s") % (self.records_service_type or ''),
+            'description': _("Invoice line created for %s", self.records_service_type),
             'invoice_line_id': self.id,
             'amount': self.price_total,
             'naid_compliant': self.naid_compliant,
@@ -632,10 +632,10 @@ class AccountMoveLine(models.Model):
         }
 
         # Service type breakdown
-        for st in lines.mapped('records_service_type'):
-            if st:
-                service_lines = lines.filtered(lambda l, _st=st: l.records_service_type == _st)
-                summary['service_breakdown'][st] = {
+        for service_type in lines.mapped('records_service_type'):
+            if service_type:
+                service_lines = lines.filtered(lambda l: l.records_service_type == service_type)
+                summary['service_breakdown'][service_type] = {
                     'line_count': len(service_lines),
                     'revenue': sum(service_lines.mapped('price_total')),
                     'container_count': sum(service_lines.mapped('container_count')),
@@ -684,12 +684,11 @@ class AccountMoveLine(models.Model):
         result = []
         for line in self:
             if line.records_related and line.records_service_type:
-                name = _("%s - %s") % (
+                name = _("%s - %s",
                         dict(self._fields['records_service_type'].selection).get(line.records_service_type, ''),
-                        line.name or _('Service Line')
-                    )
+                        line.name or _('Service Line'))
                 if line.container_count:
-                    name += _(" (%s containers)") % line.container_count
+                    name += _(" (%s containers)", line.container_count)
             else:
                 name = line.name or _('Invoice Line')
             result.append((line.id, name))

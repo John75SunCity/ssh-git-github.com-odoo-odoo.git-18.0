@@ -163,15 +163,14 @@ class BarcodeGenerationHistory(models.Model):
             raise UserError(_("A product must be selected to generate a barcode."))
 
         # In a real scenario, this would call the barcode generation logic
-        generated_barcode = "%s-%s" % (self.product_id.barcode_prefix or 'BC', self.id)
+        generated_barcode = f"{self.product_id.barcode_prefix or 'BC'}-{self.id}"
 
         self.write({
             "state": "generated",
             "generation_date": fields.Datetime.now(),
             "barcode_generated": generated_barcode,
         })
-        # Post chatter inside the method scope
-        self.message_post(body=_("Barcode generated: %s") % generated_barcode)
+        self.message_post(body=_("Barcode generated: %s", generated_barcode))
 
     def action_print(self):
         """Mark as printed and increment print count."""
@@ -179,15 +178,12 @@ class BarcodeGenerationHistory(models.Model):
         if self.state not in ['generated', 'printed']:
             raise UserError(_("Only generated barcodes can be printed."))
 
-        # Compute new count first so the message reflects the updated value
-        new_count = (self.print_count or 0) + 1
         self.write({
             "state": "printed",
             "printed_date": fields.Datetime.now(),
-            "print_count": new_count,
+            "print_count": self.print_count + 1,
         })
-        # Post chatter inside the method scope with correct updated count
-        self.message_post(body=_("Barcode printed. Total prints: %s") % new_count)
+        self.message_post(body=_("Barcode printed. Total prints: %s", self.print_count))
 
         # This would typically return a report action to print the barcode label
         # return self.env.ref('records_management.action_report_barcode_label').report_action(self)

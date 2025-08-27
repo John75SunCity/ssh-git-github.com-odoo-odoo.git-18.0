@@ -129,7 +129,7 @@ class RecordsContainerMovement(models.Model):
             'authorized_by_id': self.env.user.id,
             'authorization_date': fields.Datetime.now(),
         })
-    self.message_post(body=_("Movement authorized by %s.") % self.env.user.name)
+        self.message_post(body=_("Movement authorized by %s.", self.env.user.name))
 
     def action_start_movement(self):
         self.ensure_one()
@@ -138,14 +138,14 @@ class RecordsContainerMovement(models.Model):
         if self.state not in ['draft', 'authorized']:
             raise UserError(_("Movement can only be started from 'Draft' or 'Authorized' state."))
         self.write({'state': 'in_progress', 'actual_start_time': fields.Datetime.now()})
-    self.message_post(body=_("Movement started by %s.") % self.env.user.name)
+        self.message_post(body=_("Movement started by %s.", self.env.user.name))
 
     def action_complete_movement(self):
         self.ensure_one()
         if self.state != 'in_progress':
             raise UserError(_("Only movements in progress can be completed."))
         self.write({'state': 'completed', 'actual_end_time': fields.Datetime.now()})
-    self.message_post(body=_("Movement completed by %s.") % self.env.user.name)
+        self.message_post(body=_("Movement completed by %s.", self.env.user.name))
 
     def action_verify_movement(self):
         self.ensure_one()
@@ -157,14 +157,14 @@ class RecordsContainerMovement(models.Model):
             'verification_date': fields.Datetime.now(),
             'verified_by_id': self.env.user.id,
         })
-    self.message_post(body=_("Movement verified by %s.") % self.env.user.name)
+        self.message_post(body=_("Movement verified by %s.", self.env.user.name))
 
     def action_cancel_movement(self):
         self.ensure_one()
         if self.state in ['completed', 'verified']:
             raise UserError(_("Completed or verified movements cannot be cancelled."))
         self.write({'state': 'cancelled'})
-    self.message_post(body=_("Movement cancelled by %s.") % self.env.user.name)
+        self.message_post(body=_("Movement cancelled by %s.", self.env.user.name))
 
     def action_reset_to_draft(self):
         self.ensure_one()

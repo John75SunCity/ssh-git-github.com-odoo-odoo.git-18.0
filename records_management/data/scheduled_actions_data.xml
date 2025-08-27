@@ -32,16 +32,16 @@ try:
         # For each customer, create a sale order for the storage fee product
         for customer, qty in customer_items.items():
             if qty > 0:
-        env['sale.order'].create({
+                env['sale.order'].create({
                     'partner_id': customer.id,
                     'order_line': [(0, 0, {
                         'product_id': product.id,
                         'product_uom_qty': qty,
-            'name': _("Monthly Storage Fee for %s items") % qty,
+                        'name': _('Monthly Storage Fee for %s items', qty),
                     })],
                 })
 except Exception as e:
-    log(_("Error computing monthly storage fees: %s") % str(e))
+    log(_('Error computing monthly storage fees: %s', str(e)))
             </field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
@@ -60,7 +60,7 @@ try:
     env['customer.inventory.report'].generate_monthly_reports()
     log(_('Monthly customer inventory reports generated successfully.'))
 except Exception as e:
-    log(_("Error generating monthly inventory reports: %s") % str(e))
+    log(_('Error generating monthly inventory reports: %s', str(e)))
             </field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
@@ -149,24 +149,4 @@ REPORT_SCHEDULE = {
             <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=32)).replace(day=1).strftime('%Y-%m-%d 09:00:00')"/>
         </record>
     </data>
-
-    <!-- Daily recompute for Signed Document dynamic fields -->
-    <record id="ir_cron_signed_document_recompute" model="ir.cron">
-        <field name="name">Recompute Signed Document Dynamic Fields</field>
-        <field name="model_id" ref="records_management.model_signed_document"/>
-        <field name="state">code</field>
-        <field name="code">
-# Recompute time-based stored fields on signed documents
-try:
-    env['signed.document'].cron_recompute_dynamic_fields()
-    log(_('Signed document dynamic fields recomputed.'))
-except Exception as e:
-    log(_("Error during signed document recompute: %s") % str(e))
-        </field>
-        <field name="active">True</field>
-        <field name="interval_number">1</field>
-        <field name="interval_type">days</field>
-        <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 02:30:00')"/>
-    </record>
-
-    </odoo>
+</odoo>

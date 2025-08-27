@@ -48,7 +48,7 @@ class RevenueAnalytic(models.Model):
     def _compute_name(self):
         for record in self:
             if record.period_start and record.period_end:
-                record.name = _("Revenue Analysis: %s to %s") % (record.period_start.strftime('%b %Y'), record.period_end.strftime('%b %Y'))
+                record.name = _("Revenue Analysis: %s to %s", record.period_start.strftime('%b %Y'), record.period_end.strftime('%b %Y'))
             else:
                 record.name = _("New Revenue Analysis")
 

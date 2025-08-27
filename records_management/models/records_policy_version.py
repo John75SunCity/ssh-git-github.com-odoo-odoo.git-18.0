@@ -71,7 +71,7 @@ class RecordsPolicyVersion(models.Model):
         other_versions.action_archive()
 
         self.write({'state': 'active'})
-    self.message_post(body=_("Policy version %s has been activated.") % self.name)
+        self.message_post(body=_("Policy version %s has been activated.", self.name))
 
     def action_archive(self):
         """Archives the policy version."""
@@ -79,7 +79,7 @@ class RecordsPolicyVersion(models.Model):
             if record.state == 'active':
                 raise UserError(_("You cannot archive the currently active version. Please activate another version first."))
             record.write({'state': 'archived', 'active': False})
-            record.message_post(body=_("Policy version %s has been archived.") % record.name)
+            record.message_post(body=_("Policy version %s has been archived.", record.name))
 
     def action_restore(self):
         """Restores an archived version to draft state."""
@@ -87,4 +87,4 @@ class RecordsPolicyVersion(models.Model):
         if self.state != 'archived':
             raise UserError(_("Only archived versions can be restored."))
         self.write({'state': 'draft', 'active': True})
-    self.message_post(body=_("Policy version %s has been restored to draft.") % self.name)
+        self.message_post(body=_("Policy version %s has been restored to draft.", self.name))

@@ -259,7 +259,7 @@ class CustodyTransferEvent(models.Model):
         if self.status != 'completed':
             raise UserError(_('Can only verify completed transfers.'))
         self.write({'status': 'verified'})
-        self.message_post(body=_('Custody transfer verified by %s') % self.env.user.name)
+    self.message_post(body=_('Custody transfer verified by %s') % self.env.user.name)
 
     def action_dispute_transfer(self):
         """Mark transfer as disputed."""

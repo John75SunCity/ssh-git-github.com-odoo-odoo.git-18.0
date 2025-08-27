@@ -67,7 +67,7 @@ class ContainerRetrieval(models.Model):
     def _compute_display_name(self):
         for record in self:
             if record.container_id:
-                record.display_name = (record.name or "") + " - " + (record.container_id.name or "")
+                record.display_name = f"{record.name} - {record.container_id.name}"
             else:
                 record.display_name = record.name or "New Container Retrieval"
 
@@ -81,7 +81,7 @@ class ContainerRetrieval(models.Model):
                 'retrieval_date': fields.Datetime.now(),
                 'retrieved_by_id': self.env.user.id
             })
-            record.message_post(body=_("Container located by %s") % self.env.user.name)
+            record.message_post(body=_("Container located by %s", self.env.user.name))
 
     def action_retrieve_container(self):
         """Mark container as retrieved"""
@@ -89,4 +89,4 @@ class ContainerRetrieval(models.Model):
             if record.status != 'located':
                 raise UserError(_("Container must be located before retrieval."))
             record.write({'status': 'retrieved'})
-            record.message_post(body=_("Container retrieved by %s") % self.env.user.name)
+            record.message_post(body=_("Container retrieved by %s", self.env.user.name))

@@ -76,7 +76,7 @@ class PortalFeedbackAnalytic(models.Model):
                 record.message_post(body=_("Analytics generated successfully."))
             except Exception as e:
                 record.write({'state': 'error'})
-                record.message_post(body=_("Failed to generate analytics: %s") % e)
+                record.message_post(body=_("Failed to generate analytics: %s", e))
 
     # ============================================================================
     # COMPUTE METHODS

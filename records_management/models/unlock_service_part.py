@@ -102,7 +102,7 @@ class UnlockServicePart(models.Model):
             return {
                 'warning': {
                     'title': _('Stock Warning'),
-                    'message': _('Product %s is out of stock. Available: %s') % (self.product_id.name, self.product_id.qty_available)
+                    'message': _('Product %s is out of stock. Available: %s', self.product_id.name, self.product_id.qty_available)
                 }
             }
 
@@ -117,7 +117,7 @@ class UnlockServicePart(models.Model):
             if record.quantity_used < 0:
                 raise ValidationError(_("Used quantity cannot be negative."))
             if record.quantity_used and record.quantity_used > record.quantity_planned:
-                raise ValidationError(_("Used quantity (%s) cannot exceed planned quantity (%s) for %s.") % (record.quantity_used, record.quantity_planned, record.product_id.name))
+                raise ValidationError(_("Used quantity (%s) cannot exceed planned quantity (%s) for %s.", record.quantity_used, record.quantity_planned, record.product_id.name))
 
     # ============================================================================
     # ACTION METHODS
@@ -131,7 +131,7 @@ class UnlockServicePart(models.Model):
         if self.state != 'planned':
             raise UserError(_("Can only reserve stock for planned parts."))
         if self.quantity_planned > self.product_id.qty_available:
-            raise UserError(_("Cannot reserve %s units of %s. Only %s available.") % (self.quantity_planned, self.product_id.name, self.product_id.qty_available))
+            raise UserError(_("Cannot reserve %s units of %s. Only %s available.", self.quantity_planned, self.product_id.name, self.product_id.qty_available))
         self.write({'state': 'reserved'})
 
     def action_cancel(self):

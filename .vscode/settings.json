@@ -261,5 +261,6 @@
     "files.trimTrailingWhitespace": false,
     "files.trimFinalNewlines": false,
     "files.insertFinalNewline": false,
-    "Odoo.selectedProfile": "default"
+    "Odoo.selectedProfile": "default",
+    "github.copilot.selectedCompletionModel": "Grok Code Fast 1"
 }

@@ -26,7 +26,7 @@ class ContainerRetrievalItem(models.Model):
         for item in self:
             name_parts = []
             if item.work_order_id:
-                name_parts.append("[" + (item.work_order_id.name or "") + "]")
+                name_parts.append(f"[{item.work_order_id.name}]")
             if item.container_id:
                 name_parts.append(item.container_id.name)
             else:
@@ -35,9 +35,8 @@ class ContainerRetrievalItem(models.Model):
 
     # Container-specific methods
     def action_locate_container(self):
-        """Mark the container as located and log the event."""
         self.ensure_one()
         # Container location logic
         self.write({'status': 'located'})
-        self.message_post(body=_("Container marked as 'Located' by %s") % self.env.user.name)
+        self.message_post(body=_("Container marked as 'Located' by %s", self.env.user.name))
         return True

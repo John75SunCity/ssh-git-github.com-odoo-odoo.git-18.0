@@ -102,7 +102,8 @@ class RecordsLocationInspection(models.Model):
         self.ensure_one()
         if self.state != 'in_progress':
             raise UserError(_("Only inspections in progress can be completed."))
-    final_state = 'failed' if self.overall_result == 'fail' else 'done'
+
+        final_state = 'failed' if self.overall_result == 'fail' else 'done'
     self.write({'state': final_state})
     self.message_post(body=_("Inspection completed with result: %s.") % self.overall_result)
 
