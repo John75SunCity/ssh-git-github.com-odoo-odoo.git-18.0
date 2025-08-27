@@ -26,7 +26,13 @@ class NAIDCustodyEvent(models.Model):
         ('other', 'Other'),
     ], string='Event Type', required=True, tracking=True)
 
-    event_datetime = fields.Datetime(string='Event Timestamp', default=fields.Datetime.now, required=True, tracking=True)
+    # Use lambda for default to match Odoo best practices and ensure consistency with other defaults
+    event_datetime = fields.Datetime(
+        string='Event Timestamp',
+        default=lambda self: fields.Datetime.now(),
+        required=True,
+        tracking=True
+    )
 
     # Polymorphic relationship to link to the primary custody chain document
     custody_id = fields.Many2one('naid.custody', string='Chain of Custody', ondelete='cascade', required=True)
@@ -48,12 +54,13 @@ class NAIDCustodyEvent(models.Model):
     # ============================================================================
     # COMPUTE & CONSTRAINTS
     # ============================================================================
-    @api.depends('event_type', 'custody_id.name', 'event_datetime')
+    @api.depends('event_type', 'custody_id.description', 'event_datetime')
     def _compute_name(self):
         for event in self:
-            event_type_display = dict(event._fields['event_type'].selection).get(event.event_type, '')
-            custody_name = event.custody_id.name if event.custody_id else _('Unknown')
-            event.name = f"{custody_name} - {event_type_display}"
+            event_type_display = dict(event.fields_get()['event_type']['selection']).get(event.event_type, '')
+            custody_name = event.custody_id.description if event.custody_id else _('Unknown')
+            timestamp = event.event_datetime.strftime('%Y-%m-%d %H:%M:%S') if event.event_datetime else ''
+            event.name = f"{custody_name} - {event_type_display} ({timestamp})"
 
     @api.constrains('event_datetime', 'custody_id')
     def _check_event_chronology(self):
@@ -62,7 +69,7 @@ class NAIDCustodyEvent(models.Model):
                 ('custody_id', '=', event.custody_id.id),
                 ('id', '!=', event.id),
                 ('event_datetime', '>', event.event_datetime)
-            ])
+            ], limit=1)
             if previous_events:
                 raise ValidationError(_("Event datetime must be after all previous events in the same custody chain."))
 
@@ -98,7 +105,7 @@ class NAIDCustodyEvent(models.Model):
         self.ensure_one()
         log_description = _("Custody Event '%(event_name)s' for Chain '%(chain_name)s' had action '%(action)s'.") % {
             'event_name': self.name,
-            'chain_name': self.custody_id.name,
+            'chain_name': self.custody_id.description or 'Unknown',
             'action': action_type,
         }
         self.env['naid.audit.log'].log_action(

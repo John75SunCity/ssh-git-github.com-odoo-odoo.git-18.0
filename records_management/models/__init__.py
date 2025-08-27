@@ -208,6 +208,7 @@ from . import records_department
 from . import records_container_type
 from . import records_request_type
 from . import records_retention_policy
+from . import records_retention_policy_version
 from . import records_document_type
 from . import records_category
 from . import billing_period

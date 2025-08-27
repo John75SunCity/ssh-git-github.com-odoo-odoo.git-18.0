@@ -93,6 +93,7 @@ class RecordsRetentionRule(models.Model):
         ('expired', 'Expired'),
     ], string='Version Status', default='draft', tracking=True)
     version = fields.Integer(string='Version', default=1)
+    rule_code = fields.Char(string='Rule Code', help="Unique code to identify rule versions")
     is_latest_version = fields.Boolean(string='Is Latest Version', compute='_compute_version_details')
 
     compliance_status = fields.Selection([

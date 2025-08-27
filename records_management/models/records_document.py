@@ -107,6 +107,16 @@ class RecordsDocument(models.Model):
     found_date = fields.Date(string="Date Found", help="Date the document was located after being missing.")
 
     # ============================================================================
+    # VITAL RECORDS & CHECKOUT TRACKING
+    # ============================================================================
+    last_review_date = fields.Date(string="Last Review Date", help="Date of the last vital records review.")
+    vital_record_review_period = fields.Integer(string="Review Period (Days)", help="Period in days for vital record reviews.")
+    checked_out_date = fields.Datetime(string="Checked Out Date", help="Date and time when document was checked out.")
+    expected_return_date = fields.Date(string="Expected Return Date", help="Expected date for document return.")
+    attachment_ids = fields.One2many('ir.attachment', 'res_id', string="Attachments",
+                                   domain=[('res_model', '=', 'records.document')], help="Digital attachments for this document.")
+
+    # ============================================================================
     # FILTERS & GROUPING FIELDS (for advanced search and reporting)
     # ============================================================================
     pending_destruction = fields.Boolean(string="Pending Destruction", compute='_compute_pending_destruction', store=True, search='_search_pending_destruction', help="True if the document is eligible for destruction but not yet destroyed.")

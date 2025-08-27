@@ -100,6 +100,7 @@ class RecordsDocumentType(models.Model):
     barcode_required = fields.Boolean(string="Barcode Required", default=True)
     digital_copy_required = fields.Boolean(string="Digital Copy Required", help="A digital scan must be created for documents of this type.")
     encryption_required = fields.Boolean(string="Encryption Required", help="Digital copies must be encrypted.")
+    retention_policy_id = fields.Many2one('records.retention.policy', string='Retention Policy', help="Default retention policy for this document type")
 
     # ============================================================================
     # FIELDS - Computed & Analytics

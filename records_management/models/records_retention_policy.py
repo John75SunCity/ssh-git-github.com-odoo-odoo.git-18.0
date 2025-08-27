@@ -84,6 +84,7 @@ class RecordsRetentionPolicy(models.Model):
     audit_log_ids = fields.One2many('records.audit.log', 'policy_id', string='Audit Log')
     child_policy_ids = fields.One2many('records.retention.policy', 'parent_policy_id', string='Child Policies')
     parent_policy_id = fields.Many2one('records.retention.policy', string='Parent Policy')
+    version_ids = fields.One2many('records.retention.policy.version', 'policy_id', string='Policy Versions')
     template_id = fields.Many2one('records.retention.policy', string='Template')
     destruction_approver_ids = fields.Many2many('res.users', string='Destruction Approvers')
     tag_ids = fields.Many2many('records.tag', string='Tags')
