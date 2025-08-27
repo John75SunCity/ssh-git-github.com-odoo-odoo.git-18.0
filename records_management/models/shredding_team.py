@@ -90,13 +90,13 @@ class ShreddingTeam(models.Model):
         for team in self:
             team.member_count = len(team.member_ids)
 
-    @api.depends('service_ids.weight_processed', 'max_capacity_per_day')
+    @api.depends('service_ids.total_weight', 'max_capacity_per_day')
     def _compute_performance_metrics(self):
         for team in self:
             # Simplified calculation since stage_id and planned_hours don't exist in shredding service model
             team.service_count = len(team.service_ids)
             team.total_services_completed = len(team.service_ids)  # Simplified
-            team.total_weight_processed = sum(team.service_ids.mapped('weight_processed') or [0.0])
+            team.total_weight_processed = sum(team.service_ids.mapped('total_weight') or [0.0])
 
             # Simplified time calculation
             if team.service_ids:
