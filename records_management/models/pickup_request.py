@@ -50,6 +50,7 @@ class PickupRequest(models.Model):
     route_id = fields.Many2one('pickup.route', string="Pickup Route")
 
     total_items = fields.Integer(string='Total Items', compute='_compute_total_items', store=True)
+    container_count = fields.Integer(string='Container Count', compute='_compute_container_count', store=True)
     description = fields.Text(string='Description')
     internal_notes = fields.Text(string='Internal Notes')
 
@@ -85,6 +86,11 @@ class PickupRequest(models.Model):
     def _compute_total_items(self):
         for request in self:
             request.total_items = len(request.pickup_item_ids)
+
+    @api.depends('pickup_item_ids', 'pickup_item_ids.quantity')
+    def _compute_container_count(self):
+        for request in self:
+            request.container_count = sum(item.quantity for item in request.pickup_item_ids)
 
     # ============================================================================
     # CREATE/WRITE METHODS
