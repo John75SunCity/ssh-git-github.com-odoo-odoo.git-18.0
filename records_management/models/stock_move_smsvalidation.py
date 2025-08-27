@@ -1,6 +1,7 @@
 import random
 import string
-from odoo import models, fields, api, _
+
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -13,14 +14,56 @@ class StockMoveSMSValidation(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char(string="Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    move_id = fields.Many2one('stock.move', string="Stock Move", required=True, readonly=True, ondelete='cascade')
-    picking_id = fields.Many2one(related='move_id.picking_id', string="Transfer", store=True, readonly=True)
-    user_id = fields.Many2one('res.users', string="Validator User", required=True, readonly=True, help="User who must validate this move.")
-    sms_code = fields.Char(string="SMS Code", readonly=True, copy=False)
-    is_validated = fields.Boolean(string="Validated", default=False, readonly=True, copy=False)
-    validation_date = fields.Datetime(string="Validation Date", readonly=True, copy=False)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    name = fields.Char(
+        string="Reference", 
+        required=True, 
+        copy=False, 
+        readonly=True, 
+        default=lambda self: _('New')
+    )
+    move_id = fields.Many2one(
+        comodel_name='stock.move', 
+        string="Stock Move", 
+        required=True, 
+        readonly=True, 
+        ondelete='cascade'
+    )
+    picking_id = fields.Many2one(
+        related='move_id.picking_id', 
+        string="Transfer", 
+        store=True, 
+        readonly=True
+    )
+    user_id = fields.Many2one(
+        comodel_name='res.users', 
+        string="Validator User", 
+        required=True, 
+        readonly=True, 
+        help="User who must validate this move."
+    )
+    sms_code = fields.Char(
+        string="SMS Code", 
+        readonly=True, 
+        copy=False
+    )
+    is_validated = fields.Boolean(
+        string="Validated", 
+        default=False, 
+        readonly=True, 
+        copy=False
+    )
+    validation_date = fields.Datetime(
+        string="Validation Date", 
+        readonly=True, 
+        copy=False
+    )
+    company_id = fields.Many2one(
+        comodel_name='res.company', 
+        string='Company', 
+        default=lambda self: self.env.company, 
+        required=True, 
+        readonly=True
+    )
     active = fields.Boolean(default=True)
 
     # ============================================================================
@@ -74,6 +117,6 @@ class StockMoveSMSValidation(models.Model):
             })
             self.message_post(body=_("Successfully validated by %s.") % self.env.user.name)
             return True
-        else:
-            self.message_post(body=_("Failed validation attempt by %s.") % self.env.user.name)
-            raise UserError(_("The provided validation code is incorrect."))
+        
+        self.message_post(body=_("Failed validation attempt by %s.") % self.env.user.name)
+        raise UserError(_("The provided validation code is incorrect."))

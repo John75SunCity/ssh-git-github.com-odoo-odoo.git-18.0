@@ -62,8 +62,8 @@ class Load(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('paper.bale.load') or _('New')
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('paper.bale.load') or 'New'
         return super().create(vals_list)
 
     # ============================================================================
@@ -73,7 +73,7 @@ class Load(models.Model):
     def _compute_load_stats(self):
         for load in self:
             load.total_bales = len(load.paper_bale_ids)
-            load.total_weight = sum(load.paper_bale_ids.mapped('weight'))
+            load.total_weight = sum(b.weight for b in load.paper_bale_ids)
 
     @api.depends('paper_bale_ids', 'paper_bale_ids.weight', 'paper_bale_ids.paper_type')
     def _compute_weight_by_type(self):
@@ -107,17 +107,18 @@ class Load(models.Model):
         if not self.buyer_id:
             raise UserError(_("Please select a Buyer/Recycling Center before creating an invoice."))
 
-        invoice_lines = []
-        # This is a simplified example. You would likely have products for each paper type.
+        # Map paper type to product (assume product_map is defined elsewhere or fetch here)
         product_map = {
-            'wht': self.env.ref('records_management.product_paper_wht', raise_if_not_found=False),
-            'mix': self.env.ref('records_management.product_paper_mix', raise_if_not_found=False),
-            'occ': self.env.ref('records_management.product_paper_occ', raise_if_not_found=False),
+            'wht': self.env['product.product'].search([('default_code', '=', 'PAPER_WHT')], limit=1),
+            'mix': self.env['product.product'].search([('default_code', '=', 'PAPER_MIX')], limit=1),
+            'occ': self.env['product.product'].search([('default_code', '=', 'PAPER_OCC')], limit=1),
         }
+        invoice_lines = []
 
         if self.total_weight_wht > 0:
             product = product_map.get('wht')
-            if not product: raise UserError(_("Product for 'WHT' paper not found."))
+            if not product:
+                raise UserError(_("Product for 'WHT' paper not found."))
             invoice_lines.append((0, 0, {
                 'product_id': product.id,
                 'name': _('White Paper Scrap'),
@@ -128,7 +129,8 @@ class Load(models.Model):
 
         if self.total_weight_mix > 0:
             product = product_map.get('mix')
-            if not product: raise UserError(_("Product for 'MIX' paper not found."))
+            if not product:
+                raise UserError(_("Product for 'MIX' paper not found."))
             invoice_lines.append((0, 0, {
                 'product_id': product.id,
                 'name': _('Mixed Paper Scrap'),
@@ -139,7 +141,8 @@ class Load(models.Model):
 
         if self.total_weight_occ > 0:
             product = product_map.get('occ')
-            if not product: raise UserError(_("Product for 'OCC' paper not found."))
+            if not product:
+                raise UserError(_("Product for 'OCC' paper not found."))
             invoice_lines.append((0, 0, {
                 'product_id': product.id,
                 'name': _('Cardboard/OCC Scrap'),
@@ -179,3 +182,22 @@ class Load(models.Model):
     def action_reset_to_draft(self):
         self.ensure_one()
         self.write({'state': 'draft'})
+        # Open the linked invoice if it exists, otherwise return to the load form
+        if self.invoice_id:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Customer Invoice'),
+                'res_model': 'account.move',
+                'res_id': self.invoice_id.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        else:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Paper Bale Load'),
+                'res_model': 'load',
+                'res_id': self.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }

@@ -3,6 +3,7 @@ from . import res_partner
 # Base models must be imported before their children
 from . import retrieval_item_base
 from . import container_retrieval_item
+from . import base_rate
 from . import base_rates
 from . import route_optimizer
 from . import records_container_content_line
@@ -186,11 +187,10 @@ from . import pickup_route
 from . import naid_custody
 from . import stock_lot_attribute
 from . import paper_load_shipment
-from . import load
+from . import paper_bale_load
 from . import records_vehicle
 from . import records_location
 from . import portal_request
-from . import base_rate
 from . import hr_employee
 from . import document_retrieval_equipment
 from . import records_document
