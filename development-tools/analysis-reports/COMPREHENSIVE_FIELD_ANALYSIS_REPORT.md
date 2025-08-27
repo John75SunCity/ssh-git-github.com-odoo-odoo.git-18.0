@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-27T18:22:06.178691+00:00
+Generated: 2025-08-27T22:54:07.736485+00:00
 
 ## validate_imports.py
 
@@ -162,8 +162,6 @@ Exit code: 0
 
 <details><summary>stdout (tail)</summary>
 
-   • naid_certificate_item.py:10 (Many2one\([\'"]([^\'"]+)[\'"])
-
    • records_container_line.py:13 (Many2one\([\'"]([^\'"]+)[\'"])
 
    • ... and 2 more references
@@ -200,15 +198,17 @@ Exit code: 0
 
 
 
-📊 Found 5 model inheritance relationships
+📊 Found 6 model inheritance relationships
 
 
 
-✅ All inheritance relationships are valid
+🚨 INHERITANCE ISSUES: 1 models inherit from non-existent models:
+
+   ❌ res.currency inherits from maintenance.request (not found)
 
 
 
-📊 Found 42 domain references with field access
+📊 Found 43 domain references with field access
 
 ⚠️  Domain field references (may need validation):
 
@@ -228,7 +228,7 @@ Exit code: 0
 
    • barcode_product.py:405 - , record.barcode), (
 
-   • ... and 37 more domain references
+   • ... and 38 more domain references
 
 
 
@@ -236,7 +236,7 @@ Exit code: 0
 
    ❌  -  (in document_search_attempt.py)
 
-   ❌ res.currency (in advanced_billing_service_line.py)
+   ❌ res.currency (in maintenance_request.py)
 
    ❌ res.company (in full_customization_name.py)
 
@@ -254,11 +254,11 @@ AUDIT SUMMARY
 
 ================================================================================
 
-📊 Total models: 247
+📊 Total models: 248
 
-📊 Total field references: 137
+📊 Total field references: 138
 
-🚨 Critical issues found: 36
+🚨 Critical issues found: 37
 
 ⚠️  Issues found that may cause loading order problems
 
@@ -362,7 +362,7 @@ document_type_id (unknown):
 
 ================================================================================
 
-SUMMARY: Found 0 potential issues in 209 related fields
+SUMMARY: Found 0 potential issues in 211 related fields
 
 ================================================================================
 

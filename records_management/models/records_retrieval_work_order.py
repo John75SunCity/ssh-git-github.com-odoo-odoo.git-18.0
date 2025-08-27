@@ -25,6 +25,7 @@ class RecordsRetrievalWorkOrder(models.Model):
 
     # Link to retrieval team (for One2many in maintenance.team)
     retrieval_team_id = fields.Many2one('maintenance.team', string='Retrieval Team')
+    currency_id = fields.Many2one('res.currency', string='Currency', compute='_compute_currency_id', store=True)
 
     # ============================================================================
     # METHODS
@@ -41,4 +42,9 @@ class RecordsRetrievalWorkOrder(models.Model):
         if 'state' in vals and vals['state'] == 'completed':
             vals['completion_date'] = fields.Datetime.now()
         return super().write(vals)
+
+    @api.depends('company_id')
+    def _compute_currency_id(self):
+        for record in self:
+            record.currency_id = record.company_id.currency_id
 
