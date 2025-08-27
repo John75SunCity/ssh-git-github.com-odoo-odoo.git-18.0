@@ -21,7 +21,7 @@ class RecordsInstaller(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft', tracking=True)
     notes = fields.Text(string='Notes')
-    installer_display_name = fields.Char(compute='_compute_installer_display_name', string="Display Name")
+    installer_display_name = fields.Char(compute='_compute_installer_display_name', string="Installer Display Name")
     partner_id = fields.Many2one('res.partner', string="Partner")
 
     # ============================================================================

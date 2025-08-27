@@ -16,13 +16,13 @@ class ResPartnerKeyRestriction(models.Model):
     partner_id = fields.Many2one('res.partner', string="Customer/Contact", required=True, ondelete='cascade', tracking=True)
     active = fields.Boolean(string='Active', default=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    
+
     # ============================================================================
     # RESTRICTION DETAILS & LIFECYCLE
     # ============================================================================
     key_issuance_allowed = fields.Boolean(
-        string="Key Issuance Allowed", 
-        default=False, 
+        string="Key Issuance Allowed",
+        default=False,
         tracking=True,
         help="Check this box if the partner is allowed to be issued physical keys. Uncheck to restrict access."
     )
@@ -39,7 +39,7 @@ class ResPartnerKeyRestriction(models.Model):
     # ============================================================================
     effective_date = fields.Date(string="Effective Date", default=fields.Date.context_today, required=True, tracking=True)
     expiry_date = fields.Date(string="Expiry Date", tracking=True)
-    user_id = fields.Many2one('res.users', string='Responsible User', default=lambda self: self.env.user, tracking=True)
+    user_id = fields.Many2one('res.users', string='Created By', default=lambda self: self.env.user, tracking=True)
     notes = fields.Text(string='Internal Notes')
 
     # ============================================================================

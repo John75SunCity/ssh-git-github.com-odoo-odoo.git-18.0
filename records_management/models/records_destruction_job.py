@@ -30,7 +30,7 @@ class RecordsDestructionLine(models.Model):
     _description = 'Records Destruction Line'
 
     job_id = fields.Many2one('records.destruction.job', string='Destruction Job', required=True, ondelete='cascade')
-    box_id = fields.Many2one('records.container', string='Container')
+    box_id = fields.Many2one('records.container', string='Box')
     container_id = fields.Many2one('records.container', string='Container')
     destruction_date = fields.Date(string='Destruction Date', related='job_id.destruction_date', store=True)
     state = fields.Selection(related='job_id.state', string='Status', store=True)

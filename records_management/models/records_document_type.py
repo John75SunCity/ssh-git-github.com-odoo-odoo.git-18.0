@@ -112,7 +112,7 @@ class RecordsDocumentType(models.Model):
     # New Fields from analysis
     partner_id = fields.Many2one('res.partner', string='Customer')
     department_id = fields.Many2one('hr.department', string='Department')
-    category_id = fields.Many2one('records.category', string='Category')
+    category_id = fields.Many2one('records.category', string='Record Category')
     retention_type = fields.Selection([('permanent', 'Permanent'), ('temporary', 'Temporary')], string='Retention Type')
     retention_event = fields.Selection([('creation', 'Creation Date'), ('end_of_year', 'End of Fiscal Year'), ('last_activity', 'Last Activity Date')], string='Retention Event')
     is_legal_hold = fields.Boolean(string='Legal Hold')

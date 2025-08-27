@@ -71,9 +71,9 @@ class RecordsRetentionRule(models.Model):
     state = fields.Selection(related='policy_id.state', readonly=True, store=True)
     next_action_date = fields.Date(string='Next Action Date')
     next_action = fields.Selection([('review', 'Review'), ('destroy', 'Destroy')], string='Next Action')
-    expiration_date = fields.Date(string='Expiration Date', compute='_compute_expiration_details', store=True)
-    is_expired = fields.Boolean(string='Is Expired', compute='_compute_expiration_details')
-    overdue_days = fields.Integer(string='Overdue Days', compute='_compute_expiration_details')
+    expiration_date = fields.Date(string='Expiration Date', compute='_compute_expiration_details', store=True, compute_sudo=True)
+    is_expired = fields.Boolean(string='Is Expired', compute='_compute_expiration_details', store=True, compute_sudo=True)
+    overdue_days = fields.Integer(string='Overdue Days', compute='_compute_expiration_details', store=True, compute_sudo=True)
 
     # Consolidated Status Fields
     approval_status = fields.Selection([

@@ -17,25 +17,25 @@ class WorkOrderRetrieval(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
-    
+
     # Partner and Customer Information
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    customer_id = fields.Many2one('res.partner', string='Customer', related='partner_id', store=True)
+    customer_id = fields.Many2one('res.partner', string='Related Customer', related='partner_id', store=True)
     portal_request_id = fields.Many2one('portal.request', string='Portal Request', ondelete='set null')
-    
+
     # Assignment and Team
     user_id = fields.Many2one('res.users', string='Assigned To', default=lambda self: self.env.user, tracking=True)
     assigned_team_id = fields.Many2one('hr.department', string='Assigned Team')
     team_leader_id = fields.Many2one('res.users', string='Team Leader')
     technician_ids = fields.Many2many('res.users', string='Technicians')
-    
+
     # Scheduling and Dates
     scheduled_date = fields.Datetime(string='Scheduled Start Date', tracking=True)
     start_date = fields.Datetime(string='Start Date')
     completion_date = fields.Datetime(string='Completion Date')
     estimated_duration = fields.Float(string='Estimated Duration (Hours)', help='Estimated time in hours')
     actual_duration = fields.Float(string='Actual Duration (Hours)', help='Actual time spent in hours')
-    
+
     # Status and Priority
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -45,16 +45,16 @@ class WorkOrderRetrieval(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
     ], string='Status', default='draft', tracking=True)
-    
+
     priority = fields.Selection([
         ('0', 'Normal'),
         ('1', 'High'),
         ('2', 'Urgent'),
         ('3', 'Critical')
     ], string='Priority', default='0', tracking=True)
-    
+
     urgency_reason = fields.Text(string='Urgency Reason')
-    
+
     # Work Order Details
     work_order_type = fields.Selection([
         ('file_retrieval', 'File Retrieval'),
@@ -62,7 +62,7 @@ class WorkOrderRetrieval(models.Model):
         ('box_retrieval', 'Box Retrieval'),
         ('bulk_retrieval', 'Bulk Retrieval')
     ], string='Retrieval Type', default='file_retrieval')
-    
+
     # Location and Access
     service_location_id = fields.Many2one('records.location', string='Service Location')
     customer_address = fields.Text(string='Customer Address')
@@ -70,16 +70,16 @@ class WorkOrderRetrieval(models.Model):
     access_restrictions = fields.Text(string='Access Restrictions')
     contact_person = fields.Char(string='Contact Person')
     contact_phone = fields.Char(string='Contact Phone')
-    
+
     # Equipment and Vehicle
     equipment_ids = fields.Many2many('maintenance.equipment', string='Equipment Required')
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle')
-    
+
     # Items to Retrieve
     item_count = fields.Integer(string='Number of Items', default=1)
     item_descriptions = fields.Text(string='Item Descriptions')
     special_instructions = fields.Text(string='Special Instructions')
-    
+
     # Completion and Quality
     completion_notes = fields.Text(string='Completion Notes')
     customer_signature = fields.Binary(string='Customer Signature')
@@ -90,17 +90,17 @@ class WorkOrderRetrieval(models.Model):
         ('4', 'Satisfied'),
         ('5', 'Very Satisfied')
     ], string='Customer Satisfaction')
-    
+
     quality_check_passed = fields.Boolean(string='Quality Check Passed', default=True)
     supervisor_approval = fields.Boolean(string='Supervisor Approval')
-    
+
     # Financial
     estimated_cost = fields.Monetary(string='Estimated Cost')
     actual_cost = fields.Monetary(string='Actual Cost')
-    currency_id = fields.Many2one('res.currency', string='Currency', 
+    currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda self: self.env.company.currency_id)
     billable = fields.Boolean(string='Billable', default=True)
-    
+
     # Related Records
     coordinator_id = fields.Many2one('work.order.coordinator', string='Work Order Coordinator')
 

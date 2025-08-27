@@ -34,7 +34,7 @@ class DestructionItem(models.Model):
 
     # Link to the parent destruction order
     records_destruction_id = fields.Many2one('naid.destruction.record', string='Destruction Record', ondelete='cascade', required=True)
-    destruction_record_id = fields.Many2one('naid.destruction.record', string="Destruction Record")
+    destruction_record_id = fields.Many2one('naid.destruction.record', string="Related Destruction Record")
     bale_id = fields.Many2one('paper.bale', string="Paper Bale")
     destruction_id = fields.Many2one('records.destruction', string="Destruction Order")
 
