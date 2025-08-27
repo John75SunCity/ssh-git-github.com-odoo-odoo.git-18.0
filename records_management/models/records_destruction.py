@@ -59,7 +59,7 @@ class RecordsDestruction(models.Model):
     )
     responsible_user_id = fields.Many2one(
         'res.users',
-        string='Responsible User',
+        string='Destruction Supervisor',
         default=lambda self: self.env.user,
         tracking=True
     )
