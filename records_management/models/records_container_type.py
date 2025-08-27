@@ -27,6 +27,7 @@ class RecordsContainerType(models.Model):
     height = fields.Float(string="Height (in)")
     cubic_feet = fields.Float(string="Cubic Feet", compute='_compute_cubic_feet', store=True)
     weight_capacity = fields.Float(string="Weight Capacity (lbs)")
+    average_weight_lbs = fields.Float(string="Average Weight (lbs)", help="Average weight of containers of this type")
 
     # ============================================================================
     # PRICING & BILLING

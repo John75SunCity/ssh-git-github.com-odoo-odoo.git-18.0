@@ -41,13 +41,14 @@ class RecordsRetentionPolicyVersion(models.Model):
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', related='policy_id.company_id', store=True, readonly=True)
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Auto-generate version name if not provided."""
-        if not vals.get('name') and vals.get('policy_id') and vals.get('version'):
-            policy = self.env['records.retention.policy'].browse(vals['policy_id'])
-            vals['name'] = f"{policy.name} v{vals['version']}"
-        return super().create(vals)
+        for vals in vals_list:
+            if not vals.get('name') and vals.get('policy_id') and vals.get('version'):
+                policy = self.env['records.retention.policy'].browse(vals['policy_id'])
+                vals['name'] = f"{policy.name} v{vals['version']}"
+        return super().create(vals_list)
 
     @api.constrains('policy_id', 'version')
     def _check_unique_version(self):
