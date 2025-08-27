@@ -39,7 +39,6 @@ class RecordsRetentionPolicy(models.Model):
         required=True,
         copy=False,
         readonly=True,
-        states={'draft': [('readonly', False)]},
         default=DEFAULT_CODE,
         tracking=True
     )

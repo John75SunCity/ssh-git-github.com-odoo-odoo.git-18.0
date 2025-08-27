@@ -16,7 +16,7 @@ class MobilePhoto(models.Model):
     active = fields.Boolean(string="Active", default=True)
 
     # Relational fields to link photos to operations
-    wizard_id = fields.Many2one('mobile.bin.key.wizard', string="Related Wizard")
+    wizard_reference = fields.Char(string="Related Wizard Reference", help="Reference to the mobile wizard that created this photo")
 
     # Work Order and FSM Integration
     fsm_task_id = fields.Many2one('project.task', string="FSM Task",
@@ -213,7 +213,7 @@ class MobilePhoto(models.Model):
             'device_info': mobile_data.get('device_info'),
             'file_size': mobile_data.get('file_size'),
             'resolution': mobile_data.get('resolution'),
-            'wizard_id': mobile_data.get('wizard_id'),
+            'wizard_reference': str(mobile_data.get('wizard_id')) if mobile_data.get('wizard_id') else False,
             'fsm_task_id': mobile_data.get('fsm_task_id'),
             'work_order_reference': mobile_data.get('work_order_reference'),
             'container_id': mobile_data.get('container_id'),

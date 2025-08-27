@@ -30,7 +30,7 @@ class Photo(models.Model):
     file_size = fields.Integer(string='File Size (bytes)', compute='_compute_file_info', store=True)
     file_type = fields.Char(string='File Type', compute='_compute_file_info', store=True)
     resolution = fields.Char(string='Resolution', compute='_compute_resolution', store=True)
-    mobile_bin_key_wizard_id = fields.Many2one('mobile.bin.key.wizard', string='Mobile Bin Key Wizard')
+    mobile_wizard_reference = fields.Char(string='Mobile Wizard Reference', help="Reference to the mobile wizard")
     partner_id = fields.Many2one('res.partner', string='Customer')
     state = fields.Selection([
         ('draft', 'Draft'),
