@@ -33,7 +33,7 @@ class NaidCertificate(models.Model):
 
     # FSM & Operational Links
     fsm_task_id = fields.Many2one('project.task', string='FSM Work Order', readonly=True, help="Link to the Field Service task for this destruction.")
-    technician_user_id = fields.Many2one('res.users', string='Technician', related='fsm_task_id.user_id', store=True, readonly=True)
+    technician_user_id = fields.Many2one('res.users', string='Technician', related='fsm_task_id.responsible_id', store=True, readonly=True)
 
     # Link to the source of the destruction
     res_model = fields.Char(string='Related Document Model', readonly=True)
