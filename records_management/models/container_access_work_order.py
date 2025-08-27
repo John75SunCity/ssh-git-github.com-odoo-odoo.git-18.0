@@ -55,7 +55,7 @@ class ContainerAccessWorkOrder(models.Model):
     )
     user_id = fields.Many2one(
         'res.users',
-        string='Work Order Coordinator',
+        string='Assigned User',
         default=lambda self: self.env.user,
         tracking=True,
         help="User responsible for coordinating this work order."
@@ -179,7 +179,7 @@ class ContainerAccessWorkOrder(models.Model):
     max_visitors = fields.Integer(string='Max Visitors Allowed', default=1)
     coordinator_id = fields.Many2one(
         'hr.employee',
-        string='Work Order Coordinator',
+        string='Field Coordinator',
         help="Employee coordinating this access work order."
     )
 
