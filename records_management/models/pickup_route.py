@@ -96,6 +96,23 @@ class PickupRoute(models.Model):
     notes = fields.Text(string='Route Notes')
     special_instructions = fields.Text(string='Special Instructions')
 
+    # ============================================================================
+    # CONSOLIDATED FIELDS (migrated from fsm.route.management)
+    # ============================================================================
+    route_type = fields.Selection([
+        ('pickup', 'Pickup'),
+        ('delivery', 'Delivery'),
+        ('mixed', 'Mixed')
+    ], string='Route Type', default='pickup')
+
+    max_stops_per_route = fields.Integer(string='Max Stops', default=50)
+    max_driving_hours = fields.Float(string='Max Driving Hours', default=8.0)
+
+    service_area_ids = fields.Many2many('res.country.state', string='Service Areas')
+    customer_instructions = fields.Text(string='Customer Instructions')
+
+    backup_driver_id = fields.Many2one('res.users', string='Backup Driver')
+
     # Remove all the incorrect field definitions and keep only proper computed fields
     container_count = fields.Integer(string='Container Count', compute='_compute_container_count')
     pickup_count = fields.Integer(string='Pickup Count', compute='_compute_pickup_count')
@@ -449,3 +466,40 @@ class PickupRoute(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
+
+    # ============================================================================
+    # BUSINESS LOGIC HELPERS (consolidated from fsm.route.management)
+    # ============================================================================
+    def _get_next_business_day(self, current_date):
+        """Get next business day (Monday-Friday)"""
+        from datetime import timedelta
+        next_date = current_date + timedelta(days=1)
+        while next_date.weekday() > 4:  # Saturday=5, Sunday=6
+            next_date += timedelta(days=1)
+        return next_date
+
+    # ============================================================================
+    # CONSTRAINTS (enhanced from fsm.route.management)
+    # ============================================================================
+    @api.constrains('planned_start_time', 'planned_end_time')
+    def _check_time_logic(self):
+        for record in self:
+            if (record.planned_start_time and record.planned_end_time and
+                record.planned_start_time >= record.planned_end_time):
+                raise ValidationError(_("Start time must be before end time."))
+
+    @api.constrains('route_date')
+    def _check_route_date(self):
+        for record in self:
+            if record.route_date and record.route_date < fields.Date.today():
+                raise ValidationError(_("Cannot schedule routes in the past."))
+
+    @api.constrains('pickup_request_ids')
+    def _check_max_stops(self):
+        for record in self:
+            if len(record.pickup_request_ids) > record.max_stops_per_route:
+                raise ValidationError(
+                    _("Route exceeds maximum stops limit (%s/%s)") % (
+                        len(record.pickup_request_ids), record.max_stops_per_route
+                    )
+                )

@@ -58,7 +58,7 @@ class ShreddingTeam(models.Model):
     equipment_ids = fields.Many2many('maintenance.equipment', string="Assigned Equipment", domain="[('equipment_category', '=', 'shredder')]")
     primary_equipment_id = fields.Many2one('maintenance.equipment', string="Primary Shredder")
     mobile_unit = fields.Boolean(string="Is Mobile Unit")
-    base_location_id = fields.Many2one('stock.location', string="Base Location")
+    base_location_id = fields.Many2one('records.location', string="Base Location")
     service_area_ids = fields.Many2many('res.country.state', string="Service Areas")
     travel_radius = fields.Float(string="Travel Radius (km)")
     emergency_response = fields.Boolean(string="Emergency Response Team")

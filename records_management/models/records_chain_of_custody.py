@@ -7,6 +7,11 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 class RecordsChainOfCustody(models.Model):
     _name = 'records.chain.of.custody'
+    location_id = fields.Many2one("records.location", string="Storage Location")
+    department_id = fields.Many2one("records.department", string="Department")
+    container_type_id = fields.Many2one("records.container.type", string="Container Type")
+    temp_inventory_id = fields.Many2one("temp.inventory", string="Temporary Inventory")
+    document_type_id = fields.Many2one("records.document.type", string="Document Type")
     _description = 'Records Chain of Custody'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'custody_date desc, sequence, name'

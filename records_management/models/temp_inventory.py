@@ -37,7 +37,7 @@ class TempInventory(models.Model):
     # ============================================================================
     # LOCATION & CAPACITY
     # ============================================================================
-    location_id = fields.Many2one('stock.location', string="Physical Location")
+    location_id = fields.Many2one('records.location', string="Physical Location")
     capacity_limit = fields.Integer(string="Capacity Limit (Items)", default=100)
     current_count = fields.Integer(string="Current Item Count", compute='_compute_current_count', store=True)
     available_capacity = fields.Integer(string="Available Capacity", compute='_compute_capacity_metrics', store=True)

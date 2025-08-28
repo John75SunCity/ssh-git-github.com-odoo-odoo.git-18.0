@@ -59,7 +59,7 @@ class ProjectTask(models.Model):
     actual_end_time = fields.Datetime(string="Actual End", readonly=True)
 
     # --- Route & Vehicle ---
-    route_id = fields.Many2one('fsm.route', string="Route")
+    route_id = fields.Many2one('pickup.route', string="Pickup Route")
     vehicle_id = fields.Many2one('fleet.vehicle', string="Vehicle")
 
     # --- Compliance & Audit ---

@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError, UserError
 
 class ScanDigitalAsset(models.Model):
     _name = 'scan.digital.asset'
+    coordinator_id = fields.Many2one("work.order.coordinator", string="Coordinator")
     _description = 'Scanned Digital Asset'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'

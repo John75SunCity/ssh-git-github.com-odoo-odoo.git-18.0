@@ -1004,16 +1004,6 @@
             <field name="name">Fsm Reschedule Wizard</field>
         </record>
 
-        <record id="model_fsm_route" model="ir.model">
-            <field name="model">fsm.route</field>
-            <field name="name">Fsm Route</field>
-        </record>
-
-        <record id="model_fsm_route_management" model="ir.model">
-            <field name="model">fsm.route.management</field>
-            <field name="name">Fsm Route Management</field>
-        </record>
-
         <record id="model_pickup_request" model="ir.model">
             <field name="model">pickup.request</field>
             <field name="name">Pickup Request</field>

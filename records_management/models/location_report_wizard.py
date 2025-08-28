@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 
 
 class LocationReport(models.AbstractModel):
+    _inherit = ['mail.thread']
     """
     Abstract model to prepare data for the Location Utilization QWeb report.
     """
@@ -26,6 +27,7 @@ class LocationReport(models.AbstractModel):
 
 
 class LocationReportWizard(models.TransientModel):
+    _inherit = ['mail.thread']
     """
     Wizard to generate a report on location utilization.
     """

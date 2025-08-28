@@ -959,7 +959,7 @@ class RelationshipAuditorOptimizer:
         report = self.generate_comprehensive_report()
 
         report_file = os.path.join(
-            self.base_path, "development-tools", "comprehensive_audit_report.json"
+            self.base_path, "development-tools", "analysis-reports", "comprehensive_audit_report.json"
         )
         with open(report_file, "w") as f:
             json.dump(report, f, indent=2, default=str)
@@ -1098,7 +1098,10 @@ class RelationshipAuditorOptimizer:
 
 
 def main():
-    base_path = "/workspaces/ssh-git-github.com-odoo-odoo.git-18.0"
+    # Get the actual current working directory or use relative path
+    import os
+    # Since we're in development-tools/scripts/, go up two levels to get to workspace root
+    base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
     auditor = RelationshipAuditorOptimizer(base_path)
 
@@ -1109,27 +1112,27 @@ def main():
 
     # Focus on task_id specific issues
     task_id_fixes = [fix for fix in fixes if 'task_id' in fix.get('field_name', '') or 'task_id' in fix.get('inverse_name', '')]
-    
+
     if task_id_fixes:
         print(f"\n🚨 FOUND {len(task_id_fixes)} task_id related fixes:")
         for fix in task_id_fixes:
             print(f"   ⚡ {fix['description']}")
-        
+
         print("\n❓ Apply task_id fixes immediately? They resolve the critical KeyError.")
         # Automatically apply task_id fixes since they're critical
         print("🔧 APPLYING TASK_ID FIXES AUTOMATICALLY...")
         auditor.apply_fixes(task_id_fixes, dry_run=False)
         print("✅ Task_id fixes applied!")
-    
+
     if fixes:
         print(f"\n📊 FULL AUDIT SUMMARY: Found {len(fixes)} total fixable issues.")
-        
+
         # Show breakdown by type
         fix_types = {}
         for fix in fixes:
             fix_type = fix.get('type', 'unknown')
             fix_types[fix_type] = fix_types.get(fix_type, 0) + 1
-        
+
         print("\n📋 Fix types breakdown:")
         for fix_type, count in fix_types.items():
             print(f"   - {fix_type}: {count}")
@@ -1140,7 +1143,7 @@ def main():
             print(f"\n� {len(priority_fixes)} HIGH PRIORITY relationship fixes:")
             for i, fix in enumerate(priority_fixes[:10]):
                 print(f"   {i+1}. {fix['description']}")
-            
+
             if priority_fixes and len(priority_fixes) > 10:
                 print(f"   ... and {len(priority_fixes) - 10} more")
 

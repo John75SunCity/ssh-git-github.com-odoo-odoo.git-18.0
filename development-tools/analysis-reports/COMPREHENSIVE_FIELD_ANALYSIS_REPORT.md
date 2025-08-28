@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-28T08:05:58.845532+00:00
+Generated: 2025-08-28T19:42:44.961639+00:00
 
 ## validate_imports.py
 
@@ -200,7 +200,7 @@ Exit code: 0
 
 
 
-📊 Found 45 domain references with field access
+📊 Found 43 domain references with field access
 
 ⚠️  Domain field references (may need validation):
 
@@ -228,7 +228,7 @@ Exit code: 0
 
     product_category_id = fields.Many2one(
 
-   • ... and 40 more domain references
+   • ... and 38 more domain references
 
 
 
@@ -254,9 +254,9 @@ AUDIT SUMMARY
 
 ================================================================================
 
-📊 Total models: 251
+📊 Total models: 248
 
-📊 Total field references: 138
+📊 Total field references: 136
 
 🚨 Critical issues found: 36
 
@@ -362,7 +362,7 @@ document_type_id (unknown):
 
 ================================================================================
 
-SUMMARY: Found 0 potential issues in 214 related fields
+SUMMARY: Found 0 potential issues in 216 related fields
 
 ================================================================================
 

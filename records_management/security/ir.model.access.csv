@@ -109,8 +109,6 @@ access_file_retrieval_work_order_item_user,file.retrieval.work.order.item.user,m
 access_fsm_notification_user,fsm.notification.user,model_fsm_notification,records_management.group_records_user,1,1,1,0
 access_fsm_notification_manager_user,fsm.notification.manager.user,model_fsm_notification_manager,records_management.group_records_user,1,1,1,0
 access_fsm_reschedule_wizard_user,fsm.reschedule.wizard.user,model_fsm_reschedule_wizard,records_management.group_records_user,1,1,1,0
-access_fsm_route_user,fsm.route.user,model_fsm_route,records_management.group_records_user,1,1,1,0
-access_fsm_route_management_user,fsm.route.management.user,model_fsm_route_management,records_management.group_records_user,1,1,1,0
 access_full_customization_name_user,full_customization_name.user,model_full_customization_name,records_management.group_records_user,1,1,1,0
 access_hard_drive_scan_wizard_user,hard.drive.scan.wizard.user,model_hard_drive_scan_wizard,records_management.group_records_user,1,1,1,0
 access_hard_drive_scan_wizard_line_user,hard.drive.scan.wizard.line.user,model_hard_drive_scan_wizard_line,records_management.group_records_user,1,1,1,0

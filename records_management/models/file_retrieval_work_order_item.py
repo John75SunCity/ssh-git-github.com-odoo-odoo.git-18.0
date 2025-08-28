@@ -25,6 +25,7 @@ _logger = logging.getLogger(__name__)
 
 class FileRetrievalWorkOrderItem(models.Model):
     """
+    coordinator_id = fields.Many2one("work.order.coordinator", string="Coordinator")
     STREAMLINED File Retrieval Work Order Item
 
     Focuses on essential barcode scanning workflow with shadow auditing.

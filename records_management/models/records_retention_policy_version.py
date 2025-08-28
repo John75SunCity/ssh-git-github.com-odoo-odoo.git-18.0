@@ -10,6 +10,7 @@ from odoo.exceptions import ValidationError
 
 class RecordsRetentionPolicyVersion(models.Model):
     """
+    parent_policy_id = fields.Many2one("records.retention.policy", string="Parent Policy")
     Records Retention Policy Version
     Tracks versions of retention policies for audit and compliance.
     """

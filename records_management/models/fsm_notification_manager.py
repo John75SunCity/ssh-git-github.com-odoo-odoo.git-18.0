@@ -41,7 +41,7 @@ class FsmNotificationManager(models.Model):
                 vals['task_id'] = related_record.id
             elif related_record._name == 'pickup.request':
                 vals['pickup_request_id'] = related_record.id
-            elif related_record._name == 'fsm.route':
+            elif related_record._name == 'pickup.route':
                 vals['route_id'] = related_record.id
 
         # Populate subject and message from a template or defaults

@@ -126,7 +126,7 @@ class RecordsDocumentType(models.Model):
     is_default = fields.Boolean(string='Is Default Type')
     audit_log_ids = fields.One2many('records.audit.log', 'document_type_id', string='Audit Log')
     related_regulation = fields.Char(string='Related Regulation')
-    storage_location_id = fields.Many2one('stock.location', string='Storage Location')
+    storage_location_id = fields.Many2one('records.location', string='Storage Location')
     is_template = fields.Boolean(string='Is Template')
     template_id = fields.Many2one('records.document.type', string='Template')
     child_type_ids = fields.One2many('records.document.type', 'parent_type_id', string='Child Types')

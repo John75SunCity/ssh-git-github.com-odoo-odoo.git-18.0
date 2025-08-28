@@ -96,7 +96,6 @@ from . import approval_history
 from . import naid_performance_history
 from . import records_container_log
 from . import mobile_photo
-from . import fsm_route_management
 from . import fsm_notification_manager
 from . import records_container_movement
 from . import product_container_type
@@ -176,7 +175,6 @@ from . import inventory_item_destruction
 from . import stock_lot_attribute_option
 from . import payment_split
 from . import paper_bale
-from . import fsm_route
 from . import work_order_coordinator
 from . import document_retrieval_item
 from . import file_retrieval

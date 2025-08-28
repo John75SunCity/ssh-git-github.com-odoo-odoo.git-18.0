@@ -90,7 +90,7 @@ class RecordsRetentionPolicy(models.Model):
     tag_ids = fields.Many2many('records.tag', string='Tags')
     country_ids = fields.Many2many('res.country', string='Applicable Countries')
     state_ids = fields.Many2many('res.country.state', string='Applicable States')
-    storage_location_id = fields.Many2one('stock.location', string='Storage Location')
+    storage_location_id = fields.Many2one('records.location', string='Storage Location')
 
     # === COMPUTED COUNTS & STATS ===
     rule_count = fields.Integer(string="Rule Count", compute='_compute_counts')

@@ -10,6 +10,10 @@ class RecordsCategory(models.Model):
     _order = 'complete_name'
 
     name = fields.Char(string='Name', required=True)
+    code = fields.Char(string="Code")
+    arch = fields.Text(string="Architecture")
+    state = fields.Selection([("draft", "Draft"), ("active", "Active")], default="draft")
+    model = fields.Char(string="Related Model")
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     parent_path = fields.Char(index=True)

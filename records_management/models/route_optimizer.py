@@ -198,14 +198,14 @@ class RouteOptimizer(models.Model):
         except (json.JSONDecodeError, TypeError):
             raise UserError(_("Could not parse optimization results. Please re-run the optimization."))
 
-        FsmRoute = self.env['fsm.route']
+        PickupRoute = self.env['pickup.route']
         FsmOrder = self.env['project.task']
 
         for route_data in results.get('routes', []):
-            route = FsmRoute.create({
+            route = PickupRoute.create({
                 'name': _('Optimized Route %s - %s') % (route_data['route_number'], self.optimization_date.strftime('%Y-%m-%d')),
-                'date': self.optimization_date,
-                'estimated_distance': route_data.get('distance', 0),
+                'route_date': self.optimization_date,
+                'total_distance': route_data.get('distance', 0),
                 'estimated_duration': route_data.get('time', 0),
                 'state': 'draft',
             })

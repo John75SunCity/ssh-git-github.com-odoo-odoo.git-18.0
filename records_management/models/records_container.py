@@ -51,7 +51,7 @@ class RecordsContainer(models.Model):
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
     department_id = fields.Many2one('records.department', string="Department", domain="[('partner_id', '=', partner_id)]", tracking=True)
-    location_id = fields.Many2one('stock.location', string="Current Location", tracking=True, domain="[('usage', '=', 'internal')]")
+    location_id = fields.Many2one('records.location', string="Current Location", tracking=True, domain="[('usage', '=', 'internal')]")
     container_type_id = fields.Many2one('records.container.type', string="Container Type", required=True)
     retention_policy_id = fields.Many2one('records.retention.policy', string="Retention Policy")
     temp_inventory_id = fields.Many2one('temp.inventory', string="Temporary Inventory")
