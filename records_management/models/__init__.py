@@ -197,7 +197,7 @@ from . import portal_request
 from . import hr_employee
 from . import document_retrieval_equipment
 from . import records_document
-from ..wizard import records_document_flag_permanent_wizard
+from . import records_document_flag_permanent_wizard
 from . import location_group
 from . import records_retrieval_work_order
 from . import records_container
