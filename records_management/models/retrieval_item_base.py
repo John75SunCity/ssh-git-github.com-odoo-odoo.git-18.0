@@ -125,6 +125,7 @@ class RetrievalItemBase(models.AbstractModel):
     estimated_weight = fields.Float(string='Estimated Weight (kg)')
     actual_weight = fields.Float(string='Actual Weight (kg)')
     dimensions = fields.Char(string='Dimensions (LxWxH)')
+    estimated_pages = fields.Integer(string='Estimated Pages', default=0)
 
     # ============================================================================
     # NOT FOUND HANDLING
