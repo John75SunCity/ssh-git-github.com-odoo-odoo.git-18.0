@@ -16,7 +16,7 @@
     'depends': [
         'base', 'mail', 'web', 'product', 'stock', 'account', 'sale', 'purchase',
         'portal', 'website', 'point_of_sale', 'sms', 'survey',
-        'hr', 'project', 'maintenance', 'fleet', 'crm',
+        'hr', 'project', 'industry_fsm', 'maintenance', 'fleet', 'crm',
         'sale_management', 'website_sale'
     ],
     "data": [
@@ -32,6 +32,7 @@
         "data/ir_sequence_data.xml",
         "data/load_data.xml",
         "data/mail_activity_data_todo.xml",
+        "data/model_external_ids.xml",
         "data/model_records_demo.xml",
         "data/naid_certificate_data.xml",
         "data/naid_compliance_data.xml",
@@ -53,12 +54,13 @@
         "views/advanced_billing_storage_line_views.xml",
         "views/advanced_billing_views.xml",
         "views/billing_period_views.xml",
+        "views/bin_issue_report_wizard_views.xml",
         "views/customer_negotiated_rate_views.xml",
-        "views/fleet_vehicle_enhanced_views.xml",
-        "views/pickup_route_views.xml",
         "views/fleet_fsm_integration_menus.xml",
+        "views/fleet_vehicle_enhanced_views.xml",
         "views/maintenance_request_views.xml",
         "views/naid_custody_views.xml",
+        "views/pickup_route_views.xml",
         "views/records_document_flag_permanent_wizard_views.xml",
         "views/records_management_dashboard_view.xml",
         "views/records_management_dashboard.xml",
@@ -69,22 +71,28 @@
         "views/records_management_shredding_view.xml",
         "views/records_management_tree.xml",
         "views/records_service_type_views.xml",
+        "views/shredding_bin_barcode_wizard_views.xml",
+        "views/shredding_service_bin_views.xml",
+        "views/shredding_service_event_views.xml",
         "reports/account_move_line_reports.xml",
         "reports/additional_reports.xml",
         "reports/customer_negotiated_rate_report.xml",
         "reports/maintenance_request_report.xml",
         "reports/naid_custody_report.xml",
         "reports/records_service_type_report.xml",
+        "reports/shredding_bin_barcode_wizard_report.xml",
+        "reports/shredding_service_bin_report.xml",
+        "reports/shredding_service_event_report.xml",
         "reports/shredding_service_report.xml",
         "templates/records_dashboard_templates.xml",
-        "templates/records_management_dashboard_templates.xmltemplates/records_management_dashboard_templates.xml",
+        "templates/records_management_dashboard_templates.xml",
         "templates/records_management_portal_templates.xml",
         "templates/records_portal_templates.xml"
     ],
     # Use glob patterns for views/templates if possible
-        'demo': [
-            'demo/demo_records.xml'
-        ],
+    'demo': [
+        'demo/demo_records.xml'
+    ],
     'assets': {
         'web.assets_backend': [
             'records_management/static/src/lib/vis/vis-network.min.js',

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Customer Inventory Report Action -->
+        <!--
+        Customer Inventory Report Action:
+        Defines a QWeb PDF report for customer inventory, binding it to the `res.partner` model.
+        This report generates a downloadable PDF file named dynamically based on the customer's name.
+        -->
         <record id="action_customer_inventory_report" model="ir.actions.report">
             <field name="name">Customer Inventory Report</field>
             <field name="model">res.partner</field>
@@ -13,7 +17,11 @@
             <field name="print_report_name">'Inventory_Report_%s' % (object.name)</field>
         </record>
 
-        <!-- Portal Access Report (HTML version for customers) -->
+        <!--
+        Portal Access Report Action:
+        Defines an HTML version of the customer inventory report for portal users.
+        This report is accessible via the customer portal and provides a web-friendly view.
+        -->
         <record id="action_customer_inventory_portal" model="ir.actions.report">
             <field name="name">My Inventory</field>
             <field name="model">res.partner</field>
@@ -21,7 +29,11 @@
             <field name="report_name">records_management.customer_inventory_portal_template</field>
         </record>
 
-        <!-- Main Customer Inventory Report Template -->
+        <!--
+        Main Customer Inventory Report Template:
+        The primary QWeb template for generating the customer inventory report.
+        Includes customer details, inventory summary, container details, and compliance information.
+        -->
         <template id="customer_inventory_template">
             <t t-call="web.external_layout">
                 <div class="page">
@@ -53,7 +65,7 @@
 
                         <!-- Records Management Integration - Containers -->
                         <t t-set="containers" t-value="env['records.container'].search([('customer_id', '=', partner.id), ('active', '=', True)])"/>
-                        
+
                         <div class="inventory-summary" style="margin-bottom: 30px;">
                             <h3>Inventory Summary</h3>
                             <div class="row">
@@ -100,17 +112,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                                                <tr>
-                                    <td><strong>Name:</strong></td>
-                                    <td><span t-esc="doc.name or 'N/A'"/></td>
-                                </tr>
-                                <tr t-if="doc.create_date">
-                                    <td><strong>Created:</strong></td>
-                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
-                                </tr>
-                                <tr t-if="doc.user_id">
-                                    <td><strong>Created by:</strong></td>
-                                    <td><span t-esc="doc.user_id.name"/></td>
+                                <tr t-foreach="containers" t-as="container">
+                                    <td><span t-field="container.name"/></td>
+                                    <td><span t-field="container.container_type_id.name"/></td>
+                                    <td><span t-field="container.location_id.name"/></td>
+                                    <td><span t-field="container.document_count"/></td>
+                                    <td><span t-field="container.cubic_feet"/></td>
+                                    <td><span t-field="container.weight"/></td>
+                                    <td><span t-field="container.state"/></td>
+                                    <td><span t-field="container.last_access_date" t-options='{"widget": "date"}'/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -123,7 +133,7 @@
                                 <div class="location-section" style="margin-bottom: 20px;">
                                     <h4><span t-field="location.name"/> (<span t-field="location.code"/>)</h4>
                                     <t t-set="location_containers" t-value="containers.filtered(lambda c: c.location_id == location)"/>
-                                    
+
                                     <div class="row">
                                         <div class="col-6">
                                             <p><strong>Address:</strong><br/>
@@ -164,7 +174,11 @@
             </t>
         </template>
 
-        <!-- Portal Version Template (HTML for customer access) -->
+        <!--
+        Portal Version Template:
+        A responsive HTML template for displaying the customer inventory report in the portal.
+        Includes summary cards for mobile users and a detailed table for desktop users.
+        -->
         <template id="customer_inventory_portal_template">
             <t t-call="portal.portal_layout">
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -221,7 +235,11 @@
             </t>
         </template>
 
-        <!-- Reusable container table partial -->
+        <!--
+        Reusable Container Table Partial:
+        A partial template for rendering container details in a table format.
+        Used in both the main report and the portal version for consistency.
+        -->
         <template id="container_table_partial">
             <table class="table table-hover">
                 <thead>
@@ -234,18 +252,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                                                    <tr>
-                                    <td><strong>Name:</strong></td>
-                                    <td><span t-esc="doc.name or 'N/A'"/></td>
-                                </tr>
-                                <tr t-if="doc.create_date">
-                                    <td><strong>Created:</strong></td>
-                                    <td><span t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')" /></td>
-                                </tr>
-                                <tr t-if="doc.user_id">
-                                    <td><strong>Created by:</strong></td>
-                                    <td><span t-esc="doc.user_id.name"/></td>
-                                </tr>
+                    <t t-set="containers" t-value="env['records.container'].search([('customer_id', '=', partner.id)])"/>
+                    <tr t-foreach="containers" t-as="container">
+                        <td><span t-field="container.name"/></td>
+                        <td><span t-field="container.location_id.name"/></td>
+                        <td><span t-field="container.document_count"/></td>
+                        <td><span t-field="container.cubic_feet"/></td>
+                        <td><span t-field="container.state"/></td>
+                    </tr>
                 </tbody>
             </table>
         </template>

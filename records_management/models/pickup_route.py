@@ -4,16 +4,47 @@ from odoo.exceptions import ValidationError, UserError
 
 class PickupRoute(models.Model):
     """
-    Records Management Pickup Route
+    Represents a pickup route in the Records Management module.
 
-    Specialized route management for records pickup operations.
-    Integrates with FSM (project.task) for standard task management while
-    maintaining specialized route optimization and pickup logic.
+    This model is designed to manage and optimize routes for records pickup operations.
+    It integrates with Odoo's Field Service Management (FSM) module to leverage standard
+    task management workflows while providing specialized logic for route planning,
+    optimization, and execution.
+
+    Key Features:
+    - **Route Planning**: Allows creation and management of pickup routes with stops.
+    - **FSM Integration**: Automatically creates FSM tasks for each route, enabling
+      seamless integration with Odoo's project and task management system.
+    - **Route Optimization**: Provides tools to optimize the order of stops for efficiency.
+    - **Metrics and Analytics**: Tracks metrics such as total distance, estimated and
+      actual duration, fuel costs, and efficiency scores.
+    - **State Management**: Supports lifecycle states like draft, planned, in-progress,
+      completed, and cancelled.
+    - **Validation**: Enforces constraints such as maximum stops per route and logical
+      time sequences.
 
     Architecture:
-    - pickup.route: Route planning, optimization, stops management
-    - project.task: FSM task for each route (created automatically)
-    - This provides both specialized route logic + standard Odoo FSM workflows
+    - **Core Fields**: Includes fields for route details (e.g., name, date, driver, vehicle).
+    - **FSM Fields**: Links to FSM tasks and projects for integration.
+    - **Specialized Fields**: Tracks business-specific data like pickup requests, route
+      stops, and completion percentages.
+    - **Computed Fields**: Calculates metrics such as total distance, fuel costs, and
+      efficiency scores.
+    - **Action Methods**: Provides methods for planning, starting, completing, and
+      cancelling routes.
+    - **Validation Methods**: Ensures data integrity and enforces business rules.
+
+    Use Cases:
+    - Managing daily pickup routes for document containers.
+    - Optimizing route efficiency based on distance and time.
+    - Tracking the progress and completion of pickup operations.
+    - Integrating with FSM for task assignment and monitoring.
+
+    Example:
+        - Create a new route with pickup requests.
+        - Plan the route to generate stops.
+        - Start the route and track its progress.
+        - Complete the route and calculate efficiency metrics.
     """
     _name = 'pickup.route'
     _description = 'Pickup Route Management'
@@ -56,7 +87,8 @@ class PickupRoute(models.Model):
         related='fsm_task_id.stage_id.name',
         string='FSM Status',
         store=True,
-        readonly=True
+        readonly=True,
+        translate=False
     )
 
     fsm_project_id = fields.Many2one(
@@ -84,7 +116,7 @@ class PickupRoute(models.Model):
     ], string='Priority', default='normal')
     pickup_request_ids = fields.One2many('pickup.request', 'route_id', string='Pickup Requests')
     route_stop_ids = fields.One2many('pickup.route.stop', 'route_id', string='Route Stops')
-    total_distance = fields.Float(string='Total Distance (km)', compute='_compute_route_metrics', store=True)
+    total_distance = fields.Float(string='Total Distance (miles)', compute='_compute_route_metrics', store=True)
     estimated_duration = fields.Float(string='Estimated Duration (hours)', compute='_compute_route_metrics', store=True)
     actual_duration = fields.Float(string='Actual Duration (hours)', compute='_compute_actual_duration', store=True)
     fuel_cost = fields.Monetary(string='Fuel Cost', compute='_compute_costs', store=True)
@@ -121,10 +153,9 @@ class PickupRoute(models.Model):
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
-    @api.depends('pickup_request_ids')
+    @api.depends('pickup_request_ids', 'pickup_request_ids.container_ids')
     def _compute_container_count(self):
         for record in self:
-            # Assuming containers are linked through pickup requests
             container_count = 0
             for request in record.pickup_request_ids:
                 if hasattr(request, 'container_ids'):
@@ -149,13 +180,13 @@ class PickupRoute(models.Model):
     @api.depends('route_stop_ids.distance')
     def _compute_route_metrics(self):
         for route in self:
-            total_distance = sum(route.route_stop_ids.mapped("distance"))
-            route.total_distance = total_distance
+            total_distance_miles = sum(route.route_stop_ids.mapped("distance"))  # Assume distance is already in miles
+            route.total_distance = total_distance_miles
 
             # Estimate duration based on distance and average speed
-            average_speed = 40  # km/hour
-            if total_distance > 0:
-                route.estimated_duration = total_distance / average_speed
+            average_speed_mph = 25  # miles/hour
+            if total_distance_miles > 0:
+                route.estimated_duration = total_distance_miles / average_speed_mph
             else:
                 route.estimated_duration = 0.0
 
@@ -174,9 +205,9 @@ class PickupRoute(models.Model):
             fuel_cost = 0.0
             if route.total_distance and route.vehicle_id:
                 # Example calculation - adjust based on actual vehicle fuel efficiency
-                fuel_per_km = 0.08  # 8 liters per 100km = 0.08 L/km
-                fuel_price = 1.50   # Price per liter
-                fuel_cost = route.total_distance * fuel_per_km * fuel_price
+                fuel_per_mile = 0.03  # 3 gallons per 100 miles = 0.03 gal/mile
+                fuel_price = 4.00  # Price per gallon
+                fuel_cost = route.total_distance * fuel_per_mile * fuel_price
 
             route.fuel_cost = fuel_cost
             route.total_cost = fuel_cost  # Add other costs as needed
@@ -227,6 +258,7 @@ class PickupRoute(models.Model):
 
         self.write({"state": "planned"})
         self.message_post(body=_("Route planned with %s stops") % len(self.route_stop_ids))
+        return True
 
     def action_start_route(self):
         """Start route execution"""
@@ -239,6 +271,7 @@ class PickupRoute(models.Model):
             "actual_start_time": fields.Datetime.now()
         })
         self.message_post(body=_("Route started by %s") % self.env.user.name)
+        return True
 
     def action_complete_route(self):
         """Complete the route"""
@@ -253,15 +286,15 @@ class PickupRoute(models.Model):
 
         if incomplete_requests:
             raise UserError(_(
-                "Cannot complete route with incomplete requests: %s",
-                ", ".join(incomplete_requests.mapped("name"))
-            ))
+                "Cannot complete route with incomplete requests: %s"
+            ) % ", ".join(incomplete_requests.mapped("name")))
 
         self.write({
             "state": "completed",
             "actual_end_time": fields.Datetime.now()
         })
         self.message_post(body=_("Route completed"))
+        return True
 
     def action_cancel_route(self):
         """Cancel the route"""
@@ -271,6 +304,7 @@ class PickupRoute(models.Model):
 
         self.write({"state": "cancelled"})
         self.message_post(body=_("Route cancelled"))
+        return True
 
     def action_view_pickup_requests(self):
         """View pickup requests for this route"""
@@ -300,11 +334,11 @@ class PickupRoute(models.Model):
         self.route_stop_ids.unlink()
 
         # Create stops from pickup requests
-        for request in self.pickup_request_ids:
+        for idx, request in enumerate(self.pickup_request_ids, start=1):
             self.env['pickup.route.stop'].create({
                 'route_id': self.id,
                 'pickup_request_id': request.id,
-                'sequence': len(self.route_stop_ids) + 1,
+                'sequence': idx,
                 'location': request.pickup_address,
             })
 
@@ -331,7 +365,8 @@ class PickupRoute(models.Model):
     def _check_pickup_requests_same_date(self):
         for route in self:
             if route.pickup_request_ids:
-                request_dates = route.pickup_request_ids.mapped("pickup_date")
+                # Filter out falsy pickup_date values
+                request_dates = [d for d in route.pickup_request_ids.mapped("pickup_date") if d]
                 if len(set(request_dates)) > 1:
                     raise ValidationError(_(
                         "All pickup requests on a route must have the same pickup date"
@@ -380,19 +415,24 @@ class PickupRoute(models.Model):
 
         # Create FSM task
         task_vals = {
-            'name': f"Pickup Route: {self.name}",
+            'name': _("Pickup Route: %s") % self.name,
             'project_id': fsm_project.id,
             'user_ids': [(6, 0, [self.user_id.id])] if self.user_id else [],
             'date_start': self.planned_start_time,
             'date_end': self.planned_end_time,
-            'partner_id': self.route_stop_ids[0].partner_id.id if self.route_stop_ids else False,
-            'description': f"""
+            'partner_id': next((partner.id for partner in self.route_stop_ids.mapped('partner_id') if partner), False),
+            'description': _("""
                 Pickup Route Details:
-                - Route Date: {self.route_date}
-                - Vehicle: {self.vehicle_id.license_plate if self.vehicle_id else 'TBD'}
-                - Stops: {len(self.route_stop_ids)}
-                - Notes: {self.notes or 'No special notes'}
-            """,
+                - Route Date: %s
+                - Vehicle: %s
+                - Stops: %s
+                - Notes: %s
+            """) % (
+                self.route_date,
+                (self.vehicle_id.license_plate or 'TBD') if self.vehicle_id else 'TBD',
+                len(self.route_stop_ids),
+                self.notes or 'No special notes'
+            ),
             'is_fsm': True,  # Mark as field service task
         }
 
@@ -409,7 +449,7 @@ class PickupRoute(models.Model):
             return
 
         sync_vals = {
-            'name': f"Pickup Route: {self.name}",
+            'name': _("Pickup Route: %s") % self.name,
             'date_start': self.planned_start_time,
             'date_end': self.planned_end_time,
         }
@@ -418,7 +458,7 @@ class PickupRoute(models.Model):
         if self.state == 'in_progress':
             # Find "In Progress" stage
             stage = self.env['project.task.type'].search([
-                ('project_ids', 'in', self.fsm_task_id.project_id.id),
+                ('project_id', '=', self.fsm_task_id.project_id.id),
                 ('name', 'ilike', 'progress')
             ], limit=1)
             if stage:
@@ -426,7 +466,7 @@ class PickupRoute(models.Model):
         elif self.state == 'completed':
             # Find "Done" stage
             stage = self.env['project.task.type'].search([
-                ('project_ids', 'in', self.fsm_task_id.project_id.id),
+                ('project_id', '=', self.fsm_task_id.project_id.id),
                 ('fold', '=', True)  # Done stages are typically folded
             ], limit=1)
             if stage:

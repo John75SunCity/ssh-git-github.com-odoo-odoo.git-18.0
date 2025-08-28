@@ -22,3 +22,5 @@ from . import wizard_template
 from . import work_order_bin_assignment_wizard
 from . import customer_inventory_report_wizard
 from . import records_document_flag_permanent_wizard
+from . import shredding_bin_barcode_wizard
+from . import bin_issue_report_wizard

@@ -40,6 +40,10 @@ class MobilePhoto(models.Model):
     partner_id = fields.Many2one('res.partner', string="Customer",
                                  help="Customer related to this photo")
 
+    # Bin Issue Integration
+    bin_issue_id = fields.Many2one('bin.issue.record', string="Bin Issue",
+                                   help="Related bin issue record for this photo")
+
     # Auto-computed from relationships
     project_id = fields.Many2one('project.project', string="Project",
                                  related='fsm_task_id.project_id', store=True)

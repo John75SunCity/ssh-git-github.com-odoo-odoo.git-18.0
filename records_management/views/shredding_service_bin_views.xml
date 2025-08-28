@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================================ -->
+    <!-- SHREDDING SERVICE BIN VIEWS -->
+    <!-- ============================================================================ -->
+
+    <!-- List View -->
+    <record id="view_shredding_service_bin_list" model="ir.ui.view">
+        <field name="name">shredding.service.bin.list</field>
+        <field name="model">shredding.service.bin</field>
+        <field name="arch" type="xml">
+            <tree string="Shredding Service Bins" decoration-success="status == 'active'"
+                  decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'">
+                <field name="barcode"/>
+                <field name="bin_size" widget="badge"/>
+                <field name="status" widget="badge"/>
+                <field name="current_customer_id"/>
+                <field name="current_location"/>
+                <field name="last_service_date" widget="date"/>
+                <field name="fill_count"/>
+                <field name="total_weight" sum="Total Weight" widget="float"/>
+                <field name="estimated_monthly_revenue" sum="Monthly Revenue" widget="monetary"/>
+                <field name="last_scan_date" widget="datetime"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_shredding_service_bin_form" model="ir.ui.view">
+        <field name="name">shredding.service.bin.form</field>
+        <field name="model">shredding.service.bin</field>
+        <field name="arch" type="xml">
+            <form string="Shredding Service Bin">
+                <header>
+                    <button name="action_report_bin_issue" string="Report Issue" type="object"
+                            class="btn-warning" icon="fa-exclamation-triangle"/>
+                    <button name="action_schedule_service" string="Schedule Service" type="object"
+                            class="btn-primary" icon="fa-calendar"
+                            invisible="status == 'retired'"/>
+                    <button name="action_empty_bin" string="Empty Bin" type="object"
+                            class="btn-success" icon="fa-recycle"
+                            invisible="status != 'active' or fill_count == 0"/>
+                    <button name="action_place_bin" string="Place at Customer" type="object"
+                            class="btn-primary" icon="fa-map-marker"
+                            invisible="current_customer_id"/>
+                    <button name="action_recall_bin" string="Recall Bin" type="object"
+                            class="btn-secondary" icon="fa-undo"
+                            invisible="not current_customer_id"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="available,active,maintenance,retired"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_service_history" type="object" class="oe_stat_button" icon="fa-history">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="service_count"/></span>
+                                <span class="o_stat_text">Services</span>
+                            </div>
+                        </button>
+                        <button name="action_view_work_orders" type="object" class="oe_stat_button" icon="fa-wrench">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value"><field name="work_order_count"/></span>
+                                <span class="o_stat_text">Work Orders</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="barcode" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="bin_size" widget="selection_badge" readonly="1"/>
+                        </h2>
+                    </div>
+
+                    <group>
+                        <group name="basic_info" string="Bin Information">
+                            <field name="name"/>
+                            <field name="bin_specifications" readonly="1"/>
+                            <field name="purchase_date"/>
+                            <field name="installation_date"/>
+                            <field name="estimated_weight" widget="float"/>
+                            <field name="weight_percentage"/>
+                        </group>
+
+                        <group name="current_status" string="Current Status">
+                            <field name="current_customer_id" options="{'no_create': True}"/>
+                            <field name="current_location"/>
+                            <field name="placement_date"/>
+                            <field name="last_scan_location_id"/>
+                            <field name="last_scan_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Service Information" name="service_info">
+                            <group>
+                                <group name="service_tracking" string="Service Tracking">
+                                    <field name="last_service_date"/>
+                                    <field name="next_scheduled_service"/>
+                                    <field name="service_frequency"/>
+                                    <field name="fill_count"/>
+                                    <field name="total_weight" widget="float"/>
+                                </group>
+
+                                <group name="billing_info" string="Billing Information">
+                                    <field name="base_monthly_rate" widget="monetary"/>
+                                    <field name="per_service_rate" widget="monetary"/>
+                                    <field name="estimated_monthly_revenue" widget="monetary"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                            </group>
+
+                            <group name="service_notes" string="Service Notes">
+                                <field name="service_notes" nolabel="1" placeholder="Add service notes..."/>
+                            </group>
+                        </page>
+
+                        <page string="Location History" name="location_history">
+                            <field name="location_history_ids" readonly="1">
+                                <tree string="Location History">
+                                    <field name="timestamp" widget="datetime"/>
+                                    <field name="location"/>
+                                    <field name="scan_type"/>
+                                    <field name="user_id"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Service History" name="service_history">
+                            <field name="service_history_ids" readonly="1">
+                                <tree string="Service History">
+                                    <field name="service_date" widget="date"/>
+                                    <field name="service_type"/>
+                                    <field name="weight_collected" widget="float"/>
+                                    <field name="technician_id"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Work Orders" name="work_orders">
+                            <field name="work_order_ids" readonly="1">
+                                <tree string="Work Orders">
+                                    <field name="name"/>
+                                    <field name="stage_id"/>
+                                    <field name="user_ids" widget="many2many_tags"/>
+                                    <field name="date_deadline" widget="date"/>
+                                    <field name="priority" widget="priority"/>
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="Technical Details" name="technical">
+                            <group>
+                                <group name="barcode_info" string="Barcode Information">
+                                    <field name="barcode_product_id"/>
+                                    <field name="bin_category"/>
+                                    <field name="manufacturing_date"/>
+                                </group>
+
+                                <group name="maintenance" string="Maintenance">
+                                    <field name="last_maintenance_date"/>
+                                    <field name="next_maintenance_date"/>
+                                    <field name="maintenance_notes"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_shredding_service_bin_search" model="ir.ui.view">
+        <field name="name">shredding.service.bin.search</field>
+        <field name="model">shredding.service.bin</field>
+        <field name="arch" type="xml">
+            <search string="Search Shredding Bins">
+                <field name="barcode" string="Barcode" filter_domain="[('barcode', 'ilike', self)]"/>
+                <field name="current_customer_id" string="Customer"/>
+                <field name="current_location" string="Location"/>
+                <field name="bin_size"/>
+
+                <filter name="filter_active" string="Active" domain="[('status', '=', 'active')]"/>
+                <filter name="filter_available" string="Available" domain="[('status', '=', 'available')]"/>
+                <filter name="filter_maintenance" string="Maintenance" domain="[('status', '=', 'maintenance')]"/>
+                <filter name="filter_deployed" string="Deployed" domain="[('current_customer_id', '!=', False)]"/>
+                <filter name="filter_needs_service" string="Needs Service"
+                        domain="[('next_scheduled_service', '<=', datetime.datetime.now().strftime('%Y-%m-%d'))]"/>
+
+                <separator/>
+                <filter name="filter_today" string="Scanned Today"
+                        domain="[('last_scan_date', '>=', datetime.datetime.now().replace(hour=0, minute=0, second=0))]"/>
+                <filter name="filter_week" string="This Week"
+                        domain="[('last_scan_date', '>=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
+                    <filter name="group_by_size" string="Bin Size" context="{'group_by': 'bin_size'}"/>
+                    <filter name="group_by_customer" string="Customer" context="{'group_by': 'current_customer_id'}"/>
+                    <filter name="group_by_location" string="Location" context="{'group_by': 'current_location'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_shredding_service_bin_kanban" model="ir.ui.view">
+        <field name="name">shredding.service.bin.kanban</field>
+        <field name="model">shredding.service.bin</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" class="o_kanban_small_column">
+                <field name="barcode"/>
+                <field name="bin_size"/>
+                <field name="status"/>
+                <field name="current_customer_id"/>
+                <field name="current_location"/>
+                <field name="fill_count"/>
+                <field name="estimated_monthly_revenue"/>
+                <field name="last_service_date"/>
+
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="oe_kanban_header">
+                                    <strong><field name="barcode"/></strong>
+                                    <span class="badge badge-pill badge-info">
+                                        <field name="bin_size"/>
+                                    </span>
+                                </div>
+
+                                <div class="oe_kanban_body">
+                                    <div class="oe_kanban_row" t-if="record.current_customer_id.raw_value">
+                                        <i class="fa fa-user"/> <field name="current_customer_id"/>
+                                    </div>
+
+                                    <div class="oe_kanban_row" t-if="record.current_location.raw_value">
+                                        <i class="fa fa-map-marker"/> <field name="current_location"/>
+                                    </div>
+
+                                    <div class="oe_kanban_row">
+                                        <i class="fa fa-recycle"/>
+                                        Fills: <field name="fill_count"/>
+                                    </div>
+
+                                    <div class="oe_kanban_row" t-if="record.estimated_monthly_revenue.raw_value > 0">
+                                        <i class="fa fa-dollar"/>
+                                        <field name="estimated_monthly_revenue" widget="monetary"/>
+                                    </div>
+                                </div>
+
+                                <div class="oe_kanban_footer">
+                                    <div class="oe_kanban_footer_left">
+                                        <field name="last_service_date" widget="date"/>
+                                    </div>
+                                    <div class="oe_kanban_footer_right">
+                                        <button name="action_report_bin_issue" type="object"
+                                                class="btn btn-sm btn-warning" title="Report Issue">
+                                            <i class="fa fa-exclamation-triangle"/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ============================================================================ -->
+    <!-- ACTIONS -->
+    <!-- ============================================================================ -->
+
+    <!-- Main Shredding Service Bin Action -->
+    <record id="action_shredding_service_bin" model="ir.actions.act_window">
+        <field name="name">Shredding Service Bins</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">shredding.service.bin</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{
+            'search_default_filter_active': 1,
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No shredding service bins found!
+            </p>
+            <p>
+                Shredding service bins are tracked containers placed at customer locations
+                for secure document disposal. They include barcode tracking, service history,
+                and automated billing integration.
+            </p>
+        </field>
+    </record>
+
+    <!-- Available Bins Action -->
+    <record id="action_shredding_service_bin_available" model="ir.actions.act_window">
+        <field name="name">Available Bins</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">shredding.service.bin</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('status', '=', 'available')]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No available bins found!
+            </p>
+            <p>
+                Available bins are ready for deployment to customer locations.
+            </p>
+        </field>
+    </record>
+
+    <!-- Maintenance Bins Action -->
+    <record id="action_shredding_service_bin_maintenance" model="ir.actions.act_window">
+        <field name="name">Bins in Maintenance</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">shredding.service.bin</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('status', '=', 'maintenance')]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No bins in maintenance!
+            </p>
+            <p>
+                Bins requiring maintenance, repair, or replacement will appear here.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,7 +1,14 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
+
 class FsmOrder(models.Model):
+    """
+    Extends the 'project.task' model to include shredding service-specific fields,
+    methods, and business logic. This model supports various shredding services
+    such as on-site shredding, off-site shredding, and hard drive destruction,
+    while ensuring compliance with NAID AAA standards.
+    """
     _inherit = 'project.task'
 
     # ============================================================================
@@ -31,15 +38,31 @@ class FsmOrder(models.Model):
     # ============================================================================
     # QUANTITIES & FINANCIALS
     # ============================================================================
-    container_ids = fields.Many2many('records.container', string="Containers for Service")
-    container_count = fields.Integer(string="Container Count", compute='_compute_container_totals', store=True)
-    total_weight = fields.Float(string="Total Weight (kg)", compute='_compute_container_totals', store=True)
+    container_ids = fields.Many2many(
+        comodel_name='records.container',
+        string="Containers for Service"
+    )
+    container_count = fields.Integer(
+        string="Container Count",
+        compute='_compute_container_totals',
+        store=True
+    )
+    total_weight = fields.Float(
+        string="Total Weight (kg)",
+        compute='_compute_container_totals',
+        store=True
+    )
 
     # ============================================================================
     # COMPLIANCE & CERTIFICATION
     # ============================================================================
     certificate_required = fields.Boolean(string="Certificate Required", default=True)
-    certificate_id = fields.Many2one('shredding.certificate', string="Destruction Certificate", readonly=True, copy=False)
+    certificate_id = fields.Many2one(
+        comodel_name='shredding.certificate',
+        string="Destruction Certificate",
+        readonly=True,
+        copy=False
+    )
     naid_compliance_required = fields.Boolean(string="NAID Compliance Required", default=True)
     witness_required = fields.Boolean(string="Witness Required")
     witness_name = fields.Char(string="Witness Name")
@@ -47,20 +70,58 @@ class FsmOrder(models.Model):
     # ============================================================================
     # PHOTO DOCUMENTATION
     # ============================================================================
-    photo_ids = fields.One2many('shredding.service.photo', 'shredding_service_id', string="Photo Documentation")
-    photo_count = fields.Integer(compute='_compute_photo_count', string="Photo Count")
+    photo_ids = fields.One2many(
+        comodel_name='shredding.service.photo',
+        inverse_name='shredding_service_id',
+        string="Photo Documentation"
+    )
+    photo_count = fields.Integer(
+        compute='_compute_photo_count',
+        string="Photo Count"
+    )
 
     # ============================================================================
     # EQUIPMENT & RESOURCES
     # ============================================================================
-    shredding_equipment_id = fields.Many2one('maintenance.equipment', string="Shredding Equipment", domain="[('equipment_category', '=', 'shredder')]")
+    shredding_equipment_id = fields.Many2one(
+        comodel_name='maintenance.equipment',
+        string="Shredding Equipment",
+        domain="[('equipment_category', '=', 'shredder')]"
+    )
+
+    # ============================================================================
+    # BIN DETAILS
+    # ============================================================================
+    bin_details = fields.One2many(
+        comodel_name='shredding.service.bin',
+        inverse_name='shredding_service_id',
+        string="Bin Details"
+    )
+
+    # ============================================================================
+    # VEHICLE & TECHNICIAN DETAILS
+    # ============================================================================
+    vehicle_id = fields.Many2one(
+        comodel_name='fleet.vehicle',
+        string="Vehicle Used",
+        readonly=True
+    )
+    technician_id = fields.Many2one(
+        comodel_name='res.users',
+        string="Technician",
+        readonly=True
+    )
 
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('container_ids', 'container_ids.container_type_id')
+    @api.depends('container_ids', 'container_ids.container_type_id', 'container_ids.container_type_id.average_weight_lbs')
     def _compute_container_totals(self):
-        """Compute container totals with safe dependency pattern"""
+        """
+        Computes the total number of containers and their estimated weight
+        based on the container type's average weight. This method ensures
+        safe dependency handling for accurate calculations.
+        """
         for order in self:
             order.container_count = len(order.container_ids)
 
@@ -76,6 +137,10 @@ class FsmOrder(models.Model):
 
     @api.depends('photo_ids')
     def _compute_photo_count(self):
+        """
+        Computes the total number of photos attached to the shredding service
+        for documentation purposes.
+        """
         for order in self:
             order.photo_count = len(order.photo_ids)
 
@@ -83,14 +148,34 @@ class FsmOrder(models.Model):
     # ACTION METHODS
     # ============================================================================
     def action_complete(self):
-        # Override to add certificate generation
+        """
+        Overrides the default 'action_complete' method to include additional
+        logic for certificate generation, vehicle assignment, and technician
+        assignment when completing a shredding service.
+        """
         res = super().action_complete()
         for order in self:
-            if order.certificate_required and not order.certificate_id:
-                order._generate_certificate()
+            try:
+                if order.certificate_required and not order.certificate_id:
+                    order._generate_certificate()
+                if not order.vehicle_id:
+                    vehicle = self.env['fleet.vehicle'].search([('driver_id', '=', order.user_id.id)], limit=1)
+                    if vehicle:
+                        order.vehicle_id = vehicle.id
+                if not order.technician_id:
+                    order.technician_id = order.user_id.id
+            except Exception as e:
+                raise UserError(_("Error completing shredding service: %s") % str(e))
         return res
 
     def action_view_photos(self):
+        """
+        Opens a window to display the photo documentation associated with
+        the shredding service. Ensures that the current record is selected.
+
+        Returns:
+            dict: An action dictionary to open the photo documentation view.
+        """
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -102,6 +187,16 @@ class FsmOrder(models.Model):
         }
 
     def action_view_certificate(self):
+        """
+        Opens the destruction certificate associated with the shredding service.
+        Raises an error if no certificate has been generated.
+
+        Returns:
+            dict: An action dictionary to open the certificate form view.
+
+        Raises:
+            UserError: If no certificate is available for the service.
+        """
         self.ensure_one()
         if not self.certificate_id:
             raise UserError(_("No certificate has been generated for this service."))
@@ -114,26 +209,149 @@ class FsmOrder(models.Model):
             'target': 'current',
         }
 
+    def action_generate_certificate(self):
+        """
+        Manual action to generate a destruction certificate.
+        """
+        self.ensure_one()
+        if self.certificate_id:
+            raise UserError(_("A certificate has already been generated for this service."))
+
+        self._generate_certificate()
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _("Certificate Generated"),
+                'message': _("Destruction certificate %s has been generated successfully.") % self.certificate_id.name,
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
     # ============================================================================
     # HELPER METHODS
     # ============================================================================
     def _generate_certificate(self):
+        """
+        Generates a destruction certificate for the shredding service.
+        Includes details such as partner information, destruction method,
+        equipment used, and bin details. Posts a message with the generated
+        certificate as an attachment.
+        """
         self.ensure_one()
         if 'shredding.certificate' not in self.env:
             return
 
+        # Prepare bin details for the certificate
+        bin_details = []
+        for bin_detail in self.bin_details:
+            if hasattr(bin_detail, 'bin_size') and hasattr(bin_detail, 'barcode'):
+                bin_details.append({
+                    'bin_size': bin_detail.bin_size,
+                    'barcode': bin_detail.barcode,
+                })
+
         certificate_vals = {
-            'partner_id': self.partner_id.id,
+            'partner_id': self.partner_id.id if self.partner_id else False,
             'destruction_date': fields.Date.context_today(self),
             'destruction_method': self.destruction_method,
             'shredding_service_ids': [(6, 0, self.ids)],
             'destruction_equipment': self.shredding_equipment_id.name if self.shredding_equipment_id else False,
             'equipment_serial_number': self.shredding_equipment_id.serial_no if self.shredding_equipment_id else False,
-            'operator_name': self.user_id.name,
+            'operator_name': self.user_id.name if self.user_id else False,
+            'bin_details': bin_details,  # Include bin details
         }
-        certificate = self.env['shredding.certificate'].create(certificate_vals)
-        self.certificate_id = certificate.id
-        self.message_post(
-            body=_("Destruction Certificate %s generated.") % certificate.name,
-            attachment_ids=[(4, certificate.id)]
-        )
+
+        try:
+            certificate = self.env['shredding.certificate'].create(certificate_vals)
+            self.certificate_id = certificate.id
+            self.message_post(
+                body=_("Destruction Certificate %s generated.") % certificate.name,
+                attachment_ids=[(4, certificate.id)]
+            )
+        except Exception as e:
+            raise UserError(_("Failed to generate certificate: %s") % str(e))
+
+    def _prepare_certificate_vals(self):
+        """
+        Prepare certificate values for creation.
+        Separated for easier testing and customization.
+        """
+        self.ensure_one()
+
+        # Prepare bin details for the certificate
+        bin_details = []
+        for bin_detail in self.bin_details:
+            if hasattr(bin_detail, 'bin_size') and hasattr(bin_detail, 'barcode'):
+                bin_details.append({
+                    'bin_size': bin_detail.bin_size,
+                    'barcode': bin_detail.barcode,
+                })
+
+        return {
+            'partner_id': self.partner_id.id if self.partner_id else False,
+            'destruction_date': fields.Date.context_today(self),
+            'destruction_method': self.destruction_method,
+            'shredding_service_ids': [(6, 0, self.ids)],
+            'destruction_equipment': self.shredding_equipment_id.name if self.shredding_equipment_id else False,
+            'equipment_serial_number': self.shredding_equipment_id.serial_no if self.shredding_equipment_id else False,
+            'operator_name': self.user_id.name if self.user_id else False,
+            'bin_details': bin_details,
+        }
+
+    # ============================================================================
+    # VALIDATION METHODS
+    # ============================================================================
+    @api.constrains('witness_required', 'witness_name')
+    def _check_witness_required(self):
+        """Validate that witness name is provided when witness is required."""
+        for record in self:
+            if record.witness_required and not record.witness_name:
+                raise UserError(_("Witness name is required when witness is marked as required."))
+
+    @api.constrains('naid_compliance_required', 'certificate_required')
+    def _check_naid_compliance(self):
+        """Validate NAID compliance requirements."""
+        for record in self:
+            if record.naid_compliance_required and not record.certificate_required:
+                raise UserError(_("Certificate is required when NAID compliance is enabled."))
+
+    # ============================================================================
+    # BUSINESS METHODS
+    # ============================================================================
+    def get_service_summary(self):
+        """
+        Get a summary of the service details for reporting.
+        """
+        self.ensure_one()
+        return {
+            'service_type': dict(self._fields['service_type'].selection).get(self.service_type),
+            'material_type': dict(self._fields['material_type'].selection).get(self.material_type),
+            'destruction_method': dict(self._fields['destruction_method'].selection).get(self.destruction_method),
+            'container_count': self.container_count,
+            'total_weight': self.total_weight,
+            'certificate_generated': bool(self.certificate_id),
+            'photo_count': self.photo_count,
+            'witness_present': bool(self.witness_name),
+        }
+
+    def can_generate_certificate(self):
+        """
+        Check if the service is ready for certificate generation.
+        """
+        self.ensure_one()
+        if self.certificate_id:
+            return False, _("Certificate already generated")
+
+        if not self.partner_id:
+            return False, _("Customer is required for certificate generation")
+
+        if not self.destruction_method:
+            return False, _("Destruction method is required")
+
+        if self.witness_required and not self.witness_name:
+            return False, _("Witness name is required")
+
+        return True, _("Ready for certificate generation")

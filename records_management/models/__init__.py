@@ -215,3 +215,8 @@ from . import records_category
 from . import billing_period
 from . import records_category
 from . import billing_period
+from . import shredding_service_bin
+
+# Import wizard models
+from . import bin_issue_report_wizard
+from . import shredding_service_event

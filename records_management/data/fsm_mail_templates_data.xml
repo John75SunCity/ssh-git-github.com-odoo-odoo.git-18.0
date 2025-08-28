@@ -4,7 +4,7 @@
         <!-- Email Template for Day of Service Notification -->
         <record id="mail_template_fsm_day_of_service" model="mail.template">
             <field name="name">FSM: Day of Service Notification</field>
-            <field name="model_id" ref="base.model_project_task"/>
+            <field name="model_id" ref="project.model_project_task"/>
             <field name="subject">Your Service is Scheduled for Today</field>
             <field name="email_from">"${object.company_id.email}"</field>
             <field name="email_to">"${object.partner_id.email}"</field>
@@ -20,7 +20,7 @@ ${object.company_id.name}</p>
         <!-- Email Template for Driver Nearby Notification -->
         <record id="mail_template_fsm_driver_nearby" model="mail.template">
             <field name="name">FSM: Driver Nearby Notification</field>
-            <field name="model_id" ref="base.model_project_task"/>
+            <field name="model_id" ref="project.model_project_task"/>
             <field name="subject">Your Driver is Nearby</field>
             <field name="email_from">"${object.company_id.email}"</field>
             <field name="email_to">"${object.partner_id.email}"</field>
@@ -85,7 +85,7 @@ ${object.company_id.name}</p>
         <!-- Service Completion Notification -->
         <record id="mail_template_fsm_service_complete" model="mail.template">
             <field name="name">FSM: Service Completion</field>
-            <field name="model_id" ref="base.model_project_task"/>
+            <field name="model_id" ref="project.model_project_task"/>
             <field name="subject">Service Complete: ${object.name}</field>
             <field name="email_from">service@suncityshred.com</field>
             <field name="email_to">${object.partner_id.email}</field>
@@ -271,13 +271,13 @@ ${object.company_id.name}</p>
         <!-- SMS Templates for FSM -->
         <record id="sms_template_fsm_arrival" model="sms.template">
             <field name="name">FSM: Driver Arrival</field>
-            <field name="model_id" ref="base.model_project_task"/>
+            <field name="model_id" ref="project.model_project_task"/>
             <field name="body">Sun City Shred: Your technician ${object.user_id.name} has arrived for service ${object.name}. ETA: 5 minutes.</field>
         </record>
 
         <record id="sms_template_fsm_complete" model="sms.template">
             <field name="name">FSM: Service Complete</field>
-            <field name="model_id" ref="base.model_project_task"/>
+            <field name="model_id" ref="project.model_project_task"/>
             <field name="body">Sun City Shred: Service ${object.name} completed successfully. Certificate available at: ${ctx.get('base_url', '')}/my/fsm</field>
         </record>
 

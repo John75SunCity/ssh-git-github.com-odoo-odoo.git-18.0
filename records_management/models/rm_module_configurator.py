@@ -3,6 +3,50 @@ from odoo.exceptions import ValidationError, UserError
 
 
 class RmModuleConfigurator(models.Model):
+    """
+    This model manages the configuration settings for the Records Management module.
+
+    It provides a centralized way to define, store, and manage various configuration options
+    such as feature toggles, field visibility rules, system parameters, and domain rules.
+    Each configuration can be categorized, targeted to specific models or fields, and
+    associated with a company for multi-company environments.
+
+    Key Features:
+    - Supports multiple configuration types: field visibility, feature toggles, parameters, and domain rules.
+    - Allows targeting specific models and fields for UI-related configurations.
+    - Tracks modifications with auditing fields (e.g., last modified, modified by, modification count).
+    - Enforces constraints to ensure data integrity, such as unique configuration keys per company
+      and valid value types for parameters.
+    - Provides a high-performance method (`get_config_parameter`) to retrieve configuration values
+      with caching for optimal performance.
+    - Includes functionality to apply configurations by clearing server-side caches.
+
+    Fields:
+    - Configuration Definition: Includes fields like `name`, `category`, `config_type`, and `config_key`.
+    - Configuration Value: Supports multiple value types (text, boolean, number, selection).
+    - Targeting: Allows specifying target models and fields for UI/domain rules.
+    - Auditing: Tracks who modified the configuration and when, along with internal notes.
+
+    Constraints:
+    - Ensures only one value type is set for parameters.
+    - Validates that target models and fields are set for UI-related configurations.
+
+    Example Use Case:
+    - A feature toggle to enable or disable a specific functionality in the customer portal.
+    - A field visibility rule to hide or make a field read-only based on user roles.
+
+    Methods:
+    - `create`: Overrides the create method to initialize auditing fields.
+    - `write`: Overrides the write method to track modifications and clear caches.
+    - `get_config_parameter`: Retrieves a configuration value efficiently.
+    - `action_apply_configuration`: Applies the configuration by clearing caches.
+
+    SQL Constraints:
+    - Ensures the uniqueness of configuration keys per company.
+
+    This model is critical for ensuring the flexibility and extendability of the Records Management module.
+    """
+
     _name = 'rm.module.configurator'
     _description = 'Records Management Configuration'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -15,7 +59,12 @@ class RmModuleConfigurator(models.Model):
     name = fields.Char(string="Configuration Name", required=True, index=True)
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True, help="Only active configurations are applied.")
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, help="Configuration specific to a company. Leave empty for global.")
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+        help="Configuration specific to a company. Leave empty for global."
+    )
 
     category = fields.Selection([
         ('ui', 'User Interface'),
@@ -51,9 +100,17 @@ class RmModuleConfigurator(models.Model):
     # ============================================================================
     # FIELDS - Targeting (for UI/Domain rules)
     # ============================================================================
-    target_model_id = fields.Many2one('ir.model', string="Target Model", domain="[('model', 'like', 'records_management.')]")
+    target_model_id = fields.Many2one(
+        comodel_name='ir.model',
+        string="Target Model",
+        domain="[('model', 'like', 'records_management.')]"
+    )
     target_model = fields.Char(related='target_model_id.model', readonly=True, store=True)
-    target_field_id = fields.Many2one('ir.model.fields', string="Target Field", domain="[('model_id', '=', target_model_id)]")
+    target_field_id = fields.Many2one(
+        comodel_name='ir.model.fields',
+        string="Target Field",
+        domain="[('model_id', '=', target_model_id)]"
+    )
     target_field = fields.Char(related='target_field_id.name', readonly=True, store=True)
 
     # For field_visibility
@@ -64,11 +121,55 @@ class RmModuleConfigurator(models.Model):
     # ============================================================================
     # FIELDS - Auditing
     # ============================================================================
-    modified_by_id = fields.Many2one('res.users', string='Last Modified By', readonly=True)
+    modified_by_id = fields.Many2one(comodel_name='res.users', string='Last Modified By', readonly=True)
     last_modified = fields.Datetime(string='Last Modified On', readonly=True)
     modification_count = fields.Integer(string="Modification Count", default=0, readonly=True)
     notes = fields.Text(string="Internal Notes")
 
+    # ============================================================================
+    # COMPUTED FIELDS
+    # ============================================================================
+    @api.depends('value_text', 'value_boolean', 'value_number', 'value_selection')
+    def _compute_current_value(self):
+        """Compute the current effective value based on type."""
+        for record in self:
+            if record.value_boolean is not False:  # Check explicitly for False
+                record.current_value = str(record.value_boolean)
+            elif record.value_number is not False and record.value_number != 0.0:
+                record.current_value = str(record.value_number)
+            elif record.value_text:
+                record.current_value = record.value_text
+            elif record.value_selection:
+                record.current_value = record.value_selection
+            else:
+                record.current_value = ''
+
+    current_value = fields.Char(string="Current Value", compute='_compute_current_value', store=True)
+
+    @api.depends('config_type', 'target_model', 'target_field')
+    def _compute_display_name(self):
+        """Compute a descriptive display name."""
+        for record in self:
+            if record.config_type == 'field_visibility' and record.target_model and record.target_field:
+                record.display_name = _("%(name)s (%(model)s.%(field)s)") % {
+                    'name': record.name,
+                    'model': record.target_model,
+                    'field': record.target_field
+                }
+            elif record.config_type == 'feature_toggle':
+                status = _("Enabled") if record.value_boolean else _("Disabled")
+                record.display_name = _("%(name)s - %(status)s") % {
+                    'name': record.name,
+                    'status': status
+                }
+            else:
+                record.display_name = record.name
+
+    display_name = fields.Char(compute='_compute_display_name', store=True)
+
+    # ============================================================================
+    # SQL CONSTRAINTS
+    # ============================================================================
     _sql_constraints = [
         ('config_key_company_uniq', 'unique(config_key, company_id)', 'The configuration key must be unique per company!')
     ]
@@ -81,20 +182,64 @@ class RmModuleConfigurator(models.Model):
         for vals in vals_list:
             vals['modified_by_id'] = self.env.user.id
             vals['last_modified'] = fields.Datetime.now()
-        return super().create(vals_list)
+
+        records = super().create(vals_list)
+
+        # Log creation in chatter
+        for record in records:
+            record.message_post(
+                body=_("Configuration created: %s") % record.name
+            )
+
+        return records
 
     def write(self, vals):
         """Override write to track modifications and clear server cache."""
+        # Track modifications for value changes
         if any(key.startswith('value_') for key in vals):
-            vals['modified_by_id'] = self.env.user.id
-            vals['last_modified'] = fields.Datetime.now()
-            vals['modification_count'] = self.modification_count + 1
+            for record in self:
+                old_value = record.current_value
+                vals['modified_by_id'] = self.env.user.id
+                vals['last_modified'] = fields.Datetime.now()
+                vals['modification_count'] = record.modification_count + 1
 
         res = super().write(vals)
+
         # Clear server-side caches to ensure new configuration is loaded
-        self.env.registry.clear_caches()
-        self.clear_caches()
+        try:
+            self.env.registry.clear_caches()
+            self.clear_caches()
+        except Exception:
+            # Graceful fallback if cache clearing fails
+            pass
+
+        # Log significant changes in chatter
+        if any(key.startswith('value_') for key in vals):
+            for record in self:
+                record.message_post(
+                    body=_("Configuration updated: %s = %s") % (record.config_key, record.current_value)
+                )
+
         return res
+
+    def unlink(self):
+        """Override unlink to log deletion."""
+        for record in self:
+            config_key = record.config_key
+            config_name = record.name
+
+        result = super().unlink()
+
+        # Log deletion (can't use message_post after deletion)
+        self.env['mail.message'].create({
+            'subject': _("Configuration Deleted"),
+            'body': _("Configuration deleted: %s (%s)") % (config_name, config_key),
+            'model': self._name,
+            'message_type': 'comment',
+            'author_id': self.env.user.partner_id.id,
+        })
+
+        return result
 
     # ============================================================================
     # CONSTRAINTS
@@ -104,13 +249,26 @@ class RmModuleConfigurator(models.Model):
         """Validate that the correct value field is used for the parameter type."""
         for record in self:
             if record.config_type == 'parameter':
-                # Ensure only one value field is set for parameters
-                value_fields = [record.value_text, record.value_boolean, record.value_number, record.value_selection]
-                if sum(1 for v in value_fields if v) > 1:
+                # Count non-empty/non-false values
+                value_count = 0
+                if record.value_text:
+                    value_count += 1
+                if record.value_boolean is not False:  # Explicit check for False
+                    value_count += 1
+                if record.value_number != 0.0:  # Check if not default 0.0
+                    value_count += 1
+                if record.value_selection:
+                    value_count += 1
+
+                if value_count > 1:
                     raise ValidationError(_(
-                        "Configuration '%(name)s' is a parameter and must have only one value type (Text, Boolean, Number, or Selection).",
-                        name=record.name
-                    ))
+                        "Configuration '%s' is a parameter and must have only one value type (Text, Boolean, Number, or Selection)."
+                    ) % record.name)
+
+                if value_count == 0:
+                    raise ValidationError(_(
+                        "Configuration '%s' must have at least one value set."
+                    ) % record.name)
 
     @api.constrains('config_type', 'target_model_id', 'target_field_id')
     def _check_target_exists(self):
@@ -122,6 +280,16 @@ class RmModuleConfigurator(models.Model):
                 if not record.target_field_id and record.config_type == 'field_visibility':
                     raise ValidationError(_("A 'Target Field' is required for Field Visibility configurations."))
 
+    @api.constrains('config_key')
+    def _check_config_key_format(self):
+        """Validate that config_key follows proper naming convention."""
+        import re
+        for record in self:
+            if not re.match(r'^[a-z][a-z0-9_]*[a-z0-9]$', record.config_key):
+                raise ValidationError(_(
+                    "Configuration key '%s' must start with a lowercase letter, contain only lowercase letters, numbers, and underscores, and end with a letter or number."
+                ) % record.config_key)
+
     # ============================================================================
     # BUSINESS LOGIC
     # ============================================================================
@@ -132,21 +300,62 @@ class RmModuleConfigurator(models.Model):
         This should be the primary way code interacts with this model.
         It uses caching for performance.
         """
-        # Caching is automatically handled by Odoo for search method
-        config = self.search([('config_key', '=', key), ('active', '=', True)], limit=1)
-        if not config:
+        try:
+            # Caching is automatically handled by Odoo for search method
+            config = self.search([
+                ('config_key', '=', key),
+                ('active', '=', True)
+            ], limit=1)
+
+            if not config:
+                return default
+
+            # Return the appropriate value based on type
+            if config.value_boolean is not False:  # Explicit check for False
+                return config.value_boolean
+            if config.value_number != 0.0:  # Check if not default 0.0
+                return config.value_number
+            if config.value_text:
+                return config.value_text
+            if config.value_selection:
+                return config.value_selection
+
             return default
 
-        if config.value_boolean:
-            return config.value_boolean
-        if config.value_number is not None:
-            return config.value_number
-        if config.value_text:
-            return config.value_text
-        if config.value_selection:
-            return config.value_selection
+        except Exception:
+            # Return default value if any error occurs
+            return default
 
-        return default
+    def get_value(self):
+        """Get the configuration value for this record."""
+        self.ensure_one()
+        return self.get_config_parameter(self.config_key)
+
+    def set_value(self, value):
+        """Set the configuration value for this record."""
+        self.ensure_one()
+
+        # Determine the appropriate field based on value type
+        vals = {
+            'value_text': False,
+            'value_boolean': False,
+            'value_number': 0.0,
+            'value_selection': False,
+        }
+
+        if isinstance(value, bool):
+            vals['value_boolean'] = value
+        elif isinstance(value, (int, float)):
+            vals['value_number'] = float(value)
+        elif isinstance(value, str):
+            if self.config_type == 'parameter':
+                vals['value_text'] = value
+            else:
+                vals['value_selection'] = value
+        else:
+            vals['value_text'] = str(value) if value is not None else False
+
+        self.write(vals)
 
     def action_apply_configuration(self):
         """
@@ -154,3 +363,168 @@ class RmModuleConfigurator(models.Model):
         For more complex scenarios, this method can be extended.
         """
         self.ensure_one()
+
+        try:
+            # Clear various caches to ensure configuration takes effect
+            self.env.registry.clear_caches()
+            self.clear_caches()
+
+            # For field visibility configurations, we might need to clear view caches
+            if self.config_type == 'field_visibility':
+                self.env['ir.ui.view'].clear_caches()
+
+            # For feature toggles, clear menu caches
+            elif self.config_type == 'feature_toggle':
+                self.env['ir.ui.menu'].clear_caches()
+
+            # Log the application
+            self.message_post(
+                body=_("Configuration applied successfully: %s") % self.name
+            )
+
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _("Configuration Applied"),
+                    'message': _("Configuration '%s' has been applied successfully.") % self.name,
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
+
+        except Exception as exc:
+            error_msg = _("Failed to apply configuration '%s': %s") % (self.name, str(exc))
+            self.message_post(body=error_msg)
+            raise UserError(error_msg) from exc
+
+    def action_toggle_active(self):
+        """Toggle the active state of the configuration."""
+        for record in self:
+            record.active = not record.active
+            status = _("activated") if record.active else _("deactivated")
+            record.message_post(
+                body=_("Configuration %s: %s") % (status, record.name)
+            )
+
+    def action_reset_to_default(self):
+        """Reset configuration values to default."""
+        self.ensure_one()
+
+        vals = {
+            'value_text': False,
+            'value_boolean': False,
+            'value_number': 0.0,
+            'value_selection': False,
+        }
+
+        # Set default based on config type
+        if self.config_type == 'feature_toggle':
+            vals['value_boolean'] = False
+        elif self.config_type == 'field_visibility':
+            vals['value_boolean'] = True  # Default to visible
+
+        self.write(vals)
+        self.message_post(body=_("Configuration reset to default values: %s") % self.name)
+
+    # ============================================================================
+    # UTILITY METHODS
+    # ============================================================================
+    @api.model
+    def get_feature_toggle(self, key, default=False):
+        """Convenience method specifically for feature toggles."""
+        return self.get_config_parameter(key, default)
+
+    @api.model
+    def is_feature_enabled(self, key):
+        """Check if a feature is enabled."""
+        return bool(self.get_config_parameter(key, False))
+
+    @api.model
+    def get_field_visibility(self, model_name, field_name):
+        """Get field visibility configuration for a specific model.field."""
+        config = self.search([
+            ('config_type', '=', 'field_visibility'),
+            ('target_model', '=', model_name),
+            ('target_field', '=', field_name),
+            ('active', '=', True)
+        ], limit=1)
+
+        if config:
+            return {
+                'visible': config.visible,
+                'required': config.required,
+                'readonly': config.readonly,
+            }
+
+        # Default values if no configuration found
+        return {
+            'visible': True,
+            'required': False,
+            'readonly': False,
+        }
+
+    def action_view_related_configurations(self):
+        """View configurations in the same category."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Related Configurations'),
+            'res_model': 'rm.module.configurator',
+            'view_mode': 'tree,form',
+            'domain': [
+                ('category', '=', self.category),
+                ('id', '!=', self.id)
+            ],
+            'context': {
+                'default_category': self.category,
+                'search_default_group_by_config_type': 1,
+            }
+        }
+
+    @api.model
+    def create_default_configurations(self):
+        """Create default configurations for the Records Management module."""
+        default_configs = [
+            {
+                'name': 'Enable Customer Portal',
+                'config_key': 'portal_enabled',
+                'category': 'portal',
+                'config_type': 'feature_toggle',
+                'value_boolean': True,
+                'description': 'Enable or disable the customer portal functionality.',
+            },
+            {
+                'name': 'Enable NAID Compliance',
+                'config_key': 'naid_compliance_enabled',
+                'category': 'compliance',
+                'config_type': 'feature_toggle',
+                'value_boolean': True,
+                'description': 'Enable NAID AAA compliance features and audit logging.',
+            },
+            {
+                'name': 'Enable FSM Integration',
+                'config_key': 'fsm_integration_enabled',
+                'category': 'fsm',
+                'config_type': 'feature_toggle',
+                'value_boolean': True,
+                'description': 'Enable Field Service Management integration.',
+            },
+            {
+                'name': 'Default Retention Period',
+                'config_key': 'default_retention_years',
+                'category': 'compliance',
+                'config_type': 'parameter',
+                'value_number': 7.0,
+                'description': 'Default retention period in years for documents.',
+            },
+        ]
+
+        created_configs = []
+        for config_data in default_configs:
+            # Check if configuration already exists
+            existing = self.search([('config_key', '=', config_data['config_key'])], limit=1)
+            if not existing:
+                created_configs.append(self.create(config_data))
+
+        return created_configs

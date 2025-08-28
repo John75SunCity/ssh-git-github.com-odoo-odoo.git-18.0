@@ -87,10 +87,10 @@ class ShreddingService(models.Model):
         help="Additional price per container"
     )
 
-    price_per_kg = fields.Float(
-        string='Price per KG',
+    price_per_lb = fields.Float(
+        string='Price per Pound',
         digits='Product Price',
-        help="Price per kilogram of shredded material"
+        help="Price per pound of shredded material"
     )
 
     # Service Provider Information
@@ -143,9 +143,9 @@ class ShreddingService(models.Model):
         help="Type of shredding equipment used"
     )
 
-    max_capacity_per_day = fields.Float(
-        string='Max Capacity per Day (KG)',
-        help="Maximum daily capacity in kilograms"
+    max_capacity_per_day_lbs = fields.Float(
+        string='Max Capacity per Day (lbs)',
+        help="Maximum daily capacity in pounds"
     )
 
     # Security Features
@@ -231,11 +231,11 @@ class ShreddingService(models.Model):
                 record.last_used_date = False
 
     # Validation
-    @api.constrains('base_price', 'price_per_container', 'price_per_kg')
+    @api.constrains('base_price', 'price_per_container', 'price_per_lb')
     def _check_prices(self):
         """Validate that at least one price is set."""
         for record in self:
-            if not any([record.base_price, record.price_per_container, record.price_per_kg]):
+            if not any([record.base_price, record.price_per_container, record.price_per_lb]):
                 raise ValidationError(_("At least one pricing field must be set."))
 
     @api.constrains('lead_time_days')
@@ -245,20 +245,20 @@ class ShreddingService(models.Model):
             if record.lead_time_days < 0:
                 raise ValidationError(_("Lead time must be positive."))
 
-    @api.constrains('max_capacity_per_day')
+    @api.constrains('max_capacity_per_day_lbs')
     def _check_capacity(self):
         """Validate capacity is positive if set."""
         for record in self:
-            if record.max_capacity_per_day and record.max_capacity_per_day <= 0:
+            if record.max_capacity_per_day_lbs and record.max_capacity_per_day_lbs <= 0:
                 raise ValidationError(_("Capacity must be positive if specified."))
 
     # Business Methods
-    def calculate_service_cost(self, container_count=0, weight_kg=0):
+    def calculate_service_cost(self, container_count=0, weight_lbs=0):
         """Calculate total cost for this service.
 
         Args:
             container_count (int): Number of containers
-            weight_kg (float): Weight in kilograms
+            weight_lbs (float): Weight in pounds
 
         Returns:
             float: Total calculated cost
@@ -266,7 +266,7 @@ class ShreddingService(models.Model):
         self.ensure_one()
         total_cost = self.base_price or 0.0
         total_cost += (container_count * (self.price_per_container or 0.0))
-        total_cost += (weight_kg * (self.price_per_kg or 0.0))
+        total_cost += (weight_lbs * (self.price_per_lb or 0.0))
         return total_cost
 
     def schedule_service(self, requested_date):
