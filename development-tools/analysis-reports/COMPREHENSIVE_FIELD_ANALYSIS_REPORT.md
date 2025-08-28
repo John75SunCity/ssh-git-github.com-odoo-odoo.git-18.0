@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-27T22:54:07.736485+00:00
+Generated: 2025-08-28T00:27:13.657616+00:00
 
 ## validate_imports.py
 
@@ -232,7 +232,7 @@ Exit code: 0
 
 
 
-🚨 SECURITY ISSUES: 28 models missing security access rules:
+🚨 SECURITY ISSUES: 26 models missing security access rules:
 
    ❌  -  (in document_search_attempt.py)
 
@@ -240,11 +240,11 @@ Exit code: 0
 
    ❌ res.company (in full_customization_name.py)
 
-   ❌ records.request.line (in records_request_line.py)
-
    ❌ [%s] %s (in records_tag.py)
 
-   ❌ ... and 23 more models
+   ❌ res.users (in full_customization_name.py)
+
+   ❌ ... and 21 more models
 
 
 
@@ -258,7 +258,7 @@ AUDIT SUMMARY
 
 📊 Total field references: 138
 
-🚨 Critical issues found: 37
+🚨 Critical issues found: 35
 
 ⚠️  Issues found that may cause loading order problems
 
