@@ -1,12 +1,1174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
-        <!-- External ID references for Records Management models -->
+        <!--
+        Complete External ID references for Records Management models
 
-        <!-- Pickup Route Model -->
+        This file contains external ID definitions for all custom models in the
+        Records Management module. These external IDs are required for:
+        - Mail templates that reference models
+        - Report bindings
+        - Security rules
+        - Intelligent search indexes
+        - Automated actions
+        - Any XML data that references models
+
+        Generated automatically - do not edit manually.
+        Use development-tools/generate_complete_model_external_ids.py to regenerate.
+        -->
+
+        <!-- Billing & Finance Models -->
+        <record id="model_advanced_billing" model="ir.model">
+            <field name="model">advanced.billing</field>
+            <field name="name">Advanced Billing</field>
+        </record>
+
+        <record id="model_advanced_billing_contact" model="ir.model">
+            <field name="model">advanced.billing.contact</field>
+            <field name="name">Advanced Billing Contact</field>
+        </record>
+
+        <record id="model_advanced_billing_line" model="ir.model">
+            <field name="model">advanced.billing.line</field>
+            <field name="name">Advanced Billing Line</field>
+        </record>
+
+        <record id="model_advanced_billing_profile" model="ir.model">
+            <field name="model">advanced.billing.profile</field>
+            <field name="name">Advanced Billing Profile</field>
+        </record>
+
+        <record id="model_advanced_billing_service_line" model="ir.model">
+            <field name="model">advanced.billing.service.line</field>
+            <field name="name">Advanced Billing Service Line</field>
+        </record>
+
+        <record id="model_advanced_billing_storage_line" model="ir.model">
+            <field name="model">advanced.billing.storage.line</field>
+            <field name="name">Advanced Billing Storage Line</field>
+        </record>
+
+        <record id="model_base_rate" model="ir.model">
+            <field name="model">base.rate</field>
+            <field name="name">Base Rate</field>
+        </record>
+
+        <record id="model_base_rates" model="ir.model">
+            <field name="model">base.rates</field>
+            <field name="name">Base Rates</field>
+        </record>
+
+        <record id="model_billing_period" model="ir.model">
+            <field name="model">billing.period</field>
+            <field name="name">Billing Period</field>
+        </record>
+
+        <record id="model_customer_negotiated_rate" model="ir.model">
+            <field name="model">customer.negotiated.rate</field>
+            <field name="name">Customer Negotiated Rate</field>
+        </record>
+
+        <record id="model_customer_negotiated_rates" model="ir.model">
+            <field name="model">customer.negotiated.rates</field>
+            <field name="name">Customer Negotiated Rates</field>
+        </record>
+
+        <record id="model_invoice_generation_log" model="ir.model">
+            <field name="model">invoice.generation.log</field>
+            <field name="name">Invoice Generation Log</field>
+        </record>
+
+        <record id="model_payment_split" model="ir.model">
+            <field name="model">payment.split</field>
+            <field name="name">Payment Split</field>
+        </record>
+
+        <record id="model_payment_split_line" model="ir.model">
+            <field name="model">payment.split.line</field>
+            <field name="name">Payment Split Line</field>
+        </record>
+
+        <record id="model_records_department_billing_approval" model="ir.model">
+            <field name="model">records.department.billing.approval</field>
+            <field name="name">Records Department Billing Approval</field>
+        </record>
+
+        <record id="model_records_department_billing_contact" model="ir.model">
+            <field name="model">records.department.billing.contact</field>
+            <field name="name">Records Department Billing Contact</field>
+        </record>
+
+        <record id="model_shredding_rate" model="ir.model">
+            <field name="model">shredding.rate</field>
+            <field name="name">Shredding Rate</field>
+        </record>
+
+        <!-- Other Models Models -->
+        <record id="model_approval_history" model="ir.model">
+            <field name="model">approval.history</field>
+            <field name="name">Approval History</field>
+        </record>
+
+        <record id="model_barcode_generation_history" model="ir.model">
+            <field name="model">barcode.generation.history</field>
+            <field name="name">Barcode Generation History</field>
+        </record>
+
+        <record id="model_barcode_models_enhanced" model="ir.model">
+            <field name="model">barcode.models.enhanced</field>
+            <field name="name">Barcode Models Enhanced</field>
+        </record>
+
+        <record id="model_barcode_pricing_tier" model="ir.model">
+            <field name="model">barcode.pricing.tier</field>
+            <field name="name">Barcode Pricing Tier</field>
+        </record>
+
+        <record id="model_barcode_product" model="ir.model">
+            <field name="model">barcode.product</field>
+            <field name="name">Barcode Product</field>
+        </record>
+
+        <record id="model_bin_key" model="ir.model">
+            <field name="model">bin.key</field>
+            <field name="name">Bin Key</field>
+        </record>
+
+        <record id="model_bin_key_history" model="ir.model">
+            <field name="model">bin.key.history</field>
+            <field name="name">Bin Key History</field>
+        </record>
+
+        <record id="model_bin_key_unlock_service" model="ir.model">
+            <field name="model">bin.key.unlock.service</field>
+            <field name="name">Bin Key Unlock Service</field>
+        </record>
+
+        <record id="model_bin_unlock_service" model="ir.model">
+            <field name="model">bin.unlock.service</field>
+            <field name="name">Bin Unlock Service</field>
+        </record>
+
+        <record id="model_chain_of_custody" model="ir.model">
+            <field name="model">chain.of.custody</field>
+            <field name="name">Chain Of Custody</field>
+        </record>
+
+        <record id="model_custody_transfer_event" model="ir.model">
+            <field name="model">custody.transfer.event</field>
+            <field name="name">Custody Transfer Event</field>
+        </record>
+
+        <record id="model_discount_rule" model="ir.model">
+            <field name="model">discount.rule</field>
+            <field name="name">Discount Rule</field>
+        </record>
+
+        <record id="model_field_label_customization" model="ir.model">
+            <field name="model">field.label.customization</field>
+            <field name="name">Field Label Customization</field>
+        </record>
+
+        <record id="model_file_retrieval" model="ir.model">
+            <field name="model">file.retrieval</field>
+            <field name="name">File Retrieval</field>
+        </record>
+
+        <record id="model_file_retrieval_item" model="ir.model">
+            <field name="model">file.retrieval.item</field>
+            <field name="name">File Retrieval Item</field>
+        </record>
+
+        <record id="model_file_retrieval_work_order" model="ir.model">
+            <field name="model">file.retrieval.work.order</field>
+            <field name="name">File Retrieval Work Order</field>
+        </record>
+
+        <record id="model_file_retrieval_work_order_item" model="ir.model">
+            <field name="model">file.retrieval.work.order.item</field>
+            <field name="name">File Retrieval Work Order Item</field>
+        </record>
+
+        <record id="model_full_customization_name" model="ir.model">
+            <field name="model">full.customization.name</field>
+            <field name="name">Full Customization Name</field>
+        </record>
+
+        <record id="model_hr_employee" model="ir.model">
+            <field name="model">hr.employee</field>
+            <field name="name">Hr Employee</field>
+        </record>
+
+        <record id="model_inventory_adjustment_reason" model="ir.model">
+            <field name="model">inventory.adjustment.reason</field>
+            <field name="name">Inventory Adjustment Reason</field>
+        </record>
+
+        <record id="model_inventory_item" model="ir.model">
+            <field name="model">inventory.item</field>
+            <field name="name">Inventory Item</field>
+        </record>
+
+        <record id="model_inventory_item_profile" model="ir.model">
+            <field name="model">inventory.item.profile</field>
+            <field name="name">Inventory Item Profile</field>
+        </record>
+
+        <record id="model_inventory_item_retrieval" model="ir.model">
+            <field name="model">inventory.item.retrieval</field>
+            <field name="name">Inventory Item Retrieval</field>
+        </record>
+
+        <record id="model_inventory_item_retrieval_line" model="ir.model">
+            <field name="model">inventory.item.retrieval.line</field>
+            <field name="name">Inventory Item Retrieval Line</field>
+        </record>
+
+        <record id="model_inventory_item_type" model="ir.model">
+            <field name="model">inventory.item.type</field>
+            <field name="name">Inventory Item Type</field>
+        </record>
+
+        <record id="model_key_inventory" model="ir.model">
+            <field name="model">key.inventory</field>
+            <field name="name">Key Inventory</field>
+        </record>
+
+        <record id="model_key_restriction_checker" model="ir.model">
+            <field name="model">key.restriction.checker</field>
+            <field name="name">Key Restriction Checker</field>
+        </record>
+
+        <record id="model_maintenance_equipment" model="ir.model">
+            <field name="model">maintenance.equipment</field>
+            <field name="name">Maintenance Equipment</field>
+        </record>
+
+        <record id="model_maintenance_team" model="ir.model">
+            <field name="model">maintenance.team</field>
+            <field name="name">Maintenance Team</field>
+        </record>
+
+        <record id="model_media_type" model="ir.model">
+            <field name="model">media.type</field>
+            <field name="name">Media Type</field>
+        </record>
+
+        <record id="model_mobile_photo" model="ir.model">
+            <field name="model">mobile.photo</field>
+            <field name="name">Mobile Photo</field>
+        </record>
+
+        <record id="model_partner_bin_key" model="ir.model">
+            <field name="model">partner.bin.key</field>
+            <field name="name">Partner Bin Key</field>
+        </record>
+
+        <record id="model_processing_log" model="ir.model">
+            <field name="model">processing.log</field>
+            <field name="name">Processing Log</field>
+        </record>
+
+        <record id="model_project_task" model="ir.model">
+            <field name="model">project.task</field>
+            <field name="name">Project Task</field>
+        </record>
+
+        <record id="model_records_access_log" model="ir.model">
+            <field name="model">records.access.log</field>
+            <field name="name">Records Access Log</field>
+        </record>
+
+        <record id="model_records_approval_step" model="ir.model">
+            <field name="model">records.approval.step</field>
+            <field name="name">Records Approval Step</field>
+        </record>
+
+        <record id="model_records_approval_workflow" model="ir.model">
+            <field name="model">records.approval.workflow</field>
+            <field name="name">Records Approval Workflow</field>
+        </record>
+
+        <record id="model_records_approval_workflow_line" model="ir.model">
+            <field name="model">records.approval.workflow.line</field>
+            <field name="name">Records Approval Workflow Line</field>
+        </record>
+
+        <record id="model_records_bulk_user_import" model="ir.model">
+            <field name="model">records.bulk.user.import</field>
+            <field name="name">Records Bulk User Import</field>
+        </record>
+
+        <record id="model_records_category" model="ir.model">
+            <field name="model">records.category</field>
+            <field name="name">Records Category</field>
+        </record>
+
+        <record id="model_records_chain_of_custody" model="ir.model">
+            <field name="model">records.chain.of.custody</field>
+            <field name="name">Records Chain Of Custody</field>
+        </record>
+
+        <record id="model_records_deletion_request" model="ir.model">
+            <field name="model">records.deletion.request</field>
+            <field name="name">Records Deletion Request</field>
+        </record>
+
+        <record id="model_records_department" model="ir.model">
+            <field name="model">records.department</field>
+            <field name="name">Records Department</field>
+        </record>
+
+        <record id="model_records_digital_scan" model="ir.model">
+            <field name="model">records.digital.scan</field>
+            <field name="name">Records Digital Scan</field>
+        </record>
+
+        <record id="model_records_installer" model="ir.model">
+            <field name="model">records.installer</field>
+            <field name="name">Records Installer</field>
+        </record>
+
+        <record id="model_records_inventory_dashboard" model="ir.model">
+            <field name="model">records.inventory.dashboard</field>
+            <field name="name">Records Inventory Dashboard</field>
+        </record>
+
+        <record id="model_records_policy_version" model="ir.model">
+            <field name="model">records.policy.version</field>
+            <field name="name">Records Policy Version</field>
+        </record>
+
+        <record id="model_records_promotional_discount" model="ir.model">
+            <field name="model">records.promotional.discount</field>
+            <field name="name">Records Promotional Discount</field>
+        </record>
+
+        <record id="model_records_request" model="ir.model">
+            <field name="model">records.request</field>
+            <field name="name">Records Request</field>
+        </record>
+
+        <record id="model_records_request_line" model="ir.model">
+            <field name="model">records.request.line</field>
+            <field name="name">Records Request Line</field>
+        </record>
+
+        <record id="model_records_request_type" model="ir.model">
+            <field name="model">records.request.type</field>
+            <field name="name">Records Request Type</field>
+        </record>
+
+        <record id="model_records_retention_policy" model="ir.model">
+            <field name="model">records.retention.policy</field>
+            <field name="name">Records Retention Policy</field>
+        </record>
+
+        <record id="model_records_retention_policy_version" model="ir.model">
+            <field name="model">records.retention.policy.version</field>
+            <field name="name">Records Retention Policy Version</field>
+        </record>
+
+        <record id="model_records_retention_rule" model="ir.model">
+            <field name="model">records.retention.rule</field>
+            <field name="name">Records Retention Rule</field>
+        </record>
+
+        <record id="model_records_retrieval_work_order" model="ir.model">
+            <field name="model">records.retrieval.work.order</field>
+            <field name="name">Records Retrieval Work Order</field>
+        </record>
+
+        <record id="model_records_series" model="ir.model">
+            <field name="model">records.series</field>
+            <field name="name">Records Series</field>
+        </record>
+
+        <record id="model_records_service_type" model="ir.model">
+            <field name="model">records.service.type</field>
+            <field name="name">Records Service Type</field>
+        </record>
+
+        <record id="model_records_tag" model="ir.model">
+            <field name="model">records.tag</field>
+            <field name="name">Records Tag</field>
+        </record>
+
+        <record id="model_records_tag_category" model="ir.model">
+            <field name="model">records.tag.category</field>
+            <field name="name">Records Tag Category</field>
+        </record>
+
+        <record id="model_records_usage_tracking" model="ir.model">
+            <field name="model">records.usage.tracking</field>
+            <field name="name">Records Usage Tracking</field>
+        </record>
+
+        <record id="model_res_company" model="ir.model">
+            <field name="model">res.company</field>
+            <field name="name">Res Company</field>
+        </record>
+
+        <record id="model_res_country" model="ir.model">
+            <field name="model">res.country</field>
+            <field name="name">Res Country</field>
+        </record>
+
+        <record id="model_res_country_state" model="ir.model">
+            <field name="model">res.country.state</field>
+            <field name="name">Res Country State</field>
+        </record>
+
+        <record id="model_res_currency" model="ir.model">
+            <field name="model">res.currency</field>
+            <field name="name">Res Currency</field>
+        </record>
+
+        <record id="model_res_partner" model="ir.model">
+            <field name="model">res.partner</field>
+            <field name="name">Res Partner</field>
+        </record>
+
+        <record id="model_res_partner_key_restriction" model="ir.model">
+            <field name="model">res.partner.key.restriction</field>
+            <field name="name">Res Partner Key Restriction</field>
+        </record>
+
+        <record id="model_res_users" model="ir.model">
+            <field name="model">res.users</field>
+            <field name="name">Res Users</field>
+        </record>
+
+        <record id="model_retrieval_item_base" model="ir.model">
+            <field name="model">retrieval.item.base</field>
+            <field name="name">Retrieval Item Base</field>
+        </record>
+
+        <record id="model_retrieval_metric" model="ir.model">
+            <field name="model">retrieval.metric</field>
+            <field name="name">Retrieval Metric</field>
+        </record>
+
+        <record id="model_revenue_analytic" model="ir.model">
+            <field name="model">revenue.analytic</field>
+            <field name="name">Revenue Analytic</field>
+        </record>
+
+        <record id="model_revenue_forecast" model="ir.model">
+            <field name="model">revenue.forecast</field>
+            <field name="name">Revenue Forecast</field>
+        </record>
+
+        <record id="model_revenue_forecast_line" model="ir.model">
+            <field name="model">revenue.forecast.line</field>
+            <field name="name">Revenue Forecast Line</field>
+        </record>
+
+        <record id="model_scan_digital_asset" model="ir.model">
+            <field name="model">scan.digital.asset</field>
+            <field name="name">Scan Digital Asset</field>
+        </record>
+
+        <record id="model_scan_retrieval" model="ir.model">
+            <field name="model">scan.retrieval</field>
+            <field name="name">Scan Retrieval</field>
+        </record>
+
+        <record id="model_scan_retrieval_item" model="ir.model">
+            <field name="model">scan.retrieval.item</field>
+            <field name="name">Scan Retrieval Item</field>
+        </record>
+
+        <record id="model_scan_retrieval_work_order" model="ir.model">
+            <field name="model">scan.retrieval.work.order</field>
+            <field name="name">Scan Retrieval Work Order</field>
+        </record>
+
+        <record id="model_service_item" model="ir.model">
+            <field name="model">service.item</field>
+            <field name="name">Service Item</field>
+        </record>
+
+        <record id="model_shred_bin" model="ir.model">
+            <field name="model">shred.bin</field>
+            <field name="name">Shred Bin</field>
+        </record>
+
+        <record id="model_stock_lot_attribute" model="ir.model">
+            <field name="model">stock.lot.attribute</field>
+            <field name="name">Stock Lot Attribute</field>
+        </record>
+
+        <record id="model_stock_lot_attribute_option" model="ir.model">
+            <field name="model">stock.lot.attribute.option</field>
+            <field name="name">Stock Lot Attribute Option</field>
+        </record>
+
+        <record id="model_stock_lot_attribute_value" model="ir.model">
+            <field name="model">stock.lot.attribute.value</field>
+            <field name="name">Stock Lot Attribute Value</field>
+        </record>
+
+        <record id="model_stock_move" model="ir.model">
+            <field name="model">stock.move</field>
+            <field name="name">Stock Move</field>
+        </record>
+
+        <record id="model_stock_move_sms_validation" model="ir.model">
+            <field name="model">stock.move.sms.validation</field>
+            <field name="name">Stock Move Sms Validation</field>
+        </record>
+
+        <record id="model_system_diagram_data" model="ir.model">
+            <field name="model">system.diagram.data</field>
+            <field name="name">System Diagram Data</field>
+        </record>
+
+        <record id="model_temp_inventory" model="ir.model">
+            <field name="model">temp.inventory</field>
+            <field name="name">Temp Inventory</field>
+        </record>
+
+        <record id="model_temp_inventory_movement" model="ir.model">
+            <field name="model">temp.inventory.movement</field>
+            <field name="name">Temp Inventory Movement</field>
+        </record>
+
+        <record id="model_transitory_item" model="ir.model">
+            <field name="model">transitory.item</field>
+            <field name="name">Transitory Item</field>
+        </record>
+
+        <record id="model_unlock_service_history" model="ir.model">
+            <field name="model">unlock.service.history</field>
+            <field name="name">Unlock Service History</field>
+        </record>
+
+        <record id="model_unlock_service_part" model="ir.model">
+            <field name="model">unlock.service.part</field>
+            <field name="name">Unlock Service Part</field>
+        </record>
+
+        <record id="model_work_order_coordinator" model="ir.model">
+            <field name="model">work.order.coordinator</field>
+            <field name="name">Work Order Coordinator</field>
+        </record>
+
+        <record id="model_work_order_retrieval" model="ir.model">
+            <field name="model">work.order.retrieval</field>
+            <field name="name">Work Order Retrieval</field>
+        </record>
+
+        <!-- Core Records Models -->
+        <record id="model_barcode_storage_box" model="ir.model">
+            <field name="model">barcode.storage.box</field>
+            <field name="name">Barcode Storage Box</field>
+        </record>
+
+        <record id="model_container_access_activity" model="ir.model">
+            <field name="model">container.access.activity</field>
+            <field name="name">Container Access Activity</field>
+        </record>
+
+        <record id="model_container_access_document" model="ir.model">
+            <field name="model">container.access.document</field>
+            <field name="name">Container Access Document</field>
+        </record>
+
+        <record id="model_container_access_photo" model="ir.model">
+            <field name="model">container.access.photo</field>
+            <field name="name">Container Access Photo</field>
+        </record>
+
+        <record id="model_container_access_report" model="ir.model">
+            <field name="model">container.access.report</field>
+            <field name="name">Container Access Report</field>
+        </record>
+
+        <record id="model_container_access_visitor" model="ir.model">
+            <field name="model">container.access.visitor</field>
+            <field name="name">Container Access Visitor</field>
+        </record>
+
+        <record id="model_container_access_work_order" model="ir.model">
+            <field name="model">container.access.work.order</field>
+            <field name="name">Container Access Work Order</field>
+        </record>
+
+        <record id="model_container_content" model="ir.model">
+            <field name="model">container.content</field>
+            <field name="name">Container Content</field>
+        </record>
+
+        <record id="model_container_destruction_work_order" model="ir.model">
+            <field name="model">container.destruction.work.order</field>
+            <field name="name">Container Destruction Work Order</field>
+        </record>
+
+        <record id="model_container_retrieval" model="ir.model">
+            <field name="model">container.retrieval</field>
+            <field name="name">Container Retrieval</field>
+        </record>
+
+        <record id="model_container_retrieval_item" model="ir.model">
+            <field name="model">container.retrieval.item</field>
+            <field name="name">Container Retrieval Item</field>
+        </record>
+
+        <record id="model_container_retrieval_work_order" model="ir.model">
+            <field name="model">container.retrieval.work.order</field>
+            <field name="name">Container Retrieval Work Order</field>
+        </record>
+
+        <record id="model_document_retrieval_item" model="ir.model">
+            <field name="model">document.retrieval.item</field>
+            <field name="name">Document Retrieval Item</field>
+        </record>
+
+        <record id="model_document_search_attempt" model="ir.model">
+            <field name="model">document.search.attempt</field>
+            <field name="name">Document Search Attempt</field>
+        </record>
+
+        <record id="model_inventory_item_location_transfer" model="ir.model">
+            <field name="model">inventory.item.location.transfer</field>
+            <field name="name">Inventory Item Location Transfer</field>
+        </record>
+
+        <record id="model_location_group" model="ir.model">
+            <field name="model">location.group</field>
+            <field name="name">Location Group</field>
+        </record>
+
+        <record id="model_location_report_wizard" model="ir.model">
+            <field name="model">location.report.wizard</field>
+            <field name="name">Location Report Wizard</field>
+        </record>
+
+        <record id="model_pickup_location" model="ir.model">
+            <field name="model">pickup.location</field>
+            <field name="name">Pickup Location</field>
+        </record>
+
+        <record id="model_product_container_type" model="ir.model">
+            <field name="model">product.container.type</field>
+            <field name="name">Product Container Type</field>
+        </record>
+
+        <record id="model_records_center_location" model="ir.model">
+            <field name="model">records.center.location</field>
+            <field name="name">Records Center Location</field>
+        </record>
+
+        <record id="model_records_container" model="ir.model">
+            <field name="model">records.container</field>
+            <field name="name">Records Container</field>
+        </record>
+
+        <record id="model_records_container_content_line" model="ir.model">
+            <field name="model">records.container.content.line</field>
+            <field name="name">Records Container Content Line</field>
+        </record>
+
+        <record id="model_records_container_line" model="ir.model">
+            <field name="model">records.container.line</field>
+            <field name="name">Records Container Line</field>
+        </record>
+
+        <record id="model_records_container_log" model="ir.model">
+            <field name="model">records.container.log</field>
+            <field name="name">Records Container Log</field>
+        </record>
+
+        <record id="model_records_container_movement" model="ir.model">
+            <field name="model">records.container.movement</field>
+            <field name="name">Records Container Movement</field>
+        </record>
+
+        <record id="model_records_container_transfer" model="ir.model">
+            <field name="model">records.container.transfer</field>
+            <field name="name">Records Container Transfer</field>
+        </record>
+
+        <record id="model_records_container_transfer_line" model="ir.model">
+            <field name="model">records.container.transfer.line</field>
+            <field name="name">Records Container Transfer Line</field>
+        </record>
+
+        <record id="model_records_container_type" model="ir.model">
+            <field name="model">records.container.type</field>
+            <field name="name">Records Container Type</field>
+        </record>
+
+        <record id="model_records_container_type_converter" model="ir.model">
+            <field name="model">records.container.type.converter</field>
+            <field name="name">Records Container Type Converter</field>
+        </record>
+
+        <record id="model_records_document" model="ir.model">
+            <field name="model">records.document</field>
+            <field name="name">Records Document</field>
+        </record>
+
+        <record id="model_records_document_type" model="ir.model">
+            <field name="model">records.document.type</field>
+            <field name="name">Records Document Type</field>
+        </record>
+
+        <record id="model_records_location" model="ir.model">
+            <field name="model">records.location</field>
+            <field name="name">Records Location</field>
+        </record>
+
+        <record id="model_records_location_inspection" model="ir.model">
+            <field name="model">records.location.inspection</field>
+            <field name="name">Records Location Inspection</field>
+        </record>
+
+        <record id="model_records_location_inspection_line" model="ir.model">
+            <field name="model">records.location.inspection.line</field>
+            <field name="name">Records Location Inspection Line</field>
+        </record>
+
+        <record id="model_records_location_report_wizard" model="ir.model">
+            <field name="model">records.location.report.wizard</field>
+            <field name="name">Records Location Report Wizard</field>
+        </record>
+
+        <record id="model_records_storage_box" model="ir.model">
+            <field name="model">records.storage.box</field>
+            <field name="name">Records Storage Box</field>
+        </record>
+
+        <record id="model_records_storage_department_user" model="ir.model">
+            <field name="model">records.storage.department.user</field>
+            <field name="name">Records Storage Department User</field>
+        </record>
+
+        <record id="model_report_records_management_report_location_utilization" model="ir.model">
+            <field name="model">report.records_management.report_location_utilization</field>
+            <field name="name">Report Records Management Report Location Utilization</field>
+        </record>
+
+        <record id="model_required_document" model="ir.model">
+            <field name="model">required.document</field>
+            <field name="name">Required Document</field>
+        </record>
+
+        <record id="model_signed_document" model="ir.model">
+            <field name="model">signed.document</field>
+            <field name="name">Signed Document</field>
+        </record>
+
+        <!-- Communication Models -->
+        <record id="model_certificate_template_data" model="ir.model">
+            <field name="model">certificate.template.data</field>
+            <field name="name">Certificate Template Data</field>
+        </record>
+
+        <record id="model_records_survey_user_input" model="ir.model">
+            <field name="model">records.survey.user.input</field>
+            <field name="name">Records Survey User Input</field>
+        </record>
+
+        <record id="model_survey_improvement_action" model="ir.model">
+            <field name="model">survey.improvement.action</field>
+            <field name="name">Survey Improvement Action</field>
+        </record>
+
+        <!-- Portal & Customer Models -->
+        <record id="model_customer_category" model="ir.model">
+            <field name="model">customer.category</field>
+            <field name="name">Customer Category</field>
+        </record>
+
+        <record id="model_customer_feedback" model="ir.model">
+            <field name="model">customer.feedback</field>
+            <field name="name">Customer Feedback</field>
+        </record>
+
+        <record id="model_customer_inventory" model="ir.model">
+            <field name="model">customer.inventory</field>
+            <field name="name">Customer Inventory</field>
+        </record>
+
+        <record id="model_customer_inventory_line" model="ir.model">
+            <field name="model">customer.inventory.line</field>
+            <field name="name">Customer Inventory Line</field>
+        </record>
+
+        <record id="model_customer_inventory_report" model="ir.model">
+            <field name="model">customer.inventory.report</field>
+            <field name="name">Customer Inventory Report</field>
+        </record>
+
+        <record id="model_customer_inventory_report_line" model="ir.model">
+            <field name="model">customer.inventory.report.line</field>
+            <field name="name">Customer Inventory Report Line</field>
+        </record>
+
+        <record id="model_customer_inventory_report_wizard" model="ir.model">
+            <field name="model">customer.inventory.report.wizard</field>
+            <field name="name">Customer Inventory Report Wizard</field>
+        </record>
+
+        <record id="model_customer_portal_diagram" model="ir.model">
+            <field name="model">customer.portal.diagram</field>
+            <field name="name">Customer Portal Diagram</field>
+        </record>
+
+        <record id="model_feedback_improvement_area" model="ir.model">
+            <field name="model">feedback.improvement.area</field>
+            <field name="name">Feedback Improvement Area</field>
+        </record>
+
+        <record id="model_portal_feedback" model="ir.model">
+            <field name="model">portal.feedback</field>
+            <field name="name">Portal Feedback</field>
+        </record>
+
+        <record id="model_portal_feedback_action" model="ir.model">
+            <field name="model">portal.feedback.action</field>
+            <field name="name">Portal Feedback Action</field>
+        </record>
+
+        <record id="model_portal_feedback_analytic" model="ir.model">
+            <field name="model">portal.feedback.analytic</field>
+            <field name="name">Portal Feedback Analytic</field>
+        </record>
+
+        <record id="model_portal_feedback_communication" model="ir.model">
+            <field name="model">portal.feedback.communication</field>
+            <field name="name">Portal Feedback Communication</field>
+        </record>
+
+        <record id="model_portal_feedback_escalation" model="ir.model">
+            <field name="model">portal.feedback.escalation</field>
+            <field name="name">Portal Feedback Escalation</field>
+        </record>
+
+        <record id="model_portal_feedback_resolution" model="ir.model">
+            <field name="model">portal.feedback.resolution</field>
+            <field name="name">Portal Feedback Resolution</field>
+        </record>
+
+        <record id="model_portal_request" model="ir.model">
+            <field name="model">portal.request</field>
+            <field name="name">Portal Request</field>
+        </record>
+
+        <record id="model_portal_request_line" model="ir.model">
+            <field name="model">portal.request.line</field>
+            <field name="name">Portal Request Line</field>
+        </record>
+
+        <record id="model_report_records_management_report_customer_inventory" model="ir.model">
+            <field name="model">report.records_management.report_customer_inventory</field>
+            <field name="name">Report Records Management Report Customer Inventory</field>
+        </record>
+
+        <record id="model_survey_feedback_theme" model="ir.model">
+            <field name="model">survey.feedback.theme</field>
+            <field name="name">Survey Feedback Theme</field>
+        </record>
+
+        <!-- Shredding & Destruction Models -->
+        <record id="model_destruction_item" model="ir.model">
+            <field name="model">destruction.item</field>
+            <field name="name">Destruction Item</field>
+        </record>
+
+        <record id="model_inventory_item_destruction" model="ir.model">
+            <field name="model">inventory.item.destruction</field>
+            <field name="name">Inventory Item Destruction</field>
+        </record>
+
+        <record id="model_inventory_item_destruction_line" model="ir.model">
+            <field name="model">inventory.item.destruction.line</field>
+            <field name="name">Inventory Item Destruction Line</field>
+        </record>
+
+        <record id="model_paper_bale" model="ir.model">
+            <field name="model">paper.bale</field>
+            <field name="name">Paper Bale</field>
+        </record>
+
+        <record id="model_paper_bale_inspection" model="ir.model">
+            <field name="model">paper.bale.inspection</field>
+            <field name="name">Paper Bale Inspection</field>
+        </record>
+
+        <record id="model_paper_bale_inspection_wizard" model="ir.model">
+            <field name="model">paper.bale.inspection.wizard</field>
+            <field name="name">Paper Bale Inspection Wizard</field>
+        </record>
+
+        <record id="model_paper_bale_line" model="ir.model">
+            <field name="model">paper.bale.line</field>
+            <field name="name">Paper Bale Line</field>
+        </record>
+
+        <record id="model_paper_bale_movement" model="ir.model">
+            <field name="model">paper.bale.movement</field>
+            <field name="name">Paper Bale Movement</field>
+        </record>
+
+        <record id="model_paper_bale_recycling" model="ir.model">
+            <field name="model">paper.bale.recycling</field>
+            <field name="name">Paper Bale Recycling</field>
+        </record>
+
+        <record id="model_paper_bale_weigh_wizard" model="ir.model">
+            <field name="model">paper.bale.weigh.wizard</field>
+            <field name="name">Paper Bale Weigh Wizard</field>
+        </record>
+
+        <record id="model_paper_load_shipment" model="ir.model">
+            <field name="model">paper.load.shipment</field>
+            <field name="name">Paper Load Shipment</field>
+        </record>
+
+        <record id="model_records_destruction" model="ir.model">
+            <field name="model">records.destruction</field>
+            <field name="name">Records Destruction</field>
+        </record>
+
+        <record id="model_records_destruction_job" model="ir.model">
+            <field name="model">records.destruction.job</field>
+            <field name="name">Records Destruction Job</field>
+        </record>
+
+        <record id="model_records_destruction_line" model="ir.model">
+            <field name="model">records.destruction.line</field>
+            <field name="name">Records Destruction Line</field>
+        </record>
+
+        <record id="model_shredding_certificate" model="ir.model">
+            <field name="model">shredding.certificate</field>
+            <field name="name">Shredding Certificate</field>
+        </record>
+
+        <record id="model_shredding_hard_drive" model="ir.model">
+            <field name="model">shredding.hard_drive</field>
+            <field name="name">Shredding Hard Drive</field>
+        </record>
+
+        <record id="model_shredding_inventory_batch" model="ir.model">
+            <field name="model">shredding.inventory.batch</field>
+            <field name="name">Shredding Inventory Batch</field>
+        </record>
+
+        <record id="model_shredding_picklist_item" model="ir.model">
+            <field name="model">shredding.picklist.item</field>
+            <field name="name">Shredding Picklist Item</field>
+        </record>
+
+        <record id="model_shredding_service" model="ir.model">
+            <field name="model">shredding.service</field>
+            <field name="name">Shredding Service</field>
+        </record>
+
+        <record id="model_shredding_service_log" model="ir.model">
+            <field name="model">shredding.service.log</field>
+            <field name="name">Shredding Service Log</field>
+        </record>
+
+        <record id="model_shredding_service_photo" model="ir.model">
+            <field name="model">shredding.service.photo</field>
+            <field name="name">Shredding Service Photo</field>
+        </record>
+
+        <record id="model_shredding_team" model="ir.model">
+            <field name="model">shredding.team</field>
+            <field name="name">Shredding Team</field>
+        </record>
+
+        <record id="model_work_order_shredding" model="ir.model">
+            <field name="model">work.order.shredding</field>
+            <field name="name">Work Order Shredding</field>
+        </record>
+
+        <!-- Fleet & Routes Models -->
+        <record id="model_fsm_notification" model="ir.model">
+            <field name="model">fsm.notification</field>
+            <field name="name">Fsm Notification</field>
+        </record>
+
+        <record id="model_fsm_notification_manager" model="ir.model">
+            <field name="model">fsm.notification.manager</field>
+            <field name="name">Fsm Notification Manager</field>
+        </record>
+
+        <record id="model_fsm_reschedule_wizard" model="ir.model">
+            <field name="model">fsm.reschedule.wizard</field>
+            <field name="name">Fsm Reschedule Wizard</field>
+        </record>
+
+        <record id="model_fsm_route" model="ir.model">
+            <field name="model">fsm.route</field>
+            <field name="name">Fsm Route</field>
+        </record>
+
+        <record id="model_fsm_route_management" model="ir.model">
+            <field name="model">fsm.route.management</field>
+            <field name="name">Fsm Route Management</field>
+        </record>
+
+        <record id="model_pickup_request" model="ir.model">
+            <field name="model">pickup.request</field>
+            <field name="name">Pickup Request</field>
+        </record>
+
+        <record id="model_pickup_request_item" model="ir.model">
+            <field name="model">pickup.request.item</field>
+            <field name="name">Pickup Request Item</field>
+        </record>
+
+        <record id="model_pickup_request_line" model="ir.model">
+            <field name="model">pickup.request.line</field>
+            <field name="name">Pickup Request Line</field>
+        </record>
+
         <record id="model_pickup_route" model="ir.model">
             <field name="model">pickup.route</field>
             <field name="name">Pickup Route</field>
+        </record>
+
+        <record id="model_pickup_route_stop" model="ir.model">
+            <field name="model">pickup.route.stop</field>
+            <field name="name">Pickup Route Stop</field>
+        </record>
+
+        <record id="model_pickup_schedule_wizard" model="ir.model">
+            <field name="model">pickup.schedule.wizard</field>
+            <field name="name">Pickup Schedule Wizard</field>
+        </record>
+
+        <record id="model_route_optimizer" model="ir.model">
+            <field name="model">route.optimizer</field>
+            <field name="name">Route Optimizer</field>
+        </record>
+
+        <!-- System & Configuration Models -->
+        <record id="model_hard_drive_scan_wizard" model="ir.model">
+            <field name="model">hard.drive.scan.wizard</field>
+            <field name="name">Hard Drive Scan Wizard</field>
+        </record>
+
+        <record id="model_hard_drive_scan_wizard_line" model="ir.model">
+            <field name="model">hard.drive.scan.wizard.line</field>
+            <field name="name">Hard Drive Scan Wizard Line</field>
+        </record>
+
+        <record id="model_mobile_bin_key_wizard" model="ir.model">
+            <field name="model">mobile.bin.key.wizard</field>
+            <field name="name">Mobile Bin Key Wizard</field>
+        </record>
+
+        <record id="model_processing_log_resolution_wizard" model="ir.model">
+            <field name="model">processing.log.resolution.wizard</field>
+            <field name="name">Processing Log Resolution Wizard</field>
+        </record>
+
+        <record id="model_rm_module_configurator" model="ir.model">
+            <field name="model">rm.module.configurator</field>
+            <field name="name">Rm Module Configurator</field>
+        </record>
+
+        <record id="model_temp_inventory_reject_wizard" model="ir.model">
+            <field name="model">temp.inventory.reject.wizard</field>
+            <field name="name">Temp Inventory Reject Wizard</field>
+        </record>
+
+        <record id="model_transitory_field_config" model="ir.model">
+            <field name="model">transitory.field.config</field>
+            <field name="name">Transitory Field Config</field>
+        </record>
+
+        <!-- NAID & Compliance Models -->
+        <record id="model_naid_audit_log" model="ir.model">
+            <field name="model">naid.audit.log</field>
+            <field name="name">Naid Audit Log</field>
+        </record>
+
+        <record id="model_naid_certificate" model="ir.model">
+            <field name="model">naid.certificate</field>
+            <field name="name">Naid Certificate</field>
+        </record>
+
+        <record id="model_naid_certificate_item" model="ir.model">
+            <field name="model">naid.certificate.item</field>
+            <field name="name">Naid Certificate Item</field>
+        </record>
+
+        <record id="model_naid_compliance_action_plan" model="ir.model">
+            <field name="model">naid.compliance.action.plan</field>
+            <field name="name">Naid Compliance Action Plan</field>
+        </record>
+
+        <record id="model_naid_compliance_alert" model="ir.model">
+            <field name="model">naid.compliance.alert</field>
+            <field name="name">Naid Compliance Alert</field>
+        </record>
+
+        <record id="model_naid_compliance_checklist" model="ir.model">
+            <field name="model">naid.compliance.checklist</field>
+            <field name="name">Naid Compliance Checklist</field>
+        </record>
+
+        <record id="model_naid_compliance_checklist_item" model="ir.model">
+            <field name="model">naid.compliance.checklist.item</field>
+            <field name="name">Naid Compliance Checklist Item</field>
+        </record>
+
+        <record id="model_naid_custody" model="ir.model">
+            <field name="model">naid.custody</field>
+            <field name="name">Naid Custody</field>
+        </record>
+
+        <record id="model_naid_custody_event" model="ir.model">
+            <field name="model">naid.custody.event</field>
+            <field name="name">Naid Custody Event</field>
+        </record>
+
+        <record id="model_naid_destruction_record" model="ir.model">
+            <field name="model">naid.destruction.record</field>
+            <field name="name">Naid Destruction Record</field>
+        </record>
+
+        <record id="model_naid_operator_certification" model="ir.model">
+            <field name="model">naid.operator.certification</field>
+            <field name="name">Naid Operator Certification</field>
+        </record>
+
+        <record id="model_naid_performance_history" model="ir.model">
+            <field name="model">naid.performance.history</field>
+            <field name="name">Naid Performance History</field>
+        </record>
+
+        <record id="model_naid_risk_assessment" model="ir.model">
+            <field name="model">naid.risk.assessment</field>
+            <field name="name">Naid Risk Assessment</field>
+        </record>
+
+        <record id="model_records_audit_log" model="ir.model">
+            <field name="model">records.audit.log</field>
+            <field name="name">Records Audit Log</field>
+        </record>
+
+        <record id="model_records_security_audit" model="ir.model">
+            <field name="model">records.security.audit</field>
+            <field name="name">Records Security Audit</field>
+        </record>
+
+        <record id="model_signed_document_audit" model="ir.model">
+            <field name="model">signed.document.audit</field>
+            <field name="name">Signed Document Audit</field>
+        </record>
+
+        <record id="model_temp_inventory_audit" model="ir.model">
+            <field name="model">temp.inventory.audit</field>
+            <field name="name">Temp Inventory Audit</field>
         </record>
 
     </data>
