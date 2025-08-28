@@ -12,6 +12,17 @@
     <field name="company_id" eval="False"/>
 </record>
 
+<!-- File Retrieval Item Sequence -->
+<record id="sequence_file_retrieval_item" model="ir.sequence">
+    <field name="name">File Retrieval Item</field>
+    <field name="code">file.retrieval.item</field>
+    <field name="prefix">FRI-</field>
+    <field name="padding">4</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name="company_id" eval="False"/>
+</record>
+
 <!-- NAID Certificate Sequence -->
 <record id="sequence_naid_certificate" model="ir.sequence">
     <field name="name">NAID Certificate</field>
@@ -31,7 +42,7 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <record id="seq_records_customer_inventory" model="ir.sequence">
             <field name="name">Customer Inventory Report</field>
             <field name="code">customer.inventory.report</field>
@@ -39,7 +50,7 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <record id="seq_records_bale" model="ir.sequence">
             <field name="name">Paper Bale</field>
             <field name="code">records_management.bale</field>
@@ -47,7 +58,7 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-        
+
         <record id="seq_records_load" model="ir.sequence">
             <field name="name">Paper Load</field>
             <field name="code">records_management.load</field>

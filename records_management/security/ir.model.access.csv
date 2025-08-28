@@ -103,6 +103,7 @@ access_feedback_improvement_area_user,feedback.improvement.area.user,model_feedb
 access_field_label_customization_user,field.label.customization.user,model_field_label_customization,records_management.group_records_user,1,1,1,0
 access_file_retrieval_user,file.retrieval.user,model_file_retrieval,records_management.group_records_user,1,1,1,0
 access_file_retrieval_item_user,file.retrieval.item.user,model_file_retrieval_item,records_management.group_records_user,1,1,1,0
+access_file_retrieval_item_manager,file.retrieval.item.manager,model_file_retrieval_item,records_management.group_records_manager,1,1,1,1
 access_file_retrieval_work_order_user,file.retrieval.work.order.user,model_file_retrieval_work_order,records_management.group_records_user,1,1,1,0
 access_file_retrieval_work_order_item_user,file.retrieval.work.order.item.user,model_file_retrieval_work_order_item,records_management.group_records_user,1,1,1,0
 access_fsm_notification_user,fsm.notification.user,model_fsm_notification,records_management.group_records_user,1,1,1,0
