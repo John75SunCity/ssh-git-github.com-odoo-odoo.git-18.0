@@ -14,6 +14,7 @@ from . import paper_bale_recycling
 from . import records_request_line
 from . import records_tag
 from . import barcode_storage_box
+from . import bin_issue_record
 from . import inventory_item_type
 from . import records_survey_user_input
 from . import portal_feedback_analytic
@@ -218,5 +219,4 @@ from . import billing_period
 from . import shredding_service_bin
 
 # Import wizard models
-from . import bin_issue_report_wizard
 from . import shredding_service_event

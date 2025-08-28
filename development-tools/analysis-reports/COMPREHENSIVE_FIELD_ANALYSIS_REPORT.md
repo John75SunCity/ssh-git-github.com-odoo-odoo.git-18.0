@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-28T19:42:44.961639+00:00
+Generated: 2025-08-28T22:18:27.059982+00:00
 
 ## validate_imports.py
 
@@ -11,6 +11,8 @@ Exit code: 0
 Exit code: 1
 
 <details><summary>stdout (tail)</summary>
+
+OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/wizard_template_reports.xml
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/load_report_templates.xml
 
@@ -86,8 +88,6 @@ OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/rec
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/photo_reports.xml
 
-OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/customer_inventory_report.xml
-
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/portal_audit_reports.xml
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/barcode_product_reports.xml
@@ -162,49 +162,49 @@ Exit code: 0
 
 <details><summary>stdout (tail)</summary>
 
-   • key_restriction_checker.py:65 (Many2one\([\'"]([^\'"]+)[\'"])
+❌ Model 'product.product' referenced but not defined:
+
+   • unlock_service_part.py:23 (Many2one\([\'"]([^\'"]+)[\'"])
+
+   • records_usage_tracking.py:47 (Many2one\([\'"]([^\'"]+)[\'"])
+
+   • product_container_type.py:17 (Many2one\([\'"]([^\'"]+)[\'"])
+
+   • ... and 2 more references
 
 
 
-❌ Model 'fleet.vehicle' referenced but not defined:
+❌ Model 'product.category' referenced but not defined:
 
-   • shredding_team.py:57 (Many2many\([\'"]([^\'"]+)[\'"])
-
-   • work_order_shredding.py:44 (Many2one\([\'"]([^\'"]+)[\'"])
-
-   • container_destruction_work_order.py:110 (Many2one\([\'"]([^\'"]+)[\'"])
-
-   • ... and 5 more references
+   • unlock_service_part.py:24 (Many2one\([\'"]([^\'"]+)[\'"])
 
 
 
-❌ Model 'crm.team' referenced but not defined:
+❌ Model 'uom.uom' referenced but not defined:
 
-   • customer_feedback.py:50 (Many2one\([\'"]([^\'"]+)[\'"])
+   • unlock_service_part.py:25 (Many2one\([\'"]([^\'"]+)[\'"])
 
+   • naid_certificate_item.py:10 (Many2one\([\'"]([^\'"]+)[\'"])
 
+   • records_container_line.py:13 (Many2one\([\'"]([^\'"]+)[\'"])
 
-❌ Model 'maintenance.request' referenced but not defined:
-
-   • service_item.py:88 (One2many\([\'"]([^\'"]+)[\'"])
-
-
-
-📊 Found 6 model inheritance relationships
+   • ... and 2 more references
 
 
 
-🚨 INHERITANCE ISSUES: 1 models inherit from non-existent models:
-
-   ❌ res.currency inherits from maintenance.request (not found)
+📊 Found 7 model inheritance relationships
 
 
 
-📊 Found 43 domain references with field access
+✅ All inheritance relationships are valid
+
+
+
+📊 Found 46 domain references with field access
 
 ⚠️  Domain field references (may need validation):
 
-   • route_optimizer.py:40 - stage_id.is_closed
+   • route_optimizer.py:85 - stage_id.is_closed
 
    • records_container.py:53 - , tracking=True)
 
@@ -228,23 +228,23 @@ Exit code: 0
 
     product_category_id = fields.Many2one(
 
-   • ... and 38 more domain references
+   • ... and 41 more domain references
 
 
 
-🚨 SECURITY ISSUES: 27 models missing security access rules:
+🚨 SECURITY ISSUES: 37 models missing security access rules:
 
    ❌  -  (in document_search_attempt.py)
 
-   ❌ res.currency (in maintenance_request.py)
+   ❌ res.currency (in bin_issue_record.py)
 
    ❌ res.company (in full_customization_name.py)
 
+   ❌ project.task (in bin_issue_record.py)
+
    ❌ [%s] %s (in records_tag.py)
 
-   ❌ res.users (in full_customization_name.py)
-
-   ❌ ... and 22 more models
+   ❌ ... and 32 more models
 
 
 
@@ -254,11 +254,11 @@ AUDIT SUMMARY
 
 ================================================================================
 
-📊 Total models: 248
+📊 Total models: 261
 
-📊 Total field references: 136
+📊 Total field references: 134
 
-🚨 Critical issues found: 36
+🚨 Critical issues found: 40
 
 ⚠️  Issues found that may cause loading order problems
 
@@ -362,7 +362,7 @@ document_type_id (unknown):
 
 ================================================================================
 
-SUMMARY: Found 0 potential issues in 216 related fields
+SUMMARY: Found 0 potential issues in 219 related fields
 
 ================================================================================
 

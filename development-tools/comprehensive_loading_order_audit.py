@@ -160,7 +160,7 @@ def audit_loading_order():
 
     missing_models = []
     for model_ref, usages in references.items():
-        if model_ref not in models and not model_ref.startswith(('res.', 'account.', 'stock.', 'project.', 'mail.', 'ir.', 'base.')):
+        if model_ref not in models and not model_ref.startswith(('res.', 'account.', 'stock.', 'project.', 'mail.', 'ir.', 'base.', 'sale.', 'crm.', 'maintenance.', 'hr.', 'fleet.', 'sign.', 'sms.', 'survey.', 'portal.', 'industry_fsm.')):
             missing_models.append((model_ref, usages))
 
     if missing_models:
@@ -181,7 +181,7 @@ def audit_loading_order():
         print(f"\n📊 Found {len(inheritance)} model inheritance relationships")
         inheritance_issues = []
         for child, parent in inheritance.items():
-            if parent not in models and not parent.startswith(('res.', 'account.', 'stock.', 'project.', 'mail.', 'ir.', 'base.')):
+            if parent not in models and not parent.startswith(('res.', 'account.', 'stock.', 'project.', 'mail.', 'ir.', 'base.', 'sale.', 'crm.', 'maintenance.', 'hr.', 'fleet.', 'sign.', 'sms.', 'survey.', 'portal.', 'industry_fsm.')):
                 inheritance_issues.append((child, parent))
 
         if inheritance_issues:
@@ -218,8 +218,8 @@ def audit_loading_order():
     total_issues = len(missing_models) + len(inheritance_issues if 'inheritance_issues' in locals() else []) + len(missing_security)
 
     print(f"\n" + "=" * 80)
-    print(f"AUDIT SUMMARY")
-    print(f"=" * 80)
+    print("AUDIT SUMMARY")
+    print("=" * 80)
     print(f"📊 Total models: {len(models)}")
     print(f"📊 Total field references: {len(references)}")
     print(f"🚨 Critical issues found: {total_issues}")
