@@ -47,6 +47,63 @@
             <field name="storage_capacity">20000</field>
         </record>
 
+        <!-- Additional Locations for Intelligent Search Demo -->
+        <record id="demo_location_warehouse_c" model="records.location">
+            <field name="name">Warehouse C - Legal Archives</field>
+            <field name="code">WHC-LEGAL</field>
+            <field name="description">Legal archives and compliance storage</field>
+            <field name="location_type">warehouse</field>
+            <field name="building">Building C</field>
+            <field name="zone">Zone 3</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">True</field>
+            <field name="humidity_controlled">True</field>
+            <field name="security_level">high</field>
+            <field name="storage_capacity">15000</field>
+        </record>
+
+        <record id="demo_location_warehouse_archive" model="records.location">
+            <field name="name">Archive Warehouse</field>
+            <field name="code">ARCHIVE-WH</field>
+            <field name="description">Long-term archive storage facility</field>
+            <field name="location_type">archive</field>
+            <field name="building">Archive Building</field>
+            <field name="zone">Archive Zone</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">True</field>
+            <field name="humidity_controlled">True</field>
+            <field name="security_level">high</field>
+            <field name="storage_capacity">50000</field>
+        </record>
+
+        <record id="demo_location_vault" model="records.location">
+            <field name="name">Secure Vault</field>
+            <field name="code">SECURE-VAULT</field>
+            <field name="description">High-security vault for confidential documents</field>
+            <field name="location_type">vault</field>
+            <field name="building">Main Building</field>
+            <field name="zone">Vault Zone</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">True</field>
+            <field name="humidity_controlled">True</field>
+            <field name="security_level">restricted</field>
+            <field name="storage_capacity">5000</field>
+        </record>
+
+        <record id="demo_location_emergency_access" model="records.location">
+            <field name="name">Emergency Access Vault</field>
+            <field name="code">EMERGENCY-VAULT</field>
+            <field name="description">Emergency access vault for critical documents</field>
+            <field name="location_type">vault</field>
+            <field name="building">Emergency Wing</field>
+            <field name="zone">Emergency Zone</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">True</field>
+            <field name="humidity_controlled">True</field>
+            <field name="security_level">restricted</field>
+            <field name="storage_capacity">1000</field>
+        </record>
+
         <!-- Demo Document Types -->
         <record id="demo_document_type_contracts" model="records.document.type">
             <field name="name">Contracts</field>
@@ -101,6 +158,61 @@
             <field name="code">LRG-CNT</field>
             <field name="description">Large container for bulk document storage</field>
             <field name="active">True</field>
+        </record>
+
+        <!-- Additional Container Types for Intelligent Search Demo -->
+        <record id="demo_container_type_standard_box" model="records.container.type">
+            <field name="name">Standard Document Box</field>
+            <field name="code">STD-BOX</field>
+            <field name="description">Standard bankers box for document storage</field>
+            <field name="active">True</field>
+            <field name="dimensions">12x15x10</field>
+            <field name="cubic_feet">1.25</field>
+        </record>
+
+        <record id="demo_container_type_legal_box" model="records.container.type">
+            <field name="name">Legal Size Box</field>
+            <field name="code">LEGAL-BOX</field>
+            <field name="description">Legal size box for legal documents and contracts</field>
+            <field name="active">True</field>
+            <field name="dimensions">15x12x10</field>
+            <field name="cubic_feet">1.25</field>
+        </record>
+
+        <record id="demo_container_type_secure_box" model="records.container.type">
+            <field name="name">Secure Storage Box</field>
+            <field name="code">SECURE-BOX</field>
+            <field name="description">High-security box for confidential documents</field>
+            <field name="active">True</field>
+            <field name="dimensions">12x15x10</field>
+            <field name="cubic_feet">1.25</field>
+        </record>
+
+        <record id="demo_container_type_archive_box" model="records.container.type">
+            <field name="name">Archive Storage Box</field>
+            <field name="code">ARCHIVE-BOX</field>
+            <field name="description">Archive box for long-term storage</field>
+            <field name="active">True</field>
+            <field name="dimensions">16x12x12</field>
+            <field name="cubic_feet">1.33</field>
+        </record>
+
+        <record id="demo_container_type_emergency_box" model="records.container.type">
+            <field name="name">Emergency Access Box</field>
+            <field name="code">EMERGENCY-BOX</field>
+            <field name="description">Emergency access box for critical documents</field>
+            <field name="active">True</field>
+            <field name="dimensions">12x15x10</field>
+            <field name="cubic_feet">1.25</field>
+        </record>
+
+        <record id="demo_container_type_media_box" model="records.container.type">
+            <field name="name">Media Storage Box</field>
+            <field name="code">MEDIA-BOX</field>
+            <field name="description">Specialized box for digital media storage</field>
+            <field name="active">True</field>
+            <field name="dimensions">14x11x8</field>
+            <field name="cubic_feet">0.89</field>
         </record>
 
         <!-- Demo Containers -->
