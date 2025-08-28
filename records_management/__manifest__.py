@@ -47,7 +47,7 @@
         "data/temp_inventory_configurator_data.xml",
         "data/temp_inventory_sequence_data.xml",
         "data/user_setup_data.xml",
-        "security/*_security.xml",
+        "security/records_management_groups.xml",  # Renamed from records_management_security.xml to follow convention
         "security/ir.model.access.csv",
         "views/advanced_billing_line_views.xml",
         "views/advanced_billing_service_line_views.xml",
@@ -89,7 +89,6 @@
         "templates/records_management_portal_templates.xml",
         "templates/records_portal_templates.xml"
     ],
-    # Use glob patterns for views/templates if possible
     'demo': [
         'demo/demo_records.xml'
     ],
