@@ -54,8 +54,10 @@
         "views/advanced_billing_views.xml",
         "views/billing_period_views.xml",
         "views/customer_negotiated_rate_views.xml",
+        "views/fleet_vehicle_views.xml",
         "views/maintenance_request_views.xml",
         "views/naid_custody_views.xml",
+        "views/records_document_flag_permanent_wizard_views.xml",
         "views/records_management_dashboard_view.xml",
         "views/records_management_dashboard.xml",
         "views/records_management_document_view.xml",
@@ -75,8 +77,7 @@
         "templates/records_dashboard_templates.xml",
         "templates/records_management_dashboard_templates.xmltemplates/records_management_dashboard_templates.xml",
         "templates/records_management_portal_templates.xml",
-        "templates/records_portal_templates.xml",
-        "views/records_document_flag_permanent_wizard_views.xml"
+        "templates/records_portal_templates.xml"
     ],
     # Use glob patterns for views/templates if possible
         'demo': [

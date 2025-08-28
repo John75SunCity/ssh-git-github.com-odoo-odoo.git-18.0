@@ -19,6 +19,7 @@
             <field name="completion_percentage"/>
             <field name="efficiency_score"/>
             <field name="request_count"/>
+            <field name="fsm_state"/>
             <field name="color"/>
             <templates>
                 <t t-name="kanban-box">
@@ -29,7 +30,7 @@
                             <span class="float-end">
                                 <field name="priority" widget="priority"/>
                             </span>
-                            <div class="text-muted">👤                                <field name="driver_id"/>
+                            <div class="text-muted">👤 <field name="user_id"/>
                             </div>
                         </div>
                         <div class="o_kanban_card_content">
@@ -44,8 +45,10 @@
                                 <field name="total_stops"/>
                                 <br/>
                                 <strong>⏱️ Est. Duration:</strong>
-                                <field name="estimated_duration"/>
- hrs
+                                <field name="estimated_duration"/> hrs
+                                <br/>
+                                <strong>🎯 FSM Status:</strong>
+                                <field name="fsm_state" attrs="{'invisible': [('fsm_state', '=', False)]}"/>
                             </div>
                             <div t-if="record.priority.raw_value == 'urgent'">
                                 <span class="badge badge-danger">🚨 Urgent Route</span>
@@ -67,7 +70,7 @@
     </field>
 </record>
 
-<!-- Enhanced Tree view for Pickup Routes -->
+<!-- Enhanced Tree view for Pickup Routes with FSM Integration -->
     <record id="pickup_route_view_tree" model="ir.ui.view">
         <field name="name">pickup.route.view.tree</field>
         <field name="model">pickup.route</field>
@@ -75,11 +78,14 @@
             <tree decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'" decoration-danger="priority == 'urgent'">
                 <field name="name"/>
                 <field name="route_date"/>
-                <field name="driver_id"/>
+                <field name="user_id"/>
                 <field name="vehicle_id"/>
                 <field name="total_stops"/>
+                <field name="container_count"/>
                 <field name="estimated_duration" widget="float_time"/>
                 <field name="actual_duration" widget="float_time"/>
+                <field name="completion_percentage" widget="progressbar"/>
+                <field name="fsm_state" string="FSM Status"/>
                 <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'"/>
                 <field name="priority" widget="priority"/>
                 <field name="company_id" groups="base.group_multi_company"/>
@@ -87,7 +93,7 @@
         </field>
     </record>
 
-<!-- Enhanced Form view for Pickup Routes -->
+<!-- Enhanced Form view for Pickup Routes with FSM Integration -->
     <record id="pickup_route_view_form" model="ir.ui.view">
         <field name="name">pickup.route.view.form</field>
         <field name="model">pickup.route</field>
@@ -98,18 +104,25 @@
     <button name="action_start_route" type="object" string="Start Route" class="btn-primary" attrs="{'invisible': [('state', '!=', 'planned')]}"/>
     <button name="action_complete_route" type="object" string="Complete Route" class="btn-success" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
     <button name="action_cancel_route" type="object" string="Cancel Route" class="btn-secondary" attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])]}"/>
+    <button name="action_optimize_route" type="object" string="Optimize Route" class="btn-warning" attrs="{'invisible': [('state', 'not in', ['draft', 'planned'])]}"/>
     <field name="state" widget="statusbar" statusbar_visible="draft,planned,in_progress,completed"/>
 </header>
                 <sheet>
 <div class="oe_button_box" name="button_box">
     <button name="action_view_pickup_requests" type="object" class="oe_stat_button" icon="fa-truck">
-        <field name="pickup_count" widget="statbutton" string="Pickups"/>
+        <field name="request_count" widget="statbutton" string="Requests"/>
     </button>
-    <button name="action_view_route_map" type="object" class="oe_stat_button" icon="fa-map">
+    <button name="action_view_fsm_task" type="object" class="oe_stat_button" icon="fa-tasks" attrs="{'invisible': [('fsm_task_id', '=', False)]}">
         <div class="o_field_widget o_stat_info">
-            <span class="o_stat_value">Map</span>
-            <span class="o_stat_text">View Route</span>
+            <span class="o_stat_value"><field name="fsm_state"/></span>
+            <span class="o_stat_text">FSM Task</span>
         </div>
+    </button>
+    <button class="oe_stat_button" icon="fa-map-marker">
+        <field name="total_stops" widget="statbutton" string="Stops"/>
+    </button>
+    <button class="oe_stat_button" icon="fa-percent">
+        <field name="completion_percentage" widget="statbutton" string="Complete"/>
     </button>
 </div>
 <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
@@ -118,89 +131,112 @@
                         <label for="name"/>
                         <h1>
 <field name="name" placeholder="Route Name..."/>
-
                         </h1>
 <div class="o_row">
     <field name="priority" widget="priority"/>
-    <field name="color" widget="color_picker"/>
-
+    <label for="fsm_task_id" string="FSM Task:" attrs="{'invisible': [('fsm_task_id', '=', False)]}"/>
+    <field name="fsm_task_id" attrs="{'invisible': [('fsm_task_id', '=', False)]}" readonly="1"/>
 </div>
 </div>
 <group>
 <group string="Route Information">
     <field name="route_date" required="1"/>
-    <field name="driver_id" required="1"/>
+    <field name="user_id" string="Driver/Operator" required="1"/>
     <field name="vehicle_id" required="1"/>
-    <field name="route_type"/>
-    <field name="start_location_id"/>
-    <field name="end_location_id"/>
+    <field name="supervisor_id"/>
+    <field name="planned_start_time"/>
+    <field name="planned_end_time"/>
 </group>
-<group string="Timing &amp; Capacity">
-    <field name="planned_start_time" widget="float_time"/>
-    <field name="actual_start_time" widget="float_time" attrs="{'readonly': [('state', 'in', ['draft', 'planned'])]}"/>
+<group string="FSM Integration &amp; Timing">
+    <field name="fsm_project_id" readonly="1" attrs="{'invisible': [('fsm_project_id', '=', False)]}"/>
+    <field name="fsm_state" readonly="1" attrs="{'invisible': [('fsm_task_id', '=', False)]}"/>
+    <field name="actual_start_time" readonly="1"/>
+    <field name="actual_end_time" readonly="1"/>
     <field name="estimated_duration" widget="float_time"/>
-    <field name="actual_duration" widget="float_time" attrs="{'readonly': [('state', '!=', 'completed')]}"/>
-    <field name="max_capacity"/>
-    <field name="current_load"/>
+    <field name="actual_duration" widget="float_time" readonly="1"/>
 </group>
 </group>
 <notebook>
-<page string="Pickup Stops" name="pickup_stops">
+<page string="Pickup Requests" name="pickup_requests">
     <field name="pickup_request_ids">
         <tree decoration-info="state == 'confirmed'" decoration-success="state == 'completed'" decoration-warning="priority == 'high'">
-            <field name="sequence" widget="handle"/>
             <field name="name"/>
             <field name="partner_id"/>
             <field name="pickup_address"/>
-            <field name="estimated_pickup_time" widget="float_time"/>
-            <field name="actual_pickup_time" widget="float_time"/>
             <field name="container_count"/>
             <field name="priority" widget="priority"/>
             <field name="state" widget="badge"/>
         </tree>
     </field>
 </page>
-<page string="Route Details" name="route_details">
+<page string="Route Stops" name="route_stops">
+    <field name="route_stop_ids">
+        <tree editable="bottom">
+            <field name="sequence" widget="handle"/>
+            <field name="pickup_request_id"/>
+            <field name="location"/>
+            <field name="distance"/>
+            <field name="estimated_arrival"/>
+            <field name="actual_arrival"/>
+            <field name="status"/>
+        </tree>
+    </field>
+</page>
+<page string="Performance &amp; Analytics" name="analytics">
     <group>
-        <group string="Route Planning">
+        <group string="Route Metrics">
             <field name="total_distance"/>
             <field name="estimated_duration" widget="float_time"/>
             <field name="actual_duration" widget="float_time"/>
-            <field name="request_count"/>
+            <field name="container_count"/>
+            <field name="pickup_count"/>
         </group>
-        <group string="Performance Metrics">
+        <group string="Performance Indicators">
             <field name="completion_percentage" widget="progressbar"/>
             <field name="efficiency_score"/>
-            <field name="planned_start_time"/>
-            <field name="actual_start_time"/>
+            <field name="fuel_cost" widget="monetary"/>
+            <field name="total_cost" widget="monetary"/>
         </group>
     </group>
-    <separator string="Route Notes"/>
+    <separator string="Route Notes &amp; Instructions"/>
     <field name="notes" nolabel="1" placeholder="Add route notes, special instructions, or observations..."/>
+    <separator string="Special Instructions"/>
+    <field name="special_instructions" nolabel="1" placeholder="Add special handling instructions, customer requirements, etc..."/>
 </page>
-<page string="Tracking &amp; Compliance" name="tracking">
+<page string="FSM Integration" name="fsm_integration" attrs="{'invisible': [('fsm_task_id', '=', False)]}">
     <group>
-        <group string="Status Tracking">
-            <field name="completion_percentage" widget="progressbar"/>
-            <field name="last_update_time"/>
-            <field name="current_location"/>
-            <field name="eta_next_stop"/>
+        <group string="FSM Task Details">
+            <field name="fsm_task_id" readonly="1"/>
+            <field name="fsm_project_id" readonly="1"/>
+            <field name="fsm_state" readonly="1"/>
         </group>
-        <group string="Compliance">
-            <field name="naid_compliance_required"/>
-            <field name="audit_trail_complete"/>
-            <field name="signatures_collected"/>
-            <field name="certificates_generated"/>
+        <group string="Task Actions">
+            <button name="action_view_fsm_task" type="object" string="Open FSM Task" class="btn-primary" icon="fa-external-link"/>
         </group>
     </group>
+    <div class="alert alert-info">
+        <p><strong>FSM Integration Benefits:</strong></p>
+        <ul>
+            <li>🔄 Automated task creation and synchronization</li>
+            <li>📱 Mobile FSM app support for drivers</li>
+            <li>📊 Standard Odoo project management workflows</li>
+            <li>⏰ Advanced scheduling and dependency management</li>
+            <li>📈 Performance tracking and analytics</li>
+        </ul>
+    </div>
 </page>
-<page string="History &amp; Analytics" name="history">
-    <group string="System Information">
-        <field name="company_id" groups="base.group_multi_company"/>
-        <field name="user_id"/>
-        <field name="create_date"/>
-        <field name="write_date"/>
-        <field name="active"/>
+<page string="System Information" name="system_info">
+    <group>
+        <group string="Record Details">
+            <field name="company_id" groups="base.group_multi_company"/>
+            <field name="user_id"/>
+            <field name="create_date"/>
+            <field name="write_date"/>
+            <field name="active"/>
+        </group>
+        <group string="Currency">
+            <field name="currency_id"/>
+        </group>
     </group>
 </page>
 </notebook>
@@ -221,9 +257,10 @@
         <field name="arch" type="xml">
             <search>
 <field name="name"/>
-<field name="driver_id"/>
+<field name="user_id"/>
 <field name="vehicle_id"/>
 <field name="route_date"/>
+<field name="fsm_task_id"/>
 
 <!-- State-based filters -->
 <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
@@ -241,24 +278,23 @@
 
 <separator/>
 <filter string="Active Routes" name="active" domain="[('active', '=', True)]"/>
-<filter string="NAID Compliance Required" name="naid_required" domain="[('naid_compliance_required', '=', True)]"/>
+<filter string="With FSM Task" name="with_fsm" domain="[('fsm_task_id', '!=', False)]"/>
 
 <separator/>
 <filter string="My Routes" name="my_routes" domain="[('user_id', '=', uid)]"/>
-<filter string="My Driving Routes" name="my_driving" domain="[('driver_id.user_id', '=', uid)]"/>
 
 <group expand="0" string="Group By">
-    <filter string="Driver" name="driver" context="{'group_by': 'driver_id'}"/>
+    <filter string="Driver/Operator" name="user" context="{'group_by': 'user_id'}"/>
     <filter string="Vehicle" name="vehicle" context="{'group_by': 'vehicle_id'}"/>
     <filter string="Status" name="state" context="{'group_by': 'state'}"/>
     <filter string="Priority" name="priority" context="{'group_by': 'priority'}"/>
-    <filter string="Route Type" name="route_type" context="{'group_by': 'route_type'}"/>
+    <filter string="FSM Status" name="fsm_state" context="{'group_by': 'fsm_state'}"/>
+    <filter string="FSM Project" name="fsm_project" context="{'group_by': 'fsm_project_id'}"/>
     <filter string="Company" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
     <separator/>
     <filter string="Route Date" name="route_date" context="{'group_by': 'route_date:day'}"/>
     <filter string="Route Week" name="route_week" context="{'group_by': 'route_date:week'}"/>
     <filter string="Route Month" name="route_month" context="{'group_by': 'route_date:month'}"/>
-
                 </group>
             </search>
         </field>

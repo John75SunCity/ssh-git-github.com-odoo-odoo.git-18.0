@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Enhanced Fleet Vehicle Form View with Records Management Integration -->
+    <record id="fleet_vehicle_view_form_records" model="ir.ui.view">
+        <field name="name">fleet.vehicle.view.form.records</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add Records Management stat buttons -->
+            <div name="button_box" position="inside">
+                <button name="action_view_pickup_routes" type="object" 
+                        class="oe_stat_button" icon="fa-route" 
+                        attrs="{'invisible': [('pickup_route_ids', '=', [])]}">
+                    <field name="pickup_route_ids" widget="statbutton" string="Routes"/>
+                </button>
+                <button name="action_set_records_available" type="object" 
+                        class="oe_stat_button" icon="fa-check-circle"
+                        attrs="{'invisible': [('records_operational_status', '!=', 'out_of_service')]}">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">Available</span>
+                        <span class="o_stat_text">Set Available</span>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Add Records Management tab -->
+            <notebook position="inside">
+                <page string="Records Management" name="records_management">
+                    <group>
+                        <group string="Records Operations">
+                            <field name="records_vehicle_type"/>
+                            <field name="records_operational_status"/>
+                            <field name="max_container_capacity"/>
+                            <field name="naid_compliant"/>
+                        </group>
+                        <group string="Current Status">
+                            <field name="pickup_route_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="route_date"/>
+                                    <field name="state"/>
+                                    <field name="total_stops"/>
+                                    <field name="completion_percentage"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                    
+                    <separator string="Records Vehicle Configuration"/>
+                    <div class="alert alert-info">
+                        <h4>🚚 Records Vehicle Types:</h4>
+                        <ul>
+                            <li><strong>Standard Pickup:</strong> Regular document pickup and delivery</li>
+                            <li><strong>Secure Transport:</strong> NAID-compliant secure document transport</li>
+                            <li><strong>Shredding Truck:</strong> Mobile on-site document destruction</li>
+                            <li><strong>Container Delivery:</strong> Specialized for container placement/pickup</li>
+                        </ul>
+                    </div>
+                    
+                    <group string="Capacity &amp; Compliance">
+                        <div class="alert alert-warning" attrs="{'invisible': [('records_vehicle_type', '!=', 'secure_transport'), ('naid_compliant', '=', True)]}">
+                            <strong>⚠️ NAID Compliance Required:</strong> Secure transport vehicles must be NAID compliant.
+                        </div>
+                        <div class="alert alert-success" attrs="{'invisible': [('naid_compliant', '=', False)]}">
+                            <strong>✅ NAID Compliant:</strong> This vehicle meets security standards for document transport.
+                        </div>
+                    </group>
+                </page>
+            </notebook>
+
+        </field>
+    </record>
+
+    <!-- Enhanced Fleet Vehicle Tree View with Records Information -->
+    <record id="fleet_vehicle_view_tree_records" model="ir.ui.view">
+        <field name="name">fleet.vehicle.view.tree.records</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add records-specific columns -->
+            <field name="state_id" position="after">
+                <field name="records_vehicle_type" optional="show"/>
+                <field name="records_operational_status" optional="show"/>
+                <field name="max_container_capacity" optional="hide"/>
+                <field name="naid_compliant" optional="hide"/>
+            </field>
+
+        </field>
+    </record>
+
+    <!-- Enhanced Fleet Vehicle Kanban View with Records Information -->
+    <record id="fleet_vehicle_view_kanban_records" model="ir.ui.view">
+        <field name="name">fleet.vehicle.view.kanban.records</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add records information to kanban cards -->
+            <field name="state_id" position="after">
+                <field name="records_vehicle_type"/>
+                <field name="records_operational_status"/>
+                <field name="max_container_capacity"/>
+                <field name="naid_compliant"/>
+            </field>
+            
+            <div class="oe_kanban_bottom_right" position="before">
+                <div class="oe_kanban_bottom_left">
+                    <span t-if="record.records_vehicle_type.raw_value" class="badge badge-info">
+                        <t t-esc="record.records_vehicle_type.value"/>
+                    </span>
+                    <span t-if="record.naid_compliant.raw_value" class="badge badge-success">
+                        🔒 NAID
+                    </span>
+                    <span t-if="record.max_container_capacity.raw_value" class="badge badge-secondary">
+                        📦 <t t-esc="record.max_container_capacity.value"/> containers
+                    </span>
+                </div>
+            </div>
+
+        </field>
+    </record>
+
+    <!-- Enhanced Fleet Vehicle Search View with Records Filters -->
+    <record id="fleet_vehicle_view_search_records" model="ir.ui.view">
+        <field name="name">fleet.vehicle.view.search.records</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add search fields for records -->
+            <field name="driver_id" position="after">
+                <field name="records_vehicle_type"/>
+                <field name="records_operational_status"/>
+            </field>
+
+            <!-- Add records-specific filters -->
+            <filter name="inactive" position="after">
+                <separator/>
+                <filter string="Records Vehicles" name="records_vehicles" 
+                        domain="[('records_vehicle_type', '!=', False)]"/>
+                <filter string="Available for Routes" name="available_routes" 
+                        domain="[('records_operational_status', '=', 'available')]"/>
+                <filter string="Currently on Route" name="on_route" 
+                        domain="[('records_operational_status', '=', 'on_route')]"/>
+                <filter string="NAID Compliant" name="naid_compliant" 
+                        domain="[('naid_compliant', '=', True)]"/>
+                <filter string="Secure Transport" name="secure_transport" 
+                        domain="[('records_vehicle_type', '=', 'secure_transport')]"/>
+                <filter string="Shredding Trucks" name="shredding_trucks" 
+                        domain="[('records_vehicle_type', '=', 'shredding_truck')]"/>
+            </filter>
+
+            <!-- Add records grouping options -->
+            <filter name="group_location" position="after">
+                <filter string="Records Vehicle Type" name="group_records_type" 
+                        context="{'group_by': 'records_vehicle_type'}"/>
+                <filter string="Records Status" name="group_records_status" 
+                        context="{'group_by': 'records_operational_status'}"/>
+            </filter>
+
+        </field>
+    </record>
+
+    <!-- Enhanced Action for Records Fleet Vehicles -->
+    <record id="action_fleet_vehicle_records" model="ir.actions.act_window">
+        <field name="name">Records Fleet Vehicles</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fleet.vehicle</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="domain">[('records_vehicle_type', '!=', False)]</field>
+        <field name="context">{
+            'search_default_records_vehicles': 1,
+            'search_default_available_routes': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                🚚 Add your first Records Management Vehicle!
+            </p>
+            <p>
+                <b>Records Fleet Management:</b>
+                <br/>
+                • 🔧 Leverage standard Odoo fleet management<br/>
+                • 📦 Specialized container capacity tracking<br/>
+                • 🔒 NAID compliance monitoring<br/>
+                • 🛣️ Route assignment and tracking<br/>
+                • 📱 Mobile-ready vehicle status updates<br/>
+                • 📊 Performance analytics and reporting<br/>
+                • ⚙️ Maintenance scheduling integration<br/>
+                • 💰 Fuel cost tracking and optimization<br/>
+            </p>
+        </field>
+    </record>
+
+</odoo>
