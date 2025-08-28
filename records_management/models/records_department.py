@@ -26,7 +26,13 @@ class RecordsDepartment(models.Model):
     billing_contact_ids = fields.One2many('records.department.billing.contact', 'department_id', string="Billing Contacts")
     container_ids = fields.One2many('records.container', 'department_id', string="Containers")
     document_ids = fields.One2many('records.document', 'department_id', string="Documents")
-    user_ids = fields.Many2many('res.users', string='Users')
+    user_ids = fields.Many2many(
+        'res.users',
+        relation='records_department_user_rel',
+        column1='department_id',
+        column2='user_id',
+        string='Users'
+    )
 
     # ============================================================================
     # STATE & LIFECYCLE

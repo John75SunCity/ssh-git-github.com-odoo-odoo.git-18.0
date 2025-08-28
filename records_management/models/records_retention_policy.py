@@ -86,10 +86,34 @@ class RecordsRetentionPolicy(models.Model):
     parent_policy_id = fields.Many2one('records.retention.policy', string='Parent Policy')
     version_ids = fields.One2many('records.retention.policy.version', 'policy_id', string='Policy Versions')
     template_id = fields.Many2one('records.retention.policy', string='Template')
-    destruction_approver_ids = fields.Many2many('res.users', string='Destruction Approvers')
-    tag_ids = fields.Many2many('records.tag', string='Tags')
-    country_ids = fields.Many2many('res.country', string='Applicable Countries')
-    state_ids = fields.Many2many('res.country.state', string='Applicable States')
+    destruction_approver_ids = fields.Many2many(
+        'res.users',
+        relation='records_retention_policy_destruction_approver_rel',
+        column1='policy_id',
+        column2='user_id',
+        string='Destruction Approvers'
+    )
+    tag_ids = fields.Many2many(
+        'records.tag',
+        relation='records_retention_policy_tag_rel',
+        column1='policy_id',
+        column2='tag_id',
+        string='Tags'
+    )
+    country_ids = fields.Many2many(
+        'res.country',
+        relation='records_retention_policy_country_rel',
+        column1='policy_id',
+        column2='country_id',
+        string='Applicable Countries'
+    )
+    state_ids = fields.Many2many(
+        'res.country.state',
+        relation='records_retention_policy_state_rel',
+        column1='policy_id',
+        column2='state_id',
+        string='Applicable States'
+    )
     storage_location_id = fields.Many2one('records.location', string='Storage Location')
 
     # === COMPUTED COUNTS & STATS ===

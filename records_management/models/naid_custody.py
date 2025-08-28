@@ -48,6 +48,7 @@ class NaidCustody(models.Model):
         string="Customer",
         store=True,
         readonly=True,
+        comodel_name='res.partner',
         help="The customer associated with the document."
     )
     event_type = fields.Selection([

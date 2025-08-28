@@ -50,7 +50,7 @@ class RecordsDocument(models.Model):
     partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
     department_id = fields.Many2one('records.department', string="Department", domain="[('partner_id', '=', partner_id)]", tracking=True)
     container_id = fields.Many2one('records.container', string="Container", tracking=True)
-    location_id = fields.Many2one(related='container_id.location_id', string="Location", store=True, readonly=True)
+    location_id = fields.Many2one(related='container_id.location_id', string="Location", store=True, readonly=True, comodel_name='stock.location')
     document_type_id = fields.Many2one('records.document.type', string="Document Type", tracking=True)
     lot_id = fields.Many2one('stock.lot', string="Stock Lot", tracking=True, help="Lot/Serial number associated with this document.")
     temp_inventory_id = fields.Many2one('temp.inventory', string="Temporary Inventory")
@@ -171,10 +171,10 @@ class RecordsDocument(models.Model):
     # ============================================================================
     pending_destruction = fields.Boolean(string="Pending Destruction", compute='_compute_pending_destruction', store=True, search='_search_pending_destruction', help="True if the document is eligible for destruction but not yet destroyed.")
     recently_accessed = fields.Boolean(string="Recently Accessed", compute='_compute_recent_access', search='_search_recent_access', help="True if the document was accessed in the last 30 days.")
-    group_by_customer_id = fields.Many2one(related='partner_id', string="Group by Customer", store=False, readonly=True)
-    group_by_department_id = fields.Many2one(related='department_id', string="Group by Department", store=False, readonly=True)
-    group_by_location_id = fields.Many2one(related='location_id', string="Group by Location", store=False, readonly=True)
-    group_by_doc_type_id = fields.Many2one(related='document_type_id', string="Group by Document Type", store=False, readonly=True)
+    group_by_customer_id = fields.Many2one(related='partner_id', string="Group by Customer", store=False, readonly=True, comodel_name='res.partner')
+    group_by_department_id = fields.Many2one(related='department_id', string="Group by Department", store=False, readonly=True, comodel_name='records.department')
+    group_by_location_id = fields.Many2one(related='location_id', string="Group by Location", store=False, readonly=True, comodel_name='stock.location')
+    group_by_doc_type_id = fields.Many2one(related='document_type_id', string="Group by Document Type", store=False, readonly=True, comodel_name='records.document.type')
     destroyed = fields.Boolean(string="Is Destroyed", compute='_compute_destroyed', store=True, help="True if the document's state is 'destroyed'.")
 
     # ============================================================================

@@ -12,7 +12,7 @@ class PortalFeedbackEscalation(models.Model):
     active = fields.Boolean(default=True)
 
     feedback_id = fields.Many2one('portal.feedback', string='Related Feedback', required=True, ondelete='cascade', tracking=True)
-    partner_id = fields.Many2one(related='feedback_id.partner_id', string='Customer', store=True, readonly=True)
+    partner_id = fields.Many2one(related='feedback_id.partner_id', string='Customer', store=True, readonly=True, comodel_name='res.partner')
 
     escalation_date = fields.Datetime(string='Escalation Date', default=fields.Datetime.now, required=True, readonly=True)
     escalated_by_id = fields.Many2one('res.users', string='Escalated By', default=lambda self: self.env.user, required=True, tracking=True)

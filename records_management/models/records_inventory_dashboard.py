@@ -18,10 +18,10 @@ class RecordsInventoryDashboard(models.Model):
     user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([('draft', 'Draft'), ('active', 'Active'), ('inactive', 'Inactive')], default='draft')
-    
+
     # Filters
-    location_ids = fields.Many2many('records.location', string="Locations")
-    customer_ids = fields.Many2many('res.partner', string="Customers", domain="[('is_company', '=', True)]")
+    location_ids = fields.Many2many('records.location', 'records_inventory_dashboard_location_rel', 'dashboard_id', 'location_id', string="Locations")
+    customer_ids = fields.Many2many('res.partner', 'records_inventory_dashboard_customer_rel', 'dashboard_id', 'partner_id', string="Customers", domain="[('is_company', '=', True)]")
     department_id = fields.Many2one('records.department', string="Department")
     date_range = fields.Selection([
         ('last_7_days', 'Last 7 Days'),
@@ -47,7 +47,7 @@ class RecordsInventoryDashboard(models.Model):
     total_containers = fields.Integer(string="Total Containers", compute='_compute_all_metrics')
     active_containers = fields.Integer(string="Active Containers", compute='_compute_all_metrics')
     total_volume_cf = fields.Float(string="Total Volume (cu ft)", compute='_compute_all_metrics')
-    
+
     # Customer & Location Metrics
     total_customers = fields.Integer(string="Total Customers", compute='_compute_all_metrics')
     total_locations = fields.Integer(string="Total Locations", compute='_compute_all_metrics')
@@ -67,10 +67,10 @@ class RecordsInventoryDashboard(models.Model):
     recent_movements = fields.Integer(string="Recent Movements", compute='_compute_all_metrics')
 
     # Financial Metrics
-    currency_id = fields.Many2one(related='company_id.currency_id', readonly=True)
+    currency_id = fields.Many2one(related='company_id.currency_id', readonly=True, comodel_name='res.currency')
     monthly_revenue = fields.Monetary(string="Revenue in Period", compute='_compute_all_metrics')
     total_billed_amount = fields.Monetary(string="Total Billed (All Time)", compute='_compute_all_metrics')
-    
+
     # Alert Metrics
     alert_count = fields.Integer(string="Total Alerts", compute='_compute_all_metrics')
     critical_alerts = fields.Integer(string="Critical Alerts", compute='_compute_all_metrics')

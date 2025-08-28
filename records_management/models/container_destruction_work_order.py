@@ -67,7 +67,14 @@ class ContainerDestructionWorkOrder(models.Model):
     # ============================================================================
     # CONTAINER & INVENTORY DETAILS
     # ============================================================================
-    container_ids = fields.Many2many('records.container', string='Containers for Destruction', required=True)
+    container_ids = fields.Many2many(
+        'records.container',
+        relation='container_destruction_work_order_container_rel',
+        column1='work_order_id',
+        column2='container_id',
+        string='Containers for Destruction',
+        required=True
+    )
     container_count = fields.Integer(string='Container Count', compute='_compute_container_metrics', store=True)
     total_cubic_feet = fields.Float(string='Total Cubic Feet', compute='_compute_container_metrics', store=True)
     estimated_weight_lbs = fields.Float(string='Estimated Weight (lbs)', compute='_compute_container_metrics', store=True)

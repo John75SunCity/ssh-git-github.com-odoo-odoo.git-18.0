@@ -15,7 +15,7 @@ class RecordsContainerType(models.Model):
     active = fields.Boolean(default=True, tracking=True)
     sequence = fields.Integer(string="Sequence", default=10)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    currency_id = fields.Many2one(related='company_id.currency_id', readonly=True)
+    currency_id = fields.Many2one(related='company_id.currency_id', readonly=True, comodel_name='res.currency')
     description = fields.Text(string="Description")
 
     # ============================================================================

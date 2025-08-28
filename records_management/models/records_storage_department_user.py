@@ -14,7 +14,7 @@ class RecordsStorageDepartmentUser(models.Model):
     # ============================================================================
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(string='Active', default=True, tracking=True)
-    company_id = fields.Many2one(related='department_id.company_id', store=True, readonly=True)
+    company_id = fields.Many2one(related='department_id.company_id', store=True, readonly=True, comodel_name='res.company')
 
     # ============================================================================
     # RELATIONSHIPS
@@ -30,7 +30,7 @@ class RecordsStorageDepartmentUser(models.Model):
         ('editor', 'Editor'),
         ('manager', 'Manager'),
     ], string="Role", default='viewer', required=True, tracking=True, help="Defines the user's level of access within this department.")
-    
+
     state = fields.Selection([
         ('active', 'Active'),
         ('inactive', 'Inactive'),

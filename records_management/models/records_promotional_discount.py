@@ -29,8 +29,22 @@ class RecordsPromotionalDiscount(models.Model):
     # ============================================================================
     # APPLICABILITY & CONDITIONS
     # ============================================================================
-    product_ids = fields.Many2many('product.product', string="Applicable Products/Services", help="Leave empty to apply to all eligible services.")
-    partner_ids = fields.Many2many('res.partner', string="Applicable Customers", help="Leave empty to apply to all customers.")
+    product_ids = fields.Many2many(
+        comodel_name='product.product',
+        relation='records_promotional_discount_product_rel',
+        column1='discount_id',
+        column2='product_id',
+        string="Applicable Products/Services",
+        help="Leave empty to apply to all eligible services."
+    )
+    partner_ids = fields.Many2many(
+        comodel_name='res.partner',
+        relation='records_promotional_discount_partner_rel',
+        column1='discount_id',
+        column2='partner_id',
+        string="Applicable Customers",
+        help="Leave empty to apply to all customers."
+    )
     minimum_order_amount = fields.Monetary(string="Minimum Order Amount", currency_field='currency_id', tracking=True, help="The minimum amount required to be eligible for the discount.")
     maximum_discount_amount = fields.Monetary(string="Maximum Discount", currency_field='currency_id', tracking=True, help="The maximum discount amount that can be applied. 0 for no limit.")
 

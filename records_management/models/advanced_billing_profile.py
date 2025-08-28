@@ -43,7 +43,7 @@ class AdvancedBillingProfile(models.Model):
     company_id = fields.Many2one('res.company', string='Company',
                                 default=lambda self: self.env.company)
     currency_id = fields.Many2one(related='company_id.currency_id', string='Currency',
-                                 store=True, readonly=True)
+                                 store=True, readonly=True, comodel_name='res.currency')
 
     # Billing lines
     billing_line_ids = fields.One2many('advanced.billing.line', 'billing_profile_id',

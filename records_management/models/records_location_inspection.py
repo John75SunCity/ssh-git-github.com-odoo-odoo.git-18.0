@@ -135,4 +135,10 @@ class RecordsLocationInspectionLine(models.Model):
         ('na', 'N/A'),
     ], string="Result", default='na', required=True)
     notes = fields.Text(string="Notes / Corrective Action")
-    attachment_ids = fields.Many2many('ir.attachment', string="Photos")
+    attachment_ids = fields.Many2many(
+        'ir.attachment',
+        relation='records_location_inspection_line_attachment_rel',
+        column1='inspection_line_id',
+        column2='attachment_id',
+        string="Photos"
+    )

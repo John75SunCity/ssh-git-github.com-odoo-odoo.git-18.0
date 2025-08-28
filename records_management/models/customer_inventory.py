@@ -81,10 +81,22 @@ class CustomerInventory(models.Model):
     variance_count = fields.Integer(string='Variance Count', compute='_compute_variances', store=True)
 
     # Location and filter options
-    location_ids = fields.Many2many('records.location', string='Locations',
-                                   help="Limit inventory to specific locations")
-    container_type_ids = fields.Many2many('records.container.type', string='Container Types',
-                                        help="Limit inventory to specific container types")
+    location_ids = fields.Many2many(
+        'records.location',
+        relation='customer_inventory_location_rel',
+        column1='inventory_id',
+        column2='location_id',
+        string='Locations',
+        help="Limit inventory to specific locations"
+    )
+    container_type_ids = fields.Many2many(
+        'records.container.type',
+        relation='customer_inventory_container_type_rel',
+        column1='inventory_id',
+        column2='container_type_id',
+        string='Container Types',
+        help="Limit inventory to specific container types"
+    )
 
     # Workflow fields
     reviewer_id = fields.Many2one('res.users', string='Reviewer', tracking=True)

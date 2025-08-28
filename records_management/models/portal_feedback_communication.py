@@ -13,7 +13,7 @@ class PortalFeedbackCommunication(models.Model):
     active = fields.Boolean(default=True)
 
     feedback_id = fields.Many2one('portal.feedback', string='Related Feedback', required=True, ondelete='cascade')
-    partner_id = fields.Many2one(related='feedback_id.partner_id', string='Customer', store=True, readonly=True)
+    partner_id = fields.Many2one(related='feedback_id.partner_id', string='Customer', store=True, readonly=True, comodel_name='res.partner')
 
     communication_date = fields.Datetime(string='Communication Date', default=fields.Datetime.now, required=True)
     communication_type = fields.Selection([

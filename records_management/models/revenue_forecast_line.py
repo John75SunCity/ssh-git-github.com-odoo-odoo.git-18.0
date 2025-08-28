@@ -15,8 +15,8 @@ class RevenueForecastLine(models.Model):
     name = fields.Char(string="Description", compute='_compute_name', store=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one(related='forecast_id.company_id', store=True, readonly=True)
-    currency_id = fields.Many2one(related='forecast_id.currency_id', store=True, readonly=True)
+    company_id = fields.Many2one(related='forecast_id.company_id', store=True, readonly=True, comodel_name='res.company')
+    currency_id = fields.Many2one(related='forecast_id.currency_id', store=True, readonly=True, comodel_name='res.currency')
 
     # ============================================================================
     # RELATIONSHIPS

@@ -60,7 +60,13 @@ class ContainerAccessVisitor(models.Model):
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Related Partner')
     work_order_id = fields.Many2one('container.access.work.order', string='Related Work Order')
-    container_ids = fields.Many2many('records.container', string='Accessed Containers')
+    container_ids = fields.Many2many(
+        'records.container',
+        relation='container_access_visitor_container_rel',
+        column1='visitor_id',
+        column2='container_id',
+        string='Accessed Containers'
+    )
     access_activity_ids = fields.One2many('container.access.activity', 'visitor_id', string='Access Activities')
 
     # ============================================================================

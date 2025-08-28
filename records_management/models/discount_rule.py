@@ -26,7 +26,7 @@ class DiscountRule(models.Model):
     name = fields.Char(string='Rule Name', required=True, tracking=True)
     config_id = fields.Many2one('advanced.billing', string='Billing Configuration', ondelete='cascade', help="The billing configuration this rule belongs to.")
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    currency_id = fields.Many2one(related='config_id.currency_id', string='Currency', store=True)
+    currency_id = fields.Many2one(related='config_id.currency_id', string='Currency', store=True, comodel_name='res.currency')
     active = fields.Boolean(string='Active', default=True, tracking=True)
     priority = fields.Integer(string='Priority', default=10, help="Lower number indicates higher priority.")
 

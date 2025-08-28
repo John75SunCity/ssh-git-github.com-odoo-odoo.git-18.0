@@ -125,7 +125,10 @@ class ContainerAccessWorkOrder(models.Model):
         ('view_only', 'View Only')
     ], string='Access Scope', default='full', required=True)
     container_ids = fields.Many2many(
-        'records.container',
+        comodel_name='records.container',
+        relation='container_access_work_order_container_rel',
+        column1='work_order_id',
+        column2='container_id',
         string='Containers to Access',
         required=True
     )
@@ -208,7 +211,13 @@ class ContainerAccessWorkOrder(models.Model):
         tracking=True
     )
     requires_key_access = fields.Boolean(string='Requires Key Access', default=False)
-    bin_key_ids = fields.Many2many('bin.key', string='Keys Required')
+    bin_key_ids = fields.Many2many(
+        comodel_name='bin.key',
+        relation='container_access_work_order_bin_key_rel',
+        column1='work_order_id',
+        column2='bin_key_id',
+        string='Keys Required'
+    )
     visitor_ids = fields.One2many(
         'container.access.visitor',
         'work_order_id',

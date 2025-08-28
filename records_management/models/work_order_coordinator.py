@@ -45,9 +45,27 @@ class WorkOrderCoordinator(models.Model):
     coordination_progress = fields.Float(string="Progress (%)", compute='_compute_coordination_metrics', store=True, aggregator="avg")
 
     # Resource Allocation
-    employee_ids = fields.Many2many('hr.employee', string="Assigned Employees")
-    vehicle_ids = fields.Many2many('fleet.vehicle', string="Assigned Vehicles")
-    assigned_equipment_ids = fields.Many2many('maintenance.equipment', string="Assigned Equipment")
+    employee_ids = fields.Many2many(
+        'hr.employee',
+        relation='work_order_coordinator_employee_rel',
+        column1='coordinator_id',
+        column2='employee_id',
+        string="Assigned Employees"
+    )
+    vehicle_ids = fields.Many2many(
+        'fleet.vehicle',
+        relation='work_order_coordinator_vehicle_rel',
+        column1='coordinator_id',
+        column2='vehicle_id',
+        string="Assigned Vehicles"
+    )
+    assigned_equipment_ids = fields.Many2many(
+        'maintenance.equipment',
+        relation='work_order_coordinator_equipment_rel',
+        column1='coordinator_id',
+        column2='equipment_id',
+        string="Assigned Equipment"
+    )
 
     # FSM Integration
     fsm_project_id = fields.Many2one('project.project', string="FSM Project", help="Project for managing Field Service tasks related to this coordination.")

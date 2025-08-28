@@ -36,9 +36,9 @@ class ContainerContent(models.Model):
         index=True
     )
     document_type_id = fields.Many2one('records.document.type', string='Document Type', tracking=True)
-    partner_id = fields.Many2one(related='container_id.partner_id', string='Customer', store=True)
-    location_id = fields.Many2one(related='container_id.location_id', string='Location', store=True)
-    company_id = fields.Many2one(related='container_id.company_id', string='Company', store=True)
+    partner_id = fields.Many2one(related='container_id.partner_id', string='Customer', store=True, comodel_name='res.partner')
+    location_id = fields.Many2one(related='container_id.location_id', string='Location', store=True, comodel_name='stock.location')
+    company_id = fields.Many2one(related='container_id.company_id', string='Company', store=True, comodel_name='res.company')
     user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
     container_barcode = fields.Char(related='container_id.barcode', string='Container Barcode', store=True)
 

@@ -30,7 +30,7 @@ class DestructionItem(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True, tracking=True)
-    partner_id = fields.Many2one(related='records_destruction_id.partner_id', string='Customer', store=True)
+    partner_id = fields.Many2one(related='records_destruction_id.partner_id', string='Customer', store=True, comodel_name='res.partner')
 
     # Link to the parent destruction order
     records_destruction_id = fields.Many2one('naid.destruction.record', string='Destruction Record', ondelete='cascade', required=True)
@@ -39,7 +39,7 @@ class DestructionItem(models.Model):
     destruction_id = fields.Many2one('records.destruction', string="Destruction Order")
 
     # Link to the generated certificate
-    naid_certificate_id = fields.Many2one(related='records_destruction_id.certificate_id', string='NAID Certificate', store=True)
+    naid_certificate_id = fields.Many2one(related='records_destruction_id.certificate_id', string='NAID Certificate', store=True, comodel_name='naid.certificate')
 
     # ============================================================================
     # ITEM DETAILS

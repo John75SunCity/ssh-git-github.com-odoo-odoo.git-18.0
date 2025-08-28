@@ -39,8 +39,20 @@ class WorkOrderShredding(models.Model):
     ], string="Priority", default='0', tracking=True)
 
     assigned_team_id = fields.Many2one('maintenance.team', string="Assigned Team")
-    technician_ids = fields.Many2many('hr.employee', string="Assigned Technicians")
-    equipment_ids = fields.Many2many('maintenance.equipment', string="Assigned Equipment")
+    technician_ids = fields.Many2many(
+        'hr.employee',
+        relation='work_order_shredding_technician_rel',
+        column1='work_order_id',
+        column2='employee_id',
+        string="Assigned Technicians"
+    )
+    equipment_ids = fields.Many2many(
+        'maintenance.equipment',
+        relation='work_order_shredding_equipment_rel',
+        column1='work_order_id',
+        column2='equipment_id',
+        string="Assigned Equipment"
+    )
     vehicle_id = fields.Many2one('fleet.vehicle', string="Assigned Vehicle")
 
     material_type = fields.Selection([

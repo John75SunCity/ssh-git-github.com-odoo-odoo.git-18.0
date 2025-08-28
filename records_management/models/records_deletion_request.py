@@ -19,7 +19,7 @@ class RecordsDeletionRequest(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Requested By", default=lambda self: self.env.user, tracking=True)
     partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
-    currency_id = fields.Many2one(related='company_id.currency_id', readonly=True)
+    currency_id = fields.Many2one(related='company_id.currency_id', readonly=True, comodel_name='res.currency')
 
     # ============================================================================
     # STATE & LIFECYCLE

@@ -23,7 +23,13 @@ class FileRetrieval(models.Model):
     barcode = fields.Char(string='Barcode/ID')
 
     # Search and discovery
-    searched_container_ids = fields.Many2many('records.container', string='Searched Containers')
+    searched_container_ids = fields.Many2many(
+        'records.container',
+        relation='file_retrieval_container_rel',
+        column1='file_retrieval_id',
+        column2='container_id',
+        string='Searched Containers'
+    )
     search_attempt_ids = fields.One2many('document.search.attempt', 'file_retrieval_id', string='Search Attempts')
     file_discovered = fields.Boolean(string='File Discovered')
     discovery_date = fields.Datetime(string='Discovery Date')

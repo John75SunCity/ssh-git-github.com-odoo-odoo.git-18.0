@@ -45,7 +45,14 @@ class ContainerRetrievalWorkOrder(models.Model):
     # CUSTOMER & CONTAINER DETAILS
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    container_ids = fields.Many2many('records.container', string='Containers for Retrieval', required=True)
+    container_ids = fields.Many2many(
+        'records.container',
+        relation='container_retrieval_work_order_container_rel',
+        column1='work_order_id',
+        column2='container_id',
+        string='Containers for Retrieval',
+        required=True
+    )
     container_count = fields.Integer(string='Container Count', compute='_compute_container_metrics', store=True)
     total_volume = fields.Float(string='Total Volume (cubic ft)', compute='_compute_container_metrics', store=True)
     total_weight = fields.Float(string='Total Weight (lbs)', compute='_compute_container_metrics', store=True)

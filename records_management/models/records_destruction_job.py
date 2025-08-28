@@ -34,5 +34,5 @@ class RecordsDestructionLine(models.Model):
     container_id = fields.Many2one('records.container', string='Container')
     destruction_date = fields.Date(string='Destruction Date', related='job_id.destruction_date', store=True)
     state = fields.Selection(related='job_id.state', string='Status', store=True)
-    user_id = fields.Many2one(related='job_id.user_id', string='Responsible', store=True)
+    user_id = fields.Many2one(related='job_id.user_id', string='Responsible', store=True, comodel_name='res.users')
     company_id = fields.Many2one('res.company', string='Company', related='job_id.company_id', store=True, readonly=True)

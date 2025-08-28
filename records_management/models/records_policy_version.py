@@ -13,7 +13,7 @@ class RecordsPolicyVersion(models.Model):
     # ============================================================================
     name = fields.Char(string="Version Name", compute='_compute_name', store=True)
     active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one(related='policy_id.company_id', store=True, readonly=True)
+    company_id = fields.Many2one(related='policy_id.company_id', store=True, readonly=True, comodel_name='res.company')
     user_id = fields.Many2one('res.users', string="Created By", default=lambda self: self.env.user, readonly=True, required=True)
     version_number = fields.Integer(string="Version Number", required=True, readonly=True)
 

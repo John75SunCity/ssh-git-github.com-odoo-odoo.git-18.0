@@ -31,9 +31,27 @@ class RecordsRetentionRule(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer')
     department_id = fields.Many2one('hr.department', string='Department')
     category_id = fields.Many2one('records.category', string='Category')
-    tag_ids = fields.Many2many('records.tag', string='Tags')
-    country_ids = fields.Many2many('res.country', string='Applicable Countries')
-    state_ids = fields.Many2many('res.country.state', string='Applicable States')
+    tag_ids = fields.Many2many(
+        comodel_name='records.tag',
+        relation='records_retention_rule_tag_rel',
+        column1='rule_id',
+        column2='tag_id',
+        string='Tags'
+    )
+    country_ids = fields.Many2many(
+        comodel_name='res.country',
+        relation='records_retention_rule_country_rel',
+        column1='rule_id',
+        column2='country_id',
+        string='Applicable Countries'
+    )
+    state_ids = fields.Many2many(
+        comodel_name='res.country.state',
+        relation='records_retention_rule_state_rel',
+        column1='rule_id',
+        column2='state_id',
+        string='Applicable States'
+    )
     branch_company_id = fields.Many2one(
         'res.company',
         string='Branch (Subsidiary/Location)',

@@ -33,7 +33,7 @@ class AdvancedBillingContact(models.Model):
     billing_profile_id = fields.Many2one('advanced.billing.profile', string='Billing Profile',
                                         required=True, ondelete='cascade')
     partner_id = fields.Many2one(related='billing_profile_id.partner_id', string='Customer',
-                                store=True, readonly=True)
+                                store=True, readonly=True, comodel_name='res.partner')
 
     # Contact preferences
     receive_storage_invoices = fields.Boolean(string='Receive Storage Invoices',
@@ -72,7 +72,7 @@ class AdvancedBillingContact(models.Model):
     timezone = fields.Selection(selection='_tz_get', string='Timezone')
 
     # Status and metadata
-    company_id = fields.Many2one(related='billing_profile_id.company_id', store=True, readonly=True)
+    company_id = fields.Many2one(related='billing_profile_id.company_id', store=True, readonly=True, comodel_name='res.company')
     last_contact_date = fields.Datetime(string='Last Contact Date', readonly=True)
     notes = fields.Text(string='Notes')
 

@@ -95,7 +95,8 @@ class PickupRoute(models.Model):
         related='fsm_task_id.project_id',
         string='FSM Project',
         store=True,
-        readonly=True
+        readonly=True,
+        comodel_name='project.project'
     )
 
     # ============================================================================
@@ -140,7 +141,13 @@ class PickupRoute(models.Model):
     max_stops_per_route = fields.Integer(string='Max Stops', default=50)
     max_driving_hours = fields.Float(string='Max Driving Hours', default=8.0)
 
-    service_area_ids = fields.Many2many('res.country.state', string='Service Areas')
+    service_area_ids = fields.Many2many(
+        'res.country.state',
+        relation='pickup_route_service_area_rel',
+        column1='route_id',
+        column2='state_id',
+        string='Service Areas'
+    )
     customer_instructions = fields.Text(string='Customer Instructions')
 
     backup_driver_id = fields.Many2one('res.users', string='Backup Driver')

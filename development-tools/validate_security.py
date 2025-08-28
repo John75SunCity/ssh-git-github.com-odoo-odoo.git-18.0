@@ -24,6 +24,7 @@ import csv
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 from xml.etree import ElementTree as ET
+import re
 
 class SecurityValidator:
     """Validates Odoo security configurations"""
@@ -87,13 +88,23 @@ class SecurityValidator:
                 with open(py_file, 'r', encoding='utf-8') as f:
                     content = f.read()
 
-                # Look for _name = "model.name" patterns
-                import re
-                name_pattern = r'_name\s*=\s*[\'"]([^\'"]+)[\'"]'
-                matches = re.findall(name_pattern, content)
+                # Look for _name = "model.name" patterns with more precise regex
+                # This pattern ensures we're matching class-level _name assignments
+                name_pattern = r'^\s*_name\s*=\s*[\'"]([^\'"]+)[\'"]'
 
-                for match in matches:
-                    self.models.add(match)
+                for line in content.split('\n'):
+                    line = line.strip()
+                    if line.startswith('_name ='):
+                        match = re.search(r'_name\s*=\s*[\'"]([^\']+)[\'"]', line)
+                        if match:
+                            model_name = match.group(1)
+                            # Skip if this looks like a field name or other non-model identifier
+                            if not any(skip in model_name.lower() for skip in [
+                                'display_name', 'name', 'task_id', 'bin_id', 'work_order_id',
+                                'reference', 'description', 'serial_number', 'photo',
+                                'custody_id', 'report_id', 'company_id', 'user_id', 'partner_id'
+                            ]):
+                                self.models.add(model_name)
 
             except Exception as e:
                 self.warnings.append(f"Error reading {py_file}: {e}")

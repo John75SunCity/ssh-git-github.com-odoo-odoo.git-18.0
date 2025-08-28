@@ -16,7 +16,7 @@ class PortalFeedbackResolution(models.Model):
     active = fields.Boolean(default=True)
 
     feedback_id = fields.Many2one('portal.feedback', string='Related Feedback', required=True, ondelete='cascade')
-    partner_id = fields.Many2one(related='feedback_id.partner_id', string='Customer', store=True, readonly=True)
+    partner_id = fields.Many2one(related='feedback_id.partner_id', string='Customer', store=True, readonly=True, comodel_name='res.partner')
 
     resolved_by_id = fields.Many2one('res.users', string='Resolved By', default=lambda self: self.env.user, tracking=True)
     resolution_date = fields.Datetime(string='Resolution Date', readonly=True, copy=False)
@@ -123,7 +123,7 @@ class PortalFeedbackResolution(models.Model):
             'resolution_date': fields.Datetime.now()
         })
         self.message_post(body=_('Resolution has been closed.'))
-        
+
         # Also mark the related feedback as resolved
         if self.feedback_id.state not in ['resolved', 'closed']:
             self.feedback_id.action_resolve()

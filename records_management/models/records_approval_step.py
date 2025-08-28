@@ -12,7 +12,7 @@ class RecordsApprovalStep(models.Model):
     # ============================================================================
     name = fields.Char(string="Step Name", required=True, readonly=True)
     sequence = fields.Integer(string='Sequence', default=10, readonly=True)
-    company_id = fields.Many2one(related='request_id.company_id', store=True)
+    company_id = fields.Many2one(related='request_id.company_id', store=True, comodel_name='res.company')
 
     # ============================================================================
     # RELATIONSHIPS

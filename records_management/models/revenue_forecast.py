@@ -15,7 +15,7 @@ class RevenueForecast(models.Model):
     name = fields.Char(string="Forecast Name", required=True, tracking=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', readonly=True)
+    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', readonly=True, comodel_name='res.currency')
     user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),

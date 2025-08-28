@@ -27,7 +27,7 @@ class WorkOrderRetrieval(models.Model):
     user_id = fields.Many2one('res.users', string='Assigned To', default=lambda self: self.env.user, tracking=True)
     assigned_team_id = fields.Many2one('hr.department', string='Assigned Team')
     team_leader_id = fields.Many2one('res.users', string='Team Leader')
-    technician_ids = fields.Many2many('res.users', string='Technicians')
+    technician_ids = fields.Many2many('res.users', 'work_order_retrieval_technician_rel', 'work_order_id', 'user_id', string='Technicians')
 
     # Scheduling and Dates
     scheduled_date = fields.Datetime(string='Scheduled Start Date', tracking=True)
@@ -72,7 +72,7 @@ class WorkOrderRetrieval(models.Model):
     contact_phone = fields.Char(string='Contact Phone')
 
     # Equipment and Vehicle
-    equipment_ids = fields.Many2many('maintenance.equipment', string='Equipment Required')
+    equipment_ids = fields.Many2many('maintenance.equipment', 'work_order_retrieval_equipment_rel', 'work_order_id', 'equipment_id', string='Equipment Required')
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle')
 
     # Items to Retrieve

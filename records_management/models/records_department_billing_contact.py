@@ -38,7 +38,7 @@ class RecordsDepartmentBillingContact(models.Model):
 
     monthly_budget = fields.Monetary(string='Monthly Budget')
     current_month_charges = fields.Monetary(string='Current Month Charges')
-    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', store=True, readonly=True)
+    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', store=True, readonly=True, comodel_name='res.currency')
     budget_utilization = fields.Float(string='Budget Utilization %', compute='_compute_budget_utilization', store=True)
 
     # Approvals

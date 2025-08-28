@@ -67,7 +67,7 @@ class ServiceItem(models.Model):
     # ============================================================================
     # FINANCIALS
     # ============================================================================
-    currency_id = fields.Many2one(related='company_id.currency_id')
+    currency_id = fields.Many2one(related='company_id.currency_id', comodel_name='res.currency')
     purchase_cost = fields.Monetary(string="Purchase Cost", tracking=True)
     current_value = fields.Monetary(string="Current Value", compute='_compute_current_value', store=True)
     maintenance_cost = fields.Monetary(string="Total Maintenance Cost", compute='_compute_maintenance_cost', store=True)

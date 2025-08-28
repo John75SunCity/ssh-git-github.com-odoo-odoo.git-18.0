@@ -18,7 +18,7 @@ class InvoiceGenerationLog(models.Model):
     generation_date = fields.Datetime(string="Generation Date", required=True, default=fields.Datetime.now, readonly=True)
 
     invoice_id = fields.Many2one('account.move', string="Generated Invoice", readonly=True)
-    partner_id = fields.Many2one(related='invoice_id.partner_id', string="Customer", store=True, readonly=True)
+    partner_id = fields.Many2one(related='invoice_id.partner_id', string="Customer", store=True, readonly=True, comodel_name='res.partner')
 
     status = fields.Selection([
         ('success', 'Success'),

@@ -35,7 +35,7 @@ class CustomerInventoryReport(models.Model):
     )
 
     # Totals (optional, non-blocking)
-    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', store=True, readonly=True)
+    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', store=True, readonly=True, comodel_name='res.currency')
     total_documents = fields.Integer(string='Total Documents', compute='_compute_totals', store=True)
     total_monthly_cost = fields.Monetary(string='Total Monthly Cost', compute='_compute_totals', store=True)
 

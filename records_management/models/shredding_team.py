@@ -54,12 +54,31 @@ class ShreddingTeam(models.Model):
     # ============================================================================
     # RESOURCES & LOCATION
     # ============================================================================
-    vehicle_ids = fields.Many2many('fleet.vehicle', string="Assigned Vehicles")
-    equipment_ids = fields.Many2many('maintenance.equipment', string="Assigned Equipment", domain="[('equipment_category', '=', 'shredder')]")
+    vehicle_ids = fields.Many2many(
+        'fleet.vehicle',
+        relation='shredding_team_vehicle_rel',
+        column1='team_id',
+        column2='vehicle_id',
+        string="Assigned Vehicles"
+    )
+    equipment_ids = fields.Many2many(
+        'maintenance.equipment',
+        relation='shredding_team_equipment_rel',
+        column1='team_id',
+        column2='equipment_id',
+        string="Assigned Equipment",
+        domain="[('equipment_category', '=', 'shredder')]"
+    )
     primary_equipment_id = fields.Many2one('maintenance.equipment', string="Primary Shredder")
     mobile_unit = fields.Boolean(string="Is Mobile Unit")
     base_location_id = fields.Many2one('records.location', string="Base Location")
-    service_area_ids = fields.Many2many('res.country.state', string="Service Areas")
+    service_area_ids = fields.Many2many(
+        'res.country.state',
+        relation='shredding_team_service_area_rel',
+        column1='team_id',
+        column2='state_id',
+        string="Service Areas"
+    )
     travel_radius = fields.Float(string="Travel Radius (km)")
     emergency_response = fields.Boolean(string="Emergency Response Team")
 

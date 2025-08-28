@@ -50,7 +50,7 @@ class DocumentRetrievalItem(models.Model):
     ], string='Status', default='pending', tracking=True)
     current_location = fields.Char(string='Current Location')
     storage_location_id = fields.Many2one('records.location', string='Storage Location')
-    searched_container_ids = fields.Many2many('records.container', string='Searched Containers')
+    searched_container_ids = fields.Many2many('records.container', 'document_retrieval_searched_container_rel', 'retrieval_item_id', 'container_id', string='Searched Containers')
     containers_accessed_count = fields.Integer(string='Containers Accessed', compute='_compute_containers_accessed_count')
     containers_not_found_count = fields.Integer(string='Containers Not Found', compute='_compute_containers_not_found_count')
     requested_file_name = fields.Char(string='Requested File Name')

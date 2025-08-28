@@ -94,30 +94,103 @@ class ModelValidator:
         """Validate a model class definition"""
         class_name = class_node.name
 
-        # Check for _name attribute
+        # Skip mock classes and non-model classes
+        if class_name.startswith('_') or 'Mock' in class_name:
+            return
+
+        # Check if this is an Odoo model class by looking for inheritance from models.Model
+        is_odoo_model = False
+        for base in class_node.bases:
+            if isinstance(base, ast.Attribute):
+                # Check for models.Model inheritance
+                if (isinstance(base.value, ast.Name) and base.value.id == 'models' and
+                    base.attr == 'Model'):
+                    is_odoo_model = True
+                    break
+            elif isinstance(base, ast.Name):
+                # Check for inheritance from other model classes (like _inherit)
+                # We'll validate this differently
+                pass
+
+        # If it's not clearly an Odoo model, check for _inherit or _name
+        if not is_odoo_model:
+            inherit_attr = self._find_class_attribute(class_node, '_inherit')
+            if inherit_attr:
+                is_odoo_model = True
+
+        # Only validate Odoo model classes
+        if not is_odoo_model:
+            return
+
+        # Check for _name attribute (only required for new models, not inheritance)
         name_attr = self._find_class_attribute(class_node, '_name')
-        if not name_attr:
-            self.errors.append(f"Model class {class_name} in {file_path} missing _name attribute")
+        inherit_attr = self._find_class_attribute(class_node, '_inherit')
+
+        # If it has _inherit but no _name, that's valid (inheritance model)
+        if inherit_attr and not name_attr:
+            # This is a valid inheritance model, validate it differently
+            self._validate_inheritance_model(class_node, file_path)
             return
 
-        model_name = self._get_attribute_value(name_attr)
-        if not model_name:
-            self.errors.append(f"Model class {class_name} in {file_path} has invalid _name")
-            return
+        # If it has _name, validate as a regular model
+        if name_attr:
+            model_name = self._get_attribute_value(name_attr)
+            if not model_name:
+                self.errors.append(f"Model class {class_name} in {file_path} has invalid _name")
+                return
 
-        # Check for _description attribute
-        desc_attr = self._find_class_attribute(class_node, '_description')
-        if not desc_attr:
-            self.warnings.append(f"Model {model_name} missing _description attribute")
+            # Check for _description attribute
+            desc_attr = self._find_class_attribute(class_node, '_description')
+            if not desc_attr:
+                self.warnings.append(f"Model {model_name} missing _description attribute")
 
-        # Store model info for relationship validation
-        self.models[model_name] = {
-            'file': file_path,
-            'class': class_name,
-            'fields': self._extract_fields(class_node)
-        }
+            # Store model info for relationship validation
+            self.models[model_name] = {
+                'file': file_path,
+                'class': class_name,
+                'fields': self._extract_fields(class_node)
+            }
 
-        # Validate field definitions
+            # Validate field definitions
+            self._validate_fields(class_node, model_name, file_path)
+        else:
+            # No _name and no _inherit - this might be a base class or invalid
+            self.errors.append(f"Model class {class_name} in {file_path} missing both _name and _inherit attributes")
+
+    def _validate_inheritance_model(self, class_node: ast.ClassDef, file_path: Path) -> None:
+        """Validate an inheritance model (using _inherit)"""
+        class_name = class_node.name
+
+        # For inheritance models, we still validate fields but don't require _name
+        # Extract the inherited model name from _inherit
+        inherit_attr = self._find_class_attribute(class_node, '_inherit')
+        if inherit_attr:
+            inherit_value = self._get_attribute_value(inherit_attr)
+            if inherit_value:
+                # Store model info for relationship validation using the inherited name
+                if isinstance(inherit_value, list):
+                    # Multiple inheritance
+                    for inherited_model in inherit_value:
+                        if inherited_model not in self.models:
+                            self.models[inherited_model] = {
+                                'file': file_path,
+                                'class': class_name,
+                                'fields': self._extract_fields(class_node),
+                                'inherited': True
+                            }
+                else:
+                    # Single inheritance
+                    if inherit_value not in self.models:
+                        self.models[inherit_value] = {
+                            'file': file_path,
+                            'class': class_name,
+                            'fields': self._extract_fields(class_node),
+                            'inherited': True
+                        }
+
+        # Validate field definitions for inheritance model
+        # We need to determine what model name to use for validation
+        model_name = f"{class_name} (inheritance)"
         self._validate_fields(class_node, model_name, file_path)
 
     def _find_class_attribute(self, class_node: ast.ClassDef, attr_name: str) -> ast.Assign:
@@ -237,19 +310,32 @@ class ModelValidator:
         # Check for inverse_name in One2many/Many2many
         if field_type in ['One2many', 'Many2many']:
             has_inverse = False
+            has_relation_params = False
 
             # Check keyword arguments
             for keyword in call_node.keywords:
                 if keyword.arg == 'inverse_name':
                     has_inverse = True
-                    break
+                elif keyword.arg in ['relation', 'column1', 'column2']:
+                    has_relation_params = True
 
             # Check positional arguments (second arg for One2many/Many2many)
             if not has_inverse and len(call_node.args) >= 2:
                 has_inverse = True
 
-            if not has_inverse:
+            # For Many2many fields, also check for relation table parameters
+            if field_type == 'Many2many':
+                # Check if we have the three relation parameters
+                relation_count = sum(1 for keyword in call_node.keywords
+                                   if keyword.arg in ['relation', 'column1', 'column2'])
+                if relation_count >= 3:  # We need at least relation, column1, column2
+                    has_relation_params = True
+
+            # One2many requires inverse_name, Many2many can use either inverse_name OR relation params
+            if field_type == 'One2many' and not has_inverse:
                 self.errors.append(f"Relational field {field_name} ({field_type}) in model {model_name} missing inverse_name")
+            elif field_type == 'Many2many' and not (has_inverse or has_relation_params):
+                self.errors.append(f"Relational field {field_name} ({field_type}) in model {model_name} missing inverse_name or relation parameters (relation, column1, column2)")
 
     def _validate_relationships(self) -> None:
         """Validate model relationships"""

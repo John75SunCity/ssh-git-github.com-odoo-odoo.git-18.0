@@ -159,6 +159,9 @@ class FileRetrievalWorkOrder(models.Model):
     # ============================================================================
     container_ids = fields.Many2many(
         'records.container',
+        relation='file_retrieval_work_order_container_rel',
+        column1='work_order_id',
+        column2='container_id',
         string='Related Containers',
         compute='_compute_related_containers',
         store=True,
@@ -167,6 +170,9 @@ class FileRetrievalWorkOrder(models.Model):
 
     location_ids = fields.Many2many(
         'records.location',
+        relation='file_retrieval_work_order_location_rel',
+        column1='work_order_id',
+        column2='location_id',
         string='Related Locations',
         compute='_compute_related_containers',
         store=True,
@@ -325,6 +331,9 @@ class FileRetrievalWorkOrder(models.Model):
 
     retrieval_team_ids = fields.Many2many(
         'res.users',
+        relation='file_retrieval_work_order_team_rel',
+        column1='work_order_id',
+        column2='user_id',
         string='Retrieval Team',
         help="Team members assigned to execute the file retrieval"
     )

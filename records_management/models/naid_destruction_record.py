@@ -37,7 +37,14 @@ class NaidDestructionRecord(models.Model):
 
     responsible_user_id = fields.Many2one('res.users', string='Responsible Technician', required=True, tracking=True)
     notes = fields.Text(string='Destruction Notes')
-    witness_ids = fields.Many2many('res.users', string='Witnesses', help='Users who witnessed the destruction process')
+    witness_ids = fields.Many2many(
+        'res.users',
+        relation='naid_destruction_record_witness_rel',
+        column1='destruction_record_id',
+        column2='user_id',
+        string='Witnesses',
+        help='Users who witnessed the destruction process'
+    )
     destruction_item_ids = fields.One2many('destruction.item', 'destruction_record_id', string='Destruction Items')
 
     state = fields.Selection([

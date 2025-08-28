@@ -42,7 +42,7 @@ class RecordsContainer(models.Model):
     name = fields.Char(string="Container Name", required=True, copy=False, readonly=True, default=lambda self: _('New'))
     active = fields.Boolean(default=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    currency_id = fields.Many2one(related='company_id.currency_id', readonly=True)
+    currency_id = fields.Many2one(related='company_id.currency_id', readonly=True, comodel_name='res.currency')
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     barcode = fields.Char(string='Barcode', copy=False, index=True)
 

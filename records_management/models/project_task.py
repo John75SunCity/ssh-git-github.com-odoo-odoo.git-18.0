@@ -46,7 +46,13 @@ class ProjectTask(models.Model):
         readonly=True
     )
 
-    container_ids = fields.Many2many(comodel_name='records.container', string="Related Containers")
+    container_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='project_task_records_container_rel',
+        column1='task_id',
+        column2='container_id',
+        string="Related Containers"
+    )
 
     # --- Team Assignment ---
     shredding_team_id = fields.Many2one(

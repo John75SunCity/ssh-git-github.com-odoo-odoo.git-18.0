@@ -33,14 +33,14 @@ class CustomerInventoryReportLine(models.Model):
     sequence = fields.Integer(default=10)
     # Explicit comodel_name per project convention
     report_id = fields.Many2one(comodel_name='customer.inventory.report', string='Inventory Report', required=True, ondelete='cascade')
-    partner_id = fields.Many2one(related='report_id.partner_id', string='Customer', store=True)
+    partner_id = fields.Many2one(related='report_id.partner_id', string='Customer', store=True, comodel_name='res.partner')
     report_date = fields.Date(related='report_id.report_date', string='Report Date', store=True)
 
     # ============================================================================
     # CONTAINER & DOCUMENT DETAILS
     # ============================================================================
     container_id = fields.Many2one('records.container', string='Container', required=True)
-    location_id = fields.Many2one(related='container_id.location_id', string='Location', store=True)
+    location_id = fields.Many2one(related='container_id.location_id', string='Location', store=True, comodel_name='stock.location')
     # Use a Char related to the container type name (the target is Char)
     container_type = fields.Char(related='container_id.container_type_id.name', string='Container Type', store=True)
     container_barcode = fields.Char(related='container_id.barcode', string='Barcode')
@@ -67,7 +67,7 @@ class CustomerInventoryReportLine(models.Model):
     # ============================================================================
     # FINANCIALS
     # ============================================================================
-    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency')
+    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', comodel_name='res.currency')
     monthly_storage_cost = fields.Monetary(string='Monthly Storage Cost')
     total_storage_cost = fields.Monetary(string='Total Storage Cost', compute='_compute_total_storage_cost', store=True)
     storage_months = fields.Integer(string='Months in Storage', compute='_compute_storage_months', store=True)
