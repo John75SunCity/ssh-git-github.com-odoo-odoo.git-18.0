@@ -54,7 +54,6 @@
         "views/advanced_billing_views.xml",
         "views/billing_period_views.xml",
         "views/customer_negotiated_rate_views.xml",
-        "views/fleet_vehicle_views.xml",
         "views/fleet_vehicle_enhanced_views.xml",
         "views/pickup_route_views.xml",
         "views/fleet_fsm_integration_menus.xml",
