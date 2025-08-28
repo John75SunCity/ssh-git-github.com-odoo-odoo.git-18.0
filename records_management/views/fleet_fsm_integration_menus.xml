@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Enhanced Records Management Menu with Fleet and FSM Integration -->
+    <menuitem id="menu_records_fleet_fsm"
+              name="Fleet &amp; Route Management"
+              parent="records_management_menu.menu_records_management_root"
+              sequence="30"/>
+
+    <!-- Fleet Management Submenu -->
+    <menuitem id="menu_records_fleet"
+              name="Fleet Management"
+              parent="menu_records_fleet_fsm"
+              sequence="10"/>
+
+    <!-- Records Fleet Vehicles (Enhanced Fleet View) -->
+    <menuitem id="menu_records_fleet_vehicles"
+              name="Records Vehicles"
+              parent="menu_records_fleet"
+              action="action_fleet_vehicle_records"
+              sequence="10"/>
+
+    <!-- Standard Fleet Menu for Comparison -->
+    <menuitem id="menu_standard_fleet"
+              name="Standard Fleet"
+              parent="menu_records_fleet"
+              action="fleet.fleet_vehicle_action"
+              sequence="20"/>
+
+    <!-- Route Management Submenu -->
+    <menuitem id="menu_records_routes"
+              name="Route Management"
+              parent="menu_records_fleet_fsm"
+              sequence="20"/>
+
+    <!-- Pickup Routes (Enhanced with FSM) -->
+    <menuitem id="menu_pickup_routes"
+              name="Pickup Routes"
+              parent="menu_records_routes"
+              action="action_pickup_route"
+              sequence="10"/>
+
+    <!-- FSM Projects for Routes -->
+    <menuitem id="menu_fsm_route_projects"
+              name="FSM Route Projects"
+              parent="menu_records_routes"
+              action="project.action_view_projects_fsm"
+              sequence="20"/>
+
+    <!-- Route Analytics -->
+    <record id="action_route_analytics" model="ir.actions.act_window">
+        <field name="name">Route Analytics</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pickup.route</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="domain">[]</field>
+        <field name="context">{
+            'search_default_completed': 1,
+            'group_by': ['route_date:month']
+        }</field>
+    </record>
+
+    <menuitem id="menu_route_analytics"
+              name="Route Analytics"
+              parent="menu_records_routes"
+              action="action_route_analytics"
+              sequence="30"/>
+
+    <!-- Integration Tools Submenu -->
+    <menuitem id="menu_integration_tools"
+              name="Integration Tools"
+              parent="menu_records_fleet_fsm"
+              sequence="30"/>
+
+    <!-- Fleet/FSM Integration Dashboard -->
+    <record id="action_fleet_fsm_dashboard" model="ir.actions.client">
+        <field name="name">Fleet &amp; FSM Dashboard</field>
+        <field name="tag">fleet_fsm_dashboard</field>
+    </record>
+
+    <menuitem id="menu_fleet_fsm_dashboard"
+              name="Integration Dashboard"
+              parent="menu_integration_tools"
+              action="action_fleet_fsm_dashboard"
+              sequence="10"/>
+
+</odoo>

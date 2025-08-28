@@ -7,15 +7,15 @@
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
         <field name="arch" type="xml">
-            
+
             <!-- Add Records Management stat buttons -->
             <div name="button_box" position="inside">
-                <button name="action_view_pickup_routes" type="object" 
-                        class="oe_stat_button" icon="fa-route" 
+                <button name="action_view_pickup_routes" type="object"
+                        class="oe_stat_button" icon="fa-route"
                         attrs="{'invisible': [('pickup_route_ids', '=', [])]}">
                     <field name="pickup_route_ids" widget="statbutton" string="Routes"/>
                 </button>
-                <button name="action_set_records_available" type="object" 
+                <button name="action_set_records_available" type="object"
                         class="oe_stat_button" icon="fa-check-circle"
                         attrs="{'invisible': [('records_operational_status', '!=', 'out_of_service')]}">
                     <div class="o_field_widget o_stat_info">
@@ -47,7 +47,7 @@
                             </field>
                         </group>
                     </group>
-                    
+
                     <separator string="Records Vehicle Configuration"/>
                     <div class="alert alert-info">
                         <h4>🚚 Records Vehicle Types:</h4>
@@ -58,7 +58,7 @@
                             <li><strong>Container Delivery:</strong> Specialized for container placement/pickup</li>
                         </ul>
                     </div>
-                    
+
                     <group string="Capacity &amp; Compliance">
                         <div class="alert alert-warning" attrs="{'invisible': [('records_vehicle_type', '!=', 'secure_transport'), ('naid_compliant', '=', True)]}">
                             <strong>⚠️ NAID Compliance Required:</strong> Secure transport vehicles must be NAID compliant.
@@ -79,7 +79,7 @@
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
         <field name="arch" type="xml">
-            
+
             <!-- Add records-specific columns -->
             <field name="state_id" position="after">
                 <field name="records_vehicle_type" optional="show"/>
@@ -97,7 +97,7 @@
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban"/>
         <field name="arch" type="xml">
-            
+
             <!-- Add records information to kanban cards -->
             <field name="state_id" position="after">
                 <field name="records_vehicle_type"/>
@@ -105,7 +105,7 @@
                 <field name="max_container_capacity"/>
                 <field name="naid_compliant"/>
             </field>
-            
+
             <div class="oe_kanban_bottom_right" position="before">
                 <div class="oe_kanban_bottom_left">
                     <span t-if="record.records_vehicle_type.raw_value" class="badge badge-info">
@@ -129,7 +129,7 @@
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
         <field name="arch" type="xml">
-            
+
             <!-- Add search fields for records -->
             <field name="driver_id" position="after">
                 <field name="records_vehicle_type"/>
@@ -139,25 +139,25 @@
             <!-- Add records-specific filters -->
             <filter name="inactive" position="after">
                 <separator/>
-                <filter string="Records Vehicles" name="records_vehicles" 
+                <filter string="Records Vehicles" name="records_vehicles"
                         domain="[('records_vehicle_type', '!=', False)]"/>
-                <filter string="Available for Routes" name="available_routes" 
+                <filter string="Available for Routes" name="available_routes"
                         domain="[('records_operational_status', '=', 'available')]"/>
-                <filter string="Currently on Route" name="on_route" 
+                <filter string="Currently on Route" name="on_route"
                         domain="[('records_operational_status', '=', 'on_route')]"/>
-                <filter string="NAID Compliant" name="naid_compliant" 
+                <filter string="NAID Compliant" name="naid_compliant"
                         domain="[('naid_compliant', '=', True)]"/>
-                <filter string="Secure Transport" name="secure_transport" 
+                <filter string="Secure Transport" name="secure_transport"
                         domain="[('records_vehicle_type', '=', 'secure_transport')]"/>
-                <filter string="Shredding Trucks" name="shredding_trucks" 
+                <filter string="Shredding Trucks" name="shredding_trucks"
                         domain="[('records_vehicle_type', '=', 'shredding_truck')]"/>
             </filter>
 
             <!-- Add records grouping options -->
             <filter name="group_location" position="after">
-                <filter string="Records Vehicle Type" name="group_records_type" 
+                <filter string="Records Vehicle Type" name="group_records_type"
                         context="{'group_by': 'records_vehicle_type'}"/>
-                <filter string="Records Status" name="group_records_status" 
+                <filter string="Records Status" name="group_records_status"
                         context="{'group_by': 'records_operational_status'}"/>
             </filter>
 
