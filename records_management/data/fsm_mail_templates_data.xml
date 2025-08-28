@@ -69,7 +69,7 @@ ${object.company_id.name}</p>
                         <p>Please review the optimized route and contact dispatch if you have any questions.</p>
 
                         <p style="text-align: center; margin: 20px 0;">
-                            <a href="/fsm/route/${object.id}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                            <a href="${ctx.get('base_url', '')}/fsm/route/${object.id}" style="background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
                                 View Route Details
                             </a>
                         </p>
@@ -139,10 +139,10 @@ ${object.company_id.name}</p>
                         </div>
 
                         <p style="text-align: center; margin: 25px 0;">
-                            <a href="/my/fsm" style="background-color: #007cba; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                            <a href="${ctx.get('base_url', '')}/my/fsm" style="background-color: #007cba; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block;">
                                 View Service Details
                             </a>
-                            <a href="/my/feedback/new?service_id=${object.id}" style="background-color: #6c757d; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-left: 10px;">
+                            <a href="${ctx.get('base_url', '')}/my/feedback/new?service_id=${object.id}" style="background-color: #6c757d; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; margin-left: 10px;">
                                 Leave Feedback
                             </a>
                         </p>
@@ -162,7 +162,7 @@ ${object.company_id.name}</p>
         <!-- Equipment Maintenance Alert -->
         <record id="mail_template_fsm_equipment_maintenance" model="mail.template">
             <field name="name">FSM: Equipment Maintenance Due</field>
-            <field name="model_id" ref="model_shredding_equipment"/>
+            <field name="model_id" ref="maintenance.model_maintenance_equipment"/>
             <field name="subject">🔧 Equipment Maintenance Required: ${object.name}</field>
             <field name="email_from">maintenance@suncityshred.com</field>
             <field name="email_to">${object.responsible_user_id.email}</field>
@@ -196,7 +196,7 @@ ${object.company_id.name}</p>
                         <p>Please schedule the maintenance to ensure continued NAID compliance and optimal performance.</p>
 
                         <p style="text-align: center; margin: 20px 0;">
-                            <a href="/fsm/equipment/${object.id}" style="background-color: #ffc107; color: #212529; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                            <a href="${ctx.get('base_url', '')}/fsm/equipment/${object.id}" style="background-color: #ffc107; color: #212529; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
                                 View Equipment Details
                             </a>
                         </p>
@@ -255,7 +255,7 @@ ${object.company_id.name}</p>
                         <p>Please schedule the inspection immediately to maintain service availability.</p>
 
                         <p style="text-align: center; margin: 20px 0;">
-                            <a href="/fsm/vehicle/${object.id}" style="background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                            <a href="${ctx.get('base_url', '')}/fsm/vehicle/${object.id}" style="background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
                                 View Vehicle Details
                             </a>
                         </p>

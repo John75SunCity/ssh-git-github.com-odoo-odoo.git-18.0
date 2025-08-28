@@ -1,6 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--
+    This XML file defines automated actions for the FSM (Field Service Management) module within the Records Management system.
+    Specifically, it sets up a scheduled action (ir.cron) to send daily service notifications.
+
+    Key Elements:
+    - <record>: Defines a scheduled action with the ID "ir_cron_fsm_day_of_service_notification".
+        - name: The name of the scheduled action, "FSM: Daily Service Notifications".
+        - model_id: References the model "fsm.notification" responsible for sending notifications.
+        - state: Indicates the execution type, set to "code" for Python code execution.
+        - code: Specifies the method to execute, "send_day_of_service_notification".
+        - user_id: Specifies the user under which the action runs, set to the root user.
+        - interval_number and interval_type: Define the frequency of execution (daily in this case).
+-->
 <odoo noupdate="1">
     <data>
+        <!-- Scheduled action to send daily service notifications -->
         <record id="ir_cron_fsm_day_of_service_notification" model="ir.cron">
             <field name="name">FSM: Daily Service Notifications</field>
             <field name="model_id" ref="records_management.model_fsm_notification"/>

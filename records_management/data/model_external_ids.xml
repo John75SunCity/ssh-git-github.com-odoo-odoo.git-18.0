@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- External ID references for Records Management models -->
+        
+        <!-- Pickup Route Model -->
+        <record id="model_pickup_route" model="ir.model">
+            <field name="model">pickup.route</field>
+            <field name="name">Pickup Route</field>
+        </record>
+        
+        <!-- Records Vehicle Model -->
+        <record id="model_records_vehicle" model="ir.model">
+            <field name="model">records.vehicle</field>
+            <field name="name">Records Vehicle</field>
+        </record>
+
+    </data>
+</odoo>

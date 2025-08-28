@@ -179,7 +179,7 @@ class AccountMoveLine(models.Model):
     )
 
     vehicle_id = fields.Many2one(
-        "records.vehicle",
+        "fleet.vehicle",  # Use standard fleet.vehicle
         string="Vehicle",
         help="Vehicle used for pickup/delivery"
     )

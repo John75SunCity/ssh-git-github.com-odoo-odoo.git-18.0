@@ -3,6 +3,18 @@ from odoo.exceptions import ValidationError, UserError
 
 
 class PickupRoute(models.Model):
+    """
+    Records Management Pickup Route
+
+    Specialized route management for records pickup operations.
+    Integrates with FSM (project.task) for standard task management while
+    maintaining specialized route optimization and pickup logic.
+
+    Architecture:
+    - pickup.route: Route planning, optimization, stops management
+    - project.task: FSM task for each route (created automatically)
+    - This provides both specialized route logic + standard Odoo FSM workflows
+    """
     _name = 'pickup.route'
     _description = 'Pickup Route Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -10,20 +22,53 @@ class PickupRoute(models.Model):
     _rec_name = 'name'
 
     # ============================================================================
-    # FIELDS
+    # CORE FIELDS (Enhanced with FSM Integration)
     # ============================================================================
     name = fields.Char(string='Route Name', required=True, default='New')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Route Driver', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
+
+    # Enhanced date/time management leveraging FSM scheduling
     route_date = fields.Date(string='Route Date', required=True, default=fields.Date.today)
     planned_start_time = fields.Datetime(string='Planned Start Time')
     planned_end_time = fields.Datetime(string='Planned End Time')
     actual_start_time = fields.Datetime(string='Actual Start Time')
     actual_end_time = fields.Datetime(string='Actual End Time')
-    driver_id = fields.Many2one('res.partner', string='Driver')
+
+    # Leverage fleet.vehicle (already updated)
     vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicle')
     supervisor_id = fields.Many2one('res.users', string='Supervisor')
+
+    # ============================================================================
+    # FSM INTEGRATION - Link to project.task for standard workflows
+    # ============================================================================
+    fsm_task_id = fields.Many2one(
+        'project.task',
+        string='FSM Task',
+        help='Automatically created FSM task for this route',
+        readonly=True,
+        copy=False
+    )
+
+    # Related FSM fields for convenience
+    fsm_state = fields.Selection(
+        related='fsm_task_id.stage_id.name',
+        string='FSM Status',
+        store=True,
+        readonly=True
+    )
+
+    fsm_project_id = fields.Many2one(
+        related='fsm_task_id.project_id',
+        string='FSM Project',
+        store=True,
+        readonly=True
+    )
+
+    # ============================================================================
+    # SPECIALIZED ROUTE FIELDS (Records business logic)
+    # ============================================================================
     state = fields.Selection([
         ('draft', 'Draft'),
         ('planned', 'Planned'),
@@ -276,11 +321,131 @@ class PickupRoute(models.Model):
                     ))
 
     # ============================================================================
-    # ORM METHODS
+    # ORM METHODS (Enhanced with FSM Integration)
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get("name", "New") == "New":
                 vals["name"] = self.env["ir.sequence"].next_by_code("pickup.route") or "New"
-        return super().create(vals_list)
+
+        routes = super().create(vals_list)
+
+        # Auto-create FSM tasks for each route
+        for route in routes:
+            route._create_fsm_task()
+
+        return routes
+
+    def write(self, vals):
+        result = super().write(vals)
+
+        # Sync important changes to FSM task
+        if any(field in vals for field in ['name', 'route_date', 'user_id', 'planned_start_time', 'planned_end_time', 'state']):
+            for route in self:
+                if route.fsm_task_id:
+                    route._sync_to_fsm_task()
+
+        return result
+
+    # ============================================================================
+    # FSM INTEGRATION METHODS
+    # ============================================================================
+    def _create_fsm_task(self):
+        """Create corresponding FSM task for route management."""
+        self.ensure_one()
+
+        if self.fsm_task_id:
+            return  # Already has FSM task
+
+        # Find or create FSM project for routes
+        fsm_project = self._get_or_create_fsm_project()
+
+        # Create FSM task
+        task_vals = {
+            'name': f"Pickup Route: {self.name}",
+            'project_id': fsm_project.id,
+            'user_ids': [(6, 0, [self.user_id.id])] if self.user_id else [],
+            'date_start': self.planned_start_time,
+            'date_end': self.planned_end_time,
+            'partner_id': self.route_stop_ids[0].partner_id.id if self.route_stop_ids else False,
+            'description': f"""
+                Pickup Route Details:
+                - Route Date: {self.route_date}
+                - Vehicle: {self.vehicle_id.license_plate if self.vehicle_id else 'TBD'}
+                - Stops: {len(self.route_stop_ids)}
+                - Notes: {self.notes or 'No special notes'}
+            """,
+            'is_fsm': True,  # Mark as field service task
+        }
+
+        fsm_task = self.env['project.task'].create(task_vals)
+        self.write({'fsm_task_id': fsm_task.id})
+
+        return fsm_task
+
+    def _sync_to_fsm_task(self):
+        """Sync route changes to FSM task."""
+        self.ensure_one()
+
+        if not self.fsm_task_id:
+            return
+
+        sync_vals = {
+            'name': f"Pickup Route: {self.name}",
+            'date_start': self.planned_start_time,
+            'date_end': self.planned_end_time,
+        }
+
+        # Sync state changes
+        if self.state == 'in_progress':
+            # Find "In Progress" stage
+            stage = self.env['project.task.type'].search([
+                ('project_ids', 'in', self.fsm_task_id.project_id.id),
+                ('name', 'ilike', 'progress')
+            ], limit=1)
+            if stage:
+                sync_vals['stage_id'] = stage.id
+        elif self.state == 'completed':
+            # Find "Done" stage
+            stage = self.env['project.task.type'].search([
+                ('project_ids', 'in', self.fsm_task_id.project_id.id),
+                ('fold', '=', True)  # Done stages are typically folded
+            ], limit=1)
+            if stage:
+                sync_vals['stage_id'] = stage.id
+
+        self.fsm_task_id.write(sync_vals)
+
+    def _get_or_create_fsm_project(self):
+        """Get or create FSM project for pickup routes."""
+        project = self.env['project.project'].search([
+            ('name', '=', 'Records Pickup Routes'),
+            ('is_fsm', '=', True)
+        ], limit=1)
+
+        if not project:
+            project = self.env['project.project'].create({
+                'name': 'Records Pickup Routes',
+                'is_fsm': True,
+                'allow_task_dependencies': True,
+                'company_id': self.company_id.id,
+            })
+
+        return project
+
+    def action_view_fsm_task(self):
+        """Open the related FSM task."""
+        self.ensure_one()
+
+        if not self.fsm_task_id:
+            self._create_fsm_task()
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'FSM Task',
+            'res_model': 'project.task',
+            'res_id': self.fsm_task_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
