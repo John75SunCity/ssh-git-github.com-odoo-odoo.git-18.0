@@ -1,6 +1,6 @@
 # Comprehensive Field Analysis Report
 
-Generated: 2025-08-28T00:27:13.657616+00:00
+Generated: 2025-08-28T08:05:58.845532+00:00
 
 ## validate_imports.py
 
@@ -11,8 +11,6 @@ Exit code: 0
 Exit code: 1
 
 <details><summary>stdout (tail)</summary>
-
-OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/wizard_template_reports.xml
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/load_report_templates.xml
 
@@ -45,6 +43,8 @@ OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/rec
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/work_order_shredding_reports.xml
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/bin_key_reports.xml
+
+OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/maintenance_request_report.xml
 
 OK [stdlib]: /Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/report/scrm_records_management_reports.xml
 
@@ -162,14 +162,6 @@ Exit code: 0
 
 <details><summary>stdout (tail)</summary>
 
-   • records_container_line.py:13 (Many2one\([\'"]([^\'"]+)[\'"])
-
-   • ... and 2 more references
-
-
-
-❌ Model 'sale.order' referenced but not defined:
-
    • key_restriction_checker.py:65 (Many2one\([\'"]([^\'"]+)[\'"])
 
 
@@ -208,7 +200,7 @@ Exit code: 0
 
 
 
-📊 Found 43 domain references with field access
+📊 Found 45 domain references with field access
 
 ⚠️  Domain field references (may need validation):
 
@@ -222,17 +214,25 @@ Exit code: 0
 
     container_type_id = fields.Many2one(
 
+   • advanced_billing_profile.py:56 - )
+
+
+
+    # Status and computed fields
+
+    state = fields.Selection([
+
+        (
+
    • unlock_service_part.py:23 - )
 
     product_category_id = fields.Many2one(
 
-   • barcode_product.py:405 - , record.barcode), (
-
-   • ... and 38 more domain references
+   • ... and 40 more domain references
 
 
 
-🚨 SECURITY ISSUES: 26 models missing security access rules:
+🚨 SECURITY ISSUES: 27 models missing security access rules:
 
    ❌  -  (in document_search_attempt.py)
 
@@ -244,7 +244,7 @@ Exit code: 0
 
    ❌ res.users (in full_customization_name.py)
 
-   ❌ ... and 21 more models
+   ❌ ... and 22 more models
 
 
 
@@ -254,11 +254,11 @@ AUDIT SUMMARY
 
 ================================================================================
 
-📊 Total models: 248
+📊 Total models: 251
 
 📊 Total field references: 138
 
-🚨 Critical issues found: 35
+🚨 Critical issues found: 36
 
 ⚠️  Issues found that may cause loading order problems
 
@@ -270,11 +270,11 @@ Exit code: 0
 
 <details><summary>stdout (tail)</summary>
 
-partner_id (res.partner):
+billing_profile_id (unknown):
 
-  ✅ OK: destruction_address_id = related='partner_id.destruction_address_id'
+  ✅ OK: partner_id = related='billing_profile_id.partner_id'
 
-  ✅ OK: destruction_address_id = related='partner_id.destruction_address_id'
+  ✅ OK: company_id = related='billing_profile_id.company_id'
 
 
 
@@ -362,7 +362,7 @@ document_type_id (unknown):
 
 ================================================================================
 
-SUMMARY: Found 0 potential issues in 211 related fields
+SUMMARY: Found 0 potential issues in 214 related fields
 
 ================================================================================
 
