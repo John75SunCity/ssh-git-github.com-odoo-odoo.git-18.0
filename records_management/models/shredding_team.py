@@ -111,10 +111,11 @@ class ShreddingTeam(models.Model):
             else:
                 team.efficiency_rating = 0.0
 
-    @api.depends('feedback_ids.rating', 'service_ids.feedback_ids.rating')
+    @api.depends('feedback_ids.rating')
     def _compute_customer_satisfaction(self):
         for team in self:
-            all_feedback = team.feedback_ids | team.service_ids.mapped('feedback_ids')
+            # Only use direct team feedback since service_ids (project.task) don't have feedback_ids
+            all_feedback = team.feedback_ids
             valid_feedback = all_feedback.filtered(lambda f: f.rating and f.rating > 0)
 
             if valid_feedback:
