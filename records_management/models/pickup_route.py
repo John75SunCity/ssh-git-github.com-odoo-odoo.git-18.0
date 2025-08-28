@@ -52,7 +52,7 @@ class PickupRoute(models.Model):
     )
 
     # Related FSM fields for convenience
-    fsm_state = fields.Selection(
+    fsm_state = fields.Char(
         related='fsm_task_id.stage_id.name',
         string='FSM Status',
         store=True,
