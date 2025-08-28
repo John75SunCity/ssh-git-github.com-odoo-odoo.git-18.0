@@ -1,6 +1,7 @@
 from odoo import models, fields, api, _
 
 class MaintenanceEquipment(models.Model):
+    _name = 'maintenance.equipment'
     _inherit = 'maintenance.equipment'
 
     # ============================================================================

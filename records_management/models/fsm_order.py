@@ -9,6 +9,7 @@ class FsmOrder(models.Model):
     such as on-site shredding, off-site shredding, and hard drive destruction,
     while ensuring compliance with NAID AAA standards.
     """
+    _name = 'project.task'
     _inherit = 'project.task'
 
     # ============================================================================
@@ -165,7 +166,7 @@ class FsmOrder(models.Model):
                 if not order.technician_id:
                     order.technician_id = order.user_id.id
             except Exception as e:
-                raise UserError(_("Error completing shredding service: %s") % str(e))
+                raise UserError(_("Error completing shredding service: %s") % str(e)) from e
         return res
 
     def action_view_photos(self):
@@ -272,7 +273,7 @@ class FsmOrder(models.Model):
                 attachment_ids=[(4, certificate.id)]
             )
         except Exception as e:
-            raise UserError(_("Failed to generate certificate: %s") % str(e))
+            raise UserError(_("Failed to generate certificate: %s") % str(e)) from e
 
     def _prepare_certificate_vals(self):
         """
