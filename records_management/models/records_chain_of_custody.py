@@ -15,11 +15,20 @@ class RecordsChainOfCustody(models.Model):
     # ============================================================================
     # FIELDS
     # ============================================================================
-    name = fields.Char()
-    sequence = fields.Integer()
-    company_id = fields.Many2one(comodel_name='res.company', string='Company')
+    name = fields.Char(
+        string='Event Name',
+        required=True,
+        help="Name/reference for this custody event"
+    )
+    sequence = fields.Integer(default=10)
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        required=True,
+        default=lambda self: self.env.company
+    )
     user_id = fields.Many2one(comodel_name='res.users', string='Responsible')
-    active = fields.Boolean()
+    active = fields.Boolean(default=True)
     customer_id = fields.Many2one(comodel_name='res.partner', string='Customer')
     partner_id = fields.Many2one(comodel_name='res.partner', string='Partner')
     document_id = fields.Many2one(comodel_name='records.document', string='Document')
@@ -36,9 +45,16 @@ class RecordsChainOfCustody(models.Model):
             ("verified", "Verified"),
         ],
         string="Custody Event",
+        required=True,
         default="transfer",
+        help="Type of custody event that occurred"
     )
-    custody_date = fields.Datetime()
+    custody_date = fields.Datetime(
+        string='Custody Date',
+        required=True,
+        default=fields.Datetime.now,
+        help="Date and time when the custody event occurred"
+    )
     description = fields.Text()
     custody_from_id = fields.Many2one(comodel_name='res.users', string='From Custodian')
     custody_to_id = fields.Many2one(comodel_name='res.users', string='To Custodian')
@@ -364,6 +380,18 @@ class RecordsChainOfCustody(models.Model):
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
+
+    @api.constrains('customer_id', 'partner_id', 'document_id', 'container_id')
+    def _check_related_records(self):
+        """Validate that either customer/partner is specified or document/container is specified"""
+        for record in self:
+            has_customer = record.customer_id or record.partner_id
+            has_item = record.document_id or record.container_id
+
+            if not has_customer and not has_item:
+                raise ValidationError(_(
+                    "Either Customer/Partner must be specified, or Document/Container must be specified."
+                ))
 
     @api.constrains('custody_from_id', 'custody_to_id')
     def _check_custody_transfer(self):

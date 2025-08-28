@@ -3,15 +3,16 @@
 # Enhanced import handling for development environment
 try:
     from odoo.tests.common import TransactionCase
-from datetime import datetime, date
-from unittest.mock import patch, MagicMock
-from odoo.exceptions import AccessError
-from odoo.exceptions import UserError
-    from odoo.exceptions import ValidationError
+    from odoo.exceptions import AccessError, UserError, ValidationError
 except ImportError:
     # Development/testing environment fallback
     TransactionCase = object
     ValidationError = Exception
+    AccessError = Exception
+    UserError = Exception
+
+from datetime import datetime, date
+from unittest.mock import patch, MagicMock
 
 
 class TestRecordsManagement(TransactionCase):
@@ -52,11 +53,11 @@ class TestRecordsManagement(TransactionCase):
         record = self.env['records_management'].create({
             'name': 'Searchable Record'
         })
-        
+
         found_records = self.env['records_management'].search([
             ('name', '=', 'Searchable Record')
         ])
-        
+
         self.assertIn(record, found_records)
 
 
@@ -66,9 +67,9 @@ class TestRecordsManagement(TransactionCase):
         record = self.env['records_management'].create({
             'name': 'Original Name'
         })
-        
+
         record.write({'name': 'Updated Name'})
-        
+
         self.assertEqual(record.name, 'Updated Name')
 
 
@@ -78,10 +79,10 @@ class TestRecordsManagement(TransactionCase):
         record = self.env['records_management'].create({
             'name': 'To Be Deleted'
         })
-        
+
         record_id = record.id
         record.unlink()
-        
+
         self.assertFalse(self.env['records_management'].browse(record_id).exists())
 
 
