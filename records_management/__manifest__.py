@@ -75,7 +75,8 @@
         "templates/records_dashboard_templates.xml",
         "templates/records_management_dashboard_templates.xmltemplates/records_management_dashboard_templates.xml",
         "templates/records_management_portal_templates.xml",
-        "templates/records_portal_templates.xml"
+        "templates/records_portal_templates.xml",
+        "views/records_document_flag_permanent_wizard_views.xml"
     ],
     # Use glob patterns for views/templates if possible
         'demo': [
