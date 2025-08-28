@@ -602,7 +602,7 @@ class FileRetrievalWorkOrder(models.Model):
                 record.estimated_weight_kg = 0.0
                 record.estimated_box_count = 1
 
-    @api.depends('retrieval_item_ids.container_id', 'retrieval_item_ids.container_id.storage_location_id')
+    @api.depends('retrieval_item_ids.container_id', 'retrieval_item_ids.container_id.location_id')
     def _compute_related_containers(self):
         """Compute related containers and locations with comprehensive null safety"""
         for record in self:
@@ -616,8 +616,8 @@ class FileRetrievalWorkOrder(models.Model):
                         try:
                             if hasattr(item, 'container_id') and item.container_id:
                                 containers |= item.container_id
-                                if hasattr(item.container_id, 'storage_location_id') and item.container_id.storage_location_id:
-                                    locations |= item.container_id.storage_location_id
+                                if hasattr(item.container_id, 'location_id') and item.container_id.location_id:
+                                    locations |= item.container_id.location_id
                         except (AttributeError, TypeError):
                             continue
 

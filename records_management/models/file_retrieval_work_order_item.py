@@ -45,7 +45,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         copy=False,
         readonly=True,
         index=True,
-        default=_('New'),
+        default=lambda self: _('New'),
         help="Auto-generated reference for this retrieval item"
     )
 

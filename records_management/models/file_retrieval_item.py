@@ -129,18 +129,14 @@ class FileRetrievalItem(models.Model):
     # STATUS AND WORKFLOW FIELDS
     # ============================================================================
 
-    status = fields.Selection([
-        ('pending', 'Pending'),
-        ('searching', 'Searching'),
-        ('located', 'Located'),
-        ('retrieved', 'Retrieved'),
-        ('packaged', 'Packaged'),
-        ('delivered', 'Delivered'),
-        ('returned', 'Returned'),
-        ('completed', 'Completed'),
-        ('not_found', 'Not Found'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='pending', required=True, tracking=True)
+    status = fields.Selection(
+        selection_add=[
+            ('packaged', 'Packaged'),
+            ('delivered', 'Delivered'),
+            ('returned', 'Returned')
+        ],
+        string='Status'
+    )
 
     priority = fields.Selection([
         ('0', 'Low'),
