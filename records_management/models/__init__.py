@@ -24,6 +24,8 @@ from . import shredding_picklist_item
 from . import inventory_item_profile
 # Advanced billing models (parent before children)
 from . import advanced_billing
+from . import advanced_billing_profile
+from . import advanced_billing_contact
 from . import advanced_billing_line
 from . import advanced_billing_service_line
 from . import advanced_billing_storage_line

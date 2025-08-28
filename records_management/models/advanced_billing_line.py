@@ -7,6 +7,7 @@ class AdvancedBillingLine(models.Model):
 
     name = fields.Char(required=True)
     billing_id = fields.Many2one("advanced.billing", string="Billing", ondelete="cascade", index=True, required=True)
+    billing_profile_id = fields.Many2one("advanced.billing.profile", string="Billing Profile", ondelete="cascade", index=True)
     currency_id = fields.Many2one(related="billing_id.currency_id", comodel_name="res.currency", store=True, readonly=True)
     amount = fields.Monetary(currency_field="currency_id", required=True, default=0.0)
     sequence = fields.Integer(default=10)
