@@ -205,89 +205,35 @@ class FileRetrievalWorkOrderItem(models.Model):
     ], string="Access Difficulty", default='easy', help="Difficulty level for accessing this file")
 
     # ============================================================================
-    # STATUS AND WORKFLOW
+    # STREAMLINED STATUS WORKFLOW - FAST & EFFICIENT
     # ============================================================================
     status = fields.Selection([
-        ('pending', 'Pending'),
-        ('assigned', 'Assigned'),
-        ('locating', 'Locating'),
-        ('located', 'Located'),
-        ('access_requested', 'Access Requested'),
-        ('retrieving', 'Retrieving'),
-        ('retrieved', 'Retrieved'),
-        ('quality_checking', 'Quality Checking'),
-        ('quality_checked', 'Quality Checked'),
-        ('packaging', 'Packaging'),
-        ('packaged', 'Packaged'),
-        ('delivered', 'Delivered'),
-        ('not_found', 'Not Found'),
-        ('damaged', 'Damaged'),
-        ('access_denied', 'Access Denied'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='pending', tracking=True, help="Current processing status")
-
-    sub_status = fields.Char(
-        string="Sub-Status",
-        help="Additional status details for more granular tracking"
-    )
-    status_notes = fields.Text(
-        string="Status Notes",
-        help="Notes about current status or progress"
-    )
-    progress_percentage = fields.Float(
-        string="Progress %",
-        compute='_compute_progress_metrics',
-        store=True,
-        help="Percentage completion of retrieval process"
-    )
+        ('pending', 'Pending'),          # Waiting for technician assignment
+        ('assigned', 'Assigned'),        # Assigned to technician
+        ('retrieved', 'Retrieved'),      # File scanned and retrieved
+        ('delivered', 'Delivered'),      # Delivered to customer
+        ('not_found', 'Not Found'),      # File could not be located
+        ('cancelled', 'Cancelled')       # Request cancelled
+    ], string='Status', default='pending', tracking=True,
+       help="Streamlined status for efficient barcode workflow")
 
     # ============================================================================
-    # QUALITY CONTROL
+    # ESSENTIAL TRACKING FIELDS - STREAMLINED FOR BARCODE WORKFLOW
     # ============================================================================
+
+    # Core dates for workflow tracking
+    date_assigned = fields.Datetime(string="Assigned Date", help="When item was assigned to technician")
+    date_retrieved = fields.Datetime(string="Retrieved Date", help="When file was scanned/retrieved")
+    date_delivered = fields.Datetime(string="Delivered Date", help="When file was delivered to customer")
+
+    # Simple condition tracking
     condition = fields.Selection([
-        ('excellent', 'Excellent'),
         ('good', 'Good'),
         ('fair', 'Fair'),
-        ('poor', 'Poor'),
-        ('damaged', 'Damaged'),
-        ('deteriorated', 'Deteriorated'),
-        ('fragile', 'Fragile')
-    ], string="Condition", help="Physical condition of the retrieved file")
+        ('damaged', 'Damaged')
+    ], string="Condition", help="File condition when retrieved")
 
-    quality_notes = fields.Text(
-        string="Quality Notes",
-        help="Detailed notes about file quality and condition"
-    )
-    quality_approved = fields.Boolean(
-        string="Quality Approved",
-        tracking=True,
-        help="Whether the file quality meets requirements"
-    )
-    quality_approved_by_id = fields.Many2one(
-        comodel_name='res.users',
-        string="Approved By",
-        help="User who approved the quality"
-    )
-    quality_approved_date = fields.Datetime(
-        string="Approved Date",
-        help="Date and time when quality was approved"
-    )
-    quality_score = fields.Float(
-        string="Quality Score",
-        compute='_compute_quality_metrics',
-        store=True,
-        help="Calculated quality score based on condition and completeness"
-    )
-    completeness_score = fields.Float(
-        string="Completeness Score",
-        compute='_compute_quality_metrics',
-        store=True,
-        help="Score indicating how complete the file is compared to expectations"
-    )
-    quality_issues = fields.Text(
-        string="Quality Issues",
-        help="Description of any quality issues found"
-    )
+    notes = fields.Text(string="Notes", help="General notes about retrieval")
 
     # ============================================================================
     # TIMESTAMPS AND TRACKING
