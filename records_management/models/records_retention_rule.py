@@ -45,7 +45,7 @@ class RecordsRetentionRule(models.Model):
     template_id = fields.Many2one('records.retention.rule', string='Template')
     parent_rule_id = fields.Many2one('records.retention.rule', string='Parent Rule', check_company=True)
     child_rule_ids = fields.One2many('records.retention.rule', 'parent_rule_id', string='Child Rules')
-    rule_level = fields.Integer(string='Rule Level', compute='_compute_rule_level', store=True)
+    rule_level = fields.Integer(string='Rule Level', compute='_compute_rule_level', store=True, recursive=True)
 
     # ============================================================================
     # RETENTION PERIOD

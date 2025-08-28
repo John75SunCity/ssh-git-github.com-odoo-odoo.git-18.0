@@ -80,14 +80,15 @@ class AdvancedBillingContact(models.Model):
                 if other_primaries:
                     other_primaries.write({'primary_contact': False})
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Auto-set primary contact if none exists"""
-        contact = super().create(vals)
-        if not contact.billing_profile_id.primary_contact_id:
-            contact.billing_profile_id.primary_contact_id = contact.id
-            contact.primary_contact = True
-        return contact
+        contacts = super().create(vals_list)
+        for contact in contacts:
+            if not contact.billing_profile_id.primary_contact_id:
+                contact.billing_profile_id.primary_contact_id = contact.id
+                contact.primary_contact = True
+        return contacts
 
     def write(self, vals):
         """Update primary contact reference"""
