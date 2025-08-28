@@ -267,6 +267,15 @@ class FileRetrievalItem(models.Model):
         help="Notes about file condition before and after retrieval"
     )
 
+    quality_status = fields.Selection([
+        ('pending', 'Pending'),
+        ('passed', 'Passed'),
+        ('failed', 'Failed'),
+        ('rejected', 'Rejected'),
+        ('review', 'Under Review')
+    ], string='Quality Status', default='pending', tracking=True,
+       help="Quality assessment status for this retrieval item")
+
     # ============================================================================
     # NOT FOUND HANDLING FIELDS
     # ============================================================================
