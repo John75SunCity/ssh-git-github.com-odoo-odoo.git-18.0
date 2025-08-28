@@ -75,14 +75,17 @@ class ProjectTask(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('container_ids.container_type_id.average_weight_lbs')
+    @api.depends('container_ids', 'container_ids.container_type_id')
     def _compute_total_weight(self):
-        """Compute total estimated weight based on container type averages."""
+        """Compute total estimated weight based on container type averages with safe dependency pattern."""
         for task in self:
-            # Use estimated weights from container type definitions (per user requirement)
+            # Safe computation of estimated weight using container type definitions
             estimated_weight = 0.0
             for container in task.container_ids:
-                if container.container_type_id and container.container_type_id.average_weight_lbs:
+                if (hasattr(container, 'container_type_id') and
+                    container.container_type_id and
+                    hasattr(container.container_type_id, 'average_weight_lbs') and
+                    container.container_type_id.average_weight_lbs):
                     estimated_weight += container.container_type_id.average_weight_lbs
             task.total_weight = estimated_weight
 

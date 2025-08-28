@@ -132,16 +132,27 @@ class ContainerDestructionWorkOrder(models.Model):
             else:
                 record.display_name = record.name or _("New Container Destruction")
 
-    @api.depends('container_ids.container_type_id.average_weight_lbs')
+    @api.depends('container_ids', 'container_ids.container_type_id')
     def _compute_container_metrics(self):
+        """Compute container metrics with safe dependency pattern"""
         for record in self:
             containers = record.container_ids
             record.container_count = len(containers)
-            record.total_cubic_feet = sum(containers.mapped('cubic_feet'))
-            # Use estimated weights from container type definitions (per user requirement)
+
+            # Safe computation of cubic feet
+            total_cubic_feet = 0.0
+            for container in containers:
+                if hasattr(container, 'cubic_feet') and container.cubic_feet:
+                    total_cubic_feet += container.cubic_feet
+            record.total_cubic_feet = total_cubic_feet
+
+            # Safe computation of estimated weight using container type definitions
             estimated_weight = 0.0
             for container in containers:
-                if container.container_type_id and container.container_type_id.average_weight_lbs:
+                if (hasattr(container, 'container_type_id') and
+                    container.container_type_id and
+                    hasattr(container.container_type_id, 'average_weight_lbs') and
+                    container.container_type_id.average_weight_lbs):
                     estimated_weight += container.container_type_id.average_weight_lbs
             record.estimated_weight_lbs = estimated_weight
 

@@ -108,16 +108,27 @@ class ContainerRetrievalWorkOrder(models.Model):
             else:
                 record.display_name = record.name or _("New Container Retrieval")
 
-    @api.depends('container_ids.container_type_id.average_weight_lbs')
+    @api.depends('container_ids', 'container_ids.container_type_id')
     def _compute_container_metrics(self):
+        """Compute container metrics with safe dependency pattern"""
         for record in self:
             containers = record.container_ids
             record.container_count = len(containers)
-            record.total_volume = sum(containers.mapped('cubic_feet'))
-            # Use estimated weights from container type definitions (per user requirement)
+
+            # Safe computation of volume
+            total_volume = 0.0
+            for container in containers:
+                if hasattr(container, 'cubic_feet') and container.cubic_feet:
+                    total_volume += container.cubic_feet
+            record.total_volume = total_volume
+
+            # Safe computation of estimated weight using container type definitions
             estimated_weight = 0.0
             for container in containers:
-                if container.container_type_id and container.container_type_id.average_weight_lbs:
+                if (hasattr(container, 'container_type_id') and
+                    container.container_type_id and
+                    hasattr(container.container_type_id, 'average_weight_lbs') and
+                    container.container_type_id.average_weight_lbs):
                     estimated_weight += container.container_type_id.average_weight_lbs
             record.total_weight = estimated_weight
 

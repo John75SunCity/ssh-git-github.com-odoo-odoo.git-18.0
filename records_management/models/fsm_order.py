@@ -58,14 +58,19 @@ class FsmOrder(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('container_ids.container_type_id.average_weight_lbs')
+    @api.depends('container_ids', 'container_ids.container_type_id')
     def _compute_container_totals(self):
+        """Compute container totals with safe dependency pattern"""
         for order in self:
             order.container_count = len(order.container_ids)
-            # Use estimated weights from container type definitions (per user requirement)
+
+            # Safe computation of estimated weight using container type definitions
             estimated_weight = 0.0
             for container in order.container_ids:
-                if container.container_type_id and container.container_type_id.average_weight_lbs:
+                if (hasattr(container, 'container_type_id') and
+                    container.container_type_id and
+                    hasattr(container.container_type_id, 'average_weight_lbs') and
+                    container.container_type_id.average_weight_lbs):
                     estimated_weight += container.container_type_id.average_weight_lbs
             order.total_weight = estimated_weight
 
