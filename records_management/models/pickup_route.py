@@ -153,13 +153,13 @@ class PickupRoute(models.Model):
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
-    @api.depends('pickup_request_ids', 'pickup_request_ids.container_ids')
+    @api.depends('pickup_request_ids', 'pickup_request_ids.container_count')
     def _compute_container_count(self):
         for record in self:
             container_count = 0
             for request in record.pickup_request_ids:
-                if hasattr(request, 'container_ids'):
-                    container_count += len(request.container_ids)
+                if hasattr(request, 'container_count'):
+                    container_count += request.container_count or 0
             record.container_count = container_count
 
     @api.depends('pickup_request_ids')
