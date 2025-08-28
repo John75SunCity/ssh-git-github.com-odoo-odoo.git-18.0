@@ -18,16 +18,6 @@
         'portal', 'website', 'point_of_sale', 'sms', 'survey',
         'hr', 'project', 'industry_fsm', 'maintenance', 'fleet', 'crm',
         'sale_management', 'website_sale'
-        "templates/my_portal_inventory.xml",
-        "templates/portal_billing_template.xml",
-        "templates/portal_centralized_docs.xml",
-        "templates/portal_document_retrieval.xml",
-        "templates/portal_feedback_template.xml",
-        "templates/portal_inventory_template.xml",
-        "templates/portal_organization_diagram.xml",
-        "templates/portal_overview.xml",
-        "templates/portal_quote_template.xml",
-        "templates/portal_work_order_templates.xml",
     ],
     "data": [
         "data/advanced_billing_demo.xml",
