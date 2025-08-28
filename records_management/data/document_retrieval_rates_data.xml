@@ -40,7 +40,7 @@
         <!-- Digital Scan and Retrieval Rate -->
         <record id="rate_document_scan_retrieval" model="base.rates">
             <field name="name">Digital Scan and Retrieval</field>
-            <field name="rate_type">scan_retrieval</field>
+            <field name="rate_type">scanning</field>
             <field name="base_rate">5.25</field>
             <field name="unit_type">per_item</field>
             <field name="description">Fee for scanning and digital delivery of retrieved documents</field>
@@ -51,7 +51,7 @@
         <!-- Emergency After-Hours Retrieval Rate -->
         <record id="rate_document_retrieval_emergency" model="base.rates">
             <field name="name">Emergency After-Hours Retrieval</field>
-            <field name="rate_type">emergency_retrieval</field>
+            <field name="rate_type">retrieval</field>
             <field name="base_rate">15.00</field>
             <field name="unit_type">per_item</field>
             <field name="description">Emergency after-hours document retrieval service (outside business hours)</field>
