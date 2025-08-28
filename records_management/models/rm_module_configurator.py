@@ -16,7 +16,7 @@ class RmModuleConfigurator(models.Model):
     sequence = fields.Integer(default=10)
     active = fields.Boolean(default=True, help="Only active configurations are applied.")
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, help="Configuration specific to a company. Leave empty for global.")
-    
+
     category = fields.Selection([
         ('ui', 'User Interface'),
         ('workflow', 'Workflow'),
@@ -37,6 +37,7 @@ class RmModuleConfigurator(models.Model):
     ], string="Configuration Type", required=True, default='parameter')
 
     description = fields.Text(string="Description", help="Explain what this configuration does and its impact.")
+    help_text = fields.Text(string="Help Text", help="Additional help text for this configuration option.")
     config_key = fields.Char(string="Technical Key", required=True, copy=False, help="Unique technical key to identify this configuration in code.")
 
     # ============================================================================
@@ -46,7 +47,7 @@ class RmModuleConfigurator(models.Model):
     value_boolean = fields.Boolean(string="Boolean Value")
     value_number = fields.Float(string="Number Value")
     value_selection = fields.Char(string="Selection Value")
-    
+
     # ============================================================================
     # FIELDS - Targeting (for UI/Domain rules)
     # ============================================================================
@@ -54,7 +55,7 @@ class RmModuleConfigurator(models.Model):
     target_model = fields.Char(related='target_model_id.model', readonly=True, store=True)
     target_field_id = fields.Many2one('ir.model.fields', string="Target Field", domain="[('model_id', '=', target_model_id)]")
     target_field = fields.Char(related='target_field_id.name', readonly=True, store=True)
-    
+
     # For field_visibility
     visible = fields.Boolean(string="Is Visible", default=True)
     required = fields.Boolean(string="Is Required")
@@ -88,7 +89,7 @@ class RmModuleConfigurator(models.Model):
             vals['modified_by_id'] = self.env.user.id
             vals['last_modified'] = fields.Datetime.now()
             vals['modification_count'] = self.modification_count + 1
-        
+
         res = super().write(vals)
         # Clear server-side caches to ensure new configuration is loaded
         self.env.registry.clear_caches()
@@ -135,7 +136,7 @@ class RmModuleConfigurator(models.Model):
         config = self.search([('config_key', '=', key), ('active', '=', True)], limit=1)
         if not config:
             return default
-        
+
         if config.value_boolean:
             return config.value_boolean
         if config.value_number is not None:
@@ -144,7 +145,7 @@ class RmModuleConfigurator(models.Model):
             return config.value_text
         if config.value_selection:
             return config.value_selection
-            
+
         return default
 
     def action_apply_configuration(self):

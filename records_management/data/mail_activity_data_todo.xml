@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     records_management/data/mail_activity_data_todo.xml
 
@@ -13,7 +14,6 @@
 
     Maintainer: Records Management Team
 -->
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Add a generic To Do activity type for customer follow-up and general tasks -->
     <record id="mail_activity_data_todo" model="mail.activity.type">

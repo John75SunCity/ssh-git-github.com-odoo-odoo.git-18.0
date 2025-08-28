@@ -52,6 +52,12 @@ class ShreddingService(models.Model):
         help="Detailed description of the shredding service"
     )
 
+    # Service Date
+    service_date = fields.Date(
+        string='Service Date',
+        help="Date when the shredding service is scheduled or was performed"
+    )
+
     # Compliance & Certification
     naid_compliant = fields.Boolean(
         string='NAID AAA Compliant',

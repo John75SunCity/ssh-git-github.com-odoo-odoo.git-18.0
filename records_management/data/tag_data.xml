@@ -7,23 +7,21 @@
             <field name="color">1</field>
             <!-- <field name="description">Documents with sensitive information that require special handling</field> -->
         </record>
-        
+
         <record id="records_tag_archived" model="records.tag">
             <field name="name">Archived</field>
             <field name="color">8</field>
             <!-- <field name="description">Documents that have been permanently archived</field> -->
         </record>
-        
+
         <record id="records_tag_urgent" model="records.tag">
             <field name="name">Urgent</field>
             <field name="color">3</field>
             <!-- <field name="description">Documents requiring immediate attention</field> -->
         </record>
-    </data>
-</odoo>
 
-<!-- Essential tags for Records Management operations -->
-<record id="business_tags" model="ir.config_parameter">
+        <!-- Essential tags for Records Management operations -->
+        <record id="business_tags" model="ir.config_parameter">
     <field name="key">BUSINESS_TAGS</field>
     <field name="value">
         {
@@ -182,3 +180,6 @@
         }
     </field>
 </record>
+
+    </data>
+</odoo>

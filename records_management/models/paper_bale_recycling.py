@@ -48,6 +48,8 @@ class PaperBaleRecycling(models.Model):
     )
 
     processing_date = fields.Date(string="Processing Date", tracking=True)
+    collection_date = fields.Date(string="Collection Date", tracking=True, help="Date when the bale was collected for recycling.")
+    bale_weight = fields.Float(string="Bale Weight (kg)", related='bale_id.weight', store=True, help="Weight of the recycled bale.")
     state = fields.Selection([
         ('pending', 'Pending'),
         ('processed', 'Processed'),

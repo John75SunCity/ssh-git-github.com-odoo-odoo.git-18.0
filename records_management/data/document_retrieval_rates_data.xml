@@ -7,60 +7,55 @@
         <!-- Standard Document Retrieval Rate -->
         <record id="rate_document_retrieval_standard" model="base.rates">
             <field name="name">Standard Document Retrieval</field>
-            <field name="service_type">retrieval</field>
-            <field name="managed_retrieval_rate">3.50</field>
+            <field name="rate_type">retrieval</field>
+            <field name="base_rate">3.50</field>
+            <field name="unit_type">per_item</field>
             <field name="description">Standard fee for retrieving individual documents or files from storage containers</field>
             <field name="effective_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
-            <field name="state">confirmed</field>
-            <field name="is_current">True</field>
             <field name="active">True</field>
         </record>
 
         <!-- Expedited Document Retrieval Rate -->
         <record id="rate_document_retrieval_expedited" model="base.rates">
             <field name="name">Expedited Document Retrieval</field>
-            <field name="service_type">retrieval</field>
-            <field name="managed_retrieval_rate">7.00</field>
+            <field name="rate_type">retrieval</field>
+            <field name="base_rate">7.00</field>
+            <field name="unit_type">per_item</field>
             <field name="description">Premium fee for same-day or expedited document retrieval services</field>
             <field name="effective_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
-            <field name="state">confirmed</field>
-            <field name="is_current">True</field>
             <field name="active">True</field>
         </record>
 
         <!-- Bulk Document Retrieval Rate (20+ documents) -->
         <record id="rate_document_retrieval_bulk" model="base.rates">
             <field name="name">Bulk Document Retrieval</field>
-            <field name="service_type">retrieval</field>
-            <field name="managed_retrieval_rate">2.75</field>
+            <field name="rate_type">retrieval</field>
+            <field name="base_rate">2.75</field>
+            <field name="unit_type">per_item</field>
             <field name="description">Discounted rate for bulk document retrieval (20+ documents from same container)</field>
             <field name="effective_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
-            <field name="state">confirmed</field>
-            <field name="is_current">True</field>
             <field name="active">True</field>
         </record>
 
         <!-- Digital Scan and Retrieval Rate -->
         <record id="rate_document_scan_retrieval" model="base.rates">
             <field name="name">Digital Scan and Retrieval</field>
-            <field name="service_type">scan_retrieval</field>
-            <field name="managed_retrieval_rate">5.25</field>
+            <field name="rate_type">scan_retrieval</field>
+            <field name="base_rate">5.25</field>
+            <field name="unit_type">per_item</field>
             <field name="description">Fee for scanning and digital delivery of retrieved documents</field>
             <field name="effective_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
-            <field name="state">confirmed</field>
-            <field name="is_current">True</field>
             <field name="active">True</field>
         </record>
 
         <!-- Emergency After-Hours Retrieval Rate -->
         <record id="rate_document_retrieval_emergency" model="base.rates">
             <field name="name">Emergency After-Hours Retrieval</field>
-            <field name="service_type">emergency_retrieval</field>
-            <field name="managed_retrieval_rate">15.00</field>
+            <field name="rate_type">emergency_retrieval</field>
+            <field name="base_rate">15.00</field>
+            <field name="unit_type">per_item</field>
             <field name="description">Emergency after-hours document retrieval service (outside business hours)</field>
             <field name="effective_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
-            <field name="state">confirmed</field>
-            <field name="is_current">True</field>
             <field name="active">True</field>
         </record>
 
