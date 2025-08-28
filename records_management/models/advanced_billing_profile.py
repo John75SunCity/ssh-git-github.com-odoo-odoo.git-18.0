@@ -1,8 +1,23 @@
 # -*- coding: utf-8 -*-
+"""
+Advanced Billing Profile Model
+
+This model defines advanced billing profiles for customers, supporting flexible billing frequencies,
+discounts, auto-billing, and contact management. It is part of the Records Management enterprise DMS
+and integrates with Odoo's mail and activity mixins for full tracking and workflow support.
+"""
 from odoo import api, fields, models
 
 
 class AdvancedBillingProfile(models.Model):
+    """
+    Advanced Billing Profile
+
+    Represents a customer-specific billing profile with configurable billing frequency,
+    discounting, auto-billing, and contact management. Supports computed monthly totals
+    and integrates with advanced billing lines and contacts.
+    """
+
     _name = 'advanced.billing.profile'
     _description = 'Advanced Billing Profile'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -22,7 +37,7 @@ class AdvancedBillingProfile(models.Model):
     billing_cycle_day = fields.Integer(string='Billing Cycle Day', default=1,
                                       help='Day of the month/quarter/year when billing occurs')
     auto_billing = fields.Boolean(string='Auto Billing', default=True, tracking=True)
-    discount_percentage = fields.Float(string='Discount %', digits=(5,2), tracking=True)
+    discount_percentage = fields.Float(string='Discount %', digits=(3,2), tracking=True)
 
     # Related billing configuration
     company_id = fields.Many2one('res.company', string='Company',
@@ -38,7 +53,7 @@ class AdvancedBillingProfile(models.Model):
     contact_ids = fields.One2many('advanced.billing.contact', 'billing_profile_id',
                                  string='Billing Contacts')
     primary_contact_id = fields.Many2one('advanced.billing.contact', string='Primary Contact',
-                                        domain="[('billing_profile_id', '=', id)]")
+                                        domain="[('billing_profile_id', '=', active_id)]")
 
     # Status and computed fields
     state = fields.Selection([

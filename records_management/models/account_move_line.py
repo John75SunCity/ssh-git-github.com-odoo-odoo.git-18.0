@@ -381,7 +381,7 @@ class AccountMoveLine(models.Model):
         for line in self:
             if line.container_ids:
                 types = line.container_ids.mapped('container_type')
-                unique_types = list(set(types))
+                unique_types = sorted(set(types))
                 line.container_types = ', '.join(unique_types) if unique_types else ''
             else:
                 line.container_types = ''
@@ -407,7 +407,11 @@ class AccountMoveLine(models.Model):
             # Set basic information
             self.records_related = True
             self.work_order_reference = work_order.name if hasattr(work_order, 'name') else ''
-            self.work_order_date = work_order.create_date.date() if hasattr(work_order, 'create_date') else False
+            create_date = getattr(work_order, 'create_date', None)
+            if create_date and hasattr(create_date, 'date'):
+                self.work_order_date = create_date.date()
+            else:
+                self.work_order_date = False
 
             # Set service type based on work order type
             if 'retrieval' in self.work_order_id._name:
@@ -467,7 +471,7 @@ class AccountMoveLine(models.Model):
             'action_type': 'invoice_line_created',
             'user_id': self.env.user.id,
             'timestamp': fields.Datetime.now(),
-            'description': _("Invoice line created for %s", self.records_service_type),
+            'description': _("Invoice line created for %s") % self.records_service_type,
             'invoice_line_id': self.id,
             'amount': self.price_total,
             'naid_compliant': self.naid_compliant,
@@ -680,15 +684,16 @@ class AccountMoveLine(models.Model):
         return result
 
     def name_get(self):
-        """Custom name display for records management lines."""
         result = []
         for line in self:
             if line.records_related and line.records_service_type:
-                name = _("%s - %s",
-                        dict(self._fields['records_service_type'].selection).get(line.records_service_type, ''),
-                        line.name or _('Service Line'))
+                service_type_label = dict(self._fields['records_service_type'].selection).get(line.records_service_type, '')
+                name = _("%s - %s") % (
+                    service_type_label,
+                    line.name or _('Service Line')
+                )
                 if line.container_count:
-                    name += _(" (%s containers)", line.container_count)
+                    name += _(" (%s containers)") % line.container_count
             else:
                 name = line.name or _('Invoice Line')
             result.append((line.id, name))

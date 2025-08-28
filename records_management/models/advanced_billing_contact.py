@@ -1,8 +1,25 @@
 # -*- coding: utf-8 -*-
+"""
+Advanced Billing Contact Model
+
+Defines the advanced.billing.contact model for managing billing contacts associated with advanced billing profiles.
+Supports contact preferences, communication options, and ensures only one primary contact per billing profile.
+Integrates with Odoo's mail and activity mixins for full tracking and workflow support.
+"""
+
 from odoo import api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class AdvancedBillingContact(models.Model):
+    """
+    Advanced Billing Contact
+
+    Represents a contact for an advanced billing profile, including preferences for invoice receipt,
+    communication methods, and primary contact designation. Ensures integrity of primary contact assignment
+    and provides utility methods for contact management.
+    """
+
     _name = 'advanced.billing.contact'
     _description = 'Advanced Billing Contact'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -78,7 +95,9 @@ class AdvancedBillingContact(models.Model):
                     ('id', '!=', contact.id)
                 ])
                 if other_primaries:
-                    other_primaries.write({'primary_contact': False})
+                    raise ValidationError(
+                        "There can only be one primary contact per billing profile."
+                    )
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -105,4 +124,5 @@ class AdvancedBillingContact(models.Model):
 
     def action_contact_now(self):
         """Record contact attempt"""
+        self.last_contact_date = fields.Datetime.now()
         self.last_contact_date = fields.Datetime.now()
