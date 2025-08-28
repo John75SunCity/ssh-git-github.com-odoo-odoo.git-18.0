@@ -135,7 +135,12 @@ class FileRetrievalItem(models.Model):
             ('delivered', 'Delivered'),
             ('returned', 'Returned')
         ],
-        string='Status'
+        string='Status',
+        ondelete={
+            'packaged': 'set default',
+            'delivered': 'set default',
+            'returned': 'set default'
+        }
     )
 
     priority = fields.Selection([

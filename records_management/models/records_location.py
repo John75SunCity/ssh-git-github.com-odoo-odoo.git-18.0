@@ -4,6 +4,44 @@ from odoo.exceptions import ValidationError, UserError
 
 
 class RecordsLocation(models.Model):
+    """
+    Represents a physical or logical storage location for records containers.
+
+    This model manages hierarchical locations, such as buildings, floors, and shelves,
+    and tracks their capacity, utilization, and compliance with security and environmental
+    standards. It also provides tools for managing child locations and associated containers.
+
+    Key Features:
+    - Hierarchical structure with parent/child relationships.
+    - Capacity management and utilization tracking.
+    - Full address and coordinate-based identification.
+    - Security and compliance features (e.g., security level, inspection dates).
+    - Lifecycle management with states (Draft, Active, Maintenance, etc.).
+    - Integration with records containers for storage and tracking.
+
+    Fields:
+    - Core Fields: `name`, `display_name`, `code`, `active`, `company_id`, `user_id`, `sequence`.
+    - Hierarchy: `parent_location_id`, `child_location_ids`, `child_count`.
+    - Address: `street`, `city`, `state_id`, `zip`, `country_id`, `full_address`.
+    - Coordinates: `building`, `floor`, `zone`, `aisle`, `rack`, `shelf`, `position`, `full_coordinates`.
+    - Capacity: `max_capacity`, `utilization_percentage`, `available_spaces`, `is_at_capacity`.
+    - Status: `state`.
+    - Security: `security_level`, `temperature_controlled`, `humidity_controlled`, `fire_suppression_system`.
+
+    Constraints:
+    - Prevents recursive location hierarchies.
+    - Ensures `max_capacity` is non-negative.
+
+    Methods:
+    - Compute Methods: `_compute_display_name`, `_compute_full_address`, `_compute_full_coordinates`, etc.
+    - Action Methods: `action_view_containers`, `action_view_child_locations`, `action_activate`, `action_deactivate`.
+    - Overrides: `create`, `unlink`.
+
+    Usage:
+    - Use this model to define and manage storage locations for records containers.
+    - Supports hierarchical organization and compliance tracking.
+    """
+
     # === AUDIT: MISSING FIELDS ===
     description = fields.Char(string='Description')
     location_type = fields.Char(string='Location Type')

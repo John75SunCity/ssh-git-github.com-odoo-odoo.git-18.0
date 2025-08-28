@@ -1,187 +1,76 @@
-"""
-Intelligent test cases for the records.location model.
-
-Generated based on actual model analysis including:
-- Required fields: ['name', 'code', 'company_id', 'state']
-- Field types and constraints
-- Inheritance patterns
-- Related fields and computations
-"""
-
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import ValidationError, UserError, AccessError
-from datetime import datetime, date, timedelta
-import logging
-
-_logger = logging.getLogger(__name__)
+from odoo.exceptions import ValidationError, UserError
 
 class TestRecordsLocation(TransactionCase):
-    """Intelligent test cases for records.location model"""
-
-    @classmethod
-    def setUpClass(cls):
-        """Set up test data once for all test methods"""
-        super().setUpClass()
-        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
-
-        # Create supporting data that might be needed
-        cls._setup_supporting_data()
-
-    @classmethod
-    def _setup_supporting_data(cls):
-        """Set up supporting data for the tests"""
-        # Common supporting records
-        cls.partner = cls.env['res.partner'].create({
-            'name': 'Test Partner for records.location',
-            'email': 'test.records_location@example.com',
-        })
-
-        cls.company = cls.env.ref('base.main_company')
-        cls.user = cls.env.ref('base.user_admin')
-
-        # Add model-specific supporting data
-        # No additional supporting data needed
 
     def setUp(self):
-        """Set up test data for each test method"""
-        super().setUp()
+        super(TestRecordsLocation, self).setUp()
+        self.location_model = self.env['records.location']
+        self.parent_location = self.location_model.create({
+            'name': 'Parent Location',
+            'code': 'PARENT',
+            'max_capacity': 10,
+        })
+        self.child_location = self.location_model.create({
+            'name': 'Child Location',
+            'code': 'CHILD',
+            'parent_location_id': self.parent_location.id,
+            'max_capacity': 5,
+        })
 
-    def _create_test_record(self, **kwargs):
-        """Helper method to create test records with proper required fields"""
-        # Intelligent required field values based on analysis
-        values = {'name': 'Test name'
-            'code': 'Test code'
-            'company_id': cls.company.id
-            # 'state': # TODO: Provide Selection value}
-
-        # Override with any provided values
-        values.update(kwargs)
-
-        try:
-            return self.env['records.location'].create(values)
-        except Exception as e:
-            _logger.error(f"Failed to create records.location test record: {e}")
-            _logger.error(f"Values used: {values}")
-            raise
-
-    # ========================================================================
-    # CRUD TESTS (Based on actual model structure)
-    # ========================================================================
-
-    def test_create_with_required_fields(self):
-        """Test creation with all required fields"""
-        record = self._create_test_record()
-        self.assertTrue(record.exists())
-        self.assertEqual(record._name, 'records.location')
-
-        # Verify required fields are set
-        self.assertTrue(record.name, 'Required field name should be set')
-        self.assertTrue(record.code, 'Required field code should be set')
-        self.assertTrue(record.company_id, 'Required field company_id should be set')
-        self.assertTrue(record.state, 'Required field state should be set')
-
-    def test_create_without_required_fields(self):
-        """Test that creation fails without required fields"""
-        # Test name is required
+    def test_hierarchy_constraint(self):
+        """Test that recursive location hierarchies are not allowed."""
         with self.assertRaises(ValidationError):
-            self.env['records.location'].create({
-                # Missing name
-            })
-        # Test code is required
+            self.parent_location.write({'parent_location_id': self.child_location.id})
+
+    def test_max_capacity_constraint(self):
+        """Test that max_capacity cannot be negative."""
         with self.assertRaises(ValidationError):
-            self.env['records.location'].create({
-                # Missing code
-            })
-        # Test company_id is required
-        with self.assertRaises(ValidationError):
-            self.env['records.location'].create({
-                # Missing company_id
-            })
-        # Test state is required
-        with self.assertRaises(ValidationError):
-            self.env['records.location'].create({
-                # Missing state
-            })
+            self.parent_location.write({'max_capacity': -1})
 
+    def test_utilization_percentage(self):
+        """Test utilization percentage calculation."""
+        container_model = self.env['records.container']
+        container_model.create({'name': 'Container 1', 'location_id': self.parent_location.id})
+        container_model.create({'name': 'Container 2', 'location_id': self.parent_location.id})
+        self.parent_location._compute_utilization_percentage()
+        self.assertEqual(self.parent_location.utilization_percentage, 20.0)
 
-    def test_field_operations(self):
-        """Test field-specific operations"""
-        record = self._create_test_record()
+    def test_available_spaces(self):
+        """Test available spaces calculation."""
+        container_model = self.env['records.container']
+        container_model.create({'name': 'Container 1', 'location_id': self.parent_location.id})
+        self.parent_location._compute_available_spaces()
+        self.assertEqual(self.parent_location.available_spaces, 9)
 
-        # Test field updates work correctly
-        # TODO: Add specific field update tests based on model analysis
-        pass
+    def test_is_at_capacity(self):
+        """Test is_at_capacity computation."""
+        self.parent_location.write({'max_capacity': 1})
+        container_model = self.env['records.container']
+        container_model.create({'name': 'Container 1', 'location_id': self.parent_location.id})
+        self.parent_location._compute_is_at_capacity()
+        self.assertTrue(self.parent_location.is_at_capacity)
 
+    def test_action_view_containers(self):
+        """Test action_view_containers method."""
+        action = self.parent_location.action_view_containers()
+        self.assertEqual(action['res_model'], 'records.container')
+        self.assertEqual(action['domain'], [('location_id', '=', self.parent_location.id)])
 
-    def test_model_constraints(self):
-        """Test model constraints"""
-        record = self._create_test_record()
+    def test_action_view_child_locations(self):
+        """Test action_view_child_locations method."""
+        action = self.parent_location.action_view_child_locations()
+        self.assertEqual(action['res_model'], 'records.location')
+        self.assertEqual(action['domain'], [('parent_location_id', '=', self.parent_location.id)])
 
-        # TODO: Test specific constraints found in model
-        pass
+    def test_action_activate(self):
+        """Test action_activate method."""
+        self.parent_location.action_activate()
+        self.assertTrue(self.parent_location.active)
+        self.assertEqual(self.parent_location.state, 'active')
 
-
-    def test_method_action_view_containers(self):
-        """Test action_view_containers method"""
-        record = self._create_test_record()
-
-        # TODO: Test action_view_containers method behavior
-        pass
-
-    def test_method_action_view_child_locations(self):
-        """Test action_view_child_locations method"""
-        record = self._create_test_record()
-
-        # TODO: Test action_view_child_locations method behavior
-        pass
-
-    def test_method_action_activate(self):
-        """Test action_activate method"""
-        record = self._create_test_record()
-
-        # TODO: Test action_activate method behavior
-        pass
-
-    def test_method_action_deactivate(self):
-        """Test action_deactivate method"""
-        record = self._create_test_record()
-
-        # TODO: Test action_deactivate method behavior
-        pass
-
-
-    def test_model_relationships(self):
-        """Test relationships with other models"""
-        record = self._create_test_record()
-
-        # TODO: Test relationships based on Many2one, One2many fields
-        pass
-
-    # ========================================================================
-    # INTEGRATION TESTS
-    # ========================================================================
-
-    def test_record_integration(self):
-        """Test integration with related models"""
-        record = self._create_test_record()
-
-        # Test that the record integrates properly with the system
-        self.assertTrue(record.exists())
-
-        # Test any computed fields work
-        # Test computed field: display_name
-        # self.assertIsNotNone(record.display_name)
-        # Test computed field: child_count
-        # self.assertIsNotNone(record.child_count)
-        # Test computed field: container_count
-        # self.assertIsNotNone(record.container_count)
-        # Test computed field: full_address
-        # self.assertIsNotNone(record.full_address)
-        # Test computed field: full_coordinates
-        # self.assertIsNotNone(record.full_coordinates)
-        # Test computed field: utilization_percentage
-        # self.assertIsNotNone(record.utilization_percentage)
-        # Test computed field: available_spaces
-        # self.assertIsNotNone(record.available_spaces)
-        # Test computed field: is_at_capacity
-        # self.assertIsNotNone(record.is_at_capacity)
+    def test_action_deactivate(self):
+        """Test action_deactivate method."""
+        self.parent_location.action_deactivate()
+        self.assertFalse(self.parent_location.active)
+        self.assertEqual(self.parent_location.state, 'inactive')

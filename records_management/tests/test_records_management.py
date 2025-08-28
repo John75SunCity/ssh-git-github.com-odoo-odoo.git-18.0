@@ -175,3 +175,43 @@ class TestRecordsManagement(TransactionCase):
         # Test done action
         pickup_request.action_done()
         self.assertEqual(pickup_request.state, "done")
+
+    def setUp(self):
+        super(TestRecordsManagement, self).setUp()
+        self.RecordsLocation = self.env['records.location']
+        self.parent_location = self.RecordsLocation.create({
+            'name': 'Parent Location',
+            'max_capacity': 100,
+        })
+
+    def test_create_location(self):
+        """Test creation of a new location."""
+        location = self.RecordsLocation.create({
+            'name': 'Test Location',
+            'parent_location_id': self.parent_location.id,
+            'max_capacity': 50,
+        })
+        self.assertEqual(location.parent_location_id, self.parent_location)
+        self.assertEqual(location.max_capacity, 50)
+
+    def test_recursive_location(self):
+        """Test that recursive locations are not allowed."""
+        with self.assertRaises(ValidationError):
+            self.parent_location.write({'parent_location_id': self.parent_location.id})
+
+    def test_negative_capacity(self):
+        """Test that negative capacity is not allowed."""
+        with self.assertRaises(ValidationError):
+            self.RecordsLocation.create({
+                'name': 'Invalid Location',
+                'max_capacity': -10,
+            })
+
+    def test_utilization_percentage(self):
+        """Test computation of utilization percentage."""
+        location = self.RecordsLocation.create({
+            'name': 'Utilization Test',
+            'max_capacity': 100,
+        })
+        location.container_ids = [(0, 0, {'name': 'Container 1'})]
+        self.assertEqual(location.utilization_percentage, 1)
