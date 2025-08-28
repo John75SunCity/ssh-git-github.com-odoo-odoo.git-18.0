@@ -65,6 +65,34 @@ class ShredBin(models.Model):
     ]
 
     # ============================================================================
+    # CONSTRAINTS
+    # ============================================================================
+    @api.constrains('partner_id', 'department_id')
+    def _check_department_partner(self):
+        """Ensure department belongs to the same partner"""
+        for record in self:
+            if record.department_id and record.department_id.partner_id != record.partner_id:
+                raise ValidationError(_("Department must belong to the selected customer."))
+
+    @api.constrains('name')
+    def _check_name_format(self):
+        """Validate bin name format"""
+        for record in self:
+            if not record.name or len(record.name.strip()) < 3:
+                raise ValidationError(_("Bin number must be at least 3 characters long."))
+
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create to generate sequence numbers"""
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New') or not vals.get('name'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('shred.bin') or _('New')
+        return super().create(vals_list)
+
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends('bin_size')
@@ -92,13 +120,15 @@ class ShredBin(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft bins can be deployed."))
+        if not self.partner_id:
+            raise UserError(_("Cannot deploy bin without assigned customer."))
         self.write({'state': 'deployed'})
         self.message_post(body=_("Bin deployed by %s.") % self.env.user.name)
 
     def action_mark_full(self):
         self.ensure_one()
         if self.state not in ['in_service', 'deployed']:
-            raise UserError(_("Only bins in service can be marked as full."))
+            raise UserError(_("Only bins in service or deployed can be marked as full."))
         self.write({'state': 'full'})
         self.message_post(body=_("Bin marked as full by %s.") % self.env.user.name)
 
@@ -112,7 +142,7 @@ class ShredBin(models.Model):
     def action_complete_service(self):
         self.ensure_one()
         if self.state != 'collecting':
-            raise UserError(_("Only bins in transit can have service completed."))
+            raise UserError(_("Only bins being collected can have service completed."))
         self.write({
             'state': 'in_service',
             'last_service_date': fields.Datetime.now()

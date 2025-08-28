@@ -51,6 +51,14 @@ class PickupRequest(models.Model):
 
     total_items = fields.Integer(string='Total Items', compute='_compute_total_items', store=True)
     container_count = fields.Integer(string='Container Count', compute='_compute_container_count', store=True)
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    priority_recommendation = fields.Selection([
+        ('0', 'Low'),
+        ('1', 'Normal'),
+        ('2', 'High'),
+        ('3', 'Very High'),
+    ], string='Recommended Priority', compute='_compute_priority_recommendation',
+       help="System-recommended priority based on volume, weight, and service type")
     description = fields.Text(string='Description')
     internal_notes = fields.Text(string='Internal Notes')
 
@@ -84,13 +92,64 @@ class PickupRequest(models.Model):
     # ============================================================================
     @api.depends('pickup_item_ids')
     def _compute_total_items(self):
+        """Compute total number of pickup items with null safety"""
         for request in self:
-            request.total_items = len(request.pickup_item_ids)
+            try:
+                request.total_items = len(request.pickup_item_ids) if request.pickup_item_ids else 0
+            except Exception:
+                # Handle cases where pickup_item_ids might not be accessible
+                request.total_items = 0
 
     @api.depends('pickup_item_ids', 'pickup_item_ids.quantity')
     def _compute_container_count(self):
+        """Compute total container count with null value handling"""
         for request in self:
-            request.container_count = sum(item.quantity for item in request.pickup_item_ids)
+            try:
+                if request.pickup_item_ids:
+                    request.container_count = sum(item.quantity or 0 for item in request.pickup_item_ids)
+                else:
+                    request.container_count = 0
+            except Exception:
+                # Handle cases where pickup_item_ids might not be accessible or quantity field missing
+                request.container_count = 0
+
+    @api.depends('name', 'partner_id.name', 'state')
+    def _compute_display_name(self):
+        """Compute display name for better record identification"""
+        for request in self:
+            if request.name and request.partner_id:
+                request.display_name = f"{request.name} - {request.partner_id.name} ({request.state.title()})"
+            elif request.name:
+                request.display_name = f"{request.name} ({request.state.title()})"
+            else:
+                request.display_name = f"Pickup Request ({request.state.title()})"
+
+    @api.depends('estimated_volume', 'estimated_weight', 'service_type')
+    def _compute_priority_recommendation(self):
+        """Compute recommended priority based on volume, weight, and service type"""
+        for request in self:
+            priority = '1'  # Default normal priority
+
+            # High volume or weight suggests higher priority
+            if (request.estimated_volume and request.estimated_volume > 100) or \
+               (request.estimated_weight and request.estimated_weight > 500):
+                priority = '2'  # High priority
+
+            # Emergency service type always gets highest priority
+            if request.service_type == 'emergency':
+                priority = '3'  # Very high priority
+
+            request.priority_recommendation = priority
+
+    # Add the new computed field to the field definitions
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
+    priority_recommendation = fields.Selection([
+        ('0', 'Low'),
+        ('1', 'Normal'),
+        ('2', 'High'),
+        ('3', 'Very High'),
+    ], string='Recommended Priority', compute='_compute_priority_recommendation',
+       help="System-recommended priority based on volume, weight, and service type")
 
     # ============================================================================
     # CREATE/WRITE METHODS
@@ -227,4 +286,42 @@ class PickupRequest(models.Model):
         for request in self:
             if request.contact_email and '@' not in request.contact_email:
                 raise ValidationError(_("Please enter a valid email address."))
+
+    @api.constrains('priority', 'urgency_level')
+    def _check_priority_urgency_consistency(self):
+        """Validate priority and urgency level consistency"""
+        for request in self:
+            if request.priority == '3' and request.urgency_level in ['low', 'normal']:
+                raise ValidationError(_("Very high priority requests should have high or urgent urgency level."))
+            if request.urgency_level == 'urgent' and request.priority == '0':
+                raise ValidationError(_("Urgent requests cannot have low priority."))
+
+    @api.constrains('state', 'preferred_pickup_date', 'scheduled_pickup_date')
+    def _check_state_date_consistency(self):
+        """Validate state and date field consistency"""
+        for request in self:
+            if request.state == 'scheduled' and not request.scheduled_pickup_date:
+                raise ValidationError(_("Scheduled requests must have a scheduled pickup date."))
+            if request.state == 'completed' and not request.completed_pickup_date:
+                raise ValidationError(_("Completed requests must have a completion date."))
+
+    @api.constrains('estimated_cost')
+    def _check_estimated_cost(self):
+        """Validate estimated cost is reasonable"""
+        for request in self:
+            if request.estimated_cost and request.estimated_cost < 0:
+                raise ValidationError(_("Estimated cost cannot be negative."))
+            if request.estimated_cost and request.estimated_cost > 10000:
+                # Business rule: flag unusually high estimates for review
+                if not self.env.user.has_group('records_management.group_records_manager'):
+                    raise ValidationError(_("Estimated costs over $10,000 require manager approval."))
+
+    @api.constrains('service_type', 'urgency_level')
+    def _check_service_type_urgency(self):
+        """Validate service type and urgency compatibility"""
+        for request in self:
+            if request.service_type == 'emergency' and request.urgency_level not in ['high', 'urgent']:
+                raise ValidationError(_("Emergency service type requires high or urgent urgency level."))
+            if request.service_type == 'scheduled' and request.urgency_level == 'urgent':
+                raise ValidationError(_("Scheduled service type cannot have urgent urgency level."))
 

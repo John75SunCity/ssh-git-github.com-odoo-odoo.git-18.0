@@ -279,10 +279,17 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # VALIDATION METHODS
     # ============================================================================
+    @api.constrains('partner_id', 'department_id')
+    def _check_department_partner(self):
+        """Ensure department belongs to the same partner"""
+        for record in self:
+            if record.department_id and record.department_id.partner_id != record.partner_id:
+                raise ValidationError(_("Department must belong to the selected customer."))
+
     @api.constrains("weight")
     def _check_positive_values(self):
         for record in self:
-            if record.weight < 0:
+            if record.weight and record.weight < 0:
                 raise ValidationError(_("Weight must be a positive value."))
 
     @api.constrains("storage_start_date", "destruction_due_date")

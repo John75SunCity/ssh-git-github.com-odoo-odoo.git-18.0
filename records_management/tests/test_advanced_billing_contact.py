@@ -1,4 +1,9 @@
 from odoo.tests.common import TransactionCase
+from datetime import datetime, date
+from unittest.mock import patch, MagicMock
+from odoo.exceptions import AccessError
+from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 
 class TestAdvancedBillingContact(TransactionCase):
 
@@ -27,6 +32,68 @@ class TestAdvancedBillingContact(TransactionCase):
         self.assertTrue(contact.receive_reminders)
         self.assertEqual(contact.billing_profile_id, self.billing_profile)
         self.assertEqual(contact.partner_id, self.partner)
+    def test_search_advanced_billing_contact_records(self):
+        """Test searching advanced_billing_contact records"""
+        # GitHub Copilot Pattern: Search and read operations
+        record = self.env['advanced_billing_contact'].create({
+            'name': 'Searchable Record'
+        })
+        
+        found_records = self.env['advanced_billing_contact'].search([
+            ('name', '=', 'Searchable Record')
+        ])
+        
+        self.assertIn(record, found_records)
+    def test_search_advanced_billing_contact_records(self):
+        """Test searching advanced_billing_contact records"""
+        # GitHub Copilot Pattern: Search and read operations
+        record = self.env['advanced_billing_contact'].create({
+            'name': 'Searchable Record'
+        })
+
+        found_records = self.env['advanced_billing_contact'].search([
+            ('name', '=', 'Searchable Record')
+        ])
+
+        self.assertIn(record, found_records)
+
+
+
+
+    def test_update_advanced_billing_contact_fields(self):
+        """Test updating advanced_billing_contact record fields"""
+        # GitHub Copilot Pattern: Update operations
+        record = self.env['advanced_billing_contact'].create({
+            'name': 'Original Name'
+        })
+        
+        record.write({'name': 'Updated Name'})
+        
+        self.assertEqual(record.name, 'Updated Name')
+
+
+    def test_delete_advanced_billing_contact_record(self):
+        """Test deleting advanced_billing_contact record"""
+        # GitHub Copilot Pattern: Delete operations
+        record = self.env['advanced_billing_contact'].create({
+            'name': 'To Be Deleted'
+        })
+        
+        record_id = record.id
+        record.unlink()
+        
+        self.assertFalse(self.env['advanced_billing_contact'].browse(record_id).exists())
+
+
+    def test_validation_advanced_billing_contact_constraints(self):
+        """Test validation constraints for advanced_billing_contact"""
+        # GitHub Copilot Pattern: Validation testing with assertRaises
+        with self.assertRaises(ValidationError):
+            self.env['advanced_billing_contact'].create({
+                # Add invalid data that should trigger validation
+            })
+
+
 
     def test_primary_contact_auto_set(self):
         contact = self.env['advanced.billing.contact'].create({

@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 # Enhanced import handling for development environment
 try:
     from odoo.tests.common import TransactionCase
+from unittest.mock import patch, MagicMock
+from odoo.exceptions import AccessError
+from odoo.exceptions import ValidationError
     from odoo.exceptions import UserError
 except ImportError:
     # Development/testing environment fallback
@@ -43,6 +46,65 @@ class TestHardDriveScanning(TransactionCase):
             serial_number='HD123456789',
             scan_location='customer'
         )
+    def test_create_hard_drive_scanning_basic(self):
+        """Test basic creation of hard_drive_scanning record"""
+        # GitHub Copilot Pattern: Basic model creation test
+        record = self.env['hard_drive_scanning'].create({
+            'name': 'Test Hard Drive Scanning'
+        })
+        
+        self.assertTrue(record.exists())
+        self.assertEqual(record.name, 'Test Hard Drive Scanning')
+
+
+    def test_search_hard_drive_scanning_records(self):
+        """Test searching hard_drive_scanning records"""
+        # GitHub Copilot Pattern: Search and read operations
+        record = self.env['hard_drive_scanning'].create({
+            'name': 'Searchable Record'
+        })
+        
+        found_records = self.env['hard_drive_scanning'].search([
+            ('name', '=', 'Searchable Record')
+        ])
+        
+        self.assertIn(record, found_records)
+
+
+    def test_update_hard_drive_scanning_fields(self):
+        """Test updating hard_drive_scanning record fields"""
+        # GitHub Copilot Pattern: Update operations
+        record = self.env['hard_drive_scanning'].create({
+            'name': 'Original Name'
+        })
+        
+        record.write({'name': 'Updated Name'})
+        
+        self.assertEqual(record.name, 'Updated Name')
+
+
+    def test_delete_hard_drive_scanning_record(self):
+        """Test deleting hard_drive_scanning record"""
+        # GitHub Copilot Pattern: Delete operations
+        record = self.env['hard_drive_scanning'].create({
+            'name': 'To Be Deleted'
+        })
+        
+        record_id = record.id
+        record.unlink()
+        
+        self.assertFalse(self.env['hard_drive_scanning'].browse(record_id).exists())
+
+
+    def test_validation_hard_drive_scanning_constraints(self):
+        """Test validation constraints for hard_drive_scanning"""
+        # GitHub Copilot Pattern: Validation testing with assertRaises
+        with self.assertRaises(ValidationError):
+            self.env['hard_drive_scanning'].create({
+                # Add invalid data that should trigger validation
+            })
+
+
 
         self.assertEqual(hard_drive.serial_number, 'HD123456789')
         self.assertTrue(hard_drive.scanned_at_customer)

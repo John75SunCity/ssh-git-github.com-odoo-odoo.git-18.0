@@ -333,7 +333,6 @@ class BinUnlockService(models.Model):
             'partner_id': self.partner_id.id,
             'move_type': 'out_invoice',
             'invoice_line_ids': [(0, 0, invoice_line_vals)],
-            'unlock_service_id': self.id, # Assuming a relation field on account.move
         }
         invoice = self.env['account.move'].create(invoice_vals)
         self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
@@ -370,7 +369,6 @@ class BinUnlockService(models.Model):
                 'user_id': self.env.user.id,
                 'timestamp': fields.Datetime.now(),
                 'description': _("Bin Unlock Service: %s for %s", action, self.name),
-                'unlock_service_id': self.id, # Assuming a relation field on audit log
                 'naid_compliant': self.naid_compliant,
             })
 
@@ -387,6 +385,8 @@ class BinUnlockService(models.Model):
         for record in self:
             if record.estimated_duration < 0:
                 raise ValidationError(_("Estimated duration cannot be negative."))
+            if record.actual_duration < 0:
+                raise ValidationError(_("Actual duration cannot be negative."))
 
     @api.constrains('service_cost', 'emergency_surcharge')
     def _check_costs(self):

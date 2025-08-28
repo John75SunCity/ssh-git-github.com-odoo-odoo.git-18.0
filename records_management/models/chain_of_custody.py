@@ -333,21 +333,33 @@ class ChainOfCustody(models.Model):
     def _compute_duration(self):
         """Compute duration of custody transfer."""
         for record in self:
-            if record.transfer_date and record.state == 'completed':
-                # Calculate based on next transfer or current time
-                next_transfer = self.search([
-                    ('sequence', '>', record.sequence),
-                    ('container_id', '=', record.container_id.id),
-                    ('document_id', '=', record.document_id.id)
-                ], limit=1)
+            if not record.transfer_date:
+                record.duration_hours = 0.0
+                continue
 
-                if next_transfer:
+            if record.state == 'completed':
+                # Calculate based on next transfer or current time
+                domain = [('sequence', '>', record.sequence)]
+
+                # Add container/document filter if available
+                if record.container_id:
+                    domain.append(('container_id', '=', record.container_id.id))
+                elif record.document_id:
+                    domain.append(('document_id', '=', record.document_id.id))
+                else:
+                    # No related records to calculate duration
+                    record.duration_hours = 0.0
+                    continue
+
+                next_transfer = self.search(domain, limit=1)
+
+                if next_transfer and next_transfer.transfer_date:
                     end_time = next_transfer.transfer_date
                 else:
                     end_time = fields.Datetime.now()
 
                 duration = end_time - record.transfer_date
-                record.duration_hours = duration.total_seconds() / 3600
+                record.duration_hours = max(0.0, duration.total_seconds() / 3600)
             else:
                 record.duration_hours = 0.0
 
@@ -355,24 +367,48 @@ class ChainOfCustody(models.Model):
     def _compute_next_transfer(self):
         """Compute next transfer in the chain."""
         for record in self:
-            domain = [
-                ('sequence', '>', record.sequence),
-                '|',
-                ('container_id', '=', record.container_id.id if record.container_id else False),
-                ('document_id', '=', record.document_id.id if record.document_id else False)
-            ]
+            if not record.container_id and not record.document_id:
+                record.next_transfer_id = False
+                continue
+
+            domain = [('sequence', '>', record.sequence)]
+
+            # Build domain based on what related records exist
+            if record.container_id and record.document_id:
+                domain.extend([
+                    '|',
+                    ('container_id', '=', record.container_id.id),
+                    ('document_id', '=', record.document_id.id)
+                ])
+            elif record.container_id:
+                domain.append(('container_id', '=', record.container_id.id))
+            elif record.document_id:
+                domain.append(('document_id', '=', record.document_id.id))
+
             record.next_transfer_id = self.search(domain, limit=1)
 
     @api.depends('sequence', 'container_id', 'document_id')
     def _compute_previous_transfer(self):
         """Compute previous transfer in the chain."""
         for record in self:
-            domain = [
-                ('sequence', '<', record.sequence),
-                '|',
-                ('container_id', '=', record.container_id.id if record.container_id else False),
-                ('document_id', '=', record.document_id.id if record.document_id else False)
-            ]
+            if not record.container_id and not record.document_id:
+                record.previous_transfer_id = False
+                continue
+
+            domain = [('sequence', '<', record.sequence)]
+
+            # Build domain based on what related records exist
+            if record.container_id and record.document_id:
+                domain.extend([
+                    '|',
+                    ('container_id', '=', record.container_id.id),
+                    ('document_id', '=', record.document_id.id)
+                ])
+            elif record.container_id:
+                domain.append(('container_id', '=', record.container_id.id))
+            elif record.document_id:
+                domain.append(('document_id', '=', record.document_id.id))
+
             record.previous_transfer_id = self.search(domain, order='sequence desc', limit=1)
 
     @api.depends('transfer_type', 'next_transfer_id')
@@ -384,6 +420,7 @@ class ChainOfCustody(models.Model):
                 not record.next_transfer_id
             )
 
+    @api.depends('container_id', 'document_id')
     def _compute_related_counts(self):
         """Compute counts of related records."""
         for record in self:

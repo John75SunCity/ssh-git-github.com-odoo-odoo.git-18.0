@@ -3,13 +3,16 @@ Test cases for the account.move.line model in the records management module.
 """
 
 from odoo.tests.common import TransactionCase
+from datetime import datetime, date
+from unittest.mock import patch, MagicMock
+from odoo.exceptions import AccessError
 from odoo.exceptions import ValidationError, UserError
 
 class TestAccountMoveLine(TransactionCase):
 
     def setUp(self):
         super().setUp()
-        self.partner = self.env['res.partner'].create({'name': 'Test Partner'})
+        self.partner = self.env['res.partner'].create({'name': 'Records Management Test Partner'})
         self.user = self.env.ref('base.user_admin')
         self.container = self.env['records.container'].create({'name': 'Box 1', 'container_type': 'TYPE 01'})
         self.location = self.env['records.location'].create({'name': 'Main Storage'})
@@ -43,6 +46,79 @@ class TestAccountMoveLine(TransactionCase):
         self.assertEqual(line.records_service_type, 'retrieval')
         self.assertEqual(line.partner_id, self.partner)
         self.assertEqual(line.work_order_reference, self.work_order.name)
+    def test_create_account_move_line_basic(self):
+        """Test basic creation of account_move_line record"""
+        # GitHub Copilot Pattern: Basic model creation test
+        record = self.env['account_move_line'].create({
+            'name': 'Test Account Move Line'
+        })
+        
+        self.assertTrue(record.exists())
+        self.assertEqual(record.name, 'Test Account Move Line')
+    def test_search_account_move_line_records(self):
+        """Test searching account_move_line records"""
+        # GitHub Copilot Pattern: Search and read operations
+        record = self.env['account_move_line'].create({
+            'name': 'Searchable Record'
+        })
+
+        found_records = self.env['account_move_line'].search([
+            ('name', '=', 'Searchable Record')
+        ])
+
+        self.assertIn(record, found_records)
+
+
+
+
+    def test_search_account_move_line_records(self):
+        """Test searching account_move_line records"""
+        # GitHub Copilot Pattern: Search and read operations
+        record = self.env['account_move_line'].create({
+            'name': 'Searchable Record'
+        })
+        
+        found_records = self.env['account_move_line'].search([
+            ('name', '=', 'Searchable Record')
+        ])
+        
+        self.assertIn(record, found_records)
+
+
+    def test_update_account_move_line_fields(self):
+        """Test updating account_move_line record fields"""
+        # GitHub Copilot Pattern: Update operations
+        record = self.env['account_move_line'].create({
+            'name': 'Original Name'
+        })
+        
+        record.write({'name': 'Updated Name'})
+        
+        self.assertEqual(record.name, 'Updated Name')
+
+
+    def test_delete_account_move_line_record(self):
+        """Test deleting account_move_line record"""
+        # GitHub Copilot Pattern: Delete operations
+        record = self.env['account_move_line'].create({
+            'name': 'To Be Deleted'
+        })
+        
+        record_id = record.id
+        record.unlink()
+        
+        self.assertFalse(self.env['account_move_line'].browse(record_id).exists())
+
+
+    def test_validation_account_move_line_constraints(self):
+        """Test validation constraints for account_move_line"""
+        # GitHub Copilot Pattern: Validation testing with assertRaises
+        with self.assertRaises(ValidationError):
+            self.env['account_move_line'].create({
+                # Add invalid data that should trigger validation
+            })
+
+
 
     def test_onchange_destruction_service_id_sets_fields(self):
         line = self.env['account.move.line'].new({

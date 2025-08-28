@@ -3,6 +3,10 @@
 # Enhanced import handling for development environment
 try:
     from odoo.tests.common import TransactionCase
+from datetime import datetime, date
+from unittest.mock import patch, MagicMock
+from odoo.exceptions import AccessError
+from odoo.exceptions import UserError
     from odoo.exceptions import ValidationError
 except ImportError:
     # Development/testing environment fallback
@@ -19,7 +23,7 @@ class TestRecordsManagement(TransactionCase):
         cls.partner = cls.env["res.partner"].create(
             {
                 "name": "Test Customer",
-                "email": "test@example.com",
+                "email": "records.test@company.example",
             }
         )
         cls.product_container = cls.env.ref("records_management.product_container")
@@ -42,6 +46,54 @@ class TestRecordsManagement(TransactionCase):
         self.assertEqual(pickup_request.customer_id, self.partner)
         self.assertIn(self.lot, pickup_request.item_ids)
         self.assertEqual(pickup_request.state, "draft")
+    def test_search_records_management_records(self):
+        """Test searching records_management records"""
+        # GitHub Copilot Pattern: Search and read operations
+        record = self.env['records_management'].create({
+            'name': 'Searchable Record'
+        })
+        
+        found_records = self.env['records_management'].search([
+            ('name', '=', 'Searchable Record')
+        ])
+        
+        self.assertIn(record, found_records)
+
+
+    def test_update_records_management_fields(self):
+        """Test updating records_management record fields"""
+        # GitHub Copilot Pattern: Update operations
+        record = self.env['records_management'].create({
+            'name': 'Original Name'
+        })
+        
+        record.write({'name': 'Updated Name'})
+        
+        self.assertEqual(record.name, 'Updated Name')
+
+
+    def test_delete_records_management_record(self):
+        """Test deleting records_management record"""
+        # GitHub Copilot Pattern: Delete operations
+        record = self.env['records_management'].create({
+            'name': 'To Be Deleted'
+        })
+        
+        record_id = record.id
+        record.unlink()
+        
+        self.assertFalse(self.env['records_management'].browse(record_id).exists())
+
+
+    def test_validation_records_management_constraints(self):
+        """Test validation constraints for records_management"""
+        # GitHub Copilot Pattern: Validation testing with assertRaises
+        with self.assertRaises(ValidationError):
+            self.env['records_management'].create({
+                # Add invalid data that should trigger validation
+            })
+
+
 
     def test_pickup_request_validation(self):
         """Test validation constraints."""

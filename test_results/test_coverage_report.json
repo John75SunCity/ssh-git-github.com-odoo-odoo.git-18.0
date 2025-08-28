@@ -1,0 +1,2640 @@
+{
+  "total_models": 397,
+  "tested_models": 248,
+  "coverage_percentage": 62.468513853904284,
+  "models": [
+    {
+      "model_name": "portal.feedback",
+      "class_name": "PortalFeedback",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback.py",
+      "test_file": "test_portal_feedback.py"
+    },
+    {
+      "model_name": "records.document.type",
+      "class_name": "RecordsDocumentType",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_document_type.py",
+      "test_file": "test_records_document_type.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "RecordsDocumentType",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_document_type.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "container.retrieval.item",
+      "class_name": "ContainerRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_retrieval_item.py",
+      "test_file": "test_container_retrieval_item.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ContainerRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_retrieval_item.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": " - ",
+      "class_name": "ContainerRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_retrieval_item.py",
+      "test_file": "test_ - .py"
+    },
+    {
+      "model_name": "base.rates",
+      "class_name": "BaseRates",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/base_rates.py",
+      "test_file": "test_base_rates.py"
+    },
+    {
+      "model_name": "res.currency",
+      "class_name": "BaseRates",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/base_rates.py",
+      "test_file": "test_res_currency.py"
+    },
+    {
+      "model_name": "res.company",
+      "class_name": "BaseRates",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/base_rates.py",
+      "test_file": "test_res_company.py"
+    },
+    {
+      "model_name": "route.optimizer",
+      "class_name": "RouteOptimizer",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/route_optimizer.py",
+      "test_file": "test_route_optimizer.py"
+    },
+    {
+      "model_name": "stock.lot.attribute",
+      "class_name": "StockLotAttribute",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_lot_attribute.py",
+      "test_file": "test_stock_lot_attribute.py"
+    },
+    {
+      "model_name": "records.container.content.line",
+      "class_name": "RecordsContainerContentLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_content_line.py",
+      "test_file": "test_records_container_content_line.py"
+    },
+    {
+      "model_name": "records.tag.category",
+      "class_name": "RecordsTagCategory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_tag_category.py",
+      "test_file": "test_records_tag_category.py"
+    },
+    {
+      "model_name": "records.approval.workflow",
+      "class_name": "RecordsApprovalWorkflow",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_approval_workflow.py",
+      "test_file": "test_records_approval_workflow.py"
+    },
+    {
+      "model_name": "container.access.document",
+      "class_name": "ContainerAccessDocument",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_document.py",
+      "test_file": "test_container_access_document.py"
+    },
+    {
+      "model_name": "container.access.activity",
+      "class_name": "ContainerAccessDocument",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_document.py",
+      "test_file": "test_container_access_activity.py"
+    },
+    {
+      "model_name": "pickup.route.stop",
+      "class_name": "PickupRouteStop",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_route_stop.py",
+      "test_file": "test_pickup_route_stop.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "PickupRouteStop",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_route_stop.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "naid.operator.certification",
+      "class_name": "NAIDOperatorCertification",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_operator_certification.py",
+      "test_file": "test_naid_operator_certification.py"
+    },
+    {
+      "model_name": "temp.inventory",
+      "class_name": "TempInventory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/temp_inventory.py",
+      "test_file": "test_temp_inventory.py"
+    },
+    {
+      "model_name": "paper.bale.recycling",
+      "class_name": "PaperBaleRecycling",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_bale_recycling.py",
+      "test_file": "test_paper_bale_recycling.py"
+    },
+    {
+      "model_name": "location.group",
+      "class_name": "LocationGroup",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/location_group.py",
+      "test_file": "test_location_group.py"
+    },
+    {
+      "model_name": "records.request.line",
+      "class_name": "RecordsRequestLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_request_line.py",
+      "test_file": "test_records_request_line.py"
+    },
+    {
+      "model_name": "records.tag",
+      "class_name": "RecordsTag",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_tag.py",
+      "test_file": "test_records_tag.py"
+    },
+    {
+      "model_name": "[%s] %s",
+      "class_name": "RecordsTag",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_tag.py",
+      "test_file": "test_[%s] %s.py"
+    },
+    {
+      "model_name": "barcode.storage.box",
+      "class_name": "BarcodeStorageBox",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_storage_box.py",
+      "test_file": "test_barcode_storage_box.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "BarcodeStorageBox",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_storage_box.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "inventory.item.type",
+      "class_name": "InventoryItemType",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_item_type.py",
+      "test_file": "test_inventory_item_type.py"
+    },
+    {
+      "model_name": "records.container",
+      "class_name": "RecordsContainer",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container.py",
+      "test_file": "test_records_container.py"
+    },
+    {
+      "model_name": "records.survey.user.input",
+      "class_name": "RecordsSurveyUserInput",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_survey_user_input.py",
+      "test_file": "test_records_survey_user_input.py"
+    },
+    {
+      "model_name": "portal.feedback.analytic",
+      "class_name": "PortalFeedbackAnalytic",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_analytic.py",
+      "test_file": "test_portal_feedback_analytic.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "PortalFeedbackAnalytic",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_analytic.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "records.installer",
+      "class_name": "RecordsInstaller",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_installer.py",
+      "test_file": "test_records_installer.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "RecordsInstaller",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_installer.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "shredding.hard_drive",
+      "class_name": "ShreddingHardDrive",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_hard_drive.py",
+      "test_file": "test_shredding_hard_drive.py"
+    },
+    {
+      "model_name": "serial_number",
+      "class_name": "ShreddingHardDrive",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_hard_drive.py",
+      "test_file": "test_serial_number.py"
+    },
+    {
+      "model_name": "pickup.request.item",
+      "class_name": "PickupRequestItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_request_item.py",
+      "test_file": "test_pickup_request_item.py"
+    },
+    {
+      "model_name": "shredding.picklist.item",
+      "class_name": "ShreddingPicklistItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_picklist_item.py",
+      "test_file": "test_shredding_picklist_item.py"
+    },
+    {
+      "model_name": "inventory.item.profile",
+      "class_name": "InventoryItemProfile",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_item_profile.py",
+      "test_file": "test_inventory_item_profile.py"
+    },
+    {
+      "model_name": "records.container.type",
+      "class_name": "RecordsContainerType",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_type.py",
+      "test_file": "test_records_container_type.py"
+    },
+    {
+      "model_name": "pickup.request",
+      "class_name": "PickupRequest",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_request.py",
+      "test_file": "test_pickup_request.py"
+    },
+    {
+      "model_name": "advanced.billing.line",
+      "class_name": "AdvancedBillingLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/advanced_billing_line.py",
+      "test_file": "test_advanced_billing_line.py"
+    },
+    {
+      "model_name": "res.currency",
+      "class_name": "AdvancedBillingLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/advanced_billing_line.py",
+      "test_file": "test_res_currency.py"
+    },
+    {
+      "model_name": "bin.key",
+      "class_name": "BinKey",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_key.py",
+      "test_file": "test_bin_key.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "BinKey",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_key.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "advanced.billing.profile",
+      "class_name": "AdvancedBillingProfile",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/advanced_billing_profile.py",
+      "test_file": "test_advanced_billing_profile.py"
+    },
+    {
+      "model_name": "unlock.service.part",
+      "class_name": "UnlockServicePart",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/unlock_service_part.py",
+      "test_file": "test_unlock_service_part.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "UnlockServicePart",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/unlock_service_part.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "billing.period",
+      "class_name": "BillingPeriod",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/billing_period.py",
+      "test_file": "test_billing_period.py"
+    },
+    {
+      "model_name": "signed.document.audit",
+      "class_name": "SignedDocumentAudit",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/signed_document_audit.py",
+      "test_file": "test_signed_document_audit.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "SignedDocumentAudit",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/signed_document_audit.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "discount.rule",
+      "class_name": "DiscountRule",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/discount_rule.py",
+      "test_file": "test_discount_rule.py"
+    },
+    {
+      "model_name": "records.storage.department.user",
+      "class_name": "RecordsStorageDepartmentUser",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_storage_department_user.py",
+      "test_file": "test_records_storage_department_user.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RecordsStorageDepartmentUser",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_storage_department_user.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "barcode.product",
+      "class_name": "BarcodeProduct",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py",
+      "test_file": "test_barcode_product.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "BarcodeProduct",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_product.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "bin.key.history",
+      "class_name": "BinKeyHistory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_key_history.py",
+      "test_file": "test_bin_key_history.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "BinKeyHistory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_key_history.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "inventory.item.retrieval.line",
+      "class_name": "InventoryItemRetrievalLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_item_retrieval_line.py",
+      "test_file": "test_inventory_item_retrieval_line.py"
+    },
+    {
+      "model_name": "description",
+      "class_name": "Description",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/description.py",
+      "test_file": "test_description.py"
+    },
+    {
+      "model_name": "revenue.forecast.line",
+      "class_name": "RevenueForecastLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/revenue_forecast_line.py",
+      "test_file": "test_revenue_forecast_line.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RevenueForecastLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/revenue_forecast_line.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "chain.of.custody",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_chain_of_custody.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "records.department",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_records_department.py"
+    },
+    {
+      "model_name": "records.location",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_records_location.py"
+    },
+    {
+      "model_name": "records.location",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_records_location.py"
+    },
+    {
+      "model_name": "records.container",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_records_container.py"
+    },
+    {
+      "model_name": "records.document",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_records_document.py"
+    },
+    {
+      "model_name": "portal.request",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_portal_request.py"
+    },
+    {
+      "model_name": "naid.certificate",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_naid_certificate.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "naid.audit.log",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_naid_audit_log.py"
+    },
+    {
+      "model_name": "custody_id",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_custody_id.py"
+    },
+    {
+      "model_name": "chain.of.custody",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_chain_of_custody.py"
+    },
+    {
+      "model_name": "chain.of.custody",
+      "class_name": "ChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/chain_of_custody.py",
+      "test_file": "test_chain_of_custody.py"
+    },
+    {
+      "model_name": "records.request.type",
+      "class_name": "RecordsRequestType",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_request_type.py",
+      "test_file": "test_records_request_type.py"
+    },
+    {
+      "model_name": "inventory.item.location.transfer",
+      "class_name": "InventoryItemLocationTransfer",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_item_location_transfer.py",
+      "test_file": "test_inventory_item_location_transfer.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "InventoryItemLocationTransfer",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_item_location_transfer.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "naid.risk.assessment",
+      "class_name": "NaidRiskAssessment",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_risk_assessment.py",
+      "test_file": "test_naid_risk_assessment.py"
+    },
+    {
+      "model_name": "portal.feedback.escalation",
+      "class_name": "PortalFeedbackEscalation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_escalation.py",
+      "test_file": "test_portal_feedback_escalation.py"
+    },
+    {
+      "model_name": "revenue.analytic",
+      "class_name": "RevenueAnalytic",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/revenue_analytic.py",
+      "test_file": "test_revenue_analytic.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "RevenueAnalytic",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/revenue_analytic.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "key.restriction.checker",
+      "class_name": "KeyRestrictionChecker",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/key_restriction_checker.py",
+      "test_file": "test_key_restriction_checker.py"
+    },
+    {
+      "model_name": "records.department.billing.contact",
+      "class_name": "RecordsDepartmentBillingContact",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_department_billing_contact.py",
+      "test_file": "test_records_department_billing_contact.py"
+    },
+    {
+      "model_name": "records.department.billing.approval",
+      "class_name": "RecordsDepartmentBillingContact",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_department_billing_contact.py",
+      "test_file": "test_records_department_billing_approval.py"
+    },
+    {
+      "model_name": "billing_contact_id",
+      "class_name": "RecordsDepartmentBillingContact",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_department_billing_contact.py",
+      "test_file": "test_billing_contact_id.py"
+    },
+    {
+      "model_name": "key.inventory",
+      "class_name": "KeyInventory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/key_inventory.py",
+      "test_file": "test_key_inventory.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "KeyInventory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/key_inventory.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "temp.inventory.audit",
+      "class_name": "TempInventoryAudit",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/temp_inventory_audit.py",
+      "test_file": "test_temp_inventory_audit.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "TempInventoryAudit",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/temp_inventory_audit.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "document.retrieval.item",
+      "class_name": "DocumentRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_item.py",
+      "test_file": "test_document_retrieval_item.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "DocumentRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_item.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": " ",
+      "class_name": "DocumentRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_item.py",
+      "test_file": "test_ .py"
+    },
+    {
+      "model_name": "container.retrieval",
+      "class_name": "ContainerRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_retrieval.py",
+      "test_file": "test_container_retrieval.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ContainerRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_retrieval.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "records.service.type",
+      "class_name": "RecordsServiceType",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_service_type.py",
+      "test_file": "test_records_service_type.py"
+    },
+    {
+      "model_name": "invoice.generation.log",
+      "class_name": "InvoiceGenerationLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/invoice_generation_log.py",
+      "test_file": "test_invoice_generation_log.py"
+    },
+    {
+      "model_name": "naid.certificate.item",
+      "class_name": "NaidCertificateItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_certificate_item.py",
+      "test_file": "test_naid_certificate_item.py"
+    },
+    {
+      "model_name": "res.partner.key.restriction",
+      "class_name": "ResPartnerKeyRestriction",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/res_partner_key_restriction.py",
+      "test_file": "test_res_partner_key_restriction.py"
+    },
+    {
+      "model_name": "transitory.item",
+      "class_name": "TransitoryItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/transitory_item.py",
+      "test_file": "test_transitory_item.py"
+    },
+    {
+      "model_name": "paper.bale.weigh.wizard",
+      "class_name": "GeneratedModel",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/generated_model.py",
+      "test_file": "test_paper_bale_weigh_wizard.py"
+    },
+    {
+      "model_name": "records.approval.step",
+      "class_name": "RecordsApprovalStep",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_approval_step.py",
+      "test_file": "test_records_approval_step.py"
+    },
+    {
+      "model_name": "load",
+      "class_name": "Load",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_bale_load.py",
+      "test_file": "test_load.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "Load",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_bale_load.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "base.rate",
+      "class_name": "BaseRate",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/base_rate.py",
+      "test_file": "test_base_rate.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "BaseRate",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/base_rate.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "file.retrieval.work.order",
+      "class_name": "FileRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/file_retrieval_work_order.py",
+      "test_file": "test_file_retrieval_work_order.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "FileRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/file_retrieval_work_order.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "paper.bale.inspection",
+      "class_name": "PaperBaleInspection",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_bale_inspection.py",
+      "test_file": "test_paper_bale_inspection.py"
+    },
+    {
+      "model_name": "records.container.line",
+      "class_name": "RecordsContainerLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_line.py",
+      "test_file": "test_records_container_line.py"
+    },
+    {
+      "model_name": "fsm.route",
+      "class_name": "FsmRoute",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/fsm_route.py",
+      "test_file": "test_fsm_route.py"
+    },
+    {
+      "model_name": "bin.key.unlock.service",
+      "class_name": "BinKeyUnlockService",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_key_unlock_service.py",
+      "test_file": "test_bin_key_unlock_service.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "BinKeyUnlockService",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_key_unlock_service.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "paper.bale",
+      "class_name": "PaperBale",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_bale.py",
+      "test_file": "test_paper_bale.py"
+    },
+    {
+      "model_name": "records.center.location",
+      "class_name": "RecordsCenterLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_center_location.py",
+      "test_file": "test_records_center_location.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "RecordsCenterLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_center_location.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "shredding.team",
+      "class_name": "ShreddingTeam",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_team.py",
+      "test_file": "test_shredding_team.py"
+    },
+    {
+      "model_name": "signed.document",
+      "class_name": "SignedDocument",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/signed_document.py",
+      "test_file": "test_signed_document.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "SignedDocument",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/signed_document.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "shredding.service.log",
+      "class_name": "ShreddingServiceLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service_log.py",
+      "test_file": "test_shredding_service_log.py"
+    },
+    {
+      "model_name": "temp.inventory.movement",
+      "class_name": "TempInventoryMovement",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/temp_inventory_movement.py",
+      "test_file": "test_temp_inventory_movement.py"
+    },
+    {
+      "model_name": "barcode.generation.history",
+      "class_name": "BarcodeGenerationHistory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_generation_history.py",
+      "test_file": "test_barcode_generation_history.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "BarcodeGenerationHistory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_generation_history.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "naid.destruction.record",
+      "class_name": "NaidDestructionRecord",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_destruction_record.py",
+      "test_file": "test_naid_destruction_record.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "NaidDestructionRecord",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_destruction_record.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "records.container.transfer",
+      "class_name": "RecordsContainerTransfer",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_transfer.py",
+      "test_file": "test_records_container_transfer.py"
+    },
+    {
+      "model_name": "naid.custody",
+      "class_name": "NaidCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_custody.py",
+      "test_file": "test_naid_custody.py"
+    },
+    {
+      "model_name": "description",
+      "class_name": "NaidCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_custody.py",
+      "test_file": "test_description.py"
+    },
+    {
+      "model_name": "file.retrieval.work.order.item",
+      "class_name": "FileRetrievalWorkOrderItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/file_retrieval_work_order_item.py",
+      "test_file": "test_file_retrieval_work_order_item.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "FileRetrievalWorkOrderItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/file_retrieval_work_order_item.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "work.order.shredding",
+      "class_name": "WorkOrderShredding",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/work_order_shredding.py",
+      "test_file": "test_work_order_shredding.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "WorkOrderShredding",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/work_order_shredding.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "advanced.billing.service.line",
+      "class_name": "AdvancedBillingServiceLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/advanced_billing_service_line.py",
+      "test_file": "test_advanced_billing_service_line.py"
+    },
+    {
+      "model_name": "res.currency",
+      "class_name": "AdvancedBillingServiceLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/advanced_billing_service_line.py",
+      "test_file": "test_res_currency.py"
+    },
+    {
+      "model_name": "records.security.audit",
+      "class_name": "RecordsSecurityAudit",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_security_audit.py",
+      "test_file": "test_records_security_audit.py"
+    },
+    {
+      "model_name": "container.access.photo",
+      "class_name": "ContainerAccessPhoto",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_photo.py",
+      "test_file": "test_container_access_photo.py"
+    },
+    {
+      "model_name": "container.access.activity",
+      "class_name": "ContainerAccessPhoto",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_photo.py",
+      "test_file": "test_container_access_activity.py"
+    },
+    {
+      "model_name": "pickup.location",
+      "class_name": "PickupLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_location.py",
+      "test_file": "test_pickup_location.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "PickupLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_location.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "res.country.state",
+      "class_name": "PickupLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_location.py",
+      "test_file": "test_res_country_state.py"
+    },
+    {
+      "model_name": "res.country",
+      "class_name": "PickupLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_location.py",
+      "test_file": "test_res_country.py"
+    },
+    {
+      "model_name": "res.company",
+      "class_name": "PickupLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_location.py",
+      "test_file": "test_res_company.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "PickupLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_location.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": ", ",
+      "class_name": "PickupLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_location.py",
+      "test_file": "test_, .py"
+    },
+    {
+      "model_name": "records.usage.tracking",
+      "class_name": "RecordsUsageTracking",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_usage_tracking.py",
+      "test_file": "test_records_usage_tracking.py"
+    },
+    {
+      "model_name": "scan.retrieval.item",
+      "class_name": "ScanRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_item.py",
+      "test_file": "test_scan_retrieval_item.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ScanRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_item.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "records.document",
+      "class_name": "ScanRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_item.py",
+      "test_file": "test_records_document.py"
+    },
+    {
+      "model_name": "scan.retrieval.work.order",
+      "class_name": "ScanRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_item.py",
+      "test_file": "test_scan_retrieval_work_order.py"
+    },
+    {
+      "model_name": "file.retrieval.item",
+      "class_name": "ScanRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_item.py",
+      "test_file": "test_file_retrieval_item.py"
+    },
+    {
+      "model_name": "records.container.transfer.line",
+      "class_name": "RecordsContainerTransferLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_transfer_line.py",
+      "test_file": "test_records_container_transfer_line.py"
+    },
+    {
+      "model_name": "container.destruction.work.order",
+      "class_name": "ContainerDestructionWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_destruction_work_order.py",
+      "test_file": "test_container_destruction_work_order.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ContainerDestructionWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_destruction_work_order.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "customer.feedback",
+      "class_name": "CustomerFeedback",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_feedback.py",
+      "test_file": "test_customer_feedback.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "CustomerFeedback",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_feedback.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "res.currency",
+      "class_name": "MaintenanceRequest",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/maintenance_request.py",
+      "test_file": "test_res_currency.py"
+    },
+    {
+      "model_name": "maintenance.equipment",
+      "class_name": "MaintenanceRequest",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/maintenance_request.py",
+      "test_file": "test_maintenance_equipment.py"
+    },
+    {
+      "model_name": "records.container",
+      "class_name": "MaintenanceRequest",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/maintenance_request.py",
+      "test_file": "test_records_container.py"
+    },
+    {
+      "model_name": "unlock.service.history",
+      "class_name": "UnlockServiceHistory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/unlock_service_history.py",
+      "test_file": "test_unlock_service_history.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "UnlockServiceHistory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/unlock_service_history.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "pickup.route",
+      "class_name": "PickupRoute",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_route.py",
+      "test_file": "test_pickup_route.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "PickupRoute",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_route.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "DisplayName",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/display_name.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "records.access.log",
+      "class_name": "RecordsAccessLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_access_log.py",
+      "test_file": "test_records_access_log.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "RecordsAccessLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_access_log.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "transitory.field.config",
+      "class_name": "TransitoryFieldConfig",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/transitory_field_config.py",
+      "test_file": "test_transitory_field_config.py"
+    },
+    {
+      "model_name": "shredding.service.photo",
+      "class_name": "ShreddingServicePhoto",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service_photo.py",
+      "test_file": "test_shredding_service_photo.py"
+    },
+    {
+      "model_name": "barcode.models.enhanced",
+      "class_name": "BarcodeModelsEnhanced",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_models_enhanced.py",
+      "test_file": "test_barcode_models_enhanced.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "BarcodeModelsEnhanced",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_models_enhanced.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "inventory.item.retrieval",
+      "class_name": "InventoryItemRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_item_retrieval.py",
+      "test_file": "test_inventory_item_retrieval.py"
+    },
+    {
+      "model_name": "shredding.inventory.batch",
+      "class_name": "ShreddingInventoryBatch",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_inventory_batch.py",
+      "test_file": "test_shredding_inventory_batch.py"
+    },
+    {
+      "model_name": "customer.inventory",
+      "class_name": "CustomerInventory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory.py",
+      "test_file": "test_customer_inventory.py"
+    },
+    {
+      "model_name": "customer.inventory",
+      "class_name": "CustomerInventoryLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory.py",
+      "test_file": "test_customer_inventory.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "CustomerInventory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "CustomerInventoryLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "customer.inventory.line",
+      "class_name": "CustomerInventory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory.py",
+      "test_file": "test_customer_inventory_line.py"
+    },
+    {
+      "model_name": "customer.inventory.line",
+      "class_name": "CustomerInventoryLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory.py",
+      "test_file": "test_customer_inventory_line.py"
+    },
+    {
+      "model_name": "bin.unlock.service",
+      "class_name": "BinUnlockService",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_unlock_service.py",
+      "test_file": "test_bin_unlock_service.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "BinUnlockService",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_unlock_service.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": " - ",
+      "class_name": "BinUnlockService",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/bin_unlock_service.py",
+      "test_file": "test_ - .py"
+    },
+    {
+      "model_name": "customer.inventory.report",
+      "class_name": "CustomerInventoryReport",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory_report_model.py",
+      "test_file": "test_customer_inventory_report.py"
+    },
+    {
+      "model_name": "customer.inventory.report.line",
+      "class_name": "CustomerInventoryReport",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory_report_model.py",
+      "test_file": "test_customer_inventory_report_line.py"
+    },
+    {
+      "model_name": "report_id",
+      "class_name": "CustomerInventoryReport",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory_report_model.py",
+      "test_file": "test_report_id.py"
+    },
+    {
+      "model_name": "records.location.report.wizard",
+      "class_name": "RecordsLocationReportWizard",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_location_report_wizard.py",
+      "test_file": "test_records_location_report_wizard.py"
+    },
+    {
+      "model_name": "records.retrieval.work.order",
+      "class_name": "RecordsRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retrieval_work_order.py",
+      "test_file": "test_records_retrieval_work_order.py"
+    },
+    {
+      "model_name": "survey.improvement.action",
+      "class_name": "SurveyImprovementAction",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/survey_improvement_action.py",
+      "test_file": "test_survey_improvement_action.py"
+    },
+    {
+      "model_name": "inventory.adjustment.reason",
+      "class_name": "InventoryAdjustmentReason",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_adjustment_reason.py",
+      "test_file": "test_inventory_adjustment_reason.py"
+    },
+    {
+      "model_name": "shredding.rate",
+      "class_name": "ShreddingRate",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_rate.py",
+      "test_file": "test_shredding_rate.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "ShreddingRate",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_rate.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "records.department.billing.approval",
+      "class_name": "RecordsDepartmentBillingApproval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_department_billing_approval.py",
+      "test_file": "test_records_department_billing_approval.py"
+    },
+    {
+      "model_name": "records.department.billing.contact",
+      "class_name": "RecordsDepartmentBillingApproval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_department_billing_approval.py",
+      "test_file": "test_records_department_billing_contact.py"
+    },
+    {
+      "model_name": "naid.compliance.checklist.item",
+      "class_name": "NAIDComplianceChecklistItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_checklist_item.py",
+      "test_file": "test_naid_compliance_checklist_item.py"
+    },
+    {
+      "model_name": "custody.transfer.event",
+      "class_name": "CustodyTransferEvent",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/custody_transfer_event.py",
+      "test_file": "test_custody_transfer_event.py"
+    },
+    {
+      "model_name": "container.access.visitor",
+      "class_name": "ContainerAccessVisitor",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_visitor.py",
+      "test_file": "test_container_access_visitor.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "ContainerAccessVisitor",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_visitor.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "records.audit.log",
+      "class_name": "RecordsAuditLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_audit_log.py",
+      "test_file": "test_records_audit_log.py"
+    },
+    {
+      "model_name": "description",
+      "class_name": "RecordsAuditLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_audit_log.py",
+      "test_file": "test_description.py"
+    },
+    {
+      "model_name": "customer.negotiated.rates",
+      "class_name": "CustomerNegotiatedRates",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_negotiated_rates.py",
+      "test_file": "test_customer_negotiated_rates.py"
+    },
+    {
+      "model_name": "portal.feedback.resolution",
+      "class_name": "PortalFeedbackResolution",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_resolution.py",
+      "test_file": "test_portal_feedback_resolution.py"
+    },
+    {
+      "model_name": "advanced.billing.storage.line",
+      "class_name": "AdvancedBillingStorageLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/advanced_billing_storage_line.py",
+      "test_file": "test_advanced_billing_storage_line.py"
+    },
+    {
+      "model_name": "portal.feedback.communication",
+      "class_name": "PortalFeedbackCommunication",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_communication.py",
+      "test_file": "test_portal_feedback_communication.py"
+    },
+    {
+      "model_name": "processing.log",
+      "class_name": "ProcessingLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/processing_log.py",
+      "test_file": "test_processing_log.py"
+    },
+    {
+      "model_name": "reference",
+      "class_name": "ProcessingLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/processing_log.py",
+      "test_file": "test_reference.py"
+    },
+    {
+      "model_name": "processing.log.resolution.wizard",
+      "class_name": "ProcessingLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/processing_log.py",
+      "test_file": "test_processing_log_resolution_wizard.py"
+    },
+    {
+      "model_name": "records.policy.version",
+      "class_name": "RecordsPolicyVersion",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_policy_version.py",
+      "test_file": "test_records_policy_version.py"
+    },
+    {
+      "model_name": "container.content",
+      "class_name": "ContainerContent",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_content.py",
+      "test_file": "test_container_content.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ContainerContent",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_content.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "container.retrieval.work.order",
+      "class_name": "ContainerRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_retrieval_work_order.py",
+      "test_file": "test_container_retrieval_work_order.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ContainerRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_retrieval_work_order.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "records.chain.of.custody",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_records_chain_of_custody.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "res.company",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_res_company.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "res.partner",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_res_partner.py"
+    },
+    {
+      "model_name": "res.partner",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_res_partner.py"
+    },
+    {
+      "model_name": "records.document",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_records_document.py"
+    },
+    {
+      "model_name": "records.container",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_records_container.py"
+    },
+    {
+      "model_name": "project.task",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_project_task.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "records.location",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_records_location.py"
+    },
+    {
+      "model_name": "records.location",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_records_location.py"
+    },
+    {
+      "model_name": " - ",
+      "class_name": "RecordsChainOfCustody",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_chain_of_custody.py",
+      "test_file": "test_ - .py"
+    },
+    {
+      "model_name": "portal.request.line",
+      "class_name": "PortalRequestLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_request_line.py",
+      "test_file": "test_portal_request_line.py"
+    },
+    {
+      "model_name": "visitor",
+      "class_name": "Visitor",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/visitor.py",
+      "test_file": "test_visitor.py"
+    },
+    {
+      "model_name": "approval.history",
+      "class_name": "ApprovalHistory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/approval_history.py",
+      "test_file": "test_approval_history.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "ApprovalHistory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/approval_history.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "naid.performance.history",
+      "class_name": "NAIDPerformanceHistory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_performance_history.py",
+      "test_file": "test_naid_performance_history.py"
+    },
+    {
+      "model_name": "container.access.report",
+      "class_name": "ContainerAccessReport",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_report.py",
+      "test_file": "test_container_access_report.py"
+    },
+    {
+      "model_name": "container.access.activity",
+      "class_name": "ContainerAccessReport",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_report.py",
+      "test_file": "test_container_access_activity.py"
+    },
+    {
+      "model_name": "records.category",
+      "class_name": "RecordsCategory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_category.py",
+      "test_file": "test_records_category.py"
+    },
+    {
+      "model_name": "parent_id",
+      "class_name": "RecordsCategory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_category.py",
+      "test_file": "test_parent_id.py"
+    },
+    {
+      "model_name": "complete_name",
+      "class_name": "RecordsCategory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_category.py",
+      "test_file": "test_complete_name.py"
+    },
+    {
+      "model_name": "%s / %s",
+      "class_name": "RecordsCategory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_category.py",
+      "test_file": "test_%s / %s.py"
+    },
+    {
+      "model_name": "records.container.log",
+      "class_name": "RecordsContainerLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_log.py",
+      "test_file": "test_records_container_log.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RecordsContainerLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_log.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "mobile.photo",
+      "class_name": "MobilePhoto",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/mobile_photo.py",
+      "test_file": "test_mobile_photo.py"
+    },
+    {
+      "model_name": "fsm.route.management",
+      "class_name": "FsmRouteManagement",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/fsm_route_management.py",
+      "test_file": "test_fsm_route_management.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "FsmRouteManagement",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/fsm_route_management.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "fsm.notification.manager",
+      "class_name": "FsmNotificationManager",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/fsm_notification_manager.py",
+      "test_file": "test_fsm_notification_manager.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "FsmNotificationManager",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/fsm_notification_manager.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "records.container.movement",
+      "class_name": "RecordsContainerMovement",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_container_movement.py",
+      "test_file": "test_records_container_movement.py"
+    },
+    {
+      "model_name": "product.container.type",
+      "class_name": "ProductContainerType",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/product_container_type.py",
+      "test_file": "test_product_container_type.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "ProductContainerType",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/product_container_type.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "portal.request",
+      "class_name": "PortalRequest",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_request.py",
+      "test_file": "test_portal_request.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "PortalRequest",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_request.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "hr.employee",
+      "class_name": "HrEmployee",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/hr_employee.py",
+      "test_file": "test_hr_employee.py"
+    },
+    {
+      "model_name": "records.series",
+      "class_name": "RecordsSeries",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_series.py",
+      "test_file": "test_records_series.py"
+    },
+    {
+      "model_name": "shredding.service",
+      "class_name": "ShreddingService",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
+      "test_file": "test_shredding_service.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "ShreddingService",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_service.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "naid.compliance.action.plan",
+      "class_name": "NaidComplianceActionPlan",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_action_plan.py",
+      "test_file": "test_naid_compliance_action_plan.py"
+    },
+    {
+      "model_name": "portal.feedback.action",
+      "class_name": "PortalFeedbackAction",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_action.py",
+      "test_file": "test_portal_feedback_action.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "PortalFeedbackAction",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/portal_feedback_action.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "records.request",
+      "class_name": "RecordsRequest",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_request.py",
+      "test_file": "test_records_request.py"
+    },
+    {
+      "model_name": "stock.lot.attribute.option",
+      "class_name": "StockLotAttributeOption",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_lot_attribute_option.py",
+      "test_file": "test_stock_lot_attribute_option.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "StockLotAttributeOption",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_lot_attribute_option.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "work.order.coordinator",
+      "class_name": "WorkOrderCoordinator",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/work_order_coordinator.py",
+      "test_file": "test_work_order_coordinator.py"
+    },
+    {
+      "model_name": "survey.feedback.theme",
+      "class_name": "SurveyFeedbackTheme",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/survey_feedback_theme.py",
+      "test_file": "test_survey_feedback_theme.py"
+    },
+    {
+      "model_name": "records.vehicle",
+      "class_name": "RecordsVehicle",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_vehicle.py",
+      "test_file": "test_records_vehicle.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RecordsVehicle",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_vehicle.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "inventory.item",
+      "class_name": "InventoryItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_item.py",
+      "test_file": "test_inventory_item.py"
+    },
+    {
+      "model_name": "photo",
+      "class_name": "Photo",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/photo.py",
+      "test_file": "test_photo.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "Photo",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/photo.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "maintenance.team",
+      "class_name": "DocumentRetrievalTeam",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_team.py",
+      "test_file": "test_maintenance_team.py"
+    },
+    {
+      "model_name": "file.retrieval",
+      "class_name": "FileRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/file_retrieval.py",
+      "test_file": "test_file_retrieval.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "FileRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/file_retrieval.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "paper.bale.line",
+      "class_name": "PaperBaleLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_bale_line.py",
+      "test_file": "test_paper_bale_line.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "PaperBaleLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_bale_line.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "pickup.request.line",
+      "class_name": "PickupRequestLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/pickup_request_line.py",
+      "test_file": "test_pickup_request_line.py"
+    },
+    {
+      "model_name": "work.order.coordinator",
+      "class_name": "ProjectTask",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/project_task.py",
+      "test_file": "test_work_order_coordinator.py"
+    },
+    {
+      "model_name": "advanced.billing.contact",
+      "class_name": "AdvancedBillingContact",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/advanced_billing_contact.py",
+      "test_file": "test_advanced_billing_contact.py"
+    },
+    {
+      "model_name": "container.access.activity",
+      "class_name": "ContainerAccessActivity",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_activity.py",
+      "test_file": "test_container_access_activity.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ContainerAccessActivity",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_activity.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": " - ",
+      "class_name": "ContainerAccessActivity",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_activity.py",
+      "test_file": "test_ - .py"
+    },
+    {
+      "model_name": "naid.compliance.alert",
+      "class_name": "NaidComplianceAlert",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_alert.py",
+      "test_file": "test_naid_compliance_alert.py"
+    },
+    {
+      "model_name": "records.department",
+      "class_name": "RecordsDepartment",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_department.py",
+      "test_file": "test_records_department.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RecordsDepartment",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_department.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "records.document",
+      "class_name": "RecordsDocument",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_document.py",
+      "test_file": "test_records_document.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RecordsDocument",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_document.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "customer.portal.diagram",
+      "class_name": "CustomerPortalDiagram",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_portal_diagram.py",
+      "test_file": "test_customer_portal_diagram.py"
+    },
+    {
+      "model_name": "maintenance.equipment",
+      "class_name": "DocumentRetrievalEquipment",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_retrieval_equipment.py",
+      "test_file": "test_maintenance_equipment.py"
+    },
+    {
+      "model_name": "naid.certificate",
+      "class_name": "NaidCertificate",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_certificate.py",
+      "test_file": "test_naid_certificate.py"
+    },
+    {
+      "model_name": "shredding.service",
+      "class_name": "NaidCertificate",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_certificate.py",
+      "test_file": "test_shredding_service.py"
+    },
+    {
+      "model_name": "records.location.inspection",
+      "class_name": "RecordsLocationInspection",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_location_inspection.py",
+      "test_file": "test_records_location_inspection.py"
+    },
+    {
+      "model_name": "records.location.inspection",
+      "class_name": "RecordsLocationInspectionLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_location_inspection.py",
+      "test_file": "test_records_location_inspection.py"
+    },
+    {
+      "model_name": "records.location.inspection.line",
+      "class_name": "RecordsLocationInspection",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_location_inspection.py",
+      "test_file": "test_records_location_inspection_line.py"
+    },
+    {
+      "model_name": "records.location.inspection.line",
+      "class_name": "RecordsLocationInspectionLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_location_inspection.py",
+      "test_file": "test_records_location_inspection_line.py"
+    },
+    {
+      "model_name": "records.retention.policy",
+      "class_name": "RecordsRetentionPolicy",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy.py",
+      "test_file": "test_records_retention_policy.py"
+    },
+    {
+      "model_name": "rm.module.configurator",
+      "class_name": "RmModuleConfigurator",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/rm_module_configurator.py",
+      "test_file": "test_rm_module_configurator.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "RmModuleConfigurator",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/rm_module_configurator.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "customer.negotiated.rate",
+      "class_name": "CustomerNegotiatedRate",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_negotiated_rate.py",
+      "test_file": "test_customer_negotiated_rate.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "CustomerNegotiatedRate",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_negotiated_rate.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "destruction.item",
+      "class_name": "DestructionItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/destruction_item.py",
+      "test_file": "test_destruction_item.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "DestructionItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/destruction_item.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "inventory.item.destruction.line",
+      "class_name": "InventoryItemDestructionLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_item_destruction_line.py",
+      "test_file": "test_inventory_item_destruction_line.py"
+    },
+    {
+      "model_name": "records.storage.box",
+      "class_name": "RecordsStorageBox",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_storage_box.py",
+      "test_file": "test_records_storage_box.py"
+    },
+    {
+      "model_name": "shredding.certificate",
+      "class_name": "ShreddingCertificate",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shredding_certificate.py",
+      "test_file": "test_shredding_certificate.py"
+    },
+    {
+      "model_name": "stock.lot.attribute.value",
+      "class_name": "StockLotAttributeValue",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_lot_attribute_value.py",
+      "test_file": "test_stock_lot_attribute_value.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "StockLotAttributeValue",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_lot_attribute_value.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "payment.split.line",
+      "class_name": "PaymentSplitLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/payment_split_line.py",
+      "test_file": "test_payment_split_line.py"
+    },
+    {
+      "model_name": "payment.split",
+      "class_name": "PaymentSplit",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/payment_split.py",
+      "test_file": "test_payment_split.py"
+    },
+    {
+      "model_name": "advanced.billing",
+      "class_name": "AdvancedBilling",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/advanced_billing.py",
+      "test_file": "test_advanced_billing.py"
+    },
+    {
+      "model_name": "revenue.forecast",
+      "class_name": "RevenueForecast",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/revenue_forecast.py",
+      "test_file": "test_revenue_forecast.py"
+    },
+    {
+      "model_name": "records.destruction.job",
+      "class_name": "RecordsDestructionJob",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_destruction_job.py",
+      "test_file": "test_records_destruction_job.py"
+    },
+    {
+      "model_name": "records.destruction.job",
+      "class_name": "RecordsDestructionLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_destruction_job.py",
+      "test_file": "test_records_destruction_job.py"
+    },
+    {
+      "model_name": "records.destruction.line",
+      "class_name": "RecordsDestructionJob",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_destruction_job.py",
+      "test_file": "test_records_destruction_line.py"
+    },
+    {
+      "model_name": "records.destruction.line",
+      "class_name": "RecordsDestructionLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_destruction_job.py",
+      "test_file": "test_records_destruction_line.py"
+    },
+    {
+      "model_name": "field.label.customization",
+      "class_name": "FieldLabelCustomization",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/field_label_customization.py",
+      "test_file": "test_field_label_customization.py"
+    },
+    {
+      "model_name": "retrieval.metric",
+      "class_name": "RetrievalMetric",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/retrieval_metric.py",
+      "test_file": "test_retrieval_metric.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RetrievalMetric",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/retrieval_metric.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "media.type",
+      "class_name": "MediaType",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/media_type.py",
+      "test_file": "test_media_type.py"
+    },
+    {
+      "model_name": "records.approval.workflow.line",
+      "class_name": "RecordsApprovalWorkflowLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_approval_workflow_line.py",
+      "test_file": "test_records_approval_workflow_line.py"
+    },
+    {
+      "model_name": "records.retention.policy.version",
+      "class_name": "RecordsRetentionPolicyVersion",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy_version.py",
+      "test_file": "test_records_retention_policy_version.py"
+    },
+    {
+      "model_name": "records.retention.policy",
+      "class_name": "RecordsRetentionPolicyVersion",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy_version.py",
+      "test_file": "test_records_retention_policy.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "RecordsRetentionPolicyVersion",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy_version.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "RecordsRetentionPolicyVersion",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy_version.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "records.retention.policy.version",
+      "class_name": "RecordsRetentionPolicyVersion",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy_version.py",
+      "test_file": "test_records_retention_policy_version.py"
+    },
+    {
+      "model_name": "res.company",
+      "class_name": "RecordsRetentionPolicyVersion",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_policy_version.py",
+      "test_file": "test_res_company.py"
+    },
+    {
+      "model_name": "customer.category",
+      "class_name": "CustomerCategory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_category.py",
+      "test_file": "test_customer_category.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "CustomerCategory",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_category.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "naid.custody.event",
+      "class_name": "NAIDCustodyEvent",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naidcustody_event.py",
+      "test_file": "test_naid_custody_event.py"
+    },
+    {
+      "model_name": "records.deletion.request",
+      "class_name": "RecordsDeletionRequest",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_deletion_request.py",
+      "test_file": "test_records_deletion_request.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RecordsDeletionRequest",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_deletion_request.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "file.retrieval.item",
+      "class_name": "FileRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/file_retrieval_item.py",
+      "test_file": "test_file_retrieval_item.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "FileRetrievalItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/file_retrieval_item.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "scan.retrieval",
+      "class_name": "ScanRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval.py",
+      "test_file": "test_scan_retrieval.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ScanRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": " ",
+      "class_name": "ScanRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval.py",
+      "test_file": "test_ .py"
+    },
+    {
+      "model_name": "inventory.item.destruction",
+      "class_name": "InventoryItemDestruction",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/inventory_item_destruction.py",
+      "test_file": "test_inventory_item_destruction.py"
+    },
+    {
+      "model_name": "shred.bin",
+      "class_name": "ShredBin",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/shred_bin.py",
+      "test_file": "test_shred_bin.py"
+    },
+    {
+      "model_name": "records.inventory.dashboard",
+      "class_name": "RecordsInventoryDashboard",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_inventory_dashboard.py",
+      "test_file": "test_records_inventory_dashboard.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "RecordsInventoryDashboard",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_inventory_dashboard.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "records.bulk.user.import",
+      "class_name": "RecordsBulkUserImport",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_bulk_user_import.py",
+      "test_file": "test_records_bulk_user_import.py"
+    },
+    {
+      "model_name": "naid.audit.log",
+      "class_name": "NAIDAuditLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naidaudit_log.py",
+      "test_file": "test_naid_audit_log.py"
+    },
+    {
+      "model_name": "chain.of.custody",
+      "class_name": "NAIDAuditLog",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naidaudit_log.py",
+      "test_file": "test_chain_of_custody.py"
+    },
+    {
+      "model_name": "records.retention.rule",
+      "class_name": "RecordsRetentionRule",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_rule.py",
+      "test_file": "test_records_retention_rule.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RecordsRetentionRule",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_retention_rule.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "records.promotional.discount",
+      "class_name": "RecordsPromotionalDiscount",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_promotional_discount.py",
+      "test_file": "test_records_promotional_discount.py"
+    },
+    {
+      "model_name": "certificate.template.data",
+      "class_name": "CertificateTemplateData",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/certificate_template_data.py",
+      "test_file": "test_certificate_template_data.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "CertificateTemplateData",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/certificate_template_data.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "records.location",
+      "class_name": "RecordsLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_location.py",
+      "test_file": "test_records_location.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "RecordsLocation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_location.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "container.access.work.order",
+      "class_name": "ContainerAccessWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_work_order.py",
+      "test_file": "test_container_access_work_order.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ContainerAccessWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_work_order.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": " - ",
+      "class_name": "ContainerAccessWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/container_access_work_order.py",
+      "test_file": "test_ - .py"
+    },
+    {
+      "model_name": "stock.move.sms.validation",
+      "class_name": "StockMoveSMSValidation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_move_smsvalidation.py",
+      "test_file": "test_stock_move_sms_validation.py"
+    },
+    {
+      "model_name": "stock.move",
+      "class_name": "StockMoveSMSValidation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_move_smsvalidation.py",
+      "test_file": "test_stock_move.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "StockMoveSMSValidation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_move_smsvalidation.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "res.company",
+      "class_name": "StockMoveSMSValidation",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/stock_move_smsvalidation.py",
+      "test_file": "test_res_company.py"
+    },
+    {
+      "model_name": "paper.bale.movement",
+      "class_name": "PaperBaleMovement",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_bale_movement.py",
+      "test_file": "test_paper_bale_movement.py"
+    },
+    {
+      "model_name": "barcode.pricing.tier",
+      "class_name": "BarcodePricingTier",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_pricing_tier.py",
+      "test_file": "test_barcode_pricing_tier.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "BarcodePricingTier",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/barcode_pricing_tier.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "full.customization.name",
+      "class_name": "FullCustomizationName",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/full_customization_name.py",
+      "test_file": "test_full_customization_name.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "FullCustomizationName",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/full_customization_name.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "res.company",
+      "class_name": "FullCustomizationName",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/full_customization_name.py",
+      "test_file": "test_res_company.py"
+    },
+    {
+      "model_name": "res.users",
+      "class_name": "FullCustomizationName",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/full_customization_name.py",
+      "test_file": "test_res_users.py"
+    },
+    {
+      "model_name": "%s - %s",
+      "class_name": "FullCustomizationName",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/full_customization_name.py",
+      "test_file": "test_%s - %s.py"
+    },
+    {
+      "model_name": "service.item",
+      "class_name": "ServiceItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_item.py",
+      "test_file": "test_service_item.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ServiceItem",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/service_item.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "work.order.retrieval",
+      "class_name": "WorkOrderRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/work_order_retrieval.py",
+      "test_file": "test_work_order_retrieval.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "WorkOrderRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/work_order_retrieval.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": " ",
+      "class_name": "WorkOrderRetrieval",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/work_order_retrieval.py",
+      "test_file": "test_ .py"
+    },
+    {
+      "model_name": "fsm.notification",
+      "class_name": "FsmNotification",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/fsm_notification.py",
+      "test_file": "test_fsm_notification.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "FsmNotification",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/fsm_notification.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "system.diagram.data",
+      "class_name": "SystemDiagramData",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/system_diagram_data.py",
+      "test_file": "test_system_diagram_data.py"
+    },
+    {
+      "model_name": "required.document",
+      "class_name": "RequiredDocument",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/required_document.py",
+      "test_file": "test_required_document.py"
+    },
+    {
+      "model_name": "scan.retrieval.work.order",
+      "class_name": "ScanRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_work_order.py",
+      "test_file": "test_scan_retrieval_work_order.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "ScanRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_work_order.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "scan.retrieval.item",
+      "class_name": "ScanRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_work_order.py",
+      "test_file": "test_scan_retrieval_item.py"
+    },
+    {
+      "model_name": "work_order_id",
+      "class_name": "ScanRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_work_order.py",
+      "test_file": "test_work_order_id.py"
+    },
+    {
+      "model_name": "scan.digital.asset",
+      "class_name": "ScanRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_work_order.py",
+      "test_file": "test_scan_digital_asset.py"
+    },
+    {
+      "model_name": "work_order_id",
+      "class_name": "ScanRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_work_order.py",
+      "test_file": "test_work_order_id.py"
+    },
+    {
+      "model_name": " - ",
+      "class_name": "ScanRetrievalWorkOrder",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_retrieval_work_order.py",
+      "test_file": "test_ - .py"
+    },
+    {
+      "model_name": "feedback.improvement.area",
+      "class_name": "FeedbackImprovementArea",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/feedback_improvement_area.py",
+      "test_file": "test_feedback_improvement_area.py"
+    },
+    {
+      "model_name": "records.destruction",
+      "class_name": "RecordsDestruction",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_destruction.py",
+      "test_file": "test_records_destruction.py"
+    },
+    {
+      "model_name": "name",
+      "class_name": "RecordsDestruction",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_destruction.py",
+      "test_file": "test_name.py"
+    },
+    {
+      "model_name": "work.order.coordinator",
+      "class_name": "RecordsDestruction",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_destruction.py",
+      "test_file": "test_work_order_coordinator.py"
+    },
+    {
+      "model_name": "naid.compliance.checklist",
+      "class_name": "NAIDComplianceChecklist",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/naid_compliance_checklist.py",
+      "test_file": "test_naid_compliance_checklist.py"
+    },
+    {
+      "model_name": "customer.inventory.report.line",
+      "class_name": "CustomerInventoryReportLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory_report_line.py",
+      "test_file": "test_customer_inventory_report_line.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "CustomerInventoryReportLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory_report_line.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": "customer.inventory.report",
+      "class_name": "CustomerInventoryReportLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory_report_line.py",
+      "test_file": "test_customer_inventory_report.py"
+    },
+    {
+      "model_name": " - ",
+      "class_name": "CustomerInventoryReportLine",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/customer_inventory_report_line.py",
+      "test_file": "test_ - .py"
+    },
+    {
+      "model_name": "paper.load.shipment",
+      "class_name": "PaperLoadShipment",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/paper_load_shipment.py",
+      "test_file": "test_paper_load_shipment.py"
+    },
+    {
+      "model_name": "records.digital.scan",
+      "class_name": "RecordsDigitalScan",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/records_digital_scan.py",
+      "test_file": "test_records_digital_scan.py"
+    },
+    {
+      "model_name": "scan.digital.asset",
+      "class_name": "ScanDigitalAsset",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_digital_asset.py",
+      "test_file": "test_scan_digital_asset.py"
+    },
+    {
+      "model_name": "scan.retrieval.work.order",
+      "class_name": "ScanDigitalAsset",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/scan_digital_asset.py",
+      "test_file": "test_scan_retrieval_work_order.py"
+    },
+    {
+      "model_name": "partner.bin.key",
+      "class_name": "PartnerBinKey",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/partner_bin_key.py",
+      "test_file": "test_partner_bin_key.py"
+    },
+    {
+      "model_name": "document.search.attempt",
+      "class_name": "DocumentSearchAttempt",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_search_attempt.py",
+      "test_file": "test_document_search_attempt.py"
+    },
+    {
+      "model_name": "display_name",
+      "class_name": "DocumentSearchAttempt",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_search_attempt.py",
+      "test_file": "test_display_name.py"
+    },
+    {
+      "model_name": " - ",
+      "class_name": "DocumentSearchAttempt",
+      "file_path": "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/models/document_search_attempt.py",
+      "test_file": "test_ - .py"
+    }
+  ],
+  "test_files": [
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_certificate.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_portal_feedback_action.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_key_inventory.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_storage_department_user.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_media_type.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_work_order_coordinator.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_destruction_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_work_order_id.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_scan_retrieval_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_department_billing_contact.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_content.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_document_retrieval_equipment.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_advanced_billing_storage_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_approval_workflow_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_res_users.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_portal_feedback_communication.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_mobile_bin_key_wizard.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_inventory_item_location_transfer.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_payment_split_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_scan_retrieval.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_document.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_reference.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shredding_certificate.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_vehicle.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_processing_log_resolution_wizard.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_request.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_transitory_field_config.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_discount_rule.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_bulk_user_import.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_product_container_type.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_department.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_paper_bale_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_advanced_billing.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_custody_event.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_retrieval_metric.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_barcode_models_enhanced.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_compliance_alert.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shredding_service_photo.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_revenue_forecast.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_inventory_item_destruction.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_promotional_discount.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_scan_digital_asset.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_destruction_record.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shredding_service.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_deletion_request.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_inventory_report_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_service_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_location.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_stock_move_sms_validation.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_inventory_adjustment_reason.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_[%s] %s.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_destruction_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_center_location.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_ - .py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_temp_inventory_movement.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_negotiated_rate.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_bin_key.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_fsm_route_management.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_policy_version.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_fsm_notification.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_retention_policy.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_photo.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_inventory_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_feedback_improvement_area.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_scan_retrieval_work_order.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_mobile_photo.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_pickup_request_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_inventory_report.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_container_log.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_unlock_service_part.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_document_retrieval_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_container_type_converter.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_advanced_billing_contact.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_tag.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_stock_lot_attribute_option.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_barcode_pricing_tier.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_, .py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_operator_certification.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_stock_move.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_compliance_checklist.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_inventory_report_model.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_category.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_department_billing_approval.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_management.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_retention_rule.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_processing_log.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_certificate_template_data.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_fsm_notification_manager.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_work_order_retrieval.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_barcode_storage_box.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_inventory_item_type.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naidcustody_event.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shred_bin.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_category.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_partner_bin_key.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_key_restriction_checker.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_container_movement.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_retrieval_work_order.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_stock_lot_attribute.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_approval_history.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_paper_bale_weigh_wizard.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_digital_scan.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_project_task.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_description.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_field_label_customization.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_inventory_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_stock_lot_attribute_value.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_file_retrieval.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_retrieval.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_survey_feedback_theme.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_res_country.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shredding_picklist_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_performance_history.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_access_activity.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_required_document.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_chain_of_custody.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_res_currency.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_billing_contact_id.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_portal_request.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_series.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_rm_module_configurator.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_paper_bale_inspection_wizard.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_res_partner_key_restriction.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_container_transfer_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_destruction_work_order.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_portal_feedback_resolution.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_file_retrieval_work_order_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_pickup_route_stop.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_full_customization_name.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_file_retrieval_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_custody_id.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_invoice_generation_log.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_barcode_product.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_bin_key_history.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_risk_assessment.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_document_search_attempt.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_base_rate.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_file_retrieval_work_order.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_location_inspection.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_request_type.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_container_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_custody.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_access_visitor.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_report_id.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shredding_service_log.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_ .py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_storage_box.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shredding_team.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_temp_inventory_audit.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_service_type.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_transitory_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_installer.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_inventory_item_retrieval.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_paper_bale.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_fsm_reschedule_wizard.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_serial_number.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_container.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_location_report_wizard.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_paper_load_shipment.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_res_partner.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_tag_category.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_destruction.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_destruction_job.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_portal_feedback.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_survey_user_input.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_route_optimizer.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_inventory_dashboard.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shredding_rate.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_paper_bale_recycling.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_compliance_checklist_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_inventory_item_profile.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_request_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_container_type.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_complete_name.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_inventory_item_retrieval_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_system_diagram_data.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_container_transfer.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_access_work_order.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_retrieval_work_order.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_visitor.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_paper_bale_movement.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_barcode_generation_history.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shredding_hard_drive.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_portal_diagram.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_inventory.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_bin_unlock_service.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_display_name.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_pickup_route.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_product_template.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_access_log.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_access_document.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_approval_workflow.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_maintenance_equipment.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_signed_document_audit.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_advanced_billing_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_survey_improvement_action.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_res_country_state.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_custody_transfer_event.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_portal_request_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_negotiated_rates.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_billing_period.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_audit_log.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_temp_inventory_reject_wizard.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_pickup_request.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_unlock_service_history.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_advanced_billing_service_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_portal_feedback_escalation.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_container_content_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_account_move_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_base_rates.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_shredding_inventory_batch.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_temp_inventory.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_res_company.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_document_type.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_location_group.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_portal_feedback_analytic.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_load.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_paper_bale_inspection.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_payment_split.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_signed_document.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_approval_step.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_name.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_revenue_analytic.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_certificate_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_pickup_request_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_parent_id.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_naid_compliance_action_plan.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_advanced_billing_profile.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_maintenance_team.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_access_photo.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_security_audit.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_usage_tracking.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_access_report.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_hr_employee.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_customer_feedback.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_%s - %s.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_inventory_item_destruction_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_chain_of_custody.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_bin_key_unlock_service.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_audit_log.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_fsm_order.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_work_order_shredding.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_container_retrieval_item.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_fsm_route.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_revenue_forecast_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_retention_policy_version.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_records_location_inspection_line.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_hard_drive_scanning.py",
+    "/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/tests/test_pickup_location.py"
+  ]
+}

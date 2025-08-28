@@ -100,7 +100,7 @@ class PortalRequest(models.Model):
     @api.constrains('estimated_cost', 'actual_cost')
     def _check_cost_values(self):
         for record in self:
-            if record.estimated_cost < 0 or record.actual_cost < 0:
+            if (record.estimated_cost and record.estimated_cost < 0) or (record.actual_cost and record.actual_cost < 0):
                 raise ValidationError(_("Costs cannot be negative."))
 
     # ============================================================================
