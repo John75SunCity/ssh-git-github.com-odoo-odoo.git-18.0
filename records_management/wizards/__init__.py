@@ -20,3 +20,5 @@ from . import user_management_wizards
 from . import visitor_pos_wizard
 from . import wizard_template
 from . import work_order_bin_assignment_wizard
+from . import customer_inventory_report_wizard
+from . import records_document_flag_permanent_wizard

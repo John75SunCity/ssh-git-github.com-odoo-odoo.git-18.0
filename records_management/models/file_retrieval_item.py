@@ -442,12 +442,13 @@ class FileRetrievalItem(models.Model):
     # CRUD METHODS
     # ============================================================================
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to generate sequence number"""
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('file.retrieval.item') or _('New')
-        return super().create(vals)
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('file.retrieval.item') or _('New')
+        return super().create(vals_list)
 
     # ============================================================================
     # STATUS UPDATE METHODS

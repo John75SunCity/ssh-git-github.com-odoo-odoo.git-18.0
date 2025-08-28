@@ -274,7 +274,7 @@ class FileRetrievalWorkOrder(models.Model):
         string='Progress %',
         compute='_compute_progress',
         store=True,
-        group_operator='avg',
+        aggregator='avg',
         help="Overall completion percentage of the work order"
     )
 
