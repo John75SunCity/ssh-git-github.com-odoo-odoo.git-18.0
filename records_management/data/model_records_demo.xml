@@ -159,10 +159,8 @@
             <field name="name">Container-001</field>
             <field name="barcode">RM001234567890</field>
             <field name="container_type_id" ref="container_types_base_rates.container_type_01_standard"/>
-            <field name="classification">TYPE-01</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="location_id" ref="demo_location_warehouse_a"/>
-            <field name="dimensions">12x15x10</field>
             <field name="content_description">Legal contracts and agreements</field>
             <field name="active">True</field>
         </record>
@@ -171,10 +169,8 @@
             <field name="name">Container-002</field>
             <field name="barcode">RM002234567891</field>
             <field name="container_type_id" ref="container_types_base_rates.container_type_02_legal_banker"/>
-            <field name="classification">TYPE-02</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
-            <field name="dimensions">15x12x10</field>
             <field name="content_description">Financial records and invoices</field>
             <field name="active">True</field>
         </record>
@@ -183,10 +179,8 @@
             <field name="name">Container-003</field>
             <field name="barcode">RM003234567892</field>
             <field name="container_type_id" ref="container_types_base_rates.container_type_03_map"/>
-            <field name="classification">TYPE-03</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="location_id" ref="demo_location_warehouse_c"/>
-            <field name="dimensions">14x18x8</field>
             <field name="content_description">Engineering blueprints and architectural drawings</field>
             <field name="active">True</field>
         </record>
@@ -195,10 +189,8 @@
             <field name="name">Container-004</field>
             <field name="barcode">RM004234567893</field>
             <field name="container_type_id" ref="container_types_base_rates.container_type_04_odd_size_temp"/>
-            <field name="classification">TYPE-04</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="location_id" ref="demo_location_warehouse_b"/>
-            <field name="dimensions">24x15x12</field>
             <field name="content_description">Irregular items awaiting processing and reboxing</field>
             <field name="active">True</field>
         </record>
@@ -207,10 +199,8 @@
             <field name="name">Container-005</field>
             <field name="barcode">RM005234567894</field>
             <field name="container_type_id" ref="container_types_base_rates.container_type_05_archive_standard"/>
-            <field name="classification">TYPE-05</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="location_id" ref="demo_location_warehouse_archive"/>
-            <field name="dimensions">16x12x12</field>
             <field name="content_description">Long-term archive documents with preservation requirements</field>
             <field name="active">True</field>
         </record>
@@ -219,10 +209,8 @@
             <field name="name">Container-006</field>
             <field name="barcode">RM006234567895</field>
             <field name="container_type_id" ref="container_types_base_rates.container_type_06_pathology"/>
-            <field name="classification">TYPE-06</field>
             <field name="partner_id" ref="demo_customer_abc_corp"/>
             <field name="location_id" ref="demo_location_vault"/>
-            <field name="dimensions">6x6x4</field>
             <field name="content_description">Medical specimens and small specialized items</field>
             <field name="active">True</field>
         </record>
