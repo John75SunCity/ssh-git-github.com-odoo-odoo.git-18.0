@@ -90,21 +90,21 @@
             <field name="name">General Business Records</field>
             <field name="code">BC-GEN</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
-            <field name="state">active</field>
+            
         </record>
 
         <record id="dept_big_chairs_payroll" model="records.department">
-            <field name="name">Payroll & HR</field>
+            <field name="name">Payroll &amp; HR</field>
             <field name="code">BC-PAY</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
-            <field name="state">active</field>
+            
         </record>
 
         <record id="dept_big_chairs_financial" model="records.department">
             <field name="name">Financial Records</field>
             <field name="code">BC-FIN</field>
             <field name="partner_id" ref="customer_big_chairs_test"/>
-            <field name="state">active</field>
+            
         </record>
 
         <!-- JOHN AND LILI COPE DEPARTMENTS -->
@@ -112,7 +112,7 @@
             <field name="name">Personal Records</field>
             <field name="code">JC-PER</field>
             <field name="partner_id" ref="customer_john_lili_cope"/>
-            <field name="state">active</field>
+            
         </record>
 
         <!-- ===================================================== -->
@@ -132,7 +132,7 @@
             <field name="humidity_controlled">True</field>
             <field name="security_level">level_2</field>
             <field name="max_capacity">5000</field>
-            <field name="state">active</field>
+            
         </record>
 
         <record id="location_main_warehouse_b" model="records.location">
@@ -147,7 +147,7 @@
             <field name="humidity_controlled">True</field>
             <field name="security_level">level_2</field>
             <field name="max_capacity">5000</field>
-            <field name="state">active</field>
+            
         </record>
 
         <record id="location_secure_vault" model="records.location">
@@ -162,7 +162,7 @@
             <field name="humidity_controlled">True</field>
             <field name="security_level">level_4</field>
             <field name="max_capacity">1000</field>
-            <field name="state">active</field>
+            
         </record>
 
         <!-- ===================================================== -->
@@ -170,38 +170,38 @@
         <!-- ===================================================== -->
 
         <record id="doc_type_invoices" model="records.document.type">
-            <field name="name">Invoices & Financial</field>
+            <field name="name">Invoices &amp; Financial</field>
             <field name="code">INV-FIN</field>
             <field name="description">Financial invoices, receipts, and payment records</field>
-            <field name="state">active</field>
+            
         </record>
 
         <record id="doc_type_payroll" model="records.document.type">
-            <field name="name">Payroll & HR Records</field>
+            <field name="name">Payroll &amp; HR Records</field>
             <field name="code">PAY-HR</field>
             <field name="description">Payroll records, employee files, and HR documents</field>
-            <field name="state">active</field>
+            
         </record>
 
         <record id="doc_type_legal" model="records.document.type">
-            <field name="name">Legal & Contracts</field>
+            <field name="name">Legal &amp; Contracts</field>
             <field name="code">LEGAL</field>
             <field name="description">Legal documents, contracts, and agreements</field>
-            <field name="state">active</field>
+            
         </record>
 
         <record id="doc_type_work_orders" model="records.document.type">
-            <field name="name">Work Orders & Operations</field>
+            <field name="name">Work Orders &amp; Operations</field>
             <field name="code">WORK-OPS</field>
             <field name="description">Work orders, operational records, and maintenance logs</field>
-            <field name="state">active</field>
+            
         </record>
 
         <record id="doc_type_mixed" model="records.document.type">
             <field name="name">Mixed Business Records</field>
             <field name="code">MIXED</field>
             <field name="description">Various business records and miscellaneous documents</field>
-            <field name="state">active</field>
+            
         </record>
 
         <!-- ===================================================== -->
@@ -1226,8 +1226,8 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
-            <field name="description">CLOSING DOCS 9230 & 9270 BTK</field>
-            <field name="content_description">CLOSING DOCS 9230 & 9270 BTK</field>
+            <field name="description">CLOSING DOCS 9230 &amp; 9270 BTK</field>
+            <field name="content_description">CLOSING DOCS 9230 &amp; 9270 BTK</field>
             <field name="state">stored</field>
             <field name="security_level">1</field>
             <field name="weight">25.0</field>
@@ -1834,8 +1834,8 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
-            <field name="description">WO & FAX</field>
-            <field name="content_description">WO & FAX</field>
+            <field name="description">WO &amp; FAX</field>
+            <field name="content_description">WO &amp; FAX</field>
             <field name="state">stored</field>
             <field name="security_level">1</field>
             <field name="weight">25.0</field>
@@ -1892,8 +1892,8 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
-            <field name="description">WO & FAX</field>
-            <field name="content_description">WO & FAX</field>
+            <field name="description">WO &amp; FAX</field>
+            <field name="content_description">WO &amp; FAX</field>
             <field name="state">stored</field>
             <field name="security_level">1</field>
             <field name="weight">25.0</field>
@@ -1911,8 +1911,8 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_work_orders"/>
-            <field name="description">WO & FAX</field>
-            <field name="content_description">WO & FAX</field>
+            <field name="description">WO &amp; FAX</field>
+            <field name="content_description">WO &amp; FAX</field>
             <field name="state">stored</field>
             <field name="security_level">1</field>
             <field name="weight">25.0</field>
@@ -1930,8 +1930,8 @@
             <field name="location_id" ref="location_main_warehouse_a"/>
             <field name="container_type_id" ref="demo_container_type_standard_box"/>
             <field name="document_type_id" ref="doc_type_mixed"/>
-            <field name="description">FAX & WO</field>
-            <field name="content_description">FAX & WO</field>
+            <field name="description">FAX &amp; WO</field>
+            <field name="content_description">FAX &amp; WO</field>
             <field name="state">stored</field>
             <field name="security_level">1</field>
             <field name="weight">25.0</field>
