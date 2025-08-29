@@ -404,39 +404,9 @@
             <field name="name">Records Usage Tracking</field>
         </record>
 
-        <record id="model_res_company" model="ir.model">
-            <field name="model">res.company</field>
-            <field name="name">Res Company</field>
-        </record>
-
-        <record id="model_res_country" model="ir.model">
-            <field name="model">res.country</field>
-            <field name="name">Res Country</field>
-        </record>
-
-        <record id="model_res_country_state" model="ir.model">
-            <field name="model">res.country.state</field>
-            <field name="name">Res Country State</field>
-        </record>
-
-        <record id="model_res_currency" model="ir.model">
-            <field name="model">res.currency</field>
-            <field name="name">Res Currency</field>
-        </record>
-
-        <record id="model_res_partner" model="ir.model">
-            <field name="model">res.partner</field>
-            <field name="name">Res Partner</field>
-        </record>
-
         <record id="model_res_partner_key_restriction" model="ir.model">
             <field name="model">res.partner.key.restriction</field>
             <field name="name">Res Partner Key Restriction</field>
-        </record>
-
-        <record id="model_res_users" model="ir.model">
-            <field name="model">res.users</field>
-            <field name="name">Res Users</field>
         </record>
 
         <record id="model_retrieval_item_base" model="ir.model">
@@ -507,11 +477,6 @@
         <record id="model_stock_lot_attribute_value" model="ir.model">
             <field name="model">stock.lot.attribute.value</field>
             <field name="name">Stock Lot Attribute Value</field>
-        </record>
-
-        <record id="model_stock_move" model="ir.model">
-            <field name="model">stock.move</field>
-            <field name="name">Stock Move</field>
         </record>
 
         <record id="model_stock_move_sms_validation" model="ir.model">
