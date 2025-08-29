@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_mobile_bin_key_wizard_view</field>
         <field name="report_file">records_management.report_mobile_bin_key_wizard</field>
         <field name="print_report_name">"(Mobile Bin Key Wizard Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_mobile_bin_key_wizard"/>
+        <field name="binding_model_id" ref="records_management.model_mobile_bin_key_wizard"/>
         <field name="binding_type">report</field>
     </record>
 

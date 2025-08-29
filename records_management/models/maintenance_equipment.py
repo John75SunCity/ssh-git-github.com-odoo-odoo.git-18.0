@@ -1,3 +1,4 @@
+import logging
 from odoo import models, fields, api, _
 
 class MaintenanceEquipment(models.Model):
@@ -58,4 +59,23 @@ class MaintenanceEquipment(models.Model):
                 equipment.next_calibration_date = equipment.last_calibration_date + fields.date_utils.relativedelta(days=30)
             else:
                 equipment.next_calibration_date = False
+
+    # ============================================================================
+    # CRON METHODS
+    # ============================================================================
+    def check_calibration_due(self):
+        """Cron method to check for equipment that needs calibration"""
+        today = fields.Date.today()
+        overdue_equipment = self.search([
+            ('calibration_required', '=', True),
+            ('next_calibration_date', '<=', today)
+        ])
+
+        if overdue_equipment:
+            # Log or send notifications for overdue calibrations
+            _logger = logging.getLogger(__name__)
+            _logger.info("Found %s equipment items requiring calibration", len(overdue_equipment))
+
+            # TODO: Add notification logic here
+            # For example, create maintenance requests or send emails        return True
 

@@ -38,7 +38,7 @@ ${object.company_id.name}</p>
         <!-- Route Optimization Complete Notification -->
         <record id="mail_template_fsm_route_optimized" model="mail.template">
             <field name="name">FSM: Route Optimization Complete</field>
-            <field name="model_id" ref="model_pickup_route"/>
+            <field name="model_id" ref="records_management.model_pickup_route"/>
             <field name="subject">Route ${object.name} - Optimization Complete</field>
             <field name="email_from">dispatch@suncityshred.com</field>
             <field name="email_to">${object.driver_id.work_email}</field>

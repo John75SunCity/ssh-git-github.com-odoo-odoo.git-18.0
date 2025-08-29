@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_records_user_invitation_wizard_view</field>
         <field name="report_file">records_management.report_records_user_invitation_wizard</field>
         <field name="print_report_name">"(Records User Invitation Wizard Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_records_user_invitation_wizard"/>
+        <field name="binding_model_id" ref="records_management.model_records_user_invitation_wizard"/>
         <field name="binding_type">report</field>
     </record>
 

@@ -6,7 +6,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">records_management.report_customer_negotiated_rate_view</field>
         <field name="print_report_name">f'Negotiated Rate - {object.name}'</field>
-        <field name="binding_model_id" ref="model_customer_negotiated_rate"/>
+        <field name="binding_model_id" ref="records_management.model_customer_negotiated_rate"/>
         <field name="binding_type">report</field>
     </record>
 

@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_location_report_wizard_view</field>
         <field name="report_file">records_management.report_location_report_wizard</field>
         <field name="print_report_name">"(Location Report Wizard) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_location_report_wizard"/>
+        <field name="binding_model_id" ref="records_management.model_location_report_wizard"/>
         <field name="binding_type">report</field>
     </record>
 

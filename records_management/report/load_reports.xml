@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_load_manifest</field>
         <field name="report_file">records_management.report_load_manifest</field>
         <field name="print_report_name">'Load Manifest - %s' % (object.name)</field>
-        <field name="binding_model_id" ref="model_load"/>
+        <field name="binding_model_id" ref="records_management.model_load"/>
         <field name="binding_type">report</field>
         <field name="paperformat_id" ref="base.paperformat_us"/>
     </record>

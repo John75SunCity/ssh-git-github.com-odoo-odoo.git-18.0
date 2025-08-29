@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_fsm_reschedule_wizard_placeholder_view</field>
         <field name="report_file">records_management.report_fsm_reschedule_wizard_placeholder</field>
         <field name="print_report_name">"(FSM Reschedule Wizard Placeholder Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_fsm_reschedule_wizard_placeholder"/>
+        <field name="binding_model_id" ref="records_management.model_fsm_reschedule_wizard_placeholder"/>
         <field name="binding_type">report</field>
     </record>
 

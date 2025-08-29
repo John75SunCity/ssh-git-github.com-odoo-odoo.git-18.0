@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_proj_task_ext_view</field>
         <field name="report_file">records_management.report_proj_task_ext</field>
         <field name="print_report_name">"(Proj Task Ext Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_proj_task_ext"/>
+        <field name="binding_model_id" ref="records_management.model_proj_task_ext"/>
         <field name="binding_type">report</field>
     </record>
 

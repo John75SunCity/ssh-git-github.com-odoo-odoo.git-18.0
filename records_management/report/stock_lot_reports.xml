@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_stock_lot_view</field>
         <field name="report_file">records_management.report_stock_lot</field>
         <field name="print_report_name">"(Stock Lot Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_stock_lot"/>
+        <field name="binding_model_id" ref="records_management.model_stock_lot"/>
         <field name="binding_type">report</field>
     </record>
 

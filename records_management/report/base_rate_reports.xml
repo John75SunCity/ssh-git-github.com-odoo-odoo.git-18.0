@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_base_rate_view</field>
         <field name="report_file">records_management.report_base_rate</field>
         <field name="print_report_name">"(Base Rate Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_base_rate"/>
+        <field name="binding_model_id" ref="records_management.model_base_rate"/>
         <field name="binding_type">report</field>
     </record>
 

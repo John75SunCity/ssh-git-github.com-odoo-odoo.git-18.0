@@ -243,8 +243,8 @@
     <!-- Batch Approve Billing Config Audits -->
     <record id="action_batch_approve_billing_audit" model="ir.actions.server">
         <field name="name">Batch Approve Audits</field>
-        <field name="model_id" ref="model_records_billing_config_audit"/>
-        <field name="binding_model_id" ref="model_records_billing_config_audit"/>
+        <field name="model_id" ref="records_management.model_records_billing_config_audit"/>
+        <field name="binding_model_id" ref="records_management.model_records_billing_config_audit"/>
         <field name="state">code</field>
         <field name="code">
             for record in records:
@@ -257,8 +257,8 @@
     <!-- Generate Performance Report -->
     <record id="action_generate_performance_report" model="ir.actions.server">
         <field name="name">Generate Performance Report</field>
-        <field name="model_id" ref="model_document_retrieval_metrics"/>
-        <field name="binding_model_id" ref="model_document_retrieval_metrics"/>
+        <field name="model_id" ref="records_management.model_document_retrieval_metrics"/>
+        <field name="binding_model_id" ref="records_management.model_document_retrieval_metrics"/>
         <field name="state">code</field>
         <field name="code">
             # Generate performance summary report

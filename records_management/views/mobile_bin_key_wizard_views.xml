@@ -118,7 +118,7 @@
 <!-- Quick access shortcut -->
     <record id="action_mobile_key_shortcut" model="ir.actions.server">
         <field name="name">🔑 Quick Key Access</field>
-        <field name="model_id" ref="model_mobile_bin_key_wizard"/>
+        <field name="model_id" ref="records_management.model_mobile_bin_key_wizard"/>
         <field name="state">code</field>
         <field name="code">
 action = {

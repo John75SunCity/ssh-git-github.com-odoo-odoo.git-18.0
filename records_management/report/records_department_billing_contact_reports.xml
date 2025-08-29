@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_records_department_billing_contact_view</field>
         <field name="report_file">records_management.report_records_department_billing_contact</field>
         <field name="print_report_name">"(Records Department Billing Contact Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_records_department_billing_contact"/>
+        <field name="binding_model_id" ref="records_management.model_records_department_billing_contact"/>
         <field name="binding_type">report</field>
     </record>
 

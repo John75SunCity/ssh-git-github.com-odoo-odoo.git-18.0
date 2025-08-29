@@ -98,7 +98,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">records_management.revenue_forecast_report_template</field>
         <field name="report_file">records_management.revenue_forecast_report_template</field>
-        <field name="binding_model_id" ref="model_revenue_forecaster"/>
+        <field name="binding_model_id" ref="records_management.model_revenue_forecaster"/>
         <field name="binding_type">report</field>
     </record>
 </odoo>

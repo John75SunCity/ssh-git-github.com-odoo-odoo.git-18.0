@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_records_policy_version_view</field>
         <field name="report_file">records_management.report_records_policy_version</field>
         <field name="print_report_name">"(Records Policy Version Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_records_policy_version"/>
+        <field name="binding_model_id" ref="records_management.model_records_policy_version"/>
         <field name="binding_type">report</field>
     </record>
 

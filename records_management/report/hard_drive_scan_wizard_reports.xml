@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_hard_drive_scan_wizard_view</field>
         <field name="report_file">records_management.report_hard_drive_scan_wizard</field>
         <field name="print_report_name">"(Hard Drive Scan Wizard Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_hard_drive_scan_wizard"/>
+        <field name="binding_model_id" ref="records_management.model_hard_drive_scan_wizard"/>
         <field name="binding_type">report</field>
     </record>
 

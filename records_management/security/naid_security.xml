@@ -28,7 +28,7 @@
         <!-- NAID Access Rules -->
         <record id="access_naid_audit_log_security_officer" model="ir.rule">
             <field name="name">NAID Audit Log: Security Officer</field>
-            <field name="model_id" ref="model_naid_audit_log"/>
+            <field name="model_id" ref="records_management.model_naid_audit_log"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_naid_security_officer'))]"/>
             <field name="perm_read" eval="True"/>
@@ -39,7 +39,7 @@
 
         <record id="access_naid_audit_log_auditor" model="ir.rule">
             <field name="name">NAID Audit Log: Auditor Read-Only</field>
-            <field name="model_id" ref="model_naid_audit_log"/>
+            <field name="model_id" ref="records_management.model_naid_audit_log"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_naid_auditor'))]"/>
             <field name="perm_read" eval="True"/>
@@ -50,7 +50,7 @@
 
         <record id="access_naid_compliance_policy_manager" model="ir.rule">
             <field name="name">NAID Compliance Policy: Manager</field>
-            <field name="model_id" ref="model_naid_compliance_policy"/>
+            <field name="model_id" ref="records_management.model_naid_compliance_policy"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_naid_compliance_manager'))]"/>
             <field name="perm_read" eval="True"/>
@@ -61,7 +61,7 @@
 
         <record id="access_naid_chain_custody_operator" model="ir.rule">
             <field name="name">NAID Chain of Custody: Destruction Operator</field>
-            <field name="model_id" ref="model_naid_chain_custody"/>
+            <field name="model_id" ref="records_management.model_naid_chain_custody"/>
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_naid_destruction_operator'))]"/>
             <field name="perm_read" eval="True"/>

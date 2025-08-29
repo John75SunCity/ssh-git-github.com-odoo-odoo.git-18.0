@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_rm_module_configurator_view</field>
         <field name="report_file">records_management.report_rm_module_configurator</field>
         <field name="print_report_name">"(Rm Module Configurator Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_rm_module_configurator"/>
+        <field name="binding_model_id" ref="records_management.model_rm_module_configurator"/>
         <field name="binding_type">report</field>
     </record>
 

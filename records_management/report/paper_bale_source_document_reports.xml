@@ -6,7 +6,7 @@
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_paper_bale_source_document_view</field>
         <field name="report_file">records_management.report_paper_bale_source_document</field>
-        <field name="binding_model_id" ref="model_paper_bale_source_document"/>
+        <field name="binding_model_id" ref="records_management.model_paper_bale_source_document"/>
         <field name="binding_type">report</field>
     </record>
 

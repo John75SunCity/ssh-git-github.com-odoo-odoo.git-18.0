@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_document_search_attempt_view</field>
         <field name="report_file">records_management.report_document_search_attempt</field>
         <field name="print_report_name">"(Document Search Attempt Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_document_search_attempt"/>
+        <field name="binding_model_id" ref="records_management.model_document_search_attempt"/>
         <field name="binding_type">report</field>
     </record>
 

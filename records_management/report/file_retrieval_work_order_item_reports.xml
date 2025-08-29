@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_file_retrieval_work_order_item_view</field>
         <field name="report_file">records_management.report_file_retrieval_work_order_item</field>
         <field name="print_report_name">"(File Retrieval Work Order Item Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_file_retrieval_work_order_item"/>
+        <field name="binding_model_id" ref="records_management.model_file_retrieval_work_order_item"/>
         <field name="binding_type">report</field>
     </record>
 

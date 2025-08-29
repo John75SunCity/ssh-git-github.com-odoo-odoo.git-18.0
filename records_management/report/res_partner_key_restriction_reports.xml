@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_res_partner_key_restriction_view</field>
         <field name="report_file">records_management.report_res_partner_key_restriction</field>
         <field name="print_report_name">"(Res Partner Key Restriction Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_res_partner_key_restriction"/>
+        <field name="binding_model_id" ref="records_management.model_res_partner_key_restriction"/>
         <field name="binding_type">report</field>
     </record>
 

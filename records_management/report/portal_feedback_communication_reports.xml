@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_portal_feedback_communication_view</field>
         <field name="report_file">records_management.report_portal_feedback_communication</field>
         <field name="print_report_name">"(Portal Feedback Communication Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_portal_feedback_communication"/>
+        <field name="binding_model_id" ref="records_management.model_portal_feedback_communication"/>
         <field name="binding_type">report</field>
     </record>
 

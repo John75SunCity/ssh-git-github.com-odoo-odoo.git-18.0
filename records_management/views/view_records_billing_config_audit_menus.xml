@@ -313,8 +313,8 @@
     <!-- Server Actions for Bulk Operations -->
     <record id="server_action_approve_multiple_audits" model="ir.actions.server">
         <field name="name">Approve Selected Audits</field>
-        <field name="model_id" ref="model_records_billing_config_audit"/>
-        <field name="binding_model_id" ref="model_records_billing_config_audit"/>
+        <field name="model_id" ref="records_management.model_records_billing_config_audit"/>
+        <field name="binding_model_id" ref="records_management.model_records_billing_config_audit"/>
         <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="groups_id" eval="[(6, 0, [ref('records_management.group_records_manager')])]"/>
@@ -335,8 +335,8 @@ if records:
 
     <record id="server_action_reject_multiple_audits" model="ir.actions.server">
         <field name="name">Reject Selected Audits</field>
-        <field name="model_id" ref="model_records_billing_config_audit"/>
-        <field name="binding_model_id" ref="model_records_billing_config_audit"/>
+        <field name="model_id" ref="records_management.model_records_billing_config_audit"/>
+        <field name="binding_model_id" ref="records_management.model_records_billing_config_audit"/>
         <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="groups_id" eval="[(6, 0, [ref('records_management.group_records_manager')])]"/>

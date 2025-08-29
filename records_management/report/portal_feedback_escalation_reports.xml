@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_portal_feedback_escalation_view</field>
         <field name="report_file">records_management.report_portal_feedback_escalation</field>
         <field name="print_report_name">"(Portal Feedback Escalation Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_portal_feedback_escalation"/>
+        <field name="binding_model_id" ref="records_management.model_portal_feedback_escalation"/>
         <field name="binding_type">report</field>
     </record>
 

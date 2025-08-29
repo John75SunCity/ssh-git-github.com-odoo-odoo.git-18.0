@@ -7,7 +7,7 @@
         <field name="report_name">records_management.report_shredding_certificate_view</field>
         <field name="report_file">records_management.report_shredding_certificate</field>
         <field name="print_report_name">"(Shredding Certificate Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="model_shredding_certificate"/>
+        <field name="binding_model_id" ref="records_management.model_shredding_certificate"/>
         <field name="binding_type">report</field>
     </record>
 

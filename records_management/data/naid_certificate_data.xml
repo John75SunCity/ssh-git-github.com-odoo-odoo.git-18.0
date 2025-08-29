@@ -90,7 +90,7 @@
         <!-- Email Template for Certificate Notifications -->
         <record id="email_template_naid_certificate" model="mail.template">
             <field name="name">NAID Certificate Issued</field>
-            <field name="model_id" ref="model_naid_certificate"/>
+            <field name="model_id" ref="records_management.model_naid_certificate"/>
             <field name="subject">NAID Certificate ${object.number} - ${object.certificate_type_id.name}</field>
             <field name="email_from">${(object.company_id.email or user.email)|safe}</field>
             <field name="email_to">${object.partner_id.email}</field>

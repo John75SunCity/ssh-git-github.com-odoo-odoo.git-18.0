@@ -21,7 +21,7 @@
         </record>
 
         <!-- NAID Compliance Policies -->
-        <record id="policy_access_control" model="naid.compliance.enhanced">
+        <record id="policy_access_control" model="naid.compliance.checklist">
             <field name="name">Access Control</field>
             <field name="sequence">10</field>
             <field name="policy_type">access_control</field>
@@ -34,7 +34,7 @@
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_document_handling" model="naid.compliance.enhanced">
+        <record id="policy_document_handling" model="naid.compliance.checklist">
             <field name="name">Document Handling</field>
             <field name="sequence">20</field>
             <field name="policy_type">document_handling</field>
@@ -47,7 +47,7 @@
             <field name="review_frequency_months">12</field>
         </record>
 
-        <record id="policy_destruction_process" model="naid.compliance.enhanced">
+        <record id="policy_destruction_process" model="naid.compliance.checklist">
             <field name="name">Destruction Process</field>
             <field name="sequence">30</field>
             <field name="policy_type">destruction_process</field>
@@ -60,7 +60,7 @@
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_employee_screening" model="naid.compliance.enhanced">
+        <record id="policy_employee_screening" model="naid.compliance.checklist">
             <field name="name">Employee Screening</field>
             <field name="sequence">40</field>
             <field name="policy_type">employee_screening</field>
@@ -73,7 +73,7 @@
             <field name="review_frequency_months">12</field>
         </record>
 
-        <record id="policy_facility_security" model="naid.compliance.enhanced">
+        <record id="policy_facility_security" model="naid.compliance.checklist">
             <field name="name">Facility Security</field>
             <field name="sequence">50</field>
             <field name="policy_type">facility_security</field>
@@ -86,7 +86,7 @@
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_equipment_maintenance" model="naid.compliance.enhanced">
+        <record id="policy_equipment_maintenance" model="naid.compliance.checklist">
             <field name="name">Equipment Maintenance</field>
             <field name="sequence">60</field>
             <field name="policy_type">equipment_maintenance</field>
@@ -99,7 +99,7 @@
             <field name="review_frequency_months">3</field>
         </record>
 
-        <record id="policy_audit_requirements" model="naid.compliance.enhanced">
+        <record id="policy_audit_requirements" model="naid.compliance.checklist">
             <field name="name">Audit Requirements</field>
             <field name="sequence">70</field>
             <field name="policy_type">audit_requirements</field>
@@ -125,7 +125,7 @@
 
         <record id="cron_cleanup_audit_logs" model="ir.cron">
             <field name="name">Cleanup Old Audit Logs</field>
-            <field name="model_id" ref="model_naid_audit_log"/>
+            <field name="model_id" ref="records_management.model_naid_audit_log"/>
             <field name="state">code</field>
             <field name="code">model.cleanup_old_logs()</field>
             <field name="interval_number">1</field>
@@ -135,7 +135,7 @@
 
         <record id="cron_compliance_check" model="ir.cron">
             <field name="name">NAID Compliance Check</field>
-            <field name="model_id" ref="model_naid_compliance_enhanced"/>
+            <field name="model_id" ref="records_management.model_naid_compliance_checklist"/>
             <field name="state">code</field>
             <field name="code">model.check_compliance()</field>
             <field name="interval_number">4</field>
@@ -146,7 +146,7 @@
         <!-- Enhanced NAID Compliance Configurations -->
 
         <!-- Additional NAID Policies -->
-        <record id="policy_data_privacy" model="naid.compliance.enhanced">
+        <record id="policy_data_privacy" model="naid.compliance.checklist">
             <field name="name">Data Privacy Protection</field>
             <field name="sequence">80</field>
             <field name="policy_type">data_privacy</field>
@@ -159,7 +159,7 @@
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_transportation_security" model="naid.compliance.enhanced">
+        <record id="policy_transportation_security" model="naid.compliance.checklist">
             <field name="name">Transportation Security</field>
             <field name="sequence">90</field>
             <field name="policy_type">transportation</field>
@@ -172,7 +172,7 @@
             <field name="review_frequency_months">6</field>
         </record>
 
-        <record id="policy_incident_response" model="naid.compliance.enhanced">
+        <record id="policy_incident_response" model="naid.compliance.checklist">
             <field name="name">Incident Response</field>
             <field name="sequence">100</field>
             <field name="policy_type">incident_response</field>
@@ -276,7 +276,7 @@
         <!-- Additional Scheduled Actions -->
         <record id="cron_equipment_calibration_check" model="ir.cron">
             <field name="name">Equipment Calibration Check</field>
-            <field name="model_id" ref="model_shredding_equipment"/>
+            <field name="model_id" ref="maintenance.model_maintenance_equipment"/>
             <field name="state">code</field>
             <field name="code">model.check_calibration_due()</field>
             <field name="interval_number">1</field>
@@ -296,7 +296,7 @@
 
         <record id="cron_certificate_generation" model="ir.cron">
             <field name="name">Automatic Certificate Generation</field>
-            <field name="model_id" ref="model_naid_certificate"/>
+            <field name="model_id" ref="records_management.model_naid_certificate"/>
             <field name="state">code</field>
             <field name="code">model.generate_pending_certificates()</field>
             <field name="interval_number">1</field>

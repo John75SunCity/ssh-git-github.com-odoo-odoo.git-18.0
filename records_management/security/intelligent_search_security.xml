@@ -9,7 +9,7 @@
         <!-- Container Search Rules (Core Functionality) -->
         <record id="records_container_search_rule" model="ir.rule">
             <field name="name">Container Search Access Rule</field>
-            <field name="model_id" ref="model_records_container"/>
+            <field name="model_id" ref="records_management.model_records_container"/>
             <field name="domain_force">[
                 '|',
                 ('partner_id', '=', False),
@@ -27,7 +27,7 @@
         <!-- Portal Container Search Rule (Customer Portal) -->
         <record id="records_container_portal_search_rule" model="ir.rule">
             <field name="name">Portal Container Search Rule</field>
-            <field name="model_id" ref="model_records_container"/>
+            <field name="model_id" ref="records_management.model_records_container"/>
             <field name="domain_force">[
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
             ]</field>
@@ -41,7 +41,7 @@
         <!-- Document Search Rules -->
         <record id="records_document_search_rule" model="ir.rule">
             <field name="name">Document Search Access Rule</field>
-            <field name="model_id" ref="model_records_document"/>
+            <field name="model_id" ref="records_management.model_records_document"/>
             <field name="domain_force">[
                 '|',
                 ('partner_id', '=', False),
@@ -59,7 +59,7 @@
         <!-- Portal Document Search Rule -->
         <record id="records_document_portal_search_rule" model="ir.rule">
             <field name="name">Portal Document Search Rule</field>
-            <field name="model_id" ref="model_records_document"/>
+            <field name="model_id" ref="records_management.model_records_document"/>
             <field name="domain_force">[
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
             ]</field>
@@ -73,7 +73,7 @@
         <!-- Location Search Rules (All Users Can See Locations) -->
         <record id="records_location_search_rule" model="ir.rule">
             <field name="name">Location Search Access Rule</field>
-            <field name="model_id" ref="model_records_location"/>
+            <field name="model_id" ref="records_management.model_records_location"/>
             <!-- Allow all records to be visible (no restriction) -->
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('base.group_portal'))]"/>
@@ -90,7 +90,7 @@
     <!-- Field Label Customization Rules (Admin Only for Protected Fields) -->
     <record id="field_label_customization_admin_rule" model="ir.rule">
     <field name="name">Field Label Customization Admin Rule</field>
-    <field name="model_id" ref="model_field_label_customization"/>
+    <field name="model_id" ref="records_management.model_field_label_customization"/>
     <!-- Allow all records to be visible (no restriction) -->
     <field name="domain_force">[(1, '=', 1)]</field>
     <field name="groups" eval="[(4, ref('base.group_system'))]"/>
@@ -103,7 +103,7 @@
     <!-- Regular users can only view field customizations -->
     <record id="field_label_customization_user_rule" model="ir.rule">
     <field name="name">Field Label Customization User Rule</field>
-    <field name="model_id" ref="model_field_label_customization"/>
+    <field name="model_id" ref="records_management.model_field_label_customization"/>
     <field name="domain_force">[
                 '|',
                 ('scope', '=', 'global'),
@@ -123,7 +123,7 @@
     <!-- Portal Request Rules (Customer Can See Own Requests) -->
     <record id="portal_request_portal_rule" model="ir.rule">
     <field name="name">Portal Request Portal Access</field>
-    <field name="model_id" ref="model_portal_request"/>
+    <field name="model_id" ref="records_management.model_portal_request"/>
     <field name="domain_force">[
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
             ]</field>
@@ -137,7 +137,7 @@
     <!-- Customer Feedback Rules (Customer Can See Own Feedback) -->
     <record id="customer_feedback_portal_rule" model="ir.rule">
     <field name="name">Customer Feedback Portal Access</field>
-    <field name="model_id" ref="model_customer_feedback"/>
+    <field name="model_id" ref="records_management.model_customer_feedback"/>
     <field name="domain_force">[
                 ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
             ]</field>

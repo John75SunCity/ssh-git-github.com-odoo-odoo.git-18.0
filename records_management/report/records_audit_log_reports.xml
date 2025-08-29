@@ -6,7 +6,7 @@
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_records_audit_log_view</field>
         <field name="report_file">records_management.report_records_audit_log</field>
-        <field name="binding_model_id" ref="model_naid_audit_log"/>
+        <field name="binding_model_id" ref="records_management.model_naid_audit_log"/>
         <field name="binding_type">report</field>
     </record>
 

@@ -128,7 +128,7 @@
         <field name="res_model">naid.certificate</field>
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="naid_certificate_view_search"/>
-        <field name="binding_model_id" ref="model_project_task"/>
+        <field name="binding_model_id" ref="records_management.model_project_task"/>
         <field name="binding_view_types">form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>

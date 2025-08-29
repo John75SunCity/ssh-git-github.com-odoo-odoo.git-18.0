@@ -30,7 +30,6 @@
             "data/ir_sequence_data.xml",
             "data/load_data.xml",
             "data/mail_activity_data_todo.xml",
-            "data/model_external_ids.xml",
             "data/naid_certificate_data.xml",
             "data/naid_compliance_data.xml",
             "data/paper_products_data.xml",

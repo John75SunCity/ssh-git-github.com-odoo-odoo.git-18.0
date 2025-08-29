@@ -24,7 +24,7 @@
             <field name="report_name">records_management.report_service_item_utilization_template</field>
             <field name="report_file">records_management.report_service_item_utilization_template</field>
             <field name="print_report_name">'Utilization Report - %s' % (object.name)</field>
-            <field name="binding_model_id" ref="model_service_item"/>
+            <field name="binding_model_id" ref="records_management.model_service_item"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="paperformat_service_item_report"/>
         </record>
@@ -37,7 +37,7 @@
             <field name="report_name">records_management.report_maintenance_schedule_template</field>
             <field name="report_file">records_management.report_maintenance_schedule_template</field>
             <field name="print_report_name">'Maintenance Schedule - %s' % (object.name)</field>
-            <field name="binding_model_id" ref="model_service_item"/>
+            <field name="binding_model_id" ref="records_management.model_service_item"/>
             <field name="binding_type">report</field>
             <field name="paperformat_id" ref="paperformat_service_item_report"/>
         </record>
