@@ -20,6 +20,7 @@ from . import records_survey_user_input
 from . import portal_feedback_analytic
 from . import records_installer
 from . import shredding_hard_drive
+from . import bin_barcode_inventory
 from . import pickup_request_item
 from . import shredding_picklist_item
 from . import inventory_item_profile

@@ -478,5 +478,9 @@ access_work_order_retrieval_user,work.order.retrieval.user,model_work_order_retr
 access_work_order_retrieval_manager,work.order.retrieval.manager,model_work_order_retrieval,records_management.group_records_manager,1,1,1,1
 access_system_diagram_data_user,system.diagram.data.user,model_system_diagram_data,records_management.group_records_user,1,1,1,0
 access_system_diagram_data_manager,system.diagram.data.manager,model_system_diagram_data,records_management.group_records_manager,1,1,1,1
+access_bin_barcode_inventory_user,bin.barcode.inventory.user,model_bin_barcode_inventory,records_management.group_records_user,1,1,1,0
+access_bin_barcode_inventory_manager,bin.barcode.inventory.manager,model_bin_barcode_inventory,records_management.group_records_manager,1,1,1,1
+access_shredding_bin_sequence_reset_wizard_user,shredding.bin.sequence.reset.wizard.user,model_shredding_bin_sequence_reset_wizard,records_management.group_records_user,1,1,1,1
+access_shredding_bin_sequence_reset_wizard_manager,shredding.bin.sequence.reset.wizard.manager,model_shredding_bin_sequence_reset_wizard,records_management.group_records_manager,1,1,1,1
 access_stock_lot_user,stock.lot.user,model_stock_lot,records_management.group_records_user,1,1,1,0
 access_stock_lot_manager,stock.lot.manager,model_stock_lot,records_management.group_records_manager,1,1,1,1

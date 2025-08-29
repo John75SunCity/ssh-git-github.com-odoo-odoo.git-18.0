@@ -141,5 +141,60 @@
             <field name="padding">4</field>
             <field name="company_id" eval="False"/>
         </record>
+
+        <!-- Sequence for Bin Barcode Inventory -->
+        <record id="seq_bin_barcode_inventory" model="ir.sequence">
+            <field name="name">Bin Barcode Inventory Sequence</field>
+            <field name="code">bin.barcode.inventory</field>
+            <field name="prefix">BIN</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Portal Requests -->
+        <record id="seq_portal_request" model="ir.sequence">
+            <field name="name">Portal Request Sequence</field>
+            <field name="code">portal.request</field>
+            <field name="prefix">REQ</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Customer Feedback -->
+        <record id="seq_customer_feedback" model="ir.sequence">
+            <field name="name">Customer Feedback Sequence</field>
+            <field name="code">customer.feedback</field>
+            <field name="prefix">FB</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Chain of Custody -->
+        <record id="seq_chain_of_custody" model="ir.sequence">
+            <field name="name">Chain of Custody Sequence</field>
+            <field name="code">chain.of.custody</field>
+            <field name="prefix">COC</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Destruction Certificate -->
+        <record id="seq_destruction_certificate" model="ir.sequence">
+            <field name="name">Destruction Certificate Sequence</field>
+            <field name="code">destruction.certificate</field>
+            <field name="prefix">DEST</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for NAID Audit Log -->
+        <record id="seq_naid_audit_log" model="ir.sequence">
+            <field name="name">NAID Audit Log Sequence</field>
+            <field name="code">naid.audit.log</field>
+            <field name="prefix">AUDIT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

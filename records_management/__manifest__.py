@@ -50,6 +50,7 @@
         "views/advanced_billing_storage_line_views.xml",
         "views/advanced_billing_views.xml",
         "views/billing_period_views.xml",
+        "views/bin_barcode_inventory_views.xml",
         "views/bin_issue_report_wizard_views.xml",
         "views/customer_negotiated_rate_views.xml",
         "views/fleet_fsm_integration_menus.xml",

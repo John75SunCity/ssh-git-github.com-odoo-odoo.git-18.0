@@ -7,56 +7,23 @@
         <!-- For optimal search performance without system overload -->
         <!-- =============================================================== -->
 
-        <!-- Container Search Indexes -->
-        <record id="records_container_name_index" model="ir.model.fields">
-            <field name="model_id" ref="model_records_container"/>
-            <field name="name">name</field>
-            <field name="index">True</field>
-        </record>
+        <!--
+        IMPORTANT: Database indexes are now properly defined in Python model fields using index=True
 
-        <record id="records_container_barcode_index" model="ir.model.fields">
-            <field name="model_id" ref="model_records_container"/>
-            <field name="name">barcode</field>
-            <field name="index">True</field>
-        </record>
+        The previous approach of manually creating ir.model.fields records was incorrect and caused
+        database constraint violations. Proper indexing is achieved through:
 
-        <record id="records_container_partner_index" model="ir.model.fields">
-            <field name="model_id" ref="model_records_container"/>
-            <field name="name">partner_id</field>
-            <field name="index">True</field>
-        </record>
+        1. Adding index=True to field definitions in Python models
+        2. Using model inheritance to modify existing field indexes
+        3. Creating composite indexes via database migration scripts
 
-        <!-- Document Search Indexes -->
-        <record id="records_document_name_index" model="ir.model.fields">
-            <field name="model_id" ref="model_records_document"/>
-            <field name="name">name</field>
-            <field name="index">True</field>
-        </record>
+        Examples of proper field indexing in models:
+        - name = fields.Char(string='Name', index=True)
+        - barcode = fields.Char(string='Barcode', index=True)
+        - partner_id = fields.Many2one('res.partner', index=True)
 
-        <record id="records_document_barcode_index" model="ir.model.fields">
-            <field name="model_id" ref="model_records_document"/>
-            <field name="name">barcode</field>
-            <field name="index">True</field>
-        </record>
-
-        <record id="records_document_container_index" model="ir.model.fields">
-            <field name="model_id" ref="model_records_document"/>
-            <field name="name">container_id</field>
-            <field name="index">True</field>
-        </record>
-
-        <!-- Location Search Indexes -->
-        <record id="records_location_name_index" model="ir.model.fields">
-            <field name="model_id" ref="model_records_location"/>
-            <field name="name">name</field>
-            <field name="index">True</field>
-        </record>
-
-        <record id="records_location_barcode_index" model="ir.model.fields">
-            <field name="model_id" ref="model_records_location"/>
-            <field name="name">barcode</field>
-            <field name="index">True</field>
-        </record>
+        For composite indexes, use migration scripts as documented in the comments below.
+        -->
 
         <!-- =============================================================== -->
         <!-- COMPOSITE INDEXES FOR COMPLEX SEARCH QUERIES -->
@@ -76,24 +43,24 @@
         <!-- =============================================================== -->
 
         <!-- Container Search Composite Index -->
-        <!-- CREATE INDEX IF NOT EXISTS idx_container_search_composite 
+        <!-- CREATE INDEX IF NOT EXISTS idx_container_search_composite
              ON records_container (partner_id, alpha_range_start, primary_content_type, content_date_from); -->
 
         <!-- Document Search Composite Index -->
-        <!-- CREATE INDEX IF NOT EXISTS idx_document_search_composite 
+        <!-- CREATE INDEX IF NOT EXISTS idx_document_search_composite
              ON records_document (partner_id, container_id, document_type_id); -->
 
         <!-- Alphabetical Range Search Index -->
-        <!-- CREATE INDEX IF NOT EXISTS idx_container_alpha_range 
+        <!-- CREATE INDEX IF NOT EXISTS idx_container_alpha_range
              ON records_container (alpha_range_start, alpha_range_end) WHERE alpha_range_start IS NOT NULL; -->
 
         <!-- Date Range Search Index -->
-        <!-- CREATE INDEX IF NOT EXISTS idx_container_date_range 
+        <!-- CREATE INDEX IF NOT EXISTS idx_container_date_range
              ON records_container (content_date_from, content_date_to) WHERE content_date_from IS NOT NULL; -->
 
         <!-- Full-Text Search Support -->
-        <!-- CREATE INDEX IF NOT EXISTS idx_container_search_fulltext 
-             ON records_container USING gin(to_tsvector('english', COALESCE(search_keywords, ''))) 
+        <!-- CREATE INDEX IF NOT EXISTS idx_container_search_fulltext
+             ON records_container USING gin(to_tsvector('english', COALESCE(search_keywords, '')))
              WHERE search_keywords IS NOT NULL; -->
 
         <!-- =============================================================== -->
