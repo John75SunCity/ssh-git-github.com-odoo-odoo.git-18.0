@@ -1,5 +1,3 @@
-access_inventory_item_type_user,inventory.item.type.user,inventory.item.type,records_management.group_records_user,1,1,1,0
-access_inventory_item_type_manager,inventory.item.type.manager,inventory.item.type,records_management.group_records_manager,1,1,1,1
 access_inventory_item_profile_user,inventory.item.profile.user,inventory.item.profile,records_management.group_records_user,1,1,1,0
 access_inventory_item_profile_manager,inventory.item.profile.manager,inventory.item.profile,records_management.group_records_manager,1,1,1,1
 access_portal_request_line_user,portal.request.line.user,portal.request.line,records_management.group_records_user,1,1,1,0
