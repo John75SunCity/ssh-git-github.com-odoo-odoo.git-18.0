@@ -178,14 +178,3 @@
 
     </data>
 </odoo>
-            <field name="cubic_feet">1.25</field>
-            <field name="weight_capacity">50.0</field>
-            <field name="base_rate_monthly">30.00</field>
-            <field name="base_rate_yearly">330.00</field>
-            <field name="retrieval_fee">40.00</field>
-            <field name="security_features">24/7 access capability, priority retrieval</field>
-            <field name="state">active</field>
-        </record>
-
-    </data>
-</odoo>
