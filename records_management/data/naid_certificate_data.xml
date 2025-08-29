@@ -9,7 +9,7 @@
             <field name="company_id" eval="False"/>
         </record>
 
-        <!-- Demo NAID Certificate Types -->
+        <!-- NAID Certificate Types (Production Configuration) -->
         <record id="naid_cert_type_destruction" model="naid.certificate.type">
             <field name="name">Certificate of Destruction</field>
             <field name="code">COD</field>
@@ -25,51 +25,29 @@
             <field name="requires_witness">False</field>
         </record>
 
-        <!-- Demo Certificate Templates -->
+        <!-- Certificate Templates (Production Configuration) -->
         <record id="naid_destruction_template" model="naid.certificate.template">
             <field name="name">Standard Destruction Certificate</field>
             <field name="certificate_type_id" ref="naid_cert_type_destruction"/>
             <field name="template_content">
                 <![CDATA[
                 CERTIFICATE OF DESTRUCTION
-                
+
                 Certificate Number: ${certificate.number}
                 Date of Destruction: ${certificate.destruction_date}
-                
+
                 This certifies that the following materials have been securely destroyed
                 in accordance with NAID AAA standards:
-                
+
                 ${certificate.destroyed_items}
-                
+
                 Destruction Method: ${certificate.destruction_method}
                 Witness: ${certificate.witness_name}
-                
+
                 Authorized Signature: _________________
                 Date: ${certificate.issue_date}
                 ]]>
             </field>
-        </record>
-
-        <!-- Demo NAID Certificates -->
-        <record id="demo_naid_certificate_001" model="naid.certificate">
-            <field name="number">CERT/2024/00001</field>
-            <field name="certificate_type_id" ref="naid_cert_type_destruction"/>
-            <field name="partner_id" ref="base.res_partner_1"/>
-            <field name="destruction_date" eval="(datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')"/>
-            <field name="issue_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
-            <field name="destruction_method">Cross-Cut Shredding</field>
-            <field name="witness_name">John Smith</field>
-            <field name="state">issued</field>
-            <field name="compliance_level">naid_aaa</field>
-        </record>
-
-        <record id="demo_naid_certificate_002" model="naid.certificate">
-            <field name="number">CERT/2024/00002</field>
-            <field name="certificate_type_id" ref="naid_cert_type_transport"/>
-            <field name="partner_id" ref="base.res_partner_2"/>
-            <field name="issue_date" eval="datetime.now().strftime('%Y-%m-%d')"/>
-            <field name="state">draft</field>
-            <field name="compliance_level">naid_aa</field>
         </record>
 
         <!-- Default NAID Compliance Settings -->
@@ -99,20 +77,20 @@
                 <![CDATA[
                 <div style="margin: 0px; padding: 0px;">
                     <p>Dear ${object.partner_id.name},</p>
-                    
+
                     <p>Your NAID Certificate has been issued:</p>
-                    
+
                     <ul>
                         <li><strong>Certificate Number:</strong> ${object.number}</li>
                         <li><strong>Type:</strong> ${object.certificate_type_id.name}</li>
                         <li><strong>Issue Date:</strong> ${object.issue_date}</li>
                         <li><strong>Compliance Level:</strong> ${object.compliance_level.upper()}</li>
                     </ul>
-                    
+
                     <p>This certificate verifies compliance with NAID standards for secure document handling and destruction.</p>
-                    
+
                     <p>For questions regarding this certificate, please contact us.</p>
-                    
+
                     <p>Best regards,<br/>
                     ${object.company_id.name}</p>
                 </div>

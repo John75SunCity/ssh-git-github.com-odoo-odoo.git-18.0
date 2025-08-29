@@ -20,17 +20,12 @@
         'sale_management', 'website_sale'
     ],
     "data": [
-            "data/advanced_billing_demo.xml",
             "data/base_rates_container_access_data.xml",
             "data/container_types_base_rates.xml",
-            "data/customer_inventory_demo.xml",
             "data/document_retrieval_rates_data.xml",
             "data/feedback_survey_data.xml",
-            "data/field_label_demo_data.xml",
             "data/fsm_automated_actions_data.xml",
             "data/fsm_mail_templates_data.xml",
-            "data/model_records_demo.xml",
-            "data/intelligent_search_demo_data.xml",
             "data/intelligent_search_indexes_data.xml",
             "data/ir_sequence_data.xml",
             "data/load_data.xml",
@@ -41,7 +36,6 @@
             "data/paper_products_data.xml",
             "data/portal_mail_templates_data.xml",
             "data/products_data.xml",
-            "data/records_config_mail_templates_data.xml",
             "data/scheduled_actions_data.xml",
             "data/sequence_data.xml",
             "data/storage_fee_data.xml",
@@ -70,7 +64,13 @@
         "views/shredding_service_event_views.xml",
     ],
     'demo': [
-        'demo/demo_records.xml'
+        'demo/customer_inventory_demo.xml',
+        'demo/advanced_billing_demo.xml',
+        'demo/model_records_demo.xml',
+        'demo/field_label_demo_data.xml',
+        'demo/intelligent_search_demo_data.xml',
+        'demo/naid_demo_certificates.xml',
+        'demo/records_config_mail_templates_data.xml'
     ],
     'assets': {
         'web.assets_backend': [

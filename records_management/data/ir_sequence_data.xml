@@ -59,17 +59,68 @@
         <record id="seq_work_order_shredding" model="ir.sequence">
             <field name="name">Shredding Work Order Sequence</field>
             <field name="code">work.order.shredding</field>
-            <field name="prefix">WO</field>
+            <field name="prefix">WRK</field>
             <field name="padding">4</field>
             <field name="company_id" eval="False"/>
         </record>
 
         <!-- Sequence for Shredding Bin Barcodes -->
         <record id="seq_shredding_bin_barcode" model="ir.sequence">
-            <field name="name">Shredding Bin Barcode Sequence</field>
+            <field name="name">Shredding Bin Barcode Sequence (Legacy)</field>
             <field name="code">shredding.bin.barcode</field>
             <field name="prefix"></field>
             <field name="padding">10</field>
+            <field name="company_id" eval="False"/>
+            <field name="active">False</field>
+        </record>
+
+        <!-- Sequence for 23 Gallon Bins -->
+        <record id="seq_bin_23_gallon" model="ir.sequence">
+            <field name="name">23 Gallon Bin Barcode Sequence</field>
+            <field name="code">shredding.bin.23gallon</field>
+            <field name="prefix">BIN23</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for 32 Gallon Console -->
+        <record id="seq_console_32_gallon" model="ir.sequence">
+            <field name="name">32 Gallon Console Barcode Sequence</field>
+            <field name="code">shredding.console.32gallon</field>
+            <field name="prefix">CON32</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for 32 Gallon Bins -->
+        <record id="seq_bin_32_gallon" model="ir.sequence">
+            <field name="name">32 Gallon Bin Barcode Sequence</field>
+            <field name="code">shredding.bin.32gallon</field>
+            <field name="prefix">BIN32</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for 64 Gallon Bins -->
+        <record id="seq_bin_64_gallon" model="ir.sequence">
+            <field name="name">64 Gallon Bin Barcode Sequence</field>
+            <field name="code">shredding.bin.64gallon</field>
+            <field name="prefix">BIN64</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for 96 Gallon Bins -->
+        <record id="seq_bin_96_gallon" model="ir.sequence">
+            <field name="name">96 Gallon Bin Barcode Sequence</field>
+            <field name="code">shredding.bin.96gallon</field>
+            <field name="prefix">BIN96</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
             <field name="company_id" eval="False"/>
         </record>
 
