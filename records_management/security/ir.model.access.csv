@@ -502,3 +502,7 @@ access_enhanced_fsm_integration_user,enhanced.fsm.integration.user,enhanced.fsm.
 access_enhanced_fsm_integration_manager,enhanced.fsm.integration.manager,enhanced.fsm.integration,records_management.group_records_manager,1,1,1,1
 access_mobile_fsm_integration_user,mobile.fsm.integration.user,mobile.fsm.integration,records_management.group_records_user,1,1,1,0
 access_mobile_fsm_integration_manager,mobile.fsm.integration.manager,mobile.fsm.integration,records_management.group_records_manager,1,1,1,1
+access_mobile_dashboard_widget_user,mobile.dashboard.widget.user,mobile.dashboard.widget,records_management.group_records_user,1,1,1,0
+access_mobile_dashboard_widget_manager,mobile.dashboard.widget.manager,mobile.dashboard.widget,records_management.group_records_manager,1,1,1,1
+access_mobile_dashboard_widget_category_user,mobile.dashboard.widget.category.user,mobile.dashboard.widget.category,records_management.group_records_user,1,1,1,0
+access_mobile_dashboard_widget_category_manager,mobile.dashboard.widget.category.manager,mobile.dashboard.widget.category,records_management.group_records_manager,1,1,1,1

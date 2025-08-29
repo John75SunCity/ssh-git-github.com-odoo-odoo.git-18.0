@@ -103,6 +103,8 @@ from . import approval_history
 from . import naid_performance_history
 from . import records_container_log
 from . import mobile_photo
+from . import mobile_dashboard_widget
+from . import mobile_dashboard_widget_category
 from . import fsm_notification_manager
 from . import records_container_movement
 from . import product_container_type
