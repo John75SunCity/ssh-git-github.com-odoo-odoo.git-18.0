@@ -63,7 +63,7 @@ class MobileDashboardWidget(models.Model):
 
     # Display Settings
     icon = fields.Char(
-        string='Icon',
+        string='Widget Icon',
         help='FontAwesome icon class (e.g., fa-tachometer-alt)'
     )
 

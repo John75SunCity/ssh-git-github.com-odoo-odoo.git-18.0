@@ -39,12 +39,12 @@ class MaintenanceTeam(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('maintenance_ids.request_date')
+    @api.depends('maintenance_request_ids.request_date')
     def _compute_performance_metrics(self):
         for team in self:
             # Note: Using simplified logic since stage.done and close_date fields don't exist
             # in the current maintenance model structure
-            requests = team.maintenance_ids.filtered(lambda r: r.request_date)
+            requests = team.maintenance_request_ids.filtered(lambda r: r.request_date)
             if requests:
                 # Simplified calculation based on available fields
                 team.average_resolution_time = 24.0  # Default estimate
