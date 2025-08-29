@@ -35,8 +35,8 @@ from . import records_billing_config
 from . import workflow_visualization_manager
 from . import enhanced_fsm_integration
 from . import mobile_fsm_integration
-from . import unlock_service_part
-from . import signed_document_audit
+from . import maintenance_equipment
+from . import maintenance_team
 from . import discount_rule
 from . import records_storage_department_user
 from . import bin_key_history
@@ -75,8 +75,7 @@ from . import scan_retrieval_item
 from . import records_container_transfer_line
 from . import display_name
 from . import records_access_log
-from . import transitory_field_config
-from . import shredding_service_photo
+from . import records_container_type_converter
 from . import barcode_models_enhanced
 from . import customer_inventory
 from . import customer_inventory_report_model
@@ -230,3 +229,17 @@ from . import shredding_service_bin
 
 # Import wizard models
 from . import shredding_service_event
+from . import fsm_reschedule_wizard
+from . import paper_bale_inspection_wizard
+from . import mobile_bin_key_wizard
+from . import customer_inventory_report
+from . import pickup_schedule_wizard
+from . import hard_drive_scan_wizard
+
+# Add missing imports identified by validation
+from . import temp_inventory_reject_wizard
+from . import unlock_service_part
+from . import signed_document_audit
+from . import transitory_field_config
+from . import shredding_service_photo
+from . import location_report_wizard

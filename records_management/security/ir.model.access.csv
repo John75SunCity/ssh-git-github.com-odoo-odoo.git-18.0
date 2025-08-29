@@ -506,3 +506,11 @@ access_mobile_dashboard_widget_user,mobile.dashboard.widget.user,mobile.dashboar
 access_mobile_dashboard_widget_manager,mobile.dashboard.widget.manager,mobile.dashboard.widget,records_management.group_records_manager,1,1,1,1
 access_mobile_dashboard_widget_category_user,mobile.dashboard.widget.category.user,mobile.dashboard.widget.category,records_management.group_records_user,1,1,1,0
 access_mobile_dashboard_widget_category_manager,mobile.dashboard.widget.category.manager,mobile.dashboard.widget.category,records_management.group_records_manager,1,1,1,1
+access_temp_inventory_reject_wizard_user,temp.inventory.reject.wizard.user,temp.inventory.reject.wizard,records_management.group_records_user,1,1,1,0
+access_temp_inventory_reject_wizard_manager,temp.inventory.reject.wizard.manager,temp.inventory.reject.wizard,records_management.group_records_manager,1,1,1,1
+access_billing_period_user,billing.period.user,billing.period,records_management.group_records_user,1,1,1,0
+access_billing_period_manager,billing.period.manager,billing.period,records_management.group_records_manager,1,1,1,1
+access_naid_custody_user,naid.custody.user,naid.custody,records_management.group_records_user,1,1,1,0
+access_naid_custody_manager,naid.custody.manager,naid.custody,records_management.group_records_manager,1,1,1,1
+access_records_request_user,records.request.user,records.request,records_management.group_records_user,1,1,1,0
+access_records_request_manager,records.request.manager,records.request,records_management.group_records_manager,1,1,1,1

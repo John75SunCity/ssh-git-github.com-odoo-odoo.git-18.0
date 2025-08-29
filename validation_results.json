@@ -1,0 +1,4865 @@
+{
+  "models_found": [
+    {
+      "name": "portal.feedback",
+      "file": "portal_feedback.py",
+      "class": "PortalFeedback"
+    },
+    {
+      "name": "records.document.type",
+      "file": "records_document_type.py",
+      "class": "RecordsDocumentType"
+    },
+    {
+      "name": "container.retrieval.item",
+      "file": "container_retrieval_item.py",
+      "class": "ContainerRetrievalItem"
+    },
+    {
+      "name": "base.rates",
+      "file": "base_rates.py",
+      "class": "BaseRates"
+    },
+    {
+      "name": "route.optimizer",
+      "file": "route_optimizer.py",
+      "class": "RouteOptimizer"
+    },
+    {
+      "name": "stock.lot.attribute",
+      "file": "stock_lot_attribute.py",
+      "class": "StockLotAttribute"
+    },
+    {
+      "name": "records.container.content.line",
+      "file": "records_container_content_line.py",
+      "class": "RecordsContainerContentLine"
+    },
+    {
+      "name": "records.tag.category",
+      "file": "records_tag_category.py",
+      "class": "RecordsTagCategory"
+    },
+    {
+      "name": "records.approval.workflow",
+      "file": "records_approval_workflow.py",
+      "class": "RecordsApprovalWorkflow"
+    },
+    {
+      "name": "container.access.document",
+      "file": "container_access_document.py",
+      "class": "ContainerAccessDocument"
+    },
+    {
+      "name": "pickup.route.stop",
+      "file": "pickup_route_stop.py",
+      "class": "PickupRouteStop"
+    },
+    {
+      "name": "naid.operator.certification",
+      "file": "naid_operator_certification.py",
+      "class": "NAIDOperatorCertification"
+    },
+    {
+      "name": "temp.inventory",
+      "file": "temp_inventory.py",
+      "class": "TempInventory"
+    },
+    {
+      "name": "temp.inventory.reject.wizard",
+      "file": "temp_inventory_reject_wizard.py",
+      "class": "TempInventoryRejectWizard"
+    },
+    {
+      "name": "paper.bale.recycling",
+      "file": "paper_bale_recycling.py",
+      "class": "PaperBaleRecycling"
+    },
+    {
+      "name": "location.group",
+      "file": "location_group.py",
+      "class": "LocationGroup"
+    },
+    {
+      "name": "records.request.line",
+      "file": "records_request_line.py",
+      "class": "RecordsRequestLine"
+    },
+    {
+      "name": "records.tag",
+      "file": "records_tag.py",
+      "class": "RecordsTag"
+    },
+    {
+      "name": "barcode.storage.box",
+      "file": "barcode_storage_box.py",
+      "class": "BarcodeStorageBox"
+    },
+    {
+      "name": "inventory.item.type",
+      "file": "inventory_item_type.py",
+      "class": "InventoryItemType"
+    },
+    {
+      "name": "records.container",
+      "file": "records_container.py",
+      "class": "RecordsContainer"
+    },
+    {
+      "name": "records.survey.user.input",
+      "file": "records_survey_user_input.py",
+      "class": "RecordsSurveyUserInput"
+    },
+    {
+      "name": "portal.feedback.analytic",
+      "file": "portal_feedback_analytic.py",
+      "class": "PortalFeedbackAnalytic"
+    },
+    {
+      "name": "records.installer",
+      "file": "records_installer.py",
+      "class": "RecordsInstaller"
+    },
+    {
+      "name": "shredding.hard_drive",
+      "file": "shredding_hard_drive.py",
+      "class": "ShreddingHardDrive"
+    },
+    {
+      "name": "shredding.service.bin",
+      "file": "shredding_service_bin.py",
+      "class": "ShreddingServiceBin"
+    },
+    {
+      "name": "pickup.request.item",
+      "file": "pickup_request_item.py",
+      "class": "PickupRequestItem"
+    },
+    {
+      "name": "shredding.picklist.item",
+      "file": "shredding_picklist_item.py",
+      "class": "ShreddingPicklistItem"
+    },
+    {
+      "name": "inventory.item.profile",
+      "file": "inventory_item_profile.py",
+      "class": "InventoryItemProfile"
+    },
+    {
+      "name": "records.container.type",
+      "file": "records_container_type.py",
+      "class": "RecordsContainerType"
+    },
+    {
+      "name": "pickup.request",
+      "file": "pickup_request.py",
+      "class": "PickupRequest"
+    },
+    {
+      "name": "advanced.billing.line",
+      "file": "advanced_billing_line.py",
+      "class": "AdvancedBillingLine"
+    },
+    {
+      "name": "bin.key",
+      "file": "bin_key.py",
+      "class": "BinKey"
+    },
+    {
+      "name": "advanced.billing.profile",
+      "file": "advanced_billing_profile.py",
+      "class": "AdvancedBillingProfile"
+    },
+    {
+      "name": "unlock.service.part",
+      "file": "unlock_service_part.py",
+      "class": "UnlockServicePart"
+    },
+    {
+      "name": "maintenance.equipment",
+      "file": "maintenance_equipment.py",
+      "class": "MaintenanceEquipment"
+    },
+    {
+      "name": "billing.period",
+      "file": "billing_period.py",
+      "class": "BillingPeriod"
+    },
+    {
+      "name": "signed.document.audit",
+      "file": "signed_document_audit.py",
+      "class": "SignedDocumentAudit"
+    },
+    {
+      "name": "discount.rule",
+      "file": "discount_rule.py",
+      "class": "DiscountRule"
+    },
+    {
+      "name": "records.storage.department.user",
+      "file": "records_storage_department_user.py",
+      "class": "RecordsStorageDepartmentUser"
+    },
+    {
+      "name": "maintenance.team",
+      "file": "maintenance_team.py",
+      "class": "MaintenanceTeam"
+    },
+    {
+      "name": "barcode.product",
+      "file": "barcode_product.py",
+      "class": "BarcodeProduct"
+    },
+    {
+      "name": "bin.key.history",
+      "file": "bin_key_history.py",
+      "class": "BinKeyHistory"
+    },
+    {
+      "name": "inventory.item.retrieval.line",
+      "file": "inventory_item_retrieval_line.py",
+      "class": "InventoryItemRetrievalLine"
+    },
+    {
+      "name": "description",
+      "file": "description.py",
+      "class": "Description"
+    },
+    {
+      "name": "revenue.forecast.line",
+      "file": "revenue_forecast_line.py",
+      "class": "RevenueForecastLine"
+    },
+    {
+      "name": "chain.of.custody",
+      "file": "chain_of_custody.py",
+      "class": "ChainOfCustody"
+    },
+    {
+      "name": "records.request.type",
+      "file": "records_request_type.py",
+      "class": "RecordsRequestType"
+    },
+    {
+      "name": "inventory.item.location.transfer",
+      "file": "inventory_item_location_transfer.py",
+      "class": "InventoryItemLocationTransfer"
+    },
+    {
+      "name": "naid.risk.assessment",
+      "file": "naid_risk_assessment.py",
+      "class": "NaidRiskAssessment"
+    },
+    {
+      "name": "portal.feedback.escalation",
+      "file": "portal_feedback_escalation.py",
+      "class": "PortalFeedbackEscalation"
+    },
+    {
+      "name": "revenue.analytic",
+      "file": "revenue_analytic.py",
+      "class": "RevenueAnalytic"
+    },
+    {
+      "name": "key.restriction.checker",
+      "file": "key_restriction_checker.py",
+      "class": "KeyRestrictionChecker"
+    },
+    {
+      "name": "records.department.billing.contact",
+      "file": "records_department_billing_contact.py",
+      "class": "RecordsDepartmentBillingContact"
+    },
+    {
+      "name": "key.inventory",
+      "file": "key_inventory.py",
+      "class": "KeyInventory"
+    },
+    {
+      "name": "temp.inventory.audit",
+      "file": "temp_inventory_audit.py",
+      "class": "TempInventoryAudit"
+    },
+    {
+      "name": "document.retrieval.item",
+      "file": "document_retrieval_item.py",
+      "class": "DocumentRetrievalItem"
+    },
+    {
+      "name": "container.retrieval",
+      "file": "container_retrieval.py",
+      "class": "ContainerRetrieval"
+    },
+    {
+      "name": "records.service.type",
+      "file": "records_service_type.py",
+      "class": "RecordsServiceType"
+    },
+    {
+      "name": "invoice.generation.log",
+      "file": "invoice_generation_log.py",
+      "class": "InvoiceGenerationLog"
+    },
+    {
+      "name": "naid.certificate.item",
+      "file": "naid_certificate_item.py",
+      "class": "NaidCertificateItem"
+    },
+    {
+      "name": "res.partner.key.restriction",
+      "file": "res_partner_key_restriction.py",
+      "class": "ResPartnerKeyRestriction"
+    },
+    {
+      "name": "transitory.item",
+      "file": "transitory_item.py",
+      "class": "TransitoryItem"
+    },
+    {
+      "name": "paper.bale.weigh.wizard",
+      "file": "generated_model.py",
+      "class": "GeneratedModel"
+    },
+    {
+      "name": "naid.audit.requirement",
+      "file": "naid_audit_requirement.py",
+      "class": "NAIDAuditRequirement"
+    },
+    {
+      "name": "records.approval.step",
+      "file": "records_approval_step.py",
+      "class": "RecordsApprovalStep"
+    },
+    {
+      "name": "load",
+      "file": "paper_bale_load.py",
+      "class": "Load"
+    },
+    {
+      "name": "base.rate",
+      "file": "base_rate.py",
+      "class": "BaseRate"
+    },
+    {
+      "name": "file.retrieval.work.order",
+      "file": "file_retrieval_work_order.py",
+      "class": "FileRetrievalWorkOrder"
+    },
+    {
+      "name": "paper.bale.inspection",
+      "file": "paper_bale_inspection.py",
+      "class": "PaperBaleInspection"
+    },
+    {
+      "name": "records.container.line",
+      "file": "records_container_line.py",
+      "class": "RecordsContainerLine"
+    },
+    {
+      "name": "bin.key.unlock.service",
+      "file": "bin_key_unlock_service.py",
+      "class": "BinKeyUnlockService"
+    },
+    {
+      "name": "paper.bale",
+      "file": "paper_bale.py",
+      "class": "PaperBale"
+    },
+    {
+      "name": "records.center.location",
+      "file": "records_center_location.py",
+      "class": "RecordsCenterLocation"
+    },
+    {
+      "name": "fsm.reschedule.wizard",
+      "file": "fsm_reschedule_wizard.py",
+      "class": "FsmRescheduleWizard"
+    },
+    {
+      "name": "project.task",
+      "file": "fsm_order.py",
+      "class": "FsmOrder"
+    },
+    {
+      "name": "shredding.team",
+      "file": "shredding_team.py",
+      "class": "ShreddingTeam"
+    },
+    {
+      "name": "signed.document",
+      "file": "signed_document.py",
+      "class": "SignedDocument"
+    },
+    {
+      "name": "shredding.service.log",
+      "file": "shredding_service_log.py",
+      "class": "ShreddingServiceLog"
+    },
+    {
+      "name": "temp.inventory.movement",
+      "file": "temp_inventory_movement.py",
+      "class": "TempInventoryMovement"
+    },
+    {
+      "name": "barcode.generation.history",
+      "file": "barcode_generation_history.py",
+      "class": "BarcodeGenerationHistory"
+    },
+    {
+      "name": "naid.destruction.record",
+      "file": "naid_destruction_record.py",
+      "class": "NaidDestructionRecord"
+    },
+    {
+      "name": "records.container.transfer",
+      "file": "records_container_transfer.py",
+      "class": "RecordsContainerTransfer"
+    },
+    {
+      "name": "naid.custody",
+      "file": "naid_custody.py",
+      "class": "NaidCustody"
+    },
+    {
+      "name": "file.retrieval.work.order.item",
+      "file": "file_retrieval_work_order_item.py",
+      "class": "FileRetrievalWorkOrderItem"
+    },
+    {
+      "name": "work.order.shredding",
+      "file": "work_order_shredding.py",
+      "class": "WorkOrderShredding"
+    },
+    {
+      "name": "advanced.billing.service.line",
+      "file": "advanced_billing_service_line.py",
+      "class": "AdvancedBillingServiceLine"
+    },
+    {
+      "name": "records.security.audit",
+      "file": "records_security_audit.py",
+      "class": "RecordsSecurityAudit"
+    },
+    {
+      "name": "container.access.photo",
+      "file": "container_access_photo.py",
+      "class": "ContainerAccessPhoto"
+    },
+    {
+      "name": "pickup.location",
+      "file": "pickup_location.py",
+      "class": "PickupLocation"
+    },
+    {
+      "name": "records.usage.tracking",
+      "file": "records_usage_tracking.py",
+      "class": "RecordsUsageTracking"
+    },
+    {
+      "name": "scan.retrieval.item",
+      "file": "scan_retrieval_item.py",
+      "class": "ScanRetrievalItem"
+    },
+    {
+      "name": "records.container.transfer.line",
+      "file": "records_container_transfer_line.py",
+      "class": "RecordsContainerTransferLine"
+    },
+    {
+      "name": "container.destruction.work.order",
+      "file": "container_destruction_work_order.py",
+      "class": "ContainerDestructionWorkOrder"
+    },
+    {
+      "name": "enhanced.fsm.integration",
+      "file": "enhanced_fsm_integration.py",
+      "class": "EnhancedFsmIntegration"
+    },
+    {
+      "name": "customer.feedback",
+      "file": "customer_feedback.py",
+      "class": "CustomerFeedback"
+    },
+    {
+      "name": "unlock.service.history",
+      "file": "unlock_service_history.py",
+      "class": "UnlockServiceHistory"
+    },
+    {
+      "name": "pickup.route",
+      "file": "pickup_route.py",
+      "class": "PickupRoute"
+    },
+    {
+      "name": "display_name",
+      "file": "display_name.py",
+      "class": "DisplayName"
+    },
+    {
+      "name": "records.access.log",
+      "file": "records_access_log.py",
+      "class": "RecordsAccessLog"
+    },
+    {
+      "name": "transitory.field.config",
+      "file": "transitory_field_config.py",
+      "class": "TransitoryFieldConfig"
+    },
+    {
+      "name": "records.container.type.converter",
+      "file": "records_container_type_converter.py",
+      "class": "RecordsContainerTypeConverter"
+    },
+    {
+      "name": "shredding.service.photo",
+      "file": "shredding_service_photo.py",
+      "class": "ShreddingServicePhoto"
+    },
+    {
+      "name": "barcode.models.enhanced",
+      "file": "barcode_models_enhanced.py",
+      "class": "BarcodeModelsEnhanced"
+    },
+    {
+      "name": "bin.barcode.inventory",
+      "file": "bin_barcode_inventory.py",
+      "class": "BinBarcodeInventory"
+    },
+    {
+      "name": "inventory.item.retrieval",
+      "file": "inventory_item_retrieval.py",
+      "class": "InventoryItemRetrieval"
+    },
+    {
+      "name": "shredding.inventory.batch",
+      "file": "shredding_inventory_batch.py",
+      "class": "ShreddingInventoryBatch"
+    },
+    {
+      "name": "customer.inventory",
+      "file": "customer_inventory.py",
+      "class": "CustomerInventory"
+    },
+    {
+      "name": "customer.inventory.line",
+      "file": "customer_inventory.py",
+      "class": "CustomerInventoryLine"
+    },
+    {
+      "name": "bin.unlock.service",
+      "file": "bin_unlock_service.py",
+      "class": "BinUnlockService"
+    },
+    {
+      "name": "customer.inventory.report",
+      "file": "customer_inventory_report_model.py",
+      "class": "CustomerInventoryReport"
+    },
+    {
+      "name": "records.location.report.wizard",
+      "file": "records_location_report_wizard.py",
+      "class": "RecordsLocationReportWizard"
+    },
+    {
+      "name": "records.retrieval.work.order",
+      "file": "records_retrieval_work_order.py",
+      "class": "RecordsRetrievalWorkOrder"
+    },
+    {
+      "name": "survey.improvement.action",
+      "file": "survey_improvement_action.py",
+      "class": "SurveyImprovementAction"
+    },
+    {
+      "name": "inventory.adjustment.reason",
+      "file": "inventory_adjustment_reason.py",
+      "class": "InventoryAdjustmentReason"
+    },
+    {
+      "name": "shredding.rate",
+      "file": "shredding_rate.py",
+      "class": "ShreddingRate"
+    },
+    {
+      "name": "records.department.billing.approval",
+      "file": "records_department_billing_approval.py",
+      "class": "RecordsDepartmentBillingApproval"
+    },
+    {
+      "name": "naid.certification.level",
+      "file": "naid_certification_level.py",
+      "class": "NAIDCertificationLevel"
+    },
+    {
+      "name": "naid.compliance.checklist.item",
+      "file": "naid_compliance_checklist_item.py",
+      "class": "NAIDComplianceChecklistItem"
+    },
+    {
+      "name": "custody.transfer.event",
+      "file": "custody_transfer_event.py",
+      "class": "CustodyTransferEvent"
+    },
+    {
+      "name": "hard.drive.scan.wizard",
+      "file": "hard_drive_scan_wizard.py",
+      "class": "HardDriveScanWizard"
+    },
+    {
+      "name": "hard.drive.scan.wizard.line",
+      "file": "hard_drive_scan_wizard.py",
+      "class": "HardDriveScanWizardLine"
+    },
+    {
+      "name": "container.access.visitor",
+      "file": "container_access_visitor.py",
+      "class": "ContainerAccessVisitor"
+    },
+    {
+      "name": "records.audit.log",
+      "file": "records_audit_log.py",
+      "class": "RecordsAuditLog"
+    },
+    {
+      "name": "customer.negotiated.rates",
+      "file": "customer_negotiated_rates.py",
+      "class": "CustomerNegotiatedRates"
+    },
+    {
+      "name": "portal.feedback.resolution",
+      "file": "portal_feedback_resolution.py",
+      "class": "PortalFeedbackResolution"
+    },
+    {
+      "name": "advanced.billing.storage.line",
+      "file": "advanced_billing_storage_line.py",
+      "class": "AdvancedBillingStorageLine"
+    },
+    {
+      "name": "portal.feedback.communication",
+      "file": "portal_feedback_communication.py",
+      "class": "PortalFeedbackCommunication"
+    },
+    {
+      "name": "processing.log",
+      "file": "processing_log.py",
+      "class": "ProcessingLog"
+    },
+    {
+      "name": "processing.log.resolution.wizard",
+      "file": "processing_log.py",
+      "class": "ProcessingLogResolutionWizard"
+    },
+    {
+      "name": "records.policy.version",
+      "file": "records_policy_version.py",
+      "class": "RecordsPolicyVersion"
+    },
+    {
+      "name": "container.content",
+      "file": "container_content.py",
+      "class": "ContainerContent"
+    },
+    {
+      "name": "naid.training.requirement",
+      "file": "naid_training_requirement.py",
+      "class": "NAIDTrainingRequirement"
+    },
+    {
+      "name": "container.retrieval.work.order",
+      "file": "container_retrieval_work_order.py",
+      "class": "ContainerRetrievalWorkOrder"
+    },
+    {
+      "name": "records.chain.of.custody",
+      "file": "records_chain_of_custody.py",
+      "class": "RecordsChainOfCustody"
+    },
+    {
+      "name": "portal.request.line",
+      "file": "portal_request_line.py",
+      "class": "PortalRequestLine"
+    },
+    {
+      "name": "visitor",
+      "file": "visitor.py",
+      "class": "Visitor"
+    },
+    {
+      "name": "mobile.dashboard.widget",
+      "file": "mobile_dashboard_widget.py",
+      "class": "MobileDashboardWidget"
+    },
+    {
+      "name": "approval.history",
+      "file": "approval_history.py",
+      "class": "ApprovalHistory"
+    },
+    {
+      "name": "naid.performance.history",
+      "file": "naid_performance_history.py",
+      "class": "NAIDPerformanceHistory"
+    },
+    {
+      "name": "container.access.report",
+      "file": "container_access_report.py",
+      "class": "ContainerAccessReport"
+    },
+    {
+      "name": "records.category",
+      "file": "records_category.py",
+      "class": "RecordsCategory"
+    },
+    {
+      "name": "records.container.log",
+      "file": "records_container_log.py",
+      "class": "RecordsContainerLog"
+    },
+    {
+      "name": "mobile.photo",
+      "file": "mobile_photo.py",
+      "class": "MobilePhoto"
+    },
+    {
+      "name": "fsm.notification.manager",
+      "file": "fsm_notification_manager.py",
+      "class": "FsmNotificationManager"
+    },
+    {
+      "name": "records.container.movement",
+      "file": "records_container_movement.py",
+      "class": "RecordsContainerMovement"
+    },
+    {
+      "name": "product.container.type",
+      "file": "product_container_type.py",
+      "class": "ProductContainerType"
+    },
+    {
+      "name": "portal.request",
+      "file": "portal_request.py",
+      "class": "PortalRequest"
+    },
+    {
+      "name": "hr.employee",
+      "file": "hr_employee.py",
+      "class": "HrEmployee"
+    },
+    {
+      "name": "records.series",
+      "file": "records_series.py",
+      "class": "RecordsSeries"
+    },
+    {
+      "name": "shredding.service",
+      "file": "shredding_service.py",
+      "class": "ShreddingService"
+    },
+    {
+      "name": "records.billing.config",
+      "file": "records_billing_config.py",
+      "class": "RecordsBillingConfig"
+    },
+    {
+      "name": "location.report.wizard",
+      "file": "location_report_wizard.py",
+      "class": "LocationReportWizard"
+    },
+    {
+      "name": "naid.compliance.action.plan",
+      "file": "naid_compliance_action_plan.py",
+      "class": "NaidComplianceActionPlan"
+    },
+    {
+      "name": "mobile.dashboard.widget.category",
+      "file": "mobile_dashboard_widget_category.py",
+      "class": "MobileDashboardWidgetCategory"
+    },
+    {
+      "name": "portal.feedback.action",
+      "file": "portal_feedback_action.py",
+      "class": "PortalFeedbackAction"
+    },
+    {
+      "name": "naid.compliance.policy",
+      "file": "naid_compliance_policy.py",
+      "class": "NaidCompliancePolicy"
+    },
+    {
+      "name": "mobile.fsm.integration",
+      "file": "mobile_fsm_integration.py",
+      "class": "MobileFsmIntegration"
+    },
+    {
+      "name": "records.request",
+      "file": "records_request.py",
+      "class": "RecordsRequest"
+    },
+    {
+      "name": "stock.lot.attribute.option",
+      "file": "stock_lot_attribute_option.py",
+      "class": "StockLotAttributeOption"
+    },
+    {
+      "name": "work.order.coordinator",
+      "file": "work_order_coordinator.py",
+      "class": "WorkOrderCoordinator"
+    },
+    {
+      "name": "survey.feedback.theme",
+      "file": "survey_feedback_theme.py",
+      "class": "SurveyFeedbackTheme"
+    },
+    {
+      "name": "inventory.item",
+      "file": "inventory_item.py",
+      "class": "InventoryItem"
+    },
+    {
+      "name": "photo",
+      "file": "photo.py",
+      "class": "Photo"
+    },
+    {
+      "name": "maintenance.team",
+      "file": "document_retrieval_team.py",
+      "class": "DocumentRetrievalTeam"
+    },
+    {
+      "name": "workflow.visualization.manager",
+      "file": "workflow_visualization_manager.py",
+      "class": "WorkflowVisualizationManager"
+    },
+    {
+      "name": "file.retrieval",
+      "file": "file_retrieval.py",
+      "class": "FileRetrieval"
+    },
+    {
+      "name": "paper.bale.line",
+      "file": "paper_bale_line.py",
+      "class": "PaperBaleLine"
+    },
+    {
+      "name": "paper.bale.inspection.wizard",
+      "file": "paper_bale_inspection_wizard.py",
+      "class": "PaperBaleInspectionWizard"
+    },
+    {
+      "name": "pickup.request.line",
+      "file": "pickup_request_line.py",
+      "class": "PickupRequestLine"
+    },
+    {
+      "name": "advanced.billing.contact",
+      "file": "advanced_billing_contact.py",
+      "class": "AdvancedBillingContact"
+    },
+    {
+      "name": "container.access.activity",
+      "file": "container_access_activity.py",
+      "class": "ContainerAccessActivity"
+    },
+    {
+      "name": "naid.compliance.alert",
+      "file": "naid_compliance_alert.py",
+      "class": "NaidComplianceAlert"
+    },
+    {
+      "name": "records.department",
+      "file": "records_department.py",
+      "class": "RecordsDepartment"
+    },
+    {
+      "name": "shredding.service.event",
+      "file": "shredding_service_event.py",
+      "class": "ShreddingServiceEvent"
+    },
+    {
+      "name": "records.document",
+      "file": "records_document.py",
+      "class": "RecordsDocument"
+    },
+    {
+      "name": "customer.portal.diagram",
+      "file": "customer_portal_diagram.py",
+      "class": "CustomerPortalDiagram"
+    },
+    {
+      "name": "maintenance.equipment",
+      "file": "document_retrieval_equipment.py",
+      "class": "DocumentRetrievalEquipment"
+    },
+    {
+      "name": "naid.certificate",
+      "file": "naid_certificate.py",
+      "class": "NaidCertificate"
+    },
+    {
+      "name": "records.location.inspection",
+      "file": "records_location_inspection.py",
+      "class": "RecordsLocationInspection"
+    },
+    {
+      "name": "records.location.inspection.line",
+      "file": "records_location_inspection.py",
+      "class": "RecordsLocationInspectionLine"
+    },
+    {
+      "name": "records.retention.policy",
+      "file": "records_retention_policy.py",
+      "class": "RecordsRetentionPolicy"
+    },
+    {
+      "name": "rm.module.configurator",
+      "file": "rm_module_configurator.py",
+      "class": "RmModuleConfigurator"
+    },
+    {
+      "name": "customer.negotiated.rate",
+      "file": "customer_negotiated_rate.py",
+      "class": "CustomerNegotiatedRate"
+    },
+    {
+      "name": "destruction.item",
+      "file": "destruction_item.py",
+      "class": "DestructionItem"
+    },
+    {
+      "name": "inventory.item.destruction.line",
+      "file": "inventory_item_destruction_line.py",
+      "class": "InventoryItemDestructionLine"
+    },
+    {
+      "name": "records.storage.box",
+      "file": "records_storage_box.py",
+      "class": "RecordsStorageBox"
+    },
+    {
+      "name": "shredding.certificate",
+      "file": "shredding_certificate.py",
+      "class": "ShreddingCertificate"
+    },
+    {
+      "name": "naid.equipment.standard",
+      "file": "naid_equipment_standard.py",
+      "class": "NAIDEquipmentStandard"
+    },
+    {
+      "name": "stock.lot.attribute.value",
+      "file": "stock_lot_attribute_value.py",
+      "class": "StockLotAttributeValue"
+    },
+    {
+      "name": "payment.split.line",
+      "file": "payment_split_line.py",
+      "class": "PaymentSplitLine"
+    },
+    {
+      "name": "payment.split",
+      "file": "payment_split.py",
+      "class": "PaymentSplit"
+    },
+    {
+      "name": "mobile.bin.key.wizard",
+      "file": "mobile_bin_key_wizard.py",
+      "class": "MobileBinKeyWizard"
+    },
+    {
+      "name": "advanced.billing",
+      "file": "advanced_billing.py",
+      "class": "AdvancedBilling"
+    },
+    {
+      "name": "revenue.forecast",
+      "file": "revenue_forecast.py",
+      "class": "RevenueForecast"
+    },
+    {
+      "name": "records.destruction.job",
+      "file": "records_destruction_job.py",
+      "class": "RecordsDestructionJob"
+    },
+    {
+      "name": "records.destruction.line",
+      "file": "records_destruction_job.py",
+      "class": "RecordsDestructionLine"
+    },
+    {
+      "name": "field.label.customization",
+      "file": "field_label_customization.py",
+      "class": "FieldLabelCustomization"
+    },
+    {
+      "name": "retrieval.metric",
+      "file": "retrieval_metric.py",
+      "class": "RetrievalMetric"
+    },
+    {
+      "name": "bin.issue.record",
+      "file": "bin_issue_record.py",
+      "class": "BinIssueRecord"
+    },
+    {
+      "name": "media.type",
+      "file": "media_type.py",
+      "class": "MediaType"
+    },
+    {
+      "name": "records.approval.workflow.line",
+      "file": "records_approval_workflow_line.py",
+      "class": "RecordsApprovalWorkflowLine"
+    },
+    {
+      "name": "records.retention.policy.version",
+      "file": "records_retention_policy_version.py",
+      "class": "RecordsRetentionPolicyVersion"
+    },
+    {
+      "name": "customer.category",
+      "file": "customer_category.py",
+      "class": "CustomerCategory"
+    },
+    {
+      "name": "naid.custody.event",
+      "file": "naidcustody_event.py",
+      "class": "NAIDCustodyEvent"
+    },
+    {
+      "name": "records.deletion.request",
+      "file": "records_deletion_request.py",
+      "class": "RecordsDeletionRequest"
+    },
+    {
+      "name": "file.retrieval.item",
+      "file": "file_retrieval_item.py",
+      "class": "FileRetrievalItem"
+    },
+    {
+      "name": "scan.retrieval",
+      "file": "scan_retrieval.py",
+      "class": "ScanRetrieval"
+    },
+    {
+      "name": "inventory.item.destruction",
+      "file": "inventory_item_destruction.py",
+      "class": "InventoryItemDestruction"
+    },
+    {
+      "name": "shred.bin",
+      "file": "shred_bin.py",
+      "class": "ShredBin"
+    },
+    {
+      "name": "records.inventory.dashboard",
+      "file": "records_inventory_dashboard.py",
+      "class": "RecordsInventoryDashboard"
+    },
+    {
+      "name": "records.bulk.user.import",
+      "file": "records_bulk_user_import.py",
+      "class": "RecordsBulkUserImport"
+    },
+    {
+      "name": "naid.audit.log",
+      "file": "naidaudit_log.py",
+      "class": "NAIDAuditLog"
+    },
+    {
+      "name": "records.retention.rule",
+      "file": "records_retention_rule.py",
+      "class": "RecordsRetentionRule"
+    },
+    {
+      "name": "records.promotional.discount",
+      "file": "records_promotional_discount.py",
+      "class": "RecordsPromotionalDiscount"
+    },
+    {
+      "name": "certificate.template.data",
+      "file": "certificate_template_data.py",
+      "class": "CertificateTemplateData"
+    },
+    {
+      "name": "records.location",
+      "file": "records_location.py",
+      "class": "RecordsLocation"
+    },
+    {
+      "name": "container.access.work.order",
+      "file": "container_access_work_order.py",
+      "class": "ContainerAccessWorkOrder"
+    },
+    {
+      "name": "stock.move.sms.validation",
+      "file": "stock_move_smsvalidation.py",
+      "class": "StockMoveSMSValidation"
+    },
+    {
+      "name": "paper.bale.movement",
+      "file": "paper_bale_movement.py",
+      "class": "PaperBaleMovement"
+    },
+    {
+      "name": "barcode.pricing.tier",
+      "file": "barcode_pricing_tier.py",
+      "class": "BarcodePricingTier"
+    },
+    {
+      "name": "full.customization.name",
+      "file": "full_customization_name.py",
+      "class": "FullCustomizationName"
+    },
+    {
+      "name": "service.item",
+      "file": "service_item.py",
+      "class": "ServiceItem"
+    },
+    {
+      "name": "work.order.retrieval",
+      "file": "work_order_retrieval.py",
+      "class": "WorkOrderRetrieval"
+    },
+    {
+      "name": "customer.inventory.report.wizard",
+      "file": "customer_inventory_report.py",
+      "class": "CustomerInventoryReportWizard"
+    },
+    {
+      "name": "fsm.notification",
+      "file": "fsm_notification.py",
+      "class": "FsmNotification"
+    },
+    {
+      "name": "pickup.schedule.wizard",
+      "file": "pickup_schedule_wizard.py",
+      "class": "PickupScheduleWizard"
+    },
+    {
+      "name": "system.diagram.data",
+      "file": "system_diagram_data.py",
+      "class": "SystemDiagramData"
+    },
+    {
+      "name": "required.document",
+      "file": "required_document.py",
+      "class": "RequiredDocument"
+    },
+    {
+      "name": "scan.retrieval.work.order",
+      "file": "scan_retrieval_work_order.py",
+      "class": "ScanRetrievalWorkOrder"
+    },
+    {
+      "name": "feedback.improvement.area",
+      "file": "feedback_improvement_area.py",
+      "class": "FeedbackImprovementArea"
+    },
+    {
+      "name": "records.destruction",
+      "file": "records_destruction.py",
+      "class": "RecordsDestruction"
+    },
+    {
+      "name": "naid.compliance.checklist",
+      "file": "naid_compliance_checklist.py",
+      "class": "NAIDComplianceChecklist"
+    },
+    {
+      "name": "customer.inventory.report.line",
+      "file": "customer_inventory_report_line.py",
+      "class": "CustomerInventoryReportLine"
+    },
+    {
+      "name": "paper.load.shipment",
+      "file": "paper_load_shipment.py",
+      "class": "PaperLoadShipment"
+    },
+    {
+      "name": "records.digital.scan",
+      "file": "records_digital_scan.py",
+      "class": "RecordsDigitalScan"
+    },
+    {
+      "name": "scan.digital.asset",
+      "file": "scan_digital_asset.py",
+      "class": "ScanDigitalAsset"
+    },
+    {
+      "name": "partner.bin.key",
+      "file": "partner_bin_key.py",
+      "class": "PartnerBinKey"
+    },
+    {
+      "name": "document.search.attempt",
+      "file": "document_search_attempt.py",
+      "class": "DocumentSearchAttempt"
+    }
+  ],
+  "models_missing": [],
+  "fields_validated": [],
+  "security_rules": [
+    [
+      "portal.feedback.manager",
+      "portal.feedback"
+    ],
+    [
+      "portal.feedback.user",
+      "portal.feedback"
+    ],
+    [
+      "records.document.type.manager",
+      "records.document.type"
+    ],
+    [
+      "records.document.type.user",
+      "records.document.type"
+    ],
+    [
+      "container.retrieval.item.manager",
+      "container.retrieval.item"
+    ],
+    [
+      "container.retrieval.item.user",
+      "container.retrieval.item"
+    ],
+    [
+      "base.rates.manager",
+      "base.rates"
+    ],
+    [
+      "base.rates.user",
+      "base.rates"
+    ],
+    [
+      "route.optimizer.user",
+      "route.optimizer"
+    ],
+    [
+      "route.optimizer.manager",
+      "route.optimizer"
+    ],
+    [
+      "stock.lot.attribute.manager",
+      "stock.lot.attribute"
+    ],
+    [
+      "stock.lot.attribute.user",
+      "stock.lot.attribute"
+    ],
+    [
+      "records.container.content.line.manager",
+      "records.container.content.line"
+    ],
+    [
+      "records.container.content.line.user",
+      "records.container.content.line"
+    ],
+    [
+      "records.tag.category.manager",
+      "records.tag.category"
+    ],
+    [
+      "records.tag.category.user",
+      "records.tag.category"
+    ],
+    [
+      "records.approval.workflow.manager",
+      "records.approval.workflow"
+    ],
+    [
+      "records.approval.workflow.user",
+      "records.approval.workflow"
+    ],
+    [
+      "container.access.document.manager",
+      "container.access.document"
+    ],
+    [
+      "container.access.document.user",
+      "container.access.document"
+    ],
+    [
+      "pickup.route.stop.manager",
+      "pickup.route.stop"
+    ],
+    [
+      "pickup.route.stop.user",
+      "pickup.route.stop"
+    ],
+    [
+      "naid.operator.certification.manager",
+      "naid.operator.certification"
+    ],
+    [
+      "naid.operator.certification.user",
+      "naid.operator.certification"
+    ],
+    [
+      "temp.inventory.manager",
+      "temp.inventory"
+    ],
+    [
+      "temp.inventory.user",
+      "temp.inventory"
+    ],
+    [
+      "temp.inventory.reject.wizard.user",
+      "temp.inventory.reject.wizard"
+    ],
+    [
+      "temp.inventory.reject.wizard.manager",
+      "temp.inventory.reject.wizard"
+    ],
+    [
+      "paper.bale.recycling.user",
+      "paper.bale.recycling"
+    ],
+    [
+      "paper.bale.recycling.manager",
+      "paper.bale.recycling"
+    ],
+    [
+      "location.group.manager",
+      "location.group"
+    ],
+    [
+      "location.group.user",
+      "location.group"
+    ],
+    [
+      "records.request.line.manager",
+      "records.request.line"
+    ],
+    [
+      "records.request.line.user",
+      "records.request.line"
+    ],
+    [
+      "records.tag.user",
+      "records.tag"
+    ],
+    [
+      "records.tag.manager",
+      "records.tag"
+    ],
+    [
+      "barcode.storage.box.manager",
+      "barcode.storage.box"
+    ],
+    [
+      "barcode.storage.box.user",
+      "barcode.storage.box"
+    ],
+    [
+      "inventory.item.type.manager",
+      "inventory.item.type"
+    ],
+    [
+      "inventory.item.type.user",
+      "inventory.item.type"
+    ],
+    [
+      "records.container.manager",
+      "records.container"
+    ],
+    [
+      "records.container.user",
+      "records.container"
+    ],
+    [
+      "records.survey.user.input.user",
+      "records.survey.user.input"
+    ],
+    [
+      "records.survey.user.input.manager",
+      "records.survey.user.input"
+    ],
+    [
+      "portal.feedback.analytic.user",
+      "portal.feedback.analytic"
+    ],
+    [
+      "portal.feedback.analytic.manager",
+      "portal.feedback.analytic"
+    ],
+    [
+      "records.installer.user",
+      "records.installer"
+    ],
+    [
+      "records.installer.manager",
+      "records.installer"
+    ],
+    [
+      "shredding.hard_drive.user",
+      "shredding.hard_drive"
+    ],
+    [
+      "shredding.hard_drive.manager",
+      "shredding.hard_drive"
+    ],
+    [
+      "shredding.service.bin.manager",
+      "shredding.service.bin"
+    ],
+    [
+      "shredding.service.bin.user",
+      "shredding.service.bin"
+    ],
+    [
+      "pickup.request.item.user",
+      "pickup.request.item"
+    ],
+    [
+      "pickup.request.item.manager",
+      "pickup.request.item"
+    ],
+    [
+      "shredding.picklist.item.manager",
+      "shredding.picklist.item"
+    ],
+    [
+      "shredding.picklist.item.user",
+      "shredding.picklist.item"
+    ],
+    [
+      "inventory.item.profile.user",
+      "inventory.item.profile"
+    ],
+    [
+      "inventory.item.profile.manager",
+      "inventory.item.profile"
+    ],
+    [
+      "records.container.type.user",
+      "records.container.type"
+    ],
+    [
+      "records.container.type.manager",
+      "records.container.type"
+    ],
+    [
+      "pickup.request.user",
+      "pickup.request"
+    ],
+    [
+      "pickup.request.manager",
+      "pickup.request"
+    ],
+    [
+      "advanced.billing.line.manager",
+      "advanced.billing.line"
+    ],
+    [
+      "advanced.billing.line.user",
+      "advanced.billing.line"
+    ],
+    [
+      "bin.key.manager",
+      "bin.key"
+    ],
+    [
+      "bin.key.user",
+      "bin.key"
+    ],
+    [
+      "advanced.billing.profile.manager",
+      "advanced.billing.profile"
+    ],
+    [
+      "advanced.billing.profile.user",
+      "advanced.billing.profile"
+    ],
+    [
+      "unlock.service.part.manager",
+      "unlock.service.part"
+    ],
+    [
+      "unlock.service.part.user",
+      "unlock.service.part"
+    ],
+    [
+      "maintenance.equipment.user",
+      "maintenance.equipment"
+    ],
+    [
+      "maintenance.equipment.manager",
+      "maintenance.equipment"
+    ],
+    [
+      "billing.period.manager",
+      "billing.period"
+    ],
+    [
+      "billing.period.user",
+      "billing.period"
+    ],
+    [
+      "signed.document.audit.user",
+      "signed.document.audit"
+    ],
+    [
+      "signed.document.audit.manager",
+      "signed.document.audit"
+    ],
+    [
+      "discount.rule.manager",
+      "discount.rule"
+    ],
+    [
+      "discount.rule.user",
+      "discount.rule"
+    ],
+    [
+      "records.storage.department.user.user",
+      "records.storage.department.user"
+    ],
+    [
+      "records.storage.department.user.manager",
+      "records.storage.department.user"
+    ],
+    [
+      "maintenance.team.manager",
+      "maintenance.team"
+    ],
+    [
+      "maintenance.team.user",
+      "maintenance.team"
+    ],
+    [
+      "barcode.product.user",
+      "barcode.product"
+    ],
+    [
+      "barcode.product.manager",
+      "barcode.product"
+    ],
+    [
+      "bin.key.history.manager",
+      "bin.key.history"
+    ],
+    [
+      "bin.key.history.user",
+      "bin.key.history"
+    ],
+    [
+      "inventory.item.retrieval.line.manager",
+      "inventory.item.retrieval.line"
+    ],
+    [
+      "inventory.item.retrieval.line.user",
+      "inventory.item.retrieval.line"
+    ],
+    [
+      "description.user",
+      "description"
+    ],
+    [
+      "description.manager",
+      "description"
+    ],
+    [
+      "revenue.forecast.line.user",
+      "revenue.forecast.line"
+    ],
+    [
+      "revenue.forecast.line.manager",
+      "revenue.forecast.line"
+    ],
+    [
+      "chain.of.custody.user",
+      "chain.of.custody"
+    ],
+    [
+      "records.request.type.manager",
+      "records.request.type"
+    ],
+    [
+      "records.request.type.user",
+      "records.request.type"
+    ],
+    [
+      "inventory.item.location.transfer.manager",
+      "inventory.item.location.transfer"
+    ],
+    [
+      "inventory.item.location.transfer.user",
+      "inventory.item.location.transfer"
+    ],
+    [
+      "naid.risk.assessment.user",
+      "naid.risk.assessment"
+    ],
+    [
+      "portal.feedback.escalation.user",
+      "portal.feedback.escalation"
+    ],
+    [
+      "portal.feedback.escalation.manager",
+      "portal.feedback.escalation"
+    ],
+    [
+      "revenue.analytic.manager",
+      "revenue.analytic"
+    ],
+    [
+      "revenue.analytic.user",
+      "revenue.analytic"
+    ],
+    [
+      "key.restriction.checker.manager",
+      "key.restriction.checker"
+    ],
+    [
+      "key.restriction.checker.user",
+      "key.restriction.checker"
+    ],
+    [
+      "records.department.billing.contact.manager",
+      "records.department.billing.contact"
+    ],
+    [
+      "records.department.billing.contact.user",
+      "records.department.billing.contact"
+    ],
+    [
+      "key.inventory.manager",
+      "key.inventory"
+    ],
+    [
+      "key.inventory.user",
+      "key.inventory"
+    ],
+    [
+      "temp.inventory.audit.user",
+      "temp.inventory.audit"
+    ],
+    [
+      "temp.inventory.audit.manager",
+      "temp.inventory.audit"
+    ],
+    [
+      "document.retrieval.item.user",
+      "document.retrieval.item"
+    ],
+    [
+      "document.retrieval.item.manager",
+      "document.retrieval.item"
+    ],
+    [
+      "container.retrieval.user",
+      "container.retrieval"
+    ],
+    [
+      "container.retrieval.manager",
+      "container.retrieval"
+    ],
+    [
+      "records.service.type.manager",
+      "records.service.type"
+    ],
+    [
+      "records.service.type.user",
+      "records.service.type"
+    ],
+    [
+      "invoice.generation.log.user",
+      "invoice.generation.log"
+    ],
+    [
+      "invoice.generation.log.manager",
+      "invoice.generation.log"
+    ],
+    [
+      "naid.certificate.item.user",
+      "naid.certificate.item"
+    ],
+    [
+      "res.partner.key.restriction.user",
+      "res.partner.key.restriction"
+    ],
+    [
+      "res.partner.key.restriction.manager",
+      "res.partner.key.restriction"
+    ],
+    [
+      "transitory.item.user",
+      "transitory.item"
+    ],
+    [
+      "transitory.item.manager",
+      "transitory.item"
+    ],
+    [
+      "paper.bale.weigh.wizard.user",
+      "paper.bale.weigh.wizard"
+    ],
+    [
+      "paper.bale.weigh.wizard.manager",
+      "paper.bale.weigh.wizard"
+    ],
+    [
+      "naid.audit.requirement.manager",
+      "naid.audit.requirement"
+    ],
+    [
+      "naid.audit.requirement.user",
+      "naid.audit.requirement"
+    ],
+    [
+      "records.approval.step.manager",
+      "records.approval.step"
+    ],
+    [
+      "records.approval.step.user",
+      "records.approval.step"
+    ],
+    [
+      "load.user",
+      "load"
+    ],
+    [
+      "load.manager",
+      "load"
+    ],
+    [
+      "base.rate.user",
+      "base.rate"
+    ],
+    [
+      "base.rate.manager",
+      "base.rate"
+    ],
+    [
+      "file.retrieval.work.order.manager",
+      "file.retrieval.work.order"
+    ],
+    [
+      "file.retrieval.work.order.user",
+      "file.retrieval.work.order"
+    ],
+    [
+      "paper.bale.inspection.manager",
+      "paper.bale.inspection"
+    ],
+    [
+      "paper.bale.inspection.user",
+      "paper.bale.inspection"
+    ],
+    [
+      "records.container.line.manager",
+      "records.container.line"
+    ],
+    [
+      "records.container.line.user",
+      "records.container.line"
+    ],
+    [
+      "bin.key.unlock.service.user",
+      "bin.key.unlock.service"
+    ],
+    [
+      "bin.key.unlock.service.manager",
+      "bin.key.unlock.service"
+    ],
+    [
+      "paper.bale.manager",
+      "paper.bale"
+    ],
+    [
+      "paper.bale.user",
+      "paper.bale"
+    ],
+    [
+      "records.center.location.user",
+      "records.center.location"
+    ],
+    [
+      "records.center.location.manager",
+      "records.center.location"
+    ],
+    [
+      "fsm.reschedule.wizard.user",
+      "fsm.reschedule.wizard"
+    ],
+    [
+      "fsm.reschedule.wizard.manager",
+      "fsm.reschedule.wizard"
+    ],
+    [
+      "project.task.manager",
+      "project.task"
+    ],
+    [
+      "project.task.user",
+      "project.task"
+    ],
+    [
+      "shredding.team.manager",
+      "shredding.team"
+    ],
+    [
+      "shredding.team.user",
+      "shredding.team"
+    ],
+    [
+      "signed.document.user",
+      "signed.document"
+    ],
+    [
+      "signed.document.manager",
+      "signed.document"
+    ],
+    [
+      "shredding.service.log.user",
+      "shredding.service.log"
+    ],
+    [
+      "shredding.service.log.manager",
+      "shredding.service.log"
+    ],
+    [
+      "temp.inventory.movement.user",
+      "temp.inventory.movement"
+    ],
+    [
+      "temp.inventory.movement.manager",
+      "temp.inventory.movement"
+    ],
+    [
+      "barcode.generation.history.user",
+      "barcode.generation.history"
+    ],
+    [
+      "barcode.generation.history.manager",
+      "barcode.generation.history"
+    ],
+    [
+      "naid.destruction.record.user",
+      "naid.destruction.record"
+    ],
+    [
+      "records.container.transfer.user",
+      "records.container.transfer"
+    ],
+    [
+      "records.container.transfer.manager",
+      "records.container.transfer"
+    ],
+    [
+      "naid.custody.user",
+      "naid.custody"
+    ],
+    [
+      "naid.custody.manager",
+      "naid.custody"
+    ],
+    [
+      "file.retrieval.work.order.item.manager",
+      "file.retrieval.work.order.item"
+    ],
+    [
+      "file.retrieval.work.order.item.user",
+      "file.retrieval.work.order.item"
+    ],
+    [
+      "work.order.shredding.manager",
+      "work.order.shredding"
+    ],
+    [
+      "work.order.shredding.user",
+      "work.order.shredding"
+    ],
+    [
+      "advanced.billing.service.line.user",
+      "advanced.billing.service.line"
+    ],
+    [
+      "advanced.billing.service.line.manager",
+      "advanced.billing.service.line"
+    ],
+    [
+      "records.security.audit.manager",
+      "records.security.audit"
+    ],
+    [
+      "records.security.audit.user",
+      "records.security.audit"
+    ],
+    [
+      "container.access.photo.user",
+      "container.access.photo"
+    ],
+    [
+      "container.access.photo.manager",
+      "container.access.photo"
+    ],
+    [
+      "pickup.location.user",
+      "pickup.location"
+    ],
+    [
+      "pickup.location.manager",
+      "pickup.location"
+    ],
+    [
+      "records.usage.tracking.user",
+      "records.usage.tracking"
+    ],
+    [
+      "records.usage.tracking.manager",
+      "records.usage.tracking"
+    ],
+    [
+      "scan.retrieval.item.user",
+      "scan.retrieval.item"
+    ],
+    [
+      "scan.retrieval.item.manager",
+      "scan.retrieval.item"
+    ],
+    [
+      "records.container.transfer.line.manager",
+      "records.container.transfer.line"
+    ],
+    [
+      "records.container.transfer.line.user",
+      "records.container.transfer.line"
+    ],
+    [
+      "container.destruction.work.order.manager",
+      "container.destruction.work.order"
+    ],
+    [
+      "container.destruction.work.order.user",
+      "container.destruction.work.order"
+    ],
+    [
+      "enhanced.fsm.integration.manager",
+      "enhanced.fsm.integration"
+    ],
+    [
+      "enhanced.fsm.integration.user",
+      "enhanced.fsm.integration"
+    ],
+    [
+      "customer.feedback.user",
+      "customer.feedback"
+    ],
+    [
+      "unlock.service.history.user",
+      "unlock.service.history"
+    ],
+    [
+      "unlock.service.history.manager",
+      "unlock.service.history"
+    ],
+    [
+      "pickup.route.manager",
+      "pickup.route"
+    ],
+    [
+      "pickup.route.user",
+      "pickup.route"
+    ],
+    [
+      "display_name.user",
+      "display_name"
+    ],
+    [
+      "display_name.manager",
+      "display_name"
+    ],
+    [
+      "records.access.log.user",
+      "records.access.log"
+    ],
+    [
+      "records.access.log.manager",
+      "records.access.log"
+    ],
+    [
+      "transitory.field.config.user",
+      "transitory.field.config"
+    ],
+    [
+      "transitory.field.config.manager",
+      "transitory.field.config"
+    ],
+    [
+      "records.container.type.converter.manager",
+      "records.container.type.converter"
+    ],
+    [
+      "records.container.type.converter.user",
+      "records.container.type.converter"
+    ],
+    [
+      "shredding.service.photo.manager",
+      "shredding.service.photo"
+    ],
+    [
+      "shredding.service.photo.user",
+      "shredding.service.photo"
+    ],
+    [
+      "barcode.models.enhanced.manager",
+      "barcode.models.enhanced"
+    ],
+    [
+      "barcode.models.enhanced.user",
+      "barcode.models.enhanced"
+    ],
+    [
+      "bin.barcode.inventory.user",
+      "bin.barcode.inventory"
+    ],
+    [
+      "bin.barcode.inventory.manager",
+      "bin.barcode.inventory"
+    ],
+    [
+      "inventory.item.retrieval.manager",
+      "inventory.item.retrieval"
+    ],
+    [
+      "inventory.item.retrieval.user",
+      "inventory.item.retrieval"
+    ],
+    [
+      "shredding.inventory.batch.manager",
+      "shredding.inventory.batch"
+    ],
+    [
+      "shredding.inventory.batch.user",
+      "shredding.inventory.batch"
+    ],
+    [
+      "customer.inventory.user",
+      "customer.inventory"
+    ],
+    [
+      "customer.inventory.line.user",
+      "customer.inventory.line"
+    ],
+    [
+      "bin.unlock.service.manager",
+      "bin.unlock.service"
+    ],
+    [
+      "bin.unlock.service.user",
+      "bin.unlock.service"
+    ],
+    [
+      "customer.inventory.report.user",
+      "customer.inventory.report"
+    ],
+    [
+      "customer.inventory.report.manager",
+      "customer.inventory.report"
+    ],
+    [
+      "records.location.report.wizard.manager",
+      "records.location.report.wizard"
+    ],
+    [
+      "records.location.report.wizard.user",
+      "records.location.report.wizard"
+    ],
+    [
+      "records.retrieval.work.order.user",
+      "records.retrieval.work.order"
+    ],
+    [
+      "records.retrieval.work.order.manager",
+      "records.retrieval.work.order"
+    ],
+    [
+      "survey.improvement.action.manager",
+      "survey.improvement.action"
+    ],
+    [
+      "survey.improvement.action.user",
+      "survey.improvement.action"
+    ],
+    [
+      "inventory.adjustment.reason.manager",
+      "inventory.adjustment.reason"
+    ],
+    [
+      "inventory.adjustment.reason.user",
+      "inventory.adjustment.reason"
+    ],
+    [
+      "shredding.rate.user",
+      "shredding.rate"
+    ],
+    [
+      "shredding.rate.manager",
+      "shredding.rate"
+    ],
+    [
+      "records.department.billing.approval.manager",
+      "records.department.billing.approval"
+    ],
+    [
+      "records.department.billing.approval.user",
+      "records.department.billing.approval"
+    ],
+    [
+      "naid.certification.level.manager",
+      "naid.certification.level"
+    ],
+    [
+      "naid.certification.level.user",
+      "naid.certification.level"
+    ],
+    [
+      "naid.compliance.checklist.item.user",
+      "naid.compliance.checklist.item"
+    ],
+    [
+      "custody.transfer.event.user",
+      "custody.transfer.event"
+    ],
+    [
+      "custody.transfer.event.manager",
+      "custody.transfer.event"
+    ],
+    [
+      "hard.drive.scan.wizard.manager",
+      "hard.drive.scan.wizard"
+    ],
+    [
+      "hard.drive.scan.wizard.user",
+      "hard.drive.scan.wizard"
+    ],
+    [
+      "hard.drive.scan.wizard.line.user",
+      "hard.drive.scan.wizard.line"
+    ],
+    [
+      "hard.drive.scan.wizard.line.manager",
+      "hard.drive.scan.wizard.line"
+    ],
+    [
+      "container.access.visitor.user",
+      "container.access.visitor"
+    ],
+    [
+      "container.access.visitor.manager",
+      "container.access.visitor"
+    ],
+    [
+      "records.audit.log.user",
+      "records.audit.log"
+    ],
+    [
+      "records.audit.log.manager",
+      "records.audit.log"
+    ],
+    [
+      "customer.negotiated.rates.user",
+      "customer.negotiated.rates"
+    ],
+    [
+      "customer.negotiated.rates.manager",
+      "customer.negotiated.rates"
+    ],
+    [
+      "portal.feedback.resolution.manager",
+      "portal.feedback.resolution"
+    ],
+    [
+      "portal.feedback.resolution.user",
+      "portal.feedback.resolution"
+    ],
+    [
+      "advanced.billing.storage.line.user",
+      "advanced.billing.storage.line"
+    ],
+    [
+      "advanced.billing.storage.line.manager",
+      "advanced.billing.storage.line"
+    ],
+    [
+      "portal.feedback.communication.user",
+      "portal.feedback.communication"
+    ],
+    [
+      "portal.feedback.communication.manager",
+      "portal.feedback.communication"
+    ],
+    [
+      "processing.log.manager",
+      "processing.log"
+    ],
+    [
+      "processing.log.user",
+      "processing.log"
+    ],
+    [
+      "processing.log.resolution.wizard.user",
+      "processing.log.resolution.wizard"
+    ],
+    [
+      "processing.log.resolution.wizard.manager",
+      "processing.log.resolution.wizard"
+    ],
+    [
+      "records.policy.version.manager",
+      "records.policy.version"
+    ],
+    [
+      "records.policy.version.user",
+      "records.policy.version"
+    ],
+    [
+      "container.content.manager",
+      "container.content"
+    ],
+    [
+      "container.content.user",
+      "container.content"
+    ],
+    [
+      "naid.training.requirement.manager",
+      "naid.training.requirement"
+    ],
+    [
+      "naid.training.requirement.user",
+      "naid.training.requirement"
+    ],
+    [
+      "container.retrieval.work.order.user",
+      "container.retrieval.work.order"
+    ],
+    [
+      "container.retrieval.work.order.manager",
+      "container.retrieval.work.order"
+    ],
+    [
+      "records.chain.of.custody.user",
+      "records.chain.of.custody"
+    ],
+    [
+      "records.chain.of.custody.manager",
+      "records.chain.of.custody"
+    ],
+    [
+      "portal.request.line.manager",
+      "portal.request.line"
+    ],
+    [
+      "portal.request.line.user",
+      "portal.request.line"
+    ],
+    [
+      "visitor.manager",
+      "visitor"
+    ],
+    [
+      "visitor.user",
+      "visitor"
+    ],
+    [
+      "mobile.dashboard.widget.manager",
+      "mobile.dashboard.widget"
+    ],
+    [
+      "mobile.dashboard.widget.user",
+      "mobile.dashboard.widget"
+    ],
+    [
+      "approval.history.manager",
+      "approval.history"
+    ],
+    [
+      "approval.history.user",
+      "approval.history"
+    ],
+    [
+      "naid.performance.history.user",
+      "naid.performance.history"
+    ],
+    [
+      "container.access.report.user",
+      "container.access.report"
+    ],
+    [
+      "container.access.report.manager",
+      "container.access.report"
+    ],
+    [
+      "records.category.manager",
+      "records.category"
+    ],
+    [
+      "records.category.user",
+      "records.category"
+    ],
+    [
+      "records.container.log.manager",
+      "records.container.log"
+    ],
+    [
+      "records.container.log.user",
+      "records.container.log"
+    ],
+    [
+      "mobile.photo.user",
+      "mobile.photo"
+    ],
+    [
+      "mobile.photo.manager",
+      "mobile.photo"
+    ],
+    [
+      "fsm.notification.manager.user",
+      "fsm.notification.manager"
+    ],
+    [
+      "fsm.notification.manager.manager",
+      "fsm.notification.manager"
+    ],
+    [
+      "records.container.movement.user",
+      "records.container.movement"
+    ],
+    [
+      "records.container.movement.manager",
+      "records.container.movement"
+    ],
+    [
+      "product.container.type.user",
+      "product.container.type"
+    ],
+    [
+      "product.container.type.manager",
+      "product.container.type"
+    ],
+    [
+      "portal.request.user",
+      "portal.request"
+    ],
+    [
+      "portal.request.manager",
+      "portal.request"
+    ],
+    [
+      "hr.employee.manager",
+      "hr.employee"
+    ],
+    [
+      "hr.employee.user",
+      "hr.employee"
+    ],
+    [
+      "records.series.manager",
+      "records.series"
+    ],
+    [
+      "records.series.user",
+      "records.series"
+    ],
+    [
+      "shredding.service.manager",
+      "shredding.service"
+    ],
+    [
+      "shredding.service.user",
+      "shredding.service"
+    ],
+    [
+      "records.billing.config.user",
+      "records.billing.config"
+    ],
+    [
+      "records.billing.config.manager",
+      "records.billing.config"
+    ],
+    [
+      "location.report.wizard.user",
+      "location.report.wizard"
+    ],
+    [
+      "location.report.wizard.manager",
+      "location.report.wizard"
+    ],
+    [
+      "naid.compliance.action.plan.user",
+      "naid.compliance.action.plan"
+    ],
+    [
+      "mobile.dashboard.widget.category.manager",
+      "mobile.dashboard.widget.category"
+    ],
+    [
+      "mobile.dashboard.widget.category.user",
+      "mobile.dashboard.widget.category"
+    ],
+    [
+      "portal.feedback.action.user",
+      "portal.feedback.action"
+    ],
+    [
+      "portal.feedback.action.manager",
+      "portal.feedback.action"
+    ],
+    [
+      "naid.compliance.policy.user",
+      "naid.compliance.policy"
+    ],
+    [
+      "naid.compliance.policy.manager",
+      "naid.compliance.policy"
+    ],
+    [
+      "mobile.fsm.integration.user",
+      "mobile.fsm.integration"
+    ],
+    [
+      "mobile.fsm.integration.manager",
+      "mobile.fsm.integration"
+    ],
+    [
+      "records.request.manager",
+      "records.request"
+    ],
+    [
+      "records.request.user",
+      "records.request"
+    ],
+    [
+      "stock.lot.attribute.option.user",
+      "stock.lot.attribute.option"
+    ],
+    [
+      "stock.lot.attribute.option.manager",
+      "stock.lot.attribute.option"
+    ],
+    [
+      "work.order.coordinator.user",
+      "work.order.coordinator"
+    ],
+    [
+      "work.order.coordinator.manager",
+      "work.order.coordinator"
+    ],
+    [
+      "survey.feedback.theme.user",
+      "survey.feedback.theme"
+    ],
+    [
+      "survey.feedback.theme.manager",
+      "survey.feedback.theme"
+    ],
+    [
+      "inventory.item.manager",
+      "inventory.item"
+    ],
+    [
+      "inventory.item.user",
+      "inventory.item"
+    ],
+    [
+      "photo.manager",
+      "photo"
+    ],
+    [
+      "photo.user",
+      "photo"
+    ],
+    [
+      "maintenance.team.manager",
+      "maintenance.team"
+    ],
+    [
+      "maintenance.team.user",
+      "maintenance.team"
+    ],
+    [
+      "workflow.visualization.manager.manager",
+      "workflow.visualization.manager"
+    ],
+    [
+      "workflow.visualization.manager.user",
+      "workflow.visualization.manager"
+    ],
+    [
+      "file.retrieval.manager",
+      "file.retrieval"
+    ],
+    [
+      "file.retrieval.user",
+      "file.retrieval"
+    ],
+    [
+      "paper.bale.line.user",
+      "paper.bale.line"
+    ],
+    [
+      "paper.bale.line.manager",
+      "paper.bale.line"
+    ],
+    [
+      "paper.bale.inspection.wizard.manager",
+      "paper.bale.inspection.wizard"
+    ],
+    [
+      "paper.bale.inspection.wizard.user",
+      "paper.bale.inspection.wizard"
+    ],
+    [
+      "pickup.request.line.user",
+      "pickup.request.line"
+    ],
+    [
+      "pickup.request.line.manager",
+      "pickup.request.line"
+    ],
+    [
+      "advanced.billing.contact.manager",
+      "advanced.billing.contact"
+    ],
+    [
+      "advanced.billing.contact.user",
+      "advanced.billing.contact"
+    ],
+    [
+      "container.access.activity.manager",
+      "container.access.activity"
+    ],
+    [
+      "container.access.activity.user",
+      "container.access.activity"
+    ],
+    [
+      "naid.compliance.alert.user",
+      "naid.compliance.alert"
+    ],
+    [
+      "records.department.user",
+      "records.department"
+    ],
+    [
+      "records.department.manager",
+      "records.department"
+    ],
+    [
+      "shredding.service.event.user",
+      "shredding.service.event"
+    ],
+    [
+      "shredding.service.event.manager",
+      "shredding.service.event"
+    ],
+    [
+      "records.document.manager",
+      "records.document"
+    ],
+    [
+      "records.document.user",
+      "records.document"
+    ],
+    [
+      "customer.portal.diagram.manager",
+      "customer.portal.diagram"
+    ],
+    [
+      "customer.portal.diagram.user",
+      "customer.portal.diagram"
+    ],
+    [
+      "maintenance.equipment.user",
+      "maintenance.equipment"
+    ],
+    [
+      "maintenance.equipment.manager",
+      "maintenance.equipment"
+    ],
+    [
+      "naid.certificate.user",
+      "naid.certificate"
+    ],
+    [
+      "records.location.inspection.manager",
+      "records.location.inspection"
+    ],
+    [
+      "records.location.inspection.user",
+      "records.location.inspection"
+    ],
+    [
+      "records.location.inspection.line.user",
+      "records.location.inspection.line"
+    ],
+    [
+      "records.location.inspection.line.manager",
+      "records.location.inspection.line"
+    ],
+    [
+      "records.retention.policy.manager",
+      "records.retention.policy"
+    ],
+    [
+      "records.retention.policy.user",
+      "records.retention.policy"
+    ],
+    [
+      "rm.module.configurator.manager",
+      "rm.module.configurator"
+    ],
+    [
+      "rm.module.configurator.user",
+      "rm.module.configurator"
+    ],
+    [
+      "customer.negotiated.rate.manager",
+      "customer.negotiated.rate"
+    ],
+    [
+      "customer.negotiated.rate.user",
+      "customer.negotiated.rate"
+    ],
+    [
+      "destruction.item.manager",
+      "destruction.item"
+    ],
+    [
+      "destruction.item.user",
+      "destruction.item"
+    ],
+    [
+      "inventory.item.destruction.line.manager",
+      "inventory.item.destruction.line"
+    ],
+    [
+      "inventory.item.destruction.line.user",
+      "inventory.item.destruction.line"
+    ],
+    [
+      "records.storage.box.user",
+      "records.storage.box"
+    ],
+    [
+      "records.storage.box.manager",
+      "records.storage.box"
+    ],
+    [
+      "shredding.certificate.user",
+      "shredding.certificate"
+    ],
+    [
+      "shredding.certificate.manager",
+      "shredding.certificate"
+    ],
+    [
+      "naid.equipment.standard.manager",
+      "naid.equipment.standard"
+    ],
+    [
+      "naid.equipment.standard.user",
+      "naid.equipment.standard"
+    ],
+    [
+      "stock.lot.attribute.value.manager",
+      "stock.lot.attribute.value"
+    ],
+    [
+      "stock.lot.attribute.value.user",
+      "stock.lot.attribute.value"
+    ],
+    [
+      "payment.split.line.manager",
+      "payment.split.line"
+    ],
+    [
+      "payment.split.line.user",
+      "payment.split.line"
+    ],
+    [
+      "payment.split.user",
+      "payment.split"
+    ],
+    [
+      "payment.split.manager",
+      "payment.split"
+    ],
+    [
+      "mobile.bin.key.wizard.manager",
+      "mobile.bin.key.wizard"
+    ],
+    [
+      "mobile.bin.key.wizard.user",
+      "mobile.bin.key.wizard"
+    ],
+    [
+      "advanced.billing.manager",
+      "advanced.billing"
+    ],
+    [
+      "advanced.billing.user",
+      "advanced.billing"
+    ],
+    [
+      "revenue.forecast.manager",
+      "revenue.forecast"
+    ],
+    [
+      "revenue.forecast.user",
+      "revenue.forecast"
+    ],
+    [
+      "records.destruction.job.manager",
+      "records.destruction.job"
+    ],
+    [
+      "records.destruction.job.user",
+      "records.destruction.job"
+    ],
+    [
+      "records.destruction.line.manager",
+      "records.destruction.line"
+    ],
+    [
+      "records.destruction.line.user",
+      "records.destruction.line"
+    ],
+    [
+      "field.label.customization.user",
+      "field.label.customization"
+    ],
+    [
+      "field.label.customization.manager",
+      "field.label.customization"
+    ],
+    [
+      "retrieval.metric.manager",
+      "retrieval.metric"
+    ],
+    [
+      "retrieval.metric.user",
+      "retrieval.metric"
+    ],
+    [
+      "bin.issue.record.user",
+      "bin.issue.record"
+    ],
+    [
+      "bin.issue.record.manager",
+      "bin.issue.record"
+    ],
+    [
+      "media.type.user",
+      "media.type"
+    ],
+    [
+      "media.type.manager",
+      "media.type"
+    ],
+    [
+      "records.approval.workflow.line.manager",
+      "records.approval.workflow.line"
+    ],
+    [
+      "records.approval.workflow.line.user",
+      "records.approval.workflow.line"
+    ],
+    [
+      "records.retention.policy.version.manager",
+      "records.retention.policy.version"
+    ],
+    [
+      "records.retention.policy.version.user",
+      "records.retention.policy.version"
+    ],
+    [
+      "customer.category.user",
+      "customer.category"
+    ],
+    [
+      "customer.category.manager",
+      "customer.category"
+    ],
+    [
+      "naid.custody.event.user",
+      "naid.custody.event"
+    ],
+    [
+      "records.deletion.request.manager",
+      "records.deletion.request"
+    ],
+    [
+      "records.deletion.request.user",
+      "records.deletion.request"
+    ],
+    [
+      "file.retrieval.item.manager",
+      "file.retrieval.item"
+    ],
+    [
+      "file.retrieval.item.user",
+      "file.retrieval.item"
+    ],
+    [
+      "scan.retrieval.manager",
+      "scan.retrieval"
+    ],
+    [
+      "scan.retrieval.user",
+      "scan.retrieval"
+    ],
+    [
+      "inventory.item.destruction.user",
+      "inventory.item.destruction"
+    ],
+    [
+      "inventory.item.destruction.manager",
+      "inventory.item.destruction"
+    ],
+    [
+      "shred.bin.manager",
+      "shred.bin"
+    ],
+    [
+      "shred.bin.user",
+      "shred.bin"
+    ],
+    [
+      "records.inventory.dashboard.manager",
+      "records.inventory.dashboard"
+    ],
+    [
+      "records.inventory.dashboard.user",
+      "records.inventory.dashboard"
+    ],
+    [
+      "records.bulk.user.import.user",
+      "records.bulk.user.import"
+    ],
+    [
+      "records.bulk.user.import.manager",
+      "records.bulk.user.import"
+    ],
+    [
+      "naid.audit.log.user",
+      "naid.audit.log"
+    ],
+    [
+      "records.retention.rule.manager",
+      "records.retention.rule"
+    ],
+    [
+      "records.retention.rule.user",
+      "records.retention.rule"
+    ],
+    [
+      "records.promotional.discount.user",
+      "records.promotional.discount"
+    ],
+    [
+      "records.promotional.discount.manager",
+      "records.promotional.discount"
+    ],
+    [
+      "certificate.template.data.manager",
+      "certificate.template.data"
+    ],
+    [
+      "certificate.template.data.user",
+      "certificate.template.data"
+    ],
+    [
+      "records.location.manager",
+      "records.location"
+    ],
+    [
+      "records.location.user",
+      "records.location"
+    ],
+    [
+      "container.access.work.order.user",
+      "container.access.work.order"
+    ],
+    [
+      "container.access.work.order.manager",
+      "container.access.work.order"
+    ],
+    [
+      "stock.move.sms.validation.user",
+      "stock.move.sms.validation"
+    ],
+    [
+      "stock.move.sms.validation.manager",
+      "stock.move.sms.validation"
+    ],
+    [
+      "paper.bale.movement.manager",
+      "paper.bale.movement"
+    ],
+    [
+      "paper.bale.movement.user",
+      "paper.bale.movement"
+    ],
+    [
+      "barcode.pricing.tier.user",
+      "barcode.pricing.tier"
+    ],
+    [
+      "barcode.pricing.tier.manager",
+      "barcode.pricing.tier"
+    ],
+    [
+      "full.customization.name.manager",
+      "full.customization.name"
+    ],
+    [
+      "full.customization.name.user",
+      "full.customization.name"
+    ],
+    [
+      "service.item.manager",
+      "service.item"
+    ],
+    [
+      "service.item.user",
+      "service.item"
+    ],
+    [
+      "work.order.retrieval.manager",
+      "work.order.retrieval"
+    ],
+    [
+      "work.order.retrieval.user",
+      "work.order.retrieval"
+    ],
+    [
+      "customer.inventory.report.wizard.user",
+      "customer.inventory.report.wizard"
+    ],
+    [
+      "fsm.notification.user",
+      "fsm.notification"
+    ],
+    [
+      "fsm.notification.manager",
+      "fsm.notification"
+    ],
+    [
+      "pickup.schedule.wizard.user",
+      "pickup.schedule.wizard"
+    ],
+    [
+      "pickup.schedule.wizard.manager",
+      "pickup.schedule.wizard"
+    ],
+    [
+      "system.diagram.data.user",
+      "system.diagram.data"
+    ],
+    [
+      "system.diagram.data.manager",
+      "system.diagram.data"
+    ],
+    [
+      "required.document.user",
+      "required.document"
+    ],
+    [
+      "required.document.manager",
+      "required.document"
+    ],
+    [
+      "scan.retrieval.work.order.manager",
+      "scan.retrieval.work.order"
+    ],
+    [
+      "scan.retrieval.work.order.user",
+      "scan.retrieval.work.order"
+    ],
+    [
+      "feedback.improvement.area.user",
+      "feedback.improvement.area"
+    ],
+    [
+      "feedback.improvement.area.manager",
+      "feedback.improvement.area"
+    ],
+    [
+      "records.destruction.user",
+      "records.destruction"
+    ],
+    [
+      "records.destruction.manager",
+      "records.destruction"
+    ],
+    [
+      "naid.compliance.checklist.user",
+      "naid.compliance.checklist"
+    ],
+    [
+      "customer.inventory.report.line.user",
+      "customer.inventory.report.line"
+    ],
+    [
+      "paper.load.shipment.user",
+      "paper.load.shipment"
+    ],
+    [
+      "paper.load.shipment.manager",
+      "paper.load.shipment"
+    ],
+    [
+      "records.digital.scan.user",
+      "records.digital.scan"
+    ],
+    [
+      "records.digital.scan.manager",
+      "records.digital.scan"
+    ],
+    [
+      "scan.digital.asset.manager",
+      "scan.digital.asset"
+    ],
+    [
+      "scan.digital.asset.user",
+      "scan.digital.asset"
+    ],
+    [
+      "partner.bin.key.manager",
+      "partner.bin.key"
+    ],
+    [
+      "partner.bin.key.user",
+      "partner.bin.key"
+    ],
+    [
+      "document.search.attempt.user",
+      "document.search.attempt"
+    ],
+    [
+      "document.search.attempt.manager",
+      "document.search.attempt"
+    ]
+  ],
+  "imports_validated": [
+    "portal.feedback",
+    "records.document.type",
+    "container.retrieval.item",
+    "base.rates",
+    "route.optimizer",
+    "stock.lot.attribute",
+    "records.container.content.line",
+    "records.tag.category",
+    "records.approval.workflow",
+    "container.access.document",
+    "pickup.route.stop",
+    "naid.operator.certification",
+    "temp.inventory",
+    "temp.inventory.reject.wizard",
+    "paper.bale.recycling",
+    "location.group",
+    "records.request.line",
+    "records.tag",
+    "barcode.storage.box",
+    "inventory.item.type",
+    "records.container",
+    "records.survey.user.input",
+    "portal.feedback.analytic",
+    "records.installer",
+    "shredding.hard_drive",
+    "shredding.service.bin",
+    "pickup.request.item",
+    "shredding.picklist.item",
+    "inventory.item.profile",
+    "records.container.type",
+    "pickup.request",
+    "advanced.billing.line",
+    "bin.key",
+    "advanced.billing.profile",
+    "unlock.service.part",
+    "maintenance.equipment",
+    "billing.period",
+    "signed.document.audit",
+    "discount.rule",
+    "records.storage.department.user",
+    "maintenance.team",
+    "barcode.product",
+    "bin.key.history",
+    "inventory.item.retrieval.line",
+    "description",
+    "revenue.forecast.line",
+    "chain.of.custody",
+    "records.request.type",
+    "inventory.item.location.transfer",
+    "naid.risk.assessment",
+    "portal.feedback.escalation",
+    "revenue.analytic",
+    "key.restriction.checker",
+    "records.department.billing.contact",
+    "key.inventory",
+    "temp.inventory.audit",
+    "document.retrieval.item",
+    "container.retrieval",
+    "records.service.type",
+    "invoice.generation.log",
+    "naid.certificate.item",
+    "res.partner.key.restriction",
+    "transitory.item",
+    "paper.bale.weigh.wizard",
+    "naid.audit.requirement",
+    "records.approval.step",
+    "load",
+    "base.rate",
+    "file.retrieval.work.order",
+    "paper.bale.inspection",
+    "records.container.line",
+    "bin.key.unlock.service",
+    "paper.bale",
+    "records.center.location",
+    "fsm.reschedule.wizard",
+    "shredding.team",
+    "signed.document",
+    "shredding.service.log",
+    "temp.inventory.movement",
+    "barcode.generation.history",
+    "naid.destruction.record",
+    "records.container.transfer",
+    "naid.custody",
+    "file.retrieval.work.order.item",
+    "work.order.shredding",
+    "advanced.billing.service.line",
+    "records.security.audit",
+    "container.access.photo",
+    "pickup.location",
+    "records.usage.tracking",
+    "scan.retrieval.item",
+    "records.container.transfer.line",
+    "container.destruction.work.order",
+    "enhanced.fsm.integration",
+    "customer.feedback",
+    "unlock.service.history",
+    "pickup.route",
+    "display_name",
+    "records.access.log",
+    "transitory.field.config",
+    "records.container.type.converter",
+    "shredding.service.photo",
+    "barcode.models.enhanced",
+    "bin.barcode.inventory",
+    "inventory.item.retrieval",
+    "shredding.inventory.batch",
+    "customer.inventory",
+    "customer.inventory.line",
+    "bin.unlock.service",
+    "customer.inventory.report",
+    "records.location.report.wizard",
+    "records.retrieval.work.order",
+    "survey.improvement.action",
+    "inventory.adjustment.reason",
+    "shredding.rate",
+    "records.department.billing.approval",
+    "naid.certification.level",
+    "naid.compliance.checklist.item",
+    "custody.transfer.event",
+    "hard.drive.scan.wizard",
+    "hard.drive.scan.wizard.line",
+    "container.access.visitor",
+    "records.audit.log",
+    "customer.negotiated.rates",
+    "portal.feedback.resolution",
+    "advanced.billing.storage.line",
+    "portal.feedback.communication",
+    "processing.log",
+    "processing.log.resolution.wizard",
+    "records.policy.version",
+    "container.content",
+    "naid.training.requirement",
+    "container.retrieval.work.order",
+    "records.chain.of.custody",
+    "portal.request.line",
+    "visitor",
+    "mobile.dashboard.widget",
+    "approval.history",
+    "naid.performance.history",
+    "container.access.report",
+    "records.category",
+    "records.container.log",
+    "mobile.photo",
+    "fsm.notification.manager",
+    "records.container.movement",
+    "product.container.type",
+    "portal.request",
+    "hr.employee",
+    "records.series",
+    "shredding.service",
+    "records.billing.config",
+    "location.report.wizard",
+    "naid.compliance.action.plan",
+    "mobile.dashboard.widget.category",
+    "portal.feedback.action",
+    "naid.compliance.policy",
+    "mobile.fsm.integration",
+    "records.request",
+    "stock.lot.attribute.option",
+    "work.order.coordinator",
+    "survey.feedback.theme",
+    "inventory.item",
+    "photo",
+    "maintenance.team",
+    "workflow.visualization.manager",
+    "file.retrieval",
+    "paper.bale.line",
+    "paper.bale.inspection.wizard",
+    "pickup.request.line",
+    "advanced.billing.contact",
+    "container.access.activity",
+    "naid.compliance.alert",
+    "records.department",
+    "shredding.service.event",
+    "records.document",
+    "customer.portal.diagram",
+    "maintenance.equipment",
+    "naid.certificate",
+    "records.location.inspection",
+    "records.location.inspection.line",
+    "records.retention.policy",
+    "rm.module.configurator",
+    "customer.negotiated.rate",
+    "destruction.item",
+    "inventory.item.destruction.line",
+    "records.storage.box",
+    "shredding.certificate",
+    "naid.equipment.standard",
+    "stock.lot.attribute.value",
+    "payment.split.line",
+    "payment.split",
+    "mobile.bin.key.wizard",
+    "advanced.billing",
+    "revenue.forecast",
+    "records.destruction.job",
+    "records.destruction.line",
+    "field.label.customization",
+    "retrieval.metric",
+    "bin.issue.record",
+    "media.type",
+    "records.approval.workflow.line",
+    "records.retention.policy.version",
+    "customer.category",
+    "naid.custody.event",
+    "records.deletion.request",
+    "file.retrieval.item",
+    "scan.retrieval",
+    "inventory.item.destruction",
+    "shred.bin",
+    "records.inventory.dashboard",
+    "records.bulk.user.import",
+    "naid.audit.log",
+    "records.retention.rule",
+    "records.promotional.discount",
+    "certificate.template.data",
+    "records.location",
+    "container.access.work.order",
+    "stock.move.sms.validation",
+    "paper.bale.movement",
+    "barcode.pricing.tier",
+    "full.customization.name",
+    "service.item",
+    "work.order.retrieval",
+    "customer.inventory.report.wizard",
+    "fsm.notification",
+    "pickup.schedule.wizard",
+    "system.diagram.data",
+    "required.document",
+    "scan.retrieval.work.order",
+    "feedback.improvement.area",
+    "records.destruction",
+    "naid.compliance.checklist",
+    "customer.inventory.report.line",
+    "paper.load.shipment",
+    "records.digital.scan",
+    "scan.digital.asset",
+    "partner.bin.key",
+    "document.search.attempt"
+  ],
+  "syntax_errors": [],
+  "relationship_errors": [
+    "file_retrieval_id",
+    "inspection_id",
+    "partner_id",
+    "document_type_state_rel",
+    "fleet.vehicle",
+    "workflow_id",
+    "destruction_work_order_id",
+    "theme_id",
+    "group_id",
+    "deletion_request_container_rel",
+    "records_inventory_dashboard_customer_rel",
+    "vehicle_id",
+    "naid_certification_attachment_rel",
+    "retrieval_id",
+    "billing_profile_id",
+    "bin_unlock_service_attachment_rel",
+    "maintenance_team_location_rel",
+    "barcode_tier_partner_rel",
+    "naid_certificate_box_rel",
+    "shipment_id",
+    "document_type_country_rel",
+    "load_id",
+    "container_id",
+    "work_order_retrieval_technician_rel",
+    "document_type_destruction_approver_rel",
+    "document_type_id",
+    "service_item_id",
+    "request_id",
+    "department_id",
+    "parent_location_id",
+    "storage_box_id",
+    "shredding_service_id",
+    "feedback_id",
+    "destruction_record_id",
+    "deletion_request_document_rel",
+    "coordinator_id",
+    "service_history_id",
+    "batch_id",
+    "unlock_service_portal_request_rel",
+    "parent_policy_id",
+    "records_inventory_dashboard_location_rel",
+    "transfer_id",
+    "parent_type_id",
+    "container_type_id",
+    "shredding_team_member_rel",
+    "retention_policy_id",
+    "attribute_id",
+    "res_id",
+    "equipment_id",
+    "shred_bin_id",
+    "parent_rule_id",
+    "policy_id",
+    "naid_certificate_container_rel",
+    "bin_key_shred_bin_rel",
+    "split_id",
+    "route_id",
+    "inventory_id",
+    "visitor_id",
+    "file_retrieval_item_searched_container_rel",
+    "retrieval_team_id",
+    "job_id",
+    "series_id",
+    "category_id",
+    "location_id",
+    "document_type_tag_rel",
+    "billing_id",
+    "parent_id",
+    "retrieval_item_id",
+    "retention_rule_id",
+    "document_id",
+    "wizard_id",
+    "destruction_id",
+    "feedback_improvement_area_rel",
+    "work_order_retrieval_equipment_rel",
+    "forecast_id",
+    "lot_id",
+    "shredding_certificate_task_rel",
+    "document_retrieval_searched_container_rel",
+    "key_id",
+    "rule_id",
+    "temp_inventory_id",
+    "work_order_id",
+    "certificate_id",
+    "checklist_id",
+    "bale_id",
+    "shredding_team_id"
+  ],
+  "dynamic_data_capable": [
+    {
+      "model": "portal.feedback",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.document.type",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "container.retrieval.item",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "base.rates",
+      "features": [
+        "name_get"
+      ]
+    },
+    {
+      "model": "route.optimizer",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "stock.lot.attribute",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "pickup.route.stop",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "naid.operator.certification",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "temp.inventory",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "paper.bale.recycling",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.tag",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "barcode.storage.box",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "records.container",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "records.survey.user.input",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "portal.feedback.analytic",
+      "features": [
+        "compute",
+        "search"
+      ]
+    },
+    {
+      "model": "records.installer",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "shredding.hard_drive",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "shredding.service.bin",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "pickup.request.item",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "shredding.picklist.item",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.container.type",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange"
+      ]
+    },
+    {
+      "model": "pickup.request",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "bin.key",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "advanced.billing.profile",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "unlock.service.part",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange"
+      ]
+    },
+    {
+      "model": "maintenance.equipment",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "signed.document.audit",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "discount.rule",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.storage.department.user",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "maintenance.team",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "barcode.product",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "revenue.forecast.line",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "chain.of.custody",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "inventory.item.location.transfer",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "naid.risk.assessment",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "revenue.analytic",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "key.restriction.checker",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.department.billing.contact",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "temp.inventory.audit",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "document.retrieval.item",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "container.retrieval",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "res.partner.key.restriction",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "naid.audit.requirement",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.approval.step",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "load",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "base.rate",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "file.retrieval.work.order",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "paper.bale",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "project.task",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "shredding.team",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "signed.document",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "shredding.service.log",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "naid.destruction.record",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange"
+      ]
+    },
+    {
+      "model": "records.container.transfer",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "naid.custody",
+      "features": [
+        "name_get"
+      ]
+    },
+    {
+      "model": "file.retrieval.work.order.item",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "work.order.shredding",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.security.audit",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "pickup.location",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "name_get"
+      ]
+    },
+    {
+      "model": "records.usage.tracking",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "container.destruction.work.order",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "enhanced.fsm.integration",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "customer.feedback",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "unlock.service.history",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "pickup.route",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "records.access.log",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "records.container.type.converter",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "shredding.service.photo",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "barcode.models.enhanced",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "bin.barcode.inventory",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "shredding.inventory.batch",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "customer.inventory",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "customer.inventory.line",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "bin.unlock.service",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "customer.inventory.report",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.location.report.wizard",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "records.retrieval.work.order",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "shredding.rate",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "naid.certification.level",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "custody.transfer.event",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "container.access.visitor",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.audit.log",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "portal.feedback.resolution",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange"
+      ]
+    },
+    {
+      "model": "processing.log",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "processing.log.resolution.wizard",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.policy.version",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "container.content",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "naid.training.requirement",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "container.retrieval.work.order",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.chain.of.custody",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "visitor",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "mobile.dashboard.widget",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "approval.history",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search",
+        "name_search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "naid.performance.history",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "records.category",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.container.log",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "mobile.photo",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "fsm.notification.manager",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "records.container.movement",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "product.container.type",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "portal.request",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "hr.employee",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.series",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "shredding.service",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.billing.config",
+      "features": [
+        "compute",
+        "search"
+      ]
+    },
+    {
+      "model": "location.report.wizard",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "naid.compliance.action.plan",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "portal.feedback.action",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "mobile.fsm.integration",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "work.order.coordinator",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "survey.feedback.theme",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "photo",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "maintenance.team",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "workflow.visualization.manager",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "file.retrieval",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "paper.bale.line",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "paper.bale.inspection.wizard",
+      "features": [
+        "onchange",
+        "api.onchange"
+      ]
+    },
+    {
+      "model": "advanced.billing.contact",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "container.access.activity",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "naid.compliance.alert",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "records.department",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "shredding.service.event",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.document",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "customer.portal.diagram",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "naid.certificate",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "records.location.inspection",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "records.location.inspection.line",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "records.retention.policy",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange"
+      ]
+    },
+    {
+      "model": "rm.module.configurator",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "customer.negotiated.rate",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "destruction.item",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.storage.box",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "shredding.certificate",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search",
+        "name_search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "naid.equipment.standard",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "stock.lot.attribute.value",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "payment.split.line",
+      "features": [
+        "onchange",
+        "api.onchange"
+      ]
+    },
+    {
+      "model": "payment.split",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "mobile.bin.key.wizard",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "advanced.billing",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "revenue.forecast",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "field.label.customization",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "retrieval.metric",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "records.retention.policy.version",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "customer.category",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "naid.custody.event",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "records.deletion.request",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "file.retrieval.item",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "scan.retrieval",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "shred.bin",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.inventory.dashboard",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "records.bulk.user.import",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "naid.audit.log",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.retention.rule",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "records.promotional.discount",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "certificate.template.data",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.location",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "container.access.work.order",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "barcode.pricing.tier",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    },
+    {
+      "model": "full.customization.name",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "service.item",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "work.order.retrieval",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search",
+        "name_search",
+        "name_get"
+      ]
+    },
+    {
+      "model": "customer.inventory.report.wizard",
+      "features": [
+        "search"
+      ]
+    },
+    {
+      "model": "fsm.notification",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "system.diagram.data",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "required.document",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "scan.retrieval.work.order",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "feedback.improvement.area",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.destruction",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "naid.compliance.checklist",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "customer.inventory.report.line",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "name_get"
+      ]
+    },
+    {
+      "model": "paper.load.shipment",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "records.digital.scan",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "scan.digital.asset",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends"
+      ]
+    },
+    {
+      "model": "partner.bin.key",
+      "features": [
+        "compute",
+        "depends",
+        "api.depends",
+        "search"
+      ]
+    },
+    {
+      "model": "document.search.attempt",
+      "features": [
+        "compute",
+        "depends",
+        "onchange",
+        "api.depends",
+        "api.onchange",
+        "search"
+      ]
+    }
+  ]
+}
