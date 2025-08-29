@@ -205,6 +205,10 @@ from . import records_series
 from . import records_request
 from . import records_storage_box
 from . import naid_certificate
+from . import naid_certification_level
+from . import naid_equipment_standard
+from . import naid_audit_requirement
+from . import naid_training_requirement
 from . import records_retention_rule
 from . import document_retrieval_team
 from . import temp_inventory
