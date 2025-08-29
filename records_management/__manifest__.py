@@ -41,7 +41,6 @@
             "data/storage_fee_data.xml",
             "data/tag_data.xml",
             "data/temp_inventory_configurator_data.xml",
-            "data/temp_inventory_sequence_data.xml",
             "data/user_setup_data.xml",
         "security/records_management_security.xml",
         "security/ir.model.access.csv",
