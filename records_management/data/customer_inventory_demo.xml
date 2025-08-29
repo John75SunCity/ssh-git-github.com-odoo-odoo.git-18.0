@@ -1,0 +1,2081 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+
+        <!-- ===================================================== -->
+        <!-- CUSTOMER INVENTORY DATA MIGRATION DEMO -->
+        <!-- ===================================================== -->
+        <!-- This file maps exported customer inventory data to Odoo Records Management structure -->
+
+        <!-- ===================================================== -->
+        <!-- CUSTOMER RECORDS -->
+        <!-- ===================================================== -->
+
+        <!-- BIG CHAIRS - TEST COMPANY -->
+        <record id="customer_big_chairs_test" model="res.partner">
+            <field name="name">BIG CHAIRS - TEST COMPANY</field>
+            <field name="is_company">True</field>
+            <field name="email">invoices@suncityboxes.com</field>
+            <field name="phone">555-TEST-0001</field>
+            <field name="street">123 Test Street</field>
+            <field name="city">Test City</field>
+            <field name="zip">12345</field>
+            <field name="supplier_rank">0</field>
+            <field name="customer_rank">1</field>
+            <field name="ref">0100</field>
+        </record>
+
+        <!-- JOHN AND LILI COPE -->
+        <record id="customer_john_lili_cope" model="res.partner">
+            <field name="name">JOHN AND LILI COPE</field>
+            <field name="is_company">False</field>
+            <field name="email">invoices@suncityboxes.com</field>
+            <field name="phone">555-COPE-0001</field>
+            <field name="street">456 Cope Avenue</field>
+            <field name="city">Cope City</field>
+            <field name="zip">67890</field>
+            <field name="supplier_rank">0</field>
+            <field name="customer_rank">1</field>
+            <field name="ref">0100\JSPC</field>
+        </record>
+
+        <!-- BIO PAPPEL -->
+        <record id="customer_bio_pappel" model="res.partner">
+            <field name="name">BIO PAPPEL</field>
+            <field name="is_company">True</field>
+            <field name="email">invoices@suncityboxes.com</field>
+            <field name="phone">555-PAPPEL-001</field>
+            <field name="street">789 Pappel Drive</field>
+            <field name="city">Pappel City</field>
+            <field name="zip">54321</field>
+            <field name="supplier_rank">0</field>
+            <field name="customer_rank">1</field>
+            <field name="ref">0100</field>
+        </record>
+
+        <!-- CITY OF EL PASO -->
+        <record id="customer_city_el_paso" model="res.partner">
+            <field name="name">CITY OF EL PASO</field>
+            <field name="is_company">True</field>
+            <field name="email">invoices@suncityboxes.com</field>
+            <field name="phone">555-ELPASO-001</field>
+            <field name="street">1000 City Hall Drive</field>
+            <field name="city">El Paso</field>
+            <field name="zip">79901</field>
+            <field name="supplier_rank">0</field>
+            <field name="customer_rank">1</field>
+            <field name="ref">0100</field>
+        </record>
+
+        <!-- CHASE BANK -->
+        <record id="customer_chase_bank" model="res.partner">
+            <field name="name">CHASE BANK</field>
+            <field name="is_company">True</field>
+            <field name="email">invoices@suncityboxes.com</field>
+            <field name="phone">555-CHASE-001</field>
+            <field name="street">2000 Bank Plaza</field>
+            <field name="city">Bank City</field>
+            <field name="zip">11111</field>
+            <field name="supplier_rank">0</field>
+            <field name="customer_rank">1</field>
+            <field name="ref">0100</field>
+        </record>
+
+        <!-- ===================================================== -->
+        <!-- DEPARTMENTS -->
+        <!-- ===================================================== -->
+
+        <!-- BIG CHAIRS DEPARTMENTS -->
+        <record id="dept_big_chairs_general" model="records.department">
+            <field name="name">General Business Records</field>
+            <field name="code">BC-GEN</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="state">active</field>
+        </record>
+
+        <record id="dept_big_chairs_payroll" model="records.department">
+            <field name="name">Payroll & HR</field>
+            <field name="code">BC-PAY</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="state">active</field>
+        </record>
+
+        <record id="dept_big_chairs_financial" model="records.department">
+            <field name="name">Financial Records</field>
+            <field name="code">BC-FIN</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="state">active</field>
+        </record>
+
+        <!-- JOHN AND LILI COPE DEPARTMENTS -->
+        <record id="dept_john_cope_general" model="records.department">
+            <field name="name">Personal Records</field>
+            <field name="code">JC-PER</field>
+            <field name="partner_id" ref="customer_john_lili_cope"/>
+            <field name="state">active</field>
+        </record>
+
+        <!-- ===================================================== -->
+        <!-- STORAGE LOCATIONS -->
+        <!-- ===================================================== -->
+
+        <!-- Main Warehouse Locations -->
+        <record id="location_main_warehouse_a" model="records.location">
+            <field name="name">Main Warehouse - Section A</field>
+            <field name="code">MAIN-WH-A</field>
+            <field name="description">Primary storage warehouse section A</field>
+            <field name="location_type">warehouse</field>
+            <field name="building">Main Warehouse</field>
+            <field name="zone">Section A</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">True</field>
+            <field name="humidity_controlled">True</field>
+            <field name="security_level">level_2</field>
+            <field name="max_capacity">5000</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="location_main_warehouse_b" model="records.location">
+            <field name="name">Main Warehouse - Section B</field>
+            <field name="code">MAIN-WH-B</field>
+            <field name="description">Primary storage warehouse section B</field>
+            <field name="location_type">warehouse</field>
+            <field name="building">Main Warehouse</field>
+            <field name="zone">Section B</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">True</field>
+            <field name="humidity_controlled">True</field>
+            <field name="security_level">level_2</field>
+            <field name="max_capacity">5000</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="location_secure_vault" model="records.location">
+            <field name="name">Secure Records Vault</field>
+            <field name="code">SECURE-VAULT</field>
+            <field name="description">High-security vault for confidential documents</field>
+            <field name="location_type">vault</field>
+            <field name="building">Main Building</field>
+            <field name="zone">Vault Zone</field>
+            <field name="active">True</field>
+            <field name="temperature_controlled">True</field>
+            <field name="humidity_controlled">True</field>
+            <field name="security_level">level_4</field>
+            <field name="max_capacity">1000</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- ===================================================== -->
+        <!-- DOCUMENT TYPES -->
+        <!-- ===================================================== -->
+
+        <record id="doc_type_invoices" model="records.document.type">
+            <field name="name">Invoices & Financial</field>
+            <field name="code">INV-FIN</field>
+            <field name="description">Financial invoices, receipts, and payment records</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="doc_type_payroll" model="records.document.type">
+            <field name="name">Payroll & HR Records</field>
+            <field name="code">PAY-HR</field>
+            <field name="description">Payroll records, employee files, and HR documents</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="doc_type_legal" model="records.document.type">
+            <field name="name">Legal & Contracts</field>
+            <field name="code">LEGAL</field>
+            <field name="description">Legal documents, contracts, and agreements</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="doc_type_work_orders" model="records.document.type">
+            <field name="name">Work Orders & Operations</field>
+            <field name="code">WORK-OPS</field>
+            <field name="description">Work orders, operational records, and maintenance logs</field>
+            <field name="state">active</field>
+        </record>
+
+        <record id="doc_type_mixed" model="records.document.type">
+            <field name="name">Mixed Business Records</field>
+            <field name="code">MIXED</field>
+            <field name="description">Various business records and miscellaneous documents</field>
+            <field name="state">active</field>
+        </record>
+
+        <!-- ===================================================== -->
+        <!-- CONTAINER RECORDS FROM CSV DATA -->
+        <!-- ===================================================== -->
+
+        <!-- BIG CHAIRS - TEST COMPANY CONTAINERS -->
+
+        <!-- Container 405000 -->
+        <record id="container_405000" model="records.container">
+            <field name="name">Container-405000</field>
+            <field name="barcode">405000</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2017-01-29</field>
+            <field name="last_access_date">2019-03-14</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405001 -->
+        <record id="container_405001" model="records.container">
+            <field name="name">Container-405001</field>
+            <field name="barcode">405001</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-11</field>
+            <field name="last_access_date">2019-03-14</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405002 -->
+        <record id="container_405002" model="records.container">
+            <field name="name">Container-405002</field>
+            <field name="barcode">405002</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2019-03-14</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405003 -->
+        <record id="container_405003" model="records.container">
+            <field name="name">Container-405003</field>
+            <field name="barcode">405003</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405004 -->
+        <record id="container_405004" model="records.container">
+            <field name="name">Container-405004</field>
+            <field name="barcode">405004</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405005 -->
+        <record id="container_405005" model="records.container">
+            <field name="name">Container-405005</field>
+            <field name="barcode">405005</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405006 -->
+        <record id="container_405006" model="records.container">
+            <field name="name">Container-405006</field>
+            <field name="barcode">405006</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-07-09</field>
+            <field name="last_access_date">2015-07-09</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405007 -->
+        <record id="container_405007" model="records.container">
+            <field name="name">Container-405007</field>
+            <field name="barcode">405007</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-06-30</field>
+            <field name="last_access_date">2015-06-30</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405008 -->
+        <record id="container_405008" model="records.container">
+            <field name="name">Container-405008</field>
+            <field name="barcode">405008</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405009 -->
+        <record id="container_405009" model="records.container">
+            <field name="name">Container-405009</field>
+            <field name="barcode">405009</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2021-09-20</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405010 -->
+        <record id="container_405010" model="records.container">
+            <field name="name">Container-405010</field>
+            <field name="barcode">405010</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405011 -->
+        <record id="container_405011" model="records.container">
+            <field name="name">Container-405011</field>
+            <field name="barcode">405011</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2016-01-19</field>
+            <field name="last_access_date">2016-01-19</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405012 -->
+        <record id="container_405012" model="records.container">
+            <field name="name">Container-405012</field>
+            <field name="barcode">405012</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-12-30</field>
+            <field name="last_access_date">2011-12-30</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405013 -->
+        <record id="container_405013" model="records.container">
+            <field name="name">Container-405013</field>
+            <field name="barcode">405013</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405014 -->
+        <record id="container_405014" model="records.container">
+            <field name="name">Container-405014</field>
+            <field name="barcode">405014</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405015 -->
+        <record id="container_405015" model="records.container">
+            <field name="name">Container-405015</field>
+            <field name="barcode">405015</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405017 -->
+        <record id="container_405017" model="records.container">
+            <field name="name">Container-405017</field>
+            <field name="barcode">405017</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405018 -->
+        <record id="container_405018" model="records.container">
+            <field name="name">Container-405018</field>
+            <field name="barcode">405018</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2021-12-06</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405019 -->
+        <record id="container_405019" model="records.container">
+            <field name="name">Container-405019</field>
+            <field name="barcode">405019</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-17</field>
+            <field name="last_access_date">2021-09-20</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405020 -->
+        <record id="container_405020" model="records.container">
+            <field name="name">Container-405020</field>
+            <field name="barcode">405020</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405021 -->
+        <record id="container_405021" model="records.container">
+            <field name="name">Container-405021</field>
+            <field name="barcode">405021</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-17</field>
+            <field name="last_access_date">2011-08-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405022 -->
+        <record id="container_405022" model="records.container">
+            <field name="name">Container-405022</field>
+            <field name="barcode">405022</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-17</field>
+            <field name="last_access_date">2011-08-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405023 -->
+        <record id="container_405023" model="records.container">
+            <field name="name">Container-405023</field>
+            <field name="barcode">405023</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405024 -->
+        <record id="container_405024" model="records.container">
+            <field name="name">Container-405024</field>
+            <field name="barcode">405024</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405025 -->
+        <record id="container_405025" model="records.container">
+            <field name="name">Container-405025</field>
+            <field name="barcode">405025</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-12-29</field>
+            <field name="last_access_date">2022-01-03</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405026 -->
+        <record id="container_405026" model="records.container">
+            <field name="name">Container-405026</field>
+            <field name="barcode">405026</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405027 -->
+        <record id="container_405027" model="records.container">
+            <field name="name">Container-405027</field>
+            <field name="barcode">405027</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405028 -->
+        <record id="container_405028" model="records.container">
+            <field name="name">Container-405028</field>
+            <field name="barcode">405028</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405029 -->
+        <record id="container_405029" model="records.container">
+            <field name="name">Container-405029</field>
+            <field name="barcode">405029</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2011-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405030 -->
+        <record id="container_405030" model="records.container">
+            <field name="name">Container-405030</field>
+            <field name="barcode">405030</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405031 -->
+        <record id="container_405031" model="records.container">
+            <field name="name">Container-405031</field>
+            <field name="barcode">405031</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405032 -->
+        <record id="container_405032" model="records.container">
+            <field name="name">Container-405032</field>
+            <field name="barcode">405032</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405033 -->
+        <record id="container_405033" model="records.container">
+            <field name="name">Container-405033</field>
+            <field name="barcode">405033</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2018-09-11</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405034 -->
+        <record id="container_405034" model="records.container">
+            <field name="name">Container-405034</field>
+            <field name="barcode">405034</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2018-09-11</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405035 -->
+        <record id="container_405035" model="records.container">
+            <field name="name">Container-405035</field>
+            <field name="barcode">405035</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-10</field>
+            <field name="last_access_date">2020-09-01</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405036 -->
+        <record id="container_405036" model="records.container">
+            <field name="name">Container-405036</field>
+            <field name="barcode">405036</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-11</field>
+            <field name="last_access_date">2011-08-11</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405037 -->
+        <record id="container_405037" model="records.container">
+            <field name="name">Container-405037</field>
+            <field name="barcode">405037</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405038 -->
+        <record id="container_405038" model="records.container">
+            <field name="name">Container-405038</field>
+            <field name="barcode">405038</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-02-06</field>
+            <field name="last_access_date">2015-02-06</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405039 -->
+        <record id="container_405039" model="records.container">
+            <field name="name">Container-405039</field>
+            <field name="barcode">405039</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-18</field>
+            <field name="last_access_date">2021-12-14</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405041 -->
+        <record id="container_405041" model="records.container">
+            <field name="name">Container-405041</field>
+            <field name="barcode">405041</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">PICKUP/PULL LISTS 08-09 CALENDARS 98-09</field>
+            <field name="content_description">PICKUP/PULL LISTS 08-09 CALENDARS 98-09</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405042 -->
+        <record id="container_405042" model="records.container">
+            <field name="name">Container-405042</field>
+            <field name="barcode">405042</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO'S</field>
+            <field name="content_description">WO'S</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-10-13</field>
+            <field name="last_access_date">2015-10-13</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405043 -->
+        <record id="container_405043" model="records.container">
+            <field name="name">Container-405043</field>
+            <field name="barcode">405043</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO'S</field>
+            <field name="content_description">WO'S</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-12</field>
+            <field name="last_access_date">2011-08-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405044 -->
+        <record id="container_405044" model="records.container">
+            <field name="name">Container-405044</field>
+            <field name="barcode">405044</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES/CHECKS</field>
+            <field name="content_description">INVOICES/CHECKS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-29</field>
+            <field name="last_access_date">2022-11-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405045 -->
+        <record id="container_405045" model="records.container">
+            <field name="name">Container-405045</field>
+            <field name="barcode">405045</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES/CHECKS</field>
+            <field name="content_description">INVOICES/CHECKS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-29</field>
+            <field name="last_access_date">2022-11-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405046 -->
+        <record id="container_405046" model="records.container">
+            <field name="name">Container-405046</field>
+            <field name="barcode">405046</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">RECEIPTS/PAYROLL CHECK STUBS</field>
+            <field name="content_description">RECEIPTS/PAYROLL CHECK STUBS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-09-23</field>
+            <field name="last_access_date">2011-09-23</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405047 -->
+        <record id="container_405047" model="records.container">
+            <field name="name">Container-405047</field>
+            <field name="barcode">405047</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">RECEIPTS</field>
+            <field name="content_description">RECEIPTS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2013-11-25</field>
+            <field name="last_access_date">2013-11-25</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405048 -->
+        <record id="container_405048" model="records.container">
+            <field name="name">Container-405048</field>
+            <field name="barcode">405048</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO</field>
+            <field name="content_description">WO</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-18</field>
+            <field name="last_access_date">2011-08-18</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405049 -->
+        <record id="container_405049" model="records.container">
+            <field name="name">Container-405049</field>
+            <field name="barcode">405049</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO</field>
+            <field name="content_description">WO</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-08-18</field>
+            <field name="last_access_date">2011-08-18</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405050 -->
+        <record id="container_405050" model="records.container">
+            <field name="name">Container-405050</field>
+            <field name="barcode">405050</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-05-24</field>
+            <field name="last_access_date">2012-05-24</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405051 -->
+        <record id="container_405051" model="records.container">
+            <field name="name">Container-405051</field>
+            <field name="barcode">405051</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="content_description">BIG CHAIRS -TEST COMPANY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-05-24</field>
+            <field name="last_access_date">2012-05-24</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405052 -->
+        <record id="container_405052" model="records.container">
+            <field name="name">Container-405052</field>
+            <field name="barcode">405052</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_payroll"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_payroll"/>
+            <field name="description">PAYROLL/RECEIPTS CHECK COPIES</field>
+            <field name="content_description">PAYROLL/RECEIPTS CHECK COPIES</field>
+            <field name="state">stored</field>
+            <field name="security_level">2</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-08-14</field>
+            <field name="last_access_date">2012-08-14</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405053 -->
+        <record id="container_405053" model="records.container">
+            <field name="name">Container-405053</field>
+            <field name="barcode">405053</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">RECEIPTS</field>
+            <field name="content_description">RECEIPTS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-07-23</field>
+            <field name="last_access_date">2012-07-23</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405054 -->
+        <record id="container_405054" model="records.container">
+            <field name="name">Container-405054</field>
+            <field name="barcode">405054</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES CHECKS RECEIPTS</field>
+            <field name="content_description">INVOICES CHECKS RECEIPTS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-05-24</field>
+            <field name="last_access_date">2022-11-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405055 -->
+        <record id="container_405055" model="records.container">
+            <field name="name">Container-405055</field>
+            <field name="barcode">405055</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">CLOSING DOCS 9230 & 9270 BTK</field>
+            <field name="content_description">CLOSING DOCS 9230 & 9270 BTK</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-06-08</field>
+            <field name="last_access_date">2012-06-08</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405056 -->
+        <record id="container_405056" model="records.container">
+            <field name="name">Container-405056</field>
+            <field name="barcode">405056</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_payroll"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_payroll"/>
+            <field name="description">PAY STUBS ALL RECEIPTS 2007-2009</field>
+            <field name="content_description">PAY STUBS ALL RECEIPTS 2007-2009</field>
+            <field name="state">stored</field>
+            <field name="security_level">2</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-08-10</field>
+            <field name="last_access_date">2012-08-10</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405057 -->
+        <record id="container_405057" model="records.container">
+            <field name="name">Container-405057</field>
+            <field name="barcode">405057</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES</field>
+            <field name="content_description">INVOICES</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2011-12-30</field>
+            <field name="last_access_date">2022-11-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405058 -->
+        <record id="container_405058" model="records.container">
+            <field name="name">Container-405058</field>
+            <field name="barcode">405058</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO'S</field>
+            <field name="content_description">WO'S</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-08-31</field>
+            <field name="last_access_date">2012-08-31</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405059 -->
+        <record id="container_405059" model="records.container">
+            <field name="name">Container-405059</field>
+            <field name="barcode">405059</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO'S</field>
+            <field name="content_description">WO'S</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-08-31</field>
+            <field name="last_access_date">2012-08-31</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405060 -->
+        <record id="container_405060" model="records.container">
+            <field name="name">Container-405060</field>
+            <field name="barcode">405060</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES 2010 RECEIPTS 2010 CHECKS 2010</field>
+            <field name="content_description">INVOICES 2010 RECEIPTS 2010 CHECKS 2010</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-06-13</field>
+            <field name="last_access_date">2022-11-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405061 -->
+        <record id="container_405061" model="records.container">
+            <field name="name">Container-405061</field>
+            <field name="barcode">405061</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">W.O.</field>
+            <field name="content_description">W.O.</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-01-17</field>
+            <field name="last_access_date">2014-01-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405062 -->
+        <record id="container_405062" model="records.container">
+            <field name="name">Container-405062</field>
+            <field name="barcode">405062</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">W.O.</field>
+            <field name="content_description">W.O.</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2012-12-07</field>
+            <field name="last_access_date">2014-03-20</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405063 -->
+        <record id="container_405063" model="records.container">
+            <field name="name">Container-405063</field>
+            <field name="barcode">405063</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WORK ORDERS</field>
+            <field name="content_description">WORK ORDERS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2013-08-26</field>
+            <field name="last_access_date">2013-08-26</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405064 -->
+        <record id="container_405064" model="records.container">
+            <field name="name">Container-405064</field>
+            <field name="barcode">405064</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">EMPL II</field>
+            <field name="content_description">EMPL II</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2016-04-06</field>
+            <field name="last_access_date">2016-04-06</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405065 -->
+        <record id="container_405065" model="records.container">
+            <field name="name">Container-405065</field>
+            <field name="barcode">405065</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">OFFICE</field>
+            <field name="content_description">OFFICE</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2013-12-26</field>
+            <field name="last_access_date">2013-12-26</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405066 -->
+        <record id="container_405066" model="records.container">
+            <field name="name">Container-405066</field>
+            <field name="barcode">405066</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">OFFICE</field>
+            <field name="content_description">OFFICE</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2013-12-26</field>
+            <field name="last_access_date">2013-12-26</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405067 -->
+        <record id="container_405067" model="records.container">
+            <field name="name">Container-405067</field>
+            <field name="barcode">405067</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO</field>
+            <field name="content_description">WO</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2013-07-17</field>
+            <field name="last_access_date">2013-07-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405068 -->
+        <record id="container_405068" model="records.container">
+            <field name="name">Container-405068</field>
+            <field name="barcode">405068</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO</field>
+            <field name="content_description">WO</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2013-08-15</field>
+            <field name="last_access_date">2013-08-15</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405069 -->
+        <record id="container_405069" model="records.container">
+            <field name="name">Container-405069</field>
+            <field name="barcode">405069</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">FAXES</field>
+            <field name="content_description">FAXES</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2013-08-26</field>
+            <field name="last_access_date">2013-08-26</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405070 -->
+        <record id="container_405070" model="records.container">
+            <field name="name">Container-405070</field>
+            <field name="barcode">405070</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">FAXES PULL REQUEST</field>
+            <field name="content_description">FAXES PULL REQUEST</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2013-12-20</field>
+            <field name="last_access_date">2021-10-13</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405071 -->
+        <record id="container_405071" model="records.container">
+            <field name="name">Container-405071</field>
+            <field name="barcode">405071</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WORKORDERS</field>
+            <field name="content_description">WORKORDERS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-03-04</field>
+            <field name="last_access_date">2014-03-04</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405072 -->
+        <record id="container_405072" model="records.container">
+            <field name="name">Container-405072</field>
+            <field name="barcode">405072</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">CALENDER 2013</field>
+            <field name="content_description">CALENDER 2013</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-03-04</field>
+            <field name="last_access_date">2021-07-29</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405073 -->
+        <record id="container_405073" model="records.container">
+            <field name="name">Container-405073</field>
+            <field name="barcode">405073</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WORKORDERS</field>
+            <field name="content_description">WORKORDERS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-02-21</field>
+            <field name="last_access_date">2021-12-21</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405074 -->
+        <record id="container_405074" model="records.container">
+            <field name="name">Container-405074</field>
+            <field name="barcode">405074</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_payroll"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_payroll"/>
+            <field name="description">PAYROLL SELECT STAFFING</field>
+            <field name="content_description">PAYROLL SELECT STAFFING</field>
+            <field name="state">stored</field>
+            <field name="security_level">2</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-02-24</field>
+            <field name="last_access_date">2014-02-24</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405075 -->
+        <record id="container_405075" model="records.container">
+            <field name="name">Container-405075</field>
+            <field name="barcode">405075</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">CREDIT CARDS PAID DEPOSITS</field>
+            <field name="content_description">CREDIT CARDS PAID DEPOSITS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-02-24</field>
+            <field name="last_access_date">2014-02-24</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405076 -->
+        <record id="container_405076" model="records.container">
+            <field name="name">Container-405076</field>
+            <field name="barcode">405076</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES</field>
+            <field name="content_description">INVOICES</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-06-16</field>
+            <field name="last_access_date">2022-11-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405077 -->
+        <record id="container_405077" model="records.container">
+            <field name="name">Container-405077</field>
+            <field name="barcode">405077</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_payroll"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_payroll"/>
+            <field name="description">TIME CARDS PAYROLL CHECK COPIES</field>
+            <field name="content_description">TIME CARDS PAYROLL CHECK COPIES</field>
+            <field name="state">stored</field>
+            <field name="security_level">2</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-02-18</field>
+            <field name="last_access_date">2014-02-18</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405078 -->
+        <record id="container_405078" model="records.container">
+            <field name="name">Container-405078</field>
+            <field name="barcode">405078</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES</field>
+            <field name="content_description">INVOICES</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-05-21</field>
+            <field name="last_access_date">2022-11-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405079 -->
+        <record id="container_405079" model="records.container">
+            <field name="name">Container-405079</field>
+            <field name="barcode">405079</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES</field>
+            <field name="content_description">INVOICES</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2017-09-29</field>
+            <field name="last_access_date">2022-11-17</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405080 -->
+        <record id="container_405080" model="records.container">
+            <field name="name">Container-405080</field>
+            <field name="barcode">405080</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">RECEIPTS</field>
+            <field name="content_description">RECEIPTS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-02-21</field>
+            <field name="last_access_date">2014-02-21</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405081 -->
+        <record id="container_405081" model="records.container">
+            <field name="name">Container-405081</field>
+            <field name="barcode">405081</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">FAX/WO'S</field>
+            <field name="content_description">FAX/WO'S</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-09-25</field>
+            <field name="last_access_date">2014-09-25</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405082 -->
+        <record id="container_405082" model="records.container">
+            <field name="name">Container-405082</field>
+            <field name="barcode">405082</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">FAX/WO'S</field>
+            <field name="content_description">FAX/WO'S</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-09-26</field>
+            <field name="last_access_date">2014-09-26</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405083 -->
+        <record id="container_405083" model="records.container">
+            <field name="name">Container-405083</field>
+            <field name="barcode">405083</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO FAXES</field>
+            <field name="content_description">WO FAXES</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2014-11-26</field>
+            <field name="last_access_date">2014-11-26</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405084 -->
+        <record id="container_405084" model="records.container">
+            <field name="name">Container-405084</field>
+            <field name="barcode">405084</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">DEPOSITS 2014</field>
+            <field name="content_description">DEPOSITS 2014</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-03-18</field>
+            <field name="last_access_date">2015-03-18</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405085 -->
+        <record id="container_405085" model="records.container">
+            <field name="name">Container-405085</field>
+            <field name="barcode">405085</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES 2014</field>
+            <field name="content_description">INVOICES 2014</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-02-22</field>
+            <field name="last_access_date">2016-02-09</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405086 -->
+        <record id="container_405086" model="records.container">
+            <field name="name">Container-405086</field>
+            <field name="barcode">405086</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">INVOICES 2014</field>
+            <field name="content_description">INVOICES 2014</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-02-22</field>
+            <field name="last_access_date">2015-05-21</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405087 -->
+        <record id="container_405087" model="records.container">
+            <field name="name">Container-405087</field>
+            <field name="barcode">405087</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO & FAX</field>
+            <field name="content_description">WO & FAX</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-06-16</field>
+            <field name="last_access_date">2015-06-16</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405088 -->
+        <record id="container_405088" model="records.container">
+            <field name="name">Container-405088</field>
+            <field name="barcode">405088</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">JESUS</field>
+            <field name="content_description">JESUS</field>
+            <field name="state">destroyed</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-05-07</field>
+            <field name="last_access_date">2015-05-07</field>
+            <field name="destruction_date">2015-05-07</field>
+            <field name="active">False</field>
+        </record>
+
+        <!-- Container 405089 -->
+        <record id="container_405089" model="records.container">
+            <field name="name">Container-405089</field>
+            <field name="barcode">405089</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">DESTROY</field>
+            <field name="content_description">DESTROY</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2017-04-11</field>
+            <field name="last_access_date">2016-02-09</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405090 -->
+        <record id="container_405090" model="records.container">
+            <field name="name">Container-405090</field>
+            <field name="barcode">405090</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO & FAX</field>
+            <field name="content_description">WO & FAX</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2018-10-05</field>
+            <field name="last_access_date">2016-04-28</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405091 -->
+        <record id="container_405091" model="records.container">
+            <field name="name">Container-405091</field>
+            <field name="barcode">405091</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WO & FAX</field>
+            <field name="content_description">WO & FAX</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2015-10-16</field>
+            <field name="last_access_date">2015-10-16</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405092 -->
+        <record id="container_405092" model="records.container">
+            <field name="name">Container-405092</field>
+            <field name="barcode">405092</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">FAX & WO</field>
+            <field name="content_description">FAX & WO</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2017-05-18</field>
+            <field name="last_access_date">2021-08-26</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405093 -->
+        <record id="container_405093" model="records.container">
+            <field name="name">Container-405093</field>
+            <field name="barcode">405093</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">W.O.'S</field>
+            <field name="content_description">W.O.'S</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2017-07-25</field>
+            <field name="last_access_date">2016-05-24</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405094 -->
+        <record id="container_405094" model="records.container">
+            <field name="name">Container-405094</field>
+            <field name="barcode">405094</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">CALENDER</field>
+            <field name="content_description">CALENDER</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2018-10-17</field>
+            <field name="last_access_date">2019-03-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- Container 405095 -->
+        <record id="container_405095" model="records.container">
+            <field name="name">Container-405095</field>
+            <field name="barcode">405095</field>
+            <field name="partner_id" ref="customer_big_chairs_test"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">DESTRUCTION LIST 2015</field>
+            <field name="content_description">DESTRUCTION LIST 2015</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2017-10-10</field>
+            <field name="last_access_date">2019-03-12</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- ===================================================== -->
+        <!-- SAMPLE CONTAINERS FROM OTHER CUSTOMERS -->
+        <!-- ===================================================== -->
+
+        <!-- JOHN AND LILI COPE Container -->
+        <record id="container_910881" model="records.container">
+            <field name="name">Container-910881</field>
+            <field name="barcode">910881</field>
+            <field name="partner_id" ref="customer_john_lili_cope"/>
+            <field name="department_id" ref="dept_john_cope_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">SPRAY PAINT CANS</field>
+            <field name="content_description">SPRAY PAINT CANS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2023-05-19</field>
+            <field name="last_access_date">2023-05-19</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- BIO PAPPEL Container -->
+        <record id="container_910928" model="records.container">
+            <field name="name">Container-910928</field>
+            <field name="barcode">910928</field>
+            <field name="partner_id" ref="customer_bio_pappel"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_mixed"/>
+            <field name="description">BALE LOG SHEETS</field>
+            <field name="content_description">BALE LOG SHEETS</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2023-05-18</field>
+            <field name="last_access_date">2023-05-18</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- CITY OF EL PASO Container -->
+        <record id="container_910931" model="records.container">
+            <field name="name">Container-910931</field>
+            <field name="barcode">910931</field>
+            <field name="partner_id" ref="customer_city_el_paso"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_main_warehouse_a"/>
+            <field name="container_type_id" ref="demo_container_type_standard_box"/>
+            <field name="document_type_id" ref="doc_type_work_orders"/>
+            <field name="description">WORK ORDERS - CITY OF EL PASO</field>
+            <field name="content_description">WORK ORDERS - CITY OF EL PASO</field>
+            <field name="state">stored</field>
+            <field name="security_level">1</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2023-05-20</field>
+            <field name="last_access_date">2023-05-20</field>
+            <field name="active">True</field>
+        </record>
+
+        <!-- CHASE BANK Container -->
+        <record id="container_900007" model="records.container">
+            <field name="name">Container-900007</field>
+            <field name="barcode">900007</field>
+            <field name="partner_id" ref="customer_chase_bank"/>
+            <field name="department_id" ref="dept_big_chairs_general"/>
+            <field name="location_id" ref="location_secure_vault"/>
+            <field name="container_type_id" ref="demo_container_type_secure_box"/>
+            <field name="document_type_id" ref="doc_type_invoices"/>
+            <field name="description">DEPOSITS-2024</field>
+            <field name="content_description">DEPOSITS-2024</field>
+            <field name="state">stored</field>
+            <field name="security_level">3</field>
+            <field name="weight">25.0</field>
+            <field name="storage_start_date">2025-04-03</field>
+            <field name="last_access_date">2025-04-03</field>
+            <field name="active">True</field>
+        </record>
+
+    </data>
+</odoo>
