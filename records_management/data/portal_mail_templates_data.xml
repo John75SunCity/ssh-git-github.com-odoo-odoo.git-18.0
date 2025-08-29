@@ -5,7 +5,7 @@
         <record id="portal_request_submitted_email" model="mail.template">
             <field name="name">Portal Request Submitted</field>
             <field name="model_id" ref="model_portal_request"/>
-            <field name="email_from">${object.env.user.email or 'noreply@suncityshred.com'}</field>
+            <field name="email_from">noreply@suncityshred.com</field>
             <field name="email_to">admin@suncityshred.com</field>
             <field name="subject">New Portal Submission: ${object.name} - ${object.request_type}</field>
             <field name="body_html"><![CDATA[
@@ -60,7 +60,7 @@
                 </div>
             ]]>        </field>
             <field name="auto_delete" eval="True"/>
-            <field name="lang">${object.partner_id.lang}</field>
+            <field name="lang">${object.partner_id.lang or 'en_US'}</field>
         </record>
 
         <!-- Portal Request Status Update Email Template -->
@@ -69,7 +69,7 @@
             <field name="model_id" ref="model_portal_request"/>
             <field name="email_from">noreply@suncityshred.com</field>
             <field name="email_to">${object.partner_id.email}</field>
-            <field name="subject">Request ${object.name} Status Update - ${object.state.title()}</field>
+            <field name="subject">Request ${object.name} Status Update - ${object.state}</field>
             <field name="body_html"><![CDATA[
                 <div style="margin: 0px; padding: 0px;">
                     <p>Dear ${object.partner_id.name},</p>
@@ -82,21 +82,25 @@
                         </tr>
                         <tr>
                             <td><strong>Current Status:</strong></td>
-                            <td><span style="
-                                padding: 3px 8px;
-                                border-radius: 3px;
-                                color: white;
-                                background-color: ${'#28a745' if object.state == 'completed' else '#ffc107' if object.state == 'in_progress' else '#6c757d'};
-                            ">${object.state.replace('_', ' ').title()}</span></td>
+                            <td>
+                                % if object.state == 'completed':
+                                <span style="padding: 3px 8px; border-radius: 3px; color: white; background-color: #28a745;">
+                                    ${object.state.replace('_', ' ').title()}
+                                </span>
+                                % elif object.state == 'in_progress':
+                                <span style="padding: 3px 8px; border-radius: 3px; color: white; background-color: #ffc107;">
+                                    ${object.state.replace('_', ' ').title()}
+                                </span>
+                                % else:
+                                <span style="padding: 3px 8px; border-radius: 3px; color: white; background-color: #6c757d;">
+                        <tr t-if="object.assigned_to">
+                            <td><strong>Assigned To:</strong></td>
+                            <td t-esc="object.assigned_to.name"/>
                         </tr>
-                        <tr style="background-color: #f5f5f5;">
                             <td><strong>Last Updated:</strong></td>
                             <td>${object.write_date}</td>
-                        </tr>
-                        % if object.assigned_to:
-                        <tr>
-                            <td><strong>Assigned To:</strong></td>
-                            <td>${object.assigned_to.name}</td>
+                    <p t-if="object.state == 'completed'" style="color: #28a745; font-weight: bold;">✓ Your request has been completed successfully!</p>
+                    <p t-if="object.state == 'in_progress'" style="color: #ffc107; font-weight: bold;">⏳ Your request is currently being processed.</p>
                         </tr>
                         % endif
                     </table>
@@ -167,6 +171,7 @@
                 </div>
             ]]>        </field>
             <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.partner_id.lang}</field>
         </record>
 
         <!-- SMS Template for Portal Request Updates -->
@@ -370,7 +375,7 @@
 
         <!-- Service Completion Notification -->
         <record id="service_completion_email" model="mail.template">
-            <field name="name">Service Completion Notification</field>
+            <field name="lang">${object.lang or 'en_US'}</field>
             <field name="model_id" ref="model_portal_request"/>
             <field name="email_from">operations@suncityshred.com</field>
             <field name="email_to">${object.partner_id.email}</field>

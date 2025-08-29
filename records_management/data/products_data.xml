@@ -40,23 +40,23 @@
             <field name="description">NAID-compliant secure destruction per container</field>
         </record>
 
-<!-- Business Integration Configuration Parameters -->
+        <!-- Business Integration Configuration Parameters -->
         <record id="container_service_integration" model="ir.config_parameter">
-<field name="key">records_management.container_service_integration</field>
-<field name="value">Container setup and billing integration with TYPE 01-06 specifications</field>
+            <field name="key">records_management.container_service_integration</field>
+            <field name="value">Container setup and billing integration with TYPE 01-06 specifications</field>
         </record>
 
         <record id="storage_service_integration" model="ir.config_parameter">
-<field name="key">records_management.storage_service_integration</field>
-<field name="value">Monthly recurring billing with automated inventory-based pricing</field>
+            <field name="key">records_management.storage_service_integration</field>
+            <field name="value">Monthly recurring billing with automated inventory-based pricing</field>
         </record>
 
         <record id="shredding_service_integration" model="ir.config_parameter">
-<field name="key">records_management.shredding_service_integration</field>
-<field name="value">NAID AAA compliant destruction with certificate generation</field>
+            <field name="key">records_management.shredding_service_integration</field>
+            <field name="value">NAID AAA compliant destruction with certificate generation</field>
         </record>
 
-<!-- Container Type Specific Services (Actual Business Specifications) -->
+        <!-- Container Type Specific Services (Actual Business Specifications) -->
         <record id="product_storage_type01" model="product.product">
             <field name="name">TYPE 01 Standard Box Storage</field>
             <field name="type">service</field>
@@ -215,7 +215,7 @@
             <field name="parent_id" ref="product.product_category_all"/>
         </record>
 
-<!-- Update Category Assignments (performed after categories are created) -->
+        <!-- Post-creation updates: Assign products to their categories after all categories have been created. -->
         <record id="product_storage_container" model="product.product">
             <field name="categ_id" ref="category_storage_services"/>
         </record>
@@ -228,29 +228,29 @@
             <field name="categ_id" ref="category_destruction_services"/>
         </record>
 
-<record id="product_pickup_service" model="product.product">
-    <field name="categ_id" ref="category_value_added_services"/>
-</record>
+        <record id="product_pickup_service" model="product.product">
+            <field name="categ_id" ref="category_value_added_services"/>
+        </record>
 
-<record id="product_indexing_service" model="product.product">
-    <field name="categ_id" ref="category_value_added_services"/>
-</record>
+        <record id="product_indexing_service" model="product.product">
+            <field name="categ_id" ref="category_value_added_services"/>
+        </record>
 
-<record id="product_retrieval_service" model="product.product">
-    <field name="categ_id" ref="category_value_added_services"/>
-</record>
+        <record id="product_retrieval_service" model="product.product">
+            <field name="categ_id" ref="category_value_added_services"/>
+        </record>
 
-<record id="product_scanning_service" model="product.product">
-    <field name="categ_id" ref="category_value_added_services"/>
-</record>
+        <record id="product_scanning_service" model="product.product">
+            <field name="categ_id" ref="category_value_added_services"/>
+        </record>
 
-<record id="product_naid_certificate" model="product.product">
-    <field name="categ_id" ref="category_compliance_services"/>
-</record>
+        <record id="product_naid_certificate" model="product.product">
+            <field name="categ_id" ref="category_compliance_services"/>
+        </record>
 
-<record id="product_compliance_audit" model="product.product">
-    <field name="categ_id" ref="category_compliance_services"/>
-</record>
+        <record id="product_compliance_audit" model="product.product">
+            <field name="categ_id" ref="category_compliance_services"/>
+        </record>
 
     </data>
 </odoo>
