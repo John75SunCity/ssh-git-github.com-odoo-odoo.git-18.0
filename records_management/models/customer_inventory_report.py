@@ -68,3 +68,140 @@ class CustomerInventoryReportWizard(models.TransientModel):
             raise UserError(_("No inventory records found for the selected criteria."))
 
         return self.env.ref('records_management.action_report_customer_inventory').report_action(inventories)
+
+    @api.model
+    def generate_monthly_reports(self):
+        """
+        Generate monthly inventory reports for all customers.
+        This method is called by the scheduled action.
+        """
+        try:
+            self._generate_inventory_reports()
+        except Exception as e:
+            self.env['ir.logging'].create({
+                'name': 'Monthly Report Generation Error',
+                'type': 'server',
+                'level': 'ERROR',
+                'message': _('Error generating monthly inventory reports: %s') % str(e),
+                'path': 'customer.inventory.report.wizard',
+                'func': 'generate_monthly_reports',
+            })
+            raise
+
+    def _generate_inventory_reports(self):
+        """Internal method to generate inventory reports"""
+        customers = self.env['res.partner'].search([('customer_rank', '>', 0)])
+
+        generated_reports = 0
+        for customer in customers:
+            try:
+                self._generate_customer_report(customer)
+                generated_reports += 1
+            except Exception as e:
+                self.env['ir.logging'].create({
+                    'name': 'Customer Report Error',
+                    'type': 'server',
+                    'level': 'ERROR',
+                    'message': _('Error generating report for customer %s: %s') % (customer.name, str(e)),
+                    'path': 'customer.inventory.report.wizard',
+                    'func': '_generate_inventory_reports',
+                })
+
+        # Log success
+        self.env['ir.logging'].create({
+            'name': 'Monthly Report Generation',
+            'type': 'server',
+            'level': 'INFO',
+            'message': _('Monthly inventory reports generated for %s customers') % generated_reports,
+            'path': 'customer.inventory.report.wizard',
+            'func': '_generate_inventory_reports',
+        })
+
+    def _generate_customer_report(self, customer):
+        """Generate inventory report for a specific customer"""
+        # Get customer's inventory items
+        inventories = self.env['customer.inventory'].search([
+            ('partner_id', '=', customer.id),
+        ])
+
+        if not inventories:
+            return  # No items to report
+
+        # Create wizard instance for report generation
+        wizard = self.create({
+            'partner_id': customer.id,
+            'inventory_date_to': fields.Date.today(),
+        })
+
+        # Generate the report
+        try:
+            report_action = wizard.action_print_report()
+            # Log individual report generation
+            self.env['ir.logging'].create({
+                'name': 'Customer Report Generated',
+                'type': 'server',
+                'level': 'INFO',
+                'message': _('Inventory report generated for customer %s with %s inventory records') % (
+                    customer.name, len(inventories)),
+                'path': 'customer.inventory.report.wizard',
+                'func': '_generate_customer_report',
+            })
+        except Exception as e:
+            self.env['ir.logging'].create({
+                'name': 'Customer Report Generation Failed',
+                'type': 'server',
+                'level': 'ERROR',
+                'message': _('Failed to generate report for customer %s: %s') % (customer.name, str(e)),
+                'path': 'customer.inventory.report.wizard',
+                'func': '_generate_customer_report',
+            })
+
+    @api.model
+    def run_monthly_inventory_report_automation(self):
+        """
+        Run the monthly inventory report automation workflow.
+        This method is called by the scheduled action.
+        """
+        try:
+            self._run_inventory_report_workflow()
+        except Exception as e:
+            self.env['ir.logging'].create({
+                'name': 'Inventory Report Workflow Error',
+                'type': 'server',
+                'level': 'ERROR',
+                'message': _('Error in inventory report automation workflow: %s') % str(e),
+                'path': 'customer.inventory.report.wizard',
+                'func': 'run_monthly_inventory_report_automation',
+            })
+            raise
+
+    def _run_inventory_report_workflow(self):
+        """Internal method to run inventory report workflow"""
+        # Log workflow start
+        self.env['ir.logging'].create({
+            'name': 'Inventory Report Workflow',
+            'type': 'server',
+            'level': 'INFO',
+            'message': _('Monthly inventory report automation workflow started'),
+            'path': 'customer.inventory.report.wizard',
+            'func': '_run_inventory_report_workflow',
+        })
+
+        # Generate reports for all customers
+        self.generate_monthly_reports()
+
+        # TODO: Implement additional workflow logic here
+        # This could include:
+        # - Sending report emails to customers
+        # - Archiving old reports
+        # - Generating summary reports
+
+        # Log workflow completion
+        self.env['ir.logging'].create({
+            'name': 'Inventory Report Workflow',
+            'type': 'server',
+            'level': 'INFO',
+            'message': _('Monthly inventory report automation workflow completed successfully'),
+            'path': 'customer.inventory.report.wizard',
+            'func': '_run_inventory_report_workflow',
+        })

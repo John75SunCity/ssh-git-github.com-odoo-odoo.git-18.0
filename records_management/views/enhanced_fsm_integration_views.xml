@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Enhanced FSM Integration Views -->
+
+        <!-- Tree/List View -->
+        <record id="enhanced_fsm_integration_view_tree" model="ir.ui.view">
+            <field name="name">enhanced.fsm.integration.tree</field>
+            <field name="model">enhanced.fsm.integration</field>
+            <field name="arch" type="xml">
+                <tree string="FSM Integrations">
+                    <field name="name"/>
+                    <field name="integration_type"/>
+                    <field name="active"/>
+                    <field name="auto_create_tasks"/>
+                    <field name="enable_mobile_checkin"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="enhanced_fsm_integration_view_form" model="ir.ui.view">
+            <field name="name">enhanced.fsm.integration.form</field>
+            <field name="model">enhanced.fsm.integration</field>
+            <field name="arch" type="xml">
+                <form string="Enhanced FSM Integration">
+                    <header>
+                        <button name="create_default_integrations" type="object" string="Create Default Integrations" class="btn-secondary"/>
+                        <field name="active" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="integration_type"/>
+                                <field name="active"/>
+                                <field name="auto_create_tasks"/>
+                                <field name="task_priority"/>
+                            </group>
+                            <group>
+                                <field name="enable_mobile_checkin"/>
+                                <field name="enable_gps_tracking"/>
+                                <field name="enable_sms_notifications"/>
+                                <field name="enable_email_notifications"/>
+                            </group>
+                        </group>
+                        <group string="Target Models">
+                            <field name="target_pickup_requests"/>
+                            <field name="target_maintenance"/>
+                            <field name="target_containers"/>
+                        </group>
+                        <field name="description" placeholder="Describe this FSM integration..."/>
+                        <notebook>
+                            <page string="Settings">
+                                <group>
+                                    <field name="company_id"/>
+                                </group>
+                            </page>
+                            <page string="Mobile Features">
+                                <group>
+                                    <field name="enable_mobile_checkin"/>
+                                    <field name="enable_gps_tracking"/>
+                                    <field name="location_update_interval"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="enhanced_fsm_integration_view_search" model="ir.ui.view">
+            <field name="name">enhanced.fsm.integration.search</field>
+            <field name="model">enhanced.fsm.integration</field>
+            <field name="arch" type="xml">
+                <search string="FSM Integrations">
+                    <field name="name"/>
+                    <field name="integration_type"/>
+                    <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                    <filter name="auto_create_tasks" string="Auto Create Tasks" domain="[('auto_create_tasks', '=', True)]"/>
+                    <filter name="mobile_enabled" string="Mobile Enabled" domain="[('enable_mobile_checkin', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="integration_type" string="Type" context="{'group_by': 'integration_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_enhanced_fsm_integration" model="ir.actions.act_window">
+            <field name="name">Enhanced FSM Integration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">enhanced.fsm.integration</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="enhanced_fsm_integration_view_tree"/>
+            <field name="search_view_id" ref="enhanced_fsm_integration_view_search"/>
+            <field name="help">Configure enhanced field service management integration for your workflows.</field>
+        </record>
+
+    </data>
+</odoo>

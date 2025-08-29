@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_invoice_template" name="Portal Invoice Template">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-set="pageName" t-value="'invoice'"/>
+            <t t-set="title">Invoice Details</t>
+
+            <div class="container-fluid">
+                <!-- Invoice Header -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <h4 class="mb-0">
+                                            <i class="fa fa-file-invoice-dollar me-2"></i>
+                                            Invoice <span t-esc="invoice.name"/>
+                                        </h4>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <span t-attf-class="badge fs-6 {{ 'badge-success' if invoice.payment_state == 'paid' else 'badge-warning' if invoice.payment_state == 'partial' else 'badge-danger' }}">
+                                            <t t-esc="dict(invoice._fields['payment_state'].selection).get(invoice.payment_state, invoice.payment_state)"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <!-- Invoice Details -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <h5>Invoice Information</h5>
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <td class="text-muted">Invoice Number:</td>
+                                                <td><strong t-esc="invoice.name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Invoice Date:</td>
+                                                <td><t t-esc="invoice.invoice_date.strftime('%B %d, %Y') if invoice.invoice_date else 'N/A'"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Due Date:</td>
+                                                <td><t t-esc="invoice.invoice_date_due.strftime('%B %d, %Y') if invoice.invoice_date_due else 'N/A'"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Status:</td>
+                                                <td>
+                                                    <span t-attf-class="badge {{ 'badge-success' if invoice.payment_state == 'paid' else 'badge-warning' if invoice.payment_state == 'partial' else 'badge-danger' }}">
+                                                        <t t-esc="dict(invoice._fields['payment_state'].selection).get(invoice.payment_state, invoice.payment_state)"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Billing Information</h5>
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <td class="text-muted">Customer:</td>
+                                                <td><strong t-esc="invoice.partner_id.name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Address:</td>
+                                                <td>
+                                                    <t t-esc="invoice.partner_id.street"/><br/>
+                                                    <t t-if="invoice.partner_id.street2"><t t-esc="invoice.partner_id.street2"/><br/></t>
+                                                    <t t-esc="invoice.partner_id.city"/>, <t t-esc="invoice.partner_id.state_id.name if invoice.partner_id.state_id else ''"/> <t t-esc="invoice.partner_id.zip"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">Contact:</td>
+                                                <td><t t-esc="invoice.partner_id.email"/></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Invoice Lines -->
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h5>Invoice Lines</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Description</th>
+                                                        <th class="text-center">Quantity</th>
+                                                        <th class="text-end">Unit Price</th>
+                                                        <th class="text-end">Discount</th>
+                                                        <th class="text-end">Taxes</th>
+                                                        <th class="text-end">Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <t t-foreach="invoice.invoice_line_ids" t-as="line">
+                                                        <tr>
+                                                            <td>
+                                                                <strong t-esc="line.name"/>
+                                                                <t t-if="line.product_id">
+                                                                    <br/><small class="text-muted"><t t-esc="line.product_id.name"/></small>
+                                                                </t>
+                                                            </td>
+                                                            <td class="text-center"><t t-esc="line.quantity"/></td>
+                                                            <td class="text-end"><t t-esc="'${:,.2f}'.format(line.price_unit)"/></td>
+                                                            <td class="text-end">
+                                                                <t t-if="line.discount">
+                                                                    <t t-esc="'{:.1f}%'.format(line.discount)"/>
+                                                                </t>
+                                                                <t t-else>-</t>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <t t-if="line.tax_ids">
+                                                                    <t t-foreach="line.tax_ids" t-as="tax">
+                                                                        <t t-esc="tax.name"/><br/>
+                                                                    </t>
+                                                                </t>
+                                                                <t t-else>-</t>
+                                                            </td>
+                                                            <td class="text-end"><strong><t t-esc="'${:,.2f}'.format(line.price_total)"/></strong></td>
+                                                        </tr>
+                                                    </t>
+                                                </tbody>
+                                                <tfoot class="table-dark">
+                                                    <tr>
+                                                        <td colspan="5" class="text-end"><strong>Subtotal:</strong></td>
+                                                        <td class="text-end"><strong><t t-esc="'${:,.2f}'.format(invoice.amount_untaxed)"/></strong></td>
+                                                    </tr>
+                                                    <t t-if="invoice.amount_tax">
+                                                        <tr>
+                                                            <td colspan="5" class="text-end"><strong>Taxes:</strong></td>
+                                                            <td class="text-end"><strong><t t-esc="'${:,.2f}'.format(invoice.amount_tax)"/></strong></td>
+                                                        </tr>
+                                                    </t>
+                                                    <tr>
+                                                        <td colspan="5" class="text-end"><strong>Total:</strong></td>
+                                                        <td class="text-end"><strong class="text-primary"><t t-esc="'${:,.2f}'.format(invoice.amount_total)"/></strong></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Payment Information -->
+                                <t t-if="invoice.payment_state != 'paid'">
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <div class="alert alert-info">
+                                                <h6><i class="fa fa-info-circle me-2"></i>Payment Information</h6>
+                                                <p class="mb-2">Amount Due: <strong><t t-esc="'${:,.2f}'.format(invoice.amount_residual)"/></strong></p>
+                                                <p class="mb-0">Due Date: <strong><t t-esc="invoice.invoice_date_due.strftime('%B %d, %Y') if invoice.invoice_date_due else 'N/A'"/></strong></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <!-- Payment History -->
+                                <t t-if="invoice.payment_ids">
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <h5>Payment History</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Date</th>
+                                                            <th>Payment Method</th>
+                                                            <th>Reference</th>
+                                                            <th class="text-end">Amount</th>
+                                                            <th>Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <t t-foreach="invoice.payment_ids" t-as="payment">
+                                                            <tr>
+                                                                <td><t t-esc="payment.date.strftime('%m/%d/%Y') if payment.date else 'N/A'"/></td>
+                                                                <td><t t-esc="payment.journal_id.name"/></td>
+                                                                <td><t t-esc="payment.name"/></td>
+                                                                <td class="text-end"><t t-esc="'${:,.2f}'.format(payment.amount)"/></td>
+                                                                <td>
+                                                                    <span class="badge badge-success">Paid</span>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+
+                                <!-- Action Buttons -->
+                                <div class="row mt-4">
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <a href="/my/invoices" class="btn btn-secondary">
+                                                    <i class="fa fa-arrow-left me-2"></i>Back to Invoices
+                                                </a>
+                                            </div>
+                                            <div>
+                                                <t t-if="invoice.payment_state != 'paid'">
+                                                    <button class="btn btn-primary me-2" onclick="window.print()">
+                                                        <i class="fa fa-print me-2"></i>Print Invoice
+                                                    </button>
+                                                    <a t-attf-href="/my/invoices/{{ invoice.id }}/pay" class="btn btn-success">
+                                                        <i class="fa fa-credit-card me-2"></i>Pay Now
+                                                    </a>
+                                                </t>
+                                                <t t-else>
+                                                    <button class="btn btn-primary" onclick="window.print()">
+                                                        <i class="fa fa-print me-2"></i>Print Invoice
+                                                    </button>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

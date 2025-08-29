@@ -4,53 +4,11 @@
         <!-- Scheduled action to compute monthly storage fees for each customer -->
         <record id="ir_cron_compute_monthly_storage_fees" model="ir.cron">
             <field name="name">Compute Monthly Storage Fees</field>
-            <field name="model_id" ref="stock.model_stock_quant"/>
+            <field name="model_id" ref="records_management.model_records_billing_config"/>
             <field name="state">code</field>
             <field name="code"><![CDATA[
-# Import required modules
-from datetime import datetime, timedelta
-
-# Compute monthly storage fees for each customer
-try:
-    customer_items = {}
-    quants = env['stock.quant'].search([('location_id.usage', '=', 'internal')])
-
-    # Iterate through each quant to sum quantities by customer
-    for quant in quants:
-        customer = getattr(getattr(quant, 'lot_id', None), 'customer_id', None)
-        if not customer:
-            continue
-        if customer in customer_items:
-            customer_items[customer] += quant.quantity
-        else:
-            customer_items[customer] = quant.quantity
-
-    # Try to get the storage fee product reference (corrected reference)
-    product = env.ref('records_management.product_storage_service', raise_if_not_found=False)
-    if not product:
-        log_warning(_('Storage Service Product (records_management.product_storage_service) not found. Monthly storage fees not computed.'))
-        raise Exception(_('Storage Service Product (records_management.product_storage_service) not found. Monthly storage fees not computed.'))
-    else:
-        # For each customer, create a sale order for the storage fee product if not already present
-        for customer, qty in customer_items.items():
-            if qty > 0:
-                existing_order = env['sale.order'].search([
-                    ('partner_id', '=', customer.id),
-                    ('state', '=', 'draft'),
-                    ('order_line.product_id', '=', product.id),
-                ], limit=1)
-                if not existing_order:
-                    env['sale.order'].create({
-                        'partner_id': customer.id,
-                        'order_line': [(0, 0, {
-                            'product_id': product.id,
-                            'product_uom_qty': qty,
-                            'name': _('Monthly Storage Fee for %s items') % qty,
-                        })],
-                    })
-        log(_('Monthly storage fees computed for %s customers') % len([c for c, q in customer_items.items() if q > 0]))
-except Exception as e:
-    log(_('Error computing monthly storage fees: %s') % str(e))
+# Call the storage fee computation method
+env['records.billing.config'].compute_monthly_storage_fees()
 ]]></field>
             <field name="active" eval="True"/>
             <field name="interval_number" eval="1"/>
@@ -61,20 +19,13 @@ except Exception as e:
         <!-- Monthly Customer Inventory Reports -->
         <record id="ir_cron_generate_monthly_inventory_reports" model="ir.cron">
             <field name="name">Generate Monthly Customer Inventory Reports</field>
-            <field name="model_id" ref="base.model_ir_cron"/>
+            <field name="model_id" ref="records_management.model_customer_inventory_report"/>
             <field name="state">code</field>
             <field name="code"><![CDATA[
-# Import required modules
-from datetime import datetime, timedelta
-
-# Generate monthly inventory reports for all customers
+# Call the monthly report generation method
 try:
-    # Try to access the model and handle KeyError if it does not exist
-    try:
-        env['customer.inventory.report'].generate_monthly_reports()
-        log(_('Monthly customer inventory reports generated successfully.'))
-    except KeyError:
-        log(_('Customer inventory report model not found. Skipping report generation.'))
+    env['customer.inventory.report'].generate_monthly_reports()
+    log(_('Monthly customer inventory reports generated successfully.'))
 except Exception as e:
     log(_('Error generating monthly inventory reports: %s') % str(e))
 ]]></field>
@@ -87,17 +38,12 @@ except Exception as e:
         <!-- Monthly storage fee automation workflow -->
         <record id="ir_cron_storage_fee_automation_workflow" model="ir.cron">
             <field name="name">Storage Fee Automation Workflow</field>
-            <field name="model_id" ref="base.model_ir_cron"/>
+            <field name="model_id" ref="records_management.model_records_billing_config"/>
             <field name="state">code</field>
             <field name="code"><![CDATA[
-# Import required modules
-from datetime import datetime, timedelta
-
-# Storage fee automation workflow
+# Call the storage fee automation workflow method
 try:
-    log(_('Storage fee automation workflow started.'))
-    # See module documentation for workflow, integration, and error handling details.
-    log(_('Storage fee automation workflow completed successfully.'))
+    env['records.billing.config'].run_storage_fee_automation_workflow()
 except Exception as e:
     log(_('Error in storage fee automation workflow: %s') % str(e))
 ]]></field>
@@ -110,17 +56,12 @@ except Exception as e:
         <!-- Monthly inventory report automation -->
         <record id="ir_cron_monthly_inventory_report_automation" model="ir.cron">
             <field name="name">Monthly Inventory Report Automation</field>
-            <field name="model_id" ref="base.model_ir_cron"/>
+            <field name="model_id" ref="records_management.model_customer_inventory_report"/>
             <field name="state">code</field>
             <field name="code"><![CDATA[
-# Import required modules
-from datetime import datetime, timedelta
-
-# Monthly inventory report automation
+# Call the monthly inventory report automation method
 try:
-    log(_('Monthly inventory report automation started.'))
-    # See external documentation for reporting and billing workflow details.
-    log(_('Inventory report automation documentation updated.'))
+    env['customer.inventory.report'].run_monthly_inventory_report_automation()
 except Exception as e:
     log(_('Error in monthly inventory report automation: %s') % str(e))
 ]]></field>

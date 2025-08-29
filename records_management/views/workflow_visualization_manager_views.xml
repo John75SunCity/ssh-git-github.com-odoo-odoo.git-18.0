@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Workflow Visualization Manager Views -->
+
+        <!-- Tree/List View -->
+        <record id="workflow_visualization_manager_view_tree" model="ir.ui.view">
+            <field name="name">workflow.visualization.manager.tree</field>
+            <field name="model">workflow.visualization.manager</field>
+            <field name="arch" type="xml">
+                <tree string="Workflow Visualizations">
+                    <field name="name"/>
+                    <field name="visualization_type"/>
+                    <field name="target_model"/>
+                    <field name="active"/>
+                    <field name="last_generated"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="workflow_visualization_manager_view_form" model="ir.ui.view">
+            <field name="name">workflow.visualization.manager.form</field>
+            <field name="model">workflow.visualization.manager</field>
+            <field name="arch" type="xml">
+                <form string="Workflow Visualization">
+                    <header>
+                        <button name="generate_process_flow_diagram" type="object" string="Generate Diagram" class="btn-primary"/>
+                        <field name="active" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="visualization_type"/>
+                                <field name="target_model"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="include_states"/>
+                                <field name="include_transitions"/>
+                                <field name="include_users"/>
+                            </group>
+                        </group>
+                        <field name="description" placeholder="Describe this workflow visualization..."/>
+                        <notebook>
+                            <page string="Diagram Data">
+                                <field name="diagram_data" widget="text"/>
+                            </page>
+                            <page string="Analytics">
+                                <group>
+                                    <field name="last_generated" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="workflow_visualization_manager_view_search" model="ir.ui.view">
+            <field name="name">workflow.visualization.manager.search</field>
+            <field name="model">workflow.visualization.manager</field>
+            <field name="arch" type="xml">
+                <search string="Workflow Visualizations">
+                    <field name="name"/>
+                    <field name="visualization_type"/>
+                    <field name="target_model"/>
+                    <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="visualization_type" string="Type" context="{'group_by': 'visualization_type'}"/>
+                        <filter name="target_model" string="Model" context="{'group_by': 'target_model'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_workflow_visualization_manager" model="ir.actions.act_window">
+            <field name="name">Workflow Visualizations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">workflow.visualization.manager</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="workflow_visualization_manager_view_tree"/>
+            <field name="search_view_id" ref="workflow_visualization_manager_view_search"/>
+            <field name="help">Create and manage workflow visualizations for your business processes.</field>
+        </record>
+
+    </data>
+</odoo>

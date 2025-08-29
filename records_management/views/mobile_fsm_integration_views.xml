@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Mobile FSM Integration Views -->
+
+        <!-- Tree/List View -->
+        <record id="mobile_fsm_integration_view_tree" model="ir.ui.view">
+            <field name="name">mobile.fsm.integration.tree</field>
+            <field name="model">mobile.fsm.integration</field>
+            <field name="arch" type="xml">
+                <tree string="Mobile FSM Integrations">
+                    <field name="name"/>
+                    <field name="device_type"/>
+                    <field name="active"/>
+                    <field name="offline_enabled"/>
+                    <field name="sync_interval"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="mobile_fsm_integration_view_form" model="ir.ui.view">
+            <field name="name">mobile.fsm.integration.form</field>
+            <field name="model">mobile.fsm.integration</field>
+            <field name="arch" type="xml">
+                <form string="Mobile FSM Integration">
+                    <header>
+                        <button name="sync_mobile_data" type="object" string="Sync Data" class="btn-primary"/>
+                        <button name="test_mobile_connection" type="object" string="Test Connection" class="btn-secondary"/>
+                        <field name="active" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="device_type"/>
+                                <field name="active"/>
+                                <field name="offline_enabled"/>
+                                <field name="sync_interval"/>
+                            </group>
+                            <group>
+                                <field name="enable_biometric_auth"/>
+                                <field name="enable_gps_tracking"/>
+                                <field name="enable_photo_capture"/>
+                                <field name="enable_signature_capture"/>
+                            </group>
+                        </group>
+                        <group string="Mobile Features">
+                            <field name="enable_push_notifications"/>
+                            <field name="enable_voice_commands"/>
+                            <field name="enable_barcode_scanning"/>
+                            <field name="enable_nfc_scanning"/>
+                        </group>
+                        <field name="description" placeholder="Describe this mobile integration..."/>
+                        <notebook>
+                            <page string="Dashboard Configuration">
+                                <group>
+                                    <field name="dashboard_layout"/>
+                                    <field name="quick_action_buttons"/>
+                                </group>
+                            </page>
+                            <page string="Offline Settings">
+                                <group>
+                                    <field name="offline_enabled"/>
+                                    <field name="sync_interval"/>
+                                    <field name="max_offline_days"/>
+                                </group>
+                            </page>
+                            <page string="Security">
+                                <group>
+                                    <field name="enable_biometric_auth"/>
+                                    <field name="require_pin"/>
+                                    <field name="session_timeout"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="mobile_fsm_integration_view_search" model="ir.ui.view">
+            <field name="name">mobile.fsm.integration.search</field>
+            <field name="model">mobile.fsm.integration</field>
+            <field name="arch" type="xml">
+                <search string="Mobile FSM Integrations">
+                    <field name="name"/>
+                    <field name="device_type"/>
+                    <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                    <filter name="offline_enabled" string="Offline Enabled" domain="[('offline_enabled', '=', True)]"/>
+                    <filter name="biometric_enabled" string="Biometric Auth" domain="[('enable_biometric_auth', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="device_type" string="Device Type" context="{'group_by': 'device_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_mobile_fsm_integration" model="ir.actions.act_window">
+            <field name="name">Mobile FSM Integration</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mobile.fsm.integration</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="mobile_fsm_integration_view_tree"/>
+            <field name="search_view_id" ref="mobile_fsm_integration_view_search"/>
+            <field name="help">Configure mobile field service management integration for your workflows.</field>
+        </record>
+
+    </data>
+</odoo>

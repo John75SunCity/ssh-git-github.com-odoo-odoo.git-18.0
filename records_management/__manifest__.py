@@ -51,9 +51,12 @@
         "views/bin_barcode_inventory_views.xml",
         "views/bin_issue_report_wizard_views.xml",
         "views/customer_negotiated_rate_views.xml",
+        "views/enhanced_features_menus.xml",
+        "views/enhanced_fsm_integration_views.xml",
         "views/fleet_fsm_integration_menus.xml",
         "views/fleet_vehicle_enhanced_views.xml",
         "views/maintenance_request_views.xml",
+        "views/mobile_fsm_integration_views.xml",
         "views/naid_compliance_policy_views.xml",
         "views/naid_custody_views.xml",
         "views/pickup_route_views.xml",
@@ -62,6 +65,7 @@
         "views/shredding_bin_barcode_wizard_views.xml",
         "views/shredding_service_bin_views.xml",
         "views/shredding_service_event_views.xml",
+        "views/workflow_visualization_manager_views.xml",
         "reports/naid_compliance_policy_report.xml"
     ],
     'demo': [

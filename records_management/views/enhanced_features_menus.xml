@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Enhanced Features Menu Structure -->
+
+        <!-- Main Enhanced Features Menu -->
+        <menuitem id="menu_enhanced_features" name="Enhanced Features" parent="records_management.menu_records_management_root" sequence="100" groups="records_management.group_records_manager"/>
+
+        <!-- Workflow Visualization Submenu -->
+        <menuitem id="menu_workflow_visualization" name="Workflow Visualization" parent="menu_enhanced_features" sequence="10" action="action_workflow_visualization_manager" groups="records_management.group_records_manager"/>
+
+        <!-- FSM Integration Submenu -->
+        <menuitem id="menu_fsm_integration" name="FSM Integration" parent="menu_enhanced_features" sequence="20" groups="records_management.group_records_manager"/>
+
+        <!-- Enhanced FSM Integration -->
+        <menuitem id="menu_enhanced_fsm_integration" name="Enhanced FSM Integration" parent="menu_fsm_integration" sequence="10" action="action_enhanced_fsm_integration" groups="records_management.group_records_manager"/>
+
+        <!-- Mobile FSM Integration -->
+        <menuitem id="menu_mobile_fsm_integration" name="Mobile FSM Integration" parent="menu_fsm_integration" sequence="20" action="action_mobile_fsm_integration" groups="records_management.group_records_manager"/>
+
+        <!-- Mobile Features Submenu -->
+        <menuitem id="menu_mobile_features" name="Mobile Features" parent="menu_enhanced_features" sequence="30" groups="records_management.group_records_user,records_management.group_records_manager"/>
+
+        <!-- Mobile Dashboard -->
+        <menuitem id="menu_mobile_dashboard" name="Mobile Dashboard" parent="menu_mobile_features" sequence="10" action="action_mobile_dashboard" groups="records_management.group_records_user,records_management.group_records_manager"/>
+
+        <!-- Mobile Settings -->
+        <menuitem id="menu_mobile_settings" name="Mobile Settings" parent="menu_mobile_features" sequence="20" action="action_mobile_settings" groups="records_management.group_records_manager"/>
+
+        <!-- Analytics & Reporting Submenu -->
+        <menuitem id="menu_analytics_reporting" name="Analytics &amp; Reporting" parent="menu_enhanced_features" sequence="40" groups="records_management.group_records_manager"/>
+
+        <!-- Workflow Analytics -->
+        <menuitem id="menu_workflow_analytics" name="Workflow Analytics" parent="menu_analytics_reporting" sequence="10" action="action_workflow_analytics" groups="records_management.group_records_manager"/>
+
+        <!-- Mobile Analytics -->
+        <menuitem id="menu_mobile_analytics" name="Mobile Analytics" parent="menu_analytics_reporting" sequence="20" action="action_mobile_analytics" groups="records_management.group_records_manager"/>
+
+        <!-- FSM Analytics -->
+        <menuitem id="menu_fsm_analytics" name="FSM Analytics" parent="menu_analytics_reporting" sequence="30" action="action_fsm_analytics" groups="records_management.group_records_manager"/>
+
+    </data>
+</odoo>

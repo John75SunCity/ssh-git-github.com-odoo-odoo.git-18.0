@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_workflow_template" name="Portal Workflow Template">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-set="pageName" t-value="'workflow'"/>
+            <t t-set="title">Workflow Management</t>
+
+            <div class="container-fluid">
+                <!-- Workflow Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <h4 class="mb-0">
+                                            <i class="fa fa-project-diagram me-2"></i>
+                                            Workflow Management
+                                        </h4>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newRequestModal">
+                                            <i class="fa fa-plus me-2"></i>New Request
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow Overview Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="h1 text-primary mb-2" t-esc="workflow_stats.draft or 0"/>
+                                <h5 class="card-title">Draft</h5>
+                                <p class="card-text text-muted">Requests being prepared</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="h1 text-warning mb-2" t-esc="workflow_stats.pending or 0"/>
+                                <h5 class="card-title">Pending</h5>
+                                <p class="card-text text-muted">Awaiting approval</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="h1 text-info mb-2" t-esc="workflow_stats.in_progress or 0"/>
+                                <h5 class="card-title">In Progress</h5>
+                                <p class="card-text text-muted">Currently processing</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="h1 text-success mb-2" t-esc="workflow_stats.completed or 0"/>
+                                <h5 class="card-title">Completed</h5>
+                                <p class="card-text text-muted">Successfully finished</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Workflows -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-tasks me-2"></i>
+                                    Active Workflows
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Request Type</th>
+                                                <th>Reference</th>
+                                                <th>Current Step</th>
+                                                <th>Status</th>
+                                                <th>Priority</th>
+                                                <th>Created</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="active_workflows" t-as="workflow">
+                                                <tr>
+                                                    <td>
+                                                        <strong t-esc="workflow.request_type"/>
+                                                        <br/>
+                                                        <small class="text-muted"><t t-esc="workflow.description"/></small>
+                                                    </td>
+                                                    <td>
+                                                        <code t-esc="workflow.reference"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-attf-class="badge {{ workflow.step_badge_class }}">
+                                                            <t t-esc="workflow.current_step"/>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span t-attf-class="badge {{ workflow.status_badge_class }}">
+                                                            <t t-esc="workflow.status"/>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="workflow.priority == 'high'">
+                                                            <span class="badge badge-danger">
+                                                                <i class="fa fa-arrow-up"></i> High
+                                                            </span>
+                                                        </t>
+                                                        <t t-elif="workflow.priority == 'medium'">
+                                                            <span class="badge badge-warning">
+                                                                <i class="fa fa-minus"></i> Medium
+                                                            </span>
+                                                        </t>
+                                                        <t t-else>
+                                                            <span class="badge badge-secondary">
+                                                                <i class="fa fa-arrow-down"></i> Low
+                                                            </span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <t t-esc="workflow.create_date.strftime('%m/%d/%Y')"/>
+                                                        <br/>
+                                                        <small class="text-muted"><t t-esc="workflow.create_date.strftime('%H:%M')"/></small>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <a t-attf-href="/my/workflow/{{ workflow.id }}" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fa fa-eye"></i>
+                                                            </a>
+                                                            <a t-attf-href="/my/workflow/{{ workflow.id }}/update" class="btn btn-sm btn-outline-secondary">
+                                                                <i class="fa fa-edit"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow Steps Visualization -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-route me-2"></i>
+                                    Workflow Process
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="current_workflow">
+                                    <div class="workflow-steps">
+                                        <t t-foreach="current_workflow.steps" t-as="step">
+                                            <div class="step-item mb-3">
+                                                <div class="row align-items-center">
+                                                    <div class="col-auto">
+                                                        <div t-attf-class="step-circle {{ 'completed' if step.completed else 'current' if step.current else 'pending' }}">
+                                                            <t t-if="step.completed">
+                                                                <i class="fa fa-check text-white"></i>
+                                                            </t>
+                                                            <t t-elif="step.current">
+                                                                <i class="fa fa-clock text-white"></i>
+                                                            </t>
+                                                            <t t-else>
+                                                                <span class="step-number"><t t-esc="step.sequence"/></span>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="step-content">
+                                                            <h6 class="mb-1">
+                                                                <t t-esc="step.name"/>
+                                                                <t t-if="step.required">
+                                                                    <span class="badge badge-danger ms-2">Required</span>
+                                                                </t>
+                                                            </h6>
+                                                            <p class="text-muted small mb-1"><t t-esc="step.description"/></p>
+                                                            <div class="step-meta">
+                                                                <small class="text-muted">
+                                                                    <t t-if="step.assigned_to">
+                                                                        Assigned to: <t t-esc="step.assigned_to"/>
+                                                                    </t>
+                                                                    <t t-if="step.due_date">
+                                                                        | Due: <t t-esc="step.due_date.strftime('%m/%d/%Y')"/>
+                                                                    </t>
+                                                                </small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <t t-if="step.completed">
+                                                            <span class="badge badge-success">
+                                                                <i class="fa fa-check me-1"></i>
+                                                                <t t-esc="step.completed_date.strftime('%m/%d/%Y')"/>
+                                                            </span>
+                                                        </t>
+                                                        <t t-elif="step.current">
+                                                            <span class="badge badge-warning">
+                                                                <i class="fa fa-clock me-1"></i>
+                                                                In Progress
+                                                            </span>
+                                                        </t>
+                                                        <t t-else>
+                                                            <span class="badge badge-secondary">
+                                                                Pending
+                                                            </span>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                                <t t-if="step != current_workflow.steps[-1]">
+                                                    <div class="step-connector"></div>
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-else>
+                                    <div class="text-center py-5">
+                                        <i class="fa fa-project-diagram fa-3x text-muted mb-3"></i>
+                                        <h5 class="text-muted">No Active Workflow</h5>
+                                        <p class="text-muted">Select a workflow from the list above to view its process.</p>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Approvals -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fa fa-check-circle me-2"></i>
+                                    Recent Approvals
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Request</th>
+                                                <th>Approved By</th>
+                                                <th>Decision</th>
+                                                <th>Date</th>
+                                                <th>Comments</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="recent_approvals" t-as="approval">
+                                                <tr>
+                                                    <td>
+                                                        <strong t-esc="approval.request_name"/>
+                                                        <br/>
+                                                        <small class="text-muted"><t t-esc="approval.request_type"/></small>
+                                                    </td>
+                                                    <td><t t-esc="approval.approved_by"/></td>
+                                                    <td>
+                                                        <t t-if="approval.decision == 'approved'">
+                                                            <span class="badge badge-success">
+                                                                <i class="fa fa-check"></i> Approved
+                                                            </span>
+                                                        </t>
+                                                        <t t-elif="approval.decision == 'rejected'">
+                                                            <span class="badge badge-danger">
+                                                                <i class="fa fa-times"></i> Rejected
+                                                            </span>
+                                                        </t>
+                                                        <t t-else>
+                                                            <span class="badge badge-warning">
+                                                                <i class="fa fa-clock"></i> Pending
+                                                            </span>
+                                                        </t>
+                                                    </td>
+                                                    <td><t t-esc="approval.date.strftime('%m/%d/%Y %H:%M')"/></td>
+                                                    <td>
+                                                        <t t-if="approval.comments">
+                                                            <span title="approval.comments">
+                                                                <t t-esc="approval.comments[:50]"/>...
+                                                            </span>
+                                                        </t>
+                                                        <t t-else>-</t>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Request Modal -->
+            <div class="modal fade" id="newRequestModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">New Workflow Request</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="newRequestForm">
+                                <div class="mb-3">
+                                    <label for="requestType" class="form-label">Request Type</label>
+                                    <select class="form-select" id="requestType" name="request_type" required="required">
+                                        <option value="">Select Request Type</option>
+                                        <option value="destruction">Document Destruction</option>
+                                        <option value="retrieval">Document Retrieval</option>
+                                        <option value="pickup">Document Pickup</option>
+                                        <option value="storage">Additional Storage</option>
+                                        <option value="billing">Billing Inquiry</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="requestDescription" class="form-label">Description</label>
+                                    <textarea class="form-control" id="requestDescription" name="description" rows="3" placeholder="Describe your request..." required="required"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="requestPriority" class="form-label">Priority</label>
+                                    <select class="form-select" id="requestPriority" name="priority">
+                                        <option value="low">Low</option>
+                                        <option value="medium" selected="selected">Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="submitNewRequest()">Submit Request</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .workflow-steps {
+                    position: relative;
+                    padding-left: 30px;
+                }
+
+                .step-circle {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    position: absolute;
+                    left: -50px;
+                    top: 0;
+                    border: 3px solid #dee2e6;
+                    background-color: #fff;
+                    z-index: 1;
+                }
+
+                .step-circle.completed {
+                    background-color: #28a745;
+                    border-color: #28a745;
+                }
+
+                .step-circle.current {
+                    background-color: #ffc107;
+                    border-color: #ffc107;
+                }
+
+                .step-circle.pending {
+                    background-color: #6c757d;
+                    border-color: #6c757d;
+                }
+
+                .step-number {
+                    color: white;
+                    font-weight: bold;
+                }
+
+                .step-connector {
+                    position: absolute;
+                    left: -35px;
+                    top: 40px;
+                    width: 2px;
+                    height: 30px;
+                    background-color: #dee2e6;
+                }
+
+                .step-content {
+                    padding-left: 20px;
+                }
+
+                .step-meta {
+                    margin-top: 5px;
+                }
+            </style>
+        </t>
+    </template>
+</odoo>

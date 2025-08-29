@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_mobile_template" name="Portal Mobile Template">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-set="pageName" t-value="'mobile'"/>
+            <t t-set="title">Mobile Portal</t>
+
+            <div class="container-fluid p-2">
+                <!-- Mobile Header -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center py-3">
+                                <h5 class="mb-1">
+                                    <i class="fa fa-mobile-alt me-2 text-primary"></i>
+                                    Records Management Portal
+                                </h5>
+                                <p class="text-muted small mb-0">Mobile Access</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Grid -->
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <a href="/my/invoices" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center py-3">
+                                    <i class="fa fa-file-invoice-dollar fa-2x text-primary mb-2"></i>
+                                    <h6 class="mb-0">Invoices</h6>
+                                    <small class="text-muted">View & Pay</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/my/requests" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center py-3">
+                                    <i class="fa fa-clipboard-list fa-2x text-success mb-2"></i>
+                                    <h6 class="mb-0">Requests</h6>
+                                    <small class="text-muted">New & Track</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/my/inventory" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center py-3">
+                                    <i class="fa fa-boxes fa-2x text-info mb-2"></i>
+                                    <h6 class="mb-0">Inventory</h6>
+                                    <small class="text-muted">View Items</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/my/documents" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center py-3">
+                                    <i class="fa fa-file-alt fa-2x text-warning mb-2"></i>
+                                    <h6 class="mb-0">Documents</h6>
+                                    <small class="text-muted">Access Files</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">
+                                    <i class="fa fa-clock me-2"></i>
+                                    Recent Activity
+                                </h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <t t-if="recent_activities">
+                                    <t t-foreach="recent_activities" t-as="activity">
+                                        <div class="d-flex align-items-center p-3 border-bottom">
+                                            <div class="flex-shrink-0 me-3">
+                                                <span t-attf-class="badge rounded-pill {{ activity.icon_class }} p-2">
+                                                    <i t-attf-class="fa {{ activity.icon }} text-white"></i>
+                                                </span>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-bold small"><t t-esc="activity.title"/></div>
+                                                <div class="text-muted small"><t t-esc="activity.description"/></div>
+                                                <div class="text-muted small"><t t-esc="activity.date"/></div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                                <t t-else>
+                                    <div class="text-center py-4">
+                                        <i class="fa fa-inbox fa-2x text-muted mb-2"></i>
+                                        <p class="text-muted small mb-0">No recent activity</p>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center py-2">
+                                <div class="h4 mb-0 text-primary" t-esc="stats.pending_invoices or 0"/>
+                                <div class="small text-muted">Pending Invoices</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center py-2">
+                                <div class="h4 mb-0 text-success" t-esc="stats.active_requests or 0"/>
+                                <div class="small text-muted">Active Requests</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center py-2">
+                                <div class="h4 mb-0 text-info" t-esc="stats.storage_items or 0"/>
+                                <div class="small text-muted">Storage Items</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center py-2">
+                                <div class="h4 mb-0 text-warning" t-esc="stats.documents or 0"/>
+                                <div class="small text-muted">Documents</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Actions -->
+                <t t-if="pending_actions">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-warning text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-exclamation-triangle me-2"></i>
+                                        Pending Actions
+                                    </h6>
+                                </div>
+                                <div class="card-body p-0">
+                                    <t t-foreach="pending_actions" t-as="action">
+                                        <div class="d-flex align-items-center p-3 border-bottom">
+                                            <div class="flex-shrink-0 me-3">
+                                                <i t-attf-class="fa {{ action.icon }} text-warning fa-lg"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-bold small"><t t-esc="action.title"/></div>
+                                                <div class="text-muted small"><t t-esc="action.description"/></div>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <a t-attf-href="{{ action.url }}" class="btn btn-sm btn-outline-primary">
+                                                    <t t-esc="action.button_text"/>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Emergency Contact -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm bg-light">
+                            <div class="card-body text-center py-3">
+                                <i class="fa fa-phone fa-2x text-danger mb-2"></i>
+                                <h6 class="mb-1">Need Help?</h6>
+                                <p class="text-muted small mb-2">Contact our support team</p>
+                                <a href="tel:+1-555-0123" class="btn btn-danger btn-sm">
+                                    <i class="fa fa-phone me-1"></i>
+                                    Call Support
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="text-center">
+                            <small class="text-muted">
+                                Records Management Portal v18.0.6.0.0
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
