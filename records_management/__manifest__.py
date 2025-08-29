@@ -22,6 +22,7 @@
     "data": [
             "data/advanced_billing_demo.xml",
             "data/base_rates_container_access_data.xml",
+            "data/container_types_base_rates.xml",
             "data/document_retrieval_rates_data.xml",
             "data/feedback_survey_data.xml",
             "data/field_label_demo_data.xml",

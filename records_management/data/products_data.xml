@@ -9,9 +9,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-CONTAINER</field>
-            <field name="list_price">5.0</field>
-            <field name="standard_price">1.5</field>
-            <field name="description">Standard archive container setup</field>
+            <field name="list_price">15.00</field>
+            <field name="standard_price">8.50</field>
+            <field name="description">Standard archive container setup and initial processing</field>
         </record>
 
         <!-- Document Storage Service - Basic -->
@@ -20,11 +20,11 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-STORAGE</field>
-            <field name="list_price">25.00</field>
-            <field name="standard_price">15.00</field>
+            <field name="list_price">0.95</field>
+            <field name="standard_price">0.65</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
             <field name="uom_po_id" ref="uom.product_uom_unit"/>
-            <field name="description">Ongoing monthly storage service</field>
+            <field name="description">Monthly storage service per container (industry standard rate)</field>
         </record>
 
         <!-- Document Shredding Service - Basic -->
@@ -33,11 +33,11 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-SHRED</field>
-            <field name="list_price">50.00</field>
-            <field name="standard_price">30.00</field>
+            <field name="list_price">12.50</field>
+            <field name="standard_price">7.50</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
             <field name="uom_po_id" ref="uom.product_uom_unit"/>
-            <field name="description">NAID-compliant secure destruction</field>
+            <field name="description">NAID-compliant secure destruction per container</field>
         </record>
 
 <!-- Business Integration Configuration Parameters -->
@@ -62,8 +62,8 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-TYPE01</field>
-            <field name="list_price">25.00</field>
-            <field name="standard_price">15.00</field>
+            <field name="list_price">0.95</field>
+            <field name="standard_price">0.65</field>
             <field name="description">Standard box storage (1.2 CF, 35 lbs max) - Most common container type</field>
         </record>
 
@@ -72,9 +72,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-TYPE02</field>
-            <field name="list_price">40.00</field>
-            <field name="standard_price">25.00</field>
-            <field name="description">Legal/Banker box storage (2.4 CF, 65 lbs max) - Double capacity</field>
+            <field name="list_price">1.45</field>
+            <field name="standard_price">0.95</field>
+            <field name="description">Legal/Banker box storage (2.4 CF, 65 lbs max) - Double capacity premium</field>
         </record>
 
         <record id="product_storage_type03" model="product.product">
@@ -82,9 +82,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-TYPE03</field>
-            <field name="list_price">30.00</field>
-            <field name="standard_price">18.00</field>
-            <field name="description">Map box storage (0.875 CF, 35 lbs max) - For blueprints and maps</field>
+            <field name="list_price">0.85</field>
+            <field name="standard_price">0.55</field>
+            <field name="description">Map box storage (0.875 CF, 35 lbs max) - Specialized flat storage</field>
         </record>
 
         <record id="product_storage_type04" model="product.product">
@@ -92,9 +92,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-TYPE04</field>
-            <field name="list_price">75.00</field>
-            <field name="standard_price">45.00</field>
-            <field name="description">Odd size/temporary storage (5.0 CF, 75 lbs max) - Non-standard items</field>
+            <field name="list_price">2.75</field>
+            <field name="standard_price">1.85</field>
+            <field name="description">Odd size/temporary storage (5.0 CF, 75 lbs max) - Premium oversized rate</field>
         </record>
 
         <record id="product_storage_type06" model="product.product">
@@ -102,9 +102,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-TYPE06</field>
-            <field name="list_price">15.00</field>
-            <field name="standard_price">8.00</field>
-            <field name="description">Pathology box storage (0.042 CF, 40 lbs max) - Medical specimens</field>
+            <field name="list_price">0.45</field>
+            <field name="standard_price">0.25</field>
+            <field name="description">Pathology box storage (0.042 CF, 40 lbs max) - Micro container rate</field>
         </record>
 
         <!-- Value-Added Services -->
@@ -113,9 +113,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-PICKUP</field>
-            <field name="list_price">85.00</field>
-            <field name="standard_price">50.00</field>
-            <field name="description">Professional pickup and delivery service with tracking</field>
+            <field name="list_price">125.00</field>
+            <field name="standard_price">85.00</field>
+            <field name="description">Professional pickup and delivery service with tracking (per trip)</field>
         </record>
 
         <record id="product_indexing_service" model="product.product">
@@ -123,8 +123,8 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-INDEX</field>
-            <field name="list_price">2.50</field>
-            <field name="standard_price">1.25</field>
+            <field name="list_price">1.85</field>
+            <field name="standard_price">1.15</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
             <field name="uom_po_id" ref="uom.product_uom_unit"/>
             <field name="description">Professional document cataloging and indexing per document</field>
@@ -135,9 +135,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-RETRIEVAL</field>
-            <field name="list_price">25.00</field>
-            <field name="standard_price">12.00</field>
-            <field name="description">Individual document or file retrieval service</field>
+            <field name="list_price">35.00</field>
+            <field name="standard_price">22.00</field>
+            <field name="description">Individual document or file retrieval service (per request)</field>
         </record>
 
         <record id="product_scanning_service" model="product.product">
@@ -145,11 +145,11 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-SCAN</field>
-            <field name="list_price">1.75</field>
-            <field name="standard_price">0.85</field>
+            <field name="list_price">0.65</field>
+            <field name="standard_price">0.35</field>
             <field name="uom_id" ref="uom.product_uom_unit"/>
             <field name="uom_po_id" ref="uom.product_uom_unit"/>
-            <field name="description">High-quality document scanning per page</field>
+            <field name="description">High-quality document scanning per page (300 DPI minimum)</field>
         </record>
 
         <!-- Compliance and Certification Services -->
@@ -158,8 +158,8 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-CERT</field>
-            <field name="list_price">15.00</field>
-            <field name="standard_price">5.00</field>
+            <field name="list_price">25.00</field>
+            <field name="standard_price">12.00</field>
             <field name="description">Official NAID AAA destruction certificate with legal verification</field>
         </record>
 
@@ -168,9 +168,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-AUDIT</field>
-            <field name="list_price">250.00</field>
-            <field name="standard_price">150.00</field>
-            <field name="description">Comprehensive compliance audit and reporting service</field>
+            <field name="list_price">485.00</field>
+            <field name="standard_price">285.00</field>
+            <field name="description">Comprehensive compliance audit and reporting service (full facility review)</field>
         </record>
 
         <!-- Emergency and Rush Services -->
@@ -179,9 +179,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-RUSH</field>
-            <field name="list_price">100.00</field>
-            <field name="standard_price">25.00</field>
-            <field name="description">Same-day or next-day rush service surcharge</field>
+            <field name="list_price">75.00</field>
+            <field name="standard_price">35.00</field>
+            <field name="description">Same-day or next-day rush service surcharge (50% premium)</field>
         </record>
 
         <record id="product_emergency_service" model="product.product">
@@ -189,9 +189,9 @@
             <field name="type">service</field>
             <field name="categ_id" ref="product.product_category_all"/>
             <field name="default_code">REC-EMERGENCY</field>
-            <field name="list_price">500.00</field>
-            <field name="standard_price">200.00</field>
-            <field name="description">24/7 emergency document recovery and protection service</field>
+            <field name="list_price">750.00</field>
+            <field name="standard_price">425.00</field>
+            <field name="description">24/7 emergency document recovery and protection service (per incident)</field>
         </record>
 
         <!-- Product Categories for Better Organization -->

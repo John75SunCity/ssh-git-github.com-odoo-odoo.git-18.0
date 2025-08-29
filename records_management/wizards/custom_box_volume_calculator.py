@@ -242,13 +242,19 @@ class CustomBoxVolumeCalculator(models.TransientModel):
     @api.depends('custom_volume_cf')
     def _compute_recommended_container(self):
         """Determine best matching standard container type"""
-        CONTAINER_SPECS = {
-            'type_01': 1.2,    # Standard Box
-            'type_02': 2.4,    # Legal/Banker Box
-            'type_03': 0.875,  # Map Box
-            'type_04': 5.0,    # Odd Size/Temp Box
-            'type_06': 0.042,  # Pathology Box
-        }
+        # Get container types from database instead of hardcoded values
+        container_types = self.env['records.container.type'].search([
+            ('active', '=', True),
+            ('cubic_feet', '>', 0)
+        ])
+
+        CONTAINER_SPECS = {}
+        for container in container_types:
+            # Extract type number from code (e.g., 'TYPE-01-STD' -> 'type_01')
+            if container.code and 'TYPE-' in container.code:
+                type_num = container.code.split('-')[1]
+                container_key = f'type_{type_num}'
+                CONTAINER_SPECS[container_key] = container.cubic_feet
 
         for record in self:
             if record.custom_volume_cf:
@@ -262,7 +268,10 @@ class CustomBoxVolumeCalculator(models.TransientModel):
                         smallest_diff = diff
                         best_match = container_type
 
-                record.recommended_container_type = best_match
+                if best_match:
+                    record.recommended_container_type = best_match
+                else:
+                    record.recommended_container_type = False
             else:
                 record.recommended_container_type = False
 
