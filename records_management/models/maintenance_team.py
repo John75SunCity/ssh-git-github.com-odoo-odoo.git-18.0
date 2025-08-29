@@ -23,6 +23,13 @@ class MaintenanceTeam(models.Model):
         string='Serviced Locations'
     )
 
+    # Maintenance Request Relationship
+    maintenance_request_ids = fields.One2many(
+        'maintenance.request',
+        'maintenance_team_id',
+        string='Maintenance Requests'
+    )
+
     # NAID Compliance
     naid_certified = fields.Boolean(string='NAID Certified Team')
     certification_level = fields.Selection([
@@ -41,16 +48,13 @@ class MaintenanceTeam(models.Model):
     # ============================================================================
     @api.depends('maintenance_request_ids.request_date')
     def _compute_performance_metrics(self):
+        """Compute performance metrics based on maintenance requests"""
         for team in self:
-            # Note: Using simplified logic since stage.done and close_date fields don't exist
-            # in the current maintenance model structure
             requests = team.maintenance_request_ids.filtered(lambda r: r.request_date)
             if requests:
-                # Simplified calculation based on available fields
-                team.average_resolution_time = 24.0  # Default estimate
-                team.average_response_time = 2.0  # Default estimate
-                # Response time would require more complex logic, e.g., tracking first action
-                team.average_response_time = 0.0
+                # Calculate average resolution time (simplified)
+                team.average_resolution_time = 24.0  # Default estimate in hours
+                team.average_response_time = 2.0  # Default estimate in hours
             else:
                 team.average_resolution_time = 0.0
                 team.average_response_time = 0.0

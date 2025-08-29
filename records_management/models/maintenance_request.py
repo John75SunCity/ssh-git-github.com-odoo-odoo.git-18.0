@@ -51,6 +51,11 @@ class MaintenanceRequest(models.Model):
         string='Equipment',
         help="Equipment requiring maintenance"
     )
+    maintenance_team_id = fields.Many2one(
+        comodel_name='maintenance.team',
+        string='Maintenance Team',
+        help="Team responsible for this maintenance request"
+    )
     records_container_id = fields.Many2one(
         comodel_name='records.container',
         string='Related Container',
@@ -74,7 +79,7 @@ class MaintenanceRequest(models.Model):
         self.ensure_one()
         if not self.cost:
             raise UserError(_("Cannot create invoice with zero cost."))
-        
+
         invoice_vals = {
             'move_type': 'in_invoice',
             'partner_id': self.user_id.partner_id.id if self.user_id else self.env.company.partner_id.id,
