@@ -161,7 +161,6 @@
                                     <field name="default_code" placeholder="e.g., RMS-001"/>
                                     <field name="categ_id"/>
                                     <field name="type"/>
-                                    <field name="detailed_type" invisible="type != 'product'"/>
                                 </group>
                                 <group string="🎯 Service Settings">
                                     <field name="sale_ok"/>

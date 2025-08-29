@@ -23,7 +23,7 @@
         -->
         <record id="product_paper_wht" model="product.product">
             <field name="name">WHT Paper Scrap</field>
-            <field name="detailed_type">service</field>
+            <field name="type">service</field>
             <field name="invoice_policy">order</field>
             <field name="list_price">0.05</field> <!-- Example price per lb -->
             <field name="standard_price">0.0</field>
@@ -36,7 +36,7 @@
 
         <record id="product_paper_mix" model="product.product">
             <field name="name">MIX Paper Scrap</field>
-            <field name="detailed_type">service</field>
+            <field name="type">service</field>
             <field name="invoice_policy">order</field>
             <field name="list_price">0.03</field> <!-- Example price per lb -->
             <field name="standard_price">0.0</field>
@@ -49,7 +49,7 @@
 
         <record id="product_paper_occ" model="product.product">
             <field name="name">OCC/Cardboard Scrap</field>
-            <field name="detailed_type">service</field>
+            <field name="type">service</field>
             <field name="invoice_policy">order</field>
             <field name="list_price">0.02</field> <!-- Example price per lb -->
             <field name="standard_price">0.0</field>
