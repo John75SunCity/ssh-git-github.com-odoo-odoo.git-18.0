@@ -1,11 +1,47 @@
 {
     "recommendations": [
-        "mvintg.odoo-file",
+        // === ESSENTIAL ODOO EXTENSIONS ===
+        "trinhnguyen.copilot-chat-for-odoo",
+        "odoo-ide.odoo-code",
+        "odoo-ide.odoo-code-snippets",
+        "odoo-ide.odoo-model-snippets",
+        "odoo-ide.odoo-view-snippets",
+        "odoo-ide.odoo-controller-snippets",
+        "odoo-ide.odoo-security-snippets",
+
+        // === DEVELOPMENT TOOLS ===
+        "ms-vscode.vscode-json",
+        "redhat.vscode-xml",
+        "ms-python.python",
+        "ms-python.pylint",
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode",
+
+        // === AI & PRODUCTIVITY ===
+        "github.copilot",
         "github.copilot-chat",
         "ms-vscode.vscode-websearchforcopilot",
         "ndestates.grok-integration",
         "visualstudioexptteam.vscodeintellicode",
+
+        // === VERSION CONTROL & QUALITY ===
+        "ms-vscode.vscode-git-graph",
+        "gruntfuggly.todo-tree",
+        "ms-vscode.vscode-eslint",
+        "streetsidesoftware.code-spell-checker",
+
+        // === CONTAINER & DEPLOYMENT ===
         "ms-azuretools.vscode-docker",
-        "github.copilot"
+        "ms-vscode-remote.remote-containers",
+
+        // === LEGACY SUPPORT ===
+        "mvintg.odoo-file"
+    ],
+    "unwantedRecommendations": [
+        "ms-python.black-formatter",
+        "ms-python.autopep8",
+        "ms-python.yapf",
+        "ms-python.flake8",
+        "ms-python.pycodestyle"
     ]
 }
