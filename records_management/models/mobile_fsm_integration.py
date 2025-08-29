@@ -107,6 +107,9 @@ class MobileFsmIntegration(models.Model):
     # Mobile dashboard
     dashboard_widgets = fields.Many2many(
         'mobile.dashboard.widget',
+        'mobile_config_widget_rel',
+        'config_id',
+        'widget_id',
         string='Dashboard Widgets',
         help='Widgets to display on mobile dashboard'
     )

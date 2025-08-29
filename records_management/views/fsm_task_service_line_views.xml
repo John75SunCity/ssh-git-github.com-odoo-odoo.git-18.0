@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- FSM Task Service Line Views -->
+    <data>
+<!-- FSM Task Service Line Views -->
     
     <!-- Tree View -->
     <record id="fsm_task_service_line_view_tree" model="ir.ui.view">
@@ -125,4 +126,5 @@
             </p>
         </field>
     </record>
+</data>
 </odoo>

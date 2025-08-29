@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for PAPER -->
-    
+    <data>
+<!-- Tree view for PAPER -->
+
     <!-- Kanban view for KANBAN -->
     <record id="load_view_kanban" model="ir.ui.view">
         <field name="name">load.view.kanban</field>
@@ -134,7 +135,7 @@
                             </div>
                         </button>
                     </div>
-                    
+
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="Load Number"/>
@@ -145,7 +146,7 @@
                             <field name="buyer_company" placeholder="Paper Company"/>
                         </div>
                     </div>
-                    
+
                     <group>
                         <group name="load_details" string="📦 Load Details">
                             <field name="total_weight" widget="float"/>
@@ -172,7 +173,7 @@
                         <field name="estimated_delivery" widget="datetime"/>
                         <field name="actual_delivery" widget="datetime" invisible="state != 'delivered'"/>
                     </group>
-                    
+
                     <notebook>
                         <page string="Load Items" name="load_items">
                             <field name="bale_ids" mode="list,kanban">
@@ -294,27 +295,27 @@
                 <field name="driver_id" string="Driver"/>
                 <field name="route_code" string="Route"/>
                 <field name="load_date" string="Load Date"/>
-                
+
                 <filter string="My Loads" name="my_loads" domain="[('driver_id.user_id', '=', uid)]"/>
                 <filter string="Today's Loads" name="today" domain="[('load_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
                 <filter string="This Week" name="week" domain="[('load_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('load_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
-                
+
                 <separator/>
                 <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
                 <filter string="Planned" name="planned" domain="[('state', '=', 'planned')]"/>
                 <filter string="Loading" name="loading" domain="[('state', '=', 'loading')]"/>
                 <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
                 <filter string="Delivered" name="delivered" domain="[('state', '=', 'delivered')]"/>
-                
+
                 <separator/>
                 <filter string="Temperature Controlled" name="temp_controlled" domain="[('temperature_controlled', '=', True)]"/>
                 <filter string="Hazmat Required" name="hazmat" domain="[('hazmat_required', '=', True)]"/>
                 <filter string="High Priority" name="high_priority" domain="[('priority', '=', '3')]"/>
-                
+
                 <separator/>
-                <filter string="Overdue" name="overdue" domain="[('scheduled_departure', '&amp;lt;', datetime.datetime.now()), ('state', 'in', ['draft', 'planned', 'loading'])]"/>
-                <filter string="Late Delivery" name="late_delivery" domain="[('estimated_delivery', '&amp;lt;', datetime.datetime.now()), ('state', '=', 'in_transit')]"/>
-                
+                <filter string="Overdue" name="overdue" domain="[('state', 'in', ['draft', 'planned', 'loading'])]"/>
+                <filter string="Late Delivery" name="late_delivery" domain="[('state', '=', 'in_transit')]"/>
+
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
                     <filter string="Driver" name="group_driver" context="{'group_by': 'driver_id'}"/>
@@ -384,7 +385,7 @@
                 � Create your first paper bale load!
             </p>
             <p>
-                Track paper bale loads for post-shredding market sales operations. 
+                Track paper bale loads for post-shredding market sales operations.
                 Manage paper bale tracking from preparation through market sales with quality documentation, buyer management, and revenue tracking.
             </p>
             <p>
@@ -398,4 +399,5 @@
             </p>
         </field>
     </record>
+</data>
 </odoo>

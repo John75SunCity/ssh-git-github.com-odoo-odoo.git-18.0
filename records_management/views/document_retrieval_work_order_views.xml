@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Tree view for Document -->
+    <data>
+<!-- Tree view for Document -->
 
     <!-- Tree view for base.rate -->
 <record id="document_retrieval_work_order_view_tree" model="ir.ui.view">
@@ -267,5 +268,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

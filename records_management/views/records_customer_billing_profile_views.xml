@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for records.customer.billing.profile -->
+    <data>
+<!-- Tree view for records.customer.billing.profile -->
     <record id="records_customer_billing_profile_view_tree" model="ir.ui.view">
         <field name="name">records.customer.billing.profile.view.tree</field>
         <field name="model">records.customer.billing.profile</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

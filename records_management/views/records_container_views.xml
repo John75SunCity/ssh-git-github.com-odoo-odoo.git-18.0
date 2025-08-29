@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for ENTERPRISE -->
+    <data>
+<!-- Tree view for ENTERPRISE -->
 
     <!-- Kanban view for Kanban -->
     <record id="records_container_view_kanban" model="ir.ui.view">
@@ -293,5 +294,6 @@
     </record>
 
     <menuitem id="menu_records_box" name="Records Boxes" parent="menu_records_management_root" action="action_records_box" sequence="10"/>
+</data>
 
 </odoo>

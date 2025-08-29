@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <data>
+<!-- Tree view for base.rate -->
     <record id="pickup_request_item_view_tree" model="ir.ui.view">
         <field name="name">pickup.request.item.view.tree</field>
         <field name="model">pickup.request.item</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

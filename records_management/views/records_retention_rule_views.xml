@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for records.retention.rule -->
+    <data>
+<!-- Tree view for records.retention.rule -->
     <record id="records_retention_rule_view_tree" model="ir.ui.view">
         <field name="name">records.retention.rule.view.tree</field>
         <field name="model">records.retention.rule</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

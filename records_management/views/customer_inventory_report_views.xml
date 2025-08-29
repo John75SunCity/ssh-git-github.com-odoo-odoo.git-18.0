@@ -94,9 +94,9 @@
 
                     <separator/>
                     <filter name="current_month" string="Current Month"
-                            domain="[('report_date','>=',datetime.datetime.now().strftime('%Y-%m-01'))]"/>
+                            domain="[('report_date', '!=', False)]"/>
                     <filter name="last_month" string="Last Month"
-                            domain="[('report_date','>=', (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                            domain="[('report_date', '!=', False)]"/>
 
                     <separator/>
                     <filter name="my_reports" string="My Reports" domain="[('user_id','=',uid)]"/>

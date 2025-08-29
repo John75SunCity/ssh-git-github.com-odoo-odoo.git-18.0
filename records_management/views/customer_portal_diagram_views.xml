@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- ============================================================================= -->
+    <data>
+<!-- ============================================================================= -->
     <!-- Tree view for Customer -->
     <!-- ============================================================================= -->
 
@@ -202,5 +203,6 @@
 
     <!-- Tree view for Submenu -->
     <menuitem id="menu_customer_portal_diagram_config" name="Diagram Configuration" parent="records_management.menu_configuration" action="action_customer_portal_diagram_admin" sequence="50" groups="records_management.group_records_manager"/>
+</data>
 
 </odoo>

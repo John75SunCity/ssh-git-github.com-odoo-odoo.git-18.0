@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Enhanced Fleet Vehicle Form View with Records Management Integration -->
+    <data>
+<!-- Enhanced Fleet Vehicle Form View with Records Management Integration -->
     <record id="fleet_vehicle_view_form_records" model="ir.ui.view">
         <field name="name">fleet.vehicle.view.form.records</field>
         <field name="model">fleet.vehicle</field>
@@ -193,5 +194,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

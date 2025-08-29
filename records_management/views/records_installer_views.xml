@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for records.installer -->
+    <data>
+<!-- Tree view for records.installer -->
     <record id="records_installer_view_tree" model="ir.ui.view">
         <field name="name">records.installer.view.tree</field>
         <field name="model">records.installer</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

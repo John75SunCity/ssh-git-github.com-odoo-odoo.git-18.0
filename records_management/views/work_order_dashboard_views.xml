@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+<data>
 <!-- ============================================================================ -->
 <!-- UNIFIED WORK ORDER DASHBOARD -->
 <!-- ============================================================================ -->
@@ -186,7 +187,7 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">project.task</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('date_deadline', '&lt;', datetime.datetime.now().strftime('%Y-%m-%d')), ('stage_id.name', '!=', 'Completed')]</field>
+        <field name="domain">[('date_deadline', '!=', False), ('stage_id.name', '!=', 'Completed')]</field>
         <field name="context">{'search_default_group_project': 1}</field>
     </record>
 
@@ -196,8 +197,9 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">project.task</field>
         <field name="view_mode">kanban,tree,form</field>
-        <field name="domain">[('date_deadline', '=', datetime.datetime.now().strftime('%Y-%m-%d'))]</field>
+        <field name="domain">[('date_deadline', '!=', False)]</field>
         <field name="context">{'search_default_open': 1}</field>
     </record>
+</data>
 
 </odoo>

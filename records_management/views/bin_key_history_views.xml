@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+<data>
 <!-- Tree view for bin.key.history -->
     <record id="bin_key_history_view_tree" model="ir.ui.view">
         <field name="name">bin.key.history.view.tree</field>
@@ -216,5 +217,6 @@ No key history records found.
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for DOCUMENT -->
+    <data>
+<!-- Tree view for DOCUMENT -->
 
     <!-- Tree view for Document -->
     <record id="records_document_type_view_tree" model="ir.ui.view">
@@ -147,5 +148,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

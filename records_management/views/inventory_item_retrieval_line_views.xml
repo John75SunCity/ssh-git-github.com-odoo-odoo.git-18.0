@@ -69,7 +69,7 @@
 
                     <separator/>
                     <filter name="my_retrievals" string="My Retrievals" domain="[('responsible_id','=',uid)]"/>
-                    <filter name="today" string="Today" domain="[('retrieval_date','>=',datetime.datetime.now().strftime('%Y-%m-%d 00:00:00'))]"/>
+                    <filter name="today" string="Today" domain="[('retrieval_date', '!=', False)]"/>
 
                     <group expand="0" string="Group By">
                         <filter name="group_by_retrieval" string="Retrieval" context="{'group_by':'retrieval_id'}"/>

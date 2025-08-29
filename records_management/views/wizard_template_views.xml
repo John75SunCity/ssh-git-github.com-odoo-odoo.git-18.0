@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <data>
+<!-- Tree view for base.rate -->
     <record id="wizard_template_view_tree" model="ir.ui.view">
         <field name="name">wizard.template.view.tree</field>
         <field name="model">wizard.template</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

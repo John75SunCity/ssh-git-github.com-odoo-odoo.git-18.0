@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for PERMANENT -->
+    <data>
+<!-- Tree view for PERMANENT -->
     
     <!-- Form view for Wizard -->
     <record id="records_permanent_flag_wizard_view_form" model="ir.ui.view">
@@ -77,5 +78,6 @@
             </form>
         </field>
     </record>
+</data>
 
 </odoo>

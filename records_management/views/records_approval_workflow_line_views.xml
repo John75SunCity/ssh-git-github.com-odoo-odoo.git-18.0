@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for records.approval.workflow.line -->
+    <data>
+<!-- Tree view for records.approval.workflow.line -->
     <record id="records_approval_workflow_line_view_tree" model="ir.ui.view">
         <field name="name">records.approval.workflow.line.view.tree</field>
         <field name="model">records.approval.workflow.line</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for portal.feedback.resolution -->
+    <data>
+<!-- Tree view for portal.feedback.resolution -->
     <record id="portal_feedback_resolution_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.resolution.view.tree</field>
         <field name="model">portal.feedback.resolution</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

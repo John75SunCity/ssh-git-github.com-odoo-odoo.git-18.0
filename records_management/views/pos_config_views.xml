@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for ENTERPRISE -->
+    <data>
+<!-- Tree view for ENTERPRISE -->
     
     <!-- Kanban view for KANBAN -->
     <record id="pos_config_view_kanban" model="ir.ui.view">
@@ -391,4 +392,5 @@
             </p>
         </field>
     </record>
+</data>
 </odoo>

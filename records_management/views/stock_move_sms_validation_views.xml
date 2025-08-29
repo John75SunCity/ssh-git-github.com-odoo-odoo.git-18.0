@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <data>
+<!-- Tree view for base.rate -->
     <record id="stock_move_sms_validation_view_tree" model="ir.ui.view">
         <field name="name">stock.move.sms.validation.view.tree</field>
         <field name="model">stock.move.sms.validation</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

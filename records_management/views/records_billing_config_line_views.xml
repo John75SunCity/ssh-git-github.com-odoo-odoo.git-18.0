@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Records Billing Config Line Views -->
+    <data>
+<!-- Records Billing Config Line Views -->
     
     <!-- Tree View -->
     <record id="records_billing_config_line_view_tree" model="ir.ui.view">
@@ -130,4 +131,5 @@
             </p>
         </field>
     </record>
+</data>
 </odoo>

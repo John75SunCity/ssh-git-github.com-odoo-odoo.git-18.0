@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+<data>
 <!-- Enhanced Tree View with Status Indicators -->
     <record id="rm_module_configurator_view_tree" model="ir.ui.view">
         <field name="name">rm.module.configurator.view.tree</field>
@@ -322,5 +323,6 @@
             'search_default_group_by_category': 1
         }</field>
 </record>
+</data>
 
 </odoo>

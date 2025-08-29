@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <data>
+<!-- Tree view for base.rate -->
 <record id="container_retrieval_work_order_view_tree" model="ir.ui.view">
     <field name="name">container.retrieval.work.order.view.tree</field>
         <field name="model">container.retrieval.work.order</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

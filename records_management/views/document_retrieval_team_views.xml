@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for Document Retrieval Team -->
+    <data>
+<!-- Tree view for Document Retrieval Team -->
     <record id="document_retrieval_team_view_tree" model="ir.ui.view">
         <field name="name">document.retrieval.team.view.tree</field>
         <field name="model">document.retrieval.team</field>
@@ -269,5 +270,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

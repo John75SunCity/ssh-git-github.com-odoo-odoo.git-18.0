@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for report.records_management.report_location_utilization -->
+    <data>
+<!-- Tree view for report.records_management.report_location_utilization -->
     <record id="report_records_management_report_location_utilization_view_tree" model="ir.ui.view">
         <field name="name">report.records_management.report_location_utilization.view.tree</field>
         <field name="model">report.records_management.report_location_utilization</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

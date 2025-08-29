@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for Portal -->
+    <data>
+<!-- Tree view for Portal -->
     
     <!-- Tree view for Main -->
     <menuitem id="menu_portal_feedback" 
@@ -17,5 +18,6 @@
               action="action_feedback_analytics"
               sequence="10"
               groups="records_management.group_records_manager"/>
+</data>
               
 </odoo>

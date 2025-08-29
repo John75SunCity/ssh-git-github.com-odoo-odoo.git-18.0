@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Enhanced Records Management Menu with Fleet and FSM Integration -->
+    <data>
+<!-- Enhanced Records Management Menu with Fleet and FSM Integration -->
     <menuitem id="menu_records_fleet_fsm"
               name="Fleet &amp; Route Management"
               parent="records_management_menu.menu_records_management_root"
@@ -83,5 +84,6 @@
               parent="menu_integration_tools"
               action="action_fleet_fsm_dashboard"
               sequence="10"/>
+</data>
 
 </odoo>

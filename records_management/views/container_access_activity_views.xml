@@ -19,7 +19,7 @@
             <field name="name">container.access.activity.view.tree</field>
             <field name="model">container.access.activity</field>
             <field name="type">tree</field>
-            <field name="arch_db" type="xml">
+            <field name="arch" type="xml">
                 <tree string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
                     <field name="name"/>
                     <field name="visitor_id"/>
@@ -38,7 +38,7 @@
             <field name="name">container.access.activity.view.form</field>
             <field name="model">container.access.activity</field>
             <field name="type">form</field>
-            <field name="arch_db" type="xml">
+            <field name="arch" type="xml">
                 <form string="Container Access Activity">
                     <sheet>
                         <div class="oe_title">
@@ -93,7 +93,7 @@
             <field name="name">container.access.activity.view.search</field>
             <field name="model">container.access.activity</field>
             <field name="type">search</field>
-            <field name="arch_db" type="xml">
+            <field name="arch" type="xml">
                 <search string="Search Container Access Activity">
                     <!-- Add search fields here -->
                 </search>

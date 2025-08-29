@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Pickup Location Form View -->
+    <data>
+<!-- Pickup Location Form View -->
     <record id="pickup_location_view_form" model="ir.ui.view">
         <field name="name">pickup.location.form</field>
         <field name="model">pickup.location</field>
@@ -97,4 +98,5 @@
               parent="records_management.menu_records_config"
               action="pickup_location_action"
               sequence="40"/>
+</data>
 </odoo>

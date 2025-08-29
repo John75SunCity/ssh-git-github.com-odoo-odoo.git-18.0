@@ -286,7 +286,7 @@ class XMLValidator:
                     if template_id:
                         all_templates[template_id] = xml_file
 
-            except:
+            except (ParseError, UnicodeDecodeError):
                 continue  # Skip files with parse errors
 
         # Check for broken references (simplified)
@@ -303,7 +303,7 @@ class XMLValidator:
                         if not ref.startswith(('base.', 'web.', 'mail.', 'product.')):
                             self.warnings.append(f"{xml_file}: Reference '{ref}' not found")
 
-            except:
+            except (ParseError, UnicodeDecodeError):
                 continue
 
     def _is_valid_xml_id(self, xml_id: str) -> bool:
@@ -325,7 +325,7 @@ class XMLValidator:
 
     def print_report(self) -> None:
         """Print validation report"""
-        print(f"\n📄 XML Validation Report")
+        print("\n📄 XML Validation Report")
         print("=" * 50)
 
         if self.errors:
@@ -366,32 +366,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-def main(argv: list[str]) -> int:
-    # If a path is provided, validate just that; otherwise, scan common XML folders
-    if len(argv) >= 2:
-        return 0 if validate_xml(argv[1]) else 1
-
-    root = Path(__file__).resolve().parents[1]
-    xml_dirs = [
-        root / "records_management" / "views",
-        root / "records_management" / "security",
-        root / "records_management" / "report",
-        root / "records_management_fsm" / "views",
-        root / "addons",
-    ]
-
-    any_errors = False
-    for base in xml_dirs:
-        if not base.exists():
-            continue
-        for path in base.rglob("*.xml"):
-            ok = validate_xml(str(path))
-            any_errors = any_errors or (not ok)
-
-    return 1 if any_errors else 0
-
-
-if __name__ == "__main__":
-    sys.exit(main(sys.argv))

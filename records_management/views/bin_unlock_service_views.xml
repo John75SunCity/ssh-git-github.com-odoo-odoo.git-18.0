@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <data>
+<!-- Tree view for base.rate -->
     <record id="bin_unlock_service_view_tree" model="ir.ui.view">
         <field name="name">bin.unlock.service.view.tree</field>
         <field name="model">bin.unlock.service</field>
@@ -718,5 +719,6 @@ Perfect for managing emergency access and generating additional revenue.
             </xpath>
         </field>
 </record>
+</data>
 
 </odoo>

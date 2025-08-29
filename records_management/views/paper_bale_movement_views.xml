@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <data>
+<!-- Tree view for base.rate -->
     <record id="paper_bale_movement_view_tree" model="ir.ui.view">
         <field name="name">paper.bale.movement.view.tree</field>
         <field name="model">paper.bale.movement</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

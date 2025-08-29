@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     View Definitions for full.customization.name Model
 
@@ -11,7 +12,6 @@
 
     All fields referenced here must exist in the full.customization.name model.
 -->
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
 

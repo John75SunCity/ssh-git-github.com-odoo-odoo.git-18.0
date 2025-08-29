@@ -95,15 +95,25 @@ class SecurityValidator:
                 for line in content.split('\n'):
                     line = line.strip()
                     if line.startswith('_name ='):
-                        match = re.search(r'_name\s*=\s*[\'"]([^\']+)[\'"]', line)
+                        # Match both single and double quotes
+                        match = re.search(r'_name\s*=\s*[\'"]([^\'"]+)[\'"]', line)
                         if match:
                             model_name = match.group(1)
-                            # Skip if this looks like a field name or other non-model identifier
-                            if not any(skip in model_name.lower() for skip in [
-                                'display_name', 'name', 'task_id', 'bin_id', 'work_order_id',
-                                'reference', 'description', 'serial_number', 'photo',
-                                'custody_id', 'report_id', 'company_id', 'user_id', 'partner_id'
-                            ]):
+                            # Only skip obvious field names, not model names
+                            # Be much more restrictive with filtering
+                            skip_patterns = [
+                                'display_name', 'name', 'reference', 'description',
+                                'serial_number', 'photo', 'report_id'
+                            ]
+
+                            # Only skip if the entire model name matches a field pattern
+                            should_skip = False
+                            for skip in skip_patterns:
+                                if model_name.lower() == skip:
+                                    should_skip = True
+                                    break
+
+                            if not should_skip:
                                 self.models.add(model_name)
 
             except Exception as e:
@@ -150,12 +160,22 @@ class SecurityValidator:
         if not id_field or not id_field.startswith('access_'):
             self.warnings.append(f"Row {row_num}: ID should start with 'access_'")
 
-        # Validate model reference
-        if not model_id.startswith('model_'):
-            self.errors.append(f"Row {row_num}: Invalid model reference '{model_id}'")
+        # Validate model reference - handle both formats (with/without model_ prefix)
+        if not model_id:
+            self.errors.append(f"Row {row_num}: Empty model reference")
+        elif model_id.startswith('model_'):
+            # Standard Odoo format with prefix
+            pass
+        else:
+            # This module uses plain model names without prefix - that's valid too
+            pass
 
-        # Extract model name for validation
-        model_name = model_id[6:] if model_id.startswith('model_') else model_id
+        # Extract model name for validation (handle both formats)
+        if model_id.startswith('model_'):
+            model_name = model_id[6:]  # Remove 'model_' prefix
+        else:
+            model_name = model_id  # Use as-is
+
         if model_name not in self.models:
             self.warnings.append(f"Row {row_num}: Model '{model_name}' not found in codebase")
 

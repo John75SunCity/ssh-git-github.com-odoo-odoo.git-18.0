@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <data>
+<!-- Tree view for base.rate -->
     <record id="portal_feedback_escalation_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.escalation.view.tree</field>
         <field name="model">portal.feedback.escalation</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

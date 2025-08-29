@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View shredding.service.event View List -->
+    <data>
+<!-- View shredding.service.event View List -->
     <record id="view_shredding_service_event_list" model="ir.ui.view">
         <field name="name">view.shredding.service.event.list</field>
         <field name="model">shredding.service.event</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

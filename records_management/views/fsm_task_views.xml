@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+<data>
 <!-- Kanban View - FSM Task Dashboard -->
     <record id="fsm_task_view_kanban" model="ir.ui.view">
         <field name="name">fsm.task.view.kanban</field>
@@ -320,5 +321,6 @@
 </p>
         </field>
     </record>
+</data>
 
 </odoo>

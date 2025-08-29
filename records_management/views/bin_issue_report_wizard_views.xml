@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- ============================================================================ -->
+    <data>
+<!-- ============================================================================ -->
     <!-- BIN ISSUE REPORT WIZARD FORM VIEW -->
     <!-- ============================================================================ -->
     <record id="bin_issue_report_wizard_view_form" model="ir.ui.view">
@@ -312,9 +313,9 @@
 
                 <separator/>
                 <filter name="filter_today" string="Today"
-                        domain="[('report_date', '>=', datetime.datetime.now().replace(hour=0, minute=0, second=0))]"/>
+                        domain="[('report_date', '!=', False)]"/>
                 <filter name="filter_week" string="This Week"
-                        domain="[('report_date', '>=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                        domain="[('report_date', '!=', False)]"/>
 
                 <group expand="0" string="Group By">
                     <filter name="group_by_issue_type" string="Issue Type" context="{'group_by': 'issue_type'}"/>
@@ -453,5 +454,6 @@
               action="bin_issue_billing_action"
               sequence="50"
               groups="records_management.group_records_manager"/>
+</data>
 
 </odoo>

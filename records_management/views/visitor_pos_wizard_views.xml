@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- ENTERPRISE VISITOR POS WIZARD - Advanced Walk-In Customer Processing &amp; Audit Integration -->
-    
+    <data>
+<!-- ENTERPRISE VISITOR POS WIZARD - Advanced Walk-In Customer Processing &amp; Audit Integration -->
+
     <!-- Form view for visitor.pos.wizard -->
     <record id="visitor_pos_wizard_view_form" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.form</field>
@@ -23,7 +24,7 @@
                             <span class="text-muted">Link visitor check-ins with POS transactions for comprehensive audit trails</span>
                         </div>
                     </div>
-                    
+
                     <group>
                         <group name="visitor_info" string="👤 Visitor Information">
                             <field name="visitor_id" required="1" options="{'no_create': True}" widget="many2one"/>
@@ -41,7 +42,7 @@
                             <field name="processing_priority" widget="priority"/>
                         </group>
                     </group>
-                    
+
                     <group>
                         <group name="customer_data" string="👥 Customer Data Management">
                             <field name="existing_customer_id" options="{'no_create': True}" widget="many2one"/>
@@ -58,7 +59,7 @@
                             <field name="naid_compliance_required" widget="boolean_toggle"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="Service Details" name="service_details">
                             <group>
@@ -246,28 +247,28 @@
                 <field name="pos_config_id" string="POS Terminal"/>
                 <field name="cashier_id" string="Cashier"/>
                 <field name="service_type" string="Service Type"/>
-                
-                <filter string="Today" name="today" 
-                        domain="[('wizard_start_time', '&gt;=', datetime.datetime.combine(context_today(), datetime.time.min)), 
+
+                <filter string="Today" name="today"
+                        domain="[('wizard_start_time', '&gt;=', datetime.datetime.combine(context_today(), datetime.time.min)),
                                 ('wizard_start_time', '&lt;=', datetime.datetime.combine(context_today(), datetime.time.max))]"/>
-                <filter string="This Week" name="week" 
-                        domain="[('wizard_start_time', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%%Y-%%m-%%d')), 
+                <filter string="This Week" name="week"
+                        domain="[('wizard_start_time', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%%Y-%%m-%%d')),
                                 ('wizard_start_time', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%%Y-%%m-%%d'))]"/>
                 <filter string="My Processing" name="my_processing" domain="[('processed_by', '=', uid)]"/>
-                
+
                 <separator/>
                 <filter string="POS Order Created" name="pos_created" domain="[('pos_order_created', '=', True)]"/>
                 <filter string="Customer Record Created" name="customer_created" domain="[('customer_record_created', '=', True)]"/>
                 <filter string="NAID Compliance" name="naid_compliance" domain="[('naid_compliance_required', '=', True)]"/>
                 <filter string="Express Service" name="express" domain="[('express_service', '=', True)]"/>
                 <filter string="Audit Required" name="audit_required" domain="[('audit_required', '=', True)]"/>
-                
+
                 <separator/>
                 <filter string="Document Processing" name="document_processing" domain="[('service_type', '=', 'document_processing')]"/>
                 <filter string="Document Storage" name="document_storage" domain="[('service_type', '=', 'document_storage')]"/>
                 <filter string="Shredding Service" name="shredding" domain="[('service_type', '=', 'shredding')]"/>
                 <filter string="Consultation" name="consultation" domain="[('service_type', '=', 'consultation')]"/>
-                
+
                 <group expand="0" string="Group By">
                     <filter string="Service Type" name="group_service_type" context="{'group_by': 'service_type'}"/>
                     <filter string="POS Terminal" name="group_pos_config" context="{'group_by': 'pos_config_id'}"/>
@@ -321,7 +322,7 @@
                 Process your first walk-in visitor!
             </p>
             <p>
-                Streamline walk-in customer processing with integrated POS transactions and comprehensive audit trails. 
+                Streamline walk-in customer processing with integrated POS transactions and comprehensive audit trails.
                 Link visitor check-ins with service delivery for complete Records Management compliance and NAID certification tracking.
             </p>
             <p>
@@ -344,8 +345,8 @@
         <field name="view_id" ref="visitor_pos_wizard_view_form"/>
         <field name="target">new</field>
         <field name="context">{
-            'default_wizard_start_time': datetime.datetime.now(),
             'default_processed_by': uid
         }</field>
     </record>
+</data>
 </odoo>

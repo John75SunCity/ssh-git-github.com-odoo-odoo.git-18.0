@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View work.order.retrieval View List -->
+    <data>
+<!-- View work.order.retrieval View List -->
     <record id="view_work_order_retrieval_list" model="ir.ui.view">
         <field name="name">view.work.order.retrieval.list</field>
         <field name="model">work.order.retrieval</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

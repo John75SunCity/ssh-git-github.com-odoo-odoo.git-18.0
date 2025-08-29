@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View naid.custody View List -->
+    <data>
+<!-- View naid.custody View List -->
     <record id="view_naid_custody_list" model="ir.ui.view">
         <field name="name">view.naid.custody.list</field>
         <field name="model">naid.custody</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

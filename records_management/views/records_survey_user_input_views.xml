@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Records Survey User Input List View -->
+    <data>
+<!-- Records Survey User Input List View -->
     <record id="records_survey_user_input_view_list" model="ir.ui.view">
         <field name="name">records.survey.user.input.view.list</field>
         <field name="model">records.survey.user.input</field>
@@ -143,5 +144,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

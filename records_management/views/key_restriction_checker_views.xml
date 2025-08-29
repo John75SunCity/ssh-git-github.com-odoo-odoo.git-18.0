@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Form view for Key -->
+    <data>
+<!-- Form view for Key -->
     <record id="key_restriction_checker_view_form" model="ir.ui.view">
         <field name="name">key.restriction.checker.view.form</field>
         <field name="model">key.restriction.checker</field>
@@ -84,5 +85,6 @@
 
     <!-- Tree view for Add -->
     <menuitem id="menu_key_checker_shortcut" name="Key Checker" parent="records_management.menu_records_management_root" action="action_key_restriction_checker" sequence="15" groups="records_management.group_records_user"/>
+</data>
 
 </odoo>

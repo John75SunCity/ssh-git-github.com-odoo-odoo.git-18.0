@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for Paper -->
+    <data>
+<!-- Tree view for Paper -->
 
     <!-- Tree view for base.rate -->
     <record id="paper_bale_recycling_view_tree" model="ir.ui.view">
@@ -210,5 +211,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

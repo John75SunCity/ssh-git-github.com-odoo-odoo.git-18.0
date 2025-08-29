@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+<data>
 <!-- ============================================================================ -->
 <!-- WORK ORDER COORDINATOR - TREE VIEW -->
 <!-- ============================================================================ -->
@@ -342,5 +343,6 @@ Click to create a new Work Order Coordinator.
     <field name="domain">[]</field>
     <field name="context">{'search_default_group_department': 1}</field>
 </record>
+</data>
 
 </odoo>

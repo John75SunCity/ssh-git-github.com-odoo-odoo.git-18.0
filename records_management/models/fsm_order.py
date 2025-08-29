@@ -11,6 +11,7 @@ class FsmOrder(models.Model):
     """
     _name = 'project.task'
     _inherit = 'project.task'
+    _description = 'FSM Order Management'
 
     # ============================================================================
     # SHREDDING SERVICE FIELDS

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_billing_period_tree" model="ir.ui.view">
+    <data>
+<record id="view_billing_period_tree" model="ir.ui.view">
         <field name="name">billing.period.tree</field>
         <field name="model">billing.period</field>
         <field name="arch" type="xml">
@@ -35,4 +36,5 @@
         <field name="view_mode">tree,form</field>
     </record>
     <menuitem id="menu_billing_period_root" name="Billing Periods" parent="records_management.menu_records_billing_root" action="action_billing_period" sequence="10"/>
+</data>
 </odoo>

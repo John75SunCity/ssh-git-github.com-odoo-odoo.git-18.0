@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View shredding.bin.barcode.wizard View List -->
+    <data>
+<!-- View shredding.bin.barcode.wizard View List -->
     <record id="view_shredding_bin_barcode_wizard_list" model="ir.ui.view">
         <field name="name">view.shredding.bin.barcode.wizard.list</field>
         <field name="model">shredding.bin.barcode.wizard</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

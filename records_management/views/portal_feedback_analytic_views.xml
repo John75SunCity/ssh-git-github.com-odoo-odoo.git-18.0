@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for portal.feedback.analytic -->
+    <data>
+<!-- Tree view for portal.feedback.analytic -->
     <record id="portal_feedback_analytic_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.analytic.view.tree</field>
         <field name="model">portal.feedback.analytic</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

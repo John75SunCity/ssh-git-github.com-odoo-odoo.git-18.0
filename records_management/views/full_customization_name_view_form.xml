@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Full Customization Name Form View -->
+    <data>
+<!-- Full Customization Name Form View -->
     <record id="full_customization_name_view_form" model="ir.ui.view">
         <field name="name">full.customization.name.form</field>
         <field name="model">full.customization.name</field>
@@ -96,4 +97,5 @@
               parent="records_management.menu_records_config"
               action="full_customization_name_action"
               sequence="50"/>
+</data>
 </odoo>

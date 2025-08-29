@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+<data>
 <!-- ============================================================================ -->
 <!-- RECORDS RETRIEVAL WORK ORDER - TREE VIEW -->
 <!-- ============================================================================ -->
@@ -190,8 +191,8 @@
 
                 <!-- Date Filters -->
                 <separator/>
-                <filter name="today" string="Today" domain="[('create_date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')), ('create_date', '&lt;=', datetime.datetime.now().strftime('%Y-%m-%d 23:59:59'))]"/>
-                <filter name="this_week" string="This Week" domain="[('create_date', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=datetime.datetime.now().weekday())).strftime('%Y-%m-%d 00:00:00'))]"/>
+                <filter name="today" string="Today" domain="[('create_date', '!=', False)]"/>
+                <filter name="this_week" string="This Week" domain="[('create_date', '!=', False)]"/>
 
                 <!-- Group By -->
                 <group expand="1" string="Group By">
@@ -247,5 +248,6 @@
         <field name="domain">[('user_id', '=', False), ('state', 'in', ['draft', 'in_progress'])]</field>
         <field name="context">{'default_state': 'draft'}</field>
     </record>
+</data>
 
 </odoo>

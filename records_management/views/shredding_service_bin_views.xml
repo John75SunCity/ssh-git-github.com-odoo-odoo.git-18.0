@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
 
     <!-- ============================================================================ -->
     <!-- SHREDDING SERVICE BIN VIEWS -->
@@ -198,13 +199,13 @@
                 <filter name="filter_maintenance" string="Maintenance" domain="[('status', '=', 'maintenance')]"/>
                 <filter name="filter_deployed" string="Deployed" domain="[('current_customer_id', '!=', False)]"/>
                 <filter name="filter_needs_service" string="Needs Service"
-                        domain="[('next_scheduled_service', '<=', datetime.datetime.now().strftime('%Y-%m-%d'))]"/>
+                        domain="[('next_scheduled_service', '!=', False)]"/>
 
                 <separator/>
                 <filter name="filter_today" string="Scanned Today"
-                        domain="[('last_scan_date', '>=', datetime.datetime.now().replace(hour=0, minute=0, second=0))]"/>
+                        domain="[('last_scan_date', '!=', False)]"/>
                 <filter name="filter_week" string="This Week"
-                        domain="[('last_scan_date', '>=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                        domain="[('last_scan_date', '!=', False)]"/>
 
                 <group expand="0" string="Group By">
                     <filter name="group_by_status" string="Status" context="{'group_by': 'status'}"/>
@@ -342,4 +343,5 @@
         </field>
     </record>
 
+    </data>
 </odoo>

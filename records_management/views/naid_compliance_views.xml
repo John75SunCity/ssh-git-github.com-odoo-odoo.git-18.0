@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for ENTERPRISE -->
+    <data>
+<!-- Tree view for ENTERPRISE -->
     
     <!-- Kanban view for NAID -->
     <record id="naid_compliance_view_kanban" model="ir.ui.view">
@@ -393,4 +394,5 @@ invisible="naid_level != 'AAA'">
             </p>
         </field>
     </record>
+</data>
 </odoo>

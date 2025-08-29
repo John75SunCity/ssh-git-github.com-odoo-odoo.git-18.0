@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+<data>
 <!-- ============================================================================ -->
 <!-- WORK ORDER SHREDDING - TREE VIEW -->
 <!-- ============================================================================ -->
@@ -302,7 +303,7 @@
 <separator/>
 <filter string="Today" name="today" domain="[('scheduled_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
 <filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
-<filter string="Overdue" name="overdue" domain="[('deadline_date', '&lt;', datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')), ('state', 'not in', ['completed', 'cancelled'])]"/>
+<filter string="Overdue" name="overdue" domain="[('state', 'not in', ['completed', 'cancelled'])]"/>
 <separator/>
 <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
 
@@ -381,5 +382,6 @@
     <field name="domain">[('scheduled_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]</field>
     <field name="context">{'search_default_group_coordinator': 1}</field>
 </record>
+</data>
 
 </odoo>

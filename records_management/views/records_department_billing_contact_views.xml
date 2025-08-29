@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <data>
+<!-- Tree view for base.rate -->
     <record id="records_department_billing_contact_view_tree" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.tree</field>
         <field name="model">records.department.billing.contact</field>
@@ -332,5 +333,6 @@
 </p>
 </field>
 </record>
+</data>
 
 </odoo>

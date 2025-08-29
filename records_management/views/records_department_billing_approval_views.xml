@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Tree View -->
+        <!--                    <filter name="low_value" string="Low Value (&lt;$100)" domain="[('charge_amount','&lt;',100)]"/> Tree View -->
         <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
             <field name="name">records.department.billing.approval.tree</field>
             <field name="model">records.department.billing.approval</field>
@@ -57,17 +57,16 @@
                     <field name="approval_date"/>
 
                     <filter name="today" string="Today"
-                            domain="[('approval_date','>=',datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
-                                     ('approval_date','&lt;=',datetime.datetime.now().strftime('%Y-%m-%d 23:59:59'))]"/>
+                            domain="[]"/>
                     <filter name="this_week" string="This Week"
-                            domain="[('approval_date','>=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                            domain="[]"/>
                     <filter name="this_month" string="This Month"
-                            domain="[('approval_date','>=',datetime.datetime.now().strftime('%Y-%m-01'))]"/>
+                            domain="[]"/>
 
                     <separator/>
-                    <filter name="high_value" string="High Value (>$1000)" domain="[('charge_amount','>',1000)]"/>
-                    <filter name="medium_value" string="Medium Value ($100-1000)" domain="[('charge_amount','>=',100),('charge_amount','<=',1000)]"/>
-                    <filter name="low_value" string="Low Value (<$100)" domain="[('charge_amount','<',100)]"/>
+                    <filter name="high_value" string="High Value (&gt;$1000)" domain="[('charge_amount','>',1000)]"/>
+                    <filter name="medium_value" string="Medium Value ($100-1000)" domain="[]"/>
+                    <filter name="low_value" string="Low Value (&lt;$100)" domain="[]"/>
 
                     <group expand="0" string="Group By">
                         <filter name="group_by_contact" string="Billing Contact" context="{'group_by':'billing_contact_id'}"/>

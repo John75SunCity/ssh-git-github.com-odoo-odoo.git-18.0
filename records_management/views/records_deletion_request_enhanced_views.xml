@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <data>
+<!-- Tree view for base.rate -->
     <record id="records_deletion_request_enhanced_view_tree" model="ir.ui.view">
         <field name="name">records.deletion.request.enhanced.view.tree</field>
         <field name="model">records.deletion.request.enhanced</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for Paper -->
+    <data>
+<!-- Tree view for Paper -->
 
     <!-- Tree view for base.rate -->
     <record id="paper_load_shipment_view_tree" model="ir.ui.view">
@@ -349,5 +350,6 @@
 
     <!-- Tree view for Dashboard -->
     <menuitem id="menu_paper_recycling_dashboard" name="Dashboard" parent="menu_paper_recycling" action="action_paper_recycling_dashboard" sequence="5" groups="records_management.group_records_user"/>
+</data>
 
 </odoo>

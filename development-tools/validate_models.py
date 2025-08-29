@@ -251,7 +251,14 @@ class ModelValidator:
 
                         # Check for common field naming issues
                         if field_name.startswith('_') and not field_name.startswith('__'):
-                            if field_name not in ['_name', '_description', '_inherit', '_inherits', '_order', '_rec_name', '_table']:
+                            # Standard Odoo private fields that should be allowed
+                            standard_private_fields = [
+                                '_name', '_description', '_inherit', '_inherits', '_order', '_rec_name', '_table',
+                                '_sql_constraints', '_sql', '_auto', '_sequence', '_parent_name', '_parent_store',
+                                '_date_name', '_fold_name', '_needaction', '_track', '_tracking', '_depends',
+                                '_retention_period_was_indefinite', '_check_company_auto', '_company_default_get'
+                            ]
+                            if field_name not in standard_private_fields:
                                 self.warnings.append(f"Non-standard private field {field_name} in model {model_name}")
 
                         # Validate field definitions

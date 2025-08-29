@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for serial_number -->
+    <data>
+<!-- Tree view for serial_number -->
     <record id="serial_number_view_tree" model="ir.ui.view">
         <field name="name">serial_number.view.tree</field>
         <field name="model">serial_number</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

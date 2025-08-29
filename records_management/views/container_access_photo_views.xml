@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for container.access.photo -->
+    <data>
+<!-- Tree view for container.access.photo -->
     <record id="container_access_photo_view_tree" model="ir.ui.view">
         <field name="name">container.access.photo.view.tree</field>
         <field name="model">container.access.photo</field>
@@ -181,5 +182,6 @@
               parent="menu_container_access"
               action="action_container_access_photo"
               sequence="40"/>
+</data>
 
 </odoo>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_advanced_billing_storage_line_tree" model="ir.ui.view">
+    <data>
+<record id="view_advanced_billing_storage_line_tree" model="ir.ui.view">
         <field name="name">advanced.billing.storage.line.tree</field>
         <field name="model">advanced.billing.storage.line</field>
         <field name="arch" type="xml">
@@ -29,4 +30,5 @@
             </form>
         </field>
     </record>
+</data>
 </odoo>

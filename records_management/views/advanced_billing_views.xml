@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for advanced.billing -->
+    <data>
+<!-- Tree view for advanced.billing -->
     <record id="advanced_billing_view_tree" model="ir.ui.view">
         <field name="name">advanced.billing.view.tree</field>
         <field name="model">advanced.billing</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

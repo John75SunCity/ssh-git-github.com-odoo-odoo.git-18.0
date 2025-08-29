@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for PORTAL -->
+    <data>
+<!-- Tree view for PORTAL -->
 
     <!-- Kanban view for Kanban -->
     <record id="portal_feedback_view_kanban" model="ir.ui.view">
@@ -211,5 +212,6 @@
               parent="records_management.menu_portal_root"
               action="action_portal_feedback"
               sequence="20"/>
+</data>
 
 </odoo>

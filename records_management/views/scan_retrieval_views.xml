@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for scan.retrieval -->
+    <data>
+<!-- Tree view for scan.retrieval -->
     <record id="scan_retrieval_view_tree" model="ir.ui.view">
         <field name="name">scan.retrieval.view.tree</field>
         <field name="model">scan.retrieval</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

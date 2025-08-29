@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <!-- Revenue Forecast Line Tree View -->
+    <data>
+<!-- Revenue Forecast Line Tree View -->
     <record id="view_revenue_forecast_line_tree" model="ir.ui.view">
         <field name="name">revenue.forecast.line.tree</field>
         <field name="model">revenue.forecast.line</field>
@@ -272,5 +273,6 @@
             }
         </field>
     </record>
+</data>
 
 </odoo>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for partner.bin.key -->
+    <data>
+<!-- Tree view for partner.bin.key -->
     <record id="partner_bin_key_view_tree" model="ir.ui.view">
         <field name="name">partner.bin.key.view.tree</field>
         <field name="model">partner.bin.key</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

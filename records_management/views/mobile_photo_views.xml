@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- View mobile.photo View List -->
+    <data>
+<!-- View mobile.photo View List -->
     <record id="view_mobile_photo_list" model="ir.ui.view">
         <field name="name">view.mobile.photo.list</field>
         <field name="model">mobile.photo</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

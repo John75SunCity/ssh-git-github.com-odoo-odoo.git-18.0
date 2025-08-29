@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for reference -->
+    <data>
+<!-- Tree view for reference -->
     <record id="reference_view_tree" model="ir.ui.view">
         <field name="name">reference.view.tree</field>
         <field name="model">reference</field>
@@ -57,5 +58,6 @@
             </p>
         </field>
     </record>
+</data>
 
 </odoo>

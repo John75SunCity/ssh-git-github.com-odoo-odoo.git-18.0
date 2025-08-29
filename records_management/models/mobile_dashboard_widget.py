@@ -371,12 +371,12 @@ class MobileDashboardWidget(models.Model):
     def _ensure_default_category(self):
         """Ensure the default operations category exists"""
         category_model = self.env['mobile.dashboard.widget.category']
-        
+
         # Check if default category exists
         default_category = category_model.search([
             ('technical_name', '=', 'operations')
         ], limit=1)
-        
+
         if not default_category:
             # Create default category
             default_category = category_model.create({
@@ -387,7 +387,7 @@ class MobileDashboardWidget(models.Model):
                 'is_active': True,
                 'sort_order': 10
             })
-        
+
         # Set the XML ID reference for the default widgets
         if not self.env.ref('records_management.mobile_dashboard_widget_category_operations', raise_if_not_found=False):
             # Create XML ID reference
@@ -398,7 +398,7 @@ class MobileDashboardWidget(models.Model):
                 'res_id': default_category.id,
                 'noupdate': True
             })
-        
+
         return default_category
 
     @api.model
@@ -406,7 +406,7 @@ class MobileDashboardWidget(models.Model):
         """Create default dashboard widgets using available models"""
         # Ensure default category exists
         default_category = self._ensure_default_category()
-        
+
         default_widgets = [
             {
                 'name': 'Active Records',
@@ -608,8 +608,9 @@ class MobileDashboardWidget(models.Model):
         return True
 
     # Override create to set technical name if not provided
-    @api.model
-    def create(self, vals):
-        if not vals.get('technical_name') and vals.get('name'):
-            vals['technical_name'] = vals['name'].lower().replace(' ', '_').replace("'", '')
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get('technical_name') and vals.get('name'):
+                vals['technical_name'] = vals['name'].lower().replace(' ', '_').replace("'", '')
+        return super().create(vals_list)

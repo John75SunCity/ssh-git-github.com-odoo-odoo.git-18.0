@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Shredding Service Photo Views -->
+    <data>
+<!-- Shredding Service Photo Views -->
     
     <!-- Tree View -->
     <record id="shredding_service_photo_view_tree" model="ir.ui.view">
@@ -100,4 +101,5 @@
             </p>
         </field>
     </record>
+</data>
 </odoo>
