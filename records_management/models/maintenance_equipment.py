@@ -77,5 +77,7 @@ class MaintenanceEquipment(models.Model):
             _logger.info("Found %s equipment items requiring calibration", len(overdue_equipment))
 
             # TODO: Add notification logic here
-            # For example, create maintenance requests or send emails        return True
+            # For example, create maintenance requests or send emails
+
+        return True
 

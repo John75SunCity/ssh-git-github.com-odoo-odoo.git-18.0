@@ -291,7 +291,7 @@
             <field name="code">model.check_training_expiry()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
-            <field name="active">True</field>
+            <field name="active">False</field>
         </record>
 
         <record id="cron_certificate_generation" model="ir.cron">
@@ -301,7 +301,7 @@
             <field name="code">model.generate_pending_certificates()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">hours</field>
-            <field name="active">True</field>
+            <field name="active">False</field>
         </record>
 
         <!-- NAID Integration Parameters -->
