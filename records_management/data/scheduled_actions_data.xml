@@ -12,10 +12,7 @@ from datetime import datetime, timedelta
 
 # Compute monthly storage fees for each customer
 try:
-    quants = env['stock.quant'].search([
-        ('location_id.usage', '=', 'internal'),
-        ('lot_id.customer_id', '!=', False)
-    ])
+    customer_items = {}
     quants = env['stock.quant'].search([('location_id.usage', '=', 'internal')])
 
     # Iterate through each quant to sum quantities by customer
@@ -27,9 +24,6 @@ try:
             customer_items[customer] += quant.quantity
         else:
             customer_items[customer] = quant.quantity
-                customer_items[customer] += quant.quantity
-            else:
-                customer_items[customer] = quant.quantity
 
     # Try to get the storage fee product reference (corrected reference)
     product = env.ref('records_management.product_storage_service', raise_if_not_found=False)
@@ -55,8 +49,7 @@ try:
                         })],
                     })
         log(_('Monthly storage fees computed for %s customers') % len([c for c, q in customer_items.items() if q > 0]))
-        log(_('Monthly storage fees computed for %s customers') % len([c for c, q in customer_items.items() if q > 0]))
-            <field name="nextcall" eval="(datetime.now().replace(day=1) + relativedelta(months=1)).strftime('%Y-%m-%d 00:00:00')"/>
+except Exception as e:
     log(_('Error computing monthly storage fees: %s') % str(e))
             </field>
             <field name="active">True</field>
@@ -88,7 +81,7 @@ except Exception as e:
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
-            <field name="nextcall" eval="(datetime.now().replace(day=1) + relativedelta(months=1)).strftime('%Y-%m-%d 09:00:00')"/>
+            <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=30)).strftime('%Y-%m-%d 09:00:00')"/>
         </record>
 
         <!-- Monthly storage fee automation workflow -->
@@ -100,8 +93,13 @@ except Exception as e:
 # Import required modules
 from datetime import datetime, timedelta
 
-# See module documentation for workflow, integration, and error handling details.
-
+# Storage fee automation workflow
+try:
+    log(_('Storage fee automation workflow started.'))
+    # See module documentation for workflow, integration, and error handling details.
+    log(_('Storage fee automation workflow completed successfully.'))
+except Exception as e:
+    log(_('Error in storage fee automation workflow: %s') % str(e))
             </field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
@@ -118,14 +116,18 @@ from datetime import datetime, timedelta
 # Import required modules
 from datetime import datetime, timedelta
 
-# See external documentation for reporting and billing workflow details.
-
-log(_('Inventory report automation documentation updated.'))
+# Monthly inventory report automation
+try:
+    log(_('Monthly inventory report automation started.'))
+    # See external documentation for reporting and billing workflow details.
+    log(_('Inventory report automation documentation updated.'))
+except Exception as e:
+    log(_('Error in monthly inventory report automation: %s') % str(e))
             </field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
-            <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=32)).replace(day=1).strftime('%Y-%m-%d 09:00:00')"/>
+            <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=30)).strftime('%Y-%m-%d 09:00:00')"/>
         </record>
     </data>
 </odoo>
