@@ -9,6 +9,51 @@
             <field name="company_id" eval="False"/>
         </record>
 
+        <!-- Certificate Templates (Production Configuration) -->
+        <record id="naid_destruction_template" model="naid.certificate.template">
+            <field name="name">Standard Destruction Certificate</field>
+            <field name="template_content">
+                <![CDATA[
+                CERTIFICATE OF DESTRUCTION
+
+                Certificate Number: ${certificate.number}
+                Date of Destruction: ${certificate.destruction_date}
+
+                This certifies the secure destruction of the following materials:
+
+                ${certificate.destroyed_items}
+
+                Destruction Method: ${certificate.destruction_method}
+                Witness: ${certificate.witness_name}
+
+                Authorized Signature: _________________
+                Date: ${certificate.issue_date}
+                ]]>
+            </field>
+        </record>
+
+        <record id="naid_transport_template" model="naid.certificate.template">
+            <field name="name">Chain of Custody Certificate Template</field>
+            <field name="template_content">
+                <![CDATA[
+                CHAIN OF CUSTODY CERTIFICATE
+
+                Certificate Number: ${certificate.number}
+                Date of Transfer: ${certificate.transfer_date}
+
+                This certifies the chain of custody for the following materials:
+
+                ${certificate.transferred_items}
+
+                Transfer Method: ${certificate.transfer_method}
+                Authorized By: ${certificate.authorized_by}
+
+                Authorized Signature: _________________
+                Date: ${certificate.issue_date}
+                ]]>
+            </field>
+        </record>
+
         <!-- NAID Certificate Types (Production Configuration) -->
         <record id="naid_cert_type_destruction" model="naid.certificate.type">
             <field name="name">Certificate of Destruction</field>
@@ -23,31 +68,7 @@
             <field name="code">COC</field>
             <field name="description">Certificate tracking document chain of custody</field>
             <field name="requires_witness">False</field>
-        </record>
-
-        <!-- Certificate Templates (Production Configuration) -->
-        <record id="naid_destruction_template" model="naid.certificate.template">
-            <field name="name">Standard Destruction Certificate</field>
-            <field name="certificate_type_id" ref="naid_cert_type_destruction"/>
-            <field name="template_content">
-                <![CDATA[
-                CERTIFICATE OF DESTRUCTION
-
-                Certificate Number: ${certificate.number}
-                Date of Destruction: ${certificate.destruction_date}
-
-                This certifies that the following materials have been securely destroyed
-                in accordance with NAID AAA standards:
-
-                ${certificate.destroyed_items}
-
-                Destruction Method: ${certificate.destruction_method}
-                Witness: ${certificate.witness_name}
-
-                Authorized Signature: _________________
-                Date: ${certificate.issue_date}
-                ]]>
-            </field>
+            <field name="template_id" ref="naid_transport_template"/>
         </record>
 
         <!-- Default NAID Compliance Settings -->

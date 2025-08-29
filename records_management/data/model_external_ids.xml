@@ -103,7 +103,7 @@
             <field name="name">Shredding Rate</field>
         </record>
 
-        <!-- Other Models Models -->
+        <!-- Other Models -->
         <record id="model_approval_history" model="ir.model">
             <field name="model">approval.history</field>
             <field name="name">Approval History</field>
@@ -559,7 +559,7 @@
             <field name="name">Work Order Retrieval</field>
         </record>
 
-        <!-- Core Records Models -->
+        <!-- Core Records & Storage Models -->
         <record id="model_barcode_storage_box" model="ir.model">
             <field name="model">barcode.storage.box</field>
             <field name="name">Barcode Storage Box</field>
@@ -760,7 +760,7 @@
             <field name="name">Signed Document</field>
         </record>
 
-        <!-- Communication Models -->
+        <!-- Communication & Survey Models -->
         <record id="model_certificate_template_data" model="ir.model">
             <field name="model">certificate.template.data</field>
             <field name="name">Certificate Template Data</field>

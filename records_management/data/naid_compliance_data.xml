@@ -307,7 +307,7 @@
         <!-- NAID Integration Parameters -->
         <record id="config_naid_integration" model="ir.config_parameter">
             <field name="key">naid.integration.settings</field>
-            <field name="value">{
+            <field name="value"><![CDATA[{
                 "enable_automatic_auditing": true,
                 "require_dual_witness": true,
                 "enable_gps_tracking": true,
@@ -315,17 +315,19 @@
                 "compliance_alert_email": "compliance@suncityshred.com",
                 "audit_retention_years": 7,
                 "certificate_auto_generation": true
-            }</field>
+            }]]></field>
         </record>
 
         <record id="config_security_levels" model="ir.config_parameter">
             <field name="key">naid.security.levels</field>
-            <field name="value">{
+                        <field name="value"><![CDATA[
+            {
                 "low": {"particle_size": "10mm", "witnesses": 1, "tracking": "basic"},
                 "medium": {"particle_size": "6mm", "witnesses": 1, "tracking": "enhanced"},
                 "high": {"particle_size": "2mm", "witnesses": 2, "tracking": "full_audit"},
                 "top_secret": {"particle_size": "0.8mm", "witnesses": 3, "tracking": "military_grade"}
-            }</field>
+            }
+                        ]]></field>
         </record>
 
     </data>
