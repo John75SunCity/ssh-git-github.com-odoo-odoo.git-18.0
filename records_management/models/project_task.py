@@ -46,14 +46,6 @@ class ProjectTask(models.Model):
         readonly=True
     )
 
-    container_ids = fields.Many2many(
-        comodel_name='records.container',
-        relation='project_task_records_container_rel',
-        column1='task_id',
-        column2='container_id',
-        string="Related Containers"
-    )
-
     # --- Team Assignment ---
     shredding_team_id = fields.Many2one(
         comodel_name='shredding.team',
@@ -78,6 +70,16 @@ class ProjectTask(models.Model):
     # --- Route & Vehicle ---
     route_id = fields.Many2one(comodel_name='pickup.route', string="Pickup Route")
     vehicle_id = fields.Many2one(comodel_name='fleet.vehicle', string="Vehicle")
+
+    # Container relationship - Many2many field
+    container_ids = fields.Many2many(
+        comodel_name='records.container',
+        relation='project_task_records_container_rel',
+        column1='task_id',
+        column2='container_id',
+        string="Related Containers",
+        help="Containers associated with this task"
+    )
 
     # --- Compliance & Audit ---
     naid_audit_log_ids = fields.One2many(comodel_name='naid.audit.log', inverse_name='task_id', string='Audit Logs')
