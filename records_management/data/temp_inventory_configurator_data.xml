@@ -4,101 +4,66 @@
         <!-- Temporary Inventory Feature Configuration -->
         <record id="config_enable_temp_inventory" model="rm.module.configurator">
             <field name="name">Enable Temporary Inventory</field>
-            <field name="category">feature_toggles</field>
+            <field name="category">system</field>
             <field name="config_key">enable_temp_inventory</field>
-            <field name="config_type">boolean</field>
-            <field name="default_value">False</field>
-            <field name="visible">True</field>
-            <field name="required">False</field>
-            <field name="readonly">False</field>
-            <field name="sequence">10</field>
-            <field name="target_model">temp.inventory</field>
-            <field name="help_text">Enable or disable the temporary inventory management feature. When enabled, users can create and manage temporary inventory records for staging, quarantine, and processing areas.</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">False</field>
+            <field name="description">Enable or disable the temporary inventory management feature. When enabled, users can create and manage temporary inventory records for staging, quarantine, and processing areas.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
         <!-- Temporary Inventory Movement Feature Configuration -->
         <record id="config_enable_temp_inventory_movements" model="rm.module.configurator">
             <field name="name">Enable Temporary Inventory Movements</field>
-            <field name="category">feature_toggles</field>
+            <field name="category">system</field>
             <field name="config_key">enable_temp_inventory_movements</field>
-            <field name="config_type">boolean</field>
-            <field name="default_value">False</field>
-            <field name="visible">True</field>
-            <field name="required">False</field>
-            <field name="readonly">False</field>
-            <field name="sequence">20</field>
-            <field name="target_model">temp.inventory.movement</field>
-            <field name="dependency_key">enable_temp_inventory</field>
-            <field name="help_text">Enable tracking of temporary inventory movements. This provides complete audit trail for items moving in and out of temporary storage areas.</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">False</field>
+            <field name="description">Enable tracking of temporary inventory movements. This provides complete audit trail for items moving in and out of temporary storage areas.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
         <!-- Temporary Inventory Audit Trail Configuration -->
         <record id="config_enable_temp_inventory_audit" model="rm.module.configurator">
             <field name="name">Enable Temporary Inventory Audit Trail</field>
-            <field name="category">compliance_features</field>
+            <field name="category">compliance</field>
             <field name="config_key">enable_temp_inventory_audit</field>
-            <field name="config_type">boolean</field>
-            <field name="default_value">True</field>
-            <field name="visible">True</field>
-            <field name="required">False</field>
-            <field name="readonly">False</field>
-            <field name="sequence">30</field>
-            <field name="target_model">temp.inventory.audit</field>
-            <field name="dependency_key">enable_temp_inventory</field>
-            <field name="help_text">Enable comprehensive audit trail for temporary inventory changes. Required for compliance with NAID and other regulatory standards.</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">True</field>
+            <field name="description">Enable comprehensive audit trail for temporary inventory changes. Required for compliance with NAID and other regulatory standards.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
         <!-- Temporary Inventory Auto-Cleanup Configuration -->
         <record id="config_temp_inventory_auto_cleanup" model="rm.module.configurator">
             <field name="name">Auto-Cleanup Temporary Inventory</field>
-            <field name="category">maintenance_features</field>
+            <field name="category">system</field>
             <field name="config_key">temp_inventory_auto_cleanup</field>
-            <field name="config_type">boolean</field>
-            <field name="default_value">True</field>
-            <field name="visible">True</field>
-            <field name="required">False</field>
-            <field name="readonly">False</field>
-            <field name="sequence">40</field>
-            <field name="target_model">temp.inventory</field>
-            <field name="dependency_key">enable_temp_inventory</field>
-            <field name="help_text">Automatically clean up expired temporary inventory records. Helps maintain system performance and data hygiene.</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">True</field>
+            <field name="description">Automatically clean up expired temporary inventory records. Helps maintain system performance and data hygiene.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
         <!-- Temporary Inventory Retention Period Configuration -->
         <record id="config_temp_inventory_retention_days" model="rm.module.configurator">
             <field name="name">Temporary Inventory Retention Period (Days)</field>
-            <field name="category">maintenance_features</field>
+            <field name="category">system</field>
             <field name="config_key">temp_inventory_retention_days</field>
-            <field name="config_type">integer</field>
-            <field name="default_value">30</field>
-            <field name="visible">True</field>
-            <field name="required">True</field>
-            <field name="readonly">False</field>
-            <field name="sequence">50</field>
-            <field name="target_model">temp.inventory</field>
-            <field name="dependency_key">temp_inventory_auto_cleanup</field>
-            <field name="help_text">Number of days to retain temporary inventory records before automatic cleanup. Must be between 1 and 365 days.</field>
+            <field name="config_type">parameter</field>
+            <field name="value_number">30</field>
+            <field name="description">Number of days to retain temporary inventory records before automatic cleanup. Must be between 1 and 365 days.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
         <!-- Temporary Inventory Notification Configuration -->
         <record id="config_temp_inventory_notifications" model="rm.module.configurator">
             <field name="name">Enable Temporary Inventory Notifications</field>
-            <field name="category">notification_features</field>
+            <field name="category">system</field>
             <field name="config_key">enable_temp_inventory_notifications</field>
-            <field name="config_type">boolean</field>
-            <field name="default_value">True</field>
-            <field name="visible">True</field>
-            <field name="required">False</field>
-            <field name="readonly">False</field>
-            <field name="sequence">60</field>
-            <field name="target_model">temp.inventory</field>
-            <field name="dependency_key">enable_temp_inventory</field>
-            <field name="help_text">Send notifications when temporary inventory items are created, moved, or approaching expiration.</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">True</field>
+            <field name="description">Send notifications when temporary inventory items are created, moved, or approaching expiration.</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
     </data>

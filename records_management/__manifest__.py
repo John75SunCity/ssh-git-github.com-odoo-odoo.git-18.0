@@ -40,7 +40,6 @@
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
         "data/temp_inventory_configurator_data.xml",
-        "data/user_setup_data.xml",
         "security/ir.model.access.csv",
         "security/records_management_security.xml",
         "views/advanced_billing_line_views.xml",
