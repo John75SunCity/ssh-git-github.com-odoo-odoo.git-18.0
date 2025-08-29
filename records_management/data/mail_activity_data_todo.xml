@@ -15,13 +15,15 @@
     Maintainer: Records Management Team
 -->
 <odoo>
-    <!-- Add a generic To Do activity type for customer follow-up and general tasks -->
-    <record id="mail_activity_data_todo" model="mail.activity.type">
-        <field name="name">To Do</field>
-        <field name="category">default</field>
-        <field name="icon">fa-tasks</field>
-        <field name="summary">General To Do</field>
-        <field name="delay_count">0</field>
-        <field name="sequence">10</field>
-    </record>
+    <data>
+        <!-- Add a generic To Do activity type for customer follow-up and general tasks -->
+        <record id="mail_activity_data_todo" model="mail.activity.type">
+            <field name="name">To Do</field>
+            <field name="category">default</field>
+            <field name="icon">fa-tasks</field>
+            <field name="summary">General To Do</field>
+            <field name="delay_count">0</field>
+            <field name="sequence">10</field>
+        </record>
+    </data>
 </odoo>

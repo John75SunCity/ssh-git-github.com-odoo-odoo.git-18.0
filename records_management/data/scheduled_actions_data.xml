@@ -52,8 +52,8 @@ try:
 except Exception as e:
     log(_('Error computing monthly storage fees: %s') % str(e))
 ]]></field>
-            <field name="active">True</field>
-            <field name="interval_number">1</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number" eval="1"/>
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d 00:00:00')"/>
         </record>
@@ -78,8 +78,8 @@ try:
 except Exception as e:
     log(_('Error generating monthly inventory reports: %s') % str(e))
 ]]></field>
-            <field name="active">True</field>
-            <field name="interval_number">1</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number" eval="1"/>
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=30)).strftime('%Y-%m-%d 09:00:00')"/>
         </record>
@@ -101,8 +101,8 @@ try:
 except Exception as e:
     log(_('Error in storage fee automation workflow: %s') % str(e))
 ]]></field>
-            <field name="active">True</field>
-            <field name="interval_number">1</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number" eval="1"/>
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d 00:00:00')"/>
         </record>
@@ -124,8 +124,8 @@ try:
 except Exception as e:
     log(_('Error in monthly inventory report automation: %s') % str(e))
 ]]></field>
-            <field name="active">True</field>
-            <field name="interval_number">1</field>
+            <field name="active" eval="True"/>
+            <field name="interval_number" eval="1"/>
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=30)).strftime('%Y-%m-%d 09:00:00')"/>
         </record>
