@@ -14,11 +14,12 @@
             <field name="description">Standard box for general office documents (12" x 15" x 10")</field>
             <field name="active">True</field>
             <field name="dimensions">12x15x10</field>
-            <field name="cubic_feet">1.2</field>
+            <field name="length">12</field>
+            <field name="width">15</field>
+            <field name="height">10</field>
             <field name="weight_capacity">50.0</field>
-            <field name="base_rate_monthly">15.00</field>
-            <field name="base_rate_yearly">165.00</field>
-            <field name="retrieval_fee">25.00</field>
+            <field name="standard_rate">15.00</field>
+            <field name="handling_fee">25.00</field>
             <field name="state">active</field>
         </record>
 
@@ -29,11 +30,12 @@
             <field name="description">Legal/Banker box for legal and financial documents (15" x 12" x 10")</field>
             <field name="active">True</field>
             <field name="dimensions">15x12x10</field>
-            <field name="cubic_feet">2.4</field>
+            <field name="length">15</field>
+            <field name="width">12</field>
+            <field name="height">10</field>
             <field name="weight_capacity">75.0</field>
-            <field name="base_rate_monthly">22.00</field>
-            <field name="base_rate_yearly">242.00</field>
-            <field name="retrieval_fee">30.00</field>
+            <field name="standard_rate">22.00</field>
+            <field name="handling_fee">30.00</field>
             <field name="state">active</field>
         </record>
 
@@ -44,11 +46,12 @@
             <field name="description">Map box for blueprints and large format documents (14" x 18" x 8")</field>
             <field name="active">True</field>
             <field name="dimensions">14x18x8</field>
-            <field name="cubic_feet">0.875</field>
+            <field name="length">14</field>
+            <field name="width">18</field>
+            <field name="height">8</field>
             <field name="weight_capacity">40.0</field>
-            <field name="base_rate_monthly">18.00</field>
-            <field name="base_rate_yearly">198.00</field>
-            <field name="retrieval_fee">28.00</field>
+            <field name="standard_rate">18.00</field>
+            <field name="handling_fee">28.00</field>
             <field name="state">active</field>
         </record>
 
@@ -59,11 +62,12 @@
             <field name="description">Odd size/temporary box for irregular items and temporary storage (24" x 15" x 12")</field>
             <field name="active">True</field>
             <field name="dimensions">24x15x12</field>
-            <field name="cubic_feet">5.0</field>
+            <field name="length">24</field>
+            <field name="width">15</field>
+            <field name="height">12</field>
             <field name="weight_capacity">100.0</field>
-            <field name="base_rate_monthly">35.00</field>
-            <field name="base_rate_yearly">385.00</field>
-            <field name="retrieval_fee">45.00</field>
+            <field name="standard_rate">35.00</field>
+            <field name="handling_fee">45.00</field>
             <field name="state">active</field>
         </record>
 
@@ -74,12 +78,12 @@
             <field name="description">Pathology box for medical specimens and small items (6" x 6" x 4")</field>
             <field name="active">True</field>
             <field name="dimensions">6x6x4</field>
-            <field name="cubic_feet">0.042</field>
+            <field name="length">6</field>
+            <field name="width">6</field>
+            <field name="height">4</field>
             <field name="weight_capacity">10.0</field>
-            <field name="base_rate_monthly">8.00</field>
-            <field name="base_rate_yearly">88.00</field>
-            <field name="retrieval_fee">15.00</field>
-            <field name="security_features">Climate controlled, medical grade materials</field>
+            <field name="standard_rate">8.00</field>
+            <field name="handling_fee">15.00</field>
             <field name="state">active</field>
         </record>
 
@@ -90,12 +94,12 @@
             <field name="description">High-security box with enhanced locking for confidential documents</field>
             <field name="active">True</field>
             <field name="dimensions">12x15x10</field>
-            <field name="cubic_feet">1.25</field>
+            <field name="length">12</field>
+            <field name="width">15</field>
+            <field name="height">10</field>
             <field name="weight_capacity">50.0</field>
-            <field name="base_rate_monthly">25.00</field>
-            <field name="base_rate_yearly">275.00</field>
-            <field name="retrieval_fee">35.00</field>
-            <field name="security_features">Enhanced locking system, tamper-evident seals</field>
+            <field name="standard_rate">25.00</field>
+            <field name="handling_fee">35.00</field>
             <field name="state">active</field>
         </record>
 
@@ -105,12 +109,12 @@
             <field name="description">Fire-resistant box for critical document protection</field>
             <field name="active">True</field>
             <field name="dimensions">14x11x8</field>
-            <field name="cubic_feet">0.89</field>
+            <field name="length">14</field>
+            <field name="width">11</field>
+            <field name="height">8</field>
             <field name="weight_capacity">40.0</field>
-            <field name="base_rate_monthly">45.00</field>
-            <field name="base_rate_yearly">495.00</field>
-            <field name="retrieval_fee">55.00</field>
-            <field name="security_features">Fire-resistant materials, UL rated</field>
+            <field name="standard_rate">45.00</field>
+            <field name="handling_fee">55.00</field>
             <field name="state">active</field>
         </record>
 
@@ -121,12 +125,12 @@
             <field name="description">Long-term archive box with acid-free materials for document preservation</field>
             <field name="active">True</field>
             <field name="dimensions">16x12x12</field>
-            <field name="cubic_feet">1.33</field>
+            <field name="length">16</field>
+            <field name="width">12</field>
+            <field name="height">12</field>
             <field name="weight_capacity">60.0</field>
-            <field name="base_rate_monthly">18.00</field>
-            <field name="base_rate_yearly">198.00</field>
-            <field name="retrieval_fee">28.00</field>
-            <field name="security_features">Acid-free materials, archival quality</field>
+            <field name="standard_rate">18.00</field>
+            <field name="handling_fee">28.00</field>
             <field name="state">active</field>
         </record>
 
@@ -136,12 +140,12 @@
             <field name="description">Legal size archive box for long-term legal document storage</field>
             <field name="active">True</field>
             <field name="dimensions">18x12x12</field>
-            <field name="cubic_feet">1.50</field>
+            <field name="length">18</field>
+            <field name="width">12</field>
+            <field name="height">12</field>
             <field name="weight_capacity">60.0</field>
-            <field name="base_rate_monthly">20.00</field>
-            <field name="base_rate_yearly">220.00</field>
-            <field name="retrieval_fee">28.00</field>
-            <field name="security_features">Acid-free materials, legal size format</field>
+            <field name="standard_rate">20.00</field>
+            <field name="handling_fee">28.00</field>
             <field name="state">active</field>
         </record>
 
@@ -152,12 +156,12 @@
             <field name="description">Specialized container for digital media, tapes, and electronic storage</field>
             <field name="active">True</field>
             <field name="dimensions">14x11x8</field>
-            <field name="cubic_feet">0.89</field>
+            <field name="length">14</field>
+            <field name="width">11</field>
+            <field name="height">8</field>
             <field name="weight_capacity">30.0</field>
-            <field name="base_rate_monthly">12.00</field>
-            <field name="base_rate_yearly">132.00</field>
-            <field name="retrieval_fee">20.00</field>
-            <field name="security_features">ESD protection, climate controlled requirements</field>
+            <field name="standard_rate">12.00</field>
+            <field name="handling_fee">20.00</field>
             <field name="state">active</field>
         </record>
 
@@ -167,12 +171,12 @@
             <field name="description">Emergency access container for critical documents requiring immediate retrieval</field>
             <field name="active">True</field>
             <field name="dimensions">12x15x10</field>
-            <field name="cubic_feet">1.25</field>
+            <field name="length">12</field>
+            <field name="width">15</field>
+            <field name="height">10</field>
             <field name="weight_capacity">50.0</field>
-            <field name="base_rate_monthly">30.00</field>
-            <field name="base_rate_yearly">330.00</field>
-            <field name="retrieval_fee">40.00</field>
-            <field name="security_features">24/7 access capability, priority retrieval</field>
+            <field name="standard_rate">30.00</field>
+            <field name="handling_fee">40.00</field>
             <field name="state">active</field>
         </record>
 
