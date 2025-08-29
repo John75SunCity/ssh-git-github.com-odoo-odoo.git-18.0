@@ -176,5 +176,16 @@
                 'logistics_efficiency': 'Cost per LOAD sequence'
             }</field>
         </record>
+
+        <!-- Temporary Inventory Sequence -->
+        <record id="seq_temp_inventory" model="ir.sequence">
+            <field name="name">Temporary Inventory</field>
+            <field name="code">temp.inventory</field>
+            <field name="prefix">TI</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>
