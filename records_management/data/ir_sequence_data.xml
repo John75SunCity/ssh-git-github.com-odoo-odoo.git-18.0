@@ -68,7 +68,6 @@
         <record id="seq_shredding_bin_barcode" model="ir.sequence">
             <field name="name">Shredding Bin Barcode Sequence (Legacy)</field>
             <field name="code">shredding.bin.barcode</field>
-            <field name="prefix"></field>
             <field name="padding">10</field>
             <field name="company_id" eval="False"/>
             <field name="active">False</field>
