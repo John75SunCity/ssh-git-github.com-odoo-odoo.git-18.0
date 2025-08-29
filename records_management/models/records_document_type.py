@@ -1,10 +1,8 @@
 import logging
-from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.tools import float_compare
 
 _logger = logging.getLogger(__name__)
 

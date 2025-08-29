@@ -12,8 +12,8 @@ License: LGPL-3
 """
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-from datetime import date, timedelta
+from odoo.exceptions import ValidationError
+from datetime import timedelta
 
 
 class BarcodePricingTier(models.Model):

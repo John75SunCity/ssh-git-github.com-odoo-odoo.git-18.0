@@ -6,7 +6,7 @@ Permanent record of bin issues for tracking, analytics, and compliance.
 This model was moved from wizard file to proper models directory.
 """
 
-from odoo import models, fields, api, _
+from odoo import models, fields, _
 from odoo.exceptions import UserError
 
 

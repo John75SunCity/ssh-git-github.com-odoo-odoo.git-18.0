@@ -1,5 +1,5 @@
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import ValidationError
 
 class TestRecordsLocation(TransactionCase):
 

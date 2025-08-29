@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models, _
+from odoo import fields, models
 
 class RecordsRequestLine(models.Model):
     _name = 'records.request.line'

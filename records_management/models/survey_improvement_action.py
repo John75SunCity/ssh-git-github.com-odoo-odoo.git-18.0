@@ -1,5 +1,4 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
 
 class SurveyImprovementAction(models.Model):
     _name = 'survey.improvement.action'

@@ -9,7 +9,7 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
+from odoo import models, fields, _
 from odoo.exceptions import UserError
 
 class CustomerInventoryReportWizard(models.TransientModel):

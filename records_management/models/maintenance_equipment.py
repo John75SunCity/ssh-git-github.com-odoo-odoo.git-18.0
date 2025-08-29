@@ -1,5 +1,5 @@
 import logging
-from odoo import models, fields, api, _
+from odoo import models, fields, api
 
 class MaintenanceEquipment(models.Model):
     _name = 'maintenance.equipment'

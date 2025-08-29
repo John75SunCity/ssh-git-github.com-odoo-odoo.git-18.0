@@ -7,8 +7,7 @@ It includes mobile-specific features, offline capabilities, and enhanced mobile 
 """
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class MobileFsmIntegration(models.Model):

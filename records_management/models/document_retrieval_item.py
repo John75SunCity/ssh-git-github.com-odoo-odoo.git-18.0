@@ -2,7 +2,7 @@
 # Keep for migration purposes only
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import UserError
 
 
 class DocumentRetrievalItem(models.Model):

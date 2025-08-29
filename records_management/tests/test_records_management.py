@@ -11,8 +11,6 @@ except ImportError:
     AccessError = Exception
     UserError = Exception
 
-from datetime import datetime, date
-from unittest.mock import patch, MagicMock
 
 
 class TestRecordsManagement(TransactionCase):

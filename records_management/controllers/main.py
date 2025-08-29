@@ -72,7 +72,7 @@ class RecordsManagementController(http.Controller):
 
             return request.render(template, dashboard_data)
 
-        except AccessError as e:
+        except AccessError:
             return request.redirect('/web/login?redirect=/records/dashboard')
         except Exception as e:
             return request.render('records_management.dashboard_error', {

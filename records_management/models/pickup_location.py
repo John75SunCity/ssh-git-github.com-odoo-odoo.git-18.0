@@ -1,4 +1,4 @@
-from odoo import models, fields, api, _
+from odoo import models, fields, api
 
 class PickupLocation(models.Model):
     _name = 'pickup.location'

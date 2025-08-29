@@ -1,6 +1,5 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-from datetime import timedelta
 
 class RecordsContainerMovement(models.Model):
     _name = 'records.container.movement'

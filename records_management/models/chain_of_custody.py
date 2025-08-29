@@ -6,7 +6,7 @@ from creation through destruction, ensuring full NAID AAA compliance.
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 
 _logger = logging.getLogger(__name__)

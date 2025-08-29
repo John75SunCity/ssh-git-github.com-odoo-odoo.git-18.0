@@ -1,12 +1,10 @@
-import os
-import traceback
 try:
     import psutil
 except ImportError:
     psutil = None
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 class ProcessingLog(models.Model):
     _name = 'processing.log'

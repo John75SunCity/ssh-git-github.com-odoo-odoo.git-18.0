@@ -19,7 +19,7 @@ from odoo.http import request
 
 from odoo import http, fields, _
 
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import ValidationError
 
 
 

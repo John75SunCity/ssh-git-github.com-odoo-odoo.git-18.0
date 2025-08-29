@@ -1,8 +1,7 @@
 import time
 import hashlib
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.exceptions import ValidationError
 
 
 class RecordsChainOfCustody(models.Model):

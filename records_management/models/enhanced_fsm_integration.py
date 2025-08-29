@@ -7,8 +7,7 @@ It works with or without the industry_fsm module and provides comprehensive FSM 
 """
 
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class EnhancedFsmIntegration(models.Model):

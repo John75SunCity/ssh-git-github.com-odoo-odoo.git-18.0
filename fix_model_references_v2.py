@@ -3,7 +3,6 @@
 Fix model references in XML files after removing model_external_ids.xml
 """
 import re
-import os
 import glob
 
 def find_all_models():

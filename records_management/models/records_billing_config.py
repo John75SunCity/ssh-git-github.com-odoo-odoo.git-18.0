@@ -9,7 +9,6 @@ billing workflows.
 
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from datetime import datetime, timedelta
 
 
 class RecordsBillingConfig(models.Model):

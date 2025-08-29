@@ -1,6 +1,5 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import datetime, timedelta
 
 class FileRetrievalItem(models.Model):
     _name = 'file.retrieval.item'

@@ -15,7 +15,6 @@ License: LGPL-3
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import datetime, timedelta
 import logging
 
 _logger = logging.getLogger(__name__)

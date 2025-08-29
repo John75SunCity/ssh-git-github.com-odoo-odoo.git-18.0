@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields
 
 class InventoryItemRetrievalLine(models.Model):
     _name = 'inventory.item.retrieval.line'

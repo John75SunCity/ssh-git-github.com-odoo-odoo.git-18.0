@@ -1,6 +1,6 @@
 from datetime import timedelta
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import ValidationError
 
 
 class RecordsInventoryDashboard(models.Model):

@@ -1,4 +1,4 @@
-from odoo import models, fields, api, _
+from odoo import models, fields
 
 class InventoryAdjustmentReason(models.Model):
     _name = 'inventory.adjustment.reason'

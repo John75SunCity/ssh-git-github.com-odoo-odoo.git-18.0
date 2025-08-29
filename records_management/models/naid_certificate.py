@@ -1,7 +1,4 @@
 import base64
-import hashlib
-import re
-from datetime import datetime, timedelta
 import logging
 
 from odoo import models, fields, api, _

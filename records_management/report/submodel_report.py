@@ -5,7 +5,7 @@ Revenue Forecast Report
 Comprehensive revenue forecasting report with variance analysis.
 """
 
-from odoo import models, api, fields
+from odoo import models, api
 
 
 class RevenueforecastReport(models.AbstractModel):

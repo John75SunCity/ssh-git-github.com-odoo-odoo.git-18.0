@@ -5,7 +5,6 @@ Provides detailed analysis of model structure, relationships, and dependencies
 """
 
 import os
-import re
 import ast
 import sys
 from collections import defaultdict, Counter
@@ -171,7 +170,7 @@ class OdooModelAnalyzer:
         total_fields = sum(field_patterns.values())
         for field_type, count in field_patterns.items():
             percentage = (count / total_fields * 100) if total_fields > 0 else 0
-            print(".1f")
+            print(f"  {field_type}: {count} ({percentage:.1f}%)")
 
         # Model complexity analysis
         print("\n📈 Model Complexity:")

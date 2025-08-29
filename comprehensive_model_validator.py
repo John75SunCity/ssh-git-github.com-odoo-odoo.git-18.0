@@ -363,7 +363,7 @@ class RecordsManagementValidator:
             if len(self.results['imports_validated']) < total_models:
                 print("  - Add missing imports to models/__init__.py")
 
-        print(f"\n📋 DETAILED RESULTS SAVED TO: validation_results.json")
+        print("\n📋 DETAILED RESULTS SAVED TO: validation_results.json")
 
         # Save detailed results
         with open('validation_results.json', 'w') as f:

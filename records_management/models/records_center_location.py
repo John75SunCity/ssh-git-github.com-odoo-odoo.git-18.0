@@ -1,4 +1,4 @@
-from odoo import models, fields, api, _
+from odoo import models, fields
 
 class RecordsCenterLocation(models.Model):
     _name = 'records.center.location'

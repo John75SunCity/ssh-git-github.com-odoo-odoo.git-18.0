@@ -3,7 +3,7 @@
 Records Location Report Wizard
 """
 
-from odoo import models, fields, api, _
+from odoo import models, fields
 
 
 

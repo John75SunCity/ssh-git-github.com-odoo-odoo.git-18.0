@@ -17,7 +17,7 @@ import logging
 # Odoo core imports
 from odoo import http, _
 from odoo.http import request
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import AccessError
 
 # Odoo addons imports
 from odoo.addons.portal.controllers.portal import CustomerPortal

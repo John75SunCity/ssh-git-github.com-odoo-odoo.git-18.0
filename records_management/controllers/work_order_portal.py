@@ -23,7 +23,6 @@ License: LGPL-3
 """
 
 # Standard library imports
-from datetime import datetime
 
 # Odoo core imports
 from odoo import http, _

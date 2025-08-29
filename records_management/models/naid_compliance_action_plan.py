@@ -1,6 +1,5 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-from datetime import date
 
 class NaidComplianceActionPlan(models.Model):
     _name = 'naid.compliance.action.plan'

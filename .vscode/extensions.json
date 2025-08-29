@@ -1,47 +1,104 @@
 {
     "recommendations": [
         // === ESSENTIAL ODOO EXTENSIONS ===
-        "trinhnguyen.copilot-chat-for-odoo",
-        "odoo-ide.odoo-code",
-        "odoo-ide.odoo-code-snippets",
-        "odoo-ide.odoo-model-snippets",
-        "odoo-ide.odoo-view-snippets",
-        "odoo-ide.odoo-controller-snippets",
-        "odoo-ide.odoo-security-snippets",
+        "trinhanhngoc.odoo",
+        "trinhanhngoc.odoo-shortcuts",
+        "trinhanhngoc.odoo-xml-formatter",
+        "mvintg.odoo-file",
 
-        // === DEVELOPMENT TOOLS ===
-        "ms-vscode.vscode-json",
-        "redhat.vscode-xml",
+        // === MODERN PYTHON DEVELOPMENT ===
         "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.isort",
         "ms-python.pylint",
-        "ms-vscode.vscode-typescript-next",
-        "esbenp.prettier-vscode",
+        "ms-python.mypy-type-checker",
+        "ms-python.debugpy",
+        "ms-python.pytest",
 
-        // === AI & PRODUCTIVITY ===
-        "github.copilot",
-        "github.copilot-chat",
+        // === RUFF - FAST MODERN LINTER ===
+        "charliermarsh.ruff",
+
+        // === CODE FORMATTING ===
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+
+        // === TESTING & COVERAGE ===
+        "ryanluker.vscode-coverage-gutters",
+
+        // === SECURITY ===
+        "ms-python.bandit",
+
+        // === GIT INTEGRATION ===
+        "ms-vscode.vscode-git-graph",
+        "mhutchie.git-graph",
+        "donjayamanne.git-extension-pack",
+
+        // === AI ASSISTANCE ===
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
         "ms-vscode.vscode-websearchforcopilot",
         "ndestates.grok-integration",
         "visualstudioexptteam.vscodeintellicode",
 
-        // === VERSION CONTROL & QUALITY ===
-        "ms-vscode.vscode-git-graph",
-        "gruntfuggly.todo-tree",
-        "ms-vscode.vscode-eslint",
-        "streetsidesoftware.code-spell-checker",
+        // === PRODUCTIVITY ===
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.path-intellisense",
+        "ms-vscode.vscode-css-peek",
 
-        // === CONTAINER & DEPLOYMENT ===
+        // === DATABASE TOOLS ===
+        "ms-mssql.mssql",
+        "ms-ossdata.vscode-postgresql",
+
+        // === DOCKER SUPPORT ===
         "ms-azuretools.vscode-docker",
         "ms-vscode-remote.remote-containers",
 
-        // === LEGACY SUPPORT ===
-        "mvintg.odoo-file"
+        // === THEME & ICONS ===
+        "ms-vscode.vscode-icons",
+        "ms-vscode.vscode-theme-seti",
+        "dracula-theme.theme-dracula",
+
+        // === ADDITIONAL UTILITIES ===
+        "ms-vscode.vscode-todo-highlight",
+        "gruntfuggly.todo-tree",
+        "streetsidesoftware.code-spell-checker",
+        "ms-vscode.vscode-markdownlint",
+        "DavidAnson.vscode-markdownlint",
+        "yzhang.markdown-all-in-one",
+
+        // === XML TOOLS ===
+        "DotJoshJohnson.xml",
+        "redhat.vscode-xml",
+
+        // === ENVIRONMENT MANAGEMENT ===
+        "ms-vscode.vscode-env",
+        "ms-python.vscode-pylance",
+
+        // === PERFORMANCE & DEBUGGING ===
+        "ms-vscode.vscode-performance-monitor",
+        "ms-vscode.vscode-js-profile-flame",
+
+        // === COLLABORATION ===
+        "ms-vsliveshare.vsliveshare",
+        "ms-vsliveshare.vsliveshare-audio"
     ],
     "unwantedRecommendations": [
-        "ms-python.black-formatter",
-        "ms-python.autopep8",
-        "ms-python.yapf",
-        "ms-python.flake8",
-        "ms-python.pycodestyle"
+        "ms-python.python",
+        "ms-vscode.vscode-typescript",
+        "ms-vscode.vscode-css",
+        "ms-vscode.vscode-html",
+        "ms-vscode.vscode-json",
+        "ms-vscode.vscode-yaml",
+        "ms-vscode.vscode-markdown",
+        "ms-vscode.vscode-xml",
+        "ms-vscode.vscode-docker",
+        "ms-vscode.vscode-git-graph",
+        "ms-vscode.vscode-icons",
+        "ms-vscode.vscode-todo-highlight",
+        "ms-vscode.vscode-performance-monitor",
+        "ms-vsliveshare.vsliveshare"
     ]
 }

@@ -1,112 +1,16 @@
 {
     "github.copilot.advanced.instructionsFile": ".github/copilot-instructions.md",
     "grok.integration.instructionsFile": ".github/copilot-instructions.md",
+    "github.copilot.selectedCompletionModel": "Grok Code Fast 1",
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "github.copilot.chat.codesearch.enabled": true,
+    "github.copilot.chat.agent.thinkingTool": true,
+    "github.copilot.chat.edits.temporalContext.enabled": true,
+    "github.copilot.chat.enableRetryAfterFilteredResponse": true,
     "odoo.selectedProfile": "",
     "odoo.serverLogLevel": "error",
     "odooServer.trace.server": "off",
     "odoo.disablePythonLanguageServerPopup": true,
-
-    // === PYTHON ANALYSIS SETTINGS ===
-    "python.analysis.disabled": [
-        "reportMissingImports",
-        "reportMissingModuleSource",
-        "reportAttributeAccessIssue",
-        "reportUnusedImport",
-        "reportUnusedVariable",
-        "reportUndefinedVariable",
-        "reportGeneralTypeIssues",
-        "reportOptionalMemberAccess",
-        "reportOptionalSubscript",
-        "reportUnknownMemberType",
-        "reportUnknownArgumentType",
-        "reportUnknownParameterType",
-        "reportUnknownVariableType",
-        "reportUnknownLambdaType",
-        "reportIncompatibleMethodOverride",
-        "reportIncompatibleVariableOverride",
-        "reportInconsistentConstructor",
-        "reportOverlappingOverload",
-        "reportMissingSuperCall",
-        "reportUninitializedInstanceVariable",
-        "reportSelfClsParameterName",
-        "reportImplicitStringConcatenation",
-        "reportUnnecessaryIsInstance",
-        "reportUnnecessaryCast",
-        "reportAssertAlwaysTrue",
-        "reportConstantRedefinition",
-        "reportFunctionMemberAccess",
-        "reportInvalidStringEscapeSequence",
-        "reportUnknownParameterType",
-        "reportMissingTypeArgument",
-        "reportInvalidTypeVarUse",
-        "reportCallInDefaultInitializer",
-        "reportUnnecessaryComparison",
-        "reportUnnecessaryContains",
-        "reportImplicitOverride",
-        "reportShadowedImports"
-    ],
-
-    // === PYLANCE SPECIFIC SETTINGS ===
-    "python.analysis.typeCheckingMode": "off",
-    "python.analysis.autoSearchPaths": true,
-    "python.analysis.diagnosticMode": "workspace",
-    "python.analysis.stubPath": "./typings",
-    "python.analysis.extraPaths": [
-        "/home/odoo/src/odoo",
-        "/home/odoo/src/user",
-        "./records_management",
-        "./records_management_fsm",
-        "./addons",
-        "./typings"
-    ],
-
-    // === ODOO-SPECIFIC PYLSP SETTINGS ===
-    "pylsp.plugins.pylint.enabled": false,
-    "pylsp.plugins.flake8.enabled": false,
-    "pylsp.plugins.pycodestyle.enabled": false,
-    "pylsp.plugins.pydocstyle.enabled": false,
-    "pylsp.plugins.mccabe.enabled": false,
-    "pylsp.plugins.pyflakes.enabled": false,
-    "pylsp.configurationSources": [],
-
-    // === PROBLEM MATCHER IGNORE PATTERNS ===
-    "problems.showCurrentInStatus": false,
-
-    // === SPECIFIC ODOO ERROR SUPPRESSION ===
-    "python.analysis.diagnosticSeverityOverrides": {
-        "reportMissingImports": "none",
-        "reportMissingModuleSource": "none",
-        "reportUnknownMemberType": "none",
-        "reportUnknownArgumentType": "none",
-        "reportUnknownParameterType": "none",
-        "reportGeneralTypeIssues": "none",
-        "reportOptionalMemberAccess": "none",
-        "reportAttributeAccessIssue": "none",
-        "reportUnusedImport": "none",
-        "reportUnusedVariable": "none",
-        "reportUndefinedVariable": "none",
-        "reportOptionalSubscript": "none",
-        "reportUnknownVariableType": "none",
-        "reportIncompatibleMethodOverride": "none",
-        "reportInconsistentConstructor": "none",
-        "reportUninitializedInstanceVariable": "none",
-        "reportSelfClsParameterName": "none",
-        "reportImplicitStringConcatenation": "none",
-        "reportUnnecessaryIsInstance": "none",
-        "reportAssertAlwaysTrue": "none",
-        "reportConstantRedefinition": "none",
-        "reportFunctionMemberAccess": "none",
-        "reportInvalidStringEscapeSequence": "none",
-        "reportMissingTypeArgument": "none",
-        "reportCallInDefaultInitializer": "none",
-        "reportUnnecessaryComparison": "none",
-        "reportImplicitOverride": "none"
-    },
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true,
-    "python.languageServer": "None",
-
-    // === ODOO EXTENSION SETTINGS ===
     "odoo.addonsPath": "./records_management,./addons",
     "odoo.pythonPath": "./venv312/bin/python",
     "odoo.disableOdooExtensionWarnings": true,
@@ -119,101 +23,119 @@
     "odoo.disableSecurityWarnings": true,
     "odoo.disableWorkflowWarnings": true,
     "odoo.disableMethodWarnings": true,
-
-    // === ADDITIONAL WARNING SUPPRESSION ===
-    "python.analysis.logLevel": "Error",
-    "python.linting.ignorePatterns": [
-        "**/models/**/*.py",
-        "**/controllers/**/*.py",
-        "**/wizards/**/*.py",
-        "**/views/**/*.xml"
-    ],
-
-    // === PYLINT CONFIGURATION ===
-    "python.linting.pylintArgs": [
-        "--rcfile=.pylintrc",
-        "--disable=import-error,no-name-in-module,no-member,unused-import,unused-variable,missing-docstring,line-too-long,too-many-locals,too-many-arguments,too-few-public-methods,too-many-instance-attributes,consider-using-f-string,consider-using-with,broad-except,unused-argument,redefined-outer-name,invalid-name,pointless-statement,fixme,logging-format-interpolation,consider-using-ternary,useless-object-inheritance,super-with-arguments,chained-comparison,literal-comparison,comparison-with-callable,singleton-comparison,unidiomatic-typecheck,consider-using-in,len-as-condition,unneeded-not,simplifiable-if-expression,consider-using-get,consider-iterating-dictionary,unnecessary-comprehension,consider-using-enumerate,consider-using-dict-items,unnecessary-lambda,unnecessary-lambda-assignment",
-        "--extension-pkg-whitelist=odoo",
-        "--init-hook=import sys; sys.path.append('./records_management'); sys.path.append('./addons')"
-    ],
-    "python.testing.unittestArgs": [
-        "-v",
-        "-s",
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.stubPath": "./typings",
+    "python.analysis.extraPaths": [
+        "/home/odoo/src/odoo",
+        "/home/odoo/src/user",
         "./records_management",
-        "-p",
-        "*test.py"
+        "./records_management_fsm",
+        "./addons",
+        "./typings"
     ],
-    "python.testing.pytestEnabled": false,
-    "python.testing.unittestEnabled": true,
-
-    // === FORMATTER PROTECTION FOR ODOO ===
-    "python.formatting.provider": "none",
-    "python.formatting.autopep8Args": [],
-    "python.formatting.blackArgs": [],
-    "python.formatting.yapfArgs": [],
-    // === PYTHON INTERPRETER SETTINGS ===
-    "python.defaultInterpreterPath": "./venv312/bin/python",
-    "python.pythonPath": "./venv312/bin/python",
-
-    // === DISABLE ALL AUTO-FORMATTERS ===
-    "autopep8.args": ["--disable"],
-    "black-formatter.args": ["--check", "--diff"],
-    "yapf.args": ["--diff"],
-    "ruff.format.args": ["--check", "--diff"],
-    "python.analysis.autoFormatStrings": false,
-    "python.analysis.autoImportCompletions": false,
-
-    // === AUTO-SAVE AND FORMATTING CONTROL ===
-    "editor.formatOnSave": false,
-    "editor.formatOnPaste": false,
+    "ruff.enable": true,
+    "ruff.organizeImports": true,
+    "ruff.fixAll": true,
+    "ruff.lint.run": "onType",
+    "ruff.format.args": [],
+    "ruff.lint.args": [],
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": ["--line-length", "120"],
+    "black-formatter.args": ["--line-length", "120"],
+    "isort.args": ["--profile", "black", "--line-length", "120"],
+    "python.sortImports.args": ["--profile", "black", "--line-length", "120"],
+    "python.linting.mypyEnabled": true,
+    "python.linting.mypyArgs": [
+        "--python-version", "3.12",
+        "--ignore-missing-imports",
+        "--no-strict-optional"
+    ],
+    "python.linting.banditEnabled": true,
+    "python.linting.banditArgs": ["-c", "pyproject.toml"],
+    "python.linting.enabled": true,
+    "python.linting.lintOnSave": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
     "editor.formatOnType": false,
     "editor.codeActionsOnSave": {
-        "source.organizeImports": "never",
+        "source.organizeImports": "explicit",
+        "source.fixAll.ruff": "explicit",
         "source.fixAll": "never"
     },
-
-    // === COMPREHENSIVE FORMATTER DISABLE ===
-    "editor.defaultFormatter": null,
-    "workbench.editor.enablePreview": true,
-    "diffEditor.ignoreTrimWhitespace": true,
-    "diffEditor.renderSideBySide": true,
-
-    // === DISABLE ALL POSSIBLE AUTO-FORMATTERS ===
-    "python.terminal.activateEnvironment": false,
-    "python.terminal.executeInFileDir": false,
-
-    // === ADDITIONAL FORMATTER PROTECTION ===
-    "python.formatting.blackPath": "",
-    "python.formatting.autopep8Path": "",
-    "python.formatting.yapfPath": "",
-    "python.linting.flake8Enabled": false,
-    "python.linting.pycodestyleEnabled": false,
-    "python.linting.prospectorEnabled": false,
-    "python.linting.pydocstyleEnabled": false,
-
-    // === ODOO-SPECIFIC INDENTATION ===
     "[python]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
         "editor.detectIndentation": false,
-        "editor.formatOnSave": false,
-        "editor.formatOnPaste": false,
-        "editor.formatOnType": false,
-        "editor.autoIndent": "keep",
-        "editor.trimAutoWhitespace": false
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll.ruff": "explicit"
+        }
     },
-
-    // === XML FORMATTING FOR ODOO VIEWS ===
     "[xml]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
         "editor.detectIndentation": false,
-        "editor.formatOnSave": false,
-        "editor.formatOnPaste": false,
-        "editor.autoIndent": "keep"
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-
-    // === ODOO SHORTCUTS EXTENSION ===
+    "[json]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[yaml]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[markdown]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "files.associations": {
+        "*.py": "python",
+        "*.xml": "xml",
+        "*.csv": "plaintext",
+        "*.js": "javascript",
+        "*.ts": "typescript",
+        "*.json": "json",
+        "*.yaml": "yaml",
+        "*.yml": "yaml",
+        "*.md": "markdown"
+    },
+    "files.autoSave": "onFocusChange",
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true,
+    "security.workspace.trust.enabled": true,
+    "problems.showCurrentInStatus": true,
+    "problems.decorations.enabled": true,
+    "editor.renderValidationDecorations": "editableOnly",
+    "git.autofetch": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "terminal.integrated.shell.osx": "/bin/zsh",
+    "terminal.integrated.env.osx": {
+        "PYTHONPATH": "${workspaceFolder}/records_management:${workspaceFolder}/addons"
+    },
+    "python.defaultInterpreterPath": "./venv312/bin/python",
+    "python.pythonPath": "./venv312/bin/python",
+    "extensions.ignoreRecommendations": false,
+    "extensions.showRecommendationsOnlyOnDemand": false,
     "odoo-shortcuts.openFiles": true,
     "odoo-shortcuts.sites": [
         {
@@ -237,36 +159,110 @@
             "url": "https://github.com/John75SunCity/ssh-git-github.com-odoo-odoo.git-18.0"
         }
     ],
-
-    // === FILE ASSOCIATIONS ===
-    "files.associations": {
-        "*.py": "python",
-        "*.xml": "xml",
-        "*.csv": "plaintext"
-    },
-
-    // === WORKSPACE SPECIFIC OVERRIDES ===
     "workbench.colorCustomizations": {
-        "editorError.foreground": "#ff0000",
-        "editorWarning.foreground": "#00000000",
-        "editorInfo.foreground": "#00000000"
+        "editorError.foreground": "#ff6b6b",
+        "editorWarning.foreground": "#ffd93d",
+        "editorInfo.foreground": "#4ecdc4",
+        "editorHint.foreground": "#a8e6cf"
     },
-
-    // === NOTIFICATION CONTROL ===
-    "problems.decorations.enabled": false,
-    "editor.renderValidationDecorations": "off",
-
-    // === AUTO-SAVE PROTECTION ===
-    "files.autoSave": "onFocusChange",
-    "files.trimTrailingWhitespace": false,
-    "files.trimFinalNewlines": false,
-    "files.insertFinalNewline": false,
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/venv": true,
+        "**/venv312": true,
+        "**/__pycache__": true,
+        "**/.mypy_cache": true,
+        "**/.pytest_cache": true,
+        "**/development-tools": true,
+        "**/testing-workspace": true,
+        "**/backup": true,
+        "**/*.pyc": true,
+        "**/.git": true,
+        "**/.vscode": true
+    },
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.mypy_cache": true,
+        "**/.pytest_cache": true,
+        "**/*.pyc": true,
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true
+    },
+    "git.enableCommitSigning": false,
+    "git.alwaysSignOff": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestArgs": [
+        "records_management",
+        "-v",
+        "--tb=short",
+        "--strict-markers"
+    ],
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./records_management",
+        "-p",
+        "*test*.py"
+    ],
+    "coverage-gutters.showLineRate": true,
+    "coverage-gutters.showRuler": true,
+    "coverage-gutters.showGutter": true,
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "information",
+        "reportMissingModuleSource": "information",
+        "reportUnknownMemberType": "information",
+        "reportUnknownArgumentType": "information",
+        "reportUnknownParameterType": "information",
+        "reportGeneralTypeIssues": "information",
+        "reportOptionalMemberAccess": "information",
+        "reportAttributeAccessIssue": "information",
+        "reportUnusedImport": "information",
+        "reportUnusedVariable": "information",
+        "reportUndefinedVariable": "information",
+        "reportOptionalSubscript": "information",
+        "reportUnknownVariableType": "information",
+        "reportIncompatibleMethodOverride": "information",
+        "reportInconsistentConstructor": "information",
+        "reportUninitializedInstanceVariable": "information",
+        "reportSelfClsParameterName": "information",
+        "reportImplicitStringConcatenation": "information",
+        "reportUnnecessaryIsInstance": "information",
+        "reportAssertAlwaysTrue": "information",
+        "reportConstantRedefinition": "information",
+        "reportFunctionMemberAccess": "information",
+        "reportInvalidStringEscapeSequence": "information",
+        "reportMissingTypeArgument": "information",
+        "reportCallInDefaultInitializer": "information",
+        "reportUnnecessaryComparison": "information",
+        "reportImplicitOverride": "information"
+    },
+    "notifications.enabled": true,
+    "notifications.showWarnings": true,
+    "notifications.showErrors": true,
+    "editor.largeFileOptimizations": true,
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/**": true,
+        "**/__pycache__/**": true,
+        "**/.mypy_cache/**": true,
+        "**/.pytest_cache/**": true,
+        "**/venv/**": true,
+        "**/venv312/**": true
+    },
+    "task.allowAutomaticTasks": "on",
+    "task.quickOpen.detail": true,
+    "task.quickOpen.skip": false,
     "Odoo.selectedProfile": "default",
-    "github.copilot.selectedCompletionModel": "Grok Code Fast 1",
-    "github.copilot.nextEditSuggestions.enabled": true,
-    "github.copilot.chat.codesearch.enabled": true,
-    "github.copilot.chat.agent.thinkingTool": true,
-    "github.copilot.chat.edits.temporalContext.enabled": true,
-    "github.copilot.chat.enableRetryAfterFilteredResponse": true,
-    "github.copilot.chat.languageContext.typescript.cacheTimeout": 1000
+    "editor.minimap.enabled": true,
+    "editor.renderWhitespace": "boundary",
+    "editor.renderControlCharacters": false,
+    "editor.wordWrap": "off",
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": true,
+    "editor.guides.bracketPairsHorizontal": true,
+    "editor.guides.highlightActiveBracketPair": true,
+    "editor.guides.highlightActiveIndentation": true,
+    "editor.guides.indentation": true
 }
