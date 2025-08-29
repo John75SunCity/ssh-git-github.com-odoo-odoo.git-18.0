@@ -41,6 +41,9 @@ class FsmOrder(models.Model):
     # ============================================================================
     container_ids = fields.Many2many(
         comodel_name='records.container',
+        relation='fsm_task_records_container_rel',
+        column1='task_id',
+        column2='container_id',
         string="Containers for Service"
     )
     container_count = fields.Integer(
