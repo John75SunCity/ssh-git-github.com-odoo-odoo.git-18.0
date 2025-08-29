@@ -10,9 +10,10 @@
         </record>
 
         <!-- Certificate Templates (Production Configuration) -->
-        <record id="naid_destruction_template" model="naid.certificate.template">
+        <record id="naid_destruction_template" model="certificate.template.data">
             <field name="name">Standard Destruction Certificate</field>
-            <field name="template_content">
+            <field name="template_type">destruction</field>
+            <field name="body_template">
                 <![CDATA[
                 CERTIFICATE OF DESTRUCTION
 
@@ -32,9 +33,10 @@
             </field>
         </record>
 
-        <record id="naid_transport_template" model="naid.certificate.template">
+        <record id="naid_transport_template" model="certificate.template.data">
             <field name="name">Chain of Custody Certificate Template</field>
-            <field name="template_content">
+            <field name="template_type">compliance</field>
+            <field name="body_template">
                 <![CDATA[
                 CHAIN OF CUSTODY CERTIFICATE
 
@@ -52,23 +54,6 @@
                 Date: ${certificate.issue_date}
                 ]]>
             </field>
-        </record>
-
-        <!-- NAID Certificate Types (Production Configuration) -->
-        <record id="naid_cert_type_destruction" model="naid.certificate.type">
-            <field name="name">Certificate of Destruction</field>
-            <field name="code">COD</field>
-            <field name="description">Official certificate verifying secure destruction of documents</field>
-            <field name="requires_witness">True</field>
-            <field name="template_id" ref="naid_destruction_template"/>
-        </record>
-
-        <record id="naid_cert_type_transport" model="naid.certificate.type">
-            <field name="name">Chain of Custody Certificate</field>
-            <field name="code">COC</field>
-            <field name="description">Certificate tracking document chain of custody</field>
-            <field name="requires_witness">False</field>
-            <field name="template_id" ref="naid_transport_template"/>
         </record>
 
         <!-- Default NAID Compliance Settings -->
@@ -90,8 +75,8 @@
         <!-- Email Template for Certificate Notifications -->
         <record id="email_template_naid_certificate" model="mail.template">
             <field name="name">NAID Certificate Issued</field>
-            <field name="model_id" ref="records_management.model_naid_certificate"/>
-            <field name="subject">NAID Certificate ${object.number} - ${object.certificate_type_id.name}</field>
+            <field name="model_id" ref="model_naid_certificate"/>
+            <field name="subject">NAID AAA Certificate ${object.certificate_number}</field>
             <field name="email_from">${(object.company_id.email or user.email)|safe}</field>
             <field name="email_to">${object.partner_id.email}</field>
             <field name="body_html">
@@ -99,16 +84,15 @@
                 <div style="margin: 0px; padding: 0px;">
                     <p>Dear ${object.partner_id.name},</p>
 
-                    <p>Your NAID Certificate has been issued:</p>
+                    <p>Your NAID AAA Certificate has been issued:</p>
 
                     <ul>
-                        <li><strong>Certificate Number:</strong> ${object.number}</li>
-                        <li><strong>Type:</strong> ${object.certificate_type_id.name}</li>
+                        <li><strong>Certificate Number:</strong> ${object.certificate_number}</li>
                         <li><strong>Issue Date:</strong> ${object.issue_date}</li>
-                        <li><strong>Compliance Level:</strong> ${object.compliance_level.upper()}</li>
+                        <li><strong>Compliance Level:</strong> NAID AAA</li>
                     </ul>
 
-                    <p>This certificate verifies compliance with NAID standards for secure document handling and destruction.</p>
+                    <p>This certificate verifies compliance with NAID AAA standards for secure document handling and destruction.</p>
 
                     <p>For questions regarding this certificate, please contact us.</p>
 
