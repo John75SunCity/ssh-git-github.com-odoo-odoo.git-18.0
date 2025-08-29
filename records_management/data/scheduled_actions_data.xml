@@ -6,7 +6,7 @@
             <field name="name">Compute Monthly Storage Fees</field>
             <field name="model_id" ref="stock.model_stock_quant"/>
             <field name="state">code</field>
-            <field name="code">
+            <field name="code"><![CDATA[
 # Import required modules
 from datetime import datetime, timedelta
 
@@ -51,7 +51,7 @@ try:
         log(_('Monthly storage fees computed for %s customers') % len([c for c, q in customer_items.items() if q > 0]))
 except Exception as e:
     log(_('Error computing monthly storage fees: %s') % str(e))
-            </field>
+]]></field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
@@ -63,7 +63,7 @@ except Exception as e:
             <field name="name">Generate Monthly Customer Inventory Reports</field>
             <field name="model_id" ref="base.model_ir_cron"/>
             <field name="state">code</field>
-            <field name="code">
+            <field name="code"><![CDATA[
 # Import required modules
 from datetime import datetime, timedelta
 
@@ -77,7 +77,7 @@ try:
         log(_('Customer inventory report model not found. Skipping report generation.'))
 except Exception as e:
     log(_('Error generating monthly inventory reports: %s') % str(e))
-            </field>
+]]></field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
@@ -89,7 +89,7 @@ except Exception as e:
             <field name="name">Storage Fee Automation Workflow</field>
             <field name="model_id" ref="base.model_ir_cron"/>
             <field name="state">code</field>
-            <field name="code">
+            <field name="code"><![CDATA[
 # Import required modules
 from datetime import datetime, timedelta
 
@@ -100,7 +100,7 @@ try:
     log(_('Storage fee automation workflow completed successfully.'))
 except Exception as e:
     log(_('Error in storage fee automation workflow: %s') % str(e))
-            </field>
+]]></field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
@@ -112,7 +112,7 @@ except Exception as e:
             <field name="name">Monthly Inventory Report Automation</field>
             <field name="model_id" ref="base.model_ir_cron"/>
             <field name="state">code</field>
-            <field name="code">
+            <field name="code"><![CDATA[
 # Import required modules
 from datetime import datetime, timedelta
 
@@ -123,7 +123,7 @@ try:
     log(_('Inventory report automation documentation updated.'))
 except Exception as e:
     log(_('Error in monthly inventory report automation: %s') % str(e))
-            </field>
+]]></field>
             <field name="active">True</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
