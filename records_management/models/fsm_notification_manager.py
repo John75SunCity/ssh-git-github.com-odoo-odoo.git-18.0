@@ -65,7 +65,7 @@ class FsmNotificationManager(models.Model):
 
         if notification_type == 'appointment_reminder' and record:
             subject = _("Appointment Reminder for %s") % record.name
-            message = _("<p>This is a reminder for your upcoming service appointment for <strong>%s</strong> scheduled on %s.</p>") % (record.name, record.scheduled_date_start)
+            message = _("<p>This is a reminder for your upcoming service appointment for <strong>%s</strong> scheduled on %s.</p>") % (record.name, record.scheduled_start_time)
         elif notification_type == 'service_completion' and record:
             subject = _("Service Completed: %s") % record.name
             message = _("<p>Your service for <strong>%s</strong> has been successfully completed.</p>") % record.name

@@ -6,13 +6,31 @@
             <field name="model">fsm.reschedule.wizard</field>
             <field name="arch" type="xml">
                 <form string="Reschedule Task">
-                    <group>
-                        <field name="task_id" readonly="1"/>
-                        <field name="schedule_date"/>
-                        <field name="reschedule_reason"/>
-                    </group>
+                    <sheet>
+                        <group>
+                            <field name="task_id" readonly="1"/>
+                            <field name="current_scheduled_date_start" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="new_scheduled_date_start" required="1"/>
+                            <field name="new_scheduled_date_end" required="1"/>
+                        </group>
+                        <group>
+                            <field name="reschedule_reason" required="1"/>
+                            <field name="reason_details"/>
+                        </group>
+                        <group>
+                            <field name="notify_customer"/>
+                            <field name="customer_notification_message"
+                                   attrs="{'invisible': [('notify_customer', '=', False)]}"
+                                   placeholder="Custom message to send to customer..."/>
+                        </group>
+                        <group>
+                            <field name="internal_notes"/>
+                        </group>
+                    </sheet>
                     <footer>
-                        <button name="action_confirm_reschedule" string="Confirm" type="object" class="btn-primary"/>
+                        <button name="action_reschedule_task" string="Reschedule Task" type="object" class="btn-primary"/>
                         <button string="Cancel" class="btn-secondary" special="cancel"/>
                     </footer>
                 </form>

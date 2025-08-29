@@ -10,7 +10,7 @@ class FsmRescheduleWizard(models.TransientModel):
     # ============================================================================
     task_id = fields.Many2one('project.task', string='FSM Task', required=True, readonly=True)
 
-    current_scheduled_date_start = fields.Datetime(string="Current Start Time", related='task_id.scheduled_date_start', readonly=True)
+    current_scheduled_date_start = fields.Datetime(string="Current Start Time", related='task_id.scheduled_start_time', readonly=True)
 
     new_scheduled_date_start = fields.Datetime(string="New Scheduled Start Time", required=True)
     new_scheduled_date_end = fields.Datetime(string="New Scheduled End Time", required=True)
@@ -51,13 +51,13 @@ class FsmRescheduleWizard(models.TransientModel):
         """
         self.ensure_one()
 
-        original_date_str = self.task_id.scheduled_date_start.strftime('%Y-%m-%d %H:%M') if self.task_id.scheduled_date_start else _('N/A')
+        original_date_str = self.task_id.scheduled_start_time.strftime('%Y-%m-%d %H:%M') if self.task_id.scheduled_start_time else _('N/A')
         new_date_str = self.new_scheduled_date_start.strftime('%Y-%m-%d %H:%M')
 
         # Update the FSM task
         self.task_id.write({
-            'scheduled_date_start': self.new_scheduled_date_start,
-            'scheduled_date_end': self.new_scheduled_date_end,
+            'scheduled_start_time': self.new_scheduled_date_start,
+            'scheduled_end_time': self.new_scheduled_date_end,
         })
 
         # Post a message on the task's chatter

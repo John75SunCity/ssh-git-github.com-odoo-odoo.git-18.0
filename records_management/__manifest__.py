@@ -56,6 +56,8 @@
         "views/fleet_vehicle_enhanced_views.xml",
         "views/maintenance_request_views.xml",
         "views/mobile_fsm_integration_views.xml",
+        "views/fsm_reschedule_wizard_views.xml",
+        "views/fsm_notification_manager_views.xml",
         "views/naid_compliance_policy_views.xml",
         "views/naid_custody_views.xml",
         "views/pickup_route_views.xml",
