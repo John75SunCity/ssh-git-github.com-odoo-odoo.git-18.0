@@ -29,7 +29,7 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">high</field>
+            <field name="security_level">level_3</field>
             <field name="storage_capacity">10000</field>
         </record>
 
@@ -43,7 +43,7 @@
             <field name="active">True</field>
             <field name="temperature_controlled">False</field>
             <field name="humidity_controlled">False</field>
-            <field name="security_level">standard</field>
+            <field name="security_level">level_2</field>
             <field name="storage_capacity">20000</field>
         </record>
 
@@ -58,7 +58,7 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">high</field>
+            <field name="security_level">level_3</field>
             <field name="storage_capacity">15000</field>
         </record>
 
@@ -72,7 +72,7 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">high</field>
+            <field name="security_level">level_3</field>
             <field name="storage_capacity">50000</field>
         </record>
 
@@ -86,7 +86,7 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">restricted</field>
+            <field name="security_level">level_4</field>
             <field name="storage_capacity">5000</field>
         </record>
 
@@ -100,7 +100,7 @@
             <field name="active">True</field>
             <field name="temperature_controlled">True</field>
             <field name="humidity_controlled">True</field>
-            <field name="security_level">restricted</field>
+            <field name="security_level">level_4</field>
             <field name="storage_capacity">1000</field>
         </record>
 
