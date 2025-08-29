@@ -81,6 +81,7 @@ from . import records_location_report_wizard
 from . import survey_improvement_action
 from . import inventory_adjustment_reason
 from . import shredding_rate
+from . import naid_compliance_policy
 from . import naid_compliance_checklist_item
 from . import custody_transfer_event
 from . import container_access_visitor

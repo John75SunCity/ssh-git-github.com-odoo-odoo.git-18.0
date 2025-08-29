@@ -14,6 +14,9 @@ class NAIDComplianceChecklist(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
 
+    # Link to compliance policy
+    policy_id = fields.Many2one('naid.compliance.policy', string='Compliance Policy', ondelete='cascade')
+
     # Polymorphic relationship to link checklist to any record (e.g., work order, destruction request)
     res_model = fields.Char(string='Related Model', readonly=True)
     res_id = fields.Integer(string='Related Record ID', readonly=True)
