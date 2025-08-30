@@ -22,13 +22,13 @@ import logging
 from datetime import datetime, timedelta
 
 # Odoo core imports
-from odoo import http
-from odoo.http import request
+from odoo import http  # type: ignore
+from odoo.http import request  # type: ignore
 
 _logger = logging.getLogger(__name__)
 
 
-class RecordsManagementController(http.Controller):
+class RecordsManagementController(http.Controller):  # type: ignore
     """
     Main controller for Records Management dashboard and administrative operations.
     Provides comprehensive business intelligence and operational control interface.
@@ -38,14 +38,14 @@ class RecordsManagementController(http.Controller):
     # DASHBOARD ROUTES
     # ============================================================================
 
-    @http.route("/records/dashboard", type="http", auth="user", website=True)
+    @http.route("/records/dashboard", type="http", auth="user", website=True)  # type: ignore
     def records_dashboard(self):
         """
         Enhanced dashboard with comprehensive business intelligence.
         Provides real-time operational metrics and performance indicators.
         """
-        if not request.env.user.has_group('records_management.group_records_user'):
-            return request.redirect('/web/login?redirect=/records/dashboard')
+        if not request.env.user.has_group("records_management.group_records_user"):  # type: ignore
+            return request.redirect("/web/login?redirect=/records/dashboard")  # type: ignore
 
         # Get comprehensive dashboard data (now filtered by user partner)
         dashboard_data = self._get_dashboard_data()
@@ -74,7 +74,7 @@ class RecordsManagementController(http.Controller):
         }
         return request.render('records_management.enhanced_dashboard', context)
 
-    @http.route("/records/dashboard/data", type="json", auth="user", methods=["POST"])
+    @http.route("/records/dashboard/data", type="json", auth="user", methods=["POST"])  # type: ignore
     def get_dashboard_data(self, **post):
         """
         JSON endpoint for AJAX dashboard data updates.
@@ -115,13 +115,13 @@ class RecordsManagementController(http.Controller):
     # BUSINESS INTELLIGENCE ROUTES
     # ============================================================================
 
-    @http.route("/records/analytics", type="http", auth="user", website=True)
+    @http.route("/records/analytics", type="http", auth="user", website=True)  # type: ignore
     def records_analytics(self):
         """
         Comprehensive analytics dashboard for business intelligence.
         """
-        if not request.env.user.has_group('records_management.group_records_manager'):
-            return request.redirect('/records/dashboard')
+        if not request.env.user.has_group("records_management.group_records_manager"):  # type: ignore
+            return request.redirect("/records/dashboard")  # type: ignore
 
         analytics_data = {
             'revenue_trends': self._get_revenue_trends(),
@@ -136,7 +136,7 @@ class RecordsManagementController(http.Controller):
             'date_range_options': self._get_date_range_options(),
         })
 
-    @http.route("/records/reports/container-summary", type="http", auth="user", methods=["GET"])
+    @http.route("/records/reports/container-summary", type="http", auth="user", methods=["GET"])  # type: ignore
     def container_summary_report(self, **get):
         """
         Generate comprehensive container summary report.
@@ -150,9 +150,9 @@ class RecordsManagementController(http.Controller):
         # Build domain for filtering
         domain = [('active', '=', True)]
 
-        if partner_id:
+        if partner_id and partner_id.isdigit():  # Added check to avoid int(None)
             domain.append(('partner_id', '=', int(partner_id)))
-        if location_id:
+        if location_id and location_id.isdigit():  # Added check to avoid int(None)
             domain.append(('location_id', '=', int(location_id)))
         if date_from:
             domain.append(('create_date', '>=', date_from))
@@ -178,19 +178,25 @@ class RecordsManagementController(http.Controller):
             'locations': request.env['records.location'].search([]),
         }
 
+        # The context dictionary provides the following keys to the template:
+        # - containers: recordset of filtered containers
+        # - summary_stats: dict with total/average/count breakdowns
+        # - filters: dict of applied filter values
+        # - customers: recordset of all company partners
+        # - locations: recordset of all locations
         return request.render('records_management.container_summary_report', context)
 
     # ============================================================================
     # CONTAINER MANAGEMENT ROUTES
     # ============================================================================
 
-    @http.route("/records/containers/bulk-update", type="json", auth="user", methods=["POST"])
+    @http.route("/records/containers/bulk-update", type="json", auth="user", methods=["POST"])  # type: ignore
     def action_bulk_container_update(self, **post):
         """
         Bulk update operations for containers.
         Supports location changes, status updates, and batch processing.
         """
-        if not request.env.user.has_group('records_management.group_records_user'):
+        if not request.env.user.has_group("records_management.group_records_user"):  # type: ignore
             return {'success': False, 'error': 'Insufficient permissions'}
 
         try:
@@ -201,15 +207,12 @@ class RecordsManagementController(http.Controller):
             if not container_ids:
                 return {'success': False, 'error': 'No containers selected'}
 
-            containers = request.env['records.container'].browse(container_ids)
+            containers = request.env["records.container"].browse(container_ids)  # type: ignore
 
             # Validate user can access these containers
             for container in containers:
-                if not container.can_user_access():
-                    return {
-                        'success': False,
-                        'error': f'Access denied for container {container.name}'
-                    }
+                if not container.can_user_access():  # type: ignore
+                    return {"success": False, "error": f"Access denied for container {container.name}"}  # type: ignore
 
             updated_count = 0
 
@@ -220,18 +223,14 @@ class RecordsManagementController(http.Controller):
                         new_location_id_int = int(new_location_id)
                     except (TypeError, ValueError):
                         return {'success': False, 'error': 'Invalid location_id provided'}
-                    containers.write({'location_id': new_location_id_int})
+                    containers.write({"location_id": new_location_id_int})  # type: ignore
                     updated_count = len(containers)
 
                     # Create movement records for audit trail
                     for container in containers:
                         self._create_movement_record(container, new_location_id_int)
 
-            elif action_type == "update_status":
-                # Placeholder for status update logic
-                pass
-
-            elif action_type == "add_tags":
+            elif action_type == "add_tags":  # Removed unnecessary "update_status" placeholder
                 tag_ids = values.get('tag_ids', [])
                 if tag_ids:
                     # Ensure tag_ids is a list of integers
@@ -239,13 +238,12 @@ class RecordsManagementController(http.Controller):
                         tag_ids = [tag_ids]
                     tag_ids = [int(t) for t in tag_ids if str(t).isdigit()]
                     if tag_ids:
-                        containers.write({'tag_ids': [(6, 0, tag_ids)]})
+                        containers.write({"tag_ids": [(6, 0, tag_ids)]})  # type: ignore
                         updated_count = len(containers)
 
             # Create NAID audit log
-            self._create_audit_log(
-                'bulk_container_update',
-                f'Bulk {action_type} performed on {updated_count} containers'
+            self._create_audit_log(  # type: ignore
+                "bulk_container_update", f"Bulk {action_type} performed on {updated_count} containers"
             )
 
             return {
@@ -261,34 +259,28 @@ class RecordsManagementController(http.Controller):
                 'error': 'Bulk update operation failed'
             }
 
-    @http.route("/records/containers/export", type="http", auth="user", methods=["GET"])
+    @http.route("/records/containers/export", type="http", auth="user", methods=["GET"])  # type: ignore
     def export_containers(self, **get):
         """
         Export container data to CSV format.
         """
-        if not request.env.user.has_group('records_management.group_records_user'):
-            return request.redirect('/web/login')
+        if not request.env.user.has_group("records_management.group_records_user"):  # type: ignore
+            return request.redirect("/web/login")  # type: ignore
 
         # Build domain based on filters
         domain = []
         partner_id = get.get("partner_id")
         location_id = get.get("location_id")
-        if partner_id:
-            try:
-                domain.append(("partner_id", "=", int(partner_id)))
-            except (TypeError, ValueError):
-                pass  # Skip if not convertible
-        if location_id:
-            try:
-                domain.append(("location_id", "=", int(location_id)))
-            except (TypeError, ValueError):
-                pass  # Skip if not convertible
+        if partner_id and partner_id.isdigit():  # Added check to avoid int(None)
+            domain.append(("partner_id", "=", int(partner_id)))
+        if location_id and location_id.isdigit():  # Added check to avoid int(None)
+            domain.append(("location_id", "=", int(location_id)))
 
         containers = request.env['records.container'].search(domain)
 
         # Create CSV content
         output = io.StringIO()
-        writer = csv.writer(output)
+        writer = csv.writer(output, lineterminator="\n")
 
         # Write header
         writer.writerow([
@@ -297,6 +289,8 @@ class RecordsManagementController(http.Controller):
         ])
 
         # Write data rows
+        from odoo.fields import Datetime as OdooDatetime
+
         for container in containers:
             # Normalize create_date to string if not already a datetime
             create_date_str = ""
@@ -304,11 +298,20 @@ class RecordsManagementController(http.Controller):
                 if isinstance(container.create_date, datetime):
                     create_date_str = container.create_date.strftime("%Y-%m-%d")
                 else:
-                    # Fallback: try to parse or use as string
+                    # Try Odoo's from_string first, then fallback to common formats
+                    date_val = None
                     try:
-                        create_date_obj = datetime.strptime(str(container.create_date), "%Y-%m-%d %H:%M:%S")
-                        create_date_str = create_date_obj.strftime("%Y-%m-%d")
+                        date_val = OdooDatetime.from_string(str(container.create_date))
                     except Exception:
+                        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d", "%Y-%m-%d %H:%M:%S.%f%z", "%Y-%m-%d %H:%M:%S%z"):
+                            try:
+                                date_val = datetime.strptime(str(container.create_date), fmt)
+                                break
+                            except Exception:
+                                continue
+                    if date_val:
+                        create_date_str = date_val.strftime("%Y-%m-%d")
+                    else:
                         create_date_str = str(container.create_date)
             writer.writerow(
                 [
@@ -336,7 +339,7 @@ class RecordsManagementController(http.Controller):
     # VALIDATION AND CONSTRAINT HELPER ROUTES
     # ============================================================================
 
-    @http.route("/records/validate/container-number", type="json", auth="user", methods=["POST"])
+    @http.route("/records/validate/container-number", type="json", auth="user", methods=["POST"])  # type: ignore
     def _check_container_number_availability(self, **post):
         """
         Validate container number availability and suggest alternatives.
@@ -348,10 +351,9 @@ class RecordsManagementController(http.Controller):
             return {'success': False, 'error': 'Missing required parameters'}
 
         # Check if container number exists
-        existing_container = request.env['records.container'].search([
-            ('name', '=', container_number),
-            ('partner_id', '=', int(customer_id))
-        ], limit=1)
+        existing_container = request.env["records.container"].search(
+            [("name", "=", container_number), ("partner_id", "=", int(customer_id))], limit=1  # type: ignore
+        )
 
         if existing_container:
             # Generate suggestions
@@ -360,10 +362,10 @@ class RecordsManagementController(http.Controller):
             )
 
             return {
-                'success': True,
-                'available': False,
-                'existing_container': existing_container.name,
-                'suggestions': suggestions
+                "success": True,
+                "available": False,
+                "existing_container": existing_container.name,  # type: ignore
+                "suggestions": suggestions,
             }
 
         return {
@@ -376,12 +378,12 @@ class RecordsManagementController(http.Controller):
     # SYSTEM MONITORING ROUTES
     # ============================================================================
 
-    @http.route("/records/system/health", type="json", auth="user", methods=["POST"])
+    @http.route("/records/system/health", type="json", auth="user", methods=["POST"])  # type: ignore
     def _check_system_health(self):
         """
         System health check endpoint for monitoring.
         """
-        if not request.env.user.has_group('records_management.group_records_manager'):
+        if not request.env.user.has_group("records_management.group_records_manager"):  # type: ignore
             return {'success': False, 'error': 'Insufficient permissions'}
 
         try:
@@ -421,13 +423,13 @@ class RecordsManagementController(http.Controller):
     def _get_dashboard_data(self):
         """Get comprehensive dashboard data with performance optimization."""
         # Use efficient batch queries to minimize database hits
-        Container = request.env['records.container']
-        PickupRequest = request.env['pickup.request']
-        ShredService = request.env['shredding.service']
+        Container = request.env["records.container"]  # type: ignore
+        PickupRequest = request.env["pickup.request"]  # type: ignore
+        ShredService = request.env["shredding.service"]  # type: ignore
 
         # Determine if user is a portal user (customer) - exclude sensitive data like location capacity
         is_portal_user = not request.env.user.has_group("records_management.group_records_manager")
-        user_partner_id = request.env.user.partner_id.id
+        user_partner_id = request.env.user.partner_id.id  # type: ignore
 
         # Base domain for filtering by user partner (for portal users)
         partner_domain = [("partner_id", "=", user_partner_id)] if is_portal_user else []
@@ -495,8 +497,8 @@ class RecordsManagementController(http.Controller):
         activities = []
 
         # Determine if user is a portal user and get their partner
-        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")
-        user_partner_id = request.env.user.partner_id.id
+        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")  # type: ignore
+        user_partner_id = request.env.user.partner_id.id  # type: ignore
         partner_domain = [("partner_id", "=", user_partner_id)] if is_portal_user else []
 
         # Recent container creations (filtered by partner)
@@ -540,8 +542,8 @@ class RecordsManagementController(http.Controller):
         last_week = now - timedelta(days=7)
 
         # Determine if user is a portal user and get their partner
-        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")
-        user_partner_id = request.env.user.partner_id.id
+        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")  # type: ignore
+        user_partner_id = request.env.user.partner_id.id  # type: ignore
         partner_domain = [("partner_id", "=", user_partner_id)] if is_portal_user else []
 
         # Container growth metrics (filtered by partner)
@@ -576,10 +578,12 @@ class RecordsManagementController(http.Controller):
         alerts = []
 
         # Check for overdue pickups
-        overdue_pickups = request.env['pickup.request'].search_count([
-            ('state', 'in', ['confirmed', 'in_progress']),
-            ('scheduled_date', '<', datetime.now().strftime('%Y-%m-%d'))
-        ])
+        overdue_pickups = request.env["pickup.request"].search_count(
+            [  # type: ignore
+                ("state", "in", ["confirmed", "in_progress"]),
+                ("scheduled_date", "<", datetime.now().strftime("%Y-%m-%d")),
+            ]
+        )
 
         if overdue_pickups:
             alerts.append({
@@ -602,14 +606,14 @@ class RecordsManagementController(http.Controller):
 
     def _get_user_dashboard_permissions(self):
         """Get user permissions for dashboard functionality."""
-        user = request.env.user
+        user = request.env.user  # type: ignore
 
         return {
-            'can_view_analytics': user.has_group('records_management.group_records_manager'),
-            'can_bulk_update': user.has_group('records_management.group_records_user'),
-            'can_export_data': user.has_group('records_management.group_records_user'),
-            'can_manage_system': user.has_group('records_management.group_records_manager'),
-            'can_view_billing': user.has_group('records_management.group_records_manager'),
+            "can_view_analytics": user.has_group("records_management.group_records_manager"),  # type: ignore
+            "can_bulk_update": user.has_group("records_management.group_records_user"),  # type: ignore
+            "can_export_data": user.has_group("records_management.group_records_user"),  # type: ignore
+            "can_manage_system": user.has_group("records_management.group_records_manager"),  # type: ignore
+            "can_view_billing": user.has_group("records_management.group_records_manager"),  # type: ignore
         }
 
     def _calculate_container_summary(self, containers):
@@ -618,8 +622,8 @@ class RecordsManagementController(http.Controller):
             return {}
 
         total_containers = len(containers)
-        total_volume = float(sum(c.volume or 0 for c in containers))
-        total_weight = float(sum(c.weight or 0 for c in containers))
+        total_volume = float(sum(c.volume or 0 for c in containers))  # type: ignore
+        total_weight = float(sum(c.weight or 0 for c in containers))  # type: ignore
 
         # Group by container type
         type_breakdown = {}
@@ -649,25 +653,29 @@ class RecordsManagementController(http.Controller):
 
     def _create_movement_record(self, container, new_location_id):
         """Create movement audit record for container location changes."""
-        request.env['records.container.movement'].sudo().create({
-            'container_id': container.id,
-            'from_location_id': container.location_id.id if container.location_id else False,
-            'to_location_id': new_location_id,
-            'movement_date': datetime.now(),
-            'moved_by': request.env.user.id,
-            'movement_type': 'location_change',
-        })
+        request.env["records.container.movement"].sudo().create(
+            {  # type: ignore
+                "container_id": container.id,  # type: ignore
+                "from_location_id": container.location_id.id if container.location_id else False,  # type: ignore
+                "to_location_id": new_location_id,
+                "movement_date": datetime.now(),
+                "moved_by": request.env.user.id,  # type: ignore
+                "movement_type": "location_change",
+            }
+        )
 
     def _create_audit_log(self, action_type, description):
         """Create NAID audit log entry."""
-        ip_address = getattr(getattr(request, 'httprequest', None), 'remote_addr', None)
-        request.env['naid.audit.log'].sudo().create({
-            'action_type': action_type,
-            'description': description,
-            'user_id': request.env.user.id,
-            'timestamp': datetime.now(),
-            'ip_address': ip_address,
-        })
+        ip_address = getattr(getattr(request, "httprequest", None), "remote_addr", None)  # type: ignore
+        request.env["naid.audit.log"].sudo().create(
+            {  # type: ignore
+                "action_type": action_type,
+                "description": description,
+                "user_id": request.env.user.id,  # type: ignore
+                "timestamp": datetime.now(),
+                "ip_address": ip_address,
+            }
+        )
 
     def _generate_container_number_suggestions(self, base_number, customer_id):
         """Generate alternative container number suggestions."""
@@ -678,10 +686,9 @@ class RecordsManagementController(http.Controller):
 
         for suffix in suffixes:
             suggested_number = base_number + suffix
-            exists = request.env['records.container'].search([
-                ('name', '=', suggested_number),
-                ('partner_id', '=', int(customer_id))
-            ], limit=1)
+            exists = request.env["records.container"].search(
+                [("name", "=", suggested_number), ("partner_id", "=", int(customer_id))], limit=1  # type: ignore
+            )
 
             if not exists:
                 suggestions.append(suggested_number)
@@ -695,7 +702,7 @@ class RecordsManagementController(http.Controller):
     def _check_database_health(self):
         """Check database connectivity and performance."""
         try:
-            request.env.cr.execute("SELECT 1")
+            request.env.cr.execute("SELECT 1")  # type: ignore
             return {'status': 'healthy', 'message': 'Database connection OK'}
         except Exception as e:
             return {'status': 'critical', 'message': f'Database error: {str(e)}'}
@@ -707,9 +714,9 @@ class RecordsManagementController(http.Controller):
 
     def _check_audit_log_integrity(self):
         """Verify audit log integrity for NAID compliance."""
-        recent_logs = request.env['naid.audit.log'].search_count([
-            ('timestamp', '>=', (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d'))
-        ])
+        recent_logs = request.env["naid.audit.log"].search_count(
+            [("timestamp", ">=", (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d"))]  # type: ignore
+        )
 
         if recent_logs > 0:
             return {'status': 'healthy', 'message': f'{recent_logs} audit entries in last 24h'}
@@ -727,11 +734,8 @@ class RecordsManagementController(http.Controller):
 
     def _calculate_total_cubic_feet(self):
         """Calculate total cubic feet under management."""
-        total = request.env['records.container'].search_read(
-            [('active', '=', True)],
-            ['volume']
-        )
-        return round(sum(c['volume'] or 0 for c in total), 2)
+        total = request.env["records.container"].search_read([("active", "=", True)], ["volume"])  # type: ignore
+        return round(sum(c["volume"] or 0 for c in total), 2)  # type: ignore
 
     def _calculate_compliance_score(self):
         """Calculate overall compliance score."""
