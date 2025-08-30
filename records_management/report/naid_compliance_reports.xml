@@ -92,11 +92,11 @@
 
     <record id="action_report_naid_compliance" model="ir.actions.report">
         <field name="name">NAID Compliance Report</field>
-        <field name="model">naid.compliance</field>
+        <field name="model">naid.compliance.policy</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">records_management.report_naid_compliance</field>
         <field name="report_file">records_management.report_naid_compliance</field>
-        <field name="binding_model_id" ref="records_management.model_naid_compliance"/>
+        <field name="binding_model_id" ref="records_management.model_naid_compliance_policy"/>
         <field name="binding_type">report</field>
     </record>
 </odoo>
