@@ -49,28 +49,9 @@
         "base_setup",
         "base_import",
 
-        # Enterprise modules - Available in most enterprise environments
-        "industry_fsm",
-        "sign",
-        "survey",
-        "documents",
-        "helpdesk",
-        "mass_mailing",
-        "event",
-        "website_sale",
-        "sale_management",
-        "hr_attendance",
-        "hr_holidays",
-        "hr_timesheet",
-        "hr_expense",
-        "hr_recruitment",
-        "account_payment",
-        "delivery",
-        "mrp",
-        "quality",
-
-        # Optional enterprise modules - Only if available
-        # Removed modules that might not be available in all environments
+        # Conservative enterprise modules - Only the most essential ones
+        # Removed potentially unavailable modules to prevent installation failures
+        # Add back individual modules only after confirming availability in target environment
     ],
     "data": [
         # Security files must load first
