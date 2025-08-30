@@ -13,7 +13,13 @@ class FsmNotificationManager(models.Model):
     notification_type = fields.Selection(
         [("email", "Email"), ("sms", "SMS"), ("push", "Push Notification")], string="Notification Type", required=True
     )
-    recipient_ids = fields.Many2many("res.partner", string="Recipients")
+    recipient_ids = fields.Many2many(
+        "res.partner",
+        "fsm_notification_manager_res_partner_rel",
+        "fsm_notification_manager_id",
+        "res_partner_id",
+        string="Recipients",
+    )
     message = fields.Text(string="Message")
     scheduled_date = fields.Datetime(string="Scheduled Date")
     sent = fields.Boolean(string="Sent", default=False)
@@ -49,7 +55,13 @@ class ShreddingCertificate(models.Model):
     destruction_date = fields.Datetime(string="Destruction Date", required=True)
     weight_destroyed = fields.Float(string="Weight Destroyed (lbs)")
     method_used = fields.Char(string="Destruction Method")
-    witness_ids = fields.Many2many("res.partner", string="Witnesses")
+    witness_ids = fields.Many2many(
+        "res.partner",
+        "shredding_certificate_res_partner_rel",
+        "shredding_certificate_id",
+        "res_partner_id",
+        string="Witnesses",
+    )
     certificate_file = fields.Binary(string="Certificate File")
     certificate_filename = fields.Char(string="Certificate Filename")
 

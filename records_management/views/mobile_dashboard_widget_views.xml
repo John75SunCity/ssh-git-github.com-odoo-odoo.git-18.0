@@ -41,9 +41,6 @@
             </search>
         </field>
     </record>
-</odoo>
-        </field>
-    </record>
 
     <record id="mobile_dashboard_widget_view_kanban" model="ir.ui.view">
         <field name="name">mobile.dashboard.widget.view.kanban</field>
