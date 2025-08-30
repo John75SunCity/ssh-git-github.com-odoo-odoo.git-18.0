@@ -407,6 +407,16 @@
 				"development-tools/related_field_audit.py"
 			],
 			"group": "test"
+		},
+		{
+			"label": "Clean CSV File",
+			"type": "shell",
+			"command": "python3"
+		},
+		{
+			"label": "Clean CSV File",
+			"type": "shell",
+			"command": "python3 clean_csv_final.py"
 		}
 	]
 }
