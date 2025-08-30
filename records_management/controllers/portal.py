@@ -179,6 +179,7 @@ class RecordsManagementController(http.Controller):
         }
 
         return request.render('records_management.container_summary_report', context)
+
     # ============================================================================
     # CONTAINER MANAGEMENT ROUTES
     # ============================================================================
@@ -226,9 +227,11 @@ class RecordsManagementController(http.Controller):
                     for container in containers:
                         self._create_movement_record(container, new_location_id_int)
 
-            if action_type == 'update_status':
+            elif action_type == "update_status":
                 new_status = values.get('status')
-            if action_type == 'add_tags':
+                # You may want to implement status update logic here
+
+            elif action_type == "add_tags":
                 tag_ids = values.get('tag_ids', [])
                 if tag_ids:
                     # Ensure tag_ids is a list of integers
@@ -238,7 +241,6 @@ class RecordsManagementController(http.Controller):
                     if tag_ids:
                         containers.write({'tag_ids': [(6, 0, tag_ids)]})
                         updated_count = len(containers)
-                tag_ids = values.get('tag_ids', [])
                 if tag_ids:
                     containers.write({'tag_ids': [(6, 0, tag_ids)]})
                     updated_count = len(containers)
@@ -291,18 +293,30 @@ class RecordsManagementController(http.Controller):
 
         # Write data rows
         for container in containers:
-            writer.writerow([
-                container.name or '',
-                container.partner_id.name or '',
-                container.location_id.name or '',
-                container.container_type or '',
-                container.volume or 0,
-                container.weight or 0,
-                container.state or '',
-                container.create_date.strftime('%Y-%m-%d') if hasattr(container.create_date, 'strftime') else (container.create_date or '')
-            ])
-
-        # Create response
+            # Normalize create_date to string if not already a datetime
+            create_date_str = ""
+            if container.create_date:
+                if isinstance(container.create_date, datetime):
+                    create_date_str = container.create_date.strftime("%Y-%m-%d")
+                else:
+                    # Fallback: try to parse or use as string
+                    try:
+                        create_date_obj = datetime.strptime(str(container.create_date), "%Y-%m-%d %H:%M:%S")
+                        create_date_str = create_date_obj.strftime("%Y-%m-%d")
+                    except Exception:
+                        create_date_str = str(container.create_date)
+            writer.writerow(
+                [
+                    container.name or "",
+                    container.partner_id.name or "",
+                    container.location_id.name or "",
+                    container.container_type or "",
+                    container.volume or 0,
+                    container.weight or 0,
+                    container.state or "",
+                    create_date_str,
+                ]
+            )
         response = request.make_response(
             output.getvalue(),
             headers=[
@@ -431,26 +445,36 @@ class RecordsManagementController(http.Controller):
             ['volume', 'location_id']
         )
 
-        total_volume = sum(c['volume'] or 0 for c in container_data)
-
-        # Location utilization
+        # Initialize variables for calculation
+        total_volume = 0
         location_utilization = {}
+
         for container in container_data:
-            location_name = container['location_id'][1] if container['location_id'] else 'Unassigned'
-            if location_name not in location_utilization:
-                location_utilization[location_name] = {'count': 0, 'volume': 0}
-            location_utilization[location_name]['count'] += 1
-            location_utilization[location_name]['volume'] += container['volume'] or 0
+            total_volume += container["volume"] or 0
+            location_id = container.get("location_id")
+            if location_id:
+                location_name = (
+                    request.env["records.location"].browse(location_id[0]).name if location_id else "Unknown"
+                )
+                if location_name not in location_utilization:
+                    location_utilization[location_name] = {"volume": 0, "count": 0}
+                location_utilization[location_name]["volume"] += container["volume"] or 0
+                location_utilization[location_name]["count"] += 1
+
+        # Efficiently count unique active customers using read_group
+        active_customers_group = Container.read_group([("active", "=", True)], ["partner_id"], ["partner_id"])
+        active_customers_count = len(active_customers_group)
 
         return {
-            'total_containers': total_containers,
-            'containers_by_type': {(item['container_type'] or 'Unknown'): item['__count']
-                                 for item in containers_by_type},
-            'total_volume_cf': round(total_volume, 2),
-            'pending_pickups': pending_pickups,
-            'recent_destructions': recent_destructions,
-            'location_utilization': location_utilization,
-            'active_customers': len(set(Container.search([('active', '=', True)]).mapped('partner_id'))),
+            "total_containers": total_containers,
+            "containers_by_type": {
+                (item["container_type"] or "Unknown"): item["__count"] for item in containers_by_type
+            },
+            "total_volume_cf": round(total_volume, 2),
+            "pending_pickups": pending_pickups,
+            "recent_destructions": recent_destructions,
+            "location_utilization": location_utilization,
+            "active_customers": active_customers_count,
         }
 
     def _get_recent_activities(self, limit=10):
@@ -702,7 +726,5 @@ class RecordsManagementController(http.Controller):
 
     def _check_compliance_warnings(self):
         """Check for compliance-related warnings."""
-        # Implementation would check for compliance violations
-        return []  # Placeholder
         # Implementation would check for compliance violations
         return []  # Placeholder

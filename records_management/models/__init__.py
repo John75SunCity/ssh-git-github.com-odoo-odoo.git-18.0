@@ -34,8 +34,6 @@ from . import (
     container_content,
     container_destruction_work_order,
     container_retrieval,
-    container_attachment,
-    container_batch_management,
     retrieval_item_base,  # BASE CLASS - must be before container_retrieval_item, file_retrieval_item, scan_retrieval_item
     container_retrieval_item,
     container_retrieval_work_order,
