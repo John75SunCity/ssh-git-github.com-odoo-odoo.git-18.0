@@ -64,7 +64,6 @@
         "hr_timesheet",
         "hr_expense",
         "hr_recruitment",
-        "project_timesheet",
         "account_payment",
         "delivery",
         "mrp",
