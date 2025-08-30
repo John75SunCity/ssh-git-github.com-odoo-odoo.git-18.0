@@ -4,12 +4,18 @@ This model provides comprehensive audit trail tracking for document custody
 from creation through destruction, ensuring full NAID AAA compliance.
 """
 
-from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError, UserError
-from datetime import datetime
+# Python stdlib imports
 import logging
+import random
+import string
+from datetime import datetime
+
+# Odoo core imports
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
+
 
 class ChainOfCustody(models.Model):
     """Comprehensive chain of custody tracking for NAID AAA compliance.
@@ -18,318 +24,340 @@ class ChainOfCustody(models.Model):
     for documents and containers throughout their lifecycle.
     """
 
-    _name = 'chain.of.custody'
-    _description = 'Chain of Custody Tracking'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'sequence, transfer_date desc, id desc'
-    _rec_name = 'display_name'
+    _name = "chain.of.custody"
+    _description = "Chain of Custody Tracking"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "sequence, transfer_date desc, id desc"
+    _rec_name = "display_name"
 
     # Core Identification
     name = fields.Char(
-        string='Custody Reference',
+        string="Custody Reference",
         required=True,
         copy=False,
         index=True,
-        default=lambda self: self._generate_reference(),
-        help="Unique reference for this custody record"
+        help="Unique reference for this custody record",
     )
 
     display_name = fields.Char(
-        string='Display Name',
-        compute='_compute_display_name',
+        string="Display Name",
+        compute="_compute_display_name",
         store=True,
-        help="Human-readable display name"
+        help="Human-readable display name",
     )
 
     sequence = fields.Integer(
-        string='Sequence',
-        default=10,
-        help="Order of custody transfers"
+        string="Sequence", default=10, help="Order of custody transfers"
     )
 
     active = fields.Boolean(
-        string='Active',
+        string="Active",
         default=True,
         tracking=True,
-        help="Uncheck to archive this custody record"
+        help="Uncheck to archive this custody record",
     )
 
     company_id = fields.Many2one(
-        'res.company',
-        string='Company',
+        "res.company",
+        string="Company",
         default=lambda self: self.env.company,
         required=True,
-        help="Company responsible for this custody record"
+        help="Company responsible for this custody record",
     )
 
     # Transfer Information
     transfer_date = fields.Datetime(
-        string='Transfer Date',
+        string="Transfer Date",
         required=True,
         default=fields.Datetime.now,
         tracking=True,
-        help="Date and time of custody transfer"
+        help="Date and time of custody transfer",
     )
 
-    transfer_type = fields.Selection([
-        ('creation', 'Initial Creation'),
-        ('storage', 'Storage Transfer'),
-        ('retrieval', 'Retrieval'),
-        ('transport', 'Transportation'),
-        ('destruction', 'Destruction'),
-        ('return', 'Return to Customer'),
-        ('internal', 'Internal Transfer'),
-        ('audit', 'Audit/Inspection'),
-        ('maintenance', 'Maintenance'),
-        ('emergency', 'Emergency Access')
-    ], string='Transfer Type', required=True, tracking=True)
+    transfer_type = fields.Selection(
+        [
+            ("creation", "Initial Creation"),
+            ("storage", "Storage Transfer"),
+            ("retrieval", "Retrieval"),
+            ("transport", "Transportation"),
+            ("destruction", "Destruction"),
+            ("return", "Return to Customer"),
+            ("internal", "Internal Transfer"),
+            ("audit", "Audit/Inspection"),
+            ("maintenance", "Maintenance"),
+            ("emergency", "Emergency Access"),
+        ],
+        string="Transfer Type",
+        required=True,
+        tracking=True,
+    )
 
     # Custody Parties
     from_custodian_id = fields.Many2one(
-        comodel_name='res.users',
-        string='From Custodian',
+        comodel_name="res.users",
+        string="From Custodian",
         tracking=True,
-        help="Previous custodian releasing custody"
+        help="Previous custodian releasing custody",
     )
 
     to_custodian_id = fields.Many2one(
-        comodel_name='res.users',
-        string='To Custodian',
+        comodel_name="res.users",
+        string="To Custodian",
         required=True,
         tracking=True,
-        help="New custodian receiving custody"
+        help="New custodian receiving custody",
     )
 
     witness_id = fields.Many2one(
-        comodel_name='res.users',
-        string='Witness',
+        comodel_name="res.users",
+        string="Witness",
         tracking=True,
-        help="Witness to the custody transfer"
+        help="Witness to the custody transfer",
     )
 
     department_id = fields.Many2one(
-        comodel_name='records.department',
-        string='Department',
+        comodel_name="records.department",
+        string="Department",
         tracking=True,
-        help="Department responsible for custody"
+        help="Department responsible for custody",
     )
 
     # Location Tracking
     from_location_id = fields.Many2one(
-        comodel_name='records.location',
-        string='From Location',
+        comodel_name="records.location",
+        string="From Location",
         tracking=True,
-        help="Previous location"
+        help="Previous location",
     )
 
     to_location_id = fields.Many2one(
-        comodel_name='records.location',
-        string='To Location',
+        comodel_name="records.location",
+        string="To Location",
         required=True,
         tracking=True,
-        help="New location"
+        help="New location",
     )
 
     specific_location = fields.Char(
-        string='Specific Location',
-        help="Detailed location description (shelf, room, etc.)"
+        string="Specific Location",
+        help="Detailed location description (shelf, room, etc.)",
     )
 
     # Related Records
     container_id = fields.Many2one(
-        comodel_name='records.container',
-        string='Container',
-        ondelete='cascade',
+        comodel_name="records.container",
+        string="Container",
+        ondelete="cascade",
         index=True,
-        help="Related container if applicable"
+        help="Related container if applicable",
     )
 
     document_id = fields.Many2one(
-        comodel_name='records.document',
-        string='Document',
-        ondelete='cascade',
+        comodel_name="records.document",
+        string="Document",
+        ondelete="cascade",
         index=True,
-        help="Related document if applicable"
+        help="Related document if applicable",
     )
 
     request_id = fields.Many2one(
-        comodel_name='portal.request',
-        string='Related Request',
-        ondelete='set null',
-        help="Request that triggered this custody transfer"
+        comodel_name="portal.request",
+        string="Related Request",
+        ondelete="set null",
+        help="Request that triggered this custody transfer",
     )
 
     destruction_certificate_id = fields.Many2one(
-        comodel_name='naid.certificate',
-        string='Destruction Certificate',
-        ondelete='set null',
-        help="Certificate if this was a destruction transfer"
+        comodel_name="naid.certificate",
+        string="Destruction Certificate",
+        ondelete="set null",
+        help="Certificate if this was a destruction transfer",
     )
 
     # Transfer Details
     reason = fields.Text(
-        string='Transfer Reason',
+        string="Transfer Reason",
         required=True,
         tracking=True,
-        help="Detailed reason for custody transfer"
+        help="Detailed reason for custody transfer",
     )
 
     conditions = fields.Text(
-        string='Conditions/Notes',
-        help="Special conditions or notes about the transfer"
+        string="Conditions/Notes", help="Special conditions or notes about the transfer"
     )
 
-    transfer_method = fields.Selection([
-        ('hand_delivery', 'Hand Delivery'),
-        ('secure_transport', 'Secure Transport'),
-        ('courier', 'Courier Service'),
-        ('internal_move', 'Internal Move'),
-        ('pickup_service', 'Pickup Service'),
-        ('mail', 'Postal Mail'),
-        ('electronic', 'Electronic Transfer')
-    ], string='Transfer Method', tracking=True)
+    transfer_method = fields.Selection(
+        [
+            ("hand_delivery", "Hand Delivery"),
+            ("secure_transport", "Secure Transport"),
+            ("courier", "Courier Service"),
+            ("internal_move", "Internal Move"),
+            ("pickup_service", "Pickup Service"),
+            ("mail", "Postal Mail"),
+            ("electronic", "Electronic Transfer"),
+        ],
+        string="Transfer Method",
+        tracking=True,
+    )
 
     # NAID AAA Compliance
     naid_compliant = fields.Boolean(
-        string='NAID AAA Compliant',
+        string="NAID AAA Compliant",
         default=True,
         tracking=True,
-        help="Whether this transfer meets NAID AAA standards"
+        help="Whether this transfer meets NAID AAA standards",
     )
 
-    security_level = fields.Selection([
-        ('standard', 'Standard Security'),
-        ('high', 'High Security'),
-        ('confidential', 'Confidential'),
-        ('secret', 'Secret'),
-        ('top_secret', 'Top Secret')
-    ], string='Security Level', default='standard', tracking=True)
+    security_level = fields.Selection(
+        [
+            ("standard", "Standard Security"),
+            ("high", "High Security"),
+            ("confidential", "Confidential"),
+            ("secret", "Secret"),
+            ("top_secret", "Top Secret"),
+        ],
+        string="Security Level",
+        default="standard",
+        tracking=True,
+    )
 
     authorization_required = fields.Boolean(
-        string='Authorization Required',
+        string="Authorization Required",
         default=False,
-        help="Whether special authorization was required"
+        help="Whether special authorization was required",
     )
 
     authorized_by_id = fields.Many2one(
-        comodel_name='res.users',
-        string='Authorized By',
-        help="User who authorized this transfer"
+        comodel_name="res.users",
+        string="Authorized By",
+        help="User who authorized this transfer",
     )
 
     # Digital Signatures & Verification
     custodian_signature = fields.Binary(
-        string='Custodian Signature',
-        help="Digital signature of receiving custodian"
+        string="Custodian Signature", help="Digital signature of receiving custodian"
     )
 
     witness_signature = fields.Binary(
-        string='Witness Signature',
-        help="Digital signature of witness"
+        string="Witness Signature", help="Digital signature of witness"
     )
 
     signature_date = fields.Datetime(
-        string='Signature Date',
-        help="Date and time signatures were captured"
+        string="Signature Date", help="Date and time signatures were captured"
     )
 
     verification_code = fields.Char(
-        string='Verification Code',
+        string="Verification Code",
         copy=False,
-        help="Unique verification code for this transfer"
+        help="Unique verification code for this transfer",
     )
 
     # Status and Validation
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('pending', 'Pending'),
-        ('in_transit', 'In Transit'),
-        ('completed', 'Completed'),
-        ('verified', 'Verified'),
-        ('cancelled', 'Cancelled')
-    ], string='Status', default='draft', tracking=True)
+    state = fields.Selection(
+        [
+            ("draft", "Draft"),
+            ("pending", "Pending"),
+            ("in_transit", "In Transit"),
+            ("completed", "Completed"),
+            ("verified", "Verified"),
+            ("cancelled", "Cancelled"),
+        ],
+        string="Status",
+        default="draft",
+        tracking=True,
+    )
 
     is_verified = fields.Boolean(
-        string='Verified',
+        string="Verified",
         default=False,
         tracking=True,
-        help="Whether this transfer has been verified"
+        help="Whether this transfer has been verified",
     )
 
     verified_by_id = fields.Many2one(
-        comodel_name='res.users',
-        string='Verified By',
-        help="User who verified this transfer"
+        comodel_name="res.users",
+        string="Verified By",
+        help="User who verified this transfer",
     )
 
     verified_date = fields.Datetime(
-        string='Verification Date',
-        help="Date and time of verification"
+        string="Verification Date", help="Date and time of verification"
     )
 
     # Audit Information
     audit_log_ids = fields.One2many(
-        comodel_name='naid.audit.log',
-        inverse_name='custody_id',
-        string='Audit Logs',
-        help="Related audit log entries"
+        comodel_name="naid.audit.log",
+        inverse_name="custody_id",
+        string="Audit Logs",
+        help="Related audit log entries",
     )
 
     audit_notes = fields.Text(
-        string='Audit Notes',
-        help="Special audit notes or observations"
+        string="Audit Notes", help="Special audit notes or observations"
     )
 
     # Computed Fields
     duration_hours = fields.Float(
-        string='Duration (Hours)',
-        compute='_compute_duration',
+        string="Duration (Hours)",
+        compute="_compute_duration",
         store=True,
-        help="Duration of custody transfer"
+        help="Duration of custody transfer",
     )
 
     next_transfer_id = fields.Many2one(
-        comodel_name='chain.of.custody',
-        string='Next Transfer',
-        compute='_compute_next_transfer',
-        help="Next custody transfer in the chain"
+        comodel_name="chain.of.custody",
+        string="Next Transfer",
+        compute="_compute_next_transfer",
+        help="Next custody transfer in the chain",
     )
 
     previous_transfer_id = fields.Many2one(
-        comodel_name='chain.of.custody',
-        string='Previous Transfer',
-        compute='_compute_previous_transfer',
-        help="Previous custody transfer in the chain"
+        comodel_name="chain.of.custody",
+        string="Previous Transfer",
+        compute="_compute_previous_transfer",
+        help="Previous custody transfer in the chain",
     )
 
     is_final_transfer = fields.Boolean(
-        string='Final Transfer',
-        compute='_compute_is_final',
-        help="Whether this is the final transfer (destruction)"
+        string="Final Transfer",
+        compute="_compute_is_final",
+        help="Whether this is the final transfer (destruction)",
     )
 
     # Related Record Counts
     related_container_count = fields.Integer(
-        string='Related Containers',
-        compute='_compute_related_counts'
+        string="Related Containers", compute="_compute_related_counts"
     )
 
     related_document_count = fields.Integer(
-        string='Related Documents',
-        compute='_compute_related_counts'
+        string="Related Documents", compute="_compute_related_counts"
     )
 
     # Computed Methods
-    @api.depends('name', 'transfer_type', 'to_custodian_id')
+    @api.depends("name", "transfer_type", "to_custodian_id")
     def _compute_display_name(self):
         """Compute display name for the custody record."""
         for record in self:
             if record.name and record.transfer_type and record.to_custodian_id:
-                record.display_name = f"{record.name} - {dict(record._fields['transfer_type'].selection)[record.transfer_type]} to {record.to_custodian_id.name}"
+                selection_dict = (
+                    dict(record._fields["transfer_type"].selection)
+                    if hasattr(record._fields["transfer_type"], "selection")
+                    else {}
+                )
+                transfer_type_label = selection_dict.get(
+                    record.transfer_type, record.transfer_type or ""
+                )
+                to_custodian_name = (
+                    record.to_custodian_id.name
+                    if record.to_custodian_id
+                    and hasattr(record.to_custodian_id, "name")
+                    else ""
+                )
+                record.display_name = f"{record.name or ''} - {transfer_type_label} to {to_custodian_name}"
             else:
-                record.display_name = record.name or 'New Custody Record'
+                record.display_name = record.name or "New Custody Record"
 
-    @api.depends('transfer_date', 'state')
+    @api.depends("transfer_date", "state")
     def _compute_duration(self):
         """Compute duration of custody transfer."""
         for record in self:
@@ -337,25 +365,24 @@ class ChainOfCustody(models.Model):
                 record.duration_hours = 0.0
                 continue
 
-            if record.state == 'completed':
-                # Calculate based on next transfer or current time
-                domain = [('sequence', '>', record.sequence)]
-
-                # Add container/document filter if available
-                if record.container_id:
-                    domain.append(('container_id', '=', record.container_id.id))
-                elif record.document_id:
-                    domain.append(('document_id', '=', record.document_id.id))
-                else:
-                    # No related records to calculate duration
+            if record.state == "completed":
+                # Only calculate duration if related to a container or document
+                if not record.container_id and not record.document_id:
                     record.duration_hours = 0.0
                     continue
 
-                next_transfer = self.search(domain, limit=1)
+                domain = [("sequence", ">", record.sequence)]
+                if record.container_id:
+                    domain.append(("container_id", "=", record.container_id.id))
+                elif record.document_id:
+                    domain.append(("document_id", "=", record.document_id.id))
+
+                next_transfer = self.search(domain, order="sequence asc", limit=1)
 
                 if next_transfer and next_transfer.transfer_date:
                     end_time = next_transfer.transfer_date
                 else:
+                    # Use current time if no next transfer
                     end_time = fields.Datetime.now()
 
                 duration = end_time - record.transfer_date
@@ -363,7 +390,7 @@ class ChainOfCustody(models.Model):
             else:
                 record.duration_hours = 0.0
 
-    @api.depends('sequence', 'container_id', 'document_id')
+    @api.depends("sequence", "container_id", "document_id")
     def _compute_next_transfer(self):
         """Compute next transfer in the chain."""
         for record in self:
@@ -371,23 +398,24 @@ class ChainOfCustody(models.Model):
                 record.next_transfer_id = False
                 continue
 
-            domain = [('sequence', '>', record.sequence)]
+            domain = [("sequence", ">", record.sequence)]
 
             # Build domain based on what related records exist
             if record.container_id and record.document_id:
-                domain.extend([
-                    '|',
-                    ('container_id', '=', record.container_id.id),
-                    ('document_id', '=', record.document_id.id)
-                ])
+                # Use robust OR logic for exactly two conditions
+                domain = [
+                    "|",
+                    ("container_id", "=", record.container_id.id),
+                    ("document_id", "=", record.document_id.id),
+                ] + domain
             elif record.container_id:
-                domain.append(('container_id', '=', record.container_id.id))
+                domain.append(("container_id", "=", record.container_id.id))
             elif record.document_id:
-                domain.append(('document_id', '=', record.document_id.id))
+                domain.append(("document_id", "=", record.document_id.id))
 
-            record.next_transfer_id = self.search(domain, limit=1)
+            record.next_transfer_id = self.search(domain, order="sequence asc", limit=1)
 
-    @api.depends('sequence', 'container_id', 'document_id')
+    @api.depends("sequence", "container_id", "document_id")
     def _compute_previous_transfer(self):
         """Compute previous transfer in the chain."""
         for record in self:
@@ -395,32 +423,34 @@ class ChainOfCustody(models.Model):
                 record.previous_transfer_id = False
                 continue
 
-            domain = [('sequence', '<', record.sequence)]
+            domain = [("sequence", "<", record.sequence)]
 
             # Build domain based on what related records exist
             if record.container_id and record.document_id:
-                domain.extend([
-                    '|',
-                    ('container_id', '=', record.container_id.id),
-                    ('document_id', '=', record.document_id.id)
-                ])
+                # Use proper prefix OR syntax for domain
+                domain = [
+                    "|",
+                    ("container_id", "=", record.container_id.id),
+                    ("document_id", "=", record.document_id.id),
+                ] + domain
             elif record.container_id:
-                domain.append(('container_id', '=', record.container_id.id))
+                domain.append(("container_id", "=", record.container_id.id))
             elif record.document_id:
-                domain.append(('document_id', '=', record.document_id.id))
+                domain.append(("document_id", "=", record.document_id.id))
 
-            record.previous_transfer_id = self.search(domain, order='sequence desc', limit=1)
+            record.previous_transfer_id = self.search(
+                domain, order="sequence desc", limit=1
+            )
 
-    @api.depends('transfer_type', 'next_transfer_id')
+    @api.depends("transfer_type", "next_transfer_id")
     def _compute_is_final(self):
         """Determine if this is the final transfer."""
         for record in self:
             record.is_final_transfer = (
-                record.transfer_type == 'destruction' or
-                not record.next_transfer_id
+                record.transfer_type == "destruction" or not record.next_transfer_id
             )
 
-    @api.depends('container_id', 'document_id')
+    @api.depends("container_id", "document_id")
     def _compute_related_counts(self):
         """Compute counts of related records."""
         for record in self:
@@ -428,174 +458,199 @@ class ChainOfCustody(models.Model):
             record.related_document_count = 1 if record.document_id else 0
 
     # Validation Methods
-    @api.constrains('transfer_date')
+    @api.constrains("transfer_date")
     def _check_transfer_date(self):
         """Validate transfer date is not in the future."""
         for record in self:
-            if record.transfer_date > fields.Datetime.now():
+            if record.transfer_date and record.transfer_date > fields.Datetime.now():
                 raise ValidationError(_("Transfer date cannot be in the future."))
 
-    @api.constrains('from_custodian_id', 'to_custodian_id')
+    @api.constrains("from_custodian_id", "to_custodian_id")
     def _check_custodians(self):
         """Validate custodian assignment."""
         for record in self:
-            if record.from_custodian_id and record.from_custodian_id == record.to_custodian_id:
-                raise ValidationError(_("From and To custodians cannot be the same person."))
+            if (
+                record.from_custodian_id
+                and record.from_custodian_id == record.to_custodian_id
+            ):
+                raise ValidationError(
+                    _("From and To custodians cannot be the same person.")
+                )
 
-    @api.constrains('container_id', 'document_id')
+    @api.constrains("container_id", "document_id")
     def _check_related_record(self):
         """Ensure at least one related record is specified."""
         for record in self:
             if not record.container_id and not record.document_id:
-                raise ValidationError(_("Either Container or Document must be specified."))
+                raise ValidationError(
+                    _("Either Container or Document must be specified.")
+                )
 
-    @api.constrains('security_level', 'naid_compliant')
+    @api.constrains("security_level", "naid_compliant")
     def _check_naid_compliance(self):
         """Validate NAID compliance requirements."""
         for record in self:
-            if record.naid_compliant and record.security_level in ['secret', 'top_secret']:
+            if record.naid_compliant and record.security_level in [
+                "secret",
+                "top_secret",
+            ]:
                 if not record.authorization_required or not record.authorized_by_id:
-                    raise ValidationError(_(
-                        "High security transfers require authorization and authorized by user."
-                    ))
+                    raise ValidationError(
+                        _(
+                            "High security transfers require authorization and authorized by user."
+                        )
+                    )
 
     # Generation Methods
     @api.model
     def _generate_reference(self):
         """Generate unique custody reference."""
-        sequence = self.env['ir.sequence'].next_by_code('chain.of.custody') or 'COC'
+        sequence = self.env["ir.sequence"].next_by_code("chain.of.custody") or "COC"
         return f"COC-{sequence}-{datetime.now().strftime('%Y%m%d')}"
 
     def _generate_verification_code(self):
         """Generate verification code for transfer."""
-        import random
-        import string
-        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+        return "".join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
     # Business Methods
     def action_confirm_transfer(self):
         """Confirm the custody transfer."""
-        for record in self:
-            if record.state != 'draft':
-                raise UserError(_("Only draft transfers can be confirmed."))
+        self.ensure_one()
+        if self.state != "draft":
+            raise UserError(_("Only draft transfers can be confirmed."))
 
-            record.write({
-                'state': 'pending',
-                'verification_code': record._generate_verification_code()
-            })
+        self.write(
+            {
+                "state": "pending",
+                "verification_code": self._generate_verification_code(),
+            }
+        )
 
-            # Create audit log
-            self.env['naid.audit.log'].create({
-                'event_type': 'custody_transfer',
-                'description': f"Custody transfer confirmed: {record.display_name}",
-                'user_id': self.env.user.id,
-                'custody_id': record.id,
-                'container_id': record.container_id.id if record.container_id else False,
-                'document_id': record.document_id.id if record.document_id else False,
-            })
+        # Create audit log
+        self.env["naid.audit.log"].create(
+            {
+                "event_type": "custody_transfer",
+                "description": f"Custody transfer confirmed: {self.display_name}",
+                "user_id": self.env.user.id,
+                "custody_id": self.id,
+                "container_id": self.container_id.id if self.container_id else False,
+                "document_id": self.document_id.id if self.document_id else False,
+            }
+        )
 
     def action_start_transfer(self):
         """Start the custody transfer process."""
-        for record in self:
-            if record.state != 'pending':
-                raise UserError(_("Only pending transfers can be started."))
+        self.ensure_one()
+        if self.state != "pending":
+            raise UserError(_("Only pending transfers can be started."))
 
-            record.write({'state': 'in_transit'})
+        self.write({"state": "in_transit"})
 
     def action_complete_transfer(self):
         """Complete the custody transfer."""
-        for record in self:
-            if record.state != 'in_transit':
-                raise UserError(_("Only in-transit transfers can be completed."))
+        self.ensure_one()
+        if self.state != "in_transit":
+            raise UserError(_("Only in-transit transfers can be completed."))
 
-            record.write({
-                'state': 'completed',
-                'signature_date': fields.Datetime.now()
-            })
+        self.write({"state": "completed", "signature_date": fields.Datetime.now()})
 
-            # Update related records
-            if record.container_id:
-                record.container_id.write({
-                    'current_custodian_id': record.to_custodian_id.id,
-                    'current_location_id': record.to_location_id.id
-                })
+        # Update related records
+        if self.container_id:
+            self.container_id.write(
+                {
+                    "current_custodian_id": self.to_custodian_id.id,
+                    "current_location_id": self.to_location_id.id,
+                }
+            )
 
-            if record.document_id:
-                record.document_id.write({
-                    'current_custodian_id': record.to_custodian_id.id,
-                    'current_location_id': record.to_location_id.id
-                })
+        if self.document_id:
+            self.document_id.write(
+                {
+                    "current_custodian_id": self.to_custodian_id.id,
+                    "current_location_id": self.to_location_id.id,
+                }
+            )
 
     def action_verify_transfer(self):
         """Verify the custody transfer."""
-        for record in self:
-            if record.state != 'completed':
-                raise UserError(_("Only completed transfers can be verified."))
+        self.ensure_one()
+        if self.state != "completed":
+            raise UserError(_("Only completed transfers can be verified."))
 
-            record.write({
-                'state': 'verified',
-                'is_verified': True,
-                'verified_by_id': self.env.user.id,
-                'verified_date': fields.Datetime.now()
-            })
+        self.write(
+            {
+                "state": "verified",
+                "is_verified": True,
+                "verified_by_id": self.env.user.id,
+                "verified_date": fields.Datetime.now(),
+            }
+        )
 
     def action_cancel_transfer(self):
         """Cancel the custody transfer."""
-        for record in self:
-            if record.state in ['verified', 'cancelled']:
-                raise UserError(_("Verified or cancelled transfers cannot be cancelled."))
+        self.ensure_one()
+        if self.state in ["verified", "cancelled"]:
+            raise UserError(_("Verified or cancelled transfers cannot be cancelled."))
 
-            record.write({'state': 'cancelled'})
+        self.write({"state": "cancelled"})
 
     # Reporting Methods
     def generate_custody_report(self):
         """Generate comprehensive custody report."""
         return {
-            'type': 'ir.actions.report',
-            'report_name': 'records_management.custody_chain_report',
-            'model': 'chain.of.custody',
-            'context': {'active_ids': self.ids}
+            "type": "ir.actions.report",
+            "report_name": "records_management.custody_chain_report",
+            "model": "chain.of.custody",
+            "context": {"active_ids": self.ids},
         }
 
     def get_full_chain(self):
-        """Get complete custody chain for related records."""
         domain = []
-        if self.container_id:
-            domain.append(('container_id', '=', self.container_id.id))
-        if self.document_id:
-            domain.append(('document_id', '=', self.document_id.id))
+        if self.container_id and self.document_id:
+            domain = [
+                "|",
+                ("container_id", "=", self.container_id.id),
+                ("document_id", "=", self.document_id.id),
+            ]
+        elif self.container_id:
+            domain = [("container_id", "=", self.container_id.id)]
+        elif self.document_id:
+            domain = [("document_id", "=", self.document_id.id)]
 
         if domain:
-            return self.search(domain, order='sequence, transfer_date')
+            return self.search(domain, order="sequence, transfer_date")
+        return self.browse()
         return self.browse()
 
     # Integration Methods
     def create_destruction_record(self):
         """Create NAID destruction certificate for final transfer."""
-        if not self.is_final_transfer or self.transfer_type != 'destruction':
+        if not self.is_final_transfer or self.transfer_type != "destruction":
             raise UserError(_("This is not a destruction transfer."))
 
         # Determine customer/partner for certificate
         partner = False
-        if self.document_id and getattr(self.document_id, 'partner_id', False):
+        if self.document_id and getattr(self.document_id, "partner_id", False):
             partner = self.document_id.partner_id.id
-        elif self.container_id and getattr(self.container_id, 'partner_id', False):
+        elif self.container_id and getattr(self.container_id, "partner_id", False):
             partner = self.container_id.partner_id.id
-        elif self.department_id and getattr(self.department_id, 'partner_id', False):
+        elif self.department_id and getattr(self.department_id, "partner_id", False):
             partner = self.department_id.partner_id.id
 
         if not partner:
-            raise UserError(_("Unable to determine customer for destruction certificate."))
+            raise UserError(
+                _("Unable to determine customer for destruction certificate.")
+            )
 
         certificate_vals = {
-            'partner_id': partner,
-            'destruction_date': self.transfer_date,
-            'res_model': 'chain.of.custody',
-            'res_id': self.id,
+            "partner_id": partner,
+            "destruction_date": self.transfer_date,
+            "res_model": "chain.of.custody",
+            "res_id": self.id,
             # Optional linkage of containers/boxes done by user later if needed
         }
 
-        certificate = self.env['naid.certificate'].create(certificate_vals)
+        certificate = self.env["naid.certificate"].create(certificate_vals)
         self.destruction_certificate_id = certificate.id
 
         return certificate
@@ -603,50 +658,70 @@ class ChainOfCustody(models.Model):
     # Override Methods
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to add audit logging. Batch compatible."""
-        records = super().create(vals_list)
+        """Override create to add audit logging and set default name. Batch compatible."""
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = self._generate_reference()
+        records = super(ChainOfCustody, self).create(vals_list)
+        log_messages = []
         for record in records:
-            self.env['naid.audit.log'].create({
-                'event_type': 'custody_created',
-                'description': f"New custody record created: {record.display_name}",
-                'user_id': self.env.user.id,
-                'custody_id': record.id,
-                'container_id': record.container_id.id if record.container_id else False,
-                'document_id': record.document_id.id if record.document_id else False,
-            })
-            _logger.info(f"Created custody record: {record.display_name}")
+            self.env["naid.audit.log"].create(
+                {
+                    "event_type": "custody_created",
+                    "description": f"New custody record created: {record.display_name}",
+                    "user_id": self.env.user.id,
+                    "custody_id": record.id,
+                    "container_id": record.container_id.id
+                    if record.container_id
+                    else False,
+                    "document_id": record.document_id.id
+                    if record.document_id
+                    else False,
+                }
+            )
+            log_messages.append(f"Created custody record: {record.display_name}")
+        if log_messages:
+            _logger.info("\n".join(log_messages))
         return records
 
     def write(self, vals):
         """Override write to add audit logging."""
-        result = super().write(vals)
+        result = super(ChainOfCustody, self).write(vals)
 
         # Log significant changes
-        tracked_fields = ['state', 'to_custodian_id', 'to_location_id', 'transfer_type']
+        tracked_fields = ["state", "to_custodian_id", "to_location_id", "transfer_type"]
         changed_fields = [field for field in tracked_fields if field in vals]
 
         if changed_fields:
             for record in self:
-                self.env['naid.audit.log'].create({
-                    'event_type': 'custody_modified',
-                    'description': f"Custody record modified: {record.display_name} - Fields: {', '.join(changed_fields)}",
-                    'user_id': self.env.user.id,
-                    'custody_id': record.id,
-                    'container_id': record.container_id.id if record.container_id else False,
-                    'document_id': record.document_id.id if record.document_id else False,
-                })
+                self.env["naid.audit.log"].create(
+                    {
+                        "event_type": "custody_modified",
+                        "description": f"Custody record modified: {record.display_name} - Fields: {', '.join(changed_fields)}",
+                        "user_id": self.env.user.id,
+                        "custody_id": record.id,
+                        "container_id": record.container_id.id
+                        if record.container_id
+                        else False,
+                        "document_id": record.document_id.id
+                        if record.document_id
+                        else False,
+                    }
+                )
 
         return result
 
     def unlink(self):
         """Override unlink to prevent deletion of verified transfers."""
         for record in self:
-            if record.is_verified:
-                raise UserError(_(
-                    "Verified custody transfers cannot be deleted for compliance reasons."
-                ))
+            if bool(record.is_verified):
+                raise UserError(
+                    _(
+                        "Verified custody transfers cannot be deleted for compliance reasons."
+                    )
+                )
 
-        return super().unlink()
+        return super(ChainOfCustody, self).unlink()
 
     # Utility Methods
     @api.model
@@ -654,18 +729,23 @@ class ChainOfCustody(models.Model):
         """Get custody transfer statistics."""
         domain = []
         if date_from:
-            domain.append(('transfer_date', '>=', date_from))
+            domain.append(("transfer_date", ">=", date_from))
         if date_to:
-            domain.append(('transfer_date', '<=', date_to))
+            domain.append(("transfer_date", "<=", date_to))
 
-        records = self.search(domain)
-
+        transfer_type_counts = self.read_group(
+            domain, ["transfer_type"], ["transfer_type"]
+        )
+        # Format as {transfer_type: count}
+        transfer_types = {
+            entry["transfer_type"]: entry["transfer_type_count"]
+            for entry in transfer_type_counts
+            if entry["transfer_type"]
+        }
+        total_count = self.search_count(domain)
+        completed_count = self.search_count(domain + [("state", "=", "completed")])
         return {
-            'total_transfers': len(records),
-            'completed_transfers': len(records.filtered(lambda r: r.state == 'completed')),
-            'verified_transfers': len(records.filtered(lambda r: r.is_verified)),
-            'naid_compliant_transfers': len(records.filtered(lambda r: r.naid_compliant)),
-            'transfer_types': records.read_group(
-                domain, ['transfer_type'], ['transfer_type']
-            ),
+            "total_transfers": total_count,
+            "completed_transfers": completed_count,
+            "transfer_types": transfer_types,
         }

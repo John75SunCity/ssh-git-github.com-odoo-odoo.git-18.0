@@ -259,10 +259,10 @@ class FieldLabelPortalController(CustomerPortal):
         """
         import re
         try:
-            return bool(re.match(pattern, str(value)))
+            return bool(re.fullmatch(str(pattern), str(value)))
         except re.error:
             _logger.warning("Invalid regex pattern: %s", pattern)
-            return True  # Allow value if pattern is invalid
+            return False  # Fail validation if pattern is invalid to expose misconfigurations
 
 
 class FieldLabelAdminController(http.Controller):
@@ -499,8 +499,12 @@ class FieldLabelAdminController(http.Controller):
 
         filename = 'field_labels'
         if customer_id:
-            customer_name = request.env['res.partner'].browse(customer_id).name
-            filename += f'_{customer_name.replace(" ", "_")}'
+            customer = request.env['res.partner'].browse(customer_id)
+            customer_name = customer.name if customer.exists() else None
+            if customer_name:
+                filename += f'_{customer_name.replace(" ", "_")}'
+        filename += '.csv'
+                filename += f'_{customer_name.replace(" ", "_")}'
         filename += '.csv'
 
         return request.make_response(
@@ -549,11 +553,13 @@ class FieldLabelAdminController(http.Controller):
                 worksheet.write(row, 7, 'Yes' if config.active else 'No')
 
             workbook.close()
-            output.seek(0)
-
             filename = 'field_labels'
             if customer_id:
-                customer_name = request.env['res.partner'].browse(customer_id).name
+                customer = request.env['res.partner'].browse(customer_id)
+                customer_name = customer.name if customer.exists() else None
+                if customer_name:
+                    filename += f'_{customer_name.replace(" ", "_")}'
+            filename += '.xlsx'
                 filename += f'_{customer_name.replace(" ", "_")}'
             filename += '.xlsx'
 
