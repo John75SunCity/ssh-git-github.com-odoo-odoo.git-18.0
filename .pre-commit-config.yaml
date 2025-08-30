@@ -289,4 +289,3 @@ exclude: |
       | \.DS_Store
       | Thumbs\.db
   )
-# Test commit - verifying pre-commit hooks work correctly
