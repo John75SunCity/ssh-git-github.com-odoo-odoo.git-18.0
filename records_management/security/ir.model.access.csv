@@ -1,6 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_account_move_line_user,account.move.line,model_account_move_line,records_management.group_records_user,1,1,1,0
-access_account_move_line_manager,account.move.line,model_account_move_line,records_management.group_records_manager,1,1,1,1
+access_account_move_line_user,account.move.line,account.move.line,records_management.group_records_user,1,1,1,0
+access_account_move_line_manager,account.move.line,account.move.line,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_user,advanced.billing,model_advanced_billing,records_management.group_records_user,1,1,1,0
 access_advanced_billing_manager,advanced.billing,model_advanced_billing,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_contact_user,advanced.billing.contact,model_advanced_billing_contact,records_management.group_records_user,1,1,1,0
