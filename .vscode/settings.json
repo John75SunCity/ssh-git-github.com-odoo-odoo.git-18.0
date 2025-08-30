@@ -249,7 +249,9 @@
         "**/.mypy_cache/**": true,
         "**/.pytest_cache/**": true,
         "**/venv/**": true,
-        "**/venv312/**": true
+        "**/venv312/**": true,
+        "**/development-tools/**": true,
+        "**/backup/**": true
     },
     "task.allowAutomaticTasks": "on",
     "task.quickOpen.detail": true,

@@ -1046,11 +1046,6 @@
             <field name="name">Naid Certificate</field>
         </record>
 
-        <record id="model_naid_chain_custody" model="ir.model">
-            <field name="model">chain.of.custody</field>
-            <field name="name">NAID Chain of Custody</field>
-        </record>
-
         <record id="model_naid_certificate_item" model="ir.model">
             <field name="model">naid.certificate.item</field>
             <field name="name">Naid Certificate Item</field>
