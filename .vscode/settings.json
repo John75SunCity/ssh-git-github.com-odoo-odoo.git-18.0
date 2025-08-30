@@ -141,10 +141,18 @@
     "git.showProgress": true,
     "git.supportCancellation": true,
     "git.useCommitInputAsStashMessage": true,
+    "git.enabled": true,
+    "git.path": "/usr/local/bin/git",
+    "git.defaultCloneDirectory": "~/Documents",
+    "git.openRepositoryInParentFolders": "always",
+    "git.repositoryScanMaxDepth": 1,
     "scm.alwaysShowRepositories": true,
     "scm.autoReveal": true,
     "scm.defaultViewMode": "tree",
     "scm.repositories.visible": 10,
+    "scm.showChangesSummary": true,
+    "scm.alwaysShowActions": true,
+    "scm.inputFontFamily": "default",
     "terminal.integrated.shell.osx": "/bin/zsh",
     "terminal.integrated.env.osx": {
         "PYTHONPATH": "${workspaceFolder}/records_management:${workspaceFolder}/addons"
@@ -283,3 +291,4 @@
     "editor.guides.highlightActiveIndentation": true,
     "editor.guides.indentation": true
 }
+# Test comment
