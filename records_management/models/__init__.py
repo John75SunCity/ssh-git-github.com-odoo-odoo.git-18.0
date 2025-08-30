@@ -3,6 +3,7 @@
 from . import (
     portal_request,
     records_container,
+    records_container_movement,
     records_container_type,
     records_department,
     records_document,
