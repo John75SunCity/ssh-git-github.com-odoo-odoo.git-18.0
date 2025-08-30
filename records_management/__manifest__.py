@@ -73,6 +73,7 @@
         # Data files
         "data/ir_sequence_data.xml",
         "data/sequence_data.xml",
+        "data/model_xml_ids.xml",  # Model XML ID definitions for security rules
         "data/base_rates_container_access_data.xml",
         "data/container_types_base_rates.xml",
         "data/document_retrieval_rates_data.xml",
