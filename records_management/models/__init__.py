@@ -35,6 +35,7 @@ from . import (
     container_destruction_work_order,
     container_retrieval,
     retrieval_item_base,  # BASE CLASS - must be before container_retrieval_item, file_retrieval_item, scan_retrieval_item
+    work_order_coordinator,  # COORDINATOR - must be before work orders that reference it
     container_retrieval_item,
     container_retrieval_work_order,
     custody_transfer_event,
@@ -245,7 +246,6 @@ from . import (
     unlock_service_history,
     unlock_service_part,
     visitor,
-    work_order_coordinator,
     work_order_retrieval,
     work_order_shredding,
     workflow_visualization_manager,

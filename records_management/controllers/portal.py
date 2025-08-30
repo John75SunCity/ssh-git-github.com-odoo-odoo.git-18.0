@@ -47,7 +47,7 @@ class RecordsManagementController(http.Controller):
         if not request.env.user.has_group('records_management.group_records_user'):
             return request.redirect('/web/login?redirect=/records/dashboard')
 
-        # Get comprehensive dashboard data
+        # Get comprehensive dashboard data (now filtered by user partner)
         dashboard_data = self._get_dashboard_data()
 
         # Get recent activities
@@ -228,8 +228,8 @@ class RecordsManagementController(http.Controller):
                         self._create_movement_record(container, new_location_id_int)
 
             elif action_type == "update_status":
-                new_status = values.get('status')
-                # You may want to implement status update logic here
+                # Placeholder for status update logic
+                pass
 
             elif action_type == "add_tags":
                 tag_ids = values.get('tag_ids', [])
@@ -241,9 +241,6 @@ class RecordsManagementController(http.Controller):
                     if tag_ids:
                         containers.write({'tag_ids': [(6, 0, tag_ids)]})
                         updated_count = len(containers)
-                if tag_ids:
-                    containers.write({'tag_ids': [(6, 0, tag_ids)]})
-                    updated_count = len(containers)
 
             # Create NAID audit log
             self._create_audit_log(
@@ -274,10 +271,18 @@ class RecordsManagementController(http.Controller):
 
         # Build domain based on filters
         domain = []
-        if get.get('partner_id'):
-            domain.append(('partner_id', '=', int(get.get('partner_id'))))
-        if get.get('location_id'):
-            domain.append(('location_id', '=', int(get.get('location_id'))))
+        partner_id = get.get("partner_id")
+        location_id = get.get("location_id")
+        if partner_id:
+            try:
+                domain.append(("partner_id", "=", int(partner_id)))
+            except (TypeError, ValueError):
+                pass  # Skip if not convertible
+        if location_id:
+            try:
+                domain.append(("location_id", "=", int(location_id)))
+            except (TypeError, ValueError):
+                pass  # Skip if not convertible
 
         containers = request.env['records.container'].search(domain)
 
@@ -420,50 +425,58 @@ class RecordsManagementController(http.Controller):
         PickupRequest = request.env['pickup.request']
         ShredService = request.env['shredding.service']
 
-        # Get current company containers
+        # Determine if user is a portal user (customer) - exclude sensitive data like location capacity
+        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")
+        user_partner_id = request.env.user.partner_id.id
+
+        # Base domain for filtering by user partner (for portal users)
+        partner_domain = [("partner_id", "=", user_partner_id)] if is_portal_user else []
+
+        # Get current company containers (filtered by partner for portal users)
         company_domain = [('company_id', '=', request.env.company.id)]
+        full_domain = company_domain + partner_domain + [("active", "=", True)]
 
-        # Container statistics
-        total_containers = Container.search_count(company_domain + [('active', '=', True)])
-        containers_by_type = Container.read_group(
-            company_domain + [('active', '=', True)],
-            ['container_type'],
-            ['container_type']
-        )
+        # Container statistics (filtered)
+        total_containers = Container.search_count(full_domain)
+        containers_by_type = Container.read_group(full_domain, ["container_type"], ["container_type"])
 
-        # Active requests
-        pending_pickups = PickupRequest.search_count([('state', 'in', ['draft', 'confirmed'])])
+        # Active requests (filtered by partner for portal users)
+        pickup_domain = partner_domain + [("state", "in", ["draft", "confirmed"])]
+        pending_pickups = PickupRequest.search_count(pickup_domain)
 
-        # Recent destruction services
-        recent_destructions = ShredService.search_count([
-            ('completion_date', '>=', (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d'))
-        ])
+        # Recent destruction services (filtered by partner for portal users)
+        shred_domain = partner_domain + [
+            ("completion_date", ">=", (datetime.now() - timedelta(days=30)).strftime("%Y-%m-%d"))
+        ]
+        recent_destructions = ShredService.search_count(shred_domain)
 
-        # Calculate total volume and capacity utilization
-        container_data = Container.search_read(
-            company_domain + [('active', '=', True)],
-            ['volume', 'location_id']
-        )
+        # Calculate total volume (filtered)
+        container_data = Container.search_read(full_domain, ["volume", "location_id"])
 
         # Initialize variables for calculation
         total_volume = 0
-        location_utilization = {}
+        location_utilization = {}  # Only populate for non-portal users
 
         for container in container_data:
             total_volume += container["volume"] or 0
-            location_id = container.get("location_id")
-            if location_id:
-                location_name = (
-                    request.env["records.location"].browse(location_id[0]).name if location_id else "Unknown"
-                )
-                if location_name not in location_utilization:
-                    location_utilization[location_name] = {"volume": 0, "count": 0}
-                location_utilization[location_name]["volume"] += container["volume"] or 0
-                location_utilization[location_name]["count"] += 1
+            # Exclude location utilization for portal users to prevent capacity exposure
+            if not is_portal_user:
+                location_id = container.get("location_id")
+                if location_id:
+                    location_name = (
+                        request.env["records.location"].browse(location_id[0]).name if location_id else "Unknown"
+                    )
+                    if location_name not in location_utilization:
+                        location_utilization[location_name] = {"volume": 0, "count": 0}
+                    location_utilization[location_name]["volume"] += container["volume"] or 0
+                    location_utilization[location_name]["count"] += 1
 
-        # Efficiently count unique active customers using read_group
-        active_customers_group = Container.read_group([("active", "=", True)], ["partner_id"], ["partner_id"])
-        active_customers_count = len(active_customers_group)
+        # Efficiently count unique active customers (filtered for portal users - should be 1 or 0)
+        customer_domain = partner_domain + [("active", "=", True)]
+        active_customers_group = Container.read_group(customer_domain, ["partner_id"], ["partner_id"])
+        active_customers_count = (
+            len(active_customers_group) if not is_portal_user else (1 if active_customers_group else 0)
+        )
 
         return {
             "total_containers": total_containers,
@@ -473,7 +486,7 @@ class RecordsManagementController(http.Controller):
             "total_volume_cf": round(total_volume, 2),
             "pending_pickups": pending_pickups,
             "recent_destructions": recent_destructions,
-            "location_utilization": location_utilization,
+            "location_utilization": location_utilization,  # Empty for portal users
             "active_customers": active_customers_count,
         }
 
@@ -481,12 +494,16 @@ class RecordsManagementController(http.Controller):
         """Get recent system activities for dashboard display."""
         activities = []
 
-        # Recent container creations
-        recent_containers = request.env['records.container'].search(
-            [('create_date', '>=', (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))],
-            order='create_date desc',
-            limit=5
-        )
+        # Determine if user is a portal user and get their partner
+        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")
+        user_partner_id = request.env.user.partner_id.id
+        partner_domain = [("partner_id", "=", user_partner_id)] if is_portal_user else []
+
+        # Recent container creations (filtered by partner)
+        container_domain = partner_domain + [
+            ("create_date", ">=", (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d"))
+        ]
+        recent_containers = request.env["records.container"].search(container_domain, order="create_date desc", limit=5)
 
         for container in recent_containers:
             activities.append({
@@ -497,12 +514,11 @@ class RecordsManagementController(http.Controller):
                 'color': 'success'
             })
 
-        # Recent pickup requests
-        recent_pickups = request.env['pickup.request'].search(
-            [('create_date', '>=', (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))],
-            order='create_date desc',
-            limit=5
-        )
+        # Recent pickup requests (filtered by partner)
+        pickup_domain = partner_domain + [
+            ("create_date", ">=", (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d"))
+        ]
+        recent_pickups = request.env["pickup.request"].search(pickup_domain, order="create_date desc", limit=5)
 
         for pickup in recent_pickups:
             activities.append({
@@ -523,24 +539,27 @@ class RecordsManagementController(http.Controller):
         last_month = now - timedelta(days=30)
         last_week = now - timedelta(days=7)
 
-        # Container growth metrics
-        containers_this_month = request.env['records.container'].search_count([
-            ('create_date', '>=', last_month.strftime('%Y-%m-%d'))
-        ])
+        # Determine if user is a portal user and get their partner
+        is_portal_user = not request.env.user.has_group("records_management.group_records_manager")
+        user_partner_id = request.env.user.partner_id.id
+        partner_domain = [("partner_id", "=", user_partner_id)] if is_portal_user else []
 
-        containers_last_week = request.env['records.container'].search_count([
-            ('create_date', '>=', last_week.strftime('%Y-%m-%d'))
-        ])
+        # Container growth metrics (filtered by partner)
+        container_month_domain = partner_domain + [("create_date", ">=", last_month.strftime("%Y-%m-%d"))]
+        containers_this_month = request.env["records.container"].search_count(container_month_domain)
 
-        # Pickup efficiency
-        completed_pickups = request.env['pickup.request'].search_count([
-            ('state', '=', 'completed'),
-            ('completion_date', '>=', last_month.strftime('%Y-%m-%d'))
-        ])
+        container_week_domain = partner_domain + [("create_date", ">=", last_week.strftime("%Y-%m-%d"))]
+        containers_last_week = request.env["records.container"].search_count(container_week_domain)
 
-        total_pickups = request.env['pickup.request'].search_count([
-            ('create_date', '>=', last_month.strftime('%Y-%m-%d'))
-        ])
+        # Pickup efficiency (filtered by partner)
+        pickup_completed_domain = partner_domain + [
+            ("state", "=", "completed"),
+            ("completion_date", ">=", last_month.strftime("%Y-%m-%d")),
+        ]
+        completed_pickups = request.env["pickup.request"].search_count(pickup_completed_domain)
+
+        pickup_total_domain = partner_domain + [("create_date", ">=", last_month.strftime("%Y-%m-%d"))]
+        total_pickups = request.env["pickup.request"].search_count(pickup_total_domain)
 
         pickup_completion_rate = (completed_pickups / total_pickups * 100) if total_pickups else 0
 
