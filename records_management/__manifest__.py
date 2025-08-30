@@ -63,7 +63,9 @@
         "quality",  # Important for compliance
     ],
     "data": [
-        # Security files must load first
+        # Model XML IDs must load first before security rules reference them
+        "data/model_external_ids.xml",
+        # Security files must load next
         "security/records_management_security.xml",
         "security/additional_models_security.xml",
         "security/intelligent_search_security.xml",
