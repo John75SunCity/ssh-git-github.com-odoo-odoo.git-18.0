@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
+import ast
+import json
 import logging
-from odoo import models, fields, api, _
+import re
+
+from odoo import api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.tools.translate import _
 
 _logger = logging.getLogger(__name__)
 
@@ -171,8 +176,8 @@ class MobileDashboardWidget(models.Model):
     )
 
     # Permissions and Access
-    user_groups = fields.Many2many(
-        comodel_name='res.groups',
+    user_group_ids = fields.Many2many(
+        comodel_name='res.group',
         relation='mobile_dashboard_widget_group_rel',
         column1='widget_id',
         column2='group_id',
@@ -183,7 +188,7 @@ class MobileDashboardWidget(models.Model):
     company_id = fields.Many2one(
         comodel_name='res.company',
         string='Company',
-        default=lambda self: self.env.company,
+        default=lambda self: self.env.company.id,
         help='Company this widget belongs to'
     )
 
@@ -193,26 +198,38 @@ class MobileDashboardWidget(models.Model):
         help='Unique technical identifier for the widget'
     )
 
-    config_params = fields.Json(
+    config_params = fields.Text(
         string='Configuration Parameters',
-        help='Additional configuration parameters as JSON'
+        help='Additional configuration parameters as JSON (serialized string)'
     )
 
-    # Computed Fields
     @api.depends('name', 'category_id.name')
-    def _compute_display_name(self):
-        """Compute display name with category"""
+    def _compute_dashboard_display_name(self):
+        """Compute dashboard display name with category"""
         for record in self:
             if record.category_id:
-                record.display_name = f"{record.category_id.name}: {record.name}"
+                record.dashboard_display_name = f"{record.category_id.name}: {record.name}"
             else:
-                record.display_name = record.name
+                record.dashboard_display_name = record.name
 
-    display_name = fields.Char(
-        string='Display Name',
-        compute='_compute_display_name',
+    dashboard_display_name = fields.Char(
+        string='Dashboard Display Name',
+        compute='_compute_dashboard_display_name',
         store=True
     )
+
+    def get_config_params(self):
+        """Return config_params as a Python dict."""
+        try:
+            return json.loads(str(self.config_params or '{}'))
+        except Exception:
+            return {}
+
+    def set_config_params(self, params):
+        """Set config_params from a Python dict."""
+        if not isinstance(params, dict):
+            raise ValueError("params must be a dictionary")
+        self.config_params = json.dumps(params or {})
 
     # Constraints
     @api.constrains('technical_name')
@@ -226,8 +243,7 @@ class MobileDashboardWidget(models.Model):
                 ])
                 if existing:
                     raise ValidationError(
-                        _("Technical name must be unique. '%s' already exists.") %
-                        record.technical_name
+                        _("Technical name must be unique. '%s' already exists.") % record.technical_name
                     )
 
     @api.constrains('model_name', 'field_name')
@@ -235,16 +251,14 @@ class MobileDashboardWidget(models.Model):
         """Validate that model and field exist"""
         for record in self:
             if record.model_name and record.field_name:
-                try:
-                    model = self.env[record.model_name]
-                    if record.field_name not in model._fields:
-                        raise ValidationError(
-                            _("Field '%s' does not exist in model '%s'.") %
-                            (record.field_name, record.model_name)
-                        )
-                except KeyError:
+                model = self.env.get(record.model_name)
+                if not model:
                     raise ValidationError(
                         _("Model '%s' does not exist.") % record.model_name
+                    )
+                if record.field_name not in model._fields:
+                    raise ValidationError(
+                        _("Field '%s' does not exist in model '%s'.") % (record.field_name, record.model_name)
                     )
 
     # Methods
@@ -275,7 +289,7 @@ class MobileDashboardWidget(models.Model):
             elif widget.data_source == 'static':
                 data['data'] = {'value': widget.content or 'No data'}
             elif widget.data_source == 'computed':
-                data['data'] = self._get_computed_data(widget)
+                data['data'] = self._compute_widget_data(widget)
 
             return data
 
@@ -300,7 +314,6 @@ class MobileDashboardWidget(models.Model):
             if widget.domain:
                 try:
                     # Parse domain string to list
-                    import ast
                     domain = ast.literal_eval(widget.domain)
                 except (ValueError, SyntaxError):
                     # If domain parsing fails, use empty domain
@@ -342,7 +355,7 @@ class MobileDashboardWidget(models.Model):
         except Exception as e:
             return {'value': f'Error: {str(e)}', 'error': True}
 
-    def _get_computed_data(self, widget):
+    def _compute_widget_data(self, widget):
         """Get computed data based on widget configuration"""
         try:
             # This is a placeholder for custom computed data
@@ -361,14 +374,16 @@ class MobileDashboardWidget(models.Model):
 
         # Filter by user groups if specified
         if self.env.user.id != 1:  # Not superuser
-            domain.append('|')
-            domain.append(('user_groups', '=', False))  # No group restriction
-            domain.append(('user_groups', 'in', user.groups_id.ids))
+            domain.extend([
+                '|',
+                ('user_group_ids', '=', False),  # No group restriction
+                ('user_group_ids', 'in', user.groups_id.ids)
+            ])
 
         return self.search(domain)
 
     @api.model
-    def _ensure_default_category(self):
+    def _default_category(self):
         """Ensure the default operations category exists"""
         category_model = self.env['mobile.dashboard.widget.category']
 
@@ -402,10 +417,10 @@ class MobileDashboardWidget(models.Model):
         return default_category
 
     @api.model
-    def create_default_widgets(self):
+    def _default_widgets(self):
         """Create default dashboard widgets using available models"""
         # Ensure default category exists
-        default_category = self._ensure_default_category()
+        default_category = self._default_category()
 
         default_widgets = [
             {
@@ -429,8 +444,7 @@ class MobileDashboardWidget(models.Model):
                 'icon': 'fa-clock',
                 'color': '#ffc107',
                 'model_name': 'records.request',
-                'domain': "[('state', 'in', ['draft', 'submitted'])]",
-                'aggregation': 'count',
+                'domain': "[('state', 'in', ['draft', 'submitted']), ('create_date', '>=', '{}')]".format(fields.Date.today()),
                 'title': 'Pending Requests',
                 'action_type': 'model',
                 'action_value': 'records.request',
@@ -443,7 +457,7 @@ class MobileDashboardWidget(models.Model):
                 'icon': 'fa-box',
                 'color': '#007bff',
                 'model_name': 'records.container',
-                'domain': "[('create_date', '>=', (context_today()).strftime('%Y-%m-%d'))]",
+                'domain': "[('create_date', '>=', '{}')]".format(fields.Date.context_today(self.env.user)),
                 'aggregation': 'count',
                 'title': 'Containers Today',
                 'action_type': 'model',
@@ -512,7 +526,7 @@ class MobileDashboardWidget(models.Model):
                 'icon': 'fa-exclamation-triangle',
                 'color': '#dc3545',
                 'model_name': 'records.request',
-                'domain': "[('date_deadline', '<', (context_today()).strftime('%Y-%m-%d')), ('state', '!=', 'done')]",
+                'domain': "[('date_deadline', '<', '{}'), ('state', '!=', 'done')]".format(fields.Date.context_today(self.env.user)),
                 'aggregation': 'count',
                 'title': 'Overdue Items',
                 'action_type': 'model',
@@ -602,7 +616,7 @@ class MobileDashboardWidget(models.Model):
                     self.create(widget_data)
                 except Exception as e:
                     # Log error but continue with other widgets
-                    _logger.warning("Failed to create widget %s: %s" % (widget_data['name'], str(e)))
+                    _logger.warning(_("Failed to create widget %s: %s") % (widget_data['name'], str(e)))
                     continue
 
         return True
@@ -612,5 +626,7 @@ class MobileDashboardWidget(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if not vals.get('technical_name') and vals.get('name'):
-                vals['technical_name'] = vals['name'].lower().replace(' ', '_').replace("'", '')
+                # Replace non-alphanumeric characters with underscores
+                technical_name = re.sub(r'\W+', '_', vals['name'].lower())
+                vals['technical_name'] = technical_name.strip('_')
         return super().create(vals_list)
