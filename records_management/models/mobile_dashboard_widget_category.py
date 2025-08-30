@@ -59,12 +59,12 @@ class MobileDashboardWidgetCategory(models.Model):
     # Constraints
     _sql_constraints = [
         (
-            "mobile_dashboard_widget_category_name_company_uniq",
+            "mobile_dash_widget_category_name_company_uniq",
             "unique(name, company_id)",
             "Category name must be unique per company",
         ),
         (
-            "mobile_dashboard_widget_category_technical_name_company_uniq",
+            "mobile_dash_widget_category_technical_name_company_uniq",
             "unique(technical_name, company_id)",
             "Technical name must be unique per company",
         ),

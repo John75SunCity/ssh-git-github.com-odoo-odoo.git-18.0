@@ -97,10 +97,8 @@ class FsmOrder(models.Model):
     # ============================================================================
     # BIN DETAILS
     # ============================================================================
-    bin_details = fields.One2many(
-        comodel_name='shredding.service.bin',
-        inverse_name='shredding_service_id',
-        string="Bin Details"
+    bin_details_ids = fields.One2many(
+        comodel_name="shredding.service.bin", inverse_name="shredding_service_id", string="Bin Details"
     )
 
     # ============================================================================
@@ -158,6 +156,7 @@ class FsmOrder(models.Model):
         logic for certificate generation, vehicle assignment, and technician
         assignment when completing a shredding service.
         """
+        self.ensure_one()
         res = super().action_complete()
         for order in self:
             try:
@@ -170,7 +169,7 @@ class FsmOrder(models.Model):
                 if not order.technician_id:
                     order.technician_id = order.user_id.id
             except Exception as e:
-                raise UserError(_("Error completing shredding service: %s") % str(e)) from e
+                raise UserError(_("Error completing shredding service: %s", str(e))) from e
         return res
 
     def action_view_photos(self):
@@ -225,14 +224,14 @@ class FsmOrder(models.Model):
         self._generate_certificate()
 
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _("Certificate Generated"),
-                'message': _("Destruction certificate %s has been generated successfully.") % self.certificate_id.name,
-                'type': 'success',
-                'sticky': False,
-            }
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Certificate Generated"),
+                "message": _("Destruction certificate %s has been generated successfully.", self.certificate_id.name),
+                "type": "success",
+                "sticky": False,
+            },
         }
 
     # ============================================================================
@@ -251,7 +250,7 @@ class FsmOrder(models.Model):
 
         # Prepare bin details for the certificate
         bin_details = []
-        for bin_detail in self.bin_details:
+        for bin_detail in self.bin_details_ids:
             if hasattr(bin_detail, 'bin_size') and hasattr(bin_detail, 'barcode'):
                 bin_details.append({
                     'bin_size': bin_detail.bin_size,
@@ -273,11 +272,10 @@ class FsmOrder(models.Model):
             certificate = self.env['shredding.certificate'].create(certificate_vals)
             self.certificate_id = certificate.id
             self.message_post(
-                body=_("Destruction Certificate %s generated.") % certificate.name,
-                attachment_ids=[(4, certificate.id)]
+                body=_("Destruction Certificate %s generated.", certificate.name), attachment_ids=[(4, certificate.id)]
             )
         except Exception as e:
-            raise UserError(_("Failed to generate certificate: %s") % str(e)) from e
+            raise UserError(_("Failed to generate certificate: %s", str(e))) from e
 
     def _prepare_certificate_vals(self):
         """
@@ -288,7 +286,7 @@ class FsmOrder(models.Model):
 
         # Prepare bin details for the certificate
         bin_details = []
-        for bin_detail in self.bin_details:
+        for bin_detail in self.bin_details_ids:
             if hasattr(bin_detail, 'bin_size') and hasattr(bin_detail, 'barcode'):
                 bin_details.append({
                     'bin_size': bin_detail.bin_size,
@@ -318,10 +316,12 @@ class FsmOrder(models.Model):
 
     @api.constrains('naid_compliance_required', 'certificate_required')
     def _check_naid_compliance(self):
-        """Validate NAID compliance requirements."""
+        """Validate and auto-correct NAID compliance requirements."""
         for record in self:
+            # Auto-correct: if NAID compliance is required, certificate must also be required
             if record.naid_compliance_required and not record.certificate_required:
-                raise UserError(_("Certificate is required when NAID compliance is enabled."))
+                # Instead of raising an error, auto-correct the field
+                record.certificate_required = True
 
     # ============================================================================
     # BUSINESS METHODS

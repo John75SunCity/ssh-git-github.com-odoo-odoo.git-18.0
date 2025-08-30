@@ -189,7 +189,7 @@ class MobileDashboardWidget(models.Model):
 
     # Permissions and Access
     user_group_ids = fields.Many2many(
-        comodel_name="res.group",
+        comodel_name="res.groups",
         relation="mobile_dashboard_widget_group_rel",
         column1="widget_id",
         column2="group_id",
