@@ -94,12 +94,6 @@
         </record>
 
         <!-- Grant base access to Records Management groups -->
-        <record id="records_management.group_records_manager" model="res.groups">
-            <field name="implied_ids" eval="[(4, ref('group_naid_security_officer'))]"/>
-        </record>
-
-        <record id="records_management.group_records_user" model="res.groups">
-            <field name="implied_ids" eval="[(4, ref('group_naid_destruction_operator'))]"/>
-        </record>
+        <!-- Note: Group relationships are defined in records_management_security.xml -->
     </data>
 </odoo>
