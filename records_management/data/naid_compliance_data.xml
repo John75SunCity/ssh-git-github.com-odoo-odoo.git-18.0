@@ -305,35 +305,12 @@
         </record>
 
         <!-- NAID Model XML ID definitions for security rules -->
-        <record id="model_naid_audit_log" model="ir.model">
-            <field name="model">naid.audit.log</field>
-            <field name="name">NAID Audit Log</field>
-            <field name="info">NAID Audit Log Management</field>
+                    }
+                        ]]></field>
         </record>
 
-        <record id="model_naid_chain_custody" model="ir.model">
-            <field name="model">chain.of.custody</field>
-            <field name="name">NAID Chain of Custody</field>
-            <field name="info">NAID Chain of Custody Management</field>
-        </record>
-
-        <record id="model_naid_compliance_policy" model="ir.model">
-            <field name="model">naid.compliance.policy</field>
-            <field name="name">NAID Compliance Policy</field>
-            <field name="info">NAID Compliance Policy Management</field>
-        </record>
-
-        <record id="model_naid_certificate" model="ir.model">
-            <field name="model">naid.certificate</field>
-            <field name="name">NAID Certificate</field>
-            <field name="info">NAID Certificate Management</field>
-        </record>
-
-        <record id="model_naid_compliance_checklist" model="ir.model">
-            <field name="model">naid.compliance.checklist</field>
-            <field name="name">NAID Compliance Checklist</field>
-            <field name="info">NAID Compliance Checklist Management</field>
-        </record>
+    </data>
+</odoo>
 
         <!-- NAID Integration Parameters -->
         <record id="config_naid_integration" model="ir.config_parameter">
@@ -359,37 +336,6 @@
                 "top_secret": {"particle_size": "0.8mm", "witnesses": 3, "tracking": "military_grade"}
             }
                         ]]></field>
-        </record>
-
-        <!-- NAID Model XML ID definitions for security rules -->
-        <record id="model_naid_audit_log" model="ir.model">
-            <field name="model">naid.audit.log</field>
-            <field name="name">NAID Audit Log</field>
-            <field name="info">NAID Audit Log Management</field>
-        </record>
-
-        <record id="model_naid_chain_custody" model="ir.model">
-            <field name="model">chain.of.custody</field>
-            <field name="name">NAID Chain of Custody</field>
-            <field name="info">NAID Chain of Custody Management</field>
-        </record>
-
-        <record id="model_naid_compliance_policy" model="ir.model">
-            <field name="model">naid.compliance.policy</field>
-            <field name="name">NAID Compliance Policy</field>
-            <field name="info">NAID Compliance Policy Management</field>
-        </record>
-
-        <record id="model_naid_certificate" model="ir.model">
-            <field name="model">naid.certificate</field>
-            <field name="name">NAID Certificate</field>
-            <field name="info">NAID Certificate Management</field>
-        </record>
-
-        <record id="model_naid_compliance_checklist" model="ir.model">
-            <field name="model">naid.compliance.checklist</field>
-            <field name="name">NAID Compliance Checklist</field>
-            <field name="info">NAID Compliance Checklist Management</field>
         </record>
 
     </data>
