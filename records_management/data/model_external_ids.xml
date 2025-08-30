@@ -149,11 +149,6 @@
             <field name="name">Bin Unlock Service</field>
         </record>
 
-        <record id="model_chain_of_custody" model="ir.model">
-            <field name="model">chain.of.custody</field>
-            <field name="name">Chain Of Custody</field>
-        </record>
-
         <record id="model_custody_transfer_event" model="ir.model">
             <field name="model">custody.transfer.event</field>
             <field name="name">Custody Transfer Event</field>
