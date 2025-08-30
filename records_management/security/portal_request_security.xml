@@ -4,7 +4,7 @@
     <record id="rule_pickup_request_user_read_own" model="ir.rule">
         <field name="name">Pickup Request: Read Own</field>
         <field name="model_id" ref="records_management.model_pickup_request"/>
-        <field name="domain_force">[('customer_id', '=', user.partner_id.id)]</field>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
         <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="False"/>
@@ -26,7 +26,7 @@
     <record id="rule_shredding_service_user_read_own" model="ir.rule">
         <field name="name">Shredding Service: Read Own</field>
         <field name="model_id" ref="records_management.model_shredding_service"/>
-        <field name="domain_force">[('customer_id', '=', user.partner_id.id)]</field>
+        <field name="domain_force">[('provider_id', '=', user.partner_id.id)]</field>
         <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="False"/>
@@ -47,7 +47,7 @@
     <!-- Stock Move SMS Validation -->
     <record id="rule_sms_validation_user_read_own" model="ir.rule">
         <field name="name">Stock Move SMS Validation: Read Own</field>
-        <field name="model_id" ref="records_management.model_stock_move_sms_validation"/>
+        <field name="model_id" ref="stock.model_stock_move"/>
         <field name="domain_force">[('create_uid', '=', user.id)]</field>
         <field name="groups" eval="[(4, ref('records_management.group_records_user'))]"/>
         <field name="perm_read" eval="True"/>
@@ -57,7 +57,7 @@
     </record>
     <record id="rule_sms_validation_manager_all" model="ir.rule">
         <field name="name">Stock Move SMS Validation: Manager Full Access</field>
-        <field name="model_id" ref="records_management.model_stock_move_sms_validation"/>
+        <field name="model_id" ref="stock.model_stock_move"/>
         <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
         <field name="perm_read" eval="True"/>
@@ -67,15 +67,18 @@
     </record>
 
     <!-- Installer: only managers -->
-    <record id="rule_installer_manager_all" model="ir.rule">
-        <field name="name">Records Management Installer: Manager Full Access</field>
-        <field name="model_id" ref="records_management.model_records_management_installer"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
+        <!-- Portal Request Rules (Customer Can See Own Requests) -->
+    <record id="portal_request_portal_rule" model="ir.rule">
+        <field name="name">Portal Request Portal Access</field>
+        <field name="model_id" ref="records_management.model_portal_request"/>
+        <field name="domain_force">[
+                ('partner_id', 'in', user.partner_id.commercial_partner_id.child_ids.ids + [user.partner_id.commercial_partner_id.id])
+            ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
         <field name="perm_read" eval="True"/>
         <field name="perm_write" eval="True"/>
         <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
     </record>
 
     <!-- SCRM Records Management: assuming _name is 'scrm.records.management' -->
