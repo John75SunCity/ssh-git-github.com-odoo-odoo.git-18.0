@@ -80,6 +80,7 @@
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
         "data/temp_inventory_configurator_data.xml",
+        "security/records_management_security.xml",
         "security/additional_models_security.xml",
         "security/intelligent_search_security.xml",
         "security/ir.model.access.csv",
@@ -119,8 +120,7 @@
         "#NAIDcompliancemodelXMLIDsdata/portal_mail_templates_data.xml",
         "#PortalmodelXMLIDsdata/fsm_data.xml",
         "#Reports(loadlast)reports/naid_compliance_policy_report.xml",
-        "#Securityfilesmustloadnextsecurity/records_management_security.xml",
-        "#Views(loadafterdata)views/enhanced_features_menus.xml"
+        "#Views(loadafterdata)views/enhanced_features_menus.xml",
     ],
     "demo": [
         "demo/customer_inventory_demo.xml",
