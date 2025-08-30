@@ -38,10 +38,13 @@ class ShreddingServiceBin(models.Model):
     _rec_name = 'display_name'
 
     # ============================================================================
-    # CORE IDENTIFICATION
+    # RELATIONSHIP FIELDS
     # ============================================================================
-    active = fields.Boolean(default=True, tracking=True)
-    sequence = fields.Integer(default=10, help="Display sequence")
+    shredding_service_id = fields.Many2one(
+        comodel_name="project.task",
+        string="Shredding Service",
+        help="The FSM task/work order this bin is associated with",
+    )
 
     barcode = fields.Char(
         string="Barcode",
