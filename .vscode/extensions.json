@@ -9,7 +9,6 @@
         // === MODERN PYTHON DEVELOPMENT ===
         "ms-python.python",
         "ms-python.black-formatter",
-        "ms-python.isort",
         "ms-python.pylint",
         "ms-python.mypy-type-checker",
         "ms-python.debugpy",
@@ -82,8 +81,7 @@
         "ms-vscode.vscode-js-profile-flame",
 
         // === COLLABORATION ===
-        "ms-vsliveshare.vsliveshare",
-        "ms-vsliveshare.vsliveshare-audio"
+        "ms-vsliveshare.vsliveshare"
     ],
     "unwantedRecommendations": [
         "ms-python.python",

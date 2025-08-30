@@ -36,9 +36,9 @@
         "./addons",
         "./typings"
     ],
-    "ruff.enable": true,
-    "ruff.organizeImports": true,
-    "ruff.fixAll": true,
+    "ruff.enable": false,
+    "ruff.organizeImports": false,
+    "ruff.fixAll": false,
     "ruff.lint.run": "onType",
     "ruff.format.args": [],
     "ruff.lint.args": [],
@@ -62,7 +62,7 @@
     "editor.formatOnPaste": true,
     "editor.formatOnType": false,
     "editor.codeActionsOnSave": {
-        "source.organizeImports": "explicit",
+        "source.organizeImports": "never",
         "source.fixAll.ruff": "explicit",
         "source.fixAll": "never"
     },
@@ -74,7 +74,7 @@
         "editor.formatOnPaste": true,
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.codeActionsOnSave": {
-            "source.organizeImports": "explicit",
+            "source.organizeImports": "never",
             "source.fixAll.ruff": "explicit"
         }
     },
@@ -118,7 +118,8 @@
         "*.yml": "yaml",
         "*.md": "markdown"
     },
-    "files.autoSave": "onFocusChange",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 3000,
     "files.trimTrailingWhitespace": true,
     "files.trimFinalNewlines": true,
     "files.insertFinalNewline": true,
