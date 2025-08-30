@@ -47,47 +47,69 @@ class RmModuleConfigurator(models.Model):
     This model is critical for ensuring the flexibility and extendability of the Records Management module.
     """
 
-    _name = 'rm.module.configurator'
-    _description = 'Records Management Configuration'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'category, sequence, name'
-    _rec_name = 'name'
+    _name = "rm.module.configurator"
+    _description = "Records Management Configuration"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "category, sequence, name"
+    _rec_name = "name"
 
     # ============================================================================
     # FIELDS - Configuration Definition
     # ============================================================================
     name = fields.Char(string="Configuration Name", required=True, index=True)
     sequence = fields.Integer(default=10)
-    active = fields.Boolean(default=True, help="Only active configurations are applied.")
+    active = fields.Boolean(
+        default=True, help="Only active configurations are applied."
+    )
     company_id = fields.Many2one(
-        comodel_name='res.company',
-        string='Company',
+        comodel_name="res.company",
+        string="Company",
         default=lambda self: self.env.company,
-        help="Configuration specific to a company. Leave empty for global."
+        help="Configuration specific to a company. Leave empty for global.",
     )
 
-    category = fields.Selection([
-        ('ui', 'User Interface'),
-        ('workflow', 'Workflow'),
-        ('billing', 'Billing'),
-        ('compliance', 'Compliance & NAID'),
-        ('fsm', 'Field Service'),
-        ('portal', 'Customer Portal'),
-        ('reporting', 'Reporting'),
-        ('security', 'Security'),
-        ('system', 'System')
-    ], string="Category", required=True, default='system')
+    category = fields.Selection(
+        [
+            ("ui", "User Interface"),
+            ("workflow", "Workflow"),
+            ("billing", "Billing"),
+            ("compliance", "Compliance & NAID"),
+            ("fsm", "Field Service"),
+            ("portal", "Customer Portal"),
+            ("reporting", "Reporting"),
+            ("security", "Security"),
+            ("system", "System"),
+        ],
+        string="Category",
+        required=True,
+        default="system",
+    )
 
-    config_type = fields.Selection([
-        ('field_visibility', 'Field Visibility'),
-        ('feature_toggle', 'Feature Toggle'),
-        ('parameter', 'System Parameter'),
-        ('domain_rule', 'Domain Rule')
-    ], string="Configuration Type", required=True, default='parameter')
+    config_type = fields.Selection(
+        [
+            ("field_visibility", "Field Visibility"),
+            ("feature_toggle", "Feature Toggle"),
+            ("parameter", "System Parameter"),
+            ("domain_rule", "Domain Rule"),
+        ],
+        string="Configuration Type",
+        required=True,
+        default="parameter",
+    )
 
-    description = fields.Text(string="Description", help="Explain what this configuration does and its impact.")
-    help_text = fields.Text(string="Help Text", help="Additional help text for this configuration option.")
-    config_key = fields.Char(string="Technical Key", required=True, copy=False, help="Unique technical key to identify this configuration in code.")
+    description = fields.Text(
+        string="Description",
+        help="Explain what this configuration does and its impact.",
+    )
+    help_text = fields.Text(
+        string="Help Text", help="Additional help text for this configuration option."
+    )
+    config_key = fields.Char(
+        string="Technical Key",
+        required=True,
+        copy=False,
+        help="Unique technical key to identify this configuration in code.",
+    )
 
     # ============================================================================
     # FIELDS - Configuration Value
@@ -101,17 +123,21 @@ class RmModuleConfigurator(models.Model):
     # FIELDS - Targeting (for UI/Domain rules)
     # ============================================================================
     target_model_id = fields.Many2one(
-        comodel_name='ir.model',
+        comodel_name="ir.model",
         string="Target Model",
-        domain="[('model', 'like', 'records_management.')]"
+        domain="[('model', 'like', 'records_management.')]",
     )
-    target_model = fields.Char(related='target_model_id.model', readonly=True, store=True)
+    target_model = fields.Char(
+        related="target_model_id.model", readonly=True, store=True
+    )
     target_field_id = fields.Many2one(
-        comodel_name='ir.model.fields',
+        comodel_name="ir.model.fields",
         string="Target Field",
-        domain="[('model_id', '=', target_model_id)]"
+        domain="[('model_id', '=', target_model_id)]",
     )
-    target_field = fields.Char(related='target_field_id.name', readonly=True, store=True)
+    target_field = fields.Char(
+        related="target_field_id.name", readonly=True, store=True
+    )
 
     # For field_visibility
     visible = fields.Boolean(string="Is Visible", default=True)
@@ -121,15 +147,19 @@ class RmModuleConfigurator(models.Model):
     # ============================================================================
     # FIELDS - Auditing
     # ============================================================================
-    modified_by_id = fields.Many2one(comodel_name='res.users', string='Last Modified By', readonly=True)
-    last_modified = fields.Datetime(string='Last Modified On', readonly=True)
-    modification_count = fields.Integer(string="Modification Count", default=0, readonly=True)
+    modified_by_id = fields.Many2one(
+        comodel_name="res.users", string="Last Modified By", readonly=True
+    )
+    last_modified = fields.Datetime(string="Last Modified On", readonly=True)
+    modification_count = fields.Integer(
+        string="Modification Count", default=0, readonly=True
+    )
     notes = fields.Text(string="Internal Notes")
 
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================
-    @api.depends('value_text', 'value_boolean', 'value_number', 'value_selection')
+    @api.depends("value_text", "value_boolean", "value_number", "value_selection")
     def _compute_current_value(self):
         """Compute the current effective value based on type."""
         for record in self:
@@ -142,36 +172,46 @@ class RmModuleConfigurator(models.Model):
             elif record.value_selection:
                 record.current_value = record.value_selection
             else:
-                record.current_value = ''
+                record.current_value = ""
 
-    current_value = fields.Char(string="Current Value", compute='_compute_current_value', store=True)
+    current_value = fields.Char(
+        string="Current Value", compute="_compute_current_value", store=True
+    )
 
-    @api.depends('config_type', 'target_model', 'target_field')
+    @api.depends("config_type", "target_model", "target_field")
     def _compute_display_name(self):
         """Compute a descriptive display name."""
         for record in self:
-            if record.config_type == 'field_visibility' and record.target_model and record.target_field:
+            if (
+                record.config_type == "field_visibility"
+                and record.target_model
+                and record.target_field
+            ):
                 record.display_name = _("%(name)s (%(model)s.%(field)s)") % {
-                    'name': record.name,
-                    'model': record.target_model,
-                    'field': record.target_field
+                    "name": record.name,
+                    "model": record.target_model,
+                    "field": record.target_field,
                 }
-            elif record.config_type == 'feature_toggle':
+            elif record.config_type == "feature_toggle":
                 status = _("Enabled") if record.value_boolean else _("Disabled")
                 record.display_name = _("%(name)s - %(status)s") % {
-                    'name': record.name,
-                    'status': status
+                    "name": record.name,
+                    "status": status,
                 }
             else:
                 record.display_name = record.name
 
-    display_name = fields.Char(compute='_compute_display_name', store=True)
+    display_name = fields.Char(compute="_compute_display_name", store=True)
 
     # ============================================================================
     # SQL CONSTRAINTS
     # ============================================================================
     _sql_constraints = [
-        ('config_key_company_uniq', 'unique(config_key, company_id)', 'The configuration key must be unique per company!')
+        (
+            "config_key_company_uniq",
+            "unique(config_key, company_id)",
+            "The configuration key must be unique per company!",
+        )
     ]
 
     # ============================================================================
@@ -180,28 +220,26 @@ class RmModuleConfigurator(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            vals['modified_by_id'] = self.env.user.id
-            vals['last_modified'] = fields.Datetime.now()
+            vals["modified_by_id"] = self.env.user.id
+            vals["last_modified"] = fields.Datetime.now()
 
         records = super().create(vals_list)
 
         # Log creation in chatter
         for record in records:
-            record.message_post(
-                body=_("Configuration created: %s") % record.name
-            )
+            record.message_post(body=_("Configuration created: %s") % record.name)
 
         return records
 
     def write(self, vals):
         """Override write to track modifications and clear server cache."""
         # Track modifications for value changes
-        if any(key.startswith('value_') for key in vals):
+        if any(key.startswith("value_") for key in vals):
             for record in self:
                 old_value = record.current_value
-                vals['modified_by_id'] = self.env.user.id
-                vals['last_modified'] = fields.Datetime.now()
-                vals['modification_count'] = record.modification_count + 1
+                vals["modified_by_id"] = self.env.user.id
+                vals["last_modified"] = fields.Datetime.now()
+                vals["modification_count"] = record.modification_count + 1
 
         res = super().write(vals)
 
@@ -214,10 +252,11 @@ class RmModuleConfigurator(models.Model):
             pass
 
         # Log significant changes in chatter
-        if any(key.startswith('value_') for key in vals):
+        if any(key.startswith("value_") for key in vals):
             for record in self:
                 record.message_post(
-                    body=_("Configuration updated: %s = %s") % (record.config_key, record.current_value)
+                    body=_("Configuration updated: %s = %s")
+                    % (record.config_key, record.current_value)
                 )
 
         return res
@@ -231,24 +270,28 @@ class RmModuleConfigurator(models.Model):
         result = super().unlink()
 
         # Log deletion (can't use message_post after deletion)
-        self.env['mail.message'].create({
-            'subject': _("Configuration Deleted"),
-            'body': _("Configuration deleted: %s (%s)") % (config_name, config_key),
-            'model': self._name,
-            'message_type': 'comment',
-            'author_id': self.env.user.partner_id.id,
-        })
+        self.env["mail.message"].create(
+            {
+                "subject": _("Configuration Deleted"),
+                "body": _("Configuration deleted: %s (%s)") % (config_name, config_key),
+                "model": self._name,
+                "message_type": "comment",
+                "author_id": self.env.user.partner_id.id,
+            }
+        )
 
         return result
 
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
-    @api.constrains('config_type', 'value_text', 'value_boolean', 'value_number', 'value_selection')
+    @api.constrains(
+        "config_type", "value_text", "value_boolean", "value_number", "value_selection"
+    )
     def _validate_value_type(self):
         """Validate that the correct value field is used for the parameter type."""
         for record in self:
-            if record.config_type == 'parameter':
+            if record.config_type == "parameter":
                 # Count non-empty/non-false values
                 value_count = 0
                 if record.value_text:
@@ -261,34 +304,53 @@ class RmModuleConfigurator(models.Model):
                     value_count += 1
 
                 if value_count > 1:
-                    raise ValidationError(_(
-                        "Configuration '%s' is a parameter and must have only one value type (Text, Boolean, Number, or Selection)."
-                    ) % record.name)
+                    raise ValidationError(
+                        _(
+                            "Configuration '%s' is a parameter and must have only one value type (Text, Boolean, Number, or Selection)."
+                        )
+                        % record.name
+                    )
 
                 if value_count == 0:
-                    raise ValidationError(_(
-                        "Configuration '%s' must have at least one value set."
-                    ) % record.name)
+                    raise ValidationError(
+                        _("Configuration '%s' must have at least one value set.")
+                        % record.name
+                    )
 
-    @api.constrains('config_type', 'target_model_id', 'target_field_id')
+    @api.constrains("config_type", "target_model_id", "target_field_id")
     def _check_target_exists(self):
         """Validate that target model and field are set for UI-related configs."""
         for record in self:
-            if record.config_type in ['field_visibility', 'domain_rule']:
+            if record.config_type in ["field_visibility", "domain_rule"]:
                 if not record.target_model_id:
-                    raise ValidationError(_("A 'Target Model' is required for UI or Domain configurations."))
-                if not record.target_field_id and record.config_type == 'field_visibility':
-                    raise ValidationError(_("A 'Target Field' is required for Field Visibility configurations."))
+                    raise ValidationError(
+                        _(
+                            "A 'Target Model' is required for UI or Domain configurations."
+                        )
+                    )
+                if (
+                    not record.target_field_id
+                    and record.config_type == "field_visibility"
+                ):
+                    raise ValidationError(
+                        _(
+                            "A 'Target Field' is required for Field Visibility configurations."
+                        )
+                    )
 
-    @api.constrains('config_key')
+    @api.constrains("config_key")
     def _check_config_key_format(self):
         """Validate that config_key follows proper naming convention."""
         import re
+
         for record in self:
-            if not re.match(r'^[a-z][a-z0-9_]*[a-z0-9]$', record.config_key):
-                raise ValidationError(_(
-                    "Configuration key '%s' must start with a lowercase letter, contain only lowercase letters, numbers, and underscores, and end with a letter or number."
-                ) % record.config_key)
+            if not re.match(r"^[a-z][a-z0-9_]*[a-z0-9]$", record.config_key):
+                raise ValidationError(
+                    _(
+                        "Configuration key '%s' must start with a lowercase letter, contain only lowercase letters, numbers, and underscores, and end with a letter or number."
+                    )
+                    % record.config_key
+                )
 
     # ============================================================================
     # BUSINESS LOGIC
@@ -302,10 +364,9 @@ class RmModuleConfigurator(models.Model):
         """
         try:
             # Caching is automatically handled by Odoo for search method
-            config = self.search([
-                ('config_key', '=', key),
-                ('active', '=', True)
-            ], limit=1)
+            config = self.search(
+                [("config_key", "=", key), ("active", "=", True)], limit=1
+            )
 
             if not config:
                 return default
@@ -337,23 +398,23 @@ class RmModuleConfigurator(models.Model):
 
         # Determine the appropriate field based on value type
         vals = {
-            'value_text': False,
-            'value_boolean': False,
-            'value_number': 0.0,
-            'value_selection': False,
+            "value_text": False,
+            "value_boolean": False,
+            "value_number": 0.0,
+            "value_selection": False,
         }
 
         if isinstance(value, bool):
-            vals['value_boolean'] = value
+            vals["value_boolean"] = value
         elif isinstance(value, (int, float)):
-            vals['value_number'] = float(value)
+            vals["value_number"] = float(value)
         elif isinstance(value, str):
-            if self.config_type == 'parameter':
-                vals['value_text'] = value
+            if self.config_type == "parameter":
+                vals["value_text"] = value
             else:
-                vals['value_selection'] = value
+                vals["value_selection"] = value
         else:
-            vals['value_text'] = str(value) if value is not None else False
+            vals["value_text"] = str(value) if value is not None else False
 
         self.write(vals)
 
@@ -370,12 +431,12 @@ class RmModuleConfigurator(models.Model):
             self.clear_caches()
 
             # For field visibility configurations, we might need to clear view caches
-            if self.config_type == 'field_visibility':
-                self.env['ir.ui.view'].clear_caches()
+            if self.config_type == "field_visibility":
+                self.env["ir.ui.view"].clear_caches()
 
             # For feature toggles, clear menu caches
-            elif self.config_type == 'feature_toggle':
-                self.env['ir.ui.menu'].clear_caches()
+            elif self.config_type == "feature_toggle":
+                self.env["ir.ui.menu"].clear_caches()
 
             # Log the application
             self.message_post(
@@ -383,18 +444,22 @@ class RmModuleConfigurator(models.Model):
             )
 
             return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': _("Configuration Applied"),
-                    'message': _("Configuration '%s' has been applied successfully.") % self.name,
-                    'type': 'success',
-                    'sticky': False,
-                }
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": _("Configuration Applied"),
+                    "message": _("Configuration '%s' has been applied successfully.")
+                    % self.name,
+                    "type": "success",
+                    "sticky": False,
+                },
             }
 
         except Exception as exc:
-            error_msg = _("Failed to apply configuration '%s': %s") % (self.name, str(exc))
+            error_msg = _("Failed to apply configuration '%s': %s") % (
+                self.name,
+                str(exc),
+            )
             self.message_post(body=error_msg)
             raise UserError(error_msg) from exc
 
@@ -403,29 +468,29 @@ class RmModuleConfigurator(models.Model):
         for record in self:
             record.active = not record.active
             status = _("activated") if record.active else _("deactivated")
-            record.message_post(
-                body=_("Configuration %s: %s") % (status, record.name)
-            )
+            record.message_post(body=_("Configuration %s: %s") % (status, record.name))
 
     def action_reset_to_default(self):
         """Reset configuration values to default."""
         self.ensure_one()
 
         vals = {
-            'value_text': False,
-            'value_boolean': False,
-            'value_number': 0.0,
-            'value_selection': False,
+            "value_text": False,
+            "value_boolean": False,
+            "value_number": 0.0,
+            "value_selection": False,
         }
 
         # Set default based on config type
-        if self.config_type == 'feature_toggle':
-            vals['value_boolean'] = False
-        elif self.config_type == 'field_visibility':
-            vals['value_boolean'] = True  # Default to visible
+        if self.config_type == "feature_toggle":
+            vals["value_boolean"] = False
+        elif self.config_type == "field_visibility":
+            vals["value_boolean"] = True  # Default to visible
 
         self.write(vals)
-        self.message_post(body=_("Configuration reset to default values: %s") % self.name)
+        self.message_post(
+            body=_("Configuration reset to default values: %s") % self.name
+        )
 
     # ============================================================================
     # UTILITY METHODS
@@ -443,192 +508,348 @@ class RmModuleConfigurator(models.Model):
     @api.model
     def get_field_visibility(self, model_name, field_name):
         """Get field visibility configuration for a specific model.field."""
-        config = self.search([
-            ('config_type', '=', 'field_visibility'),
-            ('target_model', '=', model_name),
-            ('target_field', '=', field_name),
-            ('active', '=', True)
-        ], limit=1)
+        config = self.search(
+            [
+                ("config_type", "=", "field_visibility"),
+                ("target_model", "=", model_name),
+                ("target_field", "=", field_name),
+                ("active", "=", True),
+            ],
+            limit=1,
+        )
 
         if config:
             return {
-                'visible': config.visible,
-                'required': config.required,
-                'readonly': config.readonly,
+                "visible": config.visible,
+                "required": config.required,
+                "readonly": config.readonly,
             }
 
         # Default values if no configuration found
         return {
-            'visible': True,
-            'required': False,
-            'readonly': False,
+            "visible": True,
+            "required": False,
+            "readonly": False,
         }
 
     def action_view_related_configurations(self):
         """View configurations in the same category."""
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Related Configurations'),
-            'res_model': 'rm.module.configurator',
-            'view_mode': 'tree,form',
-            'domain': [
-                ('category', '=', self.category),
-                ('id', '!=', self.id)
-            ],
-            'context': {
-                'default_category': self.category,
-                'search_default_group_by_config_type': 1,
-            }
+            "type": "ir.actions.act_window",
+            "name": _("Related Configurations"),
+            "res_model": "rm.module.configurator",
+            "view_mode": "tree,form",
+            "domain": [("category", "=", self.category), ("id", "!=", self.id)],
+            "context": {
+                "default_category": self.category,
+                "search_default_group_by_config_type": 1,
+            },
         }
 
     @api.model
     def create_default_configurations(self):
         """Create default configurations for the Records Management module."""
         default_configs = [
+            # ============================================================================
+            # PORTAL CONFIGURATIONS
+            # ============================================================================
             {
-                'name': 'Enable Customer Portal',
-                'config_key': 'portal_enabled',
-                'category': 'portal',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable or disable the customer portal functionality.',
+                "name": "Enable Customer Portal",
+                "config_key": "portal_enabled",
+                "category": "portal",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable or disable the customer portal functionality.",
             },
             {
-                'name': 'Enable NAID Compliance',
-                'config_key': 'naid_compliance_enabled',
-                'category': 'compliance',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable NAID AAA compliance features and audit logging.',
+                "name": "Enable Portal Feedback System",
+                "config_key": "portal_feedback_enabled",
+                "category": "portal",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable customer feedback collection in the portal.",
             },
             {
-                'name': 'Enable FSM Integration',
-                'config_key': 'fsm_integration_enabled',
-                'category': 'fsm',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable Field Service Management integration.',
+                "name": "Enable Portal Request Management",
+                "config_key": "portal_request_enabled",
+                "category": "portal",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable portal request submission and management.",
+            },
+            # ============================================================================
+            # COMPLIANCE & NAID CONFIGURATIONS
+            # ============================================================================
+            {
+                "name": "Enable NAID Compliance",
+                "config_key": "naid_compliance_enabled",
+                "category": "compliance",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable NAID AAA compliance features and audit logging.",
             },
             {
-                'name': 'Default Retention Period',
-                'config_key': 'default_retention_years',
-                'category': 'compliance',
-                'config_type': 'parameter',
-                'value_number': 7.0,
-                'description': 'Default retention period in years for documents.',
-            },
-            # Enhanced Features Configurations
-            {
-                'name': 'Enable Workflow Visualization',
-                'config_key': 'workflow_visualization_enabled',
-                'category': 'workflow',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable workflow visualization and process flow diagrams.',
+                "name": "Enable NAID Audit Logging",
+                "config_key": "naid_audit_enabled",
+                "category": "compliance",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable comprehensive audit logging for NAID compliance.",
             },
             {
-                'name': 'Enable Enhanced FSM Integration',
-                'config_key': 'enhanced_fsm_integration_enabled',
-                'category': 'fsm',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable enhanced field service management integration with fallback support.',
+                "name": "Enable Chain of Custody",
+                "config_key": "chain_of_custody_enabled",
+                "category": "compliance",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable chain of custody tracking for documents.",
             },
             {
-                'name': 'Enable Mobile FSM Integration',
-                'config_key': 'mobile_fsm_integration_enabled',
-                'category': 'fsm',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable mobile-optimized FSM integration with offline capabilities.',
+                "name": "Default Retention Period",
+                "config_key": "default_retention_years",
+                "category": "compliance",
+                "config_type": "parameter",
+                "value_number": 7.0,
+                "description": "Default retention period in years for documents.",
+            },
+            # ============================================================================
+            # FSM CONFIGURATIONS
+            # ============================================================================
+            {
+                "name": "Enable FSM Integration",
+                "config_key": "fsm_integration_enabled",
+                "category": "fsm",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable Field Service Management integration.",
             },
             {
-                'name': 'Enable Mobile Dashboard',
-                'config_key': 'mobile_dashboard_enabled',
-                'category': 'ui',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable mobile dashboard for field service operations.',
+                "name": "Enable FSM Notifications",
+                "config_key": "fsm_notifications_enabled",
+                "category": "fsm",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable notifications for FSM operations.",
             },
             {
-                'name': 'Enable Biometric Authentication',
-                'config_key': 'biometric_auth_enabled',
-                'category': 'security',
-                'config_type': 'feature_toggle',
-                'value_boolean': False,
-                'description': 'Enable biometric authentication for mobile devices.',
+                "name": "Enable Pickup Routes",
+                "config_key": "pickup_routes_enabled",
+                "category": "fsm",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable pickup route optimization and management.",
+            },
+            # ============================================================================
+            # BILLING CONFIGURATIONS
+            # ============================================================================
+            {
+                "name": "Enable Advanced Billing",
+                "config_key": "advanced_billing_enabled",
+                "category": "billing",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable advanced billing features and configurations.",
             },
             {
-                'name': 'Enable GPS Tracking',
-                'config_key': 'gps_tracking_enabled',
-                'category': 'fsm',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable GPS tracking for field service operations.',
+                "name": "Enable Customer Inventory Reports",
+                "config_key": "customer_inventory_reports_enabled",
+                "category": "billing",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable customer inventory reporting features.",
             },
             {
-                'name': 'Enable Offline Mode',
-                'config_key': 'offline_mode_enabled',
-                'category': 'system',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable offline mode for mobile field service operations.',
+                "name": "Enable Billing Periods",
+                "config_key": "billing_periods_enabled",
+                "category": "billing",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable billing period management.",
+            },
+            # ============================================================================
+            # CORE RECORDS CONFIGURATIONS
+            # ============================================================================
+            {
+                "name": "Enable Records Containers",
+                "config_key": "records_containers_enabled",
+                "category": "workflow",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable records container management functionality.",
             },
             {
-                'name': 'Mobile Sync Interval',
-                'config_key': 'mobile_sync_interval_minutes',
-                'category': 'system',
-                'config_type': 'parameter',
-                'value_number': 15.0,
-                'description': 'Interval in minutes for mobile data synchronization.',
+                "name": "Enable Records Documents",
+                "config_key": "records_documents_enabled",
+                "category": "workflow",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable records document management functionality.",
             },
             {
-                'name': 'Max Offline Days',
-                'config_key': 'max_offline_days',
-                'category': 'system',
-                'config_type': 'parameter',
-                'value_number': 7.0,
-                'description': 'Maximum number of days data can remain offline before requiring sync.',
+                "name": "Enable Records Locations",
+                "config_key": "records_locations_enabled",
+                "category": "workflow",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable records location management functionality.",
             },
             {
-                'name': 'Enable Push Notifications',
-                'config_key': 'push_notifications_enabled',
-                'category': 'ui',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable push notifications for mobile devices.',
+                "name": "Enable Shredding Services",
+                "config_key": "shredding_services_enabled",
+                "category": "workflow",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable shredding service management.",
+            },
+            # ============================================================================
+            # ENHANCED FEATURES CONFIGURATIONS
+            # ============================================================================
+            {
+                "name": "Enable Workflow Visualization",
+                "config_key": "workflow_visualization_enabled",
+                "category": "workflow",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable workflow visualization and process flow diagrams.",
             },
             {
-                'name': 'Enable Voice Commands',
-                'config_key': 'voice_commands_enabled',
-                'category': 'ui',
-                'config_type': 'feature_toggle',
-                'value_boolean': False,
-                'description': 'Enable voice command functionality for mobile operations.',
+                "name": "Enable Enhanced FSM Integration",
+                "config_key": "enhanced_fsm_integration_enabled",
+                "category": "fsm",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable enhanced field service management integration with fallback support.",
             },
             {
-                'name': 'Enable Barcode Scanning',
-                'config_key': 'barcode_scanning_enabled',
-                'category': 'fsm',
-                'config_type': 'feature_toggle',
-                'value_boolean': True,
-                'description': 'Enable barcode scanning for field service operations.',
+                "name": "Enable Mobile FSM Integration",
+                "config_key": "mobile_fsm_integration_enabled",
+                "category": "fsm",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable mobile-optimized FSM integration with offline capabilities.",
             },
             {
-                'name': 'Enable NFC Scanning',
-                'config_key': 'nfc_scanning_enabled',
-                'category': 'fsm',
-                'config_type': 'feature_toggle',
-                'value_boolean': False,
-                'description': 'Enable NFC scanning for field service operations.',
+                "name": "Enable Mobile Dashboard",
+                "config_key": "mobile_dashboard_enabled",
+                "category": "ui",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable mobile dashboard for field service operations.",
+            },
+            {
+                "name": "Enable Biometric Authentication",
+                "config_key": "biometric_auth_enabled",
+                "category": "security",
+                "config_type": "feature_toggle",
+                "value_boolean": False,
+                "description": "Enable biometric authentication for mobile devices.",
+            },
+            {
+                "name": "Enable GPS Tracking",
+                "config_key": "gps_tracking_enabled",
+                "category": "fsm",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable GPS tracking for field service operations.",
+            },
+            {
+                "name": "Enable Offline Mode",
+                "config_key": "offline_mode_enabled",
+                "category": "system",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable offline mode for mobile field service operations.",
+            },
+            # ============================================================================
+            # SYSTEM PARAMETERS
+            # ============================================================================
+            {
+                "name": "Mobile Sync Interval",
+                "config_key": "mobile_sync_interval_minutes",
+                "category": "system",
+                "config_type": "parameter",
+                "value_number": 15.0,
+                "description": "Interval in minutes for mobile data synchronization.",
+            },
+            {
+                "name": "Max Offline Days",
+                "config_key": "max_offline_days",
+                "category": "system",
+                "config_type": "parameter",
+                "value_number": 7.0,
+                "description": "Maximum number of days data can remain offline before requiring sync.",
+            },
+            {
+                "name": "Default Container Capacity",
+                "config_key": "default_container_capacity",
+                "category": "system",
+                "config_type": "parameter",
+                "value_number": 100.0,
+                "description": "Default capacity for new records containers.",
+            },
+            # ============================================================================
+            # UI CONFIGURATIONS
+            # ============================================================================
+            {
+                "name": "Enable Push Notifications",
+                "config_key": "push_notifications_enabled",
+                "category": "ui",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable push notifications for mobile devices.",
+            },
+            {
+                "name": "Enable Voice Commands",
+                "config_key": "voice_commands_enabled",
+                "category": "ui",
+                "config_type": "feature_toggle",
+                "value_boolean": False,
+                "description": "Enable voice command functionality for mobile operations.",
+            },
+            {
+                "name": "Enable Barcode Scanning",
+                "config_key": "barcode_scanning_enabled",
+                "category": "fsm",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable barcode scanning for field service operations.",
+            },
+            {
+                "name": "Enable NFC Scanning",
+                "config_key": "nfc_scanning_enabled",
+                "category": "fsm",
+                "config_type": "feature_toggle",
+                "value_boolean": False,
+                "description": "Enable NFC scanning for field service operations.",
+            },
+            # ============================================================================
+            # REPORTING CONFIGURATIONS
+            # ============================================================================
+            {
+                "name": "Enable Advanced Reporting",
+                "config_key": "advanced_reporting_enabled",
+                "category": "reporting",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable advanced reporting and analytics features.",
+            },
+            {
+                "name": "Enable Compliance Reports",
+                "config_key": "compliance_reports_enabled",
+                "category": "reporting",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable NAID compliance reporting features.",
             },
         ]
 
         created_configs = []
         for config_data in default_configs:
             # Check if configuration already exists
-            existing = self.search([('config_key', '=', config_data['config_key'])], limit=1)
+            existing = self.search(
+                [("config_key", "=", config_data["config_key"])], limit=1
+            )
             if not existing:
                 created_configs.append(self.create(config_data))
 

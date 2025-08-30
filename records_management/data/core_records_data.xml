@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+        <!-- Core Records Management Model XML ID definitions -->
+        <record id="model_records_container" model="ir.model">
+            <field name="model">records.container</field>
+            <field name="name">Records Container</field>
+            <field name="info">Records Container Management</field>
+        </record>
+
+        <record id="model_records_document" model="ir.model">
+            <field name="model">records.document</field>
+            <field name="name">Records Document</field>
+            <field name="info">Records Document Management</field>
+        </record>
+
+        <record id="model_records_location" model="ir.model">
+            <field name="model">records.location</field>
+            <field name="name">Records Location</field>
+            <field name="info">Records Location Management</field>
+        </record>
+
+        <!-- Shredding Service Models -->
+        <record id="model_shredding_service" model="ir.model">
+            <field name="model">shredding.service</field>
+            <field name="name">Shredding Service</field>
+            <field name="info">Shredding Service Management</field>
+        </record>
+
+        <!-- Field Customization Models -->
+        <record id="model_field_label_customization" model="ir.model">
+            <field name="model">field.label.customization</field>
+            <field name="name">Field Label Customization</field>
+            <field name="info">Field Label Customization Management</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+        <!-- Billing Model XML ID definitions -->
+        <record id="model_customer_inventory_report" model="ir.model">
+            <field name="model">customer.inventory.report</field>
+            <field name="name">Customer Inventory Report</field>
+            <field name="info">Customer Inventory Report Management</field>
+        </record>
+
+        <record id="model_records_billing_config" model="ir.model">
+            <field name="model">records.billing.config</field>
+            <field name="name">Records Billing Config</field>
+            <field name="info">Records Billing Configuration</field>
+        </record>
+
+    </data>
+</odoo>

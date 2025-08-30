@@ -81,18 +81,6 @@
         <field name="perm_unlink" eval="False"/>
     </record>
 
-    <!-- SCRM Records Management: assuming _name is 'scrm.records.management' -->
-    <record id="rule_scrm_records_management_manager_all" model="ir.rule">
-        <field name="name">SCRM Records Management: Manager Full Access</field>
-        <field name="model_id" ref="records_management.model_scrm_records_management"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
-
     <!-- For inherited models, rules below are for illustration; you may not need them unless you add sensitive custom fields. -->
     <!-- Stock Lot -->
     <record id="rule_stock_lot_manager_all" model="ir.rule">

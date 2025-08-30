@@ -73,7 +73,11 @@
         # Data files
         "data/ir_sequence_data.xml",
         "data/sequence_data.xml",
-        "data/model_xml_ids.xml",  # Model XML ID definitions for security rules
+        "data/core_records_data.xml",  # Core records model XML IDs
+        "data/naid_compliance_data.xml",  # NAID compliance model XML IDs
+        "data/portal_mail_templates_data.xml",  # Portal model XML IDs
+        "data/fsm_data.xml",  # FSM model XML IDs
+        "data/billing_data.xml",  # Billing model XML IDs
         "data/base_rates_container_access_data.xml",
         "data/container_types_base_rates.xml",
         "data/document_retrieval_rates_data.xml",
@@ -84,9 +88,7 @@
         "data/load_data.xml",
         "data/mail_activity_data_todo.xml",
         "data/naid_certificate_data.xml",
-        "data/naid_compliance_data.xml",
         "data/paper_products_data.xml",
-        "data/portal_mail_templates_data.xml",
         "data/products_data.xml",
         "data/scheduled_actions_data.xml",
         "data/storage_fee_data.xml",
