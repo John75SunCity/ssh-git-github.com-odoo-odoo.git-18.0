@@ -375,12 +375,12 @@ class AccountMoveLine(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('container_ids', 'container_ids.container_type')
+    @api.depends("container_ids", "container_ids.container_type_id", "container_ids.container_type_id.name")
     def _compute_container_types(self):
         """Compute string representation of container types"""
         for line in self:
             if line.container_ids:
-                types = line.container_ids.mapped('container_type')
+                types = line.container_ids.mapped("container_type_id.name")
                 unique_types = sorted(set(types))
                 line.container_types = ', '.join(unique_types) if unique_types else ''
             else:

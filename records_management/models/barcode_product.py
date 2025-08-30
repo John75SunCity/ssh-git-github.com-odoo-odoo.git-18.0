@@ -347,7 +347,7 @@ class BarcodeProduct(models.Model):
         container_vals = {
             "name": _("Container %s", self.barcode),
             "barcode": self.barcode,
-            "container_type": self.container_type,
+            "container_type_id": self._get_container_type_id(),
             "created_from_barcode_id": self.id,
         }
         container = self.env["records.container"].create(container_vals)
@@ -384,15 +384,27 @@ class BarcodeProduct(models.Model):
             "name": _("Newly Created Location"),
         }
 
-    def _increment_usage(self):
-        """Increment usage counter and log the event."""
+    def _get_container_type_id(self):
+        """Convert container_type selection to container type ID."""
         self.ensure_one()
-        self.write({
-            "usage_count": self.usage_count + 1,
-            "last_used_date": fields.Datetime.now(),
-            "state": "used"
-        })
-        self.message_post(body=_("Barcode used (Total uses: %s)", self.usage_count))
+        if not self.container_type:
+            return False
+
+        # Map selection values to container type names
+        type_mapping = {
+            "type_01": "Standard Box",
+            "type_02": "Legal/Banker Box",
+            "type_03": "Map Box",
+            "type_04": "Odd Size/Temp Box",
+            "type_06": "Pathology Box",
+        }
+
+        type_name = type_mapping.get(self.container_type)
+        if type_name:
+            container_type = self.env["records.container.type"].search([("name", "=", type_name)], limit=1)
+            return container_type.id if container_type else False
+
+        return False
 
     # ============================================================================
     # VALIDATION METHODS
@@ -422,4 +434,3 @@ class BarcodeProduct(models.Model):
                         _("Barcode length %s suggests category '%s', but category '%s' is selected. Please correct the category or barcode.",
                           length, expected_category, record.product_category)
                     )
-
