@@ -4,9 +4,17 @@ import json
 import logging
 import re
 
+# Add type checking imports to resolve Pylance type inference issues
+from typing import TYPE_CHECKING
+
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools.translate import _
+
+from .mobile_dashboard_widget_category import MobileDashboardWidgetCategory
+
+if TYPE_CHECKING:
+    pass  # TYPE_CHECKING block remains unchanged
 
 _logger = logging.getLogger(__name__)
 
@@ -18,211 +26,217 @@ class MobileDashboardWidget(models.Model):
     on mobile devices for field service management. Widgets provide
     real-time data visualization and quick access to key information.
     """
-    _name = 'mobile.dashboard.widget'
-    _description = 'Mobile Dashboard Widget'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'sequence, name'
+
+    _name = "mobile.dashboard.widget"
+    _description = "Mobile Dashboard Widget"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _order = "sequence, name"
 
     # Basic Information
     name = fields.Char(
-        string='Widget Name',
+        string="Widget Name",
         required=True,
         tracking=True,
-        help='Display name for the dashboard widget'
+        help="Display name for the dashboard widget",
     )
 
     sequence = fields.Integer(
-        string='Sequence',
+        string="Sequence",
         default=10,
-        help='Order in which widgets appear on the dashboard'
+        help="Order in which widgets appear on the dashboard",
     )
 
     # Widget Configuration
-    widget_type = fields.Selection([
-        ('kpi', 'KPI Card'),
-        ('chart', 'Chart'),
-        ('map', 'Map View'),
-        ('calendar', 'Calendar'),
-        ('list', 'List View'),
-        ('gauge', 'Gauge'),
-        ('progress', 'Progress Bar'),
-        ('counter', 'Counter'),
-        ('status', 'Status Indicator'),
-        ('notification', 'Notification Center'),
-        ('weather', 'Weather Info'),
-        ('location', 'Location Tracker'),
-        ('timer', 'Timer/Countdown'),
-        ('badge', 'Badge/Label'),
-        ('button', 'Action Button'),
-        ('form', 'Quick Form')
-    ], string='Widget Type', required=True, default='kpi',
-       help='Type of widget to display on the dashboard')
-
-    category_id = fields.Many2one(
-        comodel_name='mobile.dashboard.widget.category',
-        string='Category',
+    widget_type = fields.Selection(
+        [
+            ("kpi", "KPI Card"),
+            ("chart", "Chart"),
+            ("map", "Map View"),
+            ("calendar", "Calendar"),
+            ("list", "List View"),
+            ("gauge", "Gauge"),
+            ("progress", "Progress Bar"),
+            ("counter", "Counter"),
+            ("status", "Status Indicator"),
+            ("notification", "Notification Center"),
+            ("weather", "Weather Info"),
+            ("location", "Location Tracker"),
+            ("timer", "Timer/Countdown"),
+            ("badge", "Badge/Label"),
+            ("button", "Action Button"),
+            ("form", "Quick Form"),
+        ],
+        string="Widget Type",
         required=True,
-        ondelete='cascade',
-        help='Category this widget belongs to'
+        default="kpi",
+        help="Type of widget to display on the dashboard",
+    )
+
+    category_id: "MobileDashboardWidgetCategory" = fields.Many2one(
+        comodel_name="mobile.dashboard.widget.category",
+        string="Category",
+        required=True,
+        ondelete="cascade",
+        help="Category this widget belongs to",
     )
 
     # Display Settings
     icon = fields.Char(
-        string='Widget Icon',
-        help='FontAwesome icon class (e.g., fa-tachometer-alt)'
+        string="Widget Icon", help="FontAwesome icon class (e.g., fa-tachometer-alt)"
     )
 
     color = fields.Char(
-        string='Color',
-        default='#007bff',
-        help='Hex color code for the widget'
+        string="Color", default="#007bff", help="Hex color code for the widget"
     )
 
-    size = fields.Selection([
-        ('small', 'Small'),
-        ('medium', 'Medium'),
-        ('large', 'Large'),
-        ('xlarge', 'Extra Large')
-    ], string='Size', default='medium',
-       help='Size of the widget on the dashboard')
+    size = fields.Selection(
+        [
+            ("small", "Small"),
+            ("medium", "Medium"),
+            ("large", "Large"),
+            ("xlarge", "Extra Large"),
+        ],
+        string="Size",
+        default="medium",
+        help="Size of the widget on the dashboard",
+    )
 
     # Data Source Configuration
-    data_source = fields.Selection([
-        ('model', 'Odoo Model'),
-        ('query', 'Custom Query'),
-        ('api', 'External API'),
-        ('computed', 'Computed Field'),
-        ('static', 'Static Value')
-    ], string='Data Source', default='model',
-       help='Source of data for this widget')
+    data_source = fields.Selection(
+        [
+            ("model", "Odoo Model"),
+            ("query", "Custom Query"),
+            ("api", "External API"),
+            ("computed", "Computed Field"),
+            ("static", "Static Value"),
+        ],
+        string="Data Source",
+        default="model",
+        help="Source of data for this widget",
+    )
 
     model_name = fields.Char(
-        string='Model Name',
-        help='Odoo model to query for data (e.g., project.task)'
+        string="Model Name", help="Odoo model to query for data (e.g., project.task)"
     )
 
     domain = fields.Char(
-        string='Domain Filter',
-        help='Domain expression to filter records (JSON format)'
+        string="Domain Filter", help="Domain expression to filter records (JSON format)"
     )
 
-    field_name = fields.Char(
-        string='Field Name',
-        help='Field to display or aggregate'
-    )
+    field_name = fields.Char(string="Field Name", help="Field to display or aggregate")
 
-    aggregation = fields.Selection([
-        ('count', 'Count'),
-        ('sum', 'Sum'),
-        ('avg', 'Average'),
-        ('min', 'Minimum'),
-        ('max', 'Maximum')
-    ], string='Aggregation',
-       help='How to aggregate the field values')
+    aggregation = fields.Selection(
+        [
+            ("count", "Count"),
+            ("sum", "Sum"),
+            ("avg", "Average"),
+            ("min", "Minimum"),
+            ("max", "Maximum"),
+        ],
+        string="Aggregation",
+        help="How to aggregate the field values",
+    )
 
     # Widget Content
-    title = fields.Char(
-        string='Widget Title',
-        help='Title displayed on the widget'
-    )
+    title = fields.Char(string="Widget Title", help="Title displayed on the widget")
 
     subtitle = fields.Char(
-        string='Subtitle',
-        help='Subtitle or description for the widget'
+        string="Subtitle", help="Subtitle or description for the widget"
     )
 
     content = fields.Text(
-        string='Content',
-        help='Static content or template for dynamic content'
+        string="Content", help="Static content or template for dynamic content"
     )
 
     # Behavior Settings
     is_active = fields.Boolean(
-        string='Active',
-        default=True,
-        help='Whether this widget is active and visible'
+        string="Active", default=True, help="Whether this widget is active and visible"
     )
 
     auto_refresh = fields.Boolean(
-        string='Auto Refresh',
+        string="Auto Refresh",
         default=False,
-        help='Whether to automatically refresh widget data'
+        help="Whether to automatically refresh widget data",
     )
 
     refresh_interval = fields.Integer(
-        string='Refresh Interval (seconds)',
+        string="Refresh Interval (seconds)",
         default=300,
-        help='How often to refresh data (in seconds)'
+        help="How often to refresh data (in seconds)",
     )
 
     clickable = fields.Boolean(
-        string='Clickable',
+        string="Clickable",
         default=True,
-        help='Whether the widget can be clicked to perform actions'
+        help="Whether the widget can be clicked to perform actions",
     )
 
-    action_type = fields.Selection([
-        ('url', 'Open URL'),
-        ('model', 'Open Model View'),
-        ('wizard', 'Open Wizard'),
-        ('report', 'Generate Report'),
-        ('javascript', 'Run JavaScript')
-    ], string='Action Type',
-       help='Type of action to perform when widget is clicked')
+    action_type = fields.Selection(
+        [
+            ("url", "Open URL"),
+            ("model", "Open Model View"),
+            ("wizard", "Open Wizard"),
+            ("report", "Generate Report"),
+            ("javascript", "Run JavaScript"),
+        ],
+        string="Action Type",
+        help="Type of action to perform when widget is clicked",
+    )
 
     action_value = fields.Char(
-        string='Action Value',
-        help='Value for the action (URL, model name, etc.)'
+        string="Action Value", help="Value for the action (URL, model name, etc.)"
     )
 
     # Permissions and Access
     user_group_ids = fields.Many2many(
-        comodel_name='res.group',
-        relation='mobile_dashboard_widget_group_rel',
-        column1='widget_id',
-        column2='group_id',
-        string='Allowed Groups',
-        help='User groups that can see this widget'
+        comodel_name="res.group",
+        relation="mobile_dashboard_widget_group_rel",
+        column1="widget_id",
+        column2="group_id",
+        string="Allowed Groups",
+        help="User groups that can see this widget",
     )
 
     company_id = fields.Many2one(
-        comodel_name='res.company',
-        string='Company',
+        comodel_name="res.company",
+        string="Company",
         default=lambda self: self.env.company.id,
-        help='Company this widget belongs to'
+        help="Company this widget belongs to",
     )
 
     # Technical Fields
     technical_name = fields.Char(
-        string='Technical Name',
-        help='Unique technical identifier for the widget'
+        string="Technical Name", help="Unique technical identifier for the widget"
     )
 
     config_params = fields.Text(
-        string='Configuration Parameters',
-        help='Additional configuration parameters as JSON (serialized string)'
+        string="Configuration Parameters",
+        help="Additional configuration parameters as JSON (serialized string)",
     )
 
-    @api.depends('name', 'category_id.name')
+    @api.depends("name", "category_id.name")
     def _compute_dashboard_display_name(self):
         """Compute dashboard display name with category"""
         for record in self:
             if record.category_id:
-                record.dashboard_display_name = f"{record.category_id.name}: {record.name}"
+                record.dashboard_display_name = (
+                    f"{record.category_id.name}: {record.name}"
+                )
             else:
                 record.dashboard_display_name = record.name
 
     dashboard_display_name = fields.Char(
-        string='Dashboard Display Name',
-        compute='_compute_dashboard_display_name',
-        store=True
+        string="Dashboard Display Name",
+        compute="_compute_dashboard_display_name",
+        store=True,  # Added for better performance on computed field
     )
 
     def get_config_params(self):
         """Return config_params as a Python dict."""
         try:
-            return json.loads(str(self.config_params or '{}'))
-        except Exception:
+            return json.loads(str(self.config_params or "{}"))
+        except json.JSONDecodeError as e:
+            _logger.error("Invalid JSON in config_params: %s", e)
             return {}
 
     def set_config_params(self, params):
@@ -232,33 +246,45 @@ class MobileDashboardWidget(models.Model):
         self.config_params = json.dumps(params or {})
 
     # Constraints
-    @api.constrains('technical_name')
+    @api.constrains("technical_name")
     def _check_technical_name_unique(self):
         """Ensure technical name is unique"""
         for record in self:
             if record.technical_name:
-                existing = self.search([
-                    ('technical_name', '=', record.technical_name),
-                    ('id', '!=', record.id)
-                ])
+                existing = self.search(
+                    [
+                        ("technical_name", "=", record.technical_name),
+                        ("id", "!=", record.id),
+                    ]
+                )
                 if existing:
                     raise ValidationError(
-                        _("Technical name must be unique. '%s' already exists.") % record.technical_name
+                        _(
+                            "Technical name must be unique. '%s' already exists.",
+                            record.technical_name,
+                        )
                     )
 
-    @api.constrains('model_name', 'field_name')
+    @api.constrains("model_name", "field_name")
     def _check_model_field_exists(self):
         """Validate that model and field exist"""
         for record in self:
             if record.model_name and record.field_name:
-                model = self.env.get(record.model_name)
-                if not model:
+                try:
+                    model = self.env[
+                        record.model_name
+                    ]  # Use env[] for better error handling
+                    if record.field_name not in model._fields:
+                        raise ValidationError(
+                            _(
+                                "Field '%s' does not exist in model '%s'.",
+                                record.field_name,
+                                record.model_name,
+                            )
+                        )
+                except KeyError:
                     raise ValidationError(
-                        _("Model '%s' does not exist.") % record.model_name
-                    )
-                if record.field_name not in model._fields:
-                    raise ValidationError(
-                        _("Field '%s' does not exist in model '%s'.") % (record.field_name, record.model_name)
+                        _("Model '%s' does not exist.", record.model_name)
                     )
 
     # Methods
@@ -271,148 +297,174 @@ class MobileDashboardWidget(models.Model):
 
         try:
             data = {
-                'id': widget.id,
-                'name': widget.name,
-                'type': widget.widget_type,
-                'title': widget.title or widget.name,
-                'subtitle': widget.subtitle,
-                'icon': widget.icon,
-                'color': widget.color,
-                'size': widget.size,
-                'data': {},
-                'last_updated': fields.Datetime.now(),
+                "id": widget.id,
+                "name": widget.name,
+                "type": widget.widget_type,
+                "title": widget.title or widget.name,
+                "subtitle": widget.subtitle,
+                "icon": widget.icon,
+                "color": widget.color,
+                "size": widget.size,
+                "data": {},
+                "last_updated": fields.Datetime.now(),
             }
 
             # Fetch dynamic data based on widget configuration
-            if widget.data_source == 'model' and widget.model_name:
-                data['data'] = self._get_model_data(widget)
-            elif widget.data_source == 'static':
-                data['data'] = {'value': widget.content or 'No data'}
-            elif widget.data_source == 'computed':
-                data['data'] = self._compute_widget_data(widget)
+            if widget.data_source == "model" and widget.model_name:
+                data["data"] = self._get_model_data(widget)
+            elif widget.data_source == "static":
+                data["data"] = {"value": widget.content or "No data"}
+            elif widget.data_source == "computed":
+                data["data"] = self._compute_widget_data(widget)
 
             return data
 
         except Exception as e:
             return {
-                'id': widget.id,
-                'name': widget.name,
-                'type': widget.widget_type,
-                'title': widget.title or widget.name,
-                'error': str(e),
-                'data': {'value': 'Error loading data'}
+                "id": widget.id,
+                "name": widget.name,
+                "type": widget.widget_type,
+                "title": widget.title or widget.name,
+                "error": str(e),
+                "data": {"value": "Error loading data"},
             }
 
     def _get_model_data(self, widget):
-        """Get data from Odoo model"""
+        """Get data from Odoo model with improved performance and error handling"""
         try:
             if not widget.model_name:
-                return {'value': 'No model specified'}
+                return {"value": "No model specified"}
 
             # Build domain
             domain = []
             if widget.domain:
                 try:
-                    # Parse domain string to list
                     domain = ast.literal_eval(widget.domain)
-                except (ValueError, SyntaxError):
-                    # If domain parsing fails, use empty domain
+                except (ValueError, SyntaxError) as e:
+                    _logger.warning("Invalid domain for widget %s: %s", widget.name, e)
                     domain = []
 
-            # Get records
             model = self.env[widget.model_name]
-            records = model.search(domain)
+            if not widget.aggregation or not widget.field_name:
+                # Simple count if no aggregation
+                count = model.search_count(domain)
+                return {"value": count, "count": count, "model": widget.model_name}
 
-            # Apply aggregation if specified
-            if widget.aggregation and widget.field_name:
-                if widget.aggregation == 'count':
-                    value = len(records)
-                elif widget.aggregation == 'sum':
-                    values = [getattr(rec, widget.field_name, 0) for rec in records if hasattr(rec, widget.field_name)]
-                    value = sum(values)
-                elif widget.aggregation == 'avg':
-                    values = [getattr(rec, widget.field_name, 0) for rec in records if hasattr(rec, widget.field_name)]
-                    value = sum(values) / len(values) if values else 0
-                elif widget.aggregation == 'min':
-                    values = [getattr(rec, widget.field_name, 0) for rec in records if hasattr(rec, widget.field_name)]
-                    value = min(values) if values else 0
-                elif widget.aggregation == 'max':
-                    values = [getattr(rec, widget.field_name, 0) for rec in records if hasattr(rec, widget.field_name)]
-                    value = max(values) if values else 0
-                else:
-                    value = len(records)
-            else:
-                value = len(records)
+            # Use read_group for efficient aggregation
+            group_result = model.read_group(domain, [widget.field_name], [])
+            if not group_result:
+                return {"value": 0, "count": 0}
+
+            # Extract aggregated value
+            aggregated_value = 0
+            total_count = sum(g.get("__count", 0) for g in group_result)
+
+            if widget.aggregation == "count":
+                aggregated_value = total_count
+            elif widget.aggregation == "sum":
+                aggregated_value = sum(
+                    g.get(widget.field_name, 0)
+                    for g in group_result
+                    if g.get(widget.field_name)
+                )
+            elif widget.aggregation == "avg":
+                total_sum = sum(
+                    g.get(widget.field_name, 0)
+                    for g in group_result
+                    if g.get(widget.field_name)
+                )
+                aggregated_value = total_sum / total_count if total_count else 0
+            elif widget.aggregation == "min":
+                values = [
+                    g.get(widget.field_name, 0)
+                    for g in group_result
+                    if g.get(widget.field_name) is not None
+                ]
+                aggregated_value = min(values) if values else 0
+            elif widget.aggregation == "max":
+                values = [
+                    g.get(widget.field_name, 0)
+                    for g in group_result
+                    if g.get(widget.field_name) is not None
+                ]
+                aggregated_value = max(values) if values else 0
 
             return {
-                'value': value,
-                'count': len(records),
-                'model': widget.model_name,
-                'field': widget.field_name,
-                'aggregation': widget.aggregation
+                "value": aggregated_value,
+                "count": total_count,
+                "model": widget.model_name,
+                "field": widget.field_name,
+                "aggregation": widget.aggregation,
             }
 
         except Exception as e:
-            return {'value': f'Error: {str(e)}', 'error': True}
+            _logger.error("Error getting model data for widget %s: %s", widget.name, e)
+            return {"value": f"Error: {str(e)}", "error": True}
 
     def _compute_widget_data(self, widget):
-        """Get computed data based on widget configuration"""
+        """Get computed data based on widget configuration with better error handling"""
         try:
-            # This is a placeholder for custom computed data
-            # In a real implementation, you would add specific logic here
-            return {
-                'value': 'Computed data not implemented',
-                'type': 'computed'
-            }
+            # Placeholder for custom computed data
+            return {"value": "Computed data not implemented", "type": "computed"}
         except Exception as e:
-            return {'value': f'Error: {str(e)}', 'error': True}
+            _logger.error("Error computing widget data for %s: %s", widget.name, e)
+            return {"value": f"Error: {str(e)}", "error": True}
 
     def get_available_widgets(self):
-        """Get all available widgets for current user"""
+        """Get all available widgets for current user with proper group filtering"""
         user = self.env.user
-        domain = [('is_active', '=', True)]
+        domain = [("is_active", "=", True)]
 
         # Filter by user groups if specified
-        if self.env.user.id != 1:  # Not superuser
-            domain.extend([
-                '|',
-                ('user_group_ids', '=', False),  # No group restriction
-                ('user_group_ids', 'in', user.groups_id.ids)
-            ])
+        if user.id != 1:  # Not superuser
+            domain.extend(
+                [
+                    ("|",),
+                    ("user_group_ids", "=", False),  # No group restriction
+                    ("user_group_ids", "in", user.groups_id.ids),
+                ]
+            )
 
         return self.search(domain)
 
     @api.model
     def _default_category(self):
         """Ensure the default operations category exists"""
-        category_model = self.env['mobile.dashboard.widget.category']
+        category_model = self.env["mobile.dashboard.widget.category"]
 
         # Check if default category exists
-        default_category = category_model.search([
-            ('technical_name', '=', 'operations')
-        ], limit=1)
+        default_category = category_model.search(
+            [("technical_name", "=", "operations")], limit=1
+        )
 
         if not default_category:
             # Create default category
-            default_category = category_model.create({
-                'name': 'Operations',
-                'technical_name': 'operations',
-                'description': 'Default category for operational dashboard widgets',
-                'icon': 'fa-cogs',
-                'is_active': True,
-                'sort_order': 10
-            })
+            default_category = category_model.create(
+                {
+                    "name": "Operations",
+                    "technical_name": "operations",
+                    "description": "Default category for operational dashboard widgets",
+                    "icon": "fa-cogs",
+                    "is_active": True,
+                    "sort_order": 10,
+                }
+            )
 
         # Set the XML ID reference for the default widgets
-        if not self.env.ref('records_management.mobile_dashboard_widget_category_operations', raise_if_not_found=False):
+        if not self.env.ref(
+            "records_management.mobile_dashboard_widget_category_operations",
+            raise_if_not_found=False,
+        ):
             # Create XML ID reference
-            self.env['ir.model.data'].create({
-                'name': 'mobile_dashboard_widget_category_operations',
-                'model': 'mobile.dashboard.widget.category',
-                'module': 'records_management',
-                'res_id': default_category.id,
-                'noupdate': True
-            })
+            self.env["ir.model.data"].create(
+                {
+                    "name": "mobile_dashboard_widget_category_operations",
+                    "model": "mobile.dashboard.widget.category",
+                    "module": "records_management",
+                    "res_id": default_category.id,
+                    "noupdate": True,
+                }
+            )
 
         return default_category
 
@@ -424,199 +476,209 @@ class MobileDashboardWidget(models.Model):
 
         default_widgets = [
             {
-                'name': 'Active Records',
-                'widget_type': 'kpi',
-                'category_id': default_category.id,
-                'icon': 'fa-file-text',
-                'color': '#28a745',
-                'model_name': 'records.document',
-                'domain': "[('active', '=', True)]",
-                'aggregation': 'count',
-                'title': 'Active Records',
-                'action_type': 'model',
-                'action_value': 'records.document',
-                'technical_name': 'active_records'
+                "name": "Active Records",
+                "widget_type": "kpi",
+                "category_id": default_category.id,
+                "icon": "fa-file-text",
+                "color": "#28a745",
+                "model_name": "records.document",
+                "domain": "[('active', '=', True)]",
+                "aggregation": "count",
+                "title": "Active Records",
+                "action_type": "model",
+                "action_value": "records.document",
+                "technical_name": "active_records",
             },
             {
-                'name': 'Pending Requests',
-                'widget_type': 'counter',
-                'category_id': default_category.id,
-                'icon': 'fa-clock',
-                'color': '#ffc107',
-                'model_name': 'records.request',
-                'domain': "[('state', 'in', ['draft', 'submitted']), ('create_date', '>=', '{}')]".format(fields.Date.today()),
-                'title': 'Pending Requests',
-                'action_type': 'model',
-                'action_value': 'records.request',
-                'technical_name': 'pending_requests'
+                "name": "Pending Requests",
+                "widget_type": "counter",
+                "category_id": default_category.id,
+                "icon": "fa-clock",
+                "color": "#ffc107",
+                "model_name": "records.request",
+                "domain": "[('state', 'in', ['draft', 'submitted']), ('create_date', '>=', '{}')]".format(
+                    fields.Date.today()
+                ),  # Fixed: Use today() consistently
+                "title": "Pending Requests",
+                "action_type": "model",
+                "action_value": "records.request",
+                "technical_name": "pending_requests",
             },
             {
-                'name': 'Containers Today',
-                'widget_type': 'kpi',
-                'category_id': default_category.id,
-                'icon': 'fa-box',
-                'color': '#007bff',
-                'model_name': 'records.container',
-                'domain': "[('create_date', '>=', '{}')]".format(fields.Date.context_today(self.env.user)),
-                'aggregation': 'count',
-                'title': 'Containers Today',
-                'action_type': 'model',
-                'action_value': 'records.container',
-                'technical_name': 'containers_today'
+                "name": "Containers Today",
+                "widget_type": "kpi",
+                "category_id": default_category.id,
+                "icon": "fa-box",
+                "color": "#007bff",
+                "model_name": "records.container",
+                "domain": "[('create_date', '>=', '{}')]".format(
+                    fields.Date.today()
+                ),  # Fixed: Use today() consistently
+                "aggregation": "count",
+                "title": "Containers Today",
+                "action_type": "model",
+                "action_value": "records.container",
+                "technical_name": "containers_today",
             },
             {
-                'name': 'Storage Locations',
-                'widget_type': 'status',
-                'category_id': default_category.id,
-                'icon': 'fa-map-marker',
-                'color': '#dc3545',
-                'model_name': 'records.location',
-                'domain': "[('active', '=', True)]",
-                'aggregation': 'count',
-                'title': 'Storage Locations',
-                'action_type': 'model',
-                'action_value': 'records.location',
-                'technical_name': 'storage_locations'
+                "name": "Storage Locations",
+                "widget_type": "status",
+                "category_id": default_category.id,
+                "icon": "fa-map-marker",
+                "color": "#dc3545",
+                "model_name": "records.location",
+                "domain": "[('active', '=', True)]",
+                "aggregation": "count",
+                "title": "Storage Locations",
+                "action_type": "model",
+                "action_value": "records.location",
+                "technical_name": "storage_locations",
             },
             {
-                'name': 'Quick Actions',
-                'widget_type': 'button',
-                'category_id': default_category.id,
-                'icon': 'fa-plus',
-                'color': '#ffc107',
-                'title': 'Quick Actions',
-                'technical_name': 'quick_actions'
+                "name": "Quick Actions",
+                "widget_type": "button",
+                "category_id": default_category.id,
+                "icon": "fa-plus",
+                "color": "#ffc107",
+                "title": "Quick Actions",
+                "technical_name": "quick_actions",
             },
             {
-                'name': 'System Alerts',
-                'widget_type': 'notification',
-                'category_id': default_category.id,
-                'icon': 'fa-bell',
-                'color': '#6c757d',
-                'title': 'System Alerts',
-                'auto_refresh': True,
-                'refresh_interval': 60,
-                'technical_name': 'system_alerts'
+                "name": "System Alerts",
+                "widget_type": "notification",
+                "category_id": default_category.id,
+                "icon": "fa-bell",
+                "color": "#6c757d",
+                "title": "System Alerts",
+                "auto_refresh": True,
+                "refresh_interval": 60,
+                "technical_name": "system_alerts",
             },
             {
-                'name': 'Time Tracker',
-                'widget_type': 'timer',
-                'category_id': default_category.id,
-                'icon': 'fa-clock',
-                'color': '#fd7e14',
-                'title': 'Time Tracker',
-                'technical_name': 'time_tracker'
+                "name": "Time Tracker",
+                "widget_type": "timer",
+                "category_id": default_category.id,
+                "icon": "fa-clock",
+                "color": "#fd7e14",
+                "title": "Time Tracker",
+                "technical_name": "time_tracker",
             },
             {
-                'name': 'Completed Tasks',
-                'widget_type': 'counter',
-                'category_id': default_category.id,
-                'icon': 'fa-check-circle',
-                'color': '#20c997',
-                'model_name': 'records.request',
-                'domain': "[('state', '=', 'done')]",
-                'aggregation': 'count',
-                'title': 'Completed Tasks',
-                'technical_name': 'completed_tasks'
+                "name": "Completed Tasks",
+                "widget_type": "counter",
+                "category_id": default_category.id,
+                "icon": "fa-check-circle",
+                "color": "#20c997",
+                "model_name": "records.request",
+                "domain": "[('state', '=', 'done')]",
+                "aggregation": "count",
+                "title": "Completed Tasks",
+                "technical_name": "completed_tasks",
             },
             {
-                'name': 'Overdue Items',
-                'widget_type': 'kpi',
-                'category_id': default_category.id,
-                'icon': 'fa-exclamation-triangle',
-                'color': '#dc3545',
-                'model_name': 'records.request',
-                'domain': "[('date_deadline', '<', '{}'), ('state', '!=', 'done')]".format(fields.Date.context_today(self.env.user)),
-                'aggregation': 'count',
-                'title': 'Overdue Items',
-                'action_type': 'model',
-                'action_value': 'records.request',
-                'technical_name': 'overdue_items'
+                "name": "Overdue Items",
+                "widget_type": "kpi",
+                "category_id": default_category.id,
+                "icon": "fa-exclamation-triangle",
+                "color": "#dc3545",
+                "model_name": "records.request",
+                "domain": "[('date_deadline', '<', '{}'), ('state', '!=', 'done')]".format(
+                    fields.Date.today()
+                ),  # Fixed: Use today() consistently
+                "aggregation": "count",
+                "title": "Overdue Items",
+                "action_type": "model",
+                "action_value": "records.request",
+                "technical_name": "overdue_items",
             },
             {
-                'name': 'Progress Status',
-                'widget_type': 'progress',
-                'category_id': default_category.id,
-                'icon': 'fa-chart-line',
-                'color': '#6f42c1',
-                'title': 'Task Progress',
-                'technical_name': 'progress_status'
+                "name": "Progress Status",
+                "widget_type": "progress",
+                "category_id": default_category.id,
+                "icon": "fa-chart-line",
+                "color": "#6f42c1",
+                "title": "Task Progress",
+                "technical_name": "progress_status",
             },
             {
-                'name': 'Department Stats',
-                'widget_type': 'chart',
-                'category_id': default_category.id,
-                'icon': 'fa-building',
-                'color': '#17a2b8',
-                'model_name': 'records.department',
-                'domain': "[('active', '=', True)]",
-                'aggregation': 'count',
-                'title': 'Departments',
-                'action_type': 'model',
-                'action_value': 'records.department',
-                'technical_name': 'department_stats'
+                "name": "Department Stats",
+                "widget_type": "chart",
+                "category_id": default_category.id,
+                "icon": "fa-building",
+                "color": "#17a2b8",
+                "model_name": "records.department",
+                "domain": "[('active', '=', True)]",
+                "aggregation": "count",
+                "title": "Departments",
+                "action_type": "model",
+                "action_value": "records.department",
+                "technical_name": "department_stats",
             },
             {
-                'name': 'Location Tracker',
-                'widget_type': 'location',
-                'category_id': default_category.id,
-                'icon': 'fa-crosshairs',
-                'color': '#007bff',
-                'title': 'GPS Location',
-                'technical_name': 'location_tracker'
+                "name": "Location Tracker",
+                "widget_type": "location",
+                "category_id": default_category.id,
+                "icon": "fa-crosshairs",
+                "color": "#007bff",
+                "title": "GPS Location",
+                "technical_name": "location_tracker",
             },
             {
-                'name': 'Document Types',
-                'widget_type': 'list',
-                'category_id': default_category.id,
-                'icon': 'fa-list',
-                'color': '#28a745',
-                'model_name': 'records.document.type',
-                'domain': "[('active', '=', True)]",
-                'aggregation': 'count',
-                'title': 'Document Types',
-                'action_type': 'model',
-                'action_value': 'records.document.type',
-                'technical_name': 'document_types'
+                "name": "Document Types",
+                "widget_type": "list",
+                "category_id": default_category.id,
+                "icon": "fa-list",
+                "color": "#28a745",
+                "model_name": "records.document.type",
+                "domain": "[('active', '=', True)]",
+                "aggregation": "count",
+                "title": "Document Types",
+                "action_type": "model",
+                "action_value": "records.document.type",
+                "technical_name": "document_types",
             },
             {
-                'name': 'System Maintenance',
-                'widget_type': 'badge',
-                'category_id': default_category.id,
-                'icon': 'fa-tools',
-                'color': '#ffc107',
-                'title': 'System Maintenance',
-                'technical_name': 'system_maintenance'
+                "name": "System Maintenance",
+                "widget_type": "badge",
+                "category_id": default_category.id,
+                "icon": "fa-tools",
+                "color": "#ffc107",
+                "title": "System Maintenance",
+                "technical_name": "system_maintenance",
             },
             {
-                'name': 'Weather Info',
-                'widget_type': 'weather',
-                'category_id': default_category.id,
-                'icon': 'fa-cloud-sun',
-                'color': '#17a2b8',
-                'title': 'Weather',
-                'technical_name': 'weather_info'
+                "name": "Weather Info",
+                "widget_type": "weather",
+                "category_id": default_category.id,
+                "icon": "fa-cloud-sun",
+                "color": "#17a2b8",
+                "title": "Weather",
+                "technical_name": "weather_info",
             },
             {
-                'name': 'Quick Report',
-                'widget_type': 'form',
-                'category_id': default_category.id,
-                'icon': 'fa-clipboard',
-                'color': '#6c757d',
-                'title': 'Quick Report',
-                'technical_name': 'quick_report'
-            }
+                "name": "Quick Report",
+                "widget_type": "form",
+                "category_id": default_category.id,
+                "icon": "fa-clipboard",
+                "color": "#6c757d",
+                "title": "Quick Report",
+                "technical_name": "quick_report",
+            },
         ]
 
         for widget_data in default_widgets:
             # Check if widget already exists
-            existing = self.search([('technical_name', '=', widget_data['technical_name'])])
+            existing = self.search(
+                [("technical_name", "=", widget_data["technical_name"])]
+            )
             if not existing:
                 try:
                     self.create(widget_data)
                 except Exception as e:
                     # Log error but continue with other widgets
-                    _logger.warning(_("Failed to create widget %s: %s") % (widget_data['name'], str(e)))
+                    _logger.warning(
+                        _("Failed to create widget %s: %s", widget_data["name"], str(e))
+                    )
                     continue
 
         return True
@@ -625,8 +687,8 @@ class MobileDashboardWidget(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if not vals.get('technical_name') and vals.get('name'):
+            if not vals.get("technical_name") and vals.get("name"):
                 # Replace non-alphanumeric characters with underscores
-                technical_name = re.sub(r'\W+', '_', vals['name'].lower())
-                vals['technical_name'] = technical_name.strip('_')
+                technical_name = re.sub(r"\W+", "_", vals["name"].lower())
+                vals["technical_name"] = technical_name.strip("_")
         return super().create(vals_list)
