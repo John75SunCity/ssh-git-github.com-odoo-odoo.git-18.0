@@ -63,25 +63,8 @@
         "quality",  # Important for compliance
     ],
     "data": [
-        # Model XML IDs must load first before security rules reference them
-        "data/model_external_ids.xml",
-        # Security files must load next
-        "security/records_management_security.xml",
-        "security/additional_models_security.xml",
-        "security/intelligent_search_security.xml",
-        "security/naid_security.xml",
-        "security/portal_request_security.xml",
-        "security/ir.model.access.csv",
-        # Data files
-        "data/ir_sequence_data.xml",
-        "data/sequence_data.xml",
-        "data/core_records_data.xml",  # Core records model XML IDs
-        "data/naid_compliance_data.xml",  # NAID compliance model XML IDs
-        "data/portal_mail_templates_data.xml",  # Portal model XML IDs
-        "data/fsm_data.xml",  # FSM model XML IDs
-        "data/billing_data.xml",  # Billing model XML IDs
-        "data/base_rates_container_access_data.xml",
         "data/container_types_base_rates.xml",
+        "data/core_records_data.xml",
         "data/document_retrieval_rates_data.xml",
         "data/feedback_survey_data.xml",
         "data/fsm_automated_actions_data.xml",
@@ -93,11 +76,15 @@
         "data/paper_products_data.xml",
         "data/products_data.xml",
         "data/scheduled_actions_data.xml",
+        "data/sequence_data.xml",
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
         "data/temp_inventory_configurator_data.xml",
-        # Views (load after data)
-        "views/enhanced_features_menus.xml",
+        "security/additional_models_security.xml",
+        "security/intelligent_search_security.xml",
+        "security/ir.model.access.csv",
+        "security/naid_security.xml",
+        "security/portal_request_security.xml",
         "views/advanced_billing_line_views.xml",
         "views/advanced_billing_service_line_views.xml",
         "views/advanced_billing_storage_line_views.xml",
@@ -109,10 +96,10 @@
         "views/enhanced_fsm_integration_views.xml",
         "views/fleet_fsm_integration_menus.xml",
         "views/fleet_vehicle_enhanced_views.xml",
+        "views/fsm_notification_manager_views.xml",
+        "views/fsm_reschedule_wizard_views.xml",
         "views/maintenance_request_views.xml",
         "views/mobile_fsm_integration_views.xml",
-        "views/fsm_reschedule_wizard_views.xml",
-        "views/fsm_notification_manager_views.xml",
         "views/naid_compliance_policy_views.xml",
         "views/naid_custody_views.xml",
         "views/pickup_route_views.xml",
@@ -122,8 +109,18 @@
         "views/shredding_service_bin_views.xml",
         "views/shredding_service_event_views.xml",
         "views/workflow_visualization_manager_views.xml",
-        # Reports (load last)
-        "reports/naid_compliance_policy_report.xml",
+        "reports/document_search_attempt_report.xml",
+        "reports/report_records_management_report_customer_inventory_report.xml",
+        "#BillingmodelXMLIDsdata/base_rates_container_access_data.xml",
+        "#CorerecordsmodelXMLIDsdata/naid_compliance_data.xml",
+        "#Datafilesdata/ir_sequence_data.xml",
+        "#FSMmodelXMLIDsdata/billing_data.xml",
+        "#ModelXMLIDsmustloadfirstbeforesecurityrulesreferencethemdata/model_external_ids.xml",
+        "#NAIDcompliancemodelXMLIDsdata/portal_mail_templates_data.xml",
+        "#PortalmodelXMLIDsdata/fsm_data.xml",
+        "#Reports(loadlast)reports/naid_compliance_policy_report.xml",
+        "#Securityfilesmustloadnextsecurity/records_management_security.xml",
+        "#Views(loadafterdata)views/enhanced_features_menus.xml"
     ],
     "demo": [
         "demo/customer_inventory_demo.xml",

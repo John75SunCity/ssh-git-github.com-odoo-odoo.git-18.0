@@ -10,8 +10,14 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
+import logging
+from datetime import timedelta
+
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
+
 
 class CustomerInventoryReport(models.AbstractModel):
     _name = 'report.records_management.report_customer_inventory'
@@ -190,11 +196,21 @@ class CustomerInventoryReportWizard(models.TransientModel):
         # Generate reports for all customers
         self.generate_monthly_reports()
 
-        # TODO: Implement additional workflow logic here
-        # This could include:
-        # - Sending report emails to customers
-        # - Archiving old reports
-        # - Generating summary reports
+        # ============================================================================
+        # ADVANCED WORKFLOW LOGIC - Implemented with Odoo 18.0 patterns
+        # ============================================================================
+
+        # 1. Email reports to customers automatically
+        self._send_reports_to_customers()
+
+        # 2. Archive old reports (older than retention period)
+        self._archive_old_reports()
+
+        # 3. Generate executive summary reports
+        self._generate_summary_reports()
+
+        # 4. Create follow-up activities for incomplete reports
+        self._create_followup_activities()
 
         # Log workflow completion
         self.env['ir.logging'].create({
@@ -205,3 +221,100 @@ class CustomerInventoryReportWizard(models.TransientModel):
             'path': 'customer.inventory.report.wizard',
             'func': '_run_inventory_report_workflow',
         })
+
+    # ============================================================================
+    # WORKFLOW IMPLEMENTATION METHODS - Odoo 18.0 Best Practices
+    # ============================================================================
+
+    def _send_reports_to_customers(self):
+        """Send generated reports to customers via email using Odoo 18.0 mail system"""
+        recent_reports = self.env["customer.inventory.report"].search(
+            [("create_date", ">=", fields.Datetime.now().replace(day=1)), ("state", "=", "completed")]
+        )
+
+        for report in recent_reports:
+            if report.partner_id.email:
+                # Use Odoo 18.0 mail template system
+                template = self.env.ref("records_management.email_template_inventory_report", raise_if_not_found=False)
+                if template:
+                    template.send_mail(report.id, force_send=True)
+                    report.message_post(body=_("Inventory report sent to customer via email"))
+
+    def _archive_old_reports(self):
+        """Archive reports older than retention period (e.g., 2 years)"""
+
+        retention_date = fields.Datetime.now() - timedelta(days=730)  # 2 years
+        old_reports = self.env["customer.inventory.report"].search(
+            [("create_date", "<", retention_date), ("active", "=", True)]
+        )
+
+        if old_reports:
+            old_reports.write({"active": False})
+            _logger.info("Archived %s old inventory reports" % len(old_reports))
+
+    def _generate_summary_reports(self):
+        """Generate executive summary reports for management"""
+        summary_data = self.env["customer.inventory.report"].read_group(
+            [("create_date", ">=", fields.Datetime.now().replace(day=1))],
+            ["partner_id", "total_containers", "total_documents"],
+            ["partner_id"],
+        )
+
+        # Create summary in system parameter or log for now
+        summary_text = "Executive Summary Data: %s reports processed" % len(summary_data)
+        self.env["ir.logging"].create(
+            {
+                "name": "Executive Summary",
+                "type": "server",
+                "level": "INFO",
+                "message": summary_text,
+                "path": "customer.inventory.report.wizard",
+            }
+        )
+
+    def _create_followup_activities(self):
+        """Create follow-up activities for incomplete or problematic reports"""
+
+        incomplete_reports = self.env["customer.inventory.report"].search(
+            [("create_date", ">=", fields.Datetime.now().replace(day=1)), ("state", "in", ["draft", "error"])]
+        )
+
+        activity_type = self.env.ref("mail.mail_activity_data_todo", raise_if_not_found=False)
+        if not activity_type:
+            return
+
+        for report in incomplete_reports:
+            # Check if activity already exists
+            existing_activity = self.env["mail.activity"].search(
+                [
+                    ("res_model", "=", "customer.inventory.report"),
+                    ("res_id", "=", report.id),
+                    ("activity_type_id", "=", activity_type.id),
+                    ("user_id", "=", self.env.user.id),
+                ],
+                limit=1,
+            )
+
+            if not existing_activity:
+                self.env["mail.activity"].create(
+                    {
+                        "res_model": "customer.inventory.report",
+                        "res_id": report.id,
+                        "activity_type_id": activity_type.id,
+                        "summary": "Follow-up required: %s" % report.name,
+                        "note": "Inventory report for %s needs attention" % report.partner_id.name,
+                        "user_id": self.env.user.id,
+                        "date_deadline": fields.Date.today() + timedelta(days=3),
+                    }
+                )
+
+    @api.model
+    def cron_generate_monthly_reports(self):
+        """Cron job to automatically generate monthly inventory reports"""
+        try:
+            wizard = self.create({})
+            wizard.run_inventory_report_automation()
+            return True
+        except Exception as e:
+            _logger.error("Error in monthly inventory report cron: %s" % e)
+            return False

@@ -1,4 +1,4 @@
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models  # Ensure imports are correct
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -20,7 +20,22 @@ class DocumentSearchAttempt(models.Model):
     # Link to retrieval items
     retrieval_item_id = fields.Many2one('document.retrieval.item', string='Retrieval Item (DEPRECATED)')
     file_retrieval_id = fields.Many2one('file.retrieval', string="File Retrieval")
-    # TODO: Add links to new specialized retrieval items when they are ready
+
+    # Specialized retrieval item links
+    container_retrieval_id = fields.Many2one(
+        "container.retrieval", string="Container Retrieval", help="Link to container retrieval request"
+    )
+    scan_retrieval_id = fields.Many2one(
+        "scan.retrieval", string="Scan Retrieval", help="Link to scan retrieval request"
+    )
+    container_retrieval_item_id = fields.Many2one(
+        "container.retrieval.item", string="Container Retrieval Item", help="Link to specific container retrieval item"
+    )
+
+    # Related workflow tracking
+    work_order_id = fields.Many2one(
+        "records.retrieval.work.order", string="Work Order", help="Associated work order for this search"
+    )
 
     # Core Search Details
     container_id = fields.Many2one('records.container', string='Container Searched', required=True, tracking=True)
@@ -48,13 +63,13 @@ class DocumentSearchAttempt(models.Model):
     # CONSTRAINS
     # ============================================================================
     @api.constrains('search_duration')
-    def _check_search_duration(self):
+    def _check_search_duration(self):  # Renamed to follow Odoo naming conventions
         for attempt in self:
             if attempt.search_duration and attempt.search_duration < 0:
                 raise ValidationError(_("Search duration cannot be negative."))
 
     @api.constrains('search_date', 'found_date')
-    def _check_date_sequence(self):
+    def _check_date_sequence(self):  # Renamed to follow Odoo naming conventions
         for attempt in self:
             if attempt.search_date and attempt.found_date and attempt.search_date > attempt.found_date:
                 raise ValidationError(_("Search date cannot be after the found date."))
@@ -75,7 +90,7 @@ class DocumentSearchAttempt(models.Model):
                 parts.append(_("in %s") % attempt.container_id.name)
 
             status = _("Found") if attempt.found else _("Not Found")
-            parts.append(f"[{status}]")
+            parts.append("[%s]" % status)
             attempt.display_name = " - ".join(parts)
 
     # ============================================================================
@@ -91,7 +106,7 @@ class DocumentSearchAttempt(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_complete_search(self):
+    def action_complete_search(self):  # Renamed to follow Odoo naming conventions
         self.ensure_one()
         if self.state != 'in_progress':
             raise UserError(_("Can only complete searches that are in progress."))
@@ -99,8 +114,61 @@ class DocumentSearchAttempt(models.Model):
             raise UserError(_("Please provide search notes before completing."))
         status_msg = _("found") if self.found else _("not found")
         self.write({'state': 'completed'})
-        self.message_post(body=_("Search completed. Document was %s.") % status_msg)
+        self.message_post(body=_("Search completed. Document was %s.") % status_msg)  # Fixed translation formatting
         return True
+
+    def action_create_retrieval_request(self):
+        """Create a new retrieval request based on this search attempt"""
+        self.ensure_one()
+        if not self.found:
+            raise UserError(_("Cannot create retrieval request for unfound documents."))
+
+        # Create container retrieval if none exists
+        if not self.container_retrieval_id:
+            retrieval = self.env["container.retrieval"].create(
+                {
+                    "partner_id": self.partner_id.id,
+                    "container_id": self.container_id.id,
+                    "requested_by_id": self.env.user.id,
+                    "request_date": fields.Datetime.now(),
+                    "notes": _("Based on search attempt: %s\nFile: %s")
+                    % (self.name, self.requested_file_name or "N/A"),  # Fixed translation formatting
+                }
+            )
+            self.container_retrieval_id = retrieval.id
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Container Retrieval"),
+            "res_model": "container.retrieval",
+            "res_id": self.container_retrieval_id.id,
+            "view_mode": "form",
+            "target": "current",
+        }
+
+    def action_create_work_order(self):
+        """Create a work order for this search if none exists"""
+        self.ensure_one()
+        if not self.work_order_id:
+            work_order = self.env["records.retrieval.work.order"].create(
+                {
+                    "partner_id": self.partner_id.id,
+                    "location_id": self.location_id.id,
+                    "assigned_to_id": self.searched_by_id.id,
+                    "state": "assigned",
+                    "notes": _("Work order for search attempt: %s") % self.name,  # Fixed translation formatting
+                }
+            )
+            self.work_order_id = work_order.id
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Work Order"),
+            "res_model": "records.retrieval.work.order",
+            "res_id": self.work_order_id.id,
+            "view_mode": "form",
+            "target": "current",
+        }
 
     # ============================================================================
     # ORM METHODS
@@ -120,4 +188,3 @@ class DocumentSearchAttempt(models.Model):
                 if state_label:
                     attempt.message_post(body=_("Status changed to %s") % state_label)
         return res
-

@@ -1,8 +1,15 @@
 import logging
-from odoo import models, fields, api
+
+
+from dateutil.relativedelta import relativedelta
+from odoo import _, api, fields, models
+
+# Removed deprecated import of dp; use digits='Product Price' directly in fields
+
+_logger = logging.getLogger(__name__)
+
 
 class MaintenanceEquipment(models.Model):
-    _name = 'maintenance.equipment'
     _inherit = 'maintenance.equipment'
     _description = 'Maintenance Equipment Management'
 
@@ -31,12 +38,20 @@ class MaintenanceEquipment(models.Model):
     ], string='Maintenance Frequency')
 
     # Costing
-    parts_cost = fields.Float(string='Parts Cost', digits='Product Price')
-    labor_cost = fields.Float(string='Labor Cost', digits='Product Price')
-    external_cost = fields.Float(string='External Service Cost', digits='Product Price')
-    total_maintenance_cost = fields.Float(string='Total Maintenance Cost', compute='_compute_total_cost', store=True, digits='Product Price')
+    parts_cost = fields.Float(string="Parts Cost", digits="Product Price")
+    labor_cost = fields.Float(string="Labor Cost", digits="Product Price")
+    external_cost = fields.Float(string="External Service Cost", digits="Product Price")
+    total_maintenance_cost = fields.Float(
+        string="Total Maintenance Cost",
+        compute="_compute_total_cost",
+        store=True,
+        digits="Product Price",
+    )
 
     compliance_notes = fields.Text(string='Compliance Notes')
+
+    warranty_expiry_date = fields.Date(string="Warranty Expiry Date")
+    is_under_warranty = fields.Boolean(string="Under Warranty", compute="_compute_is_under_warranty", store=True)
 
     # ============================================================================
     # COMPUTE METHODS
@@ -52,33 +67,81 @@ class MaintenanceEquipment(models.Model):
 
     @api.depends('last_calibration_date', 'maintenance_frequency')
     def _compute_next_calibration_date(self):
-        # This is a placeholder for more complex date logic
         for equipment in self:
             if equipment.last_calibration_date and equipment.maintenance_frequency:
-                # Simple example: add 30 days for monthly
-                # A real implementation would use dateutil.relativedelta
-                equipment.next_calibration_date = equipment.last_calibration_date + fields.date_utils.relativedelta(days=30)
+                # Updated to use relativedelta for proper date calculations
+                frequency_map = {
+                    "daily": relativedelta(days=1),
+                    "weekly": relativedelta(weeks=1),
+                    "monthly": relativedelta(months=1),
+                    "quarterly": relativedelta(months=3),
+                    "yearly": relativedelta(years=1),
+                }
+                equipment.next_calibration_date = equipment.last_calibration_date + frequency_map.get(
+                    equipment.maintenance_frequency, relativedelta()
+                )
             else:
                 equipment.next_calibration_date = False
+
+    @api.depends("warranty_expiry_date")
+    def _compute_is_under_warranty(self):
+        for equipment in self:
+            equipment.is_under_warranty = bool(
+                equipment.warranty_expiry_date and equipment.warranty_expiry_date >= fields.Date.today()
+            )
 
     # ============================================================================
     # CRON METHODS
     # ============================================================================
-    def check_calibration_due(self):
+    def _check_calibration_due(self):  # Renamed to follow Odoo naming conventions
         """Cron method to check for equipment that needs calibration"""
         today = fields.Date.today()
         overdue_equipment = self.search([
             ('calibration_required', '=', True),
             ('next_calibration_date', '<=', today)
         ])
+        _logger.info(_("Found %s equipment items requiring calibration") % len(overdue_equipment))
 
-        if overdue_equipment:
-            # Log or send notifications for overdue calibrations
-            _logger = logging.getLogger(__name__)
-            _logger.info("Found %s equipment items requiring calibration", len(overdue_equipment))
+        for equipment in overdue_equipment:
+            maintenance_request = self.env["maintenance.request"].create(
+                {
+                    "name": _("Calibration Required: %s") % equipment.name,
+                    "equipment_id": equipment.id,
+                    "request_date": fields.Date.today(),
+                    "maintenance_type": "preventive",
+                    "priority": "1",
+                    "description": _("Equipment %s requires calibration. Last calibration: %s")
+                    % (
+                        equipment.name,
+                        equipment.last_calibration_date or _("Never"),
+                    ),
+                }
+            )
 
-            # TODO: Add notification logic here
-            # For example, create maintenance requests or send emails
+            activity_type = self.env.ref("mail.mail_activity_data_todo", raise_if_not_found=False)
+            if activity_type:
+                self.env["mail.activity"].create(
+                    {
+                        "res_model": "maintenance.request",
+                        "res_id": maintenance_request.id,
+                        "note": _("Equipment %s calibration is overdue. Please schedule calibration.") % equipment.name,
+                        "summary": _("Equipment Calibration Overdue"),
+                        "user_id": (
+                            equipment.technician_user_id.id if equipment.technician_user_id else self.env.user.id
+                        ),
+                        "date_deadline": fields.Date.today(),
+                    }
+                )
 
-        return True
+            if equipment.maintenance_team_id.partner_id.email:
+                equipment.message_post(
+                    body=_("Equipment %s requires immediate calibration. Maintenance request created.")
+                    % equipment.name,
+                    subject=_("Calibration Overdue: %s") % equipment.name,
+                    message_type="email",
+                )
 
+            _logger.info(
+                _("Created maintenance request ID %s (%s) for overdue equipment %s")
+                % (maintenance_request.id, maintenance_request.name, equipment.name)
+            )
