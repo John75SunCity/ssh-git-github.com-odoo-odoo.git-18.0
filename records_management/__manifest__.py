@@ -34,7 +34,6 @@
         "purchase",
         "point_of_sale",
         "repair",
-
         # Standard modules - Usually available
         "board",
         "resource",
@@ -48,10 +47,20 @@
         "http_routing",
         "base_setup",
         "base_import",
-
         # Conservative enterprise modules - Only the most essential ones
         # Removed potentially unavailable modules to prevent installation failures
         # Add back individual modules only after confirming availability in target environment
+        "industry_fsm",  # Critical for FSM integration
+        "sign",  # Critical for e-signatures
+        "survey",  # Critical for feedback system
+        "documents",  # Critical for document management
+        "helpdesk",  # Important for customer support
+        "mass_mailing",  # Important for notifications
+        "website_sale",  # Important for portal features
+        "sale_management",  # Important for sales integration
+        "account_payment",  # Important for billing
+        "delivery",  # Important for shipping
+        "quality",  # Important for compliance
     ],
     "data": [
         # Security files must load first
