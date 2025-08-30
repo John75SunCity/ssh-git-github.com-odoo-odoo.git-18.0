@@ -28,7 +28,10 @@ from odoo import _, http
 # Odoo addons imports
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.exceptions import AccessError
-from odoo.http import make_response, request
+from odoo.http import request
+
+# Third-party imports
+from werkzeug.wrappers import Response
 
 _logger = logging.getLogger(__name__)
 
@@ -529,7 +532,7 @@ class FieldLabelAdminController(http.Controller):
             if not request.env.user.has_group(
                 "records_management.group_records_manager"
             ):
-                return make_response(
+                return Response(
                     '{"error": "Access denied - Manager access required"}',
                     headers=[("Content-Type", "application/json")],
                 )
@@ -598,7 +601,7 @@ class FieldLabelAdminController(http.Controller):
                 filename += "_%s" % safe_name
         filename += ".csv"
 
-        return make_response(
+        return Response(
             output.getvalue(),
             headers=[
                 ("Content-Type", "text/csv"),
@@ -662,7 +665,7 @@ class FieldLabelAdminController(http.Controller):
                 filename += "_%s" % safe_name
         filename += ".xlsx"
 
-        return make_response(
+        return Response(
             output.getvalue(),
             headers=[
                 (
