@@ -49,7 +49,8 @@
     "python.sortImports.args": ["--profile", "black", "--line-length", "120"],
     "python.linting.mypyEnabled": true,
     "python.linting.mypyArgs": [
-        "--python-version", "3.12",
+        "--python-version",
+        "3.12",
         "--ignore-missing-imports",
         "--no-strict-optional"
     ],
@@ -128,6 +129,21 @@
     "git.autofetch": true,
     "git.enableSmartCommit": true,
     "git.confirmSync": false,
+    "git.allowForcePush": false,
+    "git.autoRepositoryDetection": true,
+    "git.autoStash": false,
+    "git.enableCommitSigning": false,
+    "git.fetchOnPull": true,
+    "git.pruneOnFetch": false,
+    "git.pullTags": true,
+    "git.showInlineOpenFileAction": true,
+    "git.showProgress": true,
+    "git.supportCancellation": true,
+    "git.useCommitInputAsStashMessage": true,
+    "scm.alwaysShowRepositories": true,
+    "scm.autoReveal": true,
+    "scm.defaultViewMode": "tree",
+    "scm.repositories.visible": 10,
     "terminal.integrated.shell.osx": "/bin/zsh",
     "terminal.integrated.env.osx": {
         "PYTHONPATH": "${workspaceFolder}/records_management:${workspaceFolder}/addons"
@@ -188,8 +204,6 @@
         "**/.DS_Store": true,
         "**/Thumbs.db": true
     },
-    "git.enableCommitSigning": false,
-    "git.alwaysSignOff": false,
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": true,
     "python.testing.pytestArgs": [
