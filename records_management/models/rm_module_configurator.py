@@ -1,5 +1,5 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 
 class RmModuleConfigurator(models.Model):
@@ -236,7 +236,6 @@ class RmModuleConfigurator(models.Model):
         # Track modifications for value changes
         if any(key.startswith("value_") for key in vals):
             for record in self:
-                old_value = record.current_value
                 vals["modified_by_id"] = self.env.user.id
                 vals["last_modified"] = fields.Datetime.now()
                 vals["modification_count"] = record.modification_count + 1
