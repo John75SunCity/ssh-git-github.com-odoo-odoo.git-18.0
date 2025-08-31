@@ -76,7 +76,7 @@ class RecordsBilling(models.Model):
     )
 
     # Related Records
-    billing_line_ids = fields.One2many("records.billing.line", "billing_id", string="Billing Lines")
+    billing_line_ids = fields.One2many("advanced.billing.line", "billing_id", string="Billing Lines")
 
     invoice_id = fields.Many2one("account.move", string="Invoice", readonly=True)
 

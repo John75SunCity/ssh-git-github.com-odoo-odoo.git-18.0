@@ -152,7 +152,6 @@ from . import (
     records_audit_log,
     records_billing,
     records_billing_config,
-    records_billing_line,
     records_bulk_user_import,
     records_category,
     records_center_location,
