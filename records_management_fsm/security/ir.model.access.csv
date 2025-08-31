@@ -1,12 +1,12 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_fsm_task_service_line_admin,fsm.task.service.line admin,model_fsm_task_service_line,records_management.group_records_admin,1,1,1,1
-access_fsm_task_service_line_manager,fsm.task.service.line manager,model_fsm_task_service_line,records_management.group_records_manager,1,1,1,0
-access_fsm_task_service_line_user,fsm.task.service.line user,model_fsm_task_service_line,records_management.group_records_user,1,1,0,0
-access_fsm_task_service_line_read,fsm.task.service.line read,model_fsm_task_service_line,records_management.group_records_readonly,1,0,0,0
-access_shredding_service_admin,shredding.service admin,model_shredding_service,records_management.group_records_admin,1,1,1,1
-access_shredding_service_manager,shredding.service manager,model_shredding_service,records_management.group_records_manager,1,1,1,0
-access_shredding_service_user,shredding.service user,model_shredding_service,records_management.group_records_user,1,1,0,0
-access_shredding_service_read,shredding.service read,model_shredding_service,records_management.group_records_readonly,1,0,0,0
+access_fsm_task_service_line_admin,fsm.task.service.line admin,fsm.task.service.line,records_management.group_records_admin,1,1,1,1
+access_fsm_task_service_line_manager,fsm.task.service.line manager,fsm.task.service.line,records_management.group_records_manager,1,1,1,0
+access_fsm_task_service_line_user,fsm.task.service.line user,fsm.task.service.line,records_management.group_records_user,1,1,0,0
+access_fsm_task_service_line_read,fsm.task.service.line read,fsm.task.service.line,records_management.group_records_readonly,1,0,0,0
+access_shredding_service_admin,shredding.service admin,shredding.service,records_management.group_records_admin,1,1,1,1
+access_shredding_service_manager,shredding.service manager,shredding.service,records_management.group_records_manager,1,1,1,0
+access_shredding_service_user,shredding.service user,shredding.service,records_management.group_records_user,1,1,0,0
+access_shredding_service_read,shredding.service read,shredding.service,records_management.group_records_readonly,1,0,0,0
 access_fsm_notification_admin,fsm notification admin,fsm.notification,records_management.group_records_admin,1,1,1,1
 access_fsm_notification_manager,fsm notification manager,fsm.notification,records_management.group_records_manager,1,1,1,0
 access_fsm_notification_user,fsm notification user,fsm.notification,records_management.group_records_user,1,1,0,0
@@ -19,7 +19,7 @@ access_fsm_reschedule_wizard_admin,fsm reschedule wizard admin,fsm.reschedule.wi
 access_fsm_reschedule_wizard_manager,fsm reschedule wizard manager,fsm.reschedule.wizard,records_management.group_records_manager,1,1,1,0
 access_fsm_reschedule_wizard_user,fsm reschedule wizard user,fsm.reschedule.wizard,records_management.group_records_user,1,1,0,0
 access_fsm_reschedule_wizard_read,fsm reschedule wizard read,fsm.reschedule.wizard,records_management.group_records_readonly,1,0,0,0
-access_project_task_fsm_admin,project.task fsm admin,model_project_task,records_management.group_records_admin,1,1,1,1
-access_project_task_fsm_manager,project.task fsm manager,model_project_task,records_management.group_records_manager,1,1,1,0
-access_project_task_fsm_user,project.task fsm user,model_project_task,records_management.group_records_user,1,1,0,0
-access_project_task_fsm_read,project.task fsm read,model_project_task,records_management.group_records_readonly,1,0,0,0
+access_project_task_fsm_admin,project.task fsm admin,project.task,records_management.group_records_admin,1,1,1,1
+access_project_task_fsm_manager,project.task fsm manager,project.task,records_management.group_records_manager,1,1,1,0
+access_project_task_fsm_user,project.task fsm user,project.task,records_management.group_records_user,1,1,0,0
+access_project_task_fsm_read,project.task fsm read,project.task,records_management.group_records_readonly,1,0,0,0
