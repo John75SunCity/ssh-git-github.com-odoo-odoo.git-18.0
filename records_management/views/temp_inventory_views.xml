@@ -20,7 +20,7 @@
                     <field name="priority"/>
                     <field name="user_id"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -200,7 +200,7 @@
                     <field name="user_id"/>
                     <field name="description"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -238,7 +238,7 @@
                     <field name="user_id"/>
                     <field name="description"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -271,28 +271,28 @@
         </record>
 
         <!-- Tree view for Menu -->
-        <menuitem id="menu_temp_inventory_root" 
-                  name="Temporary Inventory" 
-                  parent="records_management.menu_records_root" 
+        <menuitem id="menu_temp_inventory_root"
+                  name="Temporary Inventory"
+                  parent="records_management.menu_records_management_root"
                   sequence="25"
                   attrs="{'invisible': [('temp_inventory_enabled', '=', False)]}"/>
 
-        <menuitem id="menu_temp_inventory" 
-                  name="Inventories" 
-                  parent="menu_temp_inventory_root" 
-                  action="action_temp_inventory" 
+        <menuitem id="menu_temp_inventory"
+                  name="Inventories"
+                  parent="menu_temp_inventory_root"
+                  action="action_temp_inventory"
                   sequence="10"/>
 
-        <menuitem id="menu_temp_inventory_movement" 
-                  name="Movements" 
-                  parent="menu_temp_inventory_root" 
-                  action="action_temp_inventory_movement" 
+        <menuitem id="menu_temp_inventory_movement"
+                  name="Movements"
+                  parent="menu_temp_inventory_root"
+                  action="action_temp_inventory_movement"
                   sequence="20"/>
 
-        <menuitem id="menu_temp_inventory_audit" 
-                  name="Audit Trail" 
-                  parent="menu_temp_inventory_root" 
-                  action="action_temp_inventory_audit" 
+        <menuitem id="menu_temp_inventory_audit"
+                  name="Audit Trail"
+                  parent="menu_temp_inventory_root"
+                  action="action_temp_inventory_audit"
                   sequence="30"
                   groups="records_management.group_records_manager"/>
 

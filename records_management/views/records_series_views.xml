@@ -93,7 +93,7 @@
         <!-- Menu -->
         <menuitem id="menu_records_series"
                   name="Series"
-                  parent="records_management.menu_records_management_configuration"
+                  parent="records_management.menu_records_configuration"
                   action="action_records_series"
                   sequence="20"/>
 

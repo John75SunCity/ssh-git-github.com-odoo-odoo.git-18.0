@@ -97,7 +97,7 @@
     <!-- Menu Item -->
     <menuitem id="full_customization_name_menu"
               name="Customization Configurations"
-              parent="records_management.menu_records_config"
+              parent="records_management.menu_records_configuration"
               action="full_customization_name_action"
               sequence="50"/>
 </data>

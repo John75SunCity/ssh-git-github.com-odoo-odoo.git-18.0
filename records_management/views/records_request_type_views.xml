@@ -61,7 +61,7 @@
         <!-- Menu -->
         <menuitem id="menu_records_request_type"
                   name="Request Types"
-                  parent="records_management.menu_records_management_configuration"
+                  parent="records_management.menu_records_configuration"
                   action="action_records_request_type"
                   sequence="30"/>
 
