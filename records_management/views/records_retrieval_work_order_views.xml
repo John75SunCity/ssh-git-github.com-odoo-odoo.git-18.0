@@ -10,7 +10,7 @@
         <field name="model">records.retrieval.work.order</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree string="Records Retrieval Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'">
+            <list string="Records Retrieval Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="retrieval_team_id"/>
@@ -19,7 +19,7 @@
                 <field name="state" widget="badge" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'"/>
                 <field name="completion_date"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-            </tree>
+            </list>
         </field>
     </record>
 

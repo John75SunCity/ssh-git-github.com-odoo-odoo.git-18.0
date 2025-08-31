@@ -92,7 +92,7 @@
     <field name="model">stock.lot</field>
     <field name="type">list</field>
         <field name="arch" type="xml">
-<tree decoration-success="product_qty &gt; 0" decoration-warning="expiration_date and expiration_date &lt; context_today()" decoration-info="ref != False">
+<list decoration-success="product_qty &gt; 0" decoration-warning="expiration_date and expiration_date &lt; context_today()" decoration-info="ref != False">
     <field name="name" string="📦 Serial/Lot Number"/>
     <field name="product_id" string="🏷️ Product"/>
     <field name="product_qty" string="📊 Quantity"/>
@@ -103,7 +103,7 @@
 <field name="ref" string="🔗 Reference" optional="hide"/>
 <field name="company_id" string="🏢 Company" groups="base.group_multi_company" optional="hide"/>
 <button name="action_view_stock_moves" type="object" string="Movements" icon="fa-exchange" class="btn-link" title="View Stock Movements"/>
-</tree>
+</list>
 </field>
 </record>
 
@@ -111,7 +111,7 @@
 <record id="stock_lot_view_form" model="ir.ui.view">
     <field name="name">stock.lot.view.form</field>
     <field name="model">stock.lot</field>
-    <field name="type">list</field>
+    <field name="type">form</field>
         <field name="arch" type="xml">
         <form>
             <header>

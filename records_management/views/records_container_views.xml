@@ -99,7 +99,7 @@
         <field name="model">records.container</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
+            <list decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
                 <header>
                     <button name="action_bulk_convert_container_type" type="object" string="🔄 Bulk Convert Types" class="btn-primary"/>
                 </header>
@@ -116,7 +116,7 @@
                 <field name="document_count" string="💾 Documents" sum="Total Documents"/>
                 <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text-o" class="btn-link"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -124,7 +124,7 @@
     <record id="records_container_view_form" model="ir.ui.view">
         <field name="name">records.container.view.form</field>
         <field name="model">records.container</field>
-        <field name="type">list</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
                 <header>
