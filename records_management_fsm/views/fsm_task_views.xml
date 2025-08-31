@@ -63,10 +63,11 @@
     </record>
 
 <!-- Tree View - FSM Task List -->
+        <!-- Tree View -->
     <record id="fsm_task_view_tree" model="ir.ui.view">
         <field name="name">fsm.task.view.tree</field>
         <field name="model">fsm.task</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="task_status=='completed'" decoration-info="naid_compliant==True">
                 <field name="name"/>
@@ -86,10 +87,11 @@
     </record>
 
 <!-- Form View - FSM Task Details -->
+        <!-- Form View -->
     <record id="fsm_task_view_form" model="ir.ui.view">
         <field name="name">fsm.task.view.form</field>
         <field name="model">fsm.task</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -200,7 +202,7 @@
         </tree>
     </field>
 </page>
-                        
+
                         <page string="Completion Notes">
                             <group>
 <field name="completion_notes" placeholder="Task completion notes and observations..."/>
@@ -239,10 +241,11 @@
     </record>
 
 <!-- Search View - FSM Task Filters -->
+        <!-- Search View -->
     <record id="fsm_task_view_search" model="ir.ui.view">
         <field name="name">fsm.task.view.search</field>
         <field name="model">fsm.task</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
 <field name="name" string="Task Name"/>
@@ -310,10 +313,11 @@
     </record>
 
 <!-- Action Window - FSM Tasks -->
-    <record id="action_fsm_task" model="ir.actions.act_window">
+        <!-- Action -->
+    <record id="fsm_task_action" model="ir.actions.act_window">
         <field name="name">FSM Tasks</field>
         <field name="res_model">fsm.task</field>
-        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="view_mode">list,form</field>
 <field name="context">{'search_default_scheduled': 1, 'search_default_in_progress': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

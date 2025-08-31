@@ -27,7 +27,7 @@
     <record id="fsm_task_service_line_view_form" model="ir.ui.view">
         <field name="name">fsm.task.service.line.view.form</field>
         <field name="model">fsm.task.service.line</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Service Line">
                 <header>
@@ -93,7 +93,7 @@
     <record id="fsm_task_service_line_view_search" model="ir.ui.view">
         <field name="name">fsm.task.service.line.view.search</field>
         <field name="model">fsm.task.service.line</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Service Lines">
                 <field name="name"/>
@@ -115,19 +115,10 @@
     </record>
 
     <!-- Action -->
-    <record id="action_fsm_task_service_line" model="ir.actions.act_window">
-        <field name="name">FSM Service Lines</field>
+    <record id="fsm_task_service_line_action" model="ir.actions.act_window">
+        <field name="name">FSM Task Service Lines</field>
         <field name="res_model">fsm.task.service.line</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                No service lines found!
-            </p>
-            <p>
-                Service lines track individual services performed during FSM tasks.
-            </p>
-        </field>
+        <field name="view_mode">list,form</field>
     </record>
 </data>
 </odoo>

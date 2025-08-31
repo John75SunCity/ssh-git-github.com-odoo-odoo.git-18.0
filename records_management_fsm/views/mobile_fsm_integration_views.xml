@@ -7,7 +7,7 @@
         <record id="mobile_fsm_integration_view_tree" model="ir.ui.view">
             <field name="name">mobile.fsm.integration.tree</field>
             <field name="model">mobile.fsm.integration</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Mobile FSM Integrations">
                     <field name="name"/>
@@ -23,7 +23,7 @@
         <record id="mobile_fsm_integration_view_form" model="ir.ui.view">
             <field name="name">mobile.fsm.integration.form</field>
             <field name="model">mobile.fsm.integration</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Mobile FSM Integration">
                     <header>
@@ -93,7 +93,7 @@
         <record id="mobile_fsm_integration_view_search" model="ir.ui.view">
             <field name="name">mobile.fsm.integration.search</field>
             <field name="model">mobile.fsm.integration</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Mobile FSM Integrations">
                     <field name="name"/>
@@ -113,7 +113,7 @@
             <field name="name">Mobile FSM Integration</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">mobile.fsm.integration</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_id" ref="mobile_fsm_integration_view_tree"/>
             <field name="search_view_id" ref="mobile_fsm_integration_view_search"/>
             <field name="help">Configure mobile field service management integration for your workflows.</field>
