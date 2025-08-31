@@ -7,7 +7,7 @@
         <record id="enhanced_fsm_integration_view_tree" model="ir.ui.view">
             <field name="name">enhanced.fsm.integration.tree</field>
             <field name="model">enhanced.fsm.integration</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="FSM Integrations">
                     <field name="name"/>
@@ -23,7 +23,7 @@
         <record id="enhanced_fsm_integration_view_form" model="ir.ui.view">
             <field name="name">enhanced.fsm.integration.form</field>
             <field name="model">enhanced.fsm.integration</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Enhanced FSM Integration">
                     <header>
@@ -83,7 +83,7 @@
         <record id="enhanced_fsm_integration_view_search" model="ir.ui.view">
             <field name="name">enhanced.fsm.integration.search</field>
             <field name="model">enhanced.fsm.integration</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="FSM Integrations">
                     <field name="name"/>
@@ -103,7 +103,7 @@
             <field name="name">Enhanced FSM Integration</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">enhanced.fsm.integration</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_id" ref="enhanced_fsm_integration_view_tree"/>
             <field name="search_view_id" ref="enhanced_fsm_integration_view_search"/>
             <field name="help">Configure enhanced field service management integration for your workflows.</field>

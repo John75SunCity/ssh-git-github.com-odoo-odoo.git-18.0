@@ -4,7 +4,7 @@
         <record id="fsm_reschedule_wizard_view_form" model="ir.ui.view">
             <field name="name">fsm.reschedule.wizard.view.form</field>
             <field name="model">fsm.reschedule.wizard</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Reschedule Task">
                     <sheet>
