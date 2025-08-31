@@ -15,7 +15,7 @@ class ShredModelBin(models.Model):
         required=True,
         index=True,
         tracking=True,
-        help="Unique 10-digit barcode for bin identification",
+        help="Unique barcode for bin identification (replacing old 10-digit system)",
     )
     barcode_inventory_id = fields.Many2one(
         comodel_name="bin.barcode.inventory",
@@ -47,7 +47,6 @@ class ShredModelBin(models.Model):
     # ============================================================================
     _sql_constraints = [
         ("barcode_unique", "unique(barcode)", "Barcode must be unique across all bins"),
-        ("barcode_length", "length(barcode) >= 10", "Barcode must be at least 10 digits"),
     ]
 
     @api.constrains("barcode")
@@ -55,13 +54,13 @@ class ShredModelBin(models.Model):
         """Validate barcode format and uniqueness"""
         for record in self:
             if record.barcode:
-                # Check if barcode contains only digits
-                if not record.barcode.isdigit():
-                    raise ValidationError(_("Barcode must contain only digits"))
+                # Check if barcode contains only valid characters (flexible for new system)
+                if not record.barcode.replace("-", "").replace("_", "").isalnum():
+                    raise ValidationError(_("Barcode can only contain letters, numbers, hyphens, and underscores"))
 
-                # Check length using Odoo style
-                if record.barcode and len(record.barcode) < 10:
-                    raise ValidationError(_("Barcode must be at least 10 digits long"))
+                # Check minimum length for identification purposes
+                if len(record.barcode) < 3:
+                    raise ValidationError(_("Barcode must be at least 3 characters long"))
 
     @api.onchange("barcode")
     def _onchange_barcode(self):
