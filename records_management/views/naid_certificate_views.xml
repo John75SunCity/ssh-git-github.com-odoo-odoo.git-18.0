@@ -6,7 +6,7 @@
     <record id="naid_certificate_view_tree" model="ir.ui.view">
         <field name="name">naid.certificate.view.tree</field>
         <field name="model">naid.certificate</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree decoration-success="state=='issued'" decoration-muted="state=='cancelled'" decoration-info="state=='draft'">
                 <field name="name"/>
@@ -25,7 +25,7 @@
     <record id="naid_certificate_view_form" model="ir.ui.view">
         <field name="name">naid.certificate.view.form</field>
         <field name="model">naid.certificate</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <form string="NAID Certificate of Destruction">
     <header>

@@ -6,7 +6,7 @@
 <record id="container_retrieval_work_order_view_tree" model="ir.ui.view">
     <field name="name">container.retrieval.work.order.view.tree</field>
         <field name="model">container.retrieval.work.order</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree>
                 <field name="name"/>

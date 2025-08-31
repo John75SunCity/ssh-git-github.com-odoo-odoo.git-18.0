@@ -6,7 +6,7 @@
     <record id="records_usage_tracking_view_tree" model="ir.ui.view">
         <field name="name">records.usage.tracking.view.tree</field>
         <field name="model">records.usage.tracking</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

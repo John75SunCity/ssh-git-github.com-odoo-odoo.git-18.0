@@ -7,7 +7,7 @@
     <record id="records_billing_config_audit_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.audit.view.tree</field>
         <field name="model">records.billing.config.audit</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Billing Config Audit" default_order="audit_date desc">
                 <field name="name"/>

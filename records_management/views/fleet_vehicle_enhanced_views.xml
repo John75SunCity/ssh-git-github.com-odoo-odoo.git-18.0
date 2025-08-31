@@ -7,7 +7,7 @@
         <field name="name">fleet.vehicle.view.form.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 
             <!-- Add Records Management stat buttons -->

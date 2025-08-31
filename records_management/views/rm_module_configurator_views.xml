@@ -6,7 +6,7 @@
     <record id="rm_module_configurator_view_tree" model="ir.ui.view">
         <field name="name">rm.module.configurator.view.tree</field>
         <field name="model">rm.module.configurator</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree decoration-info="active == True" decoration-muted="active == False" decoration-success="value_boolean == True" decoration-warning="value_boolean == False">
                 <field name="name" string="🔧 Configuration Name"/>

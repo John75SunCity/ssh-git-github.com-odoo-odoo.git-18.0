@@ -6,7 +6,7 @@
     <record id="barcode_product_view_kanban" model="ir.ui.view">
         <field name="name">barcode.product.view.kanban</field>
         <field name="model">barcode.product</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="product_category" sample="1" quick_create="false" class="o_kanban_small_column">
                 <field name="name"/>
@@ -83,7 +83,7 @@
 <record id="barcode_product_view_tree" model="ir.ui.view">
     <field name="name">barcode.product.view.tree</field>
     <field name="model">barcode.product</field>
-    <field name="type">list</field>
+    <field name="type">tree</field>
         <field name="arch" type="xml">
         <tree string="Barcode Product Management" decoration-success="active==True" decoration-muted="active==False" multi_edit="1" sample="1">
             <header>
@@ -111,7 +111,7 @@
 <record id="barcode_product_view_form" model="ir.ui.view">
     <field name="name">barcode.product.view.form</field>
     <field name="model">barcode.product</field>
-    <field name="type">list</field>
+    <field name="type">tree</field>
         <field name="arch" type="xml">
         <form string="Barcode Product Configuration">
             <header>

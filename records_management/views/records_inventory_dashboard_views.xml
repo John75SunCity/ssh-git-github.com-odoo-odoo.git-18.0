@@ -6,7 +6,7 @@
     <record id="records_inventory_dashboard_view_tree" model="ir.ui.view">
         <field name="name">records.inventory.dashboard.view.tree</field>
         <field name="model">records.inventory.dashboard</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

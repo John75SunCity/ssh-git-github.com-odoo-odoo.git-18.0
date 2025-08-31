@@ -6,7 +6,7 @@
     <record id="processing_log_view_tree" model="ir.ui.view">
         <field name="name">processing.log.view.tree</field>
         <field name="model">processing.log</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

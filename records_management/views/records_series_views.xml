@@ -5,7 +5,7 @@
         <record id="view_records_series_tree" model="ir.ui.view">
             <field name="name">records.series.tree</field>
             <field name="model">records.series</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Records Series">
                     <field name="name"/>

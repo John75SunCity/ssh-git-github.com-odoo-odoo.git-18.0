@@ -6,7 +6,7 @@
     <record id="wizard_template_view_tree" model="ir.ui.view">
         <field name="name">wizard.template.view.tree</field>
         <field name="model">wizard.template</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

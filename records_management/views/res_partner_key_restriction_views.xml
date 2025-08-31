@@ -6,7 +6,7 @@
     <record id="res_partner_key_restriction_view_tree" model="ir.ui.view">
         <field name="name">res.partner.key.restriction.view.tree</field>
         <field name="model">res.partner.key.restriction</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

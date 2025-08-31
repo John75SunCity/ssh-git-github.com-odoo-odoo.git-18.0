@@ -6,7 +6,7 @@
         <record id="location_group_view_tree" model="ir.ui.view">
             <field name="name">location.group.view.tree</field>
             <field name="model">location.group</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Location Group">
                     name

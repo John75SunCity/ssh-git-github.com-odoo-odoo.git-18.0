@@ -6,7 +6,7 @@
     <record id="stock_lot_attribute_option_view_tree" model="ir.ui.view">
         <field name="name">stock.lot.attribute.option.view.tree</field>
         <field name="model">stock.lot.attribute.option</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

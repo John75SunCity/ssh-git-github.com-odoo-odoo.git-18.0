@@ -7,7 +7,7 @@
         <record id="workflow_visualization_manager_view_tree" model="ir.ui.view">
             <field name="name">workflow.visualization.manager.tree</field>
             <field name="model">workflow.visualization.manager</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Workflow Visualizations">
                     <field name="name"/>

@@ -6,7 +6,7 @@
 <record id="scan_retrieval_item_view_kanban" model="ir.ui.view">
     <field name="name">scan.retrieval.item.view.kanban</field>
     <field name="model">scan.retrieval.item</field>
-    <field name="type">list</field>
+    <field name="type">tree</field>
         <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_scan_retrieval_dashboard">
             <field name="name"/>
@@ -80,7 +80,7 @@
     <record id="scan_retrieval_item_view_tree" model="ir.ui.view">
         <field name="name">scan.retrieval.item.view.tree</field>
         <field name="model">scan.retrieval.item</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree decoration-info="state == 'draft'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-danger="priority == 'high'">
                 <field name="name"/>

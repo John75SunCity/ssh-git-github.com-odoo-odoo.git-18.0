@@ -6,7 +6,7 @@
         <record id="view_bin_barcode_inventory_form" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.form</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form string="Bin Barcode Inventory">
                     <header>
@@ -91,7 +91,7 @@
         <record id="view_bin_barcode_inventory_tree" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.tree</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Bin Barcode Inventory"
                       decoration-success="state == 'available'"

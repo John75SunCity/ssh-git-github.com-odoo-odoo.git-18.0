@@ -6,7 +6,7 @@
     <record id="portal_feedback_resolution_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.resolution.view.tree</field>
         <field name="model">portal.feedback.resolution</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

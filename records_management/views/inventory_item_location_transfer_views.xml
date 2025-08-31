@@ -18,7 +18,7 @@
         <record id="inventory_item_location_transfer_view_tree" model="ir.ui.view">
             <field name="name">inventory.item.location.transfer.view.tree</field>
             <field name="model">inventory.item.location.transfer</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Inventory Item Location Transfer">
                     <field name="name"/>

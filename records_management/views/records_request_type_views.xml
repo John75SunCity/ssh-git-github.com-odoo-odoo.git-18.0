@@ -5,7 +5,7 @@
         <record id="view_records_request_type_tree" model="ir.ui.view">
             <field name="name">records.request.type.tree</field>
             <field name="model">records.request.type</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Request Types">
                     <field name="name"/>

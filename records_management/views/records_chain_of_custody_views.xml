@@ -6,7 +6,7 @@
     <record id="records_chain_of_custody_view_tree" model="ir.ui.view">
         <field name="name">records.chain.of.custody.view.tree</field>
         <field name="model">records.chain.of.custody</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

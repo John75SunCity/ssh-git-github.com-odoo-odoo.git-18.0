@@ -6,7 +6,7 @@
     <record id="records_billing_config_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.view.tree</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -18,7 +18,7 @@
     <record id="records_billing_config_view_form" model="ir.ui.view">
         <field name="name">records.billing.config.view.form</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Billing Config">
                 <sheet>
@@ -37,7 +37,7 @@
     <record id="records_billing_config_view_search" model="ir.ui.view">
         <field name="name">records.billing.config.view.search</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -68,7 +68,7 @@
     <record id="records_billing_config_view_kanban" model="ir.ui.view">
         <field name="name">records.billing.config.view.kanban</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="billing_model" class="o_kanban_billing_config_dashboard">
                 <field name="name"/>
@@ -143,7 +143,7 @@
     <record id="records_billing_config_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.view.tree</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-success="active == True and auto_billing == True"
                   decoration-warning="billing_model == 'custom'"
@@ -169,7 +169,7 @@
     <record id="records_billing_config_view_form" model="ir.ui.view">
         <field name="name">records.billing.config.view.form</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>

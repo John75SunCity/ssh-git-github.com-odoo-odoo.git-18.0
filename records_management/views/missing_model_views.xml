@@ -6,7 +6,7 @@
         <record id="container_retrieval_item_tree" model="ir.ui.view">
             <field name="name">container.retrieval.item.tree</field>
             <field name="model">container.retrieval.item</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -20,7 +20,7 @@
         <record id="container_retrieval_item_form" model="ir.ui.view">
             <field name="name">container.retrieval.item.form</field>
             <field name="model">container.retrieval.item</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -40,7 +40,7 @@
         <record id="container_retrieval_item_search" model="ir.ui.view">
             <field name="name">container.retrieval.item.search</field>
             <field name="model">container.retrieval.item</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
@@ -56,7 +56,7 @@
         <record id="processing_log_resolution_wizard_form" model="ir.ui.view">
             <field name="name">processing.log.resolution.wizard.form</field>
             <field name="model">processing.log.resolution.wizard</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -81,7 +81,7 @@
         <record id="scan_digital_asset_tree" model="ir.ui.view">
             <field name="name">scan.digital.asset.tree</field>
             <field name="model">scan.digital.asset</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -95,7 +95,7 @@
         <record id="scan_digital_asset_form" model="ir.ui.view">
             <field name="name">scan.digital.asset.form</field>
             <field name="model">scan.digital.asset</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -117,7 +117,7 @@
         <record id="serial_number_tree" model="ir.ui.view">
             <field name="name">serial_number.tree</field>
             <field name="model">serial_number</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -131,7 +131,7 @@
         <record id="serial_number_form" model="ir.ui.view">
             <field name="name">serial_number.form</field>
             <field name="model">serial_number</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -153,7 +153,7 @@
         <record id="route_optimizer_tree" model="ir.ui.view">
             <field name="name">route.optimizer.tree</field>
             <field name="model">route.optimizer</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -168,7 +168,7 @@
         <record id="route_optimizer_form" model="ir.ui.view">
             <field name="name">route.optimizer.form</field>
             <field name="model">route.optimizer</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -191,7 +191,7 @@
         <record id="document_retrieval_item_tree" model="ir.ui.view">
             <field name="name">document.retrieval.item.tree</field>
             <field name="model">document.retrieval.item</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -205,7 +205,7 @@
         <record id="document_retrieval_item_form" model="ir.ui.view">
             <field name="name">document.retrieval.item.form</field>
             <field name="model">document.retrieval.item</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -227,7 +227,7 @@
         <record id="records_audit_log_tree" model="ir.ui.view">
             <field name="name">records.audit.log.tree</field>
             <field name="model">records.audit.log</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -242,7 +242,7 @@
         <record id="records_audit_log_form" model="ir.ui.view">
             <field name="name">records.audit.log.form</field>
             <field name="model">records.audit.log</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -267,7 +267,7 @@
         <record id="container_access_document_tree" model="ir.ui.view">
             <field name="name">container.access.document.tree</field>
             <field name="model">container.access.document</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -281,7 +281,7 @@
         <record id="container_access_document_form" model="ir.ui.view">
             <field name="name">container.access.document.form</field>
             <field name="model">container.access.document</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -304,7 +304,7 @@
         <record id="records_retrieval_work_order_tree" model="ir.ui.view">
             <field name="name">records.retrieval.work.order.tree</field>
             <field name="model">records.retrieval.work.order</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -319,7 +319,7 @@
         <record id="records_retrieval_work_order_form" model="ir.ui.view">
             <field name="name">records.retrieval.work.order.form</field>
             <field name="model">records.retrieval.work.order</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -342,7 +342,7 @@
         <record id="revenue_forecast_line_tree" model="ir.ui.view">
             <field name="name">revenue.forecast.line.tree</field>
             <field name="model">revenue.forecast.line</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -356,7 +356,7 @@
         <record id="revenue_forecast_line_form" model="ir.ui.view">
             <field name="name">revenue.forecast.line.form</field>
             <field name="model">revenue.forecast.line</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -378,7 +378,7 @@
         <record id="records_security_audit_tree" model="ir.ui.view">
             <field name="name">records.security.audit.tree</field>
             <field name="model">records.security.audit</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -392,7 +392,7 @@
         <record id="records_security_audit_form" model="ir.ui.view">
             <field name="name">records.security.audit.form</field>
             <field name="model">records.security.audit</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -415,7 +415,7 @@
         <record id="shredding_rate_tree" model="ir.ui.view">
             <field name="name">shredding.rate.tree</field>
             <field name="model">shredding.rate</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -429,7 +429,7 @@
         <record id="shredding_rate_form" model="ir.ui.view">
             <field name="name">shredding.rate.form</field>
             <field name="model">shredding.rate</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -451,7 +451,7 @@
         <record id="key_restriction_checker_form" model="ir.ui.view">
             <field name="name">key.restriction.checker.form</field>
             <field name="model">key.restriction.checker</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -478,7 +478,7 @@
         <record id="records_container_movement_tree" model="ir.ui.view">
             <field name="name">records.container.movement.tree</field>
             <field name="model">records.container.movement</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>

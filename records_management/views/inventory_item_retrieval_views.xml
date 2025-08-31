@@ -18,7 +18,7 @@ These definitions allow users to manage inventory item retrieval operations dire
         <record id="inventory_item_retrieval_view_tree" model="ir.ui.view">
             <field name="name">inventory.item.retrieval.view.tree</field>
             <field name="model">inventory.item.retrieval</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Inventory Item Retrieval">
                     <field name="name"/>

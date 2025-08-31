@@ -6,7 +6,7 @@
 <record id="advanced_billing_line_view_tree" model="ir.ui.view">
     <field name="name">advanced.billing.line.view.tree</field>
         <field name="model">advanced.billing.line</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -18,7 +18,7 @@
 <record id="advanced_billing_line_view_form" model="ir.ui.view">
     <field name="name">advanced.billing.line.view.form</field>
         <field name="model">advanced.billing.line</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Advanced Billing Line">
                 <sheet>
@@ -37,7 +37,7 @@
 <record id="advanced_billing_line_view_search" model="ir.ui.view">
     <field name="name">advanced.billing.line.view.search</field>
         <field name="model">advanced.billing.line</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -65,7 +65,7 @@
     <record id="view_advanced_billing_line_tree" model="ir.ui.view">
         <field name="name">advanced.billing.line.tree</field>
         <field name="model">advanced.billing.line</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

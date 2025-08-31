@@ -5,7 +5,7 @@
         <record id="container_retrieval_view_tree" model="ir.ui.view">
             <field name="name">container.retrieval.view.tree</field>
             <field name="model">container.retrieval</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Container Retrieval">
                     <field name="name"/>

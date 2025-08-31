@@ -7,7 +7,7 @@
     <record id="naid_compliance_view_kanban" model="ir.ui.view">
         <field name="name">naid.compliance.view.kanban</field>
         <field name="model">naid.compliance</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="compliance_status" class="o_kanban_naid_dashboard">
                 <field name="name"/>
@@ -81,7 +81,7 @@
     <record id="naid_compliance_view_tree" model="ir.ui.view">
         <field name="name">naid.compliance.view.tree</field>
         <field name="model">naid.compliance</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-success="compliance_status == 'certified' and certificate_valid == True" 
                   decoration-warning="compliance_status == 'pending_audit'"
@@ -109,7 +109,7 @@
     <record id="naid_compliance_view_form" model="ir.ui.view">
         <field name="name">naid.compliance.view.form</field>
         <field name="model">naid.compliance</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>

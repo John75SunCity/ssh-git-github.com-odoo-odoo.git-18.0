@@ -5,7 +5,7 @@
     <record id="stock_lot_view_kanban" model="ir.ui.view">
         <field name="name">stock.lot.view.kanban</field>
         <field name="model">stock.lot</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="product_id" class="o_kanban_stock_lot_dashboard">
                 <field name="name"/>
@@ -90,7 +90,7 @@
 <record id="stock_lot_view_tree" model="ir.ui.view">
     <field name="name">stock.lot.view.tree</field>
     <field name="model">stock.lot</field>
-    <field name="type">list</field>
+    <field name="type">tree</field>
         <field name="arch" type="xml">
 <list decoration-success="product_qty &gt; 0" decoration-warning="expiration_date and expiration_date &lt; context_today()" decoration-info="ref != False">
     <field name="name" string="📦 Serial/Lot Number"/>

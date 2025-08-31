@@ -6,7 +6,7 @@
     <record id="bin_unlock_service_view_tree" model="ir.ui.view">
         <field name="name">bin.unlock.service.view.tree</field>
         <field name="model">bin.unlock.service</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -18,7 +18,7 @@
     <record id="bin_unlock_service_view_form" model="ir.ui.view">
         <field name="name">bin.unlock.service.view.form</field>
         <field name="model">bin.unlock.service</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Bin Unlock Service">
                 <sheet>
@@ -37,7 +37,7 @@
     <record id="bin_unlock_service_view_search" model="ir.ui.view">
         <field name="name">bin.unlock.service.view.search</field>
         <field name="model">bin.unlock.service</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -66,7 +66,7 @@
     <record id="bin_key_management_view_tree" model="ir.ui.view">
         <field name="name">bin.key.management.view.tree</field>
         <field name="model">bin.key.management</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree string="Bin Key Management" decoration-success="status == 'issued'" decoration-warning="status == 'lost'" decoration-danger="status == 'replaced'" decoration-info="status == 'returned'">
                 <field name="key_number"/>
@@ -92,7 +92,7 @@
 <record id="bin_key_management_view_search" model="ir.ui.view">
     <field name="name">bin.key.management.view.search</field>
     <field name="model">bin.key.management</field>
-    <field name="type">list</field>
+    <field name="type">tree</field>
         <field name="arch" type="xml">
         <search string="Search Bin Key Management">
             <field name="key_number" string="Key Number"/>
@@ -133,7 +133,7 @@
     <record id="bin_key_management_view_form" model="ir.ui.view">
         <field name="name">bin.key.management.view.form</field>
         <field name="model">bin.key.management</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Bin Key Management">
                 <header>
@@ -233,7 +233,7 @@
     <record id="bin_key_management_view_kanban" model="ir.ui.view">
         <field name="name">bin.key.management.view.kanban</field>
         <field name="model">bin.key.management</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column">
                 <field name="partner_id"/>
@@ -305,7 +305,7 @@
 <record id="bin_unlock_service_view_search" model="ir.ui.view">
     <field name="name">bin.unlock.service.view.search</field>
     <field name="model">bin.unlock.service</field>
-    <field name="type">list</field>
+    <field name="type">tree</field>
         <field name="arch" type="xml">
         <search string="Search Unlock Services">
             <field name="service_number" string="Service Number"/>
@@ -341,7 +341,7 @@
     <record id="bin_unlock_service_view_tree" model="ir.ui.view">
         <field name="name">bin.unlock.service.view.tree</field>
         <field name="model">bin.unlock.service</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree string="Bin Unlock Services" decoration-success="billable == True and invoice_created == True" decoration-warning="billable == False" decoration-info="completed == True">
                 <field name="service_number"/>
@@ -364,7 +364,7 @@
     <record id="bin_unlock_service_view_form" model="ir.ui.view">
         <field name="name">bin.unlock.service.view.form</field>
         <field name="model">bin.unlock.service</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Bin Unlock Service">
                 <header>
@@ -501,7 +501,7 @@ Perfect for managing emergency access and generating additional revenue.
     <field name="name">res.partner.form.inherit.key.restrictions</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <!-- Add Key Restrictions tab -->
             <xpath expr="//page[@name='internal_notes']" position="after">

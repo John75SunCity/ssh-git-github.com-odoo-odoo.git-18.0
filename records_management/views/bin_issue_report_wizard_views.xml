@@ -8,7 +8,7 @@
     <record id="bin_issue_report_wizard_view_form" model="ir.ui.view">
         <field name="name">bin.issue.report.wizard.form</field>
         <field name="model">bin.issue.report.wizard</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Bin Issue Report">
                 <header>
@@ -161,7 +161,7 @@
     <record id="bin_issue_record_view_tree" model="ir.ui.view">
         <field name="name">bin.issue.record.tree</field>
         <field name="model">bin.issue.record</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Bin Issue Records" decoration-danger="resolution_status == 'reported'"
                   decoration-warning="resolution_status in ('assigned', 'in_progress')"

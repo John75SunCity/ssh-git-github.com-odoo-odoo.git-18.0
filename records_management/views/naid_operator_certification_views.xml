@@ -6,7 +6,7 @@
         <record id="naid_operator_certification_view_tree" model="ir.ui.view">
             <field name="name">naid.operator.certification.view.tree</field>
             <field name="model">naid.operator.certification</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="NAID Operator Certification" decoration-warning="status == 'expired'" decoration-danger="status == 'revoked'">
                     <field name="name"/>

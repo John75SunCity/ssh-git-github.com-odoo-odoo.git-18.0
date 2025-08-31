@@ -5,7 +5,7 @@
         <record id="records_request_line_view_tree" model="ir.ui.view">
             <field name="name">records.request.line.tree</field>
             <field name="model">records.request.line</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree decoration-info="state=='draft'"
                       decoration-warning="state=='in_progress'"

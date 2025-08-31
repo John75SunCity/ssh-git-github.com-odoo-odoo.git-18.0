@@ -4,7 +4,7 @@
 <record id="view_advanced_billing_storage_line_tree" model="ir.ui.view">
         <field name="name">advanced.billing.storage.line.tree</field>
         <field name="model">advanced.billing.storage.line</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

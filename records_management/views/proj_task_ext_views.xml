@@ -6,7 +6,7 @@
     <record id="proj_task_ext_view_tree" model="ir.ui.view">
         <field name="name">proj.task.ext.view.tree</field>
         <field name="model">proj.task.ext</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

@@ -5,7 +5,7 @@
         <record id="certificate_template_data_view_tree" model="ir.ui.view">
             <field name="name">certificate.template.data.view.tree</field>
             <field name="model">certificate.template.data</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Certificate Template Data">
                     <field name="name"/>

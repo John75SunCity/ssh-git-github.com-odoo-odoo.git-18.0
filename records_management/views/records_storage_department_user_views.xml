@@ -5,7 +5,7 @@
     <record id="records_storage_department_user_view_tree" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.tree</field>
         <field name="model">records.storage.department.user</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'">
                 <field name="name"/>
@@ -25,7 +25,7 @@
     <record id="records_storage_department_user_view_form" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.form</field>
         <field name="model">records.storage.department.user</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Storage Department User">
 <header>

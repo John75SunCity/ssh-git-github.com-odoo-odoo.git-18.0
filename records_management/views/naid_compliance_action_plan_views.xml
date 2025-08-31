@@ -6,7 +6,7 @@
     <record id="naid_compliance_action_plan_view_tree" model="ir.ui.view">
         <field name="name">naid.compliance.action.plan.view.tree</field>
         <field name="model">naid.compliance.action.plan</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

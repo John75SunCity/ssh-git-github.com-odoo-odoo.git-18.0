@@ -6,7 +6,7 @@
         <record id="ir_model_view_tree" model="ir.ui.view">
             <field name="name">ir.model.view.tree</field>
             <field name="model">ir.model</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Model">
                     name

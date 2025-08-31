@@ -5,7 +5,7 @@
         <record id="view_records_storage_box_tree" model="ir.ui.view">
             <field name="name">records.storage.box.tree</field>
             <field name="model">records.storage.box</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Storage Boxes">
                     <field name="name"/>

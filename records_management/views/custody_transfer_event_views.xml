@@ -6,7 +6,7 @@
         <record id="custody_transfer_event_view_tree" model="ir.ui.view">
             <field name="name">custody.transfer.event.view.tree</field>
             <field name="model">custody.transfer.event</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Custody Transfer Event">
                     <field name="name"/>

@@ -6,15 +6,15 @@
         <record id="customer_feedback_view_tree" model="ir.ui.view">
             <field name="name">customer.feedback.view.tree</field>
             <field name="model">customer.feedback</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Customer Feedback">
-                    name
-                    company_id
-                    user_id
-                    active
-                    state
-                    priority
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="user_id"/>
+                    <field name="active"/>
+                    <field name="state"/>
+                    <field name="priority"/>
                 </tree>
             </field>
         </record>
@@ -28,12 +28,12 @@
                 <form string="Customer Feedback">
                     <sheet>
                         <group>
-                            name
-                            company_id
-                            user_id
-                            active
-                            state
-                            priority
+                            <field name="name"/>
+                            <field name="company_id"/>
+                            <field name="user_id"/>
+                            <field name="active"/>
+                            <field name="state"/>
+                            <field name="priority"/>
                         </group>
                     </sheet>
                 </form>

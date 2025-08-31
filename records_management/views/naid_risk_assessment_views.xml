@@ -6,7 +6,7 @@
     <record id="naid_risk_assessment_view_tree" model="ir.ui.view">
         <field name="name">naid.risk.assessment.view.tree</field>
         <field name="model">naid.risk.assessment</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

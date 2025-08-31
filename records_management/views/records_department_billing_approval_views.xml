@@ -5,7 +5,7 @@
         <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
             <field name="name">records.department.billing.approval.tree</field>
             <field name="model">records.department.billing.approval</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="billing_contact_id"/>

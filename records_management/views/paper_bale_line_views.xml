@@ -6,7 +6,7 @@
         <record id="paper_bale_line_view_tree" model="ir.ui.view">
             <field name="name">paper.bale.line.view.tree</field>
             <field name="model">paper.bale.line</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <tree string="Paper Bale Line">
                     <field name="name"/>
