@@ -6,6 +6,7 @@
     <record id="view_records_container_transfer_line_list" model="ir.ui.view">
         <field name="name">view.records.container.transfer.line.list</field>
         <field name="model">records.container.transfer.line</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="view_records_container_transfer_line_form" model="ir.ui.view">
         <field name="name">view.records.container.transfer.line.form</field>
         <field name="model">records.container.transfer.line</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Container Transfer Line">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="view_records_container_transfer_line_search" model="ir.ui.view">
         <field name="name">view.records.container.transfer.line.search</field>
         <field name="model">records.container.transfer.line</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

@@ -7,6 +7,7 @@
     <record id="shred_bin_view_tree" model="ir.ui.view">
         <field name="name">shred.bin.view.tree</field>
         <field name="model">shred.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="current_fill_level &amp;gt;= 75 and state=='in_service'" decoration-success="state=='in_service' and current_fill_level &amp;lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
                 <field name="name"/>
@@ -30,6 +31,7 @@
     <record id="shred_bin_view_tree" model="ir.ui.view">
         <field name="name">shred.bin.view.tree</field>
         <field name="model">shred.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="My Shred Bins" decoration-danger="needs_collection==True" decoration-warning="current_fill_level &amp;gt;= 75 and needs_collection==False" decoration-success="state=='in_service' and current_fill_level &amp;lt; 75" create="false" delete="false" editable="false">
                 <field name="name"/>
@@ -53,6 +55,7 @@
     <record id="shred_bin_view_form" model="ir.ui.view">
         <field name="name">shred.bin.view.form</field>
         <field name="model">shred.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="My Shred Bin" create="false" edit="false" delete="false">
                 <header>
@@ -134,6 +137,7 @@
     <record id="shred_bin_view_form" model="ir.ui.view">
         <field name="name">shred.bin.view.form</field>
         <field name="model">shred.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Customer Shred Bin">
                 <header>
@@ -232,6 +236,7 @@
     <record id="shred_bin_view_search" model="ir.ui.view">
         <field name="name">shred.bin.view.search</field>
         <field name="model">shred.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Shred Bins">
                 <field name="name" string="Bin Number"/>
@@ -265,6 +270,7 @@
     <record id="shred_bin_view_kanban" model="ir.ui.view">
         <field name="name">shred.bin.view.kanban</field>
         <field name="model">shred.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban class="o_kanban_mobile" default_group_by="state">
                 <field name="name"/>
@@ -355,6 +361,7 @@
     <record id="shred_bin_view_kanban" model="ir.ui.view">
         <field name="name">shred.bin.view.kanban</field>
         <field name="model">shred.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban class="o_kanban_mobile o_kanban_portal" create="false" delete="false">
                 <field name="name"/>
@@ -456,6 +463,7 @@
     <record id="shred_bin_view_tree" model="ir.ui.view">
         <field name="name">shred.bin.view.tree</field>
         <field name="model">shred.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <map res_partner="partner_id" default_order="partner_id">
                 <field name="name"/>

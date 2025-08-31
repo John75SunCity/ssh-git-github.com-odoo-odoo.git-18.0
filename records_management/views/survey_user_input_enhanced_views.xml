@@ -6,6 +6,7 @@
     <record id="survey_user_input_enhanced_view_tree" model="ir.ui.view">
         <field name="name">survey.user.input.enhanced.view.tree</field>
         <field name="model">survey.user.input.enhanced</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="survey_user_input_enhanced_view_form" model="ir.ui.view">
         <field name="name">survey.user.input.enhanced.view.form</field>
         <field name="model">survey.user.input.enhanced</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Survey User Input Enhanced">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="survey_user_input_enhanced_view_search" model="ir.ui.view">
         <field name="name">survey.user.input.enhanced.view.search</field>
         <field name="model">survey.user.input.enhanced</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

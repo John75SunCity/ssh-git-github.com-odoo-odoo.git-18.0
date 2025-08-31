@@ -8,6 +8,7 @@
     <record id="service_item_view_kanban" model="ir.ui.view">
         <field name="name">service.item.view.kanban</field>
         <field name="model">service.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="service_category" class="o_kanban_service_items">
                 <field name="name"/>
@@ -62,6 +63,7 @@
     <record id="service_item_view_tree" model="ir.ui.view">
         <field name="name">service.item.view.tree</field>
         <field name="model">service.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Service Items" decoration-muted="not active">
                 <field name="sequence" widget="handle"/>
@@ -86,6 +88,7 @@
     <record id="service_item_view_form" model="ir.ui.view">
         <field name="name">service.item.view.form</field>
         <field name="model">service.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Service Item">
                 <header>
@@ -232,6 +235,7 @@
     <record id="service_item_view_search" model="ir.ui.view">
         <field name="name">service.item.view.search</field>
         <field name="model">service.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Service Items">
                 <field name="name" string="Service Name" filter_domain="['|', ('name', 'ilike', self), ('service_code', 'ilike', self)]"/>

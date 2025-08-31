@@ -8,6 +8,7 @@
     <record id="bin_issue_report_wizard_view_form" model="ir.ui.view">
         <field name="name">bin.issue.report.wizard.form</field>
         <field name="model">bin.issue.report.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Bin Issue Report">
                 <header>
@@ -160,6 +161,7 @@
     <record id="bin_issue_record_view_tree" model="ir.ui.view">
         <field name="name">bin.issue.record.tree</field>
         <field name="model">bin.issue.record</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Bin Issue Records" decoration-danger="resolution_status == 'reported'"
                   decoration-warning="resolution_status in ('assigned', 'in_progress')"
@@ -184,6 +186,7 @@
     <record id="bin_issue_record_view_form" model="ir.ui.view">
         <field name="name">bin.issue.record.form</field>
         <field name="model">bin.issue.record</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Bin Issue Record">
                 <header>
@@ -292,6 +295,7 @@
     <record id="bin_issue_record_view_search" model="ir.ui.view">
         <field name="name">bin.issue.record.search</field>
         <field name="model">bin.issue.record</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Bin Issues">
                 <field name="name" string="Issue" filter_domain="[('name', 'ilike', self)]"/>
@@ -332,6 +336,7 @@
     <record id="bin_issue_record_view_kanban" model="ir.ui.view">
         <field name="name">bin.issue.record.kanban</field>
         <field name="model">bin.issue.record</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="resolution_status" class="o_kanban_small_column">
                 <field name="name"/>

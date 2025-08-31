@@ -4,7 +4,8 @@
         <record id="destruction_item_view_tree" model="ir.ui.view">
             <field name="name">destruction.item.view.tree</field>
             <field name="model">destruction.item</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Destruction Item">
                     <field name="name"/>
                     <field name="item_description"/>
@@ -21,7 +22,8 @@
         <record id="destruction_item_view_form" model="ir.ui.view">
             <field name="name">destruction.item.view.form</field>
             <field name="model">destruction.item</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Destruction Item">
                     <sheet>
                         <group>

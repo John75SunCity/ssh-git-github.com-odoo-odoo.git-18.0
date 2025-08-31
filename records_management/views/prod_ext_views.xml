@@ -6,6 +6,7 @@
     <record id="prod_ext_view_tree" model="ir.ui.view">
         <field name="name">prod.ext.view.tree</field>
         <field name="model">prod.ext</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree decoration-muted="not active" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'">
                 <field name="name"/>
@@ -26,6 +27,7 @@
     <record id="prod_ext_view_form" model="ir.ui.view">
         <field name="name">prod.ext.view.form</field>
         <field name="model">prod.ext</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <form string="Product Extension">
     <header>
@@ -96,6 +98,7 @@
     <record id="prod_ext_view_search" model="ir.ui.view">
         <field name="name">prod.ext.view.search</field>
         <field name="model">prod.ext</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
 <field name="name" string="Name" filter_domain="[('name', 'ilike', self)]"/>
@@ -142,7 +145,8 @@
 <record id="prod_ext_view_kanban" model="ir.ui.view">
     <field name="name">prod.ext.view.kanban</field>
     <field name="model">prod.ext</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_small_column o_kanban_prod_ext">
             <field name="name"/>
             <field name="product_id"/>

@@ -5,7 +5,8 @@
         <record id="view_records_request_tree" model="ir.ui.view">
             <field name="name">records.request.tree</field>
             <field name="model">records.request</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Records Requests">
                     <field name="name"/>
                     <field name="request_type_id"/>
@@ -19,7 +20,8 @@
         <record id="view_records_request_form" model="ir.ui.view">
             <field name="name">records.request.form</field>
             <field name="model">records.request</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Records Request">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,submitted,in_progress,done"/>
@@ -64,7 +66,8 @@
         <record id="view_records_request_search" model="ir.ui.view">
             <field name="name">records.request.search</field>
             <field name="model">records.request</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Records Requests">
                     <field name="name"/>
                     <field name="request_type_id"/>

@@ -6,6 +6,7 @@
     <record id="report_records_management_report_customer_inventory_view_tree" model="ir.ui.view">
         <field name="name">report.records_management.report_customer_inventory.view.tree</field>
         <field name="model">report.records_management.report_customer_inventory</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="report_records_management_report_customer_inventory_view_form" model="ir.ui.view">
         <field name="name">report.records_management.report_customer_inventory.view.form</field>
         <field name="model">report.records_management.report_customer_inventory</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Report.Records Management.Report Customer Inventory">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="report_records_management_report_customer_inventory_view_search" model="ir.ui.view">
         <field name="name">report.records_management.report_customer_inventory.view.search</field>
         <field name="model">report.records_management.report_customer_inventory</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

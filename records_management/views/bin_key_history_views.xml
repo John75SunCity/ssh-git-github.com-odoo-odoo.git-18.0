@@ -6,6 +6,7 @@
     <record id="bin_key_history_view_tree" model="ir.ui.view">
         <field name="name">bin.key.history.view.tree</field>
         <field name="model">bin.key.history</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree string="Bin Key History" decoration-info="action_type == 'assigned'" decoration-success="action_type == 'returned'" decoration-warning="action_type == 'lost'" decoration-danger="action_type == 'emergency_override'">
     <field name="key_id"/>
@@ -25,6 +26,7 @@
     <record id="bin_key_history_view_form" model="ir.ui.view">
         <field name="name">bin.key.history.view.form</field>
         <field name="model">bin.key.history</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <form string="Bin Key History Record" create="false" edit="false">
                 <sheet>
@@ -107,7 +109,8 @@
 <record id="bin_key_history_view_kanban" model="ir.ui.view">
     <field name="name">bin.key.history.view.kanban</field>
     <field name="model">bin.key.history</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <kanban class="o_kanban_mobile">
             <field name="key_id"/>
             <field name="assigned_to"/>
@@ -151,6 +154,7 @@
     <record id="bin_key_history_view_search" model="ir.ui.view">
         <field name="name">bin.key.history.view.search</field>
         <field name="model">bin.key.history</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <search string="Search Key History">
     <field name="name" string="Record Name"/>

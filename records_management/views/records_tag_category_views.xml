@@ -6,6 +6,7 @@
     <record id="records_tag_category_view_tree" model="ir.ui.view">
         <field name="name">records.tag.category.view.tree</field>
         <field name="model">records.tag.category</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_tag_category_view_form" model="ir.ui.view">
         <field name="name">records.tag.category.view.form</field>
         <field name="model">records.tag.category</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records.Tag.Category">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_tag_category_view_search" model="ir.ui.view">
         <field name="name">records.tag.category.view.search</field>
         <field name="model">records.tag.category</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

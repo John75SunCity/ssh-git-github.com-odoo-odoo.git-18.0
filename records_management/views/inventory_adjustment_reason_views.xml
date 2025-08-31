@@ -6,7 +6,8 @@
         <record id="inventory_adjustment_reason_view_tree" model="ir.ui.view">
             <field name="name">inventory.adjustment.reason.view.tree</field>
             <field name="model">inventory.adjustment.reason</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Inventory Adjustment Reason">
                     <field name="name"/>
                     <field name="code"/>
@@ -20,7 +21,8 @@
         <record id="inventory_adjustment_reason_view_form" model="ir.ui.view">
             <field name="name">inventory.adjustment.reason.view.form</field>
             <field name="model">inventory.adjustment.reason</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Inventory Adjustment Reason">
                     <sheet>
                         <group>
@@ -39,7 +41,8 @@
         <record id="inventory_adjustment_reason_view_search" model="ir.ui.view">
             <field name="name">inventory.adjustment.reason.view.search</field>
             <field name="model">inventory.adjustment.reason</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Inventory Adjustment Reason">
                     <field name="name"/>
                     <field name="code"/>

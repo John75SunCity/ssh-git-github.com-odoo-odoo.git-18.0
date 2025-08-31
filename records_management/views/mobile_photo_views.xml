@@ -6,6 +6,7 @@
     <record id="view_mobile_photo_list" model="ir.ui.view">
         <field name="name">view.mobile.photo.list</field>
         <field name="model">mobile.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="view_mobile_photo_form" model="ir.ui.view">
         <field name="name">view.mobile.photo.form</field>
         <field name="model">mobile.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Mobile Photo">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="view_mobile_photo_search" model="ir.ui.view">
         <field name="name">view.mobile.photo.search</field>
         <field name="model">mobile.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

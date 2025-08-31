@@ -6,7 +6,8 @@
         <record id="inventory_item_type_view_tree" model="ir.ui.view">
             <field name="name">inventory.item.type.view.tree</field>
             <field name="model">inventory.item.type</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Inventory Item Type">
                     <field name="name"/>
                     <field name="code"/>
@@ -22,7 +23,8 @@
         <record id="inventory_item_type_view_form" model="ir.ui.view">
             <field name="name">inventory.item.type.view.form</field>
             <field name="model">inventory.item.type</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Inventory Item Type">
                     <sheet>
                         <group>
@@ -42,7 +44,8 @@
         <record id="inventory_item_type_view_search" model="ir.ui.view">
             <field name="name">inventory.item.type.view.search</field>
             <field name="model">inventory.item.type</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Inventory Item Type">
                     <field name="name"/>
                     <field name="code"/>

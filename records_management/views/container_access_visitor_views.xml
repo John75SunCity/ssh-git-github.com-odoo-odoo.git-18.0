@@ -6,7 +6,8 @@
         <record id="container_access_visitor_view_tree" model="ir.ui.view">
             <field name="name">container.access.visitor.view.tree</field>
             <field name="model">container.access.visitor</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Container Access Visitor">
                     name
                     visitor_type
@@ -25,7 +26,8 @@
         <record id="container_access_visitor_view_form" model="ir.ui.view">
             <field name="name">container.access.visitor.view.form</field>
             <field name="model">container.access.visitor</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Container Access Visitor">
                     <sheet>
                         <group>
@@ -48,7 +50,8 @@
         <record id="container_access_visitor_view_search" model="ir.ui.view">
             <field name="name">container.access.visitor.view.search</field>
             <field name="model">container.access.visitor</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Container Access Visitor">
                     <!-- Add search fields here -->
                 </search>

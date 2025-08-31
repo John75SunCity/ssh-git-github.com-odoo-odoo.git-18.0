@@ -6,6 +6,7 @@
     <record id="records_approval_workflow_view_tree" model="ir.ui.view">
         <field name="name">records.approval.workflow.view.tree</field>
         <field name="model">records.approval.workflow</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_approval_workflow_view_form" model="ir.ui.view">
         <field name="name">records.approval.workflow.view.form</field>
         <field name="model">records.approval.workflow</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Approval Workflow">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_approval_workflow_view_search" model="ir.ui.view">
         <field name="name">records.approval.workflow.view.search</field>
         <field name="model">records.approval.workflow</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

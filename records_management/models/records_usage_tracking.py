@@ -33,12 +33,27 @@ class RecordsUsageTracking(models.Model):
     ], string="Service Type", required=True, tracking=True)
     quantity = fields.Float(string='Quantity', required=True, default=1.0, tracking=True)
     uom_id = fields.Many2one('uom.uom', string="Unit of Measure", ondelete='restrict')
-    
+
     # ============================================================================
     # FINANCIALS
     # ============================================================================
+    unit_rate = fields.Float(string="Unit Rate", digits=(10, 2), tracking=True)
     cost = fields.Monetary(string='Cost', currency_field='currency_id', tracking=True)
+    total_cost = fields.Monetary(
+        string="Total Cost", currency_field="currency_id", compute="_compute_total_cost", store=True
+    )
     currency_id = fields.Many2one('res.currency', string='Currency', related='company_id.currency_id', readonly=True)
+    billable = fields.Boolean(string="Billable", default=True, tracking=True)
+    invoice_status = fields.Selection(
+        [
+            ("pending", "Pending"),
+            ("invoiced", "Invoiced"),
+            ("paid", "Paid"),
+        ],
+        string="Invoice Status",
+        default="pending",
+        tracking=True,
+    )
 
     # ============================================================================
     # RELATIONSHIPS & CONTEXT
@@ -46,7 +61,7 @@ class RecordsUsageTracking(models.Model):
     partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
     product_id = fields.Many2one('product.product', string="Service Product", ondelete='restrict')
     invoice_line_id = fields.Many2one('account.move.line', string="Invoice Line", readonly=True)
-    
+
     # Generic relation to link to the source document (e.g., work order, destruction order)
     res_model = fields.Char(string="Source Model", readonly=True)
     res_id = fields.Integer(string="Source Record ID", readonly=True)
@@ -74,8 +89,10 @@ class RecordsUsageTracking(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('res_model', 'res_id')
-    def _compute_source_document(self):
+    @api.depends("quantity", "unit_rate")
+    def _compute_total_cost(self):
+        for record in self:
+            record.total_cost = record.quantity * record.unit_rate
         for record in self:
             if record.res_model and record.res_id:
                 record.source_document = f"{record.res_model},{record.res_id}"
@@ -97,5 +114,6 @@ class RecordsUsageTracking(models.Model):
     # ACTION METHODS
     # ============================================================================
     def action_cancel(self):
+        self.ensure_one()
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Usage record cancelled."))

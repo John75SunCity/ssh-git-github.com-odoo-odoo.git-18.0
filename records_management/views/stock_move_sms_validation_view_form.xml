@@ -5,6 +5,7 @@
     <record id="stock_move_sms_validation_view_form" model="ir.ui.view">
         <field name="name">stock.move.sms.validation.form</field>
         <field name="model">stock.move.sms.validation</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="SMS Validation">
                 <header>
@@ -41,6 +42,7 @@
     <record id="stock_move_sms_validation_view_tree" model="ir.ui.view">
         <field name="name">stock.move.sms.validation.tree</field>
         <field name="model">stock.move.sms.validation</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="SMS Validations">
                 <field name="name"/>
@@ -57,6 +59,7 @@
     <record id="stock_move_sms_validation_view_search" model="ir.ui.view">
         <field name="name">stock.move.sms.validation.search</field>
         <field name="model">stock.move.sms.validation</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search SMS Validations">
                 <field name="name"/>

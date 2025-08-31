@@ -7,6 +7,7 @@
     <record id="portal_feedback_view_kanban" model="ir.ui.view">
         <field name="name">portal.feedback.view.kanban</field>
         <field name="model">portal.feedback</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" quick_create="false" class="o_kanban_small_column">
                 <field name="name"/>
@@ -63,6 +64,7 @@
     <record id="portal_feedback_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.view.tree</field>
         <field name="model">portal.feedback</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
                 <header>
@@ -90,6 +92,7 @@
     <record id="portal_feedback_view_form" model="ir.ui.view">
         <field name="name">portal.feedback.view.form</field>
         <field name="model">portal.feedback</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -165,6 +168,7 @@
     <record id="portal_feedback_view_search" model="ir.ui.view">
         <field name="name">portal.feedback.view.search</field>
         <field name="model">portal.feedback</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>

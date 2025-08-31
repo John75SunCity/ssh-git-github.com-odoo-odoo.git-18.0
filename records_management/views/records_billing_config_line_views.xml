@@ -7,6 +7,7 @@
     <record id="records_billing_config_line_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.line.view.tree</field>
         <field name="model">records.billing.config.line</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Billing Config Lines" default_order="billing_config_id, service_type">
                 <field name="name"/>
@@ -25,6 +26,7 @@
     <record id="records_billing_config_line_view_form" model="ir.ui.view">
         <field name="name">records.billing.config.line.view.form</field>
         <field name="model">records.billing.config.line</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Billing Config Line">
                 <sheet>
@@ -95,6 +97,7 @@
     <record id="records_billing_config_line_view_search" model="ir.ui.view">
         <field name="name">records.billing.config.line.view.search</field>
         <field name="model">records.billing.config.line</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Billing Config Lines">
                 <field name="name"/>

@@ -6,7 +6,8 @@
         <record id="discount_rule_view_tree" model="ir.ui.view">
             <field name="name">discount.rule.view.tree</field>
             <field name="model">discount.rule</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Discount Rule">
                     <field name="name"/>
                     <field name="config_id"/>
@@ -20,7 +21,8 @@
         <record id="discount_rule_view_form" model="ir.ui.view">
             <field name="name">discount.rule.view.form</field>
             <field name="model">discount.rule</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Discount Rule">
                     <sheet>
                         <group>
@@ -38,7 +40,8 @@
         <record id="discount_rule_view_search" model="ir.ui.view">
             <field name="name">discount.rule.view.search</field>
             <field name="model">discount.rule</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Discount Rule">
                     <!-- Add search fields here -->
                 </search>

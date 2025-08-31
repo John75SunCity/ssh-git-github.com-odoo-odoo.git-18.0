@@ -18,7 +18,8 @@
         <record id="inventory_item_location_transfer_view_tree" model="ir.ui.view">
             <field name="name">inventory.item.location.transfer.view.tree</field>
             <field name="model">inventory.item.location.transfer</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Inventory Item Location Transfer">
                     <field name="name"/>
                     <field name="item_id"/>
@@ -37,7 +38,8 @@
         <record id="inventory_item_location_transfer_view_form" model="ir.ui.view">
             <field name="name">inventory.item.location.transfer.view.form</field>
             <field name="model">inventory.item.location.transfer</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Inventory Item Location Transfer">
                     <sheet>
                         <group>
@@ -60,7 +62,8 @@
         <record id="inventory_item_location_transfer_view_search" model="ir.ui.view">
             <field name="name">inventory.item.location.transfer.view.search</field>
             <field name="model">inventory.item.location.transfer</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Inventory Item Location Transfer">
                     <field name="name"/>
                     <field name="item_id"/>

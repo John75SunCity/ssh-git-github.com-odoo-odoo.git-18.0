@@ -5,7 +5,8 @@
         <record id="view_records_storage_box_tree" model="ir.ui.view">
             <field name="name">records.storage.box.tree</field>
             <field name="model">records.storage.box</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Storage Boxes">
                     <field name="name"/>
                     <field name="box_size"/>
@@ -20,7 +21,8 @@
         <record id="view_records_storage_box_form" model="ir.ui.view">
             <field name="name">records.storage.box.form</field>
             <field name="model">records.storage.box</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Storage Box">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,in_use,archived"/>
@@ -58,7 +60,8 @@
         <record id="view_records_storage_box_search" model="ir.ui.view">
             <field name="name">records.storage.box.search</field>
             <field name="model">records.storage.box</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Storage Boxes">
                     <field name="name"/>
                     <field name="box_size"/>

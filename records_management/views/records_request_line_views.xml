@@ -5,7 +5,8 @@
         <record id="records_request_line_view_tree" model="ir.ui.view">
             <field name="name">records.request.line.tree</field>
             <field name="model">records.request.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree decoration-info="state=='draft'"
                       decoration-warning="state=='in_progress'"
                       decoration-success="state=='done'"
@@ -26,7 +27,8 @@
         <record id="records_request_line_view_form" model="ir.ui.view">
             <field name="name">records.request.line.form</field>
             <field name="model">records.request.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form>
                     <sheet>
                         <group>
@@ -56,7 +58,8 @@
         <record id="records_request_line_view_search" model="ir.ui.view">
             <field name="name">records.request.line.search</field>
             <field name="model">records.request.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search>
                     <field name="request_id"/>
                     <field name="partner_id"/>

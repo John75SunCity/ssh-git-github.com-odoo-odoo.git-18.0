@@ -6,6 +6,7 @@
     <record id="records_billing_line_view_tree" model="ir.ui.view">
         <field name="name">records.billing.line.view.tree</field>
         <field name="model">records.billing.line</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_billing_line_view_form" model="ir.ui.view">
         <field name="name">records.billing.line.view.form</field>
         <field name="model">records.billing.line</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Billing Line">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_billing_line_view_search" model="ir.ui.view">
         <field name="name">records.billing.line.view.search</field>
         <field name="model">records.billing.line</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

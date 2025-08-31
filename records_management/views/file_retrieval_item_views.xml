@@ -6,6 +6,7 @@
     <record id="view_file_retrieval_item_list" model="ir.ui.view">
         <field name="name">view.file.retrieval.item.list</field>
         <field name="model">file.retrieval.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="view_file_retrieval_item_form" model="ir.ui.view">
         <field name="name">view.file.retrieval.item.form</field>
         <field name="model">file.retrieval.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="File Retrieval Item">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="view_file_retrieval_item_search" model="ir.ui.view">
         <field name="name">view.file.retrieval.item.search</field>
         <field name="model">file.retrieval.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

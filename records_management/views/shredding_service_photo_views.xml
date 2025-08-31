@@ -7,6 +7,7 @@
     <record id="shredding_service_photo_view_tree" model="ir.ui.view">
         <field name="name">shredding.service.photo.view.tree</field>
         <field name="model">shredding.service.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Shredding Service Photos" default_order="shredding_service_id, sequence">
                 <field name="sequence" widget="handle"/>
@@ -23,6 +24,7 @@
     <record id="shredding_service_photo_view_form" model="ir.ui.view">
         <field name="name">shredding.service.photo.view.form</field>
         <field name="model">shredding.service.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Shredding Service Photo">
                 <sheet>
@@ -65,6 +67,7 @@
     <record id="shredding_service_photo_view_search" model="ir.ui.view">
         <field name="name">shredding.service.photo.view.search</field>
         <field name="model">shredding.service.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Shredding Service Photos">
                 <field name="name"/>

@@ -6,6 +6,7 @@
     <record id="naid_custody_event_view_tree" model="ir.ui.view">
         <field name="name">naid.custody.event.view.tree</field>
         <field name="model">naid.custody.event</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="naid_custody_event_view_form" model="ir.ui.view">
         <field name="name">naid.custody.event.view.form</field>
         <field name="model">naid.custody.event</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Naid.Custody.Event">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="naid_custody_event_view_search" model="ir.ui.view">
         <field name="name">naid.custody.event.view.search</field>
         <field name="model">naid.custody.event</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

@@ -6,6 +6,7 @@
     <record id="naid_performance_history_view_tree" model="ir.ui.view">
         <field name="name">naid.performance.history.view.tree</field>
         <field name="model">naid.performance.history</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="naid_performance_history_view_form" model="ir.ui.view">
         <field name="name">naid.performance.history.view.form</field>
         <field name="model">naid.performance.history</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Naid.Performance.History">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="naid_performance_history_view_search" model="ir.ui.view">
         <field name="name">naid.performance.history.view.search</field>
         <field name="model">naid.performance.history</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

@@ -5,6 +5,7 @@
     <record id="container_access_photo_view_tree" model="ir.ui.view">
         <field name="name">container.access.photo.view.tree</field>
         <field name="model">container.access.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Container Access Photos" decoration-info="is_primary==True">
                 <field name="activity_id"/>
@@ -21,6 +22,7 @@
     <record id="container_access_photo_view_form" model="ir.ui.view">
         <field name="name">container.access.photo.view.form</field>
         <field name="model">container.access.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Container Access Photo">
                 <sheet>
@@ -73,6 +75,7 @@
     <record id="container_access_photo_view_search" model="ir.ui.view">
         <field name="name">container.access.photo.view.search</field>
         <field name="model">container.access.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Container Access Photos">
                 <field name="activity_id"/>
@@ -102,6 +105,7 @@
     <record id="container_access_photo_view_kanban" model="ir.ui.view">
         <field name="name">container.access.photo.view.kanban</field>
         <field name="model">container.access.photo</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban string="Container Access Photos" class="o_kanban_mobile">
                 <field name="id"/>

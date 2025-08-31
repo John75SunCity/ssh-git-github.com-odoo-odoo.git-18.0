@@ -6,6 +6,7 @@
     <record id="records_survey_user_input_view_list" model="ir.ui.view">
         <field name="name">records.survey.user.input.view.list</field>
         <field name="model">records.survey.user.input</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -24,6 +25,7 @@
     <record id="records_survey_user_input_view_form" model="ir.ui.view">
         <field name="name">records.survey.user.input.view.form</field>
         <field name="model">records.survey.user.input</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Survey User Input">
                 <header>
@@ -95,6 +97,7 @@
     <record id="records_survey_user_input_view_search" model="ir.ui.view">
         <field name="name">records.survey.user.input.view.search</field>
         <field name="model">records.survey.user.input</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>

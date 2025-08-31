@@ -6,6 +6,7 @@
     <record id="records_department_billing_contact_view_tree" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.tree</field>
         <field name="model">records.department.billing.contact</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_department_billing_contact_view_form" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.form</field>
         <field name="model">records.department.billing.contact</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Department Billing Contact">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_department_billing_contact_view_search" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.search</field>
         <field name="model">records.department.billing.contact</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -65,6 +68,7 @@
     <record id="records_department_billing_contact_view_kanban" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.kanban</field>
         <field name="model">records.department.billing.contact</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="department_id" class="o_kanban_billing_dashboard">
                 <field name="contact_name"/>
@@ -145,6 +149,7 @@
     <record id="records_department_billing_contact_view_tree" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.tree</field>
         <field name="model">records.department.billing.contact</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-danger="budget_utilization &amp;gt; 90" decoration-warning="budget_utilization &amp;gt; 75" decoration-success="budget_utilization &amp;lt;= 50">
                 <field name="contact_name" string="💼 Contact"/>
@@ -166,6 +171,7 @@
     <record id="records_department_billing_contact_view_form" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.form</field>
         <field name="model">records.department.billing.contact</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -263,6 +269,7 @@
     <record id="records_department_billing_contact_view_graph" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.graph</field>
         <field name="model">records.department.billing.contact</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <graph string="📊 Department Budget Analytics">
                 <field name="department_id" type="row"/>
@@ -276,6 +283,7 @@
     <record id="records_department_billing_contact_view_search" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.search</field>
         <field name="model">records.department.billing.contact</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="contact_name" string="Contact"/>

@@ -7,6 +7,7 @@
 <field name="name">hr.employee.form.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <!-- Add Records Management section after department -->
             <xpath expr="//field[@name='department_id']" position="after">
@@ -26,6 +27,7 @@
 <field name="name">hr.employee.tree.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_tree"/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='department_id']" position="after">
                 <field name="records_department_id" optional="hide"/>
@@ -41,6 +43,7 @@
 <field name="name">hr.employee.search.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.view_employee_filter"/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <!-- Add Records Management search fields -->
             <xpath expr="//field[@name='department_id']" position="after">
@@ -70,6 +73,7 @@
 <field name="name">hr.employee.kanban.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//div[contains(@class,'oe_kanban_details')]" position="inside">
 <div class="o_kanban_tags_section">
@@ -93,6 +97,7 @@
     <record id="hr_employee_view_graph" model="ir.ui.view">
 <field name="name">hr.employee.view.graph.records</field>
         <field name="model">hr.employee</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <graph string="Employee Records Management Analysis" type="bar">
                 <field name="records_department_id" type="row"/>
@@ -107,6 +112,7 @@
     <record id="hr_employee_view_pivot" model="ir.ui.view">
 <field name="name">hr.employee.view.pivot.records</field>
         <field name="model">hr.employee</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <pivot string="Employee Records Management Pivot" disable_linking="True">
                 <field name="records_department_id" type="row"/>
@@ -121,6 +127,7 @@
 <field name="name">hr.employee.calendar.inherit.records</field>
         <field name="model">hr.employee</field>
         <field name="inherit_id" ref="hr.hr_employee_view_calendar"/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//calendar" position="attributes">
                 <attribute name="color">records_access_level</attribute>

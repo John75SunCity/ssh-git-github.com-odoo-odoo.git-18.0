@@ -6,6 +6,7 @@
     <record id="revenue_forecast_view_tree" model="ir.ui.view">
         <field name="name">revenue.forecast.view.tree</field>
         <field name="model">revenue.forecast</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="revenue_forecast_view_form" model="ir.ui.view">
         <field name="name">revenue.forecast.view.form</field>
         <field name="model">revenue.forecast</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Revenue.Forecast">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="revenue_forecast_view_search" model="ir.ui.view">
         <field name="name">revenue.forecast.view.search</field>
         <field name="model">revenue.forecast</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

@@ -6,7 +6,8 @@
         <record id="hard_drive_scan_wizard_line_view_tree" model="ir.ui.view">
             <field name="name">hard.drive.scan.wizard.line.view.tree</field>
             <field name="model">hard.drive.scan.wizard.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Hard Drive Scan Wizard Line">
                     <field name="wizard_id"/>
                     <field name="serial_number"/>
@@ -18,7 +19,8 @@
         <record id="hard_drive_scan_wizard_line_view_form" model="ir.ui.view">
             <field name="name">hard.drive.scan.wizard.line.view.form</field>
             <field name="model">hard.drive.scan.wizard.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Hard Drive Scan Wizard Line">
                     <sheet>
                         <group>
@@ -34,7 +36,8 @@
         <record id="hard_drive_scan_wizard_line_view_search" model="ir.ui.view">
             <field name="name">hard.drive.scan.wizard.line.view.search</field>
             <field name="model">hard.drive.scan.wizard.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Hard Drive Scan Wizard Line">
                     <field name="serial_number"/>
                     <field name="wizard_id"/>

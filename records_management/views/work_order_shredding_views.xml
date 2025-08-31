@@ -8,6 +8,7 @@
     <record id="work_order_shredding_view_tree" model="ir.ui.view">
         <field name="name">work.order.shredding.view.tree</field>
         <field name="model">work.order.shredding</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
                 <header>
@@ -35,6 +36,7 @@
     <record id="work_order_shredding_view_form" model="ir.ui.view">
         <field name="name">work.order.shredding.view.form</field>
         <field name="model">work.order.shredding</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <form string="Shredding Work Order">
     <header>
@@ -203,7 +205,8 @@
 <record id="work_order_shredding_view_kanban" model="ir.ui.view">
     <field name="name">work.order.shredding.view.kanban</field>
     <field name="model">work.order.shredding</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_small_column">
             <field name="name"/>
             <field name="partner_id"/>
@@ -283,6 +286,7 @@
     <record id="work_order_shredding_view_search" model="ir.ui.view">
         <field name="name">work.order.shredding.view.search</field>
         <field name="model">work.order.shredding</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
 <field name="name" string="Work Order" filter_domain="['|', '|', ('name', 'ilike', self), ('partner_id', 'ilike', self), ('coordinator_id', 'ilike', self)]"/>

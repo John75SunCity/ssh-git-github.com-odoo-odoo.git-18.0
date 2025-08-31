@@ -6,6 +6,7 @@
     <record id="stock_lot_attribute_value_view_tree" model="ir.ui.view">
         <field name="name">stock.lot.attribute.value.view.tree</field>
         <field name="model">stock.lot.attribute.value</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="stock_lot_attribute_value_view_form" model="ir.ui.view">
         <field name="name">stock.lot.attribute.value.view.form</field>
         <field name="model">stock.lot.attribute.value</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Stock Lot Attribute Value">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="stock_lot_attribute_value_view_search" model="ir.ui.view">
         <field name="name">stock.lot.attribute.value.view.search</field>
         <field name="model">stock.lot.attribute.value</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

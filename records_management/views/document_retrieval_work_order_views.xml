@@ -7,6 +7,7 @@
 <record id="document_retrieval_work_order_view_tree" model="ir.ui.view">
     <field name="name">document.retrieval.work.order.view.tree</field>
         <field name="model">document.retrieval.work.order</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Document Retrieval Work Orders" decoration-info="state=='draft'" decoration-warning="state=='confirmed'" decoration-success="state=='completed'">
                 <field name="name"/>
@@ -26,6 +27,7 @@
 <record id="document_retrieval_work_order_view_form" model="ir.ui.view">
     <field name="name">document.retrieval.work.order.view.form</field>
         <field name="model">document.retrieval.work.order</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Document Retrieval Work Order">
                 <header>
@@ -157,6 +159,7 @@
 <record id="document_retrieval_work_order_view_kanban" model="ir.ui.view">
         <field name="name">document.retrieval.work.order.view.kanban</field>
         <field name="model">document.retrieval.work.order</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" quick_create="false">
                 <field name="name"/>
@@ -219,6 +222,7 @@
 <record id="document_retrieval_work_order_view_search" model="ir.ui.view">
     <field name="name">document.retrieval.work.order.view.search</field>
         <field name="model">document.retrieval.work.order</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Document Retrieval Work Orders">
                 <field name="name" string="Work Order"/>

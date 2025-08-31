@@ -7,6 +7,7 @@
     <record id="customer_inventory_view_kanban" model="ir.ui.view">
         <field name="name">customer.inventory.view.kanban</field>
         <field name="model">customer.inventory</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban class="o_kanban_customer_inventory" default_group_by="status">
                 <field name="partner_id"/>
@@ -43,6 +44,7 @@
     <record id="customer_inventory_view_tree" model="ir.ui.view">
         <field name="name">customer.inventory.view.tree</field>
         <field name="model">customer.inventory</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="partner_id"/>
@@ -58,6 +60,7 @@
     <record id="customer_inventory_view_form" model="ir.ui.view">
         <field name="name">customer.inventory.view.form</field>
         <field name="model">customer.inventory</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>

@@ -24,8 +24,21 @@ class RevenueAnalytic(models.Model):
     # ============================================================================
     # PERIOD & CONFIGURATION
     # ============================================================================
+    period = fields.Char(string="Period", compute="_compute_period", store=True)
     period_start = fields.Date(string='Period Start', required=True, tracking=True)
     period_end = fields.Date(string='Period End', required=True, tracking=True)
+    service_category = fields.Selection(
+        [
+            ("storage", "Storage"),
+            ("retrieval", "Retrieval"),
+            ("destruction", "Destruction"),
+            ("digital", "Digital Services"),
+            ("all", "All Services"),
+        ],
+        string="Service Category",
+        default="all",
+        tracking=True,
+    )
 
     # ============================================================================
     # FINANCIAL METRICS
@@ -45,12 +58,12 @@ class RevenueAnalytic(models.Model):
     # COMPUTE METHODS
     # ============================================================================
     @api.depends('period_start', 'period_end')
-    def _compute_name(self):
+    def _compute_period(self):
         for record in self:
             if record.period_start and record.period_end:
-                record.name = _("Revenue Analysis: %s to %s", record.period_start.strftime('%b %Y'), record.period_end.strftime('%b %Y'))
+                record.period = f"{record.period_start.strftime('%b %Y')} - {record.period_end.strftime('%b %Y')}"
             else:
-                record.name = _("New Revenue Analysis")
+                record.period = "Unknown Period"
 
     @api.depends('total_revenue', 'actual_costs')
     def _compute_profit_margin(self):
@@ -86,10 +99,12 @@ class RevenueAnalytic(models.Model):
 
     def action_lock(self):
         """Lock the record to prevent further changes."""
+        self.ensure_one()
         self.write({'state': 'locked'})
         self.message_post(body=_("Analytic record has been locked."))
 
     def action_reset_to_draft(self):
         """Reset the record back to draft state for recalculation."""
+        self.ensure_one()
         self.write({'state': 'draft'})
         self.message_post(body=_("Analytic record reset to draft."))

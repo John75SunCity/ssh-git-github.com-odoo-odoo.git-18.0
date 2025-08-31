@@ -10,6 +10,7 @@
     <record id="view_shredding_service_bin_list" model="ir.ui.view">
         <field name="name">shredding.service.bin.list</field>
         <field name="model">shredding.service.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Shredding Service Bins" decoration-success="status == 'active'"
                   decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'">
@@ -31,6 +32,7 @@
     <record id="view_shredding_service_bin_form" model="ir.ui.view">
         <field name="name">shredding.service.bin.form</field>
         <field name="model">shredding.service.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Shredding Service Bin">
                 <header>
@@ -187,6 +189,7 @@
     <record id="view_shredding_service_bin_search" model="ir.ui.view">
         <field name="name">shredding.service.bin.search</field>
         <field name="model">shredding.service.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Shredding Bins">
                 <field name="barcode" string="Barcode" filter_domain="[('barcode', 'ilike', self)]"/>
@@ -221,6 +224,7 @@
     <record id="view_shredding_service_bin_kanban" model="ir.ui.view">
         <field name="name">shredding.service.bin.kanban</field>
         <field name="model">shredding.service.bin</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column">
                 <field name="barcode"/>

@@ -6,7 +6,8 @@
         <record id="custody_transfer_event_view_tree" model="ir.ui.view">
             <field name="name">custody.transfer.event.view.tree</field>
             <field name="model">custody.transfer.event</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Custody Transfer Event">
                     <field name="name"/>
                     <field name="company_id"/>
@@ -24,7 +25,8 @@
         <record id="custody_transfer_event_view_form" model="ir.ui.view">
             <field name="name">custody.transfer.event.view.form</field>
             <field name="model">custody.transfer.event</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Custody Transfer Event">
                     <sheet>
                         <group>
@@ -47,7 +49,8 @@
         <record id="custody_transfer_event_view_search" model="ir.ui.view">
             <field name="name">custody.transfer.event.view.search</field>
             <field name="model">custody.transfer.event</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Custody Transfer Event">
                     <!-- Add search fields here -->
                 </search>

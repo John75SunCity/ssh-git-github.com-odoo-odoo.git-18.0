@@ -6,7 +6,8 @@
         <record id="records_destruction_job_view_tree" model="ir.ui.view">
             <field name="name">records.destruction.job.view.tree</field>
             <field name="model">records.destruction.job</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Records Destruction Job">
                     <field name="name"/>
                     <field name="destruction_date"/>
@@ -21,7 +22,8 @@
         <record id="records_destruction_job_view_form" model="ir.ui.view">
             <field name="name">records.destruction.job.view.form</field>
             <field name="model">records.destruction.job</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Records Destruction Job">
                     <sheet>
                         <group>
@@ -45,7 +47,8 @@
         <record id="records_destruction_job_view_search" model="ir.ui.view">
             <field name="name">records.destruction.job.view.search</field>
             <field name="model">records.destruction.job</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Records Destruction Job">
                     <field name="name"/>
                     <field name="destruction_date"/>

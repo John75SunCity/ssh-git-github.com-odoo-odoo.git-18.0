@@ -6,6 +6,7 @@
     <record id="records_access_log_view_tree" model="ir.ui.view">
         <field name="name">records.access.log.view.tree</field>
         <field name="model">records.access.log</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_access_log_view_form" model="ir.ui.view">
         <field name="name">records.access.log.view.form</field>
         <field name="model">records.access.log</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Access Log">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_access_log_view_search" model="ir.ui.view">
         <field name="name">records.access.log.view.search</field>
         <field name="model">records.access.log</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

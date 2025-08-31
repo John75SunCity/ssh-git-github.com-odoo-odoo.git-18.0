@@ -5,6 +5,7 @@
     <record id="transitory_field_config_view_tree" model="ir.ui.view">
         <field name="name">transitory.field.config.view.tree</field>
         <field name="model">transitory.field.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -16,6 +17,7 @@
     <record id="transitory_field_config_view_form" model="ir.ui.view">
         <field name="name">transitory.field.config.view.form</field>
         <field name="model">transitory.field.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Transitory Field Config">
                 <sheet>
@@ -34,6 +36,7 @@
     <record id="transitory_field_config_view_search" model="ir.ui.view">
         <field name="name">transitory.field.config.view.search</field>
         <field name="model">transitory.field.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -63,7 +66,8 @@
         <record id="field_label_customization_view_form" model="ir.ui.view">
             <field name="name">field.label.customization.view.form</field>
             <field name="model">field.label.customization</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Field Label Customization">
                     <header>
                         <button name="action_apply_corporate_preset" string="Apply Corporate Preset" type="object" class="btn-primary" help="Apply standard corporate terminology"/>
@@ -174,7 +178,8 @@
         <record id="field_label_customization_view_tree" model="ir.ui.view">
             <field name="name">field.label.customization.view.tree</field>
             <field name="model">field.label.customization</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Field Label Customizations">
                     <field name="name"/>
                     <field name="scope_display"/>
@@ -191,7 +196,8 @@
         <record id="field_label_customization_view_search" model="ir.ui.view">
             <field name="name">field.label.customization.view.search</field>
             <field name="model">field.label.customization</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Field Label Customizations">
                     <field name="name"/>
                     <field name="partner_id"/>
@@ -240,7 +246,8 @@
         <record id="transitory_field_config_view_form" model="ir.ui.view">
             <field name="name">transitory.field.config.view.form</field>
             <field name="model">transitory.field.config</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Transitory Field Configuration">
                     <header>
                         <button name="action_setup_field_labels" string="Customize Field Labels" type="object" class="btn-primary" help="Setup custom field labels for this configuration"/>
@@ -336,7 +343,8 @@
             <field name="name">res.partner.view.form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <notebook position="inside">
                     <page string="Records Field Configuration" name="field_config" attrs="{'invisible': [('is_company', '=', False)]}">
                         <group>
@@ -443,7 +451,8 @@ action = {
         <record id="field_label_customization_view_tree" model="ir.ui.view">
             <field name="name">field.label.customization.view.tree</field>
             <field name="model">field.label.customization</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Field Label Customizations" decoration-danger="state=='failed'" decoration-success="state=='active'">
                     <field name="name"/>
                     <field name="model_name"/>
@@ -461,7 +470,8 @@ action = {
         <record id="field_label_customization_view_form" model="ir.ui.view">
             <field name="name">field.label.customization.view.form</field>
             <field name="model">field.label.customization</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Field Label Customization">
                     <header>
                         <field name="state" widget="statusbar"/>

@@ -6,6 +6,7 @@
     <record id="naid_destruction_record_view_tree" model="ir.ui.view">
         <field name="name">naid.destruction.record.view.tree</field>
         <field name="model">naid.destruction.record</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="naid_destruction_record_view_form" model="ir.ui.view">
         <field name="name">naid.destruction.record.view.form</field>
         <field name="model">naid.destruction.record</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Naid.Destruction.Record">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="naid_destruction_record_view_search" model="ir.ui.view">
         <field name="name">naid.destruction.record.view.search</field>
         <field name="model">naid.destruction.record</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

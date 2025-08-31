@@ -6,7 +6,8 @@
         <record id="file_retrieval_view_tree" model="ir.ui.view">
             <field name="name">file.retrieval.view.tree</field>
             <field name="model">file.retrieval</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="File Retrieval" decoration-warning="status == 'searching'" decoration-info="status == 'located'" decoration-success="status == 'delivered'">
                     <field name="name"/>
                     <field name="requested_file_name"/>
@@ -24,7 +25,8 @@
         <record id="file_retrieval_view_form" model="ir.ui.view">
             <field name="name">file.retrieval.view.form</field>
             <field name="model">file.retrieval</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="File Retrieval">
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -89,7 +91,8 @@
         <record id="file_retrieval_view_search" model="ir.ui.view">
             <field name="name">file.retrieval.view.search</field>
             <field name="model">file.retrieval</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search File Retrieval">
                     <field name="name"/>
                     <field name="requested_file_name"/>

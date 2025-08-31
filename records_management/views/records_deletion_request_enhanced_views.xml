@@ -6,6 +6,7 @@
     <record id="records_deletion_request_enhanced_view_tree" model="ir.ui.view">
         <field name="name">records.deletion.request.enhanced.view.tree</field>
         <field name="model">records.deletion.request.enhanced</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_deletion_request_enhanced_view_form" model="ir.ui.view">
         <field name="name">records.deletion.request.enhanced.view.form</field>
         <field name="model">records.deletion.request.enhanced</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Deletion Request Enhanced">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_deletion_request_enhanced_view_search" model="ir.ui.view">
         <field name="name">records.deletion.request.enhanced.view.search</field>
         <field name="model">records.deletion.request.enhanced</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

@@ -7,7 +7,8 @@
         <record id="enhanced_fsm_integration_view_tree" model="ir.ui.view">
             <field name="name">enhanced.fsm.integration.tree</field>
             <field name="model">enhanced.fsm.integration</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="FSM Integrations">
                     <field name="name"/>
                     <field name="integration_type"/>
@@ -22,7 +23,8 @@
         <record id="enhanced_fsm_integration_view_form" model="ir.ui.view">
             <field name="name">enhanced.fsm.integration.form</field>
             <field name="model">enhanced.fsm.integration</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Enhanced FSM Integration">
                     <header>
                         <button name="create_default_integrations" type="object" string="Create Default Integrations" class="btn-secondary"/>
@@ -81,7 +83,8 @@
         <record id="enhanced_fsm_integration_view_search" model="ir.ui.view">
             <field name="name">enhanced.fsm.integration.search</field>
             <field name="model">enhanced.fsm.integration</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="FSM Integrations">
                     <field name="name"/>
                     <field name="integration_type"/>

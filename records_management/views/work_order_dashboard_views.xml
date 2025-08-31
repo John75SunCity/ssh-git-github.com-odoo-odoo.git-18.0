@@ -92,6 +92,7 @@
     <record id="work_order_dashboard_view_tree" model="ir.ui.view">
         <field name="name">work.order.dashboard.view.tree</field>
         <field name="model">project.task</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="All Work Orders" create="false" edit="false" decoration-info="stage_id.name=='Draft'" decoration-warning="stage_id.name=='In Progress'" decoration-success="stage_id.name=='Completed'">
                 <field name="name" string="Work Order"/>

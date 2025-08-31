@@ -5,7 +5,8 @@
         <record id="chain_of_custody_view_tree" model="ir.ui.view">
             <field name="name">chain.of.custody.view.tree</field>
             <field name="model">chain.of.custody</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Chain of Custody">
                     <field name="name"/>
                 </tree>
@@ -15,7 +16,8 @@
         <record id="chain_of_custody_view_form" model="ir.ui.view">
             <field name="name">chain.of.custody.view.form</field>
             <field name="model">chain.of.custody</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Chain of Custody">
                     <sheet>
                         <group>

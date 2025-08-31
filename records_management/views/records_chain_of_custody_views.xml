@@ -6,6 +6,7 @@
     <record id="records_chain_of_custody_view_tree" model="ir.ui.view">
         <field name="name">records.chain.of.custody.view.tree</field>
         <field name="model">records.chain.of.custody</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_chain_of_custody_view_form" model="ir.ui.view">
         <field name="name">records.chain.of.custody.view.form</field>
         <field name="model">records.chain.of.custody</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records.Chain.Of.Custody">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_chain_of_custody_view_search" model="ir.ui.view">
         <field name="name">records.chain.of.custody.view.search</field>
         <field name="model">records.chain.of.custody</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

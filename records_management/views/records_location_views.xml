@@ -7,6 +7,7 @@
     <record id="records_location_view_kanban" model="ir.ui.view">
         <field name="name">records.location.view.kanban</field>
         <field name="model">records.location</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
                 <field name="name"/>
@@ -84,6 +85,7 @@
     <record id="records_location_view_tree" model="ir.ui.view">
         <field name="name">records.location.view.tree</field>
         <field name="model">records.location</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-success="current_utilization &amp;lt; storage_capacity * 0.8" decoration-warning="current_utilization &amp;gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &amp;gt;= storage_capacity">
                 <field name="name" string="🏢 Location Name"/>
@@ -102,6 +104,7 @@
     <record id="records_location_view_form" model="ir.ui.view">
         <field name="name">records.location.view.form</field>
         <field name="model">records.location</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -179,6 +182,7 @@
     <record id="records_location_view_search" model="ir.ui.view">
         <field name="name">records.location.view.search</field>
         <field name="model">records.location</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>

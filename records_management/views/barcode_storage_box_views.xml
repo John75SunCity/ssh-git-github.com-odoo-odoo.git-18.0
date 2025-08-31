@@ -6,6 +6,7 @@
 <record id="barcode_storage_box_view_tree" model="ir.ui.view">
     <field name="name">barcode.storage.box.view.tree</field>
         <field name="model">barcode.storage.box</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
 <record id="barcode_storage_box_view_form" model="ir.ui.view">
     <field name="name">barcode.storage.box.view.form</field>
         <field name="model">barcode.storage.box</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Barcode Storage Box">
                 <sheet>
@@ -35,6 +37,7 @@
 <record id="barcode_storage_box_view_search" model="ir.ui.view">
     <field name="name">barcode.storage.box.view.search</field>
         <field name="model">barcode.storage.box</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

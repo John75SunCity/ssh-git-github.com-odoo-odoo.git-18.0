@@ -7,6 +7,7 @@
     <record id="load_view_kanban" model="ir.ui.view">
         <field name="name">load.view.kanban</field>
         <field name="model">load</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" sample="1" quick_create="false" class="o_kanban_small_column">
                 <field name="name"/>
@@ -72,6 +73,7 @@
     <record id="load_view_tree" model="ir.ui.view">
         <field name="name">load.view.tree</field>
         <field name="model">load</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Paper Bale Load Management" decoration-success="state=='sold'" decoration-info="state=='shipped'" decoration-warning="state=='loading'" decoration-muted="state=='cancelled'" multi_edit="1" sample="1">
                 <header>
@@ -98,6 +100,7 @@
     <record id="load_view_form" model="ir.ui.view">
         <field name="name">load.view.form</field>
         <field name="model">load</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Paper Bale Load Management">
                 <header>
@@ -288,6 +291,7 @@
     <record id="load_view_search" model="ir.ui.view">
         <field name="name">load.view.search</field>
         <field name="model">load</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Loads">
                 <field name="name" string="Load #" filter_domain="[('name', 'ilike', self)]"/>
@@ -332,6 +336,7 @@
     <record id="load_view_calendar" model="ir.ui.view">
         <field name="name">load.view.calendar</field>
         <field name="model">load</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <calendar string="Load Schedule" date_start="scheduled_departure" date_stop="estimated_delivery" color="driver_id" quick_add="False" mode="month">
                 <field name="name"/>
@@ -347,6 +352,7 @@
     <record id="load_view_graph" model="ir.ui.view">
         <field name="name">load.view.graph</field>
         <field name="model">load</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <graph string="Load Analytics" type="bar" sample="1">
                 <field name="load_date" type="row" interval="week"/>
@@ -360,6 +366,7 @@
     <record id="load_view_pivot" model="ir.ui.view">
         <field name="name">load.view.pivot</field>
         <field name="model">load</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <pivot string="Load Performance" sample="1">
                 <field name="driver_id" type="row"/>

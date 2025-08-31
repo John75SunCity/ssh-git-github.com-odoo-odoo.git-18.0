@@ -6,6 +6,7 @@
     <record id="signed_document_view_tree" model="ir.ui.view">
         <field name="name">signed.document.view.tree</field>
         <field name="model">signed.document</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="signed_document_view_form" model="ir.ui.view">
         <field name="name">signed.document.view.form</field>
         <field name="model">signed.document</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Signed Document">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="signed_document_view_search" model="ir.ui.view">
         <field name="name">signed.document.view.search</field>
         <field name="model">signed.document</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

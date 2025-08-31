@@ -6,6 +6,7 @@
     <record id="portal_feedback_resolution_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.resolution.view.tree</field>
         <field name="model">portal.feedback.resolution</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="portal_feedback_resolution_view_form" model="ir.ui.view">
         <field name="name">portal.feedback.resolution.view.form</field>
         <field name="model">portal.feedback.resolution</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Portal.Feedback.Resolution">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="portal_feedback_resolution_view_search" model="ir.ui.view">
         <field name="name">portal.feedback.resolution.view.search</field>
         <field name="model">portal.feedback.resolution</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

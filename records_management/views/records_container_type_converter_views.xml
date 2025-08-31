@@ -5,7 +5,8 @@
         <record id="records_container_type_converter_view_form" model="ir.ui.view">
             <field name="name">records.container.type.converter.view.form</field>
             <field name="model">records.container.type.converter</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Bulk Container Type Converter">
                     <group>
                         <group>

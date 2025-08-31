@@ -8,6 +8,7 @@
     <record id="work_order_coordinator_view_tree" model="ir.ui.view">
         <field name="name">work.order.coordinator.view.tree</field>
         <field name="model">work.order.coordinator</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
                 <field name="name"/>
@@ -30,6 +31,7 @@
     <record id="work_order_coordinator_view_form" model="ir.ui.view">
         <field name="name">work.order.coordinator.view.form</field>
         <field name="model">work.order.coordinator</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Work Order Coordinator">
 <header>
@@ -202,6 +204,7 @@
     <record id="work_order_coordinator_view_search" model="ir.ui.view">
         <field name="name">work.order.coordinator.view.search</field>
         <field name="model">work.order.coordinator</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <search string="Search Work Order Coordinators">
     <!-- Search Fields -->
@@ -246,7 +249,8 @@
 <record id="work_order_coordinator_view_kanban" model="ir.ui.view">
     <field name="name">work.order.coordinator.view.kanban</field>
     <field name="model">work.order.coordinator</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="state">
             <field name="id"/>
             <field name="name"/>

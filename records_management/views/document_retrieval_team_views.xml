@@ -6,6 +6,7 @@
     <record id="document_retrieval_team_view_tree" model="ir.ui.view">
         <field name="name">document.retrieval.team.view.tree</field>
         <field name="model">document.retrieval.team</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-success="active==True" decoration-muted="active==False" decoration-info="state=='available'" decoration-warning="state=='busy'">
                 <field name="name"/>
@@ -25,6 +26,7 @@
     <record id="document_retrieval_team_view_form" model="ir.ui.view">
         <field name="name">document.retrieval.team.view.form</field>
         <field name="model">document.retrieval.team</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Document Retrieval Team">
                 <header>
@@ -172,6 +174,7 @@
     <record id="document_retrieval_team_view_kanban" model="ir.ui.view">
         <field name="name">document.retrieval.team.view.kanban</field>
         <field name="model">document.retrieval.team</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_small_column">
                 <field name="id"/>
@@ -234,6 +237,7 @@
     <record id="document_retrieval_team_view_search" model="ir.ui.view">
         <field name="name">document.retrieval.team.view.search</field>
         <field name="model">document.retrieval.team</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Team Name" filter_domain="[('name', 'ilike', self)]"/>

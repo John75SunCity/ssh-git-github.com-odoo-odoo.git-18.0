@@ -6,7 +6,8 @@
         <record id="inventory_item_destruction_line_view_tree" model="ir.ui.view">
             <field name="name">inventory.item.destruction.line.view.tree</field>
             <field name="model">inventory.item.destruction.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Inventory Item Destruction Line">
                     <field name="destruction_id"/>
                     <field name="item_id"/>
@@ -24,7 +25,8 @@
         <record id="inventory_item_destruction_line_view_form" model="ir.ui.view">
             <field name="name">inventory.item.destruction.line.view.form</field>
             <field name="model">inventory.item.destruction.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Inventory Item Destruction Line">
                     <sheet>
                         <group>
@@ -55,7 +57,8 @@
         <record id="inventory_item_destruction_line_view_search" model="ir.ui.view">
             <field name="name">inventory.item.destruction.line.view.search</field>
             <field name="model">inventory.item.destruction.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Inventory Item Destruction Line">
                     <!-- Add search fields here -->
                 </search>

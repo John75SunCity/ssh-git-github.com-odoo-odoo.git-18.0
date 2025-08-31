@@ -5,6 +5,7 @@
     <record id="pickup_location_view_form" model="ir.ui.view">
         <field name="name">pickup.location.form</field>
         <field name="model">pickup.location</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Pickup Location">
                 <header>
@@ -44,6 +45,7 @@
     <record id="pickup_location_view_tree" model="ir.ui.view">
         <field name="name">pickup.location.tree</field>
         <field name="model">pickup.location</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Pickup Locations">
                 <field name="name"/>
@@ -59,6 +61,7 @@
     <record id="pickup_location_view_search" model="ir.ui.view">
         <field name="name">pickup.location.search</field>
         <field name="model">pickup.location</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Pickup Locations">
                 <field name="name"/>

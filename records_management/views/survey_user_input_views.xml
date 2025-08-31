@@ -7,6 +7,7 @@
         <field name="name">survey.user.input.view.form</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -19,6 +20,7 @@
         <field name="name">survey.user.input.view.tree</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -31,6 +33,7 @@
         <field name="name">survey.user.input.view.search</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -43,6 +46,7 @@
         <field name="name">survey.user.input.view.kanban</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -55,6 +59,7 @@
         <field name="name">survey.user.input.view.graph</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -67,6 +72,7 @@
         <field name="name">survey.user.input.view.pivot</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -79,6 +85,7 @@
         <field name="name">survey.user.input.view.calendar</field>
         <field name="model">survey.user.input</field>
         <field name="inherit_id" ref=""/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>

@@ -3,6 +3,7 @@
     <record id="mobile_dashboard_widget_view_list" model="ir.ui.view">
         <field name="name">mobile.dashboard.widget.view.list</field>
         <field name="model">mobile.dashboard.widget</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -16,6 +17,7 @@
     <record id="mobile_dashboard_widget_view_form" model="ir.ui.view">
         <field name="name">mobile.dashboard.widget.view.form</field>
         <field name="model">mobile.dashboard.widget</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -33,6 +35,7 @@
     <record id="mobile_dashboard_widget_view_search" model="ir.ui.view">
         <field name="name">mobile.dashboard.widget.view.search</field>
         <field name="model">mobile.dashboard.widget</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
@@ -45,6 +48,7 @@
     <record id="mobile_dashboard_widget_view_kanban" model="ir.ui.view">
         <field name="name">mobile.dashboard.widget.view.kanban</field>
         <field name="model">mobile.dashboard.widget</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban>
                 <field name="name"/>

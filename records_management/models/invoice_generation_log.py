@@ -14,17 +14,32 @@ class InvoiceGenerationLog(models.Model):
     active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
 
-    config_id = fields.Many2one('advanced.billing', string="Billing Configuration", readonly=True)
+    config_id = fields.Many2one("records.billing.config", string="Billing Configuration", readonly=True)
     generation_date = fields.Datetime(string="Generation Date", required=True, default=fields.Datetime.now, readonly=True)
 
     invoice_id = fields.Many2one('account.move', string="Generated Invoice", readonly=True)
+    invoice_number = fields.Char(string="Invoice Number", related="invoice_id.name", store=True)
     partner_id = fields.Many2one(related='invoice_id.partner_id', string="Customer", store=True, readonly=True, comodel_name='res.partner')
 
-    status = fields.Selection([
-        ('success', 'Success'),
-        ('failure', 'Failure'),
-        ('warning', 'Warning')
-    ], string='Status', required=True, default='failure', readonly=True)
+    # Period tracking
+    period_start = fields.Date(string="Period Start")
+    period_end = fields.Date(string="Period End")
+
+    status = fields.Selection(
+        [
+            ("generated", "Generated"),
+            ("sent", "Sent"),
+            ("paid", "Paid"),
+            ("failed", "Failed"),
+            ("success", "Success"),
+            ("failure", "Failure"),
+            ("warning", "Warning"),
+        ],
+        string="Status",
+        required=True,
+        default="generated",
+        readonly=True,
+    )
 
     error_message = fields.Text(string='Log Message', readonly=True)
     amount = fields.Monetary(string='Invoice Amount', related='invoice_id.amount_total', readonly=True)

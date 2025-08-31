@@ -6,6 +6,7 @@
     <record id="portal_feedback_action_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.action.view.tree</field>
         <field name="model">portal.feedback.action</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="portal_feedback_action_view_form" model="ir.ui.view">
         <field name="name">portal.feedback.action.view.form</field>
         <field name="model">portal.feedback.action</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Portal Feedback Action">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="portal_feedback_action_view_search" model="ir.ui.view">
         <field name="name">portal.feedback.action.view.search</field>
         <field name="model">portal.feedback.action</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

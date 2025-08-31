@@ -6,7 +6,8 @@
         <record id="base_rates_view_form" model="ir.ui.view">
             <field name="name">base.rates.form</field>
             <field name="model">base.rates</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Base Rate">
                     <header>
                         <field name="active" widget="boolean_toggle"/>
@@ -49,7 +50,8 @@
         <record id="base_rates_view_tree" model="ir.ui.view">
             <field name="name">base.rates.tree</field>
             <field name="model">base.rates</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Base Rates">
                     <field name="name"/>
                     <field name="rate_type"/>
@@ -67,7 +69,8 @@
         <record id="base_rates_view_search" model="ir.ui.view">
             <field name="name">base.rates.search</field>
             <field name="model">base.rates</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Base Rates">
                     <field name="name"/>
                     <field name="rate_type"/>

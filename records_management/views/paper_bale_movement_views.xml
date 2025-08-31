@@ -6,6 +6,7 @@
     <record id="paper_bale_movement_view_tree" model="ir.ui.view">
         <field name="name">paper.bale.movement.view.tree</field>
         <field name="model">paper.bale.movement</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="paper_bale_movement_view_form" model="ir.ui.view">
         <field name="name">paper.bale.movement.view.form</field>
         <field name="model">paper.bale.movement</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Paper Bale Movement">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="paper_bale_movement_view_search" model="ir.ui.view">
         <field name="name">paper.bale.movement.view.search</field>
         <field name="model">paper.bale.movement</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

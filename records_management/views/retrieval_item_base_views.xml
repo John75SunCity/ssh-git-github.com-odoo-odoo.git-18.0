@@ -6,6 +6,7 @@
     <record id="retrieval_item_base_view_tree" model="ir.ui.view">
         <field name="name">retrieval.item.base.view.tree</field>
         <field name="model">retrieval.item.base</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="retrieval_item_base_view_form" model="ir.ui.view">
         <field name="name">retrieval.item.base.view.form</field>
         <field name="model">retrieval.item.base</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Retrieval.Item.Base">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="retrieval_item_base_view_search" model="ir.ui.view">
         <field name="name">retrieval.item.base.view.search</field>
         <field name="model">retrieval.item.base</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

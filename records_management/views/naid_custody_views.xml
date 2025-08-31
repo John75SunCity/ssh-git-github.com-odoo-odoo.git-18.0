@@ -6,6 +6,7 @@
     <record id="view_naid_custody_list" model="ir.ui.view">
         <field name="name">view.naid.custody.list</field>
         <field name="model">naid.custody</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="view_naid_custody_form" model="ir.ui.view">
         <field name="name">view.naid.custody.form</field>
         <field name="model">naid.custody</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Naid Custody">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="view_naid_custody_search" model="ir.ui.view">
         <field name="name">view.naid.custody.search</field>
         <field name="model">naid.custody</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

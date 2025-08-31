@@ -6,6 +6,7 @@
     <record id="shredding_inventory_batch_view_tree" model="ir.ui.view">
         <field name="name">shredding.inventory.batch.view.tree</field>
         <field name="model">shredding.inventory.batch</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="shredding_inventory_batch_view_form" model="ir.ui.view">
         <field name="name">shredding.inventory.batch.view.form</field>
         <field name="model">shredding.inventory.batch</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Shredding Inventory Batch">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="shredding_inventory_batch_view_search" model="ir.ui.view">
         <field name="name">shredding.inventory.batch.view.search</field>
         <field name="model">shredding.inventory.batch</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

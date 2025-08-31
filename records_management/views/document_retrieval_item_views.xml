@@ -5,6 +5,7 @@
     <record id="document_retrieval_item_view_tree" model="ir.ui.view">
         <field name="name">document.retrieval.item.view.tree</field>
         <field name="model">document.retrieval.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-danger="priority=='3'" decoration-warning="priority=='2'" decoration-muted="status=='not_found'">
                 <field name="priority" widget="priority" optional="show"/>
@@ -24,6 +25,7 @@
     <record id="document_retrieval_item_view_form" model="ir.ui.view">
         <field name="name">document.retrieval.item.view.form</field>
         <field name="model">document.retrieval.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -73,6 +75,7 @@
     <record id="document_retrieval_item_view_search" model="ir.ui.view">
         <field name="name">document.retrieval.item.view.search</field>
         <field name="model">document.retrieval.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
@@ -104,6 +107,7 @@
     <record id="document_retrieval_item_view_kanban" model="ir.ui.view">
         <field name="name">document.retrieval.item.view.kanban</field>
         <field name="model">document.retrieval.item</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column">
                 <field name="priority"/>

@@ -7,6 +7,7 @@
     <record id="paper_load_shipment_view_tree" model="ir.ui.view">
         <field name="name">paper.load.shipment.view.tree</field>
         <field name="model">paper.load.shipment</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Load Shipments" decoration-success="status=='paid'" decoration-info="status=='delivered'" decoration-warning="status=='in_transit'" decoration-primary="status=='ready_pickup'" sample="1">
                 <field name="load_number"/>
@@ -30,6 +31,7 @@
     <record id="paper_load_shipment_view_form" model="ir.ui.view">
         <field name="name">paper.load.shipment.view.form</field>
         <field name="model">paper.load.shipment</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Load Shipment">
                 <header>
@@ -199,6 +201,7 @@
     <record id="paper_load_shipment_view_kanban" model="ir.ui.view">
         <field name="name">paper.load.shipment.view.kanban</field>
         <field name="model">paper.load.shipment</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column" sample="1">
                 <field name="load_number"/>
@@ -268,6 +271,7 @@
     <record id="paper_load_shipment_view_search" model="ir.ui.view">
         <field name="name">paper.load.shipment.view.search</field>
         <field name="model">paper.load.shipment</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Load Shipments">
                 <field name="load_number"/>

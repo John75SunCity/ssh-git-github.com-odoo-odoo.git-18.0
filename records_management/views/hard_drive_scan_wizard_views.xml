@@ -6,7 +6,8 @@
         <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
             <field name="name">hard.drive.scan.wizard.form</field>
             <field name="model">hard.drive.scan.wizard</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Scan Hard Drives for Destruction">
                     <group>
                         <field name="fsm_task_id" options="{'no_create': True, 'no_open': True}"/>

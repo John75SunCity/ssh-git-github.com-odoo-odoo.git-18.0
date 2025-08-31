@@ -6,7 +6,8 @@
         <record id="document_search_attempt_view_search" model="ir.ui.view">
             <field name="name">document.search.attempt.view.search</field>
             <field name="model">document.search.attempt</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Document Search Attempts">
                     <field name="search_date"/>
                     <field name="retrieval_item_id"/>
@@ -23,7 +24,8 @@
         <record id="document_search_attempt_view_form" model="ir.ui.view">
             <field name="name">document.search.attempt.view.form</field>
             <field name="model">document.search.attempt</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Document Search Attempt">
                     <sheet>
                         <group>
@@ -53,7 +55,8 @@
         <record id="document_search_attempt_view_search" model="ir.ui.view">
             <field name="name">document.search.attempt.view.search</field>
             <field name="model">document.search.attempt</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Document Search Attempts">
                     <field name="requested_file_name"/>
                     <field name="container_id"/>

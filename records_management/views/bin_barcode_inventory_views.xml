@@ -6,7 +6,8 @@
         <record id="view_bin_barcode_inventory_form" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.form</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Bin Barcode Inventory">
                     <header>
                         <button name="action_set_available" type="object" string="Set Available"
@@ -90,7 +91,8 @@
         <record id="view_bin_barcode_inventory_tree" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.tree</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Bin Barcode Inventory"
                       decoration-success="state == 'available'"
                       decoration-warning="state == 'in_use'"
@@ -119,7 +121,8 @@
         <record id="view_bin_barcode_inventory_kanban" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.kanban</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_small_column">
                     <field name="id"/>
                     <field name="barcode"/>
@@ -183,7 +186,8 @@
         <record id="view_bin_barcode_inventory_search" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.search</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Bin Barcode Inventory">
                     <field name="barcode" string="Barcode"/>
                     <field name="customer_id" string="Customer"/>
@@ -245,7 +249,8 @@
         <record id="view_shredding_bin_sequence_reset_wizard_form" model="ir.ui.view">
             <field name="name">shredding.bin.sequence.reset.wizard.form</field>
             <field name="model">shredding.bin.sequence.reset.wizard</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Reset Bin Sequence">
                     <div class="alert alert-warning" role="alert">
                         <strong>Warning:</strong> This action will reset the sequence number for new bin barcodes.

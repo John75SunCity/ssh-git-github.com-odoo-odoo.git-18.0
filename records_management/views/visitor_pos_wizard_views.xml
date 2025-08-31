@@ -7,6 +7,7 @@
     <record id="visitor_pos_wizard_view_form" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.form</field>
         <field name="model">visitor.pos.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Visitor POS Processing Wizard">
                 <header>
@@ -220,6 +221,7 @@
     <record id="visitor_pos_wizard_view_tree" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.tree</field>
         <field name="model">visitor.pos.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
                 <field name="wizard_start_time" string="Processing Date" widget="datetime"/>
@@ -241,6 +243,7 @@
     <record id="visitor_pos_wizard_view_search" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.search</field>
         <field name="model">visitor.pos.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Visitor POS Processing">
                 <field name="visitor_name" string="Visitor Name" filter_domain="[('visitor_name', 'ilike', self)]"/>
@@ -284,6 +287,7 @@
     <record id="visitor_pos_wizard_view_graph" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.graph</field>
         <field name="model">visitor.pos.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <graph string="Visitor POS Analytics" type="bar" sample="1">
                 <field name="wizard_start_time" type="row" interval="day"/>
@@ -297,6 +301,7 @@
     <record id="visitor_pos_wizard_view_pivot" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.pivot</field>
         <field name="model">visitor.pos.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <pivot string="Visitor POS Performance" sample="1">
                 <field name="pos_config_id" type="row"/>

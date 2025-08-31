@@ -6,6 +6,7 @@
     <record id="records_billing_config_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.view.tree</field>
         <field name="model">records.billing.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_billing_config_view_form" model="ir.ui.view">
         <field name="name">records.billing.config.view.form</field>
         <field name="model">records.billing.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records Billing Config">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_billing_config_view_search" model="ir.ui.view">
         <field name="name">records.billing.config.view.search</field>
         <field name="model">records.billing.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -60,11 +63,12 @@
     </record>
 
 <!-- Tree view for ENTERPRISE -->
-    
+
     <!-- Kanban view for Billing -->
     <record id="records_billing_config_view_kanban" model="ir.ui.view">
         <field name="name">records.billing.config.view.kanban</field>
         <field name="model">records.billing.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="billing_model" class="o_kanban_billing_config_dashboard">
                 <field name="name"/>
@@ -139,8 +143,9 @@
     <record id="records_billing_config_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.view.tree</field>
         <field name="model">records.billing.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree decoration-success="active == True and auto_billing == True" 
+            <tree decoration-success="active == True and auto_billing == True"
                   decoration-warning="billing_model == 'custom'"
                   decoration-info="payment_terms == 'net_30'">
                 <field name="name" string="💳 Configuration Name"/>
@@ -152,9 +157,9 @@
                 <field name="auto_billing" string="🤖 Auto Billing" widget="boolean_toggle"/>
                 <field name="active" string="🎯 Status" widget="boolean_toggle"/>
                 <field name="last_invoice_date" string="📄 Last Invoice"/>
-                <button name="action_generate_invoice" type="object" string="Invoice" 
+                <button name="action_generate_invoice" type="object" string="Invoice"
                         icon="fa-file-text" class="btn-link"/>
-                <button name="action_view_analytics" type="object" string="Analytics" 
+                <button name="action_view_analytics" type="object" string="Analytics"
                         icon="fa-bar-chart" class="btn-link"/>
             </tree>
         </field>
@@ -164,6 +169,7 @@
     <record id="records_billing_config_view_form" model="ir.ui.view">
         <field name="name">records.billing.config.view.form</field>
         <field name="model">records.billing.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -184,7 +190,7 @@
                         <button class="oe_stat_button" type="object" name="action_view_revenue" icon="fa-money">
                             <field string="Total Revenue" name="total_revenue" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-check-circle" 
+                        <button class="oe_stat_button" icon="fa-check-circle"
                                 invisible="not auto_billing">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">🤖</span>
@@ -192,7 +198,7 @@
                             </div>
                         </button>
                     </div>
-                    
+
                     <group>
                         <group string="💳 Billing Configuration">
                             <field name="name" placeholder="e.g., Standard Storage Billing"/>
@@ -207,7 +213,7 @@
                             <field name="minimum_charge"/>
                         </group>
                     </group>
-                    
+
                     <group>
                         <group string="📅 Billing Schedule">
                             <field name="billing_frequency"/>
@@ -222,7 +228,7 @@
                             <field name="grace_period_days"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="💰 Rate Structure" name="rates">
                             <field name="billing_rate_ids" mode="list">
@@ -268,14 +274,14 @@
                         <page string="📄 Invoice Generation" name="invoicing">
                             <group>
                                 <group string="📝 Invoice Settings">
-                                    <field name="invoice_template"/>
+                                    <field name="invoice_template_id"/>
                                     <field name="consolidate_charges"/>
                                     <field name="prorate_monthly"/>
                                     <field name="include_usage_details"/>
                                 </group>
                                 <group string="📧 Delivery Settings">
                                     <field name="send_invoice_email"/>
-                                    <field name="invoice_email_template"/>
+                                    <field name="invoice_email_template_id"/>
                                     <field name="cc_accounting"/>
                                     <field name="reminder_schedule"/>
                                 </group>
@@ -379,9 +385,10 @@
     <record id="records_billing_config_view_calendar" model="ir.ui.view">
         <field name="name">records.billing.config.view.calendar</field>
         <field name="model">records.billing.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
-            <calendar string="📅 Billing Schedule" 
-                      date_start="next_billing_date" 
+            <calendar string="📅 Billing Schedule"
+                      date_start="next_billing_date"
                       color="billing_model">
                 <field name="name"/>
                 <field name="partner_id"/>
@@ -396,30 +403,31 @@
     <record id="records_billing_config_view_search" model="ir.ui.view">
         <field name="name">records.billing.config.view.search</field>
         <field name="model">records.billing.config</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Configuration"/>
                 <field name="partner_id"/>
                 <field name="billing_model"/>
                 <field name="service_category"/>
-                
+
                 <filter string="🟢 Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="⭕ Inactive" name="inactive" domain="[('active', '=', False)]"/>
-                
+
                 <separator/>
                 <filter string="🤖 Auto Billing" name="auto_billing" domain="[('auto_billing', '=', True)]"/>
                 <filter string="📋 Manual Billing" name="manual_billing" domain="[('auto_billing', '=', False)]"/>
-                
+
                 <separator/>
                 <filter string="📅 Monthly" name="monthly" domain="[('billing_frequency', '=', 'monthly')]"/>
                 <filter string="📆 Quarterly" name="quarterly" domain="[('billing_frequency', '=', 'quarterly')]"/>
                 <filter string="🗓️ Annual" name="annual" domain="[('billing_frequency', '=', 'annual')]"/>
-                
+
                 <separator/>
                 <filter string="💰 High Value (&amp;gt;$1000)" name="high_value" domain="[('base_rate', '&amp;gt;', 1000)]"/>
-                <filter string="⚡ Due This Week" name="due_this_week" 
+                <filter string="⚡ Due This Week" name="due_this_week"
                         domain="[('next_billing_date', '&amp;gt;=', context_today()), ('next_billing_date', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                
+
                 <group expand="0" string="📊 Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Billing Model" name="group_by_model" context="{'group_by': 'billing_model'}"/>

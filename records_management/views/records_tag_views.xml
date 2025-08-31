@@ -7,6 +7,7 @@
     <record id="records_tag_view_tree" model="ir.ui.view">
         <field name="name">records.tag.view.tree</field>
         <field name="model">records.tag</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Records Tags">
                 <field name="name"/>
@@ -19,6 +20,7 @@
     <record id="records_tag_view_form" model="ir.ui.view">
         <field name="name">records.tag.view.form</field>
         <field name="model">records.tag</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Record Tag">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_tag_view_search" model="ir.ui.view">
         <field name="name">records.tag.view.search</field>
         <field name="model">records.tag</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Search Records Tags">
                 <field name="name"/>

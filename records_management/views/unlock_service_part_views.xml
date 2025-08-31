@@ -6,6 +6,7 @@
     <record id="unlock_service_part_view_tree" model="ir.ui.view">
         <field name="name">unlock.service.part.view.tree</field>
         <field name="model">unlock.service.part</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="unlock_service_part_view_form" model="ir.ui.view">
         <field name="name">unlock.service.part.view.form</field>
         <field name="model">unlock.service.part</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Unlock Service Part">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="unlock_service_part_view_search" model="ir.ui.view">
         <field name="name">unlock.service.part.view.search</field>
         <field name="model">unlock.service.part</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

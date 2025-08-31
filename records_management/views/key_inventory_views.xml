@@ -6,7 +6,8 @@
         <record id="key_inventory_view_tree" model="ir.ui.view">
             <field name="name">key.inventory.view.tree</field>
             <field name="model">key.inventory</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Key Inventory">
                     <field name="name"/>
                     <field name="serial_number"/>
@@ -23,7 +24,8 @@
         <record id="key_inventory_view_form" model="ir.ui.view">
             <field name="name">key.inventory.view.form</field>
             <field name="model">key.inventory</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Key Inventory">
                     <sheet>
                         <group>
@@ -45,7 +47,8 @@
         <record id="key_inventory_view_search" model="ir.ui.view">
             <field name="name">key.inventory.view.search</field>
             <field name="model">key.inventory</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Key Inventory">
                     <field name="name"/>
                     <field name="serial_number"/>

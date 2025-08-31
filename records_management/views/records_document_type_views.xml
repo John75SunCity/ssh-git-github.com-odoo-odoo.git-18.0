@@ -7,6 +7,7 @@
     <record id="records_document_type_view_tree" model="ir.ui.view">
         <field name="name">records.document.type.view.tree</field>
         <field name="model">records.document.type</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree string="Document Types">
                 <field name="sequence"/>
@@ -23,6 +24,7 @@
     <record id="records_document_type_view_form" model="ir.ui.view">
         <field name="name">records.document.type.view.form</field>
         <field name="model">records.document.type</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Document Type">
                 <header>
@@ -70,6 +72,7 @@
     <record id="records_document_type_view_kanban" model="ir.ui.view">
         <field name="name">records.document.type.view.kanban</field>
         <field name="model">records.document.type</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="category" class="o_kanban_document_type">
                 <field name="name"/>
@@ -112,6 +115,7 @@
     <record id="records_document_type_view_search" model="ir.ui.view">
         <field name="name">records.document.type.view.search</field>
         <field name="model">records.document.type</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search string="Document Types">
                 <field name="name"/>

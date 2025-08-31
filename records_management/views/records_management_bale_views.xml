@@ -6,6 +6,7 @@
     <record id="records_management_bale_view_tree" model="ir.ui.view">
         <field name="name">records_management.bale.view.tree</field>
         <field name="model">records_management.bale</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_management_bale_view_form" model="ir.ui.view">
         <field name="name">records_management.bale.view.form</field>
         <field name="model">records_management.bale</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records_management Bale">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_management_bale_view_search" model="ir.ui.view">
         <field name="name">records_management.bale.view.search</field>
         <field name="model">records_management.bale</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

@@ -6,6 +6,7 @@
     <record id="work_order_bin_assignment_wizard_view_tree" model="ir.ui.view">
         <field name="name">work.order.bin.assignment.wizard.view.tree</field>
         <field name="model">work.order.bin.assignment.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="work_order_bin_assignment_wizard_view_form" model="ir.ui.view">
         <field name="name">work.order.bin.assignment.wizard.view.form</field>
         <field name="model">work.order.bin.assignment.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Work Order Bin Assignment Wizard">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="work_order_bin_assignment_wizard_view_search" model="ir.ui.view">
         <field name="name">work.order.bin.assignment.wizard.view.search</field>
         <field name="model">work.order.bin.assignment.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

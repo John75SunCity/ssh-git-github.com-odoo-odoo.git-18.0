@@ -6,6 +6,7 @@
     <record id="wizard_template_view_tree" model="ir.ui.view">
         <field name="name">wizard.template.view.tree</field>
         <field name="model">wizard.template</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="wizard_template_view_form" model="ir.ui.view">
         <field name="name">wizard.template.view.form</field>
         <field name="model">wizard.template</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Wizard Template">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="wizard_template_view_search" model="ir.ui.view">
         <field name="name">wizard.template.view.search</field>
         <field name="model">wizard.template</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

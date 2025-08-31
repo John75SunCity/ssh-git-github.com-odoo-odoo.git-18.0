@@ -6,7 +6,8 @@
         <record id="records_container_content_view_tree" model="ir.ui.view">
             <field name="name">container.content.view.tree</field>
             <field name="model">container.content</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Container Content">
                     <field name="name"/>
                     <field name="container_id"/>
@@ -25,7 +26,8 @@
         <record id="records_container_content_view_form" model="ir.ui.view">
             <field name="name">container.content.view.form</field>
             <field name="model">container.content</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Container Content">
                     <sheet>
                         <group>
@@ -54,7 +56,8 @@
         <record id="records_container_content_view_search" model="ir.ui.view">
             <field name="name">container.content.view.search</field>
             <field name="model">container.content</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Container Content">
                     <field name="name"/>
                     <field name="container_id"/>

@@ -8,7 +8,8 @@
 <record id="system_flowchart_wizard_view_welcome" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.welcome</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <form string="System Flowchart - Welcome">
             <header>
                 <button name="action_next_step" string="Get Started" type="object" class="btn-primary"/>
@@ -182,7 +183,8 @@ System Overview</h6>
 <record id="system_flowchart_wizard_view_configure" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.configure</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <form string="System Flowchart - Configure">
             <header>
                 <button name="action_previous_step" string="Back" type="object"/>
@@ -355,7 +357,8 @@ System Overview</h6>
 <record id="system_flowchart_wizard_view_preview" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.preview</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <form string="System Flowchart - Preview">
             <header>
                 <button name="action_previous_step" string="Back" type="object"/>
@@ -555,7 +558,8 @@ Quick Actions</h6>
 <record id="system_flowchart_wizard_view_complete" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.complete</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <form string="System Flowchart - Complete">
             <header>
 <button name="action_open_flowchart" string="Open Interactive Flowchart" type="object" class="btn-primary btn-lg"/>
@@ -725,7 +729,8 @@ Interactive Tutorial Enabled</h6>
 <record id="system_flowchart_wizard_view_form" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.form</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
 <form string="System Architecture Flowchart Configuration">
     <header>
 <button name="action_previous_step" string="← Back" type="object" attrs="{'invisible': [('step', '=', 'welcome')]}" class="btn btn-secondary"/>

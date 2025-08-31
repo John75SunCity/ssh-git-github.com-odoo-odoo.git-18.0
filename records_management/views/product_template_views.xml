@@ -7,6 +7,7 @@
     <record id="product_template_view_kanban" model="ir.ui.view">
         <field name="name">product.template.view.kanban</field>
         <field name="model">product.template</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="categ_id" class="o_kanban_product_template_dashboard">
                 <field name="name"/>
@@ -98,6 +99,7 @@
     <record id="product_template_view_tree" model="ir.ui.view">
         <field name="name">product.template.view.tree</field>
         <field name="model">product.template</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
                 <field name="name" string="💼 Product Name"/>
@@ -120,6 +122,7 @@
     <record id="product_template_view_form" model="ir.ui.view">
         <field name="name">product.template.view.form</field>
         <field name="model">product.template</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -308,6 +311,7 @@
     <record id="product_template_view_search" model="ir.ui.view">
         <field name="name">product.template.view.search</field>
         <field name="model">product.template</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Product"/>

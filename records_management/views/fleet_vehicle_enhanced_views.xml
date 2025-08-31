@@ -7,6 +7,7 @@
         <field name="name">fleet.vehicle.view.form.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 
             <!-- Add Records Management stat buttons -->
@@ -79,6 +80,7 @@
         <field name="name">fleet.vehicle.view.tree.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 
             <!-- Add records-specific columns -->
@@ -97,6 +99,7 @@
         <field name="name">fleet.vehicle.view.kanban.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban"/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 
             <!-- Add records information to kanban cards -->
@@ -129,6 +132,7 @@
         <field name="name">fleet.vehicle.view.search.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 
             <!-- Add search fields for records -->

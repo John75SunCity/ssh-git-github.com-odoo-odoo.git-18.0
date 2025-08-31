@@ -6,6 +6,7 @@
     <record id="records_customer_billing_profile_view_tree" model="ir.ui.view">
         <field name="name">records.customer.billing.profile.view.tree</field>
         <field name="model">records.customer.billing.profile</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_customer_billing_profile_view_form" model="ir.ui.view">
         <field name="name">records.customer.billing.profile.view.form</field>
         <field name="model">records.customer.billing.profile</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records.Customer.Billing.Profile">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_customer_billing_profile_view_search" model="ir.ui.view">
         <field name="name">records.customer.billing.profile.view.search</field>
         <field name="model">records.customer.billing.profile</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

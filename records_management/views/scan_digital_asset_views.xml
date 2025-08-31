@@ -6,6 +6,7 @@
     <record id="scan_digital_asset_view_tree" model="ir.ui.view">
         <field name="name">scan.digital.asset.view.tree</field>
         <field name="model">scan.digital.asset</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="scan_digital_asset_view_form" model="ir.ui.view">
         <field name="name">scan.digital.asset.view.form</field>
         <field name="model">scan.digital.asset</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Scan.Digital.Asset">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="scan_digital_asset_view_search" model="ir.ui.view">
         <field name="name">scan.digital.asset.view.search</field>
         <field name="model">scan.digital.asset</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

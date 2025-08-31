@@ -5,7 +5,8 @@
         <record id="customer_negotiated_rates_view_tree" model="ir.ui.view">
             <field name="name">customer.negotiated.rate.view.tree</field>
             <field name="model">customer.negotiated.rates</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree decoration-info="state == 'draft'" decoration-warning="state == 'negotiating'" decoration-success="state == 'active'" decoration-danger="state == 'expired'" decoration-muted="state == 'cancelled'">
                     <field name="partner_id"/>
                     <field name="name"/>
@@ -25,7 +26,8 @@
         <record id="customer_negotiated_rates_view_form" model="ir.ui.view">
             <field name="name">customer.negotiated.rate.view.form</field>
             <field name="model">customer.negotiated.rates</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Customer Negotiated Rates">
                     <header>
                         <button name="action_submit_for_negotiation" string="Submit for Negotiation" type="object" class="oe_highlight" states="draft"/>
@@ -142,7 +144,8 @@
         <record id="customer_negotiated_rates_view_search" model="ir.ui.view">
             <field name="name">customer.negotiated.rate.view.search</field>
             <field name="model">customer.negotiated.rates</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Customer Negotiated Rates">
                     <field name="name"/>
                     <field name="partner_id"/>

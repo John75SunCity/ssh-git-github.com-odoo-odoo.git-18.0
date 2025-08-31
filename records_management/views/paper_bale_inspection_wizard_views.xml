@@ -6,6 +6,7 @@
     <record id="paper_bale_inspection_wizard_view_tree" model="ir.ui.view">
         <field name="name">paper.bale.inspection.wizard.view.tree</field>
         <field name="model">paper.bale.inspection.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="paper_bale_inspection_wizard_view_form" model="ir.ui.view">
         <field name="name">paper.bale.inspection.wizard.view.form</field>
         <field name="model">paper.bale.inspection.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Paper Bale Inspection Wizard">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="paper_bale_inspection_wizard_view_search" model="ir.ui.view">
         <field name="name">paper.bale.inspection.wizard.view.search</field>
         <field name="model">paper.bale.inspection.wizard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

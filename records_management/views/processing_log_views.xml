@@ -6,6 +6,7 @@
     <record id="processing_log_view_tree" model="ir.ui.view">
         <field name="name">processing.log.view.tree</field>
         <field name="model">processing.log</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="processing_log_view_form" model="ir.ui.view">
         <field name="name">processing.log.view.form</field>
         <field name="model">processing.log</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Processing Log">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="processing_log_view_search" model="ir.ui.view">
         <field name="name">processing.log.view.search</field>
         <field name="model">processing.log</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

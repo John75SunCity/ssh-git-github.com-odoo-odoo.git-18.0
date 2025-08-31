@@ -6,6 +6,7 @@
     <record id="records_inventory_dashboard_view_tree" model="ir.ui.view">
         <field name="name">records.inventory.dashboard.view.tree</field>
         <field name="model">records.inventory.dashboard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="records_inventory_dashboard_view_form" model="ir.ui.view">
         <field name="name">records.inventory.dashboard.view.form</field>
         <field name="model">records.inventory.dashboard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Records.Inventory.Dashboard">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="records_inventory_dashboard_view_search" model="ir.ui.view">
         <field name="name">records.inventory.dashboard.view.search</field>
         <field name="model">records.inventory.dashboard</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

@@ -6,7 +6,8 @@
         <record id="fsm_notification_manager_view_tree" model="ir.ui.view">
             <field name="name">fsm.notification.manager.view.tree</field>
             <field name="model">fsm.notification.manager</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="FSM Notification Manager">
                     name
                     company_id
@@ -19,7 +20,8 @@
         <record id="fsm_notification_manager_view_form" model="ir.ui.view">
             <field name="name">fsm.notification.manager.view.form</field>
             <field name="model">fsm.notification.manager</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="FSM Notification Manager">
                     <sheet>
                         <group>
@@ -36,7 +38,8 @@
         <record id="fsm_notification_manager_view_search" model="ir.ui.view">
             <field name="name">fsm.notification.manager.view.search</field>
             <field name="model">fsm.notification.manager</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search FSM Notification Manager">
                     <!-- Add search fields here -->
                 </search>

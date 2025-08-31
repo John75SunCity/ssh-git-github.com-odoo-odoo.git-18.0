@@ -5,6 +5,7 @@
 <record id="base_rate_view_tree" model="ir.ui.view">
     <field name="name">base.rate.view.tree</field>
         <field name="model">base.rate</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -16,6 +17,7 @@
 <record id="base_rate_view_form" model="ir.ui.view">
     <field name="name">base.rate.view.form</field>
         <field name="model">base.rate</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Base Rate">
                 <sheet>
@@ -34,6 +36,7 @@
 <record id="base_rate_view_search" model="ir.ui.view">
     <field name="name">base.rate.view.search</field>
         <field name="model">base.rate</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -63,7 +66,8 @@
         <record id="base_rates_view_tree" model="ir.ui.view">
             <field name="name">base.rate.view.tree</field>
             <field name="model">base.rate</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree decoration-info="state == 'draft'" decoration-success="state == 'active'" decoration-warning="state == 'confirmed'" decoration-muted="state in ['superseded', 'expired', 'cancelled']">
                     <field name="name"/>
                     <field name="version"/>
@@ -83,7 +87,8 @@
         <record id="base_rates_view_form" model="ir.ui.view">
             <field name="name">base.rate.view.form</field>
             <field name="model">base.rate</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Base Rates">
                     <header>
                         <button name="action_activate" string="Activate Rate" type="object" class="oe_highlight" states="draft"/>
@@ -245,7 +250,8 @@
         <record id="revenue_forecaster_view_form" model="ir.ui.view">
             <field name="name">revenue.forecaster.view.form</field>
             <field name="model">revenue.forecaster</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Revenue Forecaster">
                     <header>
                         <button name="action_run_forecast" string="🚀 Run Forecast Analysis" type="object" class="oe_highlight" attrs="{'invisible': [('analysis_complete', '=', True)]}"/>
@@ -368,7 +374,8 @@
         <record id="rate_change_confirmation_wizard_view_form" model="ir.ui.view">
             <field name="name">rate.change.confirmation.wizard.view.form</field>
             <field name="model">rate.change.confirmation.wizard</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Rate Change Implementation">
                     <header>
                         <button name="action_approve_changes" string="✅ Approve Changes" type="object" class="oe_highlight" attrs="{'invisible': [('approved_by', '!=', False)]}" groups="records_management.group_records_manager"/>

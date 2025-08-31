@@ -6,6 +6,7 @@
     <record id="partner_bin_key_view_tree" model="ir.ui.view">
         <field name="name">partner.bin.key.view.tree</field>
         <field name="model">partner.bin.key</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="partner_bin_key_view_form" model="ir.ui.view">
         <field name="name">partner.bin.key.view.form</field>
         <field name="model">partner.bin.key</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Partner.Bin.Key">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="partner_bin_key_view_search" model="ir.ui.view">
         <field name="name">partner.bin.key.view.search</field>
         <field name="model">partner.bin.key</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

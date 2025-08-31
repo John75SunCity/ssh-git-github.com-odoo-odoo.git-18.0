@@ -6,6 +6,7 @@
     <record id="view_shredding_service_event_list" model="ir.ui.view">
         <field name="name">view.shredding.service.event.list</field>
         <field name="model">shredding.service.event</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="view_shredding_service_event_form" model="ir.ui.view">
         <field name="name">view.shredding.service.event.form</field>
         <field name="model">shredding.service.event</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Shredding Service Event">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="view_shredding_service_event_search" model="ir.ui.view">
         <field name="name">view.shredding.service.event.search</field>
         <field name="model">shredding.service.event</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

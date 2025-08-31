@@ -6,7 +6,8 @@
         <record id="portal_request_line_view_tree" model="ir.ui.view">
             <field name="name">portal.request.line.view.tree</field>
             <field name="model">portal.request.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Portal Request Line">
                     <field name="request_id"/>
                     <field name="item_type"/>
@@ -25,7 +26,8 @@
         <record id="portal_request_line_view_form" model="ir.ui.view">
             <field name="name">portal.request.line.view.form</field>
             <field name="model">portal.request.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Portal Request Line">
                     <sheet>
                         <group>
@@ -48,7 +50,8 @@
         <record id="portal_request_line_view_search" model="ir.ui.view">
             <field name="name">portal.request.line.view.search</field>
             <field name="model">portal.request.line</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search string="Search Portal Request Line">
                     <field name="description"/>
                     <field name="request_id"/>

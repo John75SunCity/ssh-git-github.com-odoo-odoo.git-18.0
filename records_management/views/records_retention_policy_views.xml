@@ -5,7 +5,8 @@
         <record id="records_retention_policy_view_tree" model="ir.ui.view">
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <tree string="Retention Policies">
                     <field name="name"/>
                     <field name="retention_years"/>
@@ -22,7 +23,8 @@
         <record id="records_retention_policy_view_form" model="ir.ui.view">
             <field name="name">records.retention.policy.view.form</field>
             <field name="model">records.retention.policy</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <form string="Retention Policy">
                     <header>
                         <button name="action_activate_policy" string="Activate" type="object" class="btn-primary" invisible="policy_status != 'pending'"/>
@@ -102,7 +104,8 @@
         <record id="records_retention_policy_view_search" model="ir.ui.view">
             <field name="name">records.retention.policy.view.search</field>
             <field name="model">records.retention.policy</field>
-            <field name="arch" type="xml">
+            <field name="type">tree</field>
+        <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
                     <field name="policy_type"/>

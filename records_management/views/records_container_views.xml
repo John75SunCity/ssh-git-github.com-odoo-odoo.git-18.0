@@ -7,6 +7,7 @@
     <record id="records_container_view_kanban" model="ir.ui.view">
         <field name="name">records.container.view.kanban</field>
         <field name="model">records.container</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_container_dashboard">
                 <field name="name"/>
@@ -96,6 +97,7 @@
     <record id="records_container_view_tree" model="ir.ui.view">
         <field name="name">records.container.view.tree</field>
         <field name="model">records.container</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
                 <header>
@@ -122,6 +124,7 @@
     <record id="records_container_view_form" model="ir.ui.view">
         <field name="name">records.container.view.form</field>
         <field name="model">records.container</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -201,6 +204,7 @@
     <record id="records_container_view_calendar" model="ir.ui.view">
         <field name="name">records.container.view.calendar</field>
         <field name="model">records.container</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <calendar string="📅 Container Storage Calendar" date_start="create_date" date_stop="destruction_date" color="partner_id">
                 <field name="name"/>
@@ -214,6 +218,7 @@
     <record id="records_container_view_graph" model="ir.ui.view">
         <field name="name">records.container.view.graph</field>
         <field name="model">records.container</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <graph string="📊 Container Analytics">
                 <field name="partner_id" type="row"/>
@@ -226,6 +231,7 @@
     <record id="records_container_view_search" model="ir.ui.view">
         <field name="name">records.container.view.search</field>
         <field name="model">records.container</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Container" filter_domain="['|', ('name', 'ilike', self), ('barcode', 'ilike', self)]"/>

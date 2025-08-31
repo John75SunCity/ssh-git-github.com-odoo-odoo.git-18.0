@@ -6,6 +6,7 @@
     <record id="serial_number_view_tree" model="ir.ui.view">
         <field name="name">serial_number.view.tree</field>
         <field name="model">serial_number</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,6 +18,7 @@
     <record id="serial_number_view_form" model="ir.ui.view">
         <field name="name">serial_number.view.form</field>
         <field name="model">serial_number</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Serial Number">
                 <sheet>
@@ -35,6 +37,7 @@
     <record id="serial_number_view_search" model="ir.ui.view">
         <field name="name">serial_number.view.search</field>
         <field name="model">serial_number</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

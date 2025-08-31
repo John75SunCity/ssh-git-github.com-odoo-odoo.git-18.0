@@ -5,6 +5,7 @@
     <record id="portal_request_view_kanban" model="ir.ui.view">
         <field name="name">portal.request.view.kanban</field>
         <field name="model">portal.request</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <kanban default_group_by="state" class="o_kanban_portal_request">
                 <field name="name"/>
@@ -61,6 +62,7 @@
     <record id="portal_request_view_tree" model="ir.ui.view">
         <field name="name">portal.request.view.tree</field>
         <field name="model">portal.request</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
 <tree decoration-muted="not active" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
                 <field name="name"/>
@@ -81,6 +83,7 @@
     <record id="portal_request_view_form" model="ir.ui.view">
         <field name="name">portal.request.view.form</field>
         <field name="model">portal.request</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -153,6 +156,7 @@
     <record id="portal_request_view_search" model="ir.ui.view">
         <field name="name">portal.request.view.search</field>
         <field name="model">portal.request</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
@@ -225,7 +229,8 @@
 <record id="portal_request_view_tree" model="ir.ui.view">
     <field name="name">portal.request.view.tree</field>
     <field name="model">portal.request</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <tree decoration-muted="not active" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
             <field name="name"/>
             <field name="partner_id" optional="show"/>
@@ -244,7 +249,8 @@
 <record id="portal_request_view_form" model="ir.ui.view">
     <field name="name">portal.request.view.form</field>
     <field name="model">portal.request</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <form>
             <header>
                 <button name="action_submit" string="Submit Request" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
@@ -328,7 +334,8 @@
 <record id="portal_request_view_kanban" model="ir.ui.view">
     <field name="name">portal.request.view.kanban</field>
     <field name="model">portal.request</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_small_column o_kanban_portal_request">
             <field name="priority"/>
             <field name="partner_id"/>
@@ -395,7 +402,8 @@
 <record id="portal_request_view_search" model="ir.ui.view">
     <field name="name">portal.request.view.search</field>
     <field name="model">portal.request</field>
-    <field name="arch" type="xml">
+    <field name="type">tree</field>
+        <field name="arch" type="xml">
         <search>
             <field name="name" string="Request Name" filter_domain="[('name', 'ilike', self)]"/>
             <field name="partner_id" string="Customer"/>
