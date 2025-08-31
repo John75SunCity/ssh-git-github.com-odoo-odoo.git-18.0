@@ -71,10 +71,11 @@ class PaperModelBale(models.Model):
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
-    @api.model
-    def create(self, vals):
-        if not vals.get("name"):
-            vals["name"] = self.env["ir.sequence"].next_by_code("paper.model_bale") or "BALE/%s" % vals.get(
-                "bale_number", "NEW"
-            )
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("name"):
+                vals["name"] = self.env["ir.sequence"].next_by_code("paper.model_bale") or "BALE/%s" % vals.get(
+                    "bale_number", "NEW"
+                )
+        return super().create(vals_list)

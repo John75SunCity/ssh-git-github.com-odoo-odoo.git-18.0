@@ -47,7 +47,7 @@ class ShredModelBin(models.Model):
     # ============================================================================
     _sql_constraints = [
         ("barcode_unique", "unique(barcode)", "Barcode must be unique across all bins"),
-        ("barcode_length", "length(barcode) = 10", "Barcode must be exactly 10 digits"),
+        ("barcode_length", "length(barcode) >= 10", "Barcode must be at least 10 digits"),
     ]
 
     @api.constrains("barcode")
@@ -60,8 +60,8 @@ class ShredModelBin(models.Model):
                     raise ValidationError(_("Barcode must contain only digits"))
 
                 # Check length using Odoo style
-                if record.barcode and len(record.barcode) != 10:
-                    raise ValidationError(_("Barcode must be exactly 10 digits long"))
+                if record.barcode and len(record.barcode) < 10:
+                    raise ValidationError(_("Barcode must be at least 10 digits long"))
 
     @api.onchange("barcode")
     def _onchange_barcode(self):
@@ -79,8 +79,9 @@ class ShredModelBin(models.Model):
             self.barcode = self.barcode_inventory_id.barcode
             # Could also populate capacity, material_type from inventory record
 
-    @api.model
-    def create(self, vals):
-        if not vals.get("name") and vals.get("barcode"):
-            vals["name"] = f"BIN-{vals['barcode']}"
-        return super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if not vals.get("name") and vals.get("barcode"):
+                vals["name"] = f"BIN-{vals['barcode']}"
+        return super().create(vals_list)
