@@ -755,10 +755,11 @@ class AccountMoveLine(models.Model):
         """Generate data for billing reports."""
         self.ensure_one()
         return {
-            'invoice_line_id': self.id,
-            'invoice_number': self.move_id.name if self.move_id else '',
-            'customer': self.partner_id.name if self.partner_id else '',
-            'service_type': self.records_service_type,
-            'service_date': self.pickup_date or self.move_id.invoice_date,
-            'container_count': self.container_count,
-            'weight_processed': self.shredding_weight_lbs,
+            "invoice_line_id": self.id,
+            "invoice_number": self.move_id.name if self.move_id else "",
+            "customer": self.partner_id.name if self.partner_id else "",
+            "service_type": self.records_service_type,
+            "service_date": self.pickup_date or self.move_id.invoice_date,
+            "container_count": self.container_count,
+            "weight_processed": self.shredding_weight_lbs,
+        }
