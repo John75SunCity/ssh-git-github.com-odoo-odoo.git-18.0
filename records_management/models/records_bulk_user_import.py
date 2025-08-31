@@ -3,7 +3,7 @@ import csv
 from io import StringIO
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError, AccessError
 
 
 class RecordsBulkUserImport(models.Model):
@@ -15,7 +15,12 @@ class RecordsBulkUserImport(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string='Import Batch Name', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    csv_file = fields.Binary(string='CSV File', required=True, help="Upload a CSV file with columns: name, login, email")
+    csv_file = fields.Binary(
+        string="CSV File",
+        required=True,
+        # Updated: Clarify expected columns and behavior for consistency with code logic
+        help="Upload a CSV file with columns: name, email. The 'login' field will be automatically set to the email value.",
+    )
     filename = fields.Char(string='Filename')
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -23,6 +28,12 @@ class RecordsBulkUserImport(models.Model):
         ('error', 'Error'),
     ], string='Status', default='draft', readonly=True)
     log = fields.Text(string="Import Log", readonly=True)
+    # New field for configurable group assignment
+    default_group_ids = fields.Many2many(
+        "res.groups",
+        string="Default User Groups",
+        help="Groups to assign to newly created users. If empty, defaults to 'base.group_user'.",
+    )
 
     # ============================================================================
     # ORM OVERRIDES
@@ -35,68 +46,100 @@ class RecordsBulkUserImport(models.Model):
         return super().create(vals_list)
 
     # ============================================================================
+    # CONSTRAINTS
+    # ============================================================================
+    @api.constrains("csv_file")
+    def _check_csv_file(self):
+        """Validate CSV file format before processing."""
+        if self.csv_file:
+            try:
+                content = base64.b64decode(self.csv_file).decode("utf-8")
+                csv_reader = csv.reader(StringIO(content))
+                headers = next(csv_reader, None)
+                # Updated: Make error message more descriptive and consistent with help text
+                if not headers or len(headers) < 2:  # Assume at least name and email
+                    raise ValidationError(
+                        _(
+                            "Invalid CSV format. Expected at least 2 columns with headers like 'name,email'. The 'login' field will be set to the email value."
+                        )
+                    )
+            except Exception as exc:
+                raise ValidationError(_("Unable to parse CSV file. Ensure it's UTF-8 encoded and properly formatted as CSV.")) from exc
+
+    # ============================================================================
     # ACTION METHODS
     # ============================================================================
     def action_import_users(self):
-        """
-        Parses the uploaded CSV file and creates new users.
-        Expected CSV header: name,login,email
-        """
-        self.ensure_one()
+        """Import users from CSV with enhanced error handling and security."""
+        self.ensure_one()  # Added: Odoo standard for action methods
+        if not self.env.user.has_group("records_management.group_records_manager"):
+            raise AccessError(_("Only managers can perform bulk user imports."))
+
         if not self.csv_file:
-            raise UserError(_("Please upload a CSV file to import."))
+            raise UserError(_("Please upload a CSV file."))
 
         log_lines = []
-        try:
-            # Decode the binary file content
-            decoded_file = base64.b64decode(self.csv_file).decode('utf-8')
-            csv_reader = csv.DictReader(StringIO(decoded_file))
+        content = base64.b64decode(self.csv_file).decode("utf-8")
+        csv_reader = csv.reader(StringIO(content))
+        headers = next(csv_reader, None)
 
-            if not all(key in csv_reader.fieldnames for key in ['name', 'login', 'email']):
-                raise UserError(_("CSV file must have the following headers: name, login, email"))
+        if not headers:
+            raise UserError(_("CSV file is empty or invalid."))
 
-            for row in csv_reader:
-                user_name = row.get('name')
-                user_login = row.get('login')
-                user_email = row.get('email')
+        # Assume CSV has columns: name, email, [optional: groups]
+        # Updated: Add comment for clarity on column handling
+        name_idx = headers.index("name") if "name" in headers else 0
+        email_idx = headers.index("email") if "email" in headers else 1
 
-                if not all([user_name, user_login, user_email]):
-                    log_lines.append(f"Skipping row due to missing data: {row}")
-                    continue
+        users_to_create = []
+        for row_num, row in enumerate(csv_reader, start=2):
+            if len(row) <= max(name_idx, email_idx):
+                log_lines.append(_("Row %d: Insufficient columns.", row_num))
+                continue
 
-                # Check if user already exists
-                if self.env['res.users'].search(['|', ('login', '=', user_login), ('email', '=', user_email)]):
-                    log_lines.append(f"User '{user_name}' with login '{user_login}' or email '{user_email}' already exists. Skipping.")
-                    continue
+            user_name = row[name_idx].strip()
+            user_email = row[email_idx].strip()
 
-                # Create the new user
-                self.env['res.users'].create({
-                    'name': user_name,
-                    'login': user_login,
-                    'email': user_email,
-                    # Add user to a default group if necessary
-                    'groups_id': [(6, 0, [self.env.ref('base.group_user').id])]
-                })
-                log_lines.append(f"Successfully created user: {user_name} ({user_login})")
+            if not user_name or not user_email:
+                log_lines.append(_("Row %d: Missing name or email.", row_num))
+                continue
 
-            self.write({
-                'state': 'done',
-                'log': "\n".join(log_lines)
-            })
-            self.message_post(body=_("User import completed successfully."))
+            # Prepare user data
+            # Note: 'login' is set to 'user_email' as per code logic (no separate 'login' column expected)
+            user_vals = {
+                "name": user_name,
+                "login": user_email,
+                "email": user_email,
+                "groups_id": [
+                    (
+                        6,
+                        0,
+                        self.default_group_ids.ids if self.default_group_ids else [self.env.ref("base.group_user").id],
+                    )
+                ],
+            }
+            users_to_create.append(user_vals)
 
-        except Exception as e:
-            self.write({
-                'state': 'error',
-                'log': f"An error occurred during import:\n{e}\n\n" + "\n".join(log_lines)
-            })
-            raise UserError(_("An error occurred during the import process. Please check the log for details. Error: %s") % e) from e
+        # Batch create users
+        if users_to_create:
+            try:
+                self.env["res.users"].create(users_to_create)
+                log_lines.append(_("Successfully imported %d users.", len(users_to_create)))
+                # Log to audit trail for compliance
+                self.env["naid.audit.log"].create(
+                    {
+                        "action": "bulk_user_import",
+                        "details": _("Imported %d users via CSV.", len(users_to_create)),
+                        "user_id": self.env.user.id,
+                    }
+                )
+            except Exception as e:
+                log_lines.append(_("Error creating users: %s", str(e)))
 
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': self._name,
-            'res_id': self.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
-
+        self.write(
+            {
+                "state": "done" if not any("Error" in line for line in log_lines) else "error",
+                "log": "\n".join(log_lines),
+            }
+        )
+        self.message_post(body=_("User import completed. Check log for details."))

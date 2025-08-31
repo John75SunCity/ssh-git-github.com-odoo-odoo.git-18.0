@@ -41,8 +41,8 @@ access_advanced_billing_contact_user,advanced.billing.contact.user,advanced.bill
 access_advanced_billing_contact_manager,advanced.billing.contact.manager,advanced.billing.contact,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_line_user,advanced.billing.line.user,advanced.billing.line,records_management.group_records_user,1,1,1,0
 access_advanced_billing_line_manager,advanced.billing.line.manager,advanced.billing.line,records_management.group_records_manager,1,1,1,1
-access_advanced_billing_profile_user,advanced.billing.profile.user,advanced.billing.profile,records_management.group_records_user,1,1,1,0
-access_advanced_billing_profile_manager,advanced.billing.profile.manager,advanced.billing.profile,records_management.group_records_manager,1,1,1,1
+access_advanced_billing_profile_user,advanced.billing.profile.user,model_advanced_billing_profile,records_management.group_records_user,1,1,1,0
+access_advanced_billing_profile_manager,advanced.billing.profile.manager,model_advanced_billing_profile,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_service_line_user,advanced.billing.service.line.user,advanced.billing.service.line,records_management.group_records_user,1,1,1,0
 access_advanced_billing_service_line_manager,advanced.billing.service.line.manager,advanced.billing.service.line,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_storage_line_user,advanced.billing.storage.line.user,advanced.billing.storage.line,records_management.group_records_user,1,1,1,0
@@ -309,8 +309,8 @@ access_records_audit_log_user,records.audit.log.user,records.audit.log,records_m
 access_records_audit_log_manager,records.audit.log.manager,records.audit.log,records_management.group_records_manager,1,1,1,1
 access_records_billing_config_user,records.billing.config.user,records.billing.config,records_management.group_records_user,1,1,1,0
 access_records_billing_config_manager,records.billing.config.manager,records.billing.config,records_management.group_records_manager,1,1,1,1
-access_records_bulk_user_import_user,records.bulk.user.import.user,records.bulk.user.import,records_management.group_records_user,1,1,1,0
-access_records_bulk_user_import_manager,records.bulk.user.import.manager,records.bulk.user.import,records_management.group_records_manager,1,1,1,1
+access_records_bulk_user_import_user,records.bulk.user.import.user,model_records_bulk_user_import,records_management.group_records_user,1,1,1,0
+access_records_bulk_user_import_manager,records.bulk.user.import.manager,model_records_bulk_user_import,records_management.group_records_manager,1,1,1,1
 access_records_category_user,records.category.user,records.category,records_management.group_records_user,1,1,1,0
 access_records_category_manager,records.category.manager,records.category,records_management.group_records_manager,1,1,1,1
 access_records_center_location_user,records.center.location.user,records.center.location,records_management.group_records_user,1,1,1,0

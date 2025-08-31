@@ -13,7 +13,7 @@ class RmModuleConfigurator(models.Model):
 
     Key Features:
     - Supports multiple configuration types: field visibility, feature toggles, parameters, and domain rules.
-    - Allows targeting specific models and fields for UI-related configurations.
+    - Allows targeting of specific models and fields for UI-related configurations.
     - Tracks modifications with auditing fields (e.g., last modified, modified by, modification count).
     - Enforces constraints to ensure data integrity, such as unique configuration keys per company
       and valid value types for parameters.
@@ -853,3 +853,7 @@ class RmModuleConfigurator(models.Model):
                 created_configs.append(self.create(config_data))
 
         return created_configs
+
+    bulk_user_import_enabled = fields.Boolean(
+        string="Enable Bulk User Import", default=True, help="Enable or disable bulk user import functionality."
+    )

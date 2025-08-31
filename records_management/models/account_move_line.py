@@ -97,13 +97,15 @@ class AccountMoveLine(models.Model):
 
     container_types = fields.Char(
         string="Container Types",
-        compute='_compute_container_types',
+        compute="_compute_container_types",
         store=True,
-        help="Types of containers involved (e.g., TYPE 01, TYPE 02)"
+        help="Comma-separated string of unique container type names involved (e.g., TYPE 01, TYPE 02)",
     )
 
     document_count = fields.Integer(
         string="Document Count",
+        compute="_compute_document_count",
+        store=True,
         help="Number of documents processed"
     )
 
@@ -395,6 +397,19 @@ class AccountMoveLine(models.Model):
             else:
                 line.shredding_weight_kg = 0.0
 
+    @api.depends("container_ids", "container_ids.document_count")
+    def _compute_document_count(self):
+        """Compute total document count from related containers."""
+        for line in self:
+            if line.container_ids:
+                line.document_count = sum(
+                    container.document_count
+                    for container in line.container_ids
+                    if hasattr(container, "document_count") and container.document_count
+                )
+            else:
+                line.document_count = 0
+
     # ============================================================================
     # ONCHANGE METHODS
     # ============================================================================
@@ -413,17 +428,26 @@ class AccountMoveLine(models.Model):
             else:
                 self.work_order_date = False
 
-            # Set service type based on work order type
-            if 'retrieval' in self.work_order_id._name:
-                self.records_service_type = 'retrieval'
-            elif 'destruction' in self.work_order_id._name or 'shredding' in self.work_order_id._name:
-                self.records_service_type = 'destruction'
-            elif 'pickup' in self.work_order_id._name:
-                self.records_service_type = 'pickup'
+            # Set service type based on work order model using a mapping
+            model_service_type_map = {
+                'document.retrieval.work.order': 'retrieval',
+                'shredding.service': 'destruction',
+                'pickup.request': 'pickup',
+            }
+            model_name = getattr(self.work_order_id, '_name', None)
+            self.records_service_type = model_service_type_map.get(model_name, False)
 
             # Set partner information
             if hasattr(work_order, 'partner_id') and work_order.partner_id:
                 self.partner_id = work_order.partner_id
+
+            # Set container_ids and container_count from work order if available
+            if hasattr(work_order, 'container_ids'):
+                self.container_ids = [(6, 0, work_order.container_ids.ids)]
+                self.container_count = len(work_order.container_ids)
+            else:
+                self.container_ids = [(5, 0, 0)]
+                self.container_count = 0
 
     @api.onchange('records_service_type')
     def _onchange_records_service_type(self):
@@ -434,6 +458,8 @@ class AccountMoveLine(models.Model):
             # Set default NAID audit requirement for certain services
             if self.records_service_type in ['destruction', 'retrieval']:
                 self.naid_audit_required = True
+            else:
+                self.naid_audit_required = False
 
     @api.onchange('destruction_service_id')
     def _onchange_destruction_service_id(self):
@@ -471,7 +497,7 @@ class AccountMoveLine(models.Model):
             'action_type': 'invoice_line_created',
             'user_id': self.env.user.id,
             'timestamp': fields.Datetime.now(),
-            'description': _("Invoice line created for %s") % self.records_service_type,
+            'description': _("Invoice line created for %s", self.records_service_type),
             'invoice_line_id': self.id,
             'amount': self.price_total,
             'naid_compliant': self.naid_compliant,
@@ -647,9 +673,6 @@ class AccountMoveLine(models.Model):
 
         return summary
 
-    # ============================================================================
-    # ORM METHODS
-    # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
         """Override create to set records management defaults"""
@@ -660,15 +683,18 @@ class AccountMoveLine(models.Model):
                     vals.get('destruction_service_id')):
                 vals['records_related'] = True
 
-                # Set NAID audit requirement for compliance services
-                if vals.get('records_service_type') in ['destruction', 'retrieval']:
-                    vals['naid_audit_required'] = True
+            # Set NAID audit requirement for compliance services
+            if vals.get('records_service_type') in ['destruction', 'retrieval']:
+                vals['naid_audit_required'] = True
+            elif 'naid_audit_required' not in vals:
+                # Explicitly set to False if not destruction/retrieval
+                vals['naid_audit_required'] = False
 
-        return super().create(vals_list)
+        return super(AccountMoveLine, self).create(vals_list)
 
     def write(self, vals):
         """Override write to maintain audit trails"""
-        result = super().write(vals)
+        result = super(AccountMoveLine, self).write(vals)
 
         # Create audit trail when certain fields change
         audit_trigger_fields = [
@@ -678,22 +704,20 @@ class AccountMoveLine(models.Model):
 
         if any(field in vals for field in audit_trigger_fields):
             for line in self.filtered('records_related'):
-                if line.naid_audit_required and not line.audit_trail_created:
+                if hasattr(line, 'action_create_audit_trail') and line.naid_audit_required and not line.audit_trail_created:
                     line.action_create_audit_trail()
 
         return result
 
     def name_get(self):
         result = []
+        service_type_dict = dict(self._fields['records_service_type'].selection)
         for line in self:
             if line.records_related and line.records_service_type:
-                service_type_label = dict(self._fields['records_service_type'].selection).get(line.records_service_type, '')
-                name = _("%s - %s") % (
-                    service_type_label,
-                    line.name or _('Service Line')
-                )
+                service_type_label = service_type_dict.get(line.records_service_type, '')
+                name = _("Service Line: %s", service_type_label)
                 if line.container_count:
-                    name += _(" (%s containers)") % line.container_count
+                    name = _("Service Line: %s (%s containers)", service_type_label, line.container_count)
             else:
                 name = line.name or _('Invoice Line')
             result.append((line.id, name))
@@ -738,9 +762,3 @@ class AccountMoveLine(models.Model):
             'service_date': self.pickup_date or self.move_id.invoice_date,
             'container_count': self.container_count,
             'weight_processed': self.shredding_weight_lbs,
-            'unit_rate': self.unit_rate,
-            'total_amount': self.price_total,
-            'naid_compliant': self.naid_compliant,
-            'audit_trail_created': self.audit_trail_created,
-            'customer_satisfaction': self.customer_satisfaction_rating,
-        }

@@ -79,5 +79,28 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <!-- List view for advanced.billing.profile -->
+        <record id="advanced_billing_profile_view_list" model="ir.ui.view">
+            <field name="name">advanced.billing.profile.view.list</field>
+            <field name="model">advanced.billing.profile</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="primary_contact_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Search view for advanced.billing.profile -->
+        <record id="advanced_billing_profile_view_search" model="ir.ui.view">
+            <field name="name">advanced.billing.profile.view.search</field>
+            <field name="model">advanced.billing.profile</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
     </data>
 </odoo>

@@ -176,7 +176,7 @@ class BarcodeProduct(models.Model):
                 else:
                     pattern_parts.append("Mixed")
 
-                pattern_parts.append(_("Length: %s", length))
+                pattern_parts.append(_("Length: %s") % length)
                 record.barcode_pattern = " - ".join(pattern_parts)
             else:
                 record.barcode_pattern = ""
@@ -239,7 +239,7 @@ class BarcodeProduct(models.Model):
 
             valid_lengths = [5, 6, 7, 10, 14, 15]
             if length not in valid_lengths:
-                messages.append(_("Invalid length: %s (expected one of: %s)", length, ', '.join(map(str, valid_lengths))))
+                messages.append(_("Invalid length: %s (expected one of: %s)") % (length, ', '.join(map(str, valid_lengths))))
 
             if not re.match(r'^[A-Za-z0-9-]+$', barcode):
                 messages.append(_("Invalid characters found. Only letters, numbers, and hyphens are allowed."))
@@ -249,7 +249,7 @@ class BarcodeProduct(models.Model):
 
             existing = self.search([('barcode', '=', barcode), ('id', '!=', record.id or 0)])
             if existing:
-                messages.append(_("This barcode already exists for product: %s", existing.name))
+                messages.append(_("This barcode already exists for product: %s") % existing.name)
 
             record.is_valid = not messages
             record.validation_message = '; '.join(messages) if messages else _("Barcode is valid.")
@@ -272,9 +272,9 @@ class BarcodeProduct(models.Model):
     def _onchange_barcode(self):
         """Auto-populate fields when barcode changes."""
         if self.barcode:
-            self.barcode = self.barcode.strip().upper()
+            self.barcode = self.barcode.strip()  # Removed .upper() to preserve original casing
             if self.product_category == "container_box" and not self.container_type:
-                self.container_type = "type_01" # Default to most common type
+                self.container_type = "type_01"  # Default to most common type
 
     @api.onchange('product_category')
     def _onchange_product_category(self):
@@ -291,12 +291,12 @@ class BarcodeProduct(models.Model):
     def action_validate_barcode(self):
         """Manually trigger barcode validation and show a notification."""
         self.ensure_one()
-        self.is_valid = self._compute_is_valid() # Recompute
+        self._compute_is_valid()  # Recompute
         if self.is_valid:
             message = _("Barcode validation successful.")
             message_type = "success"
         else:
-            message = _("Barcode validation failed: %s", self.validation_message)
+            message = _("Barcode validation failed: %s") % self.validation_message
             message_type = "warning"
 
         return {
@@ -321,7 +321,7 @@ class BarcodeProduct(models.Model):
         elif self.product_category == "location":
             return self._create_location_record()
         else:
-            raise UserError(_("Record creation is not supported for this category: %s", self.product_category))
+            raise UserError(_("Record creation is not supported for this category: %s") % self.product_category)
 
     def action_activate(self):
         """Activate the barcode product."""
@@ -345,7 +345,7 @@ class BarcodeProduct(models.Model):
             raise UserError(_("A container type must be specified before creating a container record."))
 
         container_vals = {
-            "name": _("Container %s", self.barcode),
+            "name": _("Container %s") % self.barcode,
             "barcode": self.barcode,
             "container_type_id": self._get_container_type_id(),
             "created_from_barcode_id": self.id,
@@ -367,7 +367,7 @@ class BarcodeProduct(models.Model):
         """Private method to create a records.location from the barcode."""
         self.ensure_one()
         location_vals = {
-            "name": _("Location %s", self.barcode),
+            "name": _("Location %s") % self.barcode,
             "location_code": self.barcode,
             "created_from_barcode_id": self.id,
         }
@@ -416,7 +416,7 @@ class BarcodeProduct(models.Model):
             if record.barcode:
                 domain = [('barcode', '=', record.barcode), ('id', '!=', record.id)]
                 if self.search_count(domain) > 0:
-                    raise ValidationError(_("Barcode '%s' must be unique.", record.barcode))
+                    raise ValidationError(_("Barcode '%s' must be unique.") % record.barcode)
 
     @api.constrains('barcode', 'product_category')
     def _check_barcode_category_consistency(self):
@@ -431,6 +431,5 @@ class BarcodeProduct(models.Model):
                 expected_category = LENGTH_CATEGORY_MAP.get(length)
                 if expected_category and record.product_category != expected_category:
                     raise ValidationError(
-                        _("Barcode length %s suggests category '%s', but category '%s' is selected. Please correct the category or barcode.",
-                          length, expected_category, record.product_category)
+                        _("Barcode length %s suggests category '%s', but category '%s' is selected. Please correct the category or barcode.") % (length, expected_category, record.product_category)
                     )

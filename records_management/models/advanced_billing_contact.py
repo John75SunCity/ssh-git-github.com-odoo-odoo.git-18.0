@@ -82,7 +82,8 @@ class AdvancedBillingContact(models.Model):
 
     @api.model
     def _tz_get(self):
-        return [(x, x) for x in self.env['res.partner']._tz_get()]
+        # Simplified: directly use partner's timezone method
+        return self.env["res.partner"]._tz_get()
 
     @api.constrains('primary_contact')
     def _check_primary_contact(self):
@@ -104,23 +105,29 @@ class AdvancedBillingContact(models.Model):
         """Auto-set primary contact if none exists"""
         contacts = super().create(vals_list)
         for contact in contacts:
-            if not contact.billing_profile_id.primary_contact_id:
+            # Defensive check: ensure field exists before accessing
+            if (
+                hasattr(contact.billing_profile_id, "primary_contact_id")
+                and not contact.billing_profile_id.primary_contact_id
+            ):
                 contact.billing_profile_id.primary_contact_id = contact.id
                 contact.primary_contact = True
         return contacts
 
     def write(self, vals):
-        """Update primary contact reference"""
-        result = super().write(vals)
-        if 'primary_contact' in vals:
+        if "primary_contact" in vals and vals["primary_contact"]:
             for contact in self:
-                if contact.primary_contact:
-                    contact.billing_profile_id.primary_contact_id = contact.id
-        return result
+                # Ensure only one primary per profile
+                contact.billing_profile_id.contact_ids.filtered(lambda c: c.id != contact.id).write(
+                    {"primary_contact": False}
+                )
+        return super().write(vals)
 
     def action_set_primary(self):
         """Set this contact as primary"""
         self.primary_contact = True
+        # Ensure others are not primary
+        self.billing_profile_id.contact_ids.filtered(lambda c: c.id != self.id).write({"primary_contact": False})
 
     def action_contact_now(self):
         """Record contact attempt"""

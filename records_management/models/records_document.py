@@ -47,18 +47,30 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
-    department_id = fields.Many2one('records.department', string="Department", domain="[('partner_id', '=', partner_id)]", tracking=True)
-    container_id = fields.Many2one('records.container', string="Container", tracking=True)
+    partner_id = fields.Many2one(comodel_name="res.partner", string="Customer", required=True, tracking=True)
+    department_id = fields.Many2one(
+        comodel_name="records.department",
+        string="Department",
+        domain="[('partner_id', '=', partner_id)]",
+        tracking=True,
+    )
+    container_id = fields.Many2one(comodel_name="records.container", string="Container", tracking=True)
     location_id = fields.Many2one(related='container_id.location_id', string="Location", store=True, readonly=True, comodel_name='stock.location')
-    document_type_id = fields.Many2one('records.document.type', string="Document Type", tracking=True)
-    lot_id = fields.Many2one('stock.lot', string="Stock Lot", tracking=True, help="Lot/Serial number associated with this document.")
-    temp_inventory_id = fields.Many2one('temp.inventory', string="Temporary Inventory")
-    retention_policy_id = fields.Many2one('records.retention.policy', string="Retention Policy", tracking=True)
-    retention_rule_id = fields.Many2one('records.retention.rule', string="Retention Rule", tracking=True)
-    series_id = fields.Many2one('records.series', string='Series', tracking=True)
-    storage_box_id = fields.Many2one('records.storage.box', string='Storage Box', tracking=True)
-    request_id = fields.Many2one('records.request', string='Request', tracking=True)
+    document_type_id = fields.Many2one(comodel_name="records.document.type", string="Document Type", tracking=True)
+    lot_id = fields.Many2one(
+        comodel_name="stock.lot",
+        string="Stock Lot",
+        tracking=True,
+        help="Lot/Serial number associated with this document.",
+    )
+    temp_inventory_id = fields.Many2one(comodel_name="temp.inventory", string="Temporary Inventory")
+    retention_policy_id = fields.Many2one(
+        comodel_name="records.retention.policy", string="Retention Policy", tracking=True
+    )
+    retention_rule_id = fields.Many2one(comodel_name="records.retention.rule", string="Retention Rule", tracking=True)
+    series_id = fields.Many2one(comodel_name="records.series", string="Series", tracking=True)
+    storage_box_id = fields.Many2one(comodel_name="records.storage.box", string="Storage Box", tracking=True)
+    request_id = fields.Many2one(comodel_name="records.request", string="Request", tracking=True)
 
     # ============================================================================
     # STATE & LIFECYCLE
@@ -88,10 +100,12 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # LEGAL HOLD / PERMANENT FLAG
     # ============================================================================
-    is_permanent = fields.Boolean(string="Is Permanent", tracking=True, help="Mark this document to be exempt from destruction policies.")
-    permanent_reason = fields.Text(string="Reason for Permanence", tracking=True)
-    permanent_user_id = fields.Many2one('res.users', string="Flagged Permanent By", readonly=True, tracking=True)
-    permanent_date = fields.Datetime(string="Flagged Permanent On", readonly=True, tracking=True)
+    is_permanent = fields.Boolean(
+        string="Is Permanent", help="Mark this document to be exempt from destruction policies."
+    )  # Removed tracking=True; track on state instead
+    permanent_reason = fields.Text(string="Reason for Permanence")
+    permanent_user_id = fields.Many2one(comodel_name="res.users", string="Flagged Permanent By", readonly=True)
+    permanent_date = fields.Datetime(string="Flagged Permanent On", readonly=True)
 
     # ============================================================================
     # DIGITAL & COMPLIANCE
@@ -110,13 +124,13 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # DESTRUCTION INFO
     # ============================================================================
-    destruction_method = fields.Char("Destruction Method", tracking=True)
-    destruction_certificate_id = fields.Many2one('naid.certificate', string="Destruction Certificate", tracking=True)
-    naid_destruction_verified = fields.Boolean("NAID Destruction Verified", tracking=True)
-    destruction_authorized_by_id = fields.Many2one('res.users', string="Destruction Authorized By", tracking=True)
-    destruction_witness_id = fields.Many2one('res.partner', string="Destruction Witness", tracking=True)
-    destruction_facility = fields.Char("Destruction Facility", tracking=True)
-    destruction_notes = fields.Text("Destruction Notes", tracking=True)
+    destruction_method = fields.Char("Destruction Method")
+    destruction_certificate_id = fields.Many2one(comodel_name="naid.certificate", string="Destruction Certificate")
+    naid_destruction_verified = fields.Boolean("NAID Destruction Verified")
+    destruction_authorized_by_id = fields.Many2one(comodel_name="res.users", string="Destruction Authorized By")
+    destruction_witness_id = fields.Many2one(comodel_name="res.partner", string="Destruction Witness")
+    destruction_facility = fields.Char("Destruction Facility")
+    destruction_notes = fields.Text("Destruction Notes")
 
     # ============================================================================
     # AUDIT & CHAIN OF CUSTODY
@@ -124,7 +138,11 @@ class RecordsDocument(models.Model):
     event_date = fields.Date(string="Event Date", help="Date of the last significant event (e.g., access, move, audit).")
     compliance_verified = fields.Boolean(string="Compliance Verified", help="Indicates if the document's handling meets compliance standards.")
     scan_date = fields.Datetime(string="Last Scan Date", help="Timestamp of the last barcode scan.")
-    last_verified_by_id = fields.Many2one('res.users', string="Last Verified By", help="User who last verified the document's status or location.")
+    last_verified_by_id = fields.Many2one(
+        comodel_name="res.users",
+        string="Last Verified By",
+        help="User who last verified the document's status or location.",
+    )
     last_verified_date = fields.Datetime(string="Last Verified Date", help="Timestamp of the last verification.")
     is_missing = fields.Boolean(string="Is Missing", help="Flagged if the document cannot be located during an audit.")
     missing_since_date = fields.Date(string="Missing Since", help="Date the document was first reported as missing.")
@@ -989,7 +1007,7 @@ class RecordsDocument(models.Model):
             if errors:
                 raise ValidationError('\n'.join(errors))
         except Exception as e:
-            raise ValidationError(_('Error validating business rules: %s') % str(e)) from e
+            raise ValidationError(_("Error validating business rules: %s") % str(e))
 
     def _prepare_destruction_data(self):
         """Prepare data for destruction processing"""
@@ -1027,6 +1045,7 @@ class RecordsDocument(models.Model):
             }
         except Exception:
             return {'error': 'Failed to generate summary'}
+
     def _create_access_log(self, action, details=None):
         """Create an access log entry for the document"""
         try:
@@ -1060,7 +1079,6 @@ class RecordsDocument(models.Model):
                 )
         except Exception:
             pass  # Don't fail the main operation if notifications fail
-
     def _validate_business_rules(self):
         """Validate all business rules for the document"""
         errors = []
