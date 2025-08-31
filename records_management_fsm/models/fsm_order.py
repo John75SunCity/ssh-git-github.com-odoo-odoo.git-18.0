@@ -16,12 +16,16 @@ class FsmOrder(models.Model):
     # ============================================================================
     # SHREDDING SERVICE FIELDS
     # ============================================================================
-    service_type = fields.Selection([
-        ('on_site_shredding', 'On-Site Shredding'),
-        ('off_site_shredding', 'Off-Site Shredding'),
-        ('hard_drive_destruction', 'Hard Drive Destruction'),
-        ('product_destruction', 'Product Destruction'),
-    ], string="Service Type", tracking=True)
+    service_type = fields.Selection(
+        [
+            ("on_site_shredding", "Mobile Shredding"),
+            ("off_site_shredding", "Off-Site Shredding"),
+            ("hard_drive_destruction", "Hard Drive Destruction"),
+            ("product_destruction", "Product Destruction"),
+        ],
+        string="Service Type",
+        tracking=True,
+    )
 
     material_type = fields.Selection([
         ('paper', 'Paper'),

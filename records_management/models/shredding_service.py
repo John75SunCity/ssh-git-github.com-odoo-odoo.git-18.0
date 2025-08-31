@@ -38,14 +38,18 @@ class ShreddingService(models.Model):
         help="Uncheck to archive this service"
     )
 
-    service_type = fields.Selection([
-        ('onsite', 'On-Site Shredding'),
-        ('offsite', 'Off-Site Shredding'),
-        ('mobile', 'Mobile Shredding'),
-        ('bulk', 'Bulk Destruction'),
-        ('hard_drive', 'Hard Drive Destruction'),
-        ('electronic', 'Electronic Media Destruction')
-    ], string='Service Type', required=True, tracking=True)
+    service_type = fields.Selection(
+        [
+            ("onsite", "Mobile Shredding"),
+            ("offsite", "Off-site Shredding"),
+            ("bulk", "Bulk Destruction"),
+            ("hard_drive", "Hard Drive Destruction"),
+            ("electronic", "Electronic Media Destruction"),
+        ],
+        string="Service Type",
+        required=True,
+        tracking=True,
+    )
 
     description = fields.Text(
         string='Description',

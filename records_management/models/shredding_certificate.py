@@ -78,11 +78,17 @@ class ShreddingCertificate(models.Model):
         required=True,
         tracking=True
     )
-    destruction_method = fields.Selection([
-        ('on_site_shredding', 'On-Site Shredding'),
-        ('off_site_shredding', 'Off-Site Shredding'),
-        ('incineration', 'Incineration'),
-    ], string="Destruction Method", default='on_site_shredding', required=True, tracking=True)
+    destruction_method = fields.Selection(
+        [
+            ("on_site_shredding", "Mobile Shredding"),
+            ("off_site_shredding", "Off-Site Shredding"),
+            ("incineration", "Incineration"),
+        ],
+        string="Destruction Method",
+        default="on_site_shredding",
+        required=True,
+        tracking=True,
+    )
     destruction_equipment = fields.Char(string="Destruction Equipment", tracking=True)
     equipment_serial_number = fields.Char(string="Equipment Serial Number", tracking=True)
     operator_name = fields.Char(string="Operator Name", tracking=True)

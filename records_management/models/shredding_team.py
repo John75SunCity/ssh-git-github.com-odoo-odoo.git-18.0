@@ -33,12 +33,15 @@ class ShreddingTeam(models.Model):
     # ============================================================================
     # SPECIALIZATION & COMPLIANCE
     # ============================================================================
-    specialization = fields.Selection([
-        ('on_site', 'On-Site Shredding'),
-        ('off_site', 'Off-Site Plant'),
-        ('media_destruction', 'Media Destruction'),
-        ('specialized', 'Specialized Destruction')
-    ], string="Specialization")
+    specialization = fields.Selection(
+        [
+            ("on_site", "Mobile Shredding"),
+            ("off_site", "Off-Site Plant"),
+            ("media_destruction", "Media Destruction"),
+            ("specialized", "Specialized Destruction"),
+        ],
+        string="Specialization",
+    )
     certification_level = fields.Selection([('naid_aaa', 'NAID AAA Certified'), ('standard', 'Standard')], string="Certification Level")
     security_clearance = fields.Boolean(string="Security Clearance")
 

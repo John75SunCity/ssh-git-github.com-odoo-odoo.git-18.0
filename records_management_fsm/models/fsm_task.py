@@ -22,13 +22,16 @@ class ProjectTaskFSMExtension(models.Model):
     )
 
     # Destruction type
-    destruction_type = fields.Selection([
-        ('on_site', 'On-Site Shredding'),
-        ('off_site', 'Off-Site Destruction'),
-        ('media_destruction', 'Media Destruction'),
-        ('hard_drive', 'Hard Drive Destruction'),
-        ('specialized', 'Specialized Destruction')
-    ], string="Destruction Type")
+    destruction_type = fields.Selection(
+        [
+            ("on_site", "Mobile Shredding"),
+            ("off_site", "Off-Site Destruction"),
+            ("media_destruction", "Media Destruction"),
+            ("hard_drive", "Hard Drive Destruction"),
+            ("specialized", "Specialized Destruction"),
+        ],
+        string="Destruction Type",
+    )
 
     # Weight tracking
     weight_processed = fields.Float(

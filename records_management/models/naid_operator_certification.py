@@ -8,15 +8,21 @@ class NAIDOperatorCertification(models.Model):
 
     name = fields.Char(string='Certification Name', required=True, tracking=True)
     operator_id = fields.Many2one('res.users', string='Operator', required=True, tracking=True)
-    certification_type = fields.Selection([
-        ('aaa', 'NAID AAA'),
-        ('aa', 'NAID AA'),
-        ('a', 'NAID A'),
-        ('plant_based', 'Plant-Based Destruction'),
-        ('mobile', 'Mobile Destruction'),
-        ('hard_drive', 'Hard Drive Destruction'),
-        ('other', 'Other')
-    ], string='Certification Type', required=True, default='aaa', tracking=True)
+    certification_type = fields.Selection(
+        [
+            ("aaa", "NAID AAA"),
+            ("aa", "NAID AA"),
+            ("a", "NAID A"),
+            ("plant_based", "Plant-Based Destruction"),
+            ("offsite", "Mobile Destruction"),
+            ("hard_drive", "Hard Drive Destruction"),
+            ("other", "Other"),
+        ],
+        string="Certification Type",
+        required=True,
+        default="aaa",
+        tracking=True,
+    )
 
     # Certification details
     certificate_number = fields.Char(string='Certificate Number', required=True, tracking=True)
