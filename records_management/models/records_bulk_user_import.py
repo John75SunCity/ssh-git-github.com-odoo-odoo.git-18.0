@@ -31,8 +31,12 @@ class RecordsBulkUserImport(models.Model):
     # New field for configurable group assignment
     default_group_ids = fields.Many2many(
         "res.groups",
+        "records_bulk_user_import_groups_rel",
+        "bulk_import_id",
+        "group_id",
         string="Default User Groups",
         help="Groups to assign to newly created users. If empty, defaults to 'base.group_user'.",
+        inverse_name="bulk_import_id",
     )
 
     # ============================================================================
@@ -94,14 +98,14 @@ class RecordsBulkUserImport(models.Model):
         users_to_create = []
         for row_num, row in enumerate(csv_reader, start=2):
             if len(row) <= max(name_idx, email_idx):
-                log_lines.append(_("Row %d: Insufficient columns.", row_num))
+                log_lines.append(_("Row %s: Insufficient columns.", row_num))
                 continue
 
             user_name = row[name_idx].strip()
             user_email = row[email_idx].strip()
 
             if not user_name or not user_email:
-                log_lines.append(_("Row %d: Missing name or email.", row_num))
+                log_lines.append(_("Row %s: Missing name or email.", row_num))
                 continue
 
             # Prepare user data
@@ -124,12 +128,12 @@ class RecordsBulkUserImport(models.Model):
         if users_to_create:
             try:
                 self.env["res.users"].create(users_to_create)
-                log_lines.append(_("Successfully imported %d users.", len(users_to_create)))
+                log_lines.append(_("Successfully imported %s users.", len(users_to_create)))
                 # Log to audit trail for compliance
                 self.env["naid.audit.log"].create(
                     {
                         "action": "bulk_user_import",
-                        "details": _("Imported %d users via CSV.", len(users_to_create)),
+                        "details": _("Imported %s users via CSV.", len(users_to_create)),
                         "user_id": self.env.user.id,
                     }
                 )

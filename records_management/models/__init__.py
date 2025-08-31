@@ -150,6 +150,7 @@ from . import (
     records_approval_workflow,
     records_approval_workflow_line,
     records_audit_log,
+    records_billing,
     records_billing_config,
     records_bulk_user_import,
     records_category,

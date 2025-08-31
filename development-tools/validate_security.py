@@ -207,7 +207,9 @@ class SecurityValidator:
                 for group_record in root.findall(".//record[@model='res.groups']"):
                     group_id = group_record.get('id')
                     if group_id:
+                        # Add both short form and full module reference
                         self.groups.add(group_id)
+                        self.groups.add(f"records_management.{group_id}")
 
             except ET.ParseError as e:
                 self.errors.append(f"XML parse error in {xml_file}: {e}")
