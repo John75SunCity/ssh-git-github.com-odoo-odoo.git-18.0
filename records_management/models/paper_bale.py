@@ -1,3 +1,4 @@
+import re
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -12,6 +13,9 @@ class PaperBale(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string="Bale Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    bale_number = fields.Char(
+        string="Bale Number", readonly=True, copy=False, help="Sequential bale number for identification"
+    )
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True)
     active = fields.Boolean(default=True)
 
@@ -101,7 +105,15 @@ class PaperBale(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('paper.bale') or _('New')
+                vals["name"] = self.env["ir.sequence"].next_by_code("records_management.bale") or _("New")
+                # Set bale_number to just the sequential number part for easy reference
+                if vals.get("name") and vals["name"] != _("New"):
+                    # Extract the number part from the sequence (e.g., "BALE-2025-00001" -> "00001")
+                    match = re.search(r"-(\d+)$", vals["name"])
+                    if match:
+                        vals["bale_number"] = match.group(1)
+                    else:
+                        vals["bale_number"] = vals["name"]
         return super().create(vals_list)
 
     @api.constrains('weight')

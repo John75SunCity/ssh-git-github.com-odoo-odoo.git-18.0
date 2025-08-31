@@ -73,6 +73,7 @@
         "data/mail_activity_data_todo.xml",
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
+        "data/paper_shred_configurator_data.xml",
         "data/products_data.xml",
         "data/scheduled_actions_data.xml",
         "data/sequence_data.xml",

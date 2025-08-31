@@ -28,6 +28,10 @@
 
 <menuitem id="menu_shredding_bins" name="Shredding Bins" parent="menu_records_operations" action="action_shredding_service_bin" sequence="41" groups="records_management.group_records_user"/>
 
+<menuitem id="menu_paper_model_bales" name="Paper Model Bales" parent="menu_records_operations" action="action_paper_model_bale" sequence="42" groups="records_management.group_records_user"/>
+
+<menuitem id="menu_shred_model_bins" name="Shred Model Bins" parent="menu_records_operations" action="action_shred_model_bin" sequence="43" groups="records_management.group_records_user"/>
+
 <menuitem id="menu_destruction_services" name="Destruction Services" parent="menu_records_operations" action="action_records_destruction" sequence="45" groups="records_management.group_records_user"/>
 
 <menuitem id="menu_stock_lots" name="Serial Numbers" parent="menu_records_operations" action="action_stock_lot" sequence="50" groups="records_management.group_records_user"/>

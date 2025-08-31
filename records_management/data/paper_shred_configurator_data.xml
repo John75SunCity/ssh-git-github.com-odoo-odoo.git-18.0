@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Paper Model Bale Feature Configuration -->
+        <record id="config_enable_paper_model_bale" model="rm.module.configurator">
+            <field name="name">Enable Paper Model Bales</field>
+            <field name="category">workflow</field>
+            <field name="config_key">paper_model_bale_enabled</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">True</field>
+            <field name="description">Enable paper model bale management and tracking. This feature allows tracking of paper bales for shredding operations, including weight, volume, and material type management.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Shred Model Bin Feature Configuration -->
+        <record id="config_enable_shred_model_bin" model="rm.module.configurator">
+            <field name="name">Enable Shred Model Bins</field>
+            <field name="category">workflow</field>
+            <field name="config_key">shred_model_bin_enabled</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">True</field>
+            <field name="description">Enable shred model bin management and capacity tracking. This feature provides real-time monitoring of shredding bin capacity, weight tracking, and automated status updates.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Paper Bale Weight Tracking Configuration -->
+        <record id="config_paper_bale_weight_tracking" model="rm.module.configurator">
+            <field name="name">Enable Paper Bale Weight Tracking</field>
+            <field name="category">workflow</field>
+            <field name="config_key">paper_bale_weight_tracking_enabled</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">True</field>
+            <field name="description">Enable detailed weight tracking for paper bales. Includes automatic weight calculations and capacity monitoring.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Shred Bin Capacity Alerts Configuration -->
+        <record id="config_shred_bin_capacity_alerts" model="rm.module.configurator">
+            <field name="name">Enable Shred Bin Capacity Alerts</field>
+            <field name="category">workflow</field>
+            <field name="config_key">shred_bin_capacity_alerts_enabled</field>
+            <field name="config_type">feature_toggle</field>
+            <field name="value_boolean">True</field>
+            <field name="description">Enable automatic alerts when shred bins approach capacity limits. Helps prevent overflow and ensures timely emptying.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Default Bale Capacity Configuration -->
+        <record id="config_default_bale_capacity" model="rm.module.configurator">
+            <field name="name">Default Bale Capacity (lbs)</field>
+            <field name="category">system</field>
+            <field name="config_key">default_bale_capacity_lbs</field>
+            <field name="config_type">parameter</field>
+            <field name="value_number">500</field>
+            <field name="description">Default capacity for new paper bales in pounds. Used for automatic capacity calculations and alerts.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <!-- Default Shred Bin Capacity Configuration -->
+        <record id="config_default_shred_bin_capacity" model="rm.module.configurator">
+            <field name="name">Default Shred Bin Capacity (lbs)</field>
+            <field name="category">system</field>
+            <field name="config_key">default_shred_bin_capacity_lbs</field>
+            <field name="config_type">parameter</field>
+            <field name="value_number">1000</field>
+            <field name="description">Default capacity for new shred bins in pounds. Used for capacity monitoring and alert thresholds.</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+    </data>
+</odoo>

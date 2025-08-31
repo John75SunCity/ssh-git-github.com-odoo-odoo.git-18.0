@@ -701,6 +701,22 @@ class RmModuleConfigurator(models.Model):
                 "value_boolean": True,
                 "description": "Enable shredding service management.",
             },
+            {
+                "name": "Enable Paper Model Bales",
+                "config_key": "paper_model_bale_enabled",
+                "category": "workflow",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable paper model bale management and tracking.",
+            },
+            {
+                "name": "Enable Shred Model Bins",
+                "config_key": "shred_model_bin_enabled",
+                "category": "workflow",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable shred model bin management and capacity tracking.",
+            },
             # ============================================================================
             # ENHANCED FEATURES CONFIGURATIONS
             # ============================================================================
