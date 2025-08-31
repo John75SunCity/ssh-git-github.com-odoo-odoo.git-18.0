@@ -28,9 +28,7 @@ class RecordsBilling(models.Model):
     _order = "date desc, id desc"
 
     # Basic Information
-    name = fields.Char(
-        string="Billing Reference", required=True, copy=False, readonly=True, index=True, default=lambda self: _("New")
-    )
+    name = fields.Char(string="Billing Reference", required=True, copy=False, readonly=True, index=True, default="New")
 
     date = fields.Date(string="Billing Date", required=True, default=fields.Date.context_today, index=True)
 
@@ -45,7 +43,12 @@ class RecordsBilling(models.Model):
 
     # Financial Information
     currency_id = fields.Many2one(
-        "res.currency", string="Currency", required=True, default=lambda self: self.env.company.currency_id
+        "res.currency",
+        string="Currency",
+        required=True,
+        default=lambda self: (
+            self.env.company.currency_id if self.env.company and self.env.company.currency_id else False
+        ),
     )
 
     amount_total = fields.Monetary(
@@ -86,11 +89,11 @@ class RecordsBilling(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if vals.get("name", _("New")) == _("New"):
-                vals["name"] = self.env["ir.sequence"].next_by_code("records.billing") or _("New")
+            if vals.get("name", "New") == "New":
+                vals["name"] = self.env["ir.sequence"].next_by_code("records.billing") or "New"
         return super().create(vals_list)
 
-    @api.depends("billing_line_ids.price_subtotal", "billing_line_ids.price_tax")
+    @api.depends("billing_line_ids")
     def _compute_amount_total(self):
         for record in self:
             lines = record.billing_line_ids
