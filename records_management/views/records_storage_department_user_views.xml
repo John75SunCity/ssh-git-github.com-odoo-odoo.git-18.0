@@ -5,7 +5,7 @@
     <record id="records_storage_department_user_view_tree" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.tree</field>
         <field name="model">records.storage.department.user</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <tree decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'">
                 <field name="name"/>
@@ -25,7 +25,7 @@
     <record id="records_storage_department_user_view_form" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.form</field>
         <field name="model">records.storage.department.user</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="Records Storage Department User">
 <header>
@@ -121,7 +121,7 @@
     <record id="records_storage_department_user_view_search" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.search</field>
         <field name="model">records.storage.department.user</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
 <field name="name" string="Name" filter_domain="[('name', 'ilike', self)]"/>
@@ -162,7 +162,7 @@
 <field name="name">Department User Assignments</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.storage.department.user</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
 <field name="view_ids" eval="[(5, 0, 0),
             (0, 0, {'view_mode': 'tree', 'view_id': ref('records_storage_department_user_view_tree')}),
             (0, 0, {'view_mode': 'form', 'view_id': ref('records_storage_department_user_view_form')})]"/>

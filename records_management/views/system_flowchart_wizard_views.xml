@@ -8,7 +8,7 @@
 <record id="system_flowchart_wizard_view_welcome" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.welcome</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="type">tree</field>
+    <field name="type">form</field>
         <field name="arch" type="xml">
         <form string="System Flowchart - Welcome">
             <header>
@@ -183,7 +183,7 @@ System Overview</h6>
 <record id="system_flowchart_wizard_view_configure" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.configure</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="type">tree</field>
+    <field name="type">form</field>
         <field name="arch" type="xml">
         <form string="System Flowchart - Configure">
             <header>
@@ -357,7 +357,7 @@ System Overview</h6>
 <record id="system_flowchart_wizard_view_preview" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.preview</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="type">tree</field>
+    <field name="type">form</field>
         <field name="arch" type="xml">
         <form string="System Flowchart - Preview">
             <header>
@@ -558,7 +558,7 @@ Quick Actions</h6>
 <record id="system_flowchart_wizard_view_complete" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.complete</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="type">tree</field>
+    <field name="type">form</field>
         <field name="arch" type="xml">
         <form string="System Flowchart - Complete">
             <header>
@@ -729,7 +729,7 @@ Interactive Tutorial Enabled</h6>
 <record id="system_flowchart_wizard_view_form" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.form</field>
     <field name="model">system.flowchart.wizard</field>
-    <field name="type">tree</field>
+    <field name="type">form</field>
         <field name="arch" type="xml">
 <form string="System Architecture Flowchart Configuration">
     <header>

@@ -5,7 +5,7 @@
     <record id="key_restriction_checker_view_form" model="ir.ui.view">
         <field name="name">key.restriction.checker.view.form</field>
         <field name="model">key.restriction.checker</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Key Restriction Checker">
                 <sheet>

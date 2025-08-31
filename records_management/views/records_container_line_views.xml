@@ -6,7 +6,7 @@
         <record id="records_container_line_view_tree" model="ir.ui.view">
             <field name="name">records.container.line.view.tree</field>
             <field name="model">records.container.line</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Records Container Line">
                     <field name="sequence" widget="handle"/>
@@ -26,7 +26,7 @@
         <record id="records_container_line_view_form" model="ir.ui.view">
             <field name="name">records.container.line.view.form</field>
             <field name="model">records.container.line</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Records Container Line">
                     <sheet>
@@ -67,7 +67,7 @@
         <record id="records_container_line_view_search" model="ir.ui.view">
             <field name="name">records.container.line.view.search</field>
             <field name="model">records.container.line</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Search Records Container Line">
                     <field name="name"/>
@@ -94,7 +94,7 @@
         <record id="action_records_container_line" model="ir.actions.act_window">
             <field name="name">Records Container Line</field>
             <field name="res_model">records.container.line</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
     </data>

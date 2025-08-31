@@ -6,7 +6,7 @@
     <record id="field_label_helper_wizard_view_tree" model="ir.ui.view">
         <field name="name">field.label.helper.wizard.view.tree</field>
         <field name="model">field.label.helper.wizard</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -18,7 +18,7 @@
     <record id="field_label_helper_wizard_view_form" model="ir.ui.view">
         <field name="name">field.label.helper.wizard.view.form</field>
         <field name="model">field.label.helper.wizard</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Field Label Helper Wizard">
                 <sheet>
@@ -37,7 +37,7 @@
     <record id="field_label_helper_wizard_view_search" model="ir.ui.view">
         <field name="name">field.label.helper.wizard.view.search</field>
         <field name="model">field.label.helper.wizard</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -52,7 +52,7 @@
         <field name="name">Field Label Helper Wizard</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">field.label.helper.wizard</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">

@@ -139,7 +139,7 @@ action = {
         <field name="name">res.partner.view.tree</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <field name="has_bin_key" string="🔑" widget="boolean_toggle"/>

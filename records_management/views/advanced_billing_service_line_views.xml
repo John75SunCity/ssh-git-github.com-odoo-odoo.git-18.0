@@ -4,7 +4,7 @@
 <record id="view_advanced_billing_service_line_tree" model="ir.ui.view">
         <field name="name">advanced.billing.service.line.tree</field>
         <field name="model">advanced.billing.service.line</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
@@ -17,7 +17,7 @@
     <record id="view_advanced_billing_service_line_form" model="ir.ui.view">
         <field name="name">advanced.billing.service.line.form</field>
         <field name="model">advanced.billing.service.line</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Advanced Billing Service Line">
                 <sheet>

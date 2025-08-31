@@ -6,7 +6,7 @@
         <record id="pickup_request_line_view_tree" model="ir.ui.view">
             <field name="name">pickup.request.line.view.tree</field>
             <field name="model">pickup.request.line</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Pickup Request Line">
                     request_id
@@ -25,7 +25,7 @@
         <record id="pickup_request_line_view_form" model="ir.ui.view">
             <field name="name">pickup.request.line.view.form</field>
             <field name="model">pickup.request.line</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Pickup Request Line">
                     <sheet>
@@ -48,7 +48,7 @@
         <record id="pickup_request_line_view_search" model="ir.ui.view">
             <field name="name">pickup.request.line.view.search</field>
             <field name="model">pickup.request.line</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Search Pickup Request Line">
                     <field name="item_description"/>
@@ -62,7 +62,7 @@
         <record id="action_pickup_request_line" model="ir.actions.act_window">
             <field name="name">Pickup Request Line</field>
             <field name="res_model">pickup.request.line</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
     </data>

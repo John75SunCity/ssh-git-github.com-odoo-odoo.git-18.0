@@ -6,7 +6,7 @@
         <record id="naid_operator_certification_view_tree" model="ir.ui.view">
             <field name="name">naid.operator.certification.view.tree</field>
             <field name="model">naid.operator.certification</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="NAID Operator Certification" decoration-warning="status == 'expired'" decoration-danger="status == 'revoked'">
                     <field name="name"/>
@@ -25,7 +25,7 @@
         <record id="naid_operator_certification_view_form" model="ir.ui.view">
             <field name="name">naid.operator.certification.view.form</field>
             <field name="model">naid.operator.certification</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="NAID Operator Certification">
                     <sheet>
@@ -75,7 +75,7 @@
         <record id="naid_operator_certification_view_search" model="ir.ui.view">
             <field name="name">naid.operator.certification.view.search</field>
             <field name="model">naid.operator.certification</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Search NAID Operator Certification">
                     <field name="name"/>
@@ -104,7 +104,7 @@
         <record id="action_naid_operator_certification" model="ir.actions.act_window">
             <field name="name">NAID Operator Certification</field>
             <field name="res_model">naid.operator.certification</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
     </data>

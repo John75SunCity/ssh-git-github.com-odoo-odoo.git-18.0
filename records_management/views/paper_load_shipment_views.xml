@@ -7,7 +7,7 @@
     <record id="paper_load_shipment_view_tree" model="ir.ui.view">
         <field name="name">paper.load.shipment.view.tree</field>
         <field name="model">paper.load.shipment</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree string="Load Shipments" decoration-success="status=='paid'" decoration-info="status=='delivered'" decoration-warning="status=='in_transit'" decoration-primary="status=='ready_pickup'" sample="1">
                 <field name="load_number"/>
@@ -31,7 +31,7 @@
     <record id="paper_load_shipment_view_form" model="ir.ui.view">
         <field name="name">paper.load.shipment.view.form</field>
         <field name="model">paper.load.shipment</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="Load Shipment">
                 <header>
@@ -201,7 +201,7 @@
     <record id="paper_load_shipment_view_kanban" model="ir.ui.view">
         <field name="name">paper.load.shipment.view.kanban</field>
         <field name="model">paper.load.shipment</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column" sample="1">
                 <field name="load_number"/>
@@ -271,7 +271,7 @@
     <record id="paper_load_shipment_view_search" model="ir.ui.view">
         <field name="name">paper.load.shipment.view.search</field>
         <field name="model">paper.load.shipment</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Load Shipments">
                 <field name="load_number"/>
@@ -309,7 +309,7 @@
     <record id="action_paper_load_shipment" model="ir.actions.act_window">
         <field name="name">Load Shipments</field>
         <field name="res_model">paper.load.shipment</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_paper_load_shipment_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
@@ -337,7 +337,7 @@
     <record id="action_paper_recycling_dashboard" model="ir.actions.act_window">
         <field name="name">Paper Recycling Dashboard</field>
         <field name="res_model">paper.load.shipment</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="view_id" ref="view_paper_load_shipment_kanban"/>
         <field name="domain">[('status', 'in', ['draft', 'scheduled', 'ready_pickup', 'in_transit'])]</field>
         <field name="context">{'search_default_group_status': 1}</field>

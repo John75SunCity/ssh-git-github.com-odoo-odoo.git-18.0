@@ -6,7 +6,7 @@
     <record id="view_customer_negotiated_rate_list" model="ir.ui.view">
         <field name="name">view.customer.negotiated.rate.list</field>
         <field name="model">customer.negotiated.rate</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -18,7 +18,7 @@
     <record id="view_customer_negotiated_rate_form" model="ir.ui.view">
         <field name="name">view.customer.negotiated.rate.form</field>
         <field name="model">customer.negotiated.rate</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Customer Negotiated Rate">
                 <sheet>
@@ -37,7 +37,7 @@
     <record id="view_customer_negotiated_rate_search" model="ir.ui.view">
         <field name="name">view.customer.negotiated.rate.search</field>
         <field name="model">customer.negotiated.rate</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

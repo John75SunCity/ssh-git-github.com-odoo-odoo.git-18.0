@@ -6,7 +6,7 @@
         <record id="view_bin_barcode_inventory_form" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.form</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <form string="Bin Barcode Inventory">
                     <header>
@@ -91,7 +91,7 @@
         <record id="view_bin_barcode_inventory_tree" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.tree</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Bin Barcode Inventory"
                       decoration-success="state == 'available'"
@@ -121,7 +121,7 @@
         <record id="view_bin_barcode_inventory_kanban" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.kanban</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_small_column">
                     <field name="id"/>
@@ -186,7 +186,7 @@
         <record id="view_bin_barcode_inventory_search" model="ir.ui.view">
             <field name="name">bin.barcode.inventory.search</field>
             <field name="model">bin.barcode.inventory</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <search string="Bin Barcode Inventory">
                     <field name="barcode" string="Barcode"/>
@@ -230,7 +230,7 @@
         <record id="action_bin_barcode_inventory" model="ir.actions.act_window">
             <field name="name">Bin Barcode Inventory</field>
             <field name="res_model">bin.barcode.inventory</field>
-            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">kanban,list,form</field>
             <field name="context">{
                 'search_default_available': 1,
             }</field>
@@ -249,7 +249,7 @@
         <record id="view_shredding_bin_sequence_reset_wizard_form" model="ir.ui.view">
             <field name="name">shredding.bin.sequence.reset.wizard.form</field>
             <field name="model">shredding.bin.sequence.reset.wizard</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Reset Bin Sequence">
                     <div class="alert alert-warning" role="alert">

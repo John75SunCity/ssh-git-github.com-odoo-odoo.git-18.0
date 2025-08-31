@@ -8,7 +8,7 @@
     <record id="work_order_shredding_view_tree" model="ir.ui.view">
         <field name="name">work.order.shredding.view.tree</field>
         <field name="model">work.order.shredding</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
                 <header>
@@ -36,7 +36,7 @@
     <record id="work_order_shredding_view_form" model="ir.ui.view">
         <field name="name">work.order.shredding.view.form</field>
         <field name="model">work.order.shredding</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <form string="Shredding Work Order">
     <header>
@@ -205,7 +205,7 @@
 <record id="work_order_shredding_view_kanban" model="ir.ui.view">
     <field name="name">work.order.shredding.view.kanban</field>
     <field name="model">work.order.shredding</field>
-    <field name="type">tree</field>
+    <field name="type">search</field>
         <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_small_column">
             <field name="name"/>
@@ -286,7 +286,7 @@
     <record id="work_order_shredding_view_search" model="ir.ui.view">
         <field name="name">work.order.shredding.view.search</field>
         <field name="model">work.order.shredding</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
 <field name="name" string="Work Order" filter_domain="['|', '|', ('name', 'ilike', self), ('partner_id', 'ilike', self), ('coordinator_id', 'ilike', self)]"/>
@@ -332,7 +332,7 @@
         <field name="name">Shredding Work Orders</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">work.order.shredding</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
         <field name="context">{'search_default_in_progress': 1}</field>
         <field name="help" type="html">
@@ -352,7 +352,7 @@
     <field name="name">My Shredding Orders</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.shredding</field>
-    <field name="view_mode">kanban,tree,form</field>
+    <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('coordinator_id.user_id', '=', uid)]</field>
     <field name="context">{'search_default_in_progress': 1}</field>
 </record>
@@ -362,7 +362,7 @@
     <field name="name">Urgent Shredding Orders</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.shredding</field>
-    <field name="view_mode">tree,form,kanban</field>
+    <field name="view_mode">list,form,kanban</field>
     <field name="domain">[('priority', '=', 'urgent'), ('state', 'not in', ['completed', 'cancelled'])]</field>
     <field name="context">{'default_priority': 'urgent'}</field>
 </record>
@@ -372,7 +372,7 @@
     <field name="name">NAID Compliance Orders</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.shredding</field>
-    <field name="view_mode">tree,form</field>
+    <field name="view_mode">list,form</field>
     <field name="domain">[('naid_compliant', '=', True)]</field>
     <field name="context">{'search_default_group_state': 1}</field>
 </record>
@@ -382,7 +382,7 @@
     <field name="name">Today's Shredding Orders</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.shredding</field>
-    <field name="view_mode">kanban,tree,form</field>
+    <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('scheduled_date', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]</field>
     <field name="context">{'search_default_group_coordinator': 1}</field>
 </record>

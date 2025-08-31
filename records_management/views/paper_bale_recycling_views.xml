@@ -7,7 +7,7 @@
     <record id="paper_bale_recycling_view_tree" model="ir.ui.view">
         <field name="name">paper.bale.recycling.view.tree</field>
         <field name="model">paper.bale.recycling</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree string="Paper Bales" decoration-success="status=='paid'" decoration-info="status=='shipped'" decoration-warning="status=='assigned_load'" decoration-muted="status=='produced'" sample="1">
                 <field name="display_name"/>
@@ -26,7 +26,7 @@
     <record id="paper_bale_recycling_view_form" model="ir.ui.view">
         <field name="name">paper.bale.recycling.view.form</field>
         <field name="model">paper.bale.recycling</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Paper Bale">
                 <header>
@@ -104,7 +104,7 @@
     <record id="paper_bale_recycling_view_kanban" model="ir.ui.view">
         <field name="name">paper.bale.recycling.view.kanban</field>
         <field name="model">paper.bale.recycling</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column" sample="1">
                 <field name="display_name"/>
@@ -157,7 +157,7 @@
     <record id="paper_bale_recycling_view_search" model="ir.ui.view">
         <field name="name">paper.bale.recycling.view.search</field>
         <field name="model">paper.bale.recycling</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Paper Bales">
                 <field name="display_name"/>
@@ -203,7 +203,7 @@
     <record id="action_paper_bale_recycling" model="ir.actions.act_window">
         <field name="name">Paper Bales</field>
         <field name="res_model">paper.bale.recycling</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="view_paper_bale_recycling_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

@@ -6,7 +6,7 @@
     <record id="view_mobile_photo_list" model="ir.ui.view">
         <field name="name">view.mobile.photo.list</field>
         <field name="model">mobile.photo</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>

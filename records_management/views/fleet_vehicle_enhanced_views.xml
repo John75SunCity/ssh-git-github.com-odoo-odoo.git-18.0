@@ -7,7 +7,7 @@
         <field name="name">fleet.vehicle.view.form.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 
             <!-- Add Records Management stat buttons -->
@@ -174,7 +174,7 @@
         <field name="name">Records Fleet Vehicles</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">fleet.vehicle</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="domain">[('records_vehicle_type', '!=', False)]</field>
         <field name="context">{
             'search_default_records_vehicles': 1,

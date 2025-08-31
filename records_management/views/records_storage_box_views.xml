@@ -5,7 +5,7 @@
         <record id="view_records_storage_box_tree" model="ir.ui.view">
             <field name="name">records.storage.box.tree</field>
             <field name="model">records.storage.box</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Storage Boxes">
                     <field name="name"/>
@@ -21,7 +21,7 @@
         <record id="view_records_storage_box_form" model="ir.ui.view">
             <field name="name">records.storage.box.form</field>
             <field name="model">records.storage.box</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Storage Box">
                     <header>
@@ -60,7 +60,7 @@
         <record id="view_records_storage_box_search" model="ir.ui.view">
             <field name="name">records.storage.box.search</field>
             <field name="model">records.storage.box</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Search Storage Boxes">
                     <field name="name"/>
@@ -81,7 +81,7 @@
         <record id="action_records_storage_box" model="ir.actions.act_window">
             <field name="name">Storage Boxes</field>
             <field name="res_model">records.storage.box</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a new storage box.

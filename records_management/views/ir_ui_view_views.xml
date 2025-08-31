@@ -18,7 +18,7 @@ These definitions allow administrators to manage Odoo view records directly from
         <record id="ir_ui_view_view_tree" model="ir.ui.view">
             <field name="name">ir.ui.view.view.tree</field>
             <field name="model">ir.ui.view</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="View">
                     <field name="name"/>
@@ -34,7 +34,7 @@ These definitions allow administrators to manage Odoo view records directly from
         <record id="ir_ui_view_view_form" model="ir.ui.view">
             <field name="name">ir.ui.view.view.form</field>
             <field name="model">ir.ui.view</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="View">
                     <sheet>
@@ -55,7 +55,7 @@ These definitions allow administrators to manage Odoo view records directly from
         <record id="ir_ui_view_view_search" model="ir.ui.view">
             <field name="name">ir.ui.view.view.search</field>
             <field name="model">ir.ui.view</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Search View">
                     <field name="name"/>
@@ -69,7 +69,7 @@ These definitions allow administrators to manage Odoo view records directly from
         <record id="action_ir_ui_view" model="ir.actions.act_window">
             <field name="name">View</field>
             <field name="res_model">ir.ui.view</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <!-- Menu -->

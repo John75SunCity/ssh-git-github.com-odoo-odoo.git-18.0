@@ -5,7 +5,7 @@
         <record id="customer_category_view_tree" model="ir.ui.view">
             <field name="name">customer.category.view.tree</field>
             <field name="model">customer.category</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Customer Category">
                     <field name="name"/>
@@ -23,7 +23,7 @@
         <record id="customer_category_view_form" model="ir.ui.view">
             <field name="name">customer.category.view.form</field>
             <field name="model">customer.category</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <form string="Customer Category">
                     <sheet>
@@ -64,7 +64,7 @@
         <record id="action_customer_category" model="ir.actions.act_window">
             <field name="name">Customer Category</field>
             <field name="res_model">customer.category</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
     </data>

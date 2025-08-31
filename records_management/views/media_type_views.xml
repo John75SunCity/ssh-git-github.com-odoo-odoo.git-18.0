@@ -6,7 +6,7 @@
         <record id="media_type_view_tree" model="ir.ui.view">
             <field name="name">media.type.view.tree</field>
             <field name="model">media.type</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Media Type">
                     <field name="name"/>
@@ -24,7 +24,7 @@
         <record id="media_type_view_form" model="ir.ui.view">
             <field name="name">media.type.view.form</field>
             <field name="model">media.type</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Media Type">
                     <sheet>
@@ -47,7 +47,7 @@
         <record id="media_type_view_search" model="ir.ui.view">
             <field name="name">media.type.view.search</field>
             <field name="model">media.type</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Search Media Type">
                     <!-- Add search fields here -->
@@ -59,7 +59,7 @@
         <record id="action_media_type" model="ir.actions.act_window">
             <field name="name">Media Type</field>
             <field name="res_model">media.type</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
     </data>

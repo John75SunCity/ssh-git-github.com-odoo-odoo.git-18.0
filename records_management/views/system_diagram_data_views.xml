@@ -7,7 +7,7 @@
     <record id="system_diagram_data_view_tree" model="ir.ui.view">
         <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <tree string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
                 <field name="name"/>
@@ -30,7 +30,7 @@
     <record id="system_diagram_data_view_form" model="ir.ui.view">
         <field name="name">system.diagram.data.view.form</field>
         <field name="model">system.diagram.data</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="System Diagram Data">
 <header>
@@ -130,7 +130,7 @@
     <record id="system_diagram_data_view_search" model="ir.ui.view">
         <field name="name">system.diagram.data.view.search</field>
         <field name="model">system.diagram.data</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <search string="System Diagrams Search">
     <field name="name" string="Diagram Name" filter_domain="[('name', 'ilike', self)]"/>
@@ -171,7 +171,7 @@
 <record id="system_diagram_data_view_kanban" model="ir.ui.view">
     <field name="name">system.diagram.data.view.kanban</field>
     <field name="model">system.diagram.data</field>
-    <field name="type">tree</field>
+    <field name="type">list</field>
         <field name="arch" type="xml">
         <kanban string="System Architecture Diagrams" class="o_kanban_dashboard">
             <field name="name"/>
@@ -281,7 +281,7 @@
 <field name="name">📊 System Diagrams</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">system.diagram.data</field>
-<field name="view_mode">kanban,tree,form</field>
+<field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
@@ -307,7 +307,7 @@
     <field name="name">🧑 User Access Analysis</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">system.diagram.data</field>
-    <field name="view_mode">kanban,tree,form</field>
+    <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('search_type', '=', 'user')]</field>
     <field name="context">{'default_search_type': 'user', 'default_show_access_only': True}</field>
 </record>
@@ -316,7 +316,7 @@
     <field name="name">🏗️ Model Structure Explorer</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">system.diagram.data</field>
-    <field name="view_mode">kanban,tree,form</field>
+    <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('search_type', '=', 'model')]</field>
     <field name="context">{'default_search_type': 'model'}</field>
 </record>
@@ -325,7 +325,7 @@
     <field name="name">🏢 Company System Overview</field>
     <field name="type">ir.actions.act_window</field>
     <field name="res_model">system.diagram.data</field>
-    <field name="view_mode">kanban,tree,form</field>
+    <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('search_type', '=', 'company')]</field>
     <field name="context">{'default_search_type': 'company'}</field>
 </record>
@@ -338,7 +338,7 @@
     <record id="system_diagram_data_view_search" model="ir.ui.view">
         <field name="name">system.diagram.data.view.search</field>
         <field name="model">system.diagram.data</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <search string="System Flowchart Search">
                 <field name="name" string="Diagram Name" filter_domain="[('name', 'ilike', self)]"/>
@@ -368,7 +368,7 @@
     <record id="system_diagram_data_view_tree" model="ir.ui.view">
         <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree string="System Architecture Diagrams" decoration-success="nodes_data and edges_data" decoration-warning="not nodes_data or not edges_data" create="true" edit="true" delete="true">
                 <field name="name" string="Diagram Name"/>
@@ -395,7 +395,7 @@
 <record id="system_diagram_data_view_kanban" model="ir.ui.view">
 <field name="name">system.diagram.data.view.kanban</field>
 <field name="model">system.diagram.data</field>
-<field name="type">tree</field>
+<field name="type">form</field>
         <field name="arch" type="xml">
 <kanban string="System Architecture Diagrams" class="o_kanban_dashboard">
     <field name="name"/>
@@ -479,7 +479,7 @@
 <record id="system_diagram_data_view_form" model="ir.ui.view">
     <field name="name">system.diagram.data.view.form</field>
     <field name="model">system.diagram.data</field>
-    <field name="type">tree</field>
+    <field name="type">form</field>
         <field name="arch" type="xml">
         <form string="System Diagram Configuration">
 <header>
@@ -596,7 +596,7 @@
 <record id="action_system_flowchart" model="ir.actions.act_window">
 <field name="name">📊 System Architecture Flowchart</field>
 <field name="res_model">system.diagram.data</field>
-<field name="view_mode">kanban,tree,form</field>
+<field name="view_mode">kanban,list,form</field>
 <field name="target">current</field>
 <field name="context">{
         'search_default_with_nodes': 1,

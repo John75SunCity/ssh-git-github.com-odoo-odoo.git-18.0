@@ -6,7 +6,7 @@
         <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
             <field name="name">hard.drive.scan.wizard.form</field>
             <field name="model">hard.drive.scan.wizard</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <form string="Scan Hard Drives for Destruction">
                     <group>

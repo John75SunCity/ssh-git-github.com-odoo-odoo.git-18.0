@@ -5,7 +5,7 @@
         <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
             <field name="name">records.department.billing.approval.tree</field>
             <field name="model">records.department.billing.approval</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="billing_contact_id"/>
@@ -23,7 +23,7 @@
         <record id="records_department_billing_approval_view_form" model="ir.ui.view">
             <field name="name">records.department.billing.approval.form</field>
             <field name="model">records.department.billing.approval</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -51,7 +51,7 @@
         <record id="records_department_billing_approval_view_search" model="ir.ui.view">
             <field name="name">records.department.billing.approval.search</field>
             <field name="model">records.department.billing.approval</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search>
                     <field name="billing_contact_id"/>
@@ -85,7 +85,7 @@
         <record id="records_department_billing_approval_view_kanban" model="ir.ui.view">
             <field name="name">records.department.billing.approval.kanban</field>
             <field name="model">records.department.billing.approval</field>
-            <field name="type">tree</field>
+            <field name="type">kanban</field>
         <field name="arch" type="xml">
                 <kanban>
                     <field name="id"/>
@@ -156,7 +156,7 @@
         <record id="records_department_billing_approval_action" model="ir.actions.act_window">
             <field name="name">Department Billing Approvals</field>
             <field name="res_model">records.department.billing.approval</field>
-            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">kanban,list,form</field>
             <field name="context">{'search_default_this_month': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">

@@ -7,7 +7,7 @@
     <record id="records_document_view_kanban" model="ir.ui.view">
         <field name="name">records.document.view.kanban</field>
         <field name="model">records.document</field>
-        <field name="type">tree</field>
+        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_document_dashboard">
                 <field name="name"/>
@@ -88,7 +88,7 @@
     <record id="records_document_view_tree" model="ir.ui.view">
         <field name="name">records.document.view.tree</field>
         <field name="model">records.document</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree decoration-danger="destruction_eligible_date &amp;lt;= context_today()" decoration-warning="destruction_eligible_date &amp;lt;= (context_today() + relativedelta(days=30))" decoration-success="is_permanent == True">
                 <field name="name" string="📄 Document"/>
@@ -111,7 +111,7 @@
     <record id="records_document_view_form" model="ir.ui.view">
         <field name="name">records.document.view.form</field>
         <field name="model">records.document</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -243,7 +243,7 @@
     <record id="records_document_view_calendar" model="ir.ui.view">
         <field name="name">records.document.view.calendar</field>
         <field name="model">records.document</field>
-        <field name="type">tree</field>
+        <field name="type">calendar</field>
         <field name="arch" type="xml">
             <calendar string="📅 Document Destruction Schedule" date_start="destruction_eligible_date" color="state">
                 <field name="name"/>
@@ -257,7 +257,7 @@
     <record id="records_document_view_search" model="ir.ui.view">
         <field name="name">records.document.view.search</field>
         <field name="model">records.document</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Document" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
@@ -293,7 +293,7 @@
     <record id="action_records_document" model="ir.actions.act_window">
         <field name="name">📄 Document Management</field>
         <field name="res_model">records.document</field>
-        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
         <field name="search_view_id" ref="view_records_document_search"/>
         <field name="context">{
             'search_default_active': 1

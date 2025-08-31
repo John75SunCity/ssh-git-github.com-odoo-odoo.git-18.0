@@ -5,7 +5,7 @@
         <record id="records_billing_rate_view_tree" model="ir.ui.view">
             <field name="name">records.billing.rate.view.tree</field>
             <field name="model">records.billing.rate</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
             <field name="arch" type="xml">
                 <tree string="Billing Rates" editable="bottom">
                     <field name="service_type"/>
@@ -80,7 +80,7 @@
         <record id="records_billing_rate_action" model="ir.actions.act_window">
             <field name="name">Billing Rates</field>
             <field name="res_model">records.billing.rate</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="search_view_id" ref="records_billing_rate_view_search"/>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">

@@ -3,7 +3,7 @@
     <record id="mobile_dashboard_widget_view_list" model="ir.ui.view">
         <field name="name">mobile.dashboard.widget.view.list</field>
         <field name="model">mobile.dashboard.widget</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>

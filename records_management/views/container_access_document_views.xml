@@ -5,7 +5,7 @@
         <record id="container_access_document_view_tree" model="ir.ui.view">
             <field name="name">container.access.document.tree</field>
             <field name="model">container.access.document</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
@@ -21,7 +21,7 @@
         <record id="container_access_document_view_form" model="ir.ui.view">
             <field name="name">container.access.document.form</field>
             <field name="model">container.access.document</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -52,7 +52,7 @@
         <record id="container_access_document_view_search" model="ir.ui.view">
             <field name="name">container.access.document.search</field>
             <field name="model">container.access.document</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
@@ -78,7 +78,7 @@
         <record id="container_access_document_view_kanban" model="ir.ui.view">
             <field name="name">container.access.document.kanban</field>
             <field name="model">container.access.document</field>
-            <field name="type">tree</field>
+            <field name="type">kanban</field>
         <field name="arch" type="xml">
                 <kanban>
                     <field name="id"/>
@@ -126,7 +126,7 @@
         <record id="container_access_document_action" model="ir.actions.act_window">
             <field name="name">Container Access Documents</field>
             <field name="res_model">container.access.document</field>
-            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">kanban,list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a new container access document!

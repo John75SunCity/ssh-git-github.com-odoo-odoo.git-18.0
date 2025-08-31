@@ -6,7 +6,7 @@
     <record id="view_work_order_retrieval_list" model="ir.ui.view">
         <field name="name">view.work.order.retrieval.list</field>
         <field name="model">work.order.retrieval</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -18,7 +18,7 @@
     <record id="view_work_order_retrieval_form" model="ir.ui.view">
         <field name="name">view.work.order.retrieval.form</field>
         <field name="model">work.order.retrieval</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Work Order Retrieval">
                 <sheet>
@@ -37,7 +37,7 @@
     <record id="view_work_order_retrieval_search" model="ir.ui.view">
         <field name="name">view.work.order.retrieval.search</field>
         <field name="model">work.order.retrieval</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

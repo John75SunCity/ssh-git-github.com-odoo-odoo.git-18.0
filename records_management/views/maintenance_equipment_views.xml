@@ -8,7 +8,7 @@
         <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_form"/>
 
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <!-- Add Records Management specific fields -->
 <xpath expr="//sheet//group[last()]" position="after">

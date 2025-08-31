@@ -6,7 +6,7 @@
     <record id="view_file_retrieveal_work_order_item_py_list" model="ir.ui.view">
         <field name="name">view.file_retrieveal_work_order_item.py.list</field>
         <field name="model">file_retrieveal_work_order_item.py</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -18,7 +18,7 @@
     <record id="view_file_retrieveal_work_order_item_py_form" model="ir.ui.view">
         <field name="name">view.file_retrieveal_work_order_item.py.form</field>
         <field name="model">file_retrieveal_work_order_item.py</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="File_retrieveal_work_order_item Py">
                 <sheet>
@@ -37,7 +37,7 @@
     <record id="view_file_retrieveal_work_order_item_py_search" model="ir.ui.view">
         <field name="name">view.file_retrieveal_work_order_item.py.search</field>
         <field name="model">file_retrieveal_work_order_item.py</field>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">

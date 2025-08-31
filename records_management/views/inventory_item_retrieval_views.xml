@@ -18,7 +18,7 @@ These definitions allow users to manage inventory item retrieval operations dire
         <record id="inventory_item_retrieval_view_tree" model="ir.ui.view">
             <field name="name">inventory.item.retrieval.view.tree</field>
             <field name="model">inventory.item.retrieval</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Inventory Item Retrieval">
                     <field name="name"/>
@@ -33,7 +33,7 @@ These definitions allow users to manage inventory item retrieval operations dire
         <record id="inventory_item_retrieval_view_form" model="ir.ui.view">
             <field name="name">inventory.item.retrieval.view.form</field>
             <field name="model">inventory.item.retrieval</field>
-            <field name="type">tree</field>
+            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Inventory Item Retrieval">
                     <sheet>
@@ -56,7 +56,7 @@ These definitions allow users to manage inventory item retrieval operations dire
         <record id="inventory_item_retrieval_view_search" model="ir.ui.view">
             <field name="name">inventory.item.retrieval.view.search</field>
             <field name="model">inventory.item.retrieval</field>
-            <field name="type">tree</field>
+            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Search Inventory Item Retrieval">
                     <field name="name"/>
@@ -70,7 +70,7 @@ These definitions allow users to manage inventory item retrieval operations dire
         <record id="action_inventory_item_retrieval" model="ir.actions.act_window">
             <field name="name">Inventory Item Retrieval</field>
             <field name="res_model">inventory.item.retrieval</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
         <!-- Menu -->
