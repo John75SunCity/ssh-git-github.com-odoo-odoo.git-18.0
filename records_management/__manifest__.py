@@ -91,6 +91,7 @@
         "views/advanced_billing_service_line_views.xml",
         "views/advanced_billing_storage_line_views.xml",
         "views/advanced_billing_views.xml",
+        "views/records_management_menus.xml",
         "views/billing_period_views.xml",
         "views/bin_barcode_inventory_views.xml",
         "views/bin_issue_report_wizard_views.xml",
