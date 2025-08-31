@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+        <!-- FSM Model External ID definitions -->
+        <record id="model_fsm_notification" model="ir.model">
+            <field name="model">fsm.notification</field>
+            <field name="name">FSM Notification</field>
+            <field name="info">FSM Notification Management</field>
+        </record>
+
+        <record id="model_fsm_notification_manager" model="ir.model">
+            <field name="model">fsm.notification.manager</field>
+            <field name="name">FSM Notification Manager</field>
+            <field name="info">FSM Notification Manager</field>
+        </record>
+
+        <record id="model_fsm_reschedule_wizard" model="ir.model">
+            <field name="model">fsm.reschedule.wizard</field>
+            <field name="name">FSM Reschedule Wizard</field>
+            <field name="info">FSM Reschedule Wizard</field>
+        </record>
+    </data>
+</odoo>

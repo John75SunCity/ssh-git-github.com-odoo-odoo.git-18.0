@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo noupdate="1">
     <data>
-        <!-- FSM Model XML ID definitions -->
-        <record id="model_fsm_notification" model="ir.model">
-            <field name="model">fsm.notification</field>
-            <field name="name">FSM Notification</field>
-            <field name="info">FSM Notification Management</field>
-        </record>
+        <!-- FSM Model XML ID definitions moved to records_management_fsm module -->
 
         <record id="model_pickup_route" model="ir.model">
             <field name="model">pickup.route</field>

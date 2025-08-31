@@ -948,21 +948,7 @@
             <field name="name">Work Order Shredding</field>
         </record>
 
-        <!-- Fleet & Routes Models -->
-        <record id="model_fsm_notification" model="ir.model">
-            <field name="model">fsm.notification</field>
-            <field name="name">Fsm Notification</field>
-        </record>
-
-        <record id="model_fsm_notification_manager" model="ir.model">
-            <field name="model">fsm.notification.manager</field>
-            <field name="name">Fsm Notification Manager</field>
-        </record>
-
-        <record id="model_fsm_reschedule_wizard" model="ir.model">
-            <field name="model">fsm.reschedule.wizard</field>
-            <field name="name">Fsm Reschedule Wizard</field>
-        </record>
+        <!-- Fleet & Routes Models - FSM models moved to records_management_fsm module -->
 
         <record id="model_pickup_request" model="ir.model">
             <field name="model">pickup.request</field>

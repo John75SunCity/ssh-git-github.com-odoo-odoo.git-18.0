@@ -7,6 +7,7 @@
     "license": "LGPL-3",
     "depends": ["records_management", "industry_fsm", "project"],
     "data": [
+        "data/fsm_model_external_ids_data.xml",
         "security/ir.model.access.csv",
         "views/enhanced_fsm_integration_views.xml",
         "views/fleet_fsm_integration_menus.xml",

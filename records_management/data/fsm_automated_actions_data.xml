@@ -16,7 +16,7 @@
         <!-- Scheduled action to send daily service notifications -->
         <record id="ir_cron_fsm_day_of_service_notification" model="ir.cron">
             <field name="name">FSM: Daily Service Notifications</field>
-            <field name="model_id" ref="records_management.model_fsm_notification"/>
+            <field name="model_id" ref="records_management_fsm.model_fsm_notification"/>
             <field name="state">code</field>
             <field name="code">model.send_day_of_service_notification()</field>
             <field name="user_id" ref="base.user_root"/>
