@@ -58,6 +58,12 @@ class RecordsUsageTracking(models.Model):
     # ============================================================================
     # RELATIONSHIPS & CONTEXT
     # ============================================================================
+    config_id = fields.Many2one(
+        "records.billing.config",
+        string="Billing Configuration",
+        ondelete="cascade",
+        help="The billing configuration this usage record belongs to.",
+    )
     partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
     product_id = fields.Many2one('product.product', string="Service Product", ondelete='restrict')
     invoice_line_id = fields.Many2one('account.move.line', string="Invoice Line", readonly=True)

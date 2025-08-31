@@ -55,6 +55,17 @@ class RevenueAnalytic(models.Model):
     average_revenue_per_customer = fields.Monetary(string="Avg Revenue/Customer", compute='_compute_average_revenue', store=True)
 
     # ============================================================================
+    # RELATIONSHIPS & CONTEXT
+    # ============================================================================
+    config_id = fields.Many2one(
+        "records.billing.config",
+        string="Billing Configuration",
+        ondelete="cascade",
+        help="The billing configuration this analytic record belongs to.",
+    )
+    partner_id = fields.Many2one("res.partner", string="Customer", tracking=True)
+
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends('period_start', 'period_end')

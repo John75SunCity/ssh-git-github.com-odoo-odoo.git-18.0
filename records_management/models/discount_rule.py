@@ -24,7 +24,12 @@ class DiscountRule(models.Model):
     # CORE & RELATIONSHIPS
     # ============================================================================
     name = fields.Char(string='Rule Name', required=True, tracking=True)
-    config_id = fields.Many2one('advanced.billing', string='Billing Configuration', ondelete='cascade', help="The billing configuration this rule belongs to.")
+    config_id = fields.Many2one(
+        "records.billing.config",
+        string="Billing Configuration",
+        ondelete="cascade",
+        help="The billing configuration this rule belongs to.",
+    )
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     currency_id = fields.Many2one(related='config_id.currency_id', string='Currency', store=True, comodel_name='res.currency')
     active = fields.Boolean(string='Active', default=True, tracking=True)
@@ -97,10 +102,12 @@ class DiscountRule(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activate the selected discount rules."""
+        self.ensure_one()
         self.write({'active': True})
         self.message_post(body=_("Rule(s) activated."))
 
     def action_deactivate(self):
         """Deactivate the selected discount rules."""
+        self.ensure_one()
         self.write({'active': False})
         self.message_post(body=_("Rule(s) deactivated."))
