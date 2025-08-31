@@ -37,22 +37,22 @@ _logger = logging.getLogger(__name__)
 
 class SystemDiagramData(models.Model):
     """System Architecture Diagram Data Aggregator.
-    
+
     This model aggregates and visualizes the Records Management system architecture
     through interactive diagrams. It provides a comprehensive view of system components,
     relationships, user access patterns, and organizational structure.
-    
+
     The model supports multiple visualization modes:
     - Full system overview with all components
     - Model relationships only
     - User access and security groups
     - Company and department hierarchies
     - Custom search-filtered views
-    
+
     Diagram generation is optimized with computed fields and caching to handle
     large datasets efficiently. The visualization uses vis.js library for
     interactive network graphs with customizable layouts and styling.
-    
+
     Attributes:
         name (Char): Display name for the diagram instance
         search_query (Char): Filter criteria for nodes and edges
@@ -77,7 +77,7 @@ class SystemDiagramData(models.Model):
         edges_data (Text): JSON representation of diagram edges
         diagram_config (Text): JSON configuration for diagram layout
     """
-    
+
     _name = 'system.diagram.data'
     _description = 'System Architecture Diagram Data Aggregator'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -129,17 +129,17 @@ class SystemDiagramData(models.Model):
     @api.depends('nodes_data', 'edges_data')
     def _compute_counts(self):
         """Compute the total number of nodes and edges in the diagram.
-        
+
         This method parses the JSON data stored in nodes_data and edges_data
         fields to calculate the counts. It handles JSON parsing errors gracefully
         by setting counts to zero if data is malformed.
-        
+
         Args:
             None (operates on self recordset)
-            
+
         Returns:
             None (sets node_count and edge_count fields)
-            
+
         Raises:
             None (handles exceptions internally with logging)
         """
@@ -156,22 +156,22 @@ class SystemDiagramData(models.Model):
     @api.depends('show_access_only', 'search_query', 'company_id')
     def _compute_diagram_data(self):
         """Generate nodes and edges data for the diagram.
-        
+
         This is the main computation method that aggregates all diagram data
         based on the current configuration. It collects core system nodes,
         model relationships, user access data, and company structure, then
         applies search filters if specified.
-        
+
         The method is designed to be efficient with batched operations and
         includes comprehensive error handling to prevent diagram generation
         failures.
-        
+
         Args:
             None (operates on self recordset)
-            
+
         Returns:
             None (sets nodes_data and edges_data fields)
-            
+
         Raises:
             None (handles exceptions internally with logging and fallback data)
         """
@@ -194,10 +194,11 @@ class SystemDiagramData(models.Model):
                 nodes.extend(user_nodes)
                 edges.extend(access_edges)
 
-                # Company and department nodes
-                company_nodes, company_edges = record._get_company_structure()
-                nodes.extend(company_nodes)
-                edges.extend(company_edges)
+                # Cross-department sharing nodes
+                if not record.show_access_only:
+                    sharing_nodes, sharing_edges = record._get_cross_department_sharing()
+                    nodes.extend(sharing_nodes)
+                    edges.extend(sharing_edges)
 
                 # Apply search filters
                 if record.search_query:
@@ -214,17 +215,17 @@ class SystemDiagramData(models.Model):
     @api.depends('layout_algorithm', 'node_spacing', 'edge_length')
     def _compute_diagram_config(self):
         """Generate diagram configuration for vis.js visualization.
-        
+
         Creates a comprehensive configuration object for the vis.js network
         visualization library. The configuration includes layout settings,
         physics parameters, interaction options, and styling for nodes and edges.
-        
+
         Supports both hierarchical and force-directed layouts with customizable
         spacing and interaction settings.
-        
+
         Args:
             None (operates on self recordset)
-            
+
         Returns:
             None (sets diagram_config field with JSON configuration)
         """
@@ -263,17 +264,17 @@ class SystemDiagramData(models.Model):
 
     def _compute_diagram_html(self):
         """Generates the full HTML for the diagram to be rendered in a field.
-        
+
         Creates an embedded HTML snippet with JavaScript code to initialize
         the vis.js network diagram. This method generates a self-contained
         HTML fragment that can be displayed in an Odoo form view.
-        
+
         Note: In production, this should use QWeb templates for better
         maintainability and performance.
-        
+
         Args:
             None (operates on self recordset)
-            
+
         Returns:
             None (sets diagram_html field with generated HTML)
         """
@@ -303,12 +304,12 @@ class SystemDiagramData(models.Model):
     # ============================================================================
     def _get_core_system_nodes(self):
         """Get core system component nodes for the diagram.
-        
+
         Returns a list of fundamental system nodes that form the backbone
         of the Records Management system architecture. These include the
         main system, backend interface, portal interface, and compliance
         components.
-        
+
         Returns:
             list: List of node dictionaries with vis.js node properties
                   including id, label, group, color, shape, and level
@@ -335,14 +336,14 @@ class SystemDiagramData(models.Model):
 
     def _get_model_relationships(self):
         """Get Records Management model relationships for visualization.
-        
+
         Analyzes the core models in the Records Management module and creates
         nodes and edges representing their relationships. This includes
         containers, documents, locations, requests, and compliance models.
-        
+
         The method checks for model existence to ensure compatibility across
         different module configurations.
-        
+
         Returns:
             tuple: (nodes_list, edges_list) where each is a list of dictionaries
                    representing vis.js nodes and edges with appropriate styling
@@ -378,18 +379,18 @@ class SystemDiagramData(models.Model):
 
     def _get_user_access_data(self):
         """Get user access rights visualization data.
-        
+
         Collects and visualizes user access patterns including security groups,
         user memberships, and portal user access. This provides a clear view
         of who has access to what parts of the system.
-        
+
         The method includes both internal users and portal users, with
         color-coding to indicate access levels and group memberships.
-        
+
         Returns:
             tuple: (nodes_list, edges_list) representing users, groups, and
                    their relationships in the system
-                   
+
         Note:
             Limits results to prevent performance issues with large user bases
         """
@@ -446,14 +447,14 @@ class SystemDiagramData(models.Model):
 
     def _get_company_structure(self):
         """Get company and department structure for visualization.
-        
+
         Creates nodes and edges representing the organizational hierarchy
         including companies and their departments. This helps visualize
         how the system is organized across different business units.
-        
+
         Only includes departments if the records.department model exists
         to maintain compatibility.
-        
+
         Returns:
             tuple: (nodes_list, edges_list) showing company and department
                    relationships in the organizational structure
@@ -490,16 +491,119 @@ class SystemDiagramData(models.Model):
             _logger.warning("Error getting company structure: %s", str(e))
         return nodes, edges
 
+    def _get_cross_department_sharing(self):
+        """Get cross-department sharing relationships for visualization.
+
+        Creates nodes and edges representing cross-department sharing requests,
+        approvals, and rejections. This helps visualize collaboration patterns
+        and access sharing across different departments.
+
+        Returns:
+            tuple: (nodes_list, edges_list) showing sharing relationships
+                   with appropriate status-based styling
+        """
+        nodes = []
+        edges = []
+        try:
+            # Get sharing records
+            sharing_records = self.env["cross.department.sharing"].search(
+                [("company_id", "=", self.company_id.id)], limit=50
+            )  # Limit for performance
+
+            for sharing in sharing_records:
+                # Create sharing request node
+                sharing_id = f"sharing_{sharing.id}"
+                status_color = self._get_sharing_status_color(sharing.state)
+
+                nodes.append(
+                    {
+                        "id": sharing_id,
+                        "label": f"Share\n{sharing.name}",
+                        "title": "Sharing: %s\nFrom: %s\nTo: %s\nStatus: %s"
+                        % (
+                            sharing.name,
+                            sharing.requesting_department_id.name,
+                            sharing.target_department_id.name,
+                            sharing.state.title(),
+                        ),
+                        "group": f"sharing_{sharing.state}",
+                        "color": {"background": status_color, "border": self._darken_color(status_color)},
+                        "shape": "diamond",
+                        "level": 8,
+                        "size": 25,
+                    }
+                )
+
+                # Connect requesting department to sharing
+                edges.append(
+                    {
+                        "from": f"department_{sharing.requesting_department_id.id}",
+                        "to": sharing_id,
+                        "color": {"color": "#FF6F00"},
+                        "arrows": {"to": {"enabled": True}},
+                        "label": "Requests",
+                        "dashes": [5, 5],
+                    }
+                )
+
+                # Connect sharing to target department
+                edges.append(
+                    {
+                        "from": sharing_id,
+                        "to": f"department_{sharing.target_department_id.id}",
+                        "color": {"color": status_color},
+                        "arrows": {"to": {"enabled": True}},
+                        "label": "Shares With",
+                        "width": 3,
+                    }
+                )
+
+                # Connect shared records to sharing
+                for container in sharing.shared_record_ids[:5]:  # Limit for performance
+                    edges.append(
+                        {
+                            "from": "model_records_container",
+                            "to": sharing_id,
+                            "color": {"color": "#9C27B0"},
+                            "arrows": {"to": {"enabled": True}},
+                            "label": f"Record: {container.name or container.id}",
+                            "dashes": [2, 2],
+                        }
+                    )
+
+        except Exception as e:
+            _logger.warning("Error getting cross-department sharing: %s", str(e))
+        return nodes, edges
+
+    def _get_sharing_status_color(self, state):
+        """Get color for sharing status.
+
+        Args:
+            state (str): Sharing state (draft, sent, approved, rejected, expired, revoked)
+
+        Returns:
+            str: Hex color code for the status
+        """
+        color_map = {
+            "draft": "#9E9E9E",  # Gray
+            "sent": "#FBC02D",  # Yellow
+            "approved": "#388E3C",  # Green
+            "rejected": "#D32F2F",  # Red
+            "expired": "#757575",  # Dark Gray
+            "revoked": "#5D4037",  # Brown
+        }
+        return color_map.get(state, "#9E9E9E")
+
     def _get_model_field_relationships(self):
         """Get relationships between models based on field definitions.
-        
+
         Analyzes predefined key relationships between core models in the
         Records Management system. These relationships are hardcoded based
         on common field connections and business logic dependencies.
-        
+
         The method creates dashed edges to distinguish field relationships
         from structural relationships in the diagram.
-        
+
         Returns:
             list: List of edge dictionaries representing model field relationships
                   with dashed styling to indicate field-based connections
@@ -532,15 +636,15 @@ class SystemDiagramData(models.Model):
     @api.model
     def _model_exists(self, model_name):
         """Check if a model exists in the system, with caching for performance.
-        
+
         Performs a quick existence check for a model in the current Odoo
         environment. This method is optimized for repeated calls during
         diagram generation.
-        
+
         Args:
             model_name (str): The technical name of the model to check
                               (e.g., 'res.partner', 'records.container')
-                              
+
         Returns:
             bool: True if the model exists and is accessible, False otherwise
         """
@@ -548,17 +652,17 @@ class SystemDiagramData(models.Model):
 
     def _check_user_records_access(self, user):
         """Check if user has access to Records Management functionality.
-        
+
         Determines whether a specific user has access to the Records Management
         module by checking group membership. This is used for color-coding
         users in the access visualization.
-        
+
         Args:
             user (res.users): User record to check access for
-            
+
         Returns:
             bool: True if user has records management access, False otherwise
-            
+
         Note:
             Handles exceptions gracefully to prevent diagram generation failures
         """
@@ -569,15 +673,15 @@ class SystemDiagramData(models.Model):
 
     def _apply_search_filter(self, nodes, edges):
         """Apply search filtering to nodes and edges based on query.
-        
+
         Filters the diagram data to only include nodes and edges that match
         the search query. The search is case-insensitive and looks for matches
         in node labels. Connected edges are preserved for filtered nodes.
-        
+
         Args:
             nodes (list): List of node dictionaries to filter
             edges (list): List of edge dictionaries to filter
-            
+
         Returns:
             tuple: (filtered_nodes, filtered_edges) containing only matching
                    nodes and their connecting edges
@@ -592,14 +696,14 @@ class SystemDiagramData(models.Model):
 
     def _darken_color(self, hex_color):
         """Darken a hex color for creating border colors.
-        
+
         Takes a hex color string and creates a darker version by reducing
         RGB values by 30%. This is used to generate border colors that
         complement the background colors in the diagram.
-        
+
         Args:
             hex_color (str): Hex color string (e.g., '#FF5733')
-            
+
         Returns:
             str: Darkened hex color string, or '#333333' if parsing fails
         """
@@ -616,12 +720,12 @@ class SystemDiagramData(models.Model):
     # ============================================================================
     def action_refresh_diagram(self):
         """Refresh the diagram data by clearing cached computations.
-        
+
         Forces a complete regeneration of the diagram data by clearing the
         computed fields and invalidating the recordset cache. This ensures
         that any changes to underlying data (users, groups, models) are
         reflected in the diagram.
-        
+
         Returns:
             dict: Action dictionary to reload the current view
         """
@@ -639,15 +743,15 @@ class SystemDiagramData(models.Model):
 
     def action_export_diagram_data(self):
         """Export diagram data for external use or backup.
-        
+
         Creates a comprehensive export package containing all diagram data
         including nodes, edges, configuration, and metadata. The data is
         exported as a downloadable JSON file with base64 encoding.
-        
+
         Returns:
             dict: Action dictionary to trigger file download with the
                   exported diagram data
-                  
+
         Note:
             The export includes a timestamp for versioning and external
             system integration
@@ -667,4 +771,3 @@ class SystemDiagramData(models.Model):
             "url": f"data:application/json;charset=utf-8;base64,{b64_data}",
             "target": "new",
         }
-

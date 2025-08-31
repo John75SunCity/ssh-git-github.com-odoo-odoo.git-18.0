@@ -226,94 +226,140 @@ odoo.define("records_management.system_flowchart_view", function (require) {
      */
     _getDiagramOptions: function () {
       var defaultOptions = {
-        layout: {
-          hierarchical: {
-            enabled: true,
-            direction: "UD",
-            sortMethod: "directed",
-            levelSeparation: 150,
-            nodeSpacing: 200,
+          layout: {
+              hierarchical: {
+                  enabled: true,
+                  direction: "UD",
+                  sortMethod: "directed",
+                  levelSeparation: 150,
+                  nodeSpacing: 200,
+              },
           },
-        },
-        physics: {
-          enabled: true,
-          stabilization: { iterations: 100 },
-          barnesHut: {
-            gravitationalConstant: -8000,
-            centralGravity: 0.3,
-            springLength: 95,
-            springConstant: 0.04,
-            damping: 0.09,
-          },
-        },
-        interaction: {
-          hover: true,
-          multiselect: true,
-          selectConnectedEdges: false,
-          tooltipDelay: 300,
-        },
-        nodes: {
-          font: {
-            size: 14,
-            color: "#000000",
-            face: "Arial",
-          },
-          borderWidth: 2,
-          shadow: {
-            enabled: true,
-            color: "rgba(0,0,0,0.5)",
-            size: 5,
-            x: 2,
-            y: 2,
-          },
-          margin: 10,
-        },
-        edges: {
-          arrows: {
-            to: {
+          physics: {
               enabled: true,
-              scaleFactor: 0.5,
-            },
+              stabilization: { iterations: 100 },
+              barnesHut: {
+                  gravitationalConstant: -8000,
+                  centralGravity: 0.3,
+                  springLength: 95,
+                  springConstant: 0.04,
+                  damping: 0.09,
+              },
           },
-          font: { size: 12 },
-          smooth: {
-            type: "dynamic",
-            roundness: 0.5,
+          interaction: {
+              hover: true,
+              multiselect: true,
+              selectConnectedEdges: false,
+              tooltipDelay: 300,
           },
-          width: 2,
-        },
-        groups: {
-          system: {
-            color: { background: "#2E86AB", border: "#1B4B73" },
-            font: { color: "white", size: 16 },
+          nodes: {
+              font: {
+                  size: 14,
+                  color: "#000000",
+                  face: "Arial",
+              },
+              borderWidth: 2,
+              shadow: {
+                  enabled: true,
+                  color: "rgba(0,0,0,0.5)",
+                  size: 5,
+                  x: 2,
+                  y: 2,
+              },
+              margin: 10,
           },
-          interface: {
-            color: { background: "#A23B72", border: "#6B1E47" },
-            font: { color: "white" },
+          edges: {
+              arrows: {
+                  to: {
+                      enabled: true,
+                      scaleFactor: 0.5,
+                  },
+              },
+              font: { size: 12 },
+              smooth: {
+                  type: "dynamic",
+                  roundness: 0.5,
+              },
+              width: 2,
           },
-          model: {
-            color: { background: "#4CAF50", border: "#2E7D32" },
-            shape: "box",
+          groups: {
+              system: {
+                  color: { background: "#2E86AB", border: "#1B4B73" },
+                  font: { color: "white", size: 16 },
+              },
+              interface: {
+                  color: { background: "#A23B72", border: "#6B1E47" },
+                  font: { color: "white" },
+              },
+              model: {
+                  color: { background: "#4CAF50", border: "#2E7D32" },
+                  shape: "box",
+              },
+              user: {
+                  shape: "circle",
+                  size: 30,
+              },
+              // Permission Level Groups
+              admin_user: {
+                  shape: "circle",
+                  size: 35,
+                  color: { background: "#D32F2F", border: "#B71C1C" },
+                  font: { color: "white", size: 12 },
+              },
+              manager_user: {
+                  shape: "circle",
+                  size: 32,
+                  color: { background: "#F57C00", border: "#E65100" },
+                  font: { color: "white", size: 12 },
+              },
+              regular_user: {
+                  shape: "circle",
+                  size: 30,
+                  color: { background: "#1976D2", border: "#0D47A1" },
+                  font: { color: "white", size: 12 },
+              },
+              readonly_user: {
+                  shape: "circle",
+                  size: 28,
+                  color: { background: "#757575", border: "#424242" },
+                  font: { color: "white", size: 12 },
+              },
+              security_group: {
+                  color: { background: "#8BC34A", border: "#4CAF50" },
+                  shape: "ellipse",
+              },
+              company: {
+                  color: { background: "#3F51B5", border: "#1A237E" },
+                  shape: "box",
+                  font: { color: "white" },
+              },
+              department: {
+                  color: { background: "#673AB7", border: "#4527A0" },
+                  shape: "ellipse",
+                  font: { color: "white" },
+              },
+              // Cross-Department Sharing Groups
+              sharing_request: {
+                  color: { background: "#FF6F00", border: "#E65100" },
+                  shape: "diamond",
+                  font: { color: "white", size: 11 },
+              },
+              sharing_approved: {
+                  color: { background: "#388E3C", border: "#1B5E20" },
+                  shape: "diamond",
+                  font: { color: "white", size: 11 },
+              },
+              sharing_pending: {
+                  color: { background: "#FBC02D", border: "#F57F17" },
+                  shape: "diamond",
+                  font: { color: "white", size: 11 },
+              },
+              sharing_rejected: {
+                  color: { background: "#D32F2F", border: "#B71C1C" },
+                  shape: "diamond",
+                  font: { color: "white", size: 11 },
+              },
           },
-          user: {
-            shape: "circle",
-            size: 30,
-          },
-          security_group: {
-            color: { background: "#8BC34A", border: "#4CAF50" },
-            shape: "ellipse",
-          },
-          company: {
-            color: { background: "#3F51B5", border: "#1A237E" },
-            shape: "box",
-            font: { color: "white" },
-          },
-          department: {
-            color: { background: "#673AB7", border: "#4527A0" },
-            shape: "ellipse",
-            font: { color: "white" },
-          },
-        },
       };
 
       try {
