@@ -86,6 +86,7 @@
         "security/ir.model.access.csv",
         "security/naid_security.xml",
         "security/portal_request_security.xml",
+        "views/records_billing_rate_views.xml",
         "views/advanced_billing_line_views.xml",
         "views/advanced_billing_service_line_views.xml",
         "views/advanced_billing_storage_line_views.xml",
