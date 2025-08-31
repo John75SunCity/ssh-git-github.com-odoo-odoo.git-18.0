@@ -67,7 +67,6 @@
         "data/core_records_data.xml",
         "data/document_retrieval_rates_data.xml",
         "data/feedback_survey_data.xml",
-        "data/fsm_automated_actions_data.xml",
         "data/fsm_mail_templates_data.xml",
         "data/intelligent_search_indexes_data.xml",
         "data/load_data.xml",
