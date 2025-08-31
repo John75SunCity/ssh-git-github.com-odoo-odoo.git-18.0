@@ -6,11 +6,11 @@
     <record id="required_document_view_tree" model="ir.ui.view">
         <field name="name">required.document.view.tree</field>
         <field name="model">required.document</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

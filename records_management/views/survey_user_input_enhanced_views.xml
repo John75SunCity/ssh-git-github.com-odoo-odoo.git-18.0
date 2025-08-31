@@ -6,11 +6,11 @@
     <record id="survey_user_input_enhanced_view_tree" model="ir.ui.view">
         <field name="name">survey.user.input.enhanced.view.tree</field>
         <field name="model">survey.user.input.enhanced</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -8,7 +8,7 @@
         <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_form"/>
 
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <!-- Add Records Management specific fields -->
 <xpath expr="//sheet//group[last()]" position="after">
@@ -41,12 +41,12 @@
         <notebook>
                 <page string="Destruction History" attrs="{'invisible': [('equipment_category', '!=', 'shredding')]}">
                         <field name="destruction_service_ids" mode="tree">
-                                <tree>
+                                <list>
                                         <field name="service_date"/>
                                         <field name="total_weight"/>
                                         <field name="certificate_number"/>
                                         <field name="state"/>
-                                </tree>
+                                </list>
                         </field>
                 </page>
         </notebook>
@@ -60,7 +60,7 @@
         <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_tree"/>
 
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <!-- Add Records Management columns -->
 <xpath expr="//field[@name='category_id']" position="after">
@@ -81,7 +81,7 @@
         <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_filter"/>
 
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <!-- Add Records Management search fields -->
 <xpath expr="//field[@name='name']" position="after">
@@ -117,7 +117,7 @@
         <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_kanban"/>
 
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <!-- Add Records Management indicators -->
 <xpath expr="//div[hasclass('oe_kanban_details')]" position="inside">
@@ -152,7 +152,7 @@
         <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_graph"/>
 
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <!-- Enhance graph with Records Management dimensions -->
 <xpath expr="//graph" position="attributes">
@@ -171,7 +171,7 @@
         <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_pivot"/>
 
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <!-- Add Records Management pivot dimensions -->
 <xpath expr="//pivot" position="attributes">
@@ -191,7 +191,7 @@
         <field name="model">maintenance.equipment</field>
 <field name="inherit_id" ref="maintenance.view_maintenance_equipment_calendar"/>
 
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <!-- Enhance calendar view with Records Management information -->
 <xpath expr="//calendar" position="attributes">

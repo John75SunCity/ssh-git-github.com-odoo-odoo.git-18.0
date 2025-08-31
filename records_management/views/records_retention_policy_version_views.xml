@@ -5,7 +5,7 @@
     <record id="records_retention_policy_version_view_tree" model="ir.ui.view">
         <field name="name">records.retention.policy.version.view.tree</field>
         <field name="model">records.retention.policy.version</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree string="Retention Policy Versions" decoration-success="is_active==True" decoration-muted="is_active==False">
                 <field name="policy_id"/>
@@ -15,7 +15,7 @@
                 <field name="created_by"/>
                 <field name="approval_status"/>
                 <field name="create_date" string="Created"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -23,7 +23,7 @@
     <record id="records_retention_policy_version_view_form" model="ir.ui.view">
         <field name="name">records.retention.policy.version.view.form</field>
         <field name="model">records.retention.policy.version</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="Retention Policy Version">
                 <header>
@@ -119,13 +119,13 @@
 
                         <page string="Version History" name="history">
                             <field name="previous_versions" readonly="1">
-                                <tree>
+                                <list>
                                     <field name="version_number"/>
                                     <field name="effective_date"/>
                                     <field name="expiration_date"/>
                                     <field name="created_by"/>
                                     <field name="approval_status"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>

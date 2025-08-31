@@ -6,11 +6,11 @@
     <record id="report_records_management_report_location_utilization_view_tree" model="ir.ui.view">
         <field name="name">report.records_management.report_location_utilization.view.tree</field>
         <field name="model">report.records_management.report_location_utilization</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -6,11 +6,11 @@
     <record id="stock_lot_attribute_view_tree" model="ir.ui.view">
         <field name="name">stock.lot.attribute.view.tree</field>
         <field name="model">stock.lot.attribute</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

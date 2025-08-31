@@ -5,14 +5,14 @@
         <record id="advanced_billing_profile_view_tree" model="ir.ui.view">
             <field name="name">advanced.billing.profile.view.tree</field>
             <field name="model">advanced.billing.profile</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Billing Profiles">
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="billing_frequency"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -20,7 +20,7 @@
         <record id="advanced_billing_profile_view_form" model="ir.ui.view">
             <field name="name">advanced.billing.profile.view.form</field>
             <field name="model">advanced.billing.profile</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <form string="Billing Profile">
                     <header>
@@ -53,11 +53,11 @@
                             </page>
                             <page string="Contacts">
                                 <field name="billing_contact_ids">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="email"/>
                                         <field name="phone"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Services &amp; Pricing">
@@ -85,12 +85,12 @@
         <record id="advanced_billing_profile_view_list" model="ir.ui.view">
             <field name="name">advanced.billing.profile.view.list</field>
             <field name="model">advanced.billing.profile</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="primary_contact_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 

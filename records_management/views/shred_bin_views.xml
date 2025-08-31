@@ -7,7 +7,7 @@
     <record id="shred_bin_view_tree" model="ir.ui.view">
         <field name="name">shred.bin.view.tree</field>
         <field name="model">shred.bin</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="current_fill_level &amp;gt;= 75 and state=='in_service'" decoration-success="state=='in_service' and current_fill_level &amp;lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
                 <field name="name"/>
@@ -21,7 +21,7 @@
                 <field name="service_count"/>
                 <field name="user_id"/>
                 <field name="active" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -31,7 +31,7 @@
     <record id="shred_bin_view_tree" model="ir.ui.view">
         <field name="name">shred.bin.view.tree</field>
         <field name="model">shred.bin</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree string="My Shred Bins" decoration-danger="needs_collection==True" decoration-warning="current_fill_level &amp;gt;= 75 and needs_collection==False" decoration-success="state=='in_service' and current_fill_level &amp;lt; 75" create="false" delete="false" editable="false">
                 <field name="name"/>
@@ -45,7 +45,7 @@
                 <field name="last_service_date"/>
                 <field name="active" invisible="1"/>
                 <button name="action_customer_mark_full" string="Mark Full" type="object" class="btn-warning" attrs="{'invisible': ['|', ('state', '!=', 'in_service'), ('needs_collection', '=', True)]}" confirm="Are you sure this bin is ready for collection?"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -55,7 +55,7 @@
     <record id="shred_bin_view_form" model="ir.ui.view">
         <field name="name">shred.bin.view.form</field>
         <field name="model">shred.bin</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="My Shred Bin" create="false" edit="false" delete="false">
                 <header>
@@ -108,25 +108,25 @@
                     <notebook>
                         <page string="Service History" attrs="{'invisible': [('current_billing_period_services', '=', 0)]}">
                             <field name="shredding_service_ids" readonly="1">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="service_date"/>
                                     <field name="service_type"/>
                                     <field name="state"/>
                                     <field name="actual_weight" string="Weight Destroyed"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
 
                         <page string="Collection Requests">
                             <field name="pickup_request_ids" readonly="1">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="request_date"/>
                                     <field name="urgency"/>
                                     <field name="state"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -137,7 +137,7 @@
     <record id="shred_bin_view_form" model="ir.ui.view">
         <field name="name">shred.bin.view.form</field>
         <field name="model">shred.bin</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="Customer Shred Bin">
                 <header>
@@ -197,25 +197,25 @@
 
                         <page string="Shredding Services" attrs="{'invisible': [('service_count', '=', 0)]}">
                             <field name="shredding_service_ids" readonly="1">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="service_date"/>
                                     <field name="service_type"/>
                                     <field name="state"/>
                                     <field name="total_weight"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
 
                         <page string="Pickup Requests">
                             <field name="pickup_request_ids" readonly="1">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="request_date"/>
                                     <field name="request_type"/>
                                     <field name="urgency"/>
                                     <field name="state"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -463,7 +463,7 @@
     <record id="shred_bin_view_tree" model="ir.ui.view">
         <field name="name">shred.bin.view.tree</field>
         <field name="model">shred.bin</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <map res_partner="partner_id" default_order="partner_id">
                 <field name="name"/>

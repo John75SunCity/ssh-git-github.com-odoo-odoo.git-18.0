@@ -6,9 +6,9 @@
     <record id="naid_audit_log_view_tree" model="ir.ui.view">
         <field name="name">naid.audit.log.view.tree</field>
         <field name="model">naid.audit.log</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="create_date" widget="datetime"/>
                 <field name="user_id"/>
                 <field name="action_type"/>
@@ -17,7 +17,7 @@
                 <field name="res_id"/>
                 <field name="naid_compliant" widget="boolean_toggle"/>
                 <field name="company_id" optional="hide"/>
-            </tree>
+            </list>
         </field>
     </record>
 

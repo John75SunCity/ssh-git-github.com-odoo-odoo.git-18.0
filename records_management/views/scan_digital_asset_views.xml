@@ -6,11 +6,11 @@
     <record id="scan_digital_asset_view_tree" model="ir.ui.view">
         <field name="name">scan.digital.asset.view.tree</field>
         <field name="model">scan.digital.asset</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

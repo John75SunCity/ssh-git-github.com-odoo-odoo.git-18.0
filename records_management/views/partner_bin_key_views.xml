@@ -6,11 +6,11 @@
     <record id="partner_bin_key_view_tree" model="ir.ui.view">
         <field name="name">partner.bin.key.view.tree</field>
         <field name="model">partner.bin.key</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

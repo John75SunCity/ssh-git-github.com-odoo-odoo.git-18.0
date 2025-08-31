@@ -5,7 +5,7 @@
         <record id="records_retention_policy_view_tree" model="ir.ui.view">
             <field name="name">records.retention.policy.view.tree</field>
             <field name="model">records.retention.policy</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Retention Policies">
                     <field name="name"/>
@@ -15,7 +15,7 @@
                     <field name="review_date"/>
                     <field name="policy_status"/>
                     <field name="document_count"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -23,7 +23,7 @@
         <record id="records_retention_policy_view_form" model="ir.ui.view">
             <field name="name">records.retention.policy.view.form</field>
             <field name="model">records.retention.policy</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <form string="Retention Policy">
                     <header>
@@ -64,13 +64,13 @@
                             </page>
                             <page string="Version History">
                                 <field name="version_history_ids">
-                                    <tree>
+                                    <list>
                                         <field name="version_number"/>
                                         <field name="version_date"/>
                                         <field name="changed_by"/>
                                         <field name="approval_status"/>
                                         <field name="is_current_version"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Analytics" groups="base.group_system">

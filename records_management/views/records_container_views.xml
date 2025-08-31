@@ -97,7 +97,7 @@
     <record id="records_container_view_tree" model="ir.ui.view">
         <field name="name">records.container.view.tree</field>
         <field name="model">records.container</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
                 <header>
@@ -162,23 +162,23 @@
                     <notebook>
                         <page string="📄 Documents" name="documents">
                             <field name="document_ids" mode="list">
-                                <tree>
+                                <list>
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="state"/>
                                     <field name="create_date"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🚚 Movement History" name="movements">
                             <field name="movement_ids" mode="list">
-                                <tree>
+                                <list>
                                     <field name="movement_date"/>
                                     <field name="from_location_id"/>
                                     <field name="to_location_id"/>
                                     <field name="movement_type"/>
                                     <field name="user_id"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📝 Notes &amp;amp; Details" name="details">

@@ -6,11 +6,11 @@
     <record id="records_user_invitation_wizard_view_tree" model="ir.ui.view">
         <field name="name">records.user.invitation.wizard.view.tree</field>
         <field name="model">records.user.invitation.wizard</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

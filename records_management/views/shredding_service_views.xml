@@ -6,7 +6,7 @@
         <record id="shredding_service_view_search" model="ir.ui.view">
             <field name="name">shredding.service.view.search</field>
             <field name="model">shredding.service</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <search string="Search Shredding Services">
                     <field name="name"/>
@@ -32,7 +32,7 @@
     <record id="shredding_service_view_kanban" model="ir.ui.view">
         <field name="name">shredding.service.view.kanban</field>
         <field name="model">shredding.service</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <kanban default_group_by="service_type" class="o_kanban_shredding_dashboard">
                 <field name="name"/>
@@ -76,9 +76,9 @@
     <record id="shredding_service_view_tree" model="ir.ui.view">
         <field name="name">shredding.service.view.tree</field>
         <field name="model">shredding.service</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="provider_id"/>
                 <field name="service_type"/>
@@ -88,7 +88,7 @@
                 <field name="chain_of_custody" widget="boolean_toggle"/>
                 <field name="witness_destruction" widget="boolean_toggle"/>
                 <field name="base_price"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -96,7 +96,7 @@
     <record id="shredding_service_view_form" model="ir.ui.view">
         <field name="name">shredding.service.view.form</field>
         <field name="model">shredding.service</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -152,7 +152,7 @@
                                     <field name="weight"/>
                                     <field name="container_type"/>
                                     <field name="destruction_status"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Service Details">
@@ -171,13 +171,13 @@
                             <group>
                                 <field name="certificate_id" readonly="1"/>
 <field name="naid_audit_log_ids" mode="list">
-                                    <tree>
+                                    <list>
                                         <field name="event_type"/>
                                         <field name="event_date"/>
 <field name="user_id"/>
 
                                         <field name="location"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </group>
                         </page>

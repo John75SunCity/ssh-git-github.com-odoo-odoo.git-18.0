@@ -5,7 +5,7 @@
     <record id="records_storage_department_user_view_tree" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.tree</field>
         <field name="model">records.storage.department.user</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <tree decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'">
                 <field name="name"/>
@@ -17,7 +17,7 @@
 <field name="state" widget="badge" decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'"/>
 <field name="company_id" groups="base.group_multi_company"/>
 
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -25,7 +25,7 @@
     <record id="records_storage_department_user_view_form" model="ir.ui.view">
         <field name="name">records.storage.department.user.view.form</field>
         <field name="model">records.storage.department.user</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="Records Storage Department User">
 <header>
@@ -97,12 +97,12 @@
 <div class="oe_clear">
     <label string="Assignment History"/>
     <field name="history_ids" nolabel="1">
-        <tree>
+        <list>
             <field name="date"/>
             <field name="action"/>
             <field name="user_id"/>
             <field name="notes"/>
-        </tree>
+        </list>
     </field>
 </div>
 </page>

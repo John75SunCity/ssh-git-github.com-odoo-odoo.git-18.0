@@ -6,11 +6,11 @@
     <record id="container_access_work_order_view_tree" model="ir.ui.view">
         <field name="name">container.access.work.order.view.tree</field>
         <field name="model">container.access.work.order</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

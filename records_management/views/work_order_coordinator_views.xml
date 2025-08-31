@@ -8,7 +8,7 @@
     <record id="work_order_coordinator_view_tree" model="ir.ui.view">
         <field name="name">work.order.coordinator.view.tree</field>
         <field name="model">work.order.coordinator</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
 <tree string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
                 <field name="name"/>
@@ -21,7 +21,7 @@
 <field name="state" widget="badge" decoration-info="state=='available'" decoration-warning="state=='busy'" decoration-danger="state=='unavailable'"/>
 <field name="company_id" groups="base.group_multi_company"/>
 
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -31,7 +31,7 @@
     <record id="work_order_coordinator_view_form" model="ir.ui.view">
         <field name="name">work.order.coordinator.view.form</field>
         <field name="model">work.order.coordinator</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="Work Order Coordinator">
 <header>
@@ -108,7 +108,7 @@
                 <field name="priority" widget="priority"/>
                 <field name="scheduled_date"/>
                 <field name="state" widget="badge"/>
-            </tree>
+            </list>
         </field>
     </page>
 
@@ -136,7 +136,7 @@
                 <field name="issue_date"/>
                 <field name="expiry_date"/>
                 <field name="is_active" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </page>
 
@@ -157,13 +157,13 @@
 
         <separator string="Assigned Equipment"/>
         <field name="assigned_equipment_ids" nolabel="1">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="equipment_type"/>
                 <field name="serial_number"/>
                 <field name="last_maintenance_date"/>
                 <field name="next_maintenance_due"/>
-            </tree>
+            </list>
         </field>
     </page>
 

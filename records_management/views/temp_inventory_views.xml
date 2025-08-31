@@ -5,7 +5,7 @@
         <record id="temp_inventory_view_tree" model="ir.ui.view">
             <field name="name">temp.inventory.view.tree</field>
             <field name="model">temp.inventory</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Temporary Inventory" decoration-bf="state=='active'" decoration-warning="state=='full'" decoration-danger="state=='archived'">
                     <field name="name"/>
@@ -20,7 +20,7 @@
                     <field name="priority"/>
                     <field name="user_id"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -28,7 +28,7 @@
         <record id="temp_inventory_view_form" model="ir.ui.view">
             <field name="name">temp.inventory.view.form</field>
             <field name="model">temp.inventory</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <form string="Temporary Inventory">
                     <header>
@@ -111,39 +111,39 @@
                             </page>
                             <page string="Documents" attrs="{'invisible': [('document_count', '=', 0)]}">
                                 <field name="document_ids">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="document_type_id"/>
                                         <field name="state"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Containers" attrs="{'invisible': [('container_count', '=', 0)]}">
                                 <field name="container_ids">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="container_type"/>
                                         <field name="state"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Movements" attrs="{'invisible': [('movement_count', '=', 0)]}">
                                 <field name="movement_ids">
-                                    <tree>
+                                    <list>
                                         <field name="date"/>
                                         <field name="movement_type"/>
                                         <field name="user_id"/>
                                         <field name="description"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Audit Trail" attrs="{'invisible': [('compliance_required', '=', False)]}">
                                 <field name="audit_trail_ids">
-                                    <tree>
+                                    <list>
                                         <field name="date"/>
                                         <field name="user_id"/>
                                         <field name="description"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
@@ -161,7 +161,7 @@
         <record id="temp_inventory_view_search" model="ir.ui.view">
             <field name="name">temp.inventory.view.search</field>
             <field name="model">temp.inventory</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
@@ -191,7 +191,7 @@
         <record id="temp_inventory_movement_view_tree" model="ir.ui.view">
             <field name="name">temp.inventory.movement.view.tree</field>
             <field name="model">temp.inventory.movement</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Inventory Movements" create="false" edit="false">
                     <field name="date"/>
@@ -200,7 +200,7 @@
                     <field name="user_id"/>
                     <field name="description"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -208,7 +208,7 @@
         <record id="temp_inventory_movement_view_form" model="ir.ui.view">
             <field name="name">temp.inventory.movement.view.form</field>
             <field name="model">temp.inventory.movement</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <form string="Inventory Movement">
                     <sheet>
@@ -230,7 +230,7 @@
         <record id="temp_inventory_audit_view_tree" model="ir.ui.view">
             <field name="name">temp.inventory.audit.view.tree</field>
             <field name="model">temp.inventory.audit</field>
-            <field name="type">tree</field>
+            <field name="type">list</field>
         <field name="arch" type="xml">
                 <tree string="Inventory Audit Trail" create="false" edit="false">
                     <field name="date"/>
@@ -238,7 +238,7 @@
                     <field name="user_id"/>
                     <field name="description"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 

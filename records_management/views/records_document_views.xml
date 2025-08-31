@@ -88,7 +88,7 @@
     <record id="records_document_view_tree" model="ir.ui.view">
         <field name="name">records.document.view.tree</field>
         <field name="model">records.document</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree decoration-danger="destruction_eligible_date &amp;lt;= context_today()" decoration-warning="destruction_eligible_date &amp;lt;= (context_today() + relativedelta(days=30))" decoration-success="is_permanent == True">
                 <field name="name" string="📄 Document"/>
@@ -103,7 +103,7 @@
                 <button name="action_mark_permanent" type="object" string="Mark Permanent" icon="fa-shield" class="btn-link" invisible="is_permanent" groups="records_management.group_records_user"/>
                 <button name="action_unmark_permanent" type="object" string="Remove Permanent" icon="fa-shield" class="btn-link" invisible="not is_permanent" groups="base.group_system"/>
                 <button name="action_schedule_destruction" type="object" string="Destroy" icon="fa-trash" class="btn-link" invisible="not destruction_eligible_date or is_permanent"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -179,25 +179,25 @@
                         </page>
                         <page string="🔗 Chain of Custody" name="custody_chain">
                             <field name="chain_of_custody_ids" mode="list">
-                                <tree>
+                                <list>
                                     <field name="event_date"/>
                                     <field name="event_type"/>
                                     <field name="responsible_person"/>
                                     <field name="location"/>
                                     <field name="signature_verified"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📋 Audit Trail" name="audit">
                             <field name="audit_trail_ids" mode="list">
-                                <tree>
+                                <list>
                                     <field name="timestamp"/>
                                     <field name="action_type"/>
                                     <field name="user_id"/>
                                     <field name="description"/>
                                     <field name="compliance_verified"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="💥 Destruction Record" name="destruction" invisible="state != 'destroyed'">
@@ -218,14 +218,14 @@
                         </page>
                         <page string="📷 Digital Scans" name="digital">
                             <field name="digital_scan_ids" mode="list">
-                                <tree>
+                                <list>
                                     <field name="scan_date"/>
                                     <field name="file_format"/>
                                     <field name="resolution"/>
                                     <field name="file_size"/>
                                     <field name="storage_location"/>
                                     <button name="action_download" type="object" string="Download" icon="fa-download" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>

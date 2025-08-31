@@ -7,7 +7,7 @@
     <record id="naid_compliance_view_kanban" model="ir.ui.view">
         <field name="name">naid.compliance.view.kanban</field>
         <field name="model">naid.compliance</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <kanban default_group_by="compliance_status" class="o_kanban_naid_dashboard">
                 <field name="name"/>
@@ -81,7 +81,7 @@
     <record id="naid_compliance_view_tree" model="ir.ui.view">
         <field name="name">naid.compliance.view.tree</field>
         <field name="model">naid.compliance</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <tree decoration-success="compliance_status == 'certified' and certificate_valid == True" 
                   decoration-warning="compliance_status == 'pending_audit'"
@@ -101,7 +101,7 @@
                         invisible="not audit_required"/>
                 <button name="action_renew_certificate" type="object" string="Renew" 
                         icon="fa-refresh" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -109,7 +109,7 @@
     <record id="naid_compliance_view_form" model="ir.ui.view">
         <field name="name">naid.compliance.view.form</field>
         <field name="model">naid.compliance</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -203,7 +203,7 @@ invisible="naid_level != 'AAA'">
                         </page>
                         <page string="🔍 Audit History" name="audits">
                             <field name="audit_history_ids" mode="list">
-                                <tree>
+                                <list>
                                     <field name="audit_date"/>
                                     <field name="auditor_name"/>
                                     <field name="audit_type"/>
@@ -212,12 +212,12 @@ invisible="naid_level != 'AAA'">
                                     <field name="compliance_score"/>
                                     <field name="audit_result"/>
                                     <button name="action_view_audit_details" type="object" string="Details" icon="fa-eye" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📜 Certificates" name="certificates">
                             <field name="certificate_ids" mode="list">
-                                <tree>
+                                <list>
                                     <field name="certificate_number"/>
                                     <field name="certificate_type"/>
                                     <field name="issue_date"/>
@@ -225,12 +225,12 @@ invisible="naid_level != 'AAA'">
                                     <field name="issuing_authority"/>
                                     <field name="certificate_status"/>
                                     <button name="action_download_certificate" type="object" string="Download" icon="fa-download" class="btn-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🛡️ Destruction Records" name="destructions">
                             <field name="destruction_record_ids" mode="list">
-                                <tree>
+                                <list>
                                     <field name="destruction_date"/>
                                     <field name="client_name"/>
                                     <field name="material_type"/>
@@ -238,7 +238,7 @@ invisible="naid_level != 'AAA'">
                                     <field name="witness_present"/>
                                     <field name="certificate_issued"/>
                                     <field name="compliance_verified"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📋 Compliance Checklist" name="checklist">
@@ -251,7 +251,7 @@ invisible="naid_level != 'AAA'">
                                     <field name="verification_method"/>
                                     <field name="responsible_person"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📊 Performance Metrics" name="metrics">
@@ -270,14 +270,14 @@ invisible="naid_level != 'AAA'">
                                 </group>
                             </group>
                             <field name="performance_history_ids" mode="list">
-                                <tree>
+                                <list>
                                     <field name="measurement_date"/>
                                     <field name="metric_type"/>
                                     <field name="score"/>
                                     <field name="benchmark"/>
                                     <field name="variance"/>
                                     <field name="trend"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="🔔 Notifications" name="notifications">

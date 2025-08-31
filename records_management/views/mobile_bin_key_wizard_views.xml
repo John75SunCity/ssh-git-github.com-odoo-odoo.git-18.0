@@ -139,7 +139,7 @@ action = {
         <field name="name">res.partner.view.tree</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <field name="has_bin_key" string="🔑" widget="boolean_toggle"/>
@@ -230,20 +230,20 @@ action = {
                     <!-- Tree view for Key -->
                     <separator string="🗂️ Key Assignment History"/>
                     <field name="bin_key_history_ids" readonly="1">
-                        <tree>
+                        <list>
                             <field name="key_number"/>
                             <field name="status" widget="badge" decoration-success="status == 'issued'" decoration-info="status == 'returned'" decoration-warning="status == 'lost'" decoration-danger="status == 'replaced'"/>
                             <field name="issue_date"/>
                             <field name="return_date"/>
                             <field name="issue_location"/>
                             <field name="emergency_contact" widget="boolean_toggle"/>
-                        </tree>
+                        </list>
                     </field>
 
                     <!-- Tree view for Unlock -->
                     <separator string="🔓 Unlock Service History" attrs="{'invisible': [('unlock_service_count', '=', 0)]}"/>
                     <field name="unlock_service_history_ids" readonly="1" attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
-                        <tree>
+                        <list>
                             <field name="service_number"/>
                             <field name="service_date"/>
                             <field name="bin_location"/>
@@ -251,7 +251,7 @@ action = {
                             <field name="charge_amount"/>
                             <field name="billable" widget="boolean_toggle"/>
                             <field name="invoice_created" widget="boolean_toggle"/>
-                        </tree>
+                        </list>
                     </field>
 
                 </page>

@@ -6,11 +6,11 @@
     <record id="records_customer_billing_profile_view_tree" model="ir.ui.view">
         <field name="name">records.customer.billing.profile.view.tree</field>
         <field name="model">records.customer.billing.profile</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 

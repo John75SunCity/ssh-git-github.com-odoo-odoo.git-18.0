@@ -6,11 +6,11 @@
     <record id="survey_improvement_action_view_tree" model="ir.ui.view">
         <field name="name">survey.improvement.action.view.tree</field>
         <field name="model">survey.improvement.action</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="name"/>
-            </tree>
+            </list>
         </field>
     </record>
 
