@@ -369,8 +369,16 @@ class ModelValidator:
             with open(security_file, 'r', encoding='utf-8') as f:
                 lines = f.readlines()
 
+            # Only check security rules for models that have _name (i.e., are defined in this module)
+            # Skip inherited models that don't have their own _name
+            models_to_check = []
+            for model_name, model_info in self.models.items():
+                # Only check models that have a _name attribute (not inherited models)
+                if "inherited" not in model_info or not model_info.get("inherited", False):
+                    models_to_check.append(model_name)
+
             # Check if all models have security rules
-            for model_name in self.models.keys():
+            for model_name in models_to_check:
                 model_found = False
                 for line in lines[1:]:  # Skip header
                     if f"model_{model_name}" in line or model_name in line:
