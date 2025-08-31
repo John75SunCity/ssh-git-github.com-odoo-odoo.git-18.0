@@ -69,8 +69,20 @@ class RecordsDepartmentSharing(models.Model):
     valid_until = fields.Date(string="Valid Until", tracking=True)
 
     # Related records
-    container_ids = fields.Many2many("records.container", string="Shared Containers")
-    billing_ids = fields.Many2many("records.billing", string="Shared Billing Records")
+    container_ids = fields.Many2many(
+        "records.container",
+        "records_department_sharing_container_rel",
+        "sharing_id",
+        "container_id",
+        string="Shared Containers",
+    )
+    billing_ids = fields.Many2many(
+        "records.billing",
+        "records_department_sharing_billing_rel",
+        "sharing_id",
+        "billing_id",
+        string="Shared Billing Records",
+    )
 
     # Audit trail
     sharing_logs = fields.One2many("records.department.sharing.log", "sharing_id", string="Sharing Logs")
