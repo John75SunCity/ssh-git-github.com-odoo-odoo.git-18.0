@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mobile Export Template -->
+    <template id="portal_mobile_export" name="Mobile Export Center">
+        <t t-call="portal.portal_layout">
+            <t t-set="pageName" t-value="'mobile-export'"/>
+            <t t-set="title">Export Data</t>
+
+            <div class="container-fluid p-2">
+                <!-- Mobile Header -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center py-3">
+                                <h5 class="mb-1">
+                                    <i class="fa fa-download me-2 text-primary"></i>
+                                    Export Your Data
+                                </h5>
+                                <p class="text-muted small mb-0">Download reports and documents</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Options Grid -->
+                <div class="row g-2 mb-3">
+                    <!-- Inventory Export -->
+                    <div class="col-6">
+                        <div class="card h-100 border-0 shadow-sm export-card" data-type="inventory">
+                            <div class="card-body text-center py-3">
+                                <i class="fa fa-boxes fa-2x text-primary mb-2"></i>
+                                <h6 class="mb-1">Inventory</h6>
+                                <small class="text-muted">Export your storage items</small>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary export-btn" data-format="excel">
+                                        <i class="fa fa-file-excel me-1"></i>Excel
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success export-btn" data-format="pdf">
+                                        <i class="fa fa-file-pdf me-1"></i>PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work Orders Export -->
+                    <div class="col-6">
+                        <div class="card h-100 border-0 shadow-sm export-card" data-type="work_orders">
+                            <div class="card-body text-center py-3">
+                                <i class="fa fa-clipboard-list fa-2x text-success mb-2"></i>
+                                <h6 class="mb-1">Work Orders</h6>
+                                <small class="text-muted">Export service requests</small>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary export-btn" data-format="excel">
+                                        <i class="fa fa-file-excel me-1"></i>Excel
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success export-btn" data-format="pdf">
+                                        <i class="fa fa-file-pdf me-1"></i>PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoices Export -->
+                    <div class="col-6">
+                        <div class="card h-100 border-0 shadow-sm export-card" data-type="invoices">
+                            <div class="card-body text-center py-3">
+                                <i class="fa fa-file-invoice-dollar fa-2x text-warning mb-2"></i>
+                                <h6 class="mb-1">Invoices</h6>
+                                <small class="text-muted">Export billing history</small>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary export-btn" data-format="excel">
+                                        <i class="fa fa-file-excel me-1"></i>Excel
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success export-btn" data-format="pdf">
+                                        <i class="fa fa-file-pdf me-1"></i>PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents Export -->
+                    <div class="col-6">
+                        <div class="card h-100 border-0 shadow-sm export-card" data-type="documents">
+                            <div class="card-body text-center py-3">
+                                <i class="fa fa-file-alt fa-2x text-info mb-2"></i>
+                                <h6 class="mb-1">Documents</h6>
+                                <small class="text-muted">Export document list</small>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary export-btn" data-format="excel">
+                                        <i class="fa fa-file-excel me-1"></i>Excel
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success export-btn" data-format="pdf">
+                                        <i class="fa fa-file-pdf me-1"></i>PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Settings -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">Export Settings</h6>
+                            </div>
+                            <div class="card-body">
+                                <!-- Date Range -->
+                                <div class="form-group mb-3">
+                                    <label for="date_from" class="form-label">Date From</label>
+                                    <input type="date" name="date_from" id="date_from" class="form-control"/>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="date_to" class="form-label">Date To</label>
+                                    <input type="date" name="date_to" id="date_to" class="form-control"/>
+                                </div>
+
+                                <!-- Status Filter -->
+                                <div class="form-group mb-3">
+                                    <label for="status_filter" class="form-label">Status Filter</label>
+                                    <select name="status_filter" id="status_filter" class="form-control">
+                                        <option value="all">All Records</option>
+                                        <option value="active">Active Only</option>
+                                        <option value="completed">Completed Only</option>
+                                        <option value="pending">Pending Only</option>
+                                    </select>
+                                </div>
+
+                                <!-- Include Details -->
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" name="include_details"
+                                           id="include_details" checked="checked"/>
+                                    <label class="form-check-label" for="include_details">
+                                        Include Detailed Information
+                                    </label>
+                                    <small class="form-text text-muted">Add more columns with detailed data</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Exports -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0">
+                                    <i class="fa fa-history me-2"></i>
+                                    Recent Exports
+                                </h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <t t-if="recent_exports">
+                                    <t t-foreach="recent_exports" t-as="export">
+                                        <div class="d-flex align-items-center p-3 border-bottom">
+                                            <div class="flex-shrink-0 me-3">
+                                                <span t-attf-class="badge rounded-pill {{ export.format_badge }} p-2">
+                                                    <i t-attf-class="fa {{ export.format_icon }} text-white"></i>
+                                                </span>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-bold small"><t t-esc="export.title"/></div>
+                                                <div class="text-muted small"><t t-esc="export.date"/></div>
+                                                <div class="text-muted small"><t t-esc="export.size"/></div>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <a t-attf-href="{{ export.download_url }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fa fa-download me-1"></i>Download
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-center py-4">
+                                        <i class="fa fa-inbox fa-2x text-muted mb-2"></i>
+                                        <p class="text-muted small mb-0">No recent exports</p>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Export -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm bg-light">
+                            <div class="card-body text-center py-3">
+                                <i class="fa fa-layer-group fa-2x text-primary mb-2"></i>
+                                <h6 class="mb-1">Bulk Export</h6>
+                                <p class="text-muted small mb-3">Export all your data at once</p>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <button class="btn btn-primary btn-block export-all-btn" data-format="excel">
+                                            <i class="fa fa-file-excel me-1"></i>Excel Bundle
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-success btn-block export-all-btn" data-format="pdf">
+                                            <i class="fa fa-file-pdf me-1"></i>PDF Bundle
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Tips -->
+                <div class="row mb-5">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h6 class="mb-2">
+                                    <i class="fa fa-lightbulb text-warning me-2"></i>
+                                    Export Tips
+                                </h6>
+                                <ul class="list-unstyled small text-muted">
+                                    <li class="mb-1">
+                                        <i class="fa fa-check text-success me-2"></i>
+                                        Excel files are great for data analysis and printing
+                                    </li>
+                                    <li class="mb-1">
+                                        <i class="fa fa-check text-success me-2"></i>
+                                        PDF files preserve formatting and are printer-friendly
+                                    </li>
+                                    <li class="mb-1">
+                                        <i class="fa fa-check text-success me-2"></i>
+                                        Use date filters to export specific time periods
+                                    </li>
+                                    <li class="mb-1">
+                                        <i class="fa fa-check text-success me-2"></i>
+                                        Bulk export creates a complete data package
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Quick Actions -->
+                <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1030;">
+                    <div class="btn-group-vertical" role="group">
+                        <button type="button" class="btn btn-success btn-lg rounded-circle mb-2" onclick="exportAll()">
+                            <i class="fa fa-download fa-lg"/>
+                        </button>
+                        <button type="button" class="btn btn-info btn-lg rounded-circle mb-2" onclick="clearFilters()">
+                            <i class="fa fa-filter fa-lg"/>
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-lg rounded-circle" onclick="scrollToTop()">
+                            <i class="fa fa-arrow-up fa-lg"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

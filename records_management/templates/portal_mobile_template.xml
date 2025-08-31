@@ -47,23 +47,23 @@
                         </a>
                     </div>
                     <div class="col-6">
-                        <a href="/my/inventory" class="text-decoration-none">
+                        <a href="/my/inventory/mobile" class="text-decoration-none">
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body text-center py-3">
-                                    <i class="fa fa-boxes fa-2x text-info mb-2"></i>
-                                    <h6 class="mb-0">Inventory</h6>
-                                    <small class="text-muted">View Items</small>
+                                    <i class="fa fa-mobile fa-2x text-info mb-2"></i>
+                                    <h6 class="mb-0">Mobile Inventory</h6>
+                                    <small class="text-muted">Touch-friendly browsing</small>
                                 </div>
                             </div>
                         </a>
                     </div>
                     <div class="col-6">
-                        <a href="/my/documents" class="text-decoration-none">
+                        <a href="/my/mobile/export" class="text-decoration-none">
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body text-center py-3">
-                                    <i class="fa fa-file-alt fa-2x text-warning mb-2"></i>
-                                    <h6 class="mb-0">Documents</h6>
-                                    <small class="text-muted">Access Files</small>
+                                    <i class="fa fa-download fa-2x text-info mb-2"></i>
+                                    <h6 class="mb-0">Export Data</h6>
+                                    <small class="text-muted">Excel & PDF</small>
                                 </div>
                             </div>
                         </a>

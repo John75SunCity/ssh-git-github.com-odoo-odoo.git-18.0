@@ -5,32 +5,6 @@ from odoo.exceptions import ValidationError, UserError
 
 
 class RecordsContainer(models.Model):
-    # === AUDIT: MISSING FIELDS ===
-    access_level = fields.Char(string='Access Level')
-    alpha_range_end = fields.Char(string='Alpha Range End')
-    alpha_range_start = fields.Char(string='Alpha Range Start')
-    bale_weight = fields.Char(string='Bale Weight')
-    code = fields.Char(string='Code')
-    collection_date = fields.Date(string='Collection Date')
-    compliance_category = fields.Char(string='Compliance Category')
-    content_date_from = fields.Char(string='Content Date From')
-    content_date_to = fields.Char(string='Content Date To')
-    customer_sequence_end = fields.Char(string='Customer Sequence End')
-    customer_sequence_start = fields.Char(string='Customer Sequence Start')
-    department_code = fields.Char(string='Department Code')
-    industry_category = fields.Char(string='Industry Category')
-    key = fields.Char(string='Key')
-    language_codes = fields.Char(string='Language Codes')
-    media_type = fields.Char(string='Media Type')
-    primary_content_type = fields.Char(string='Primary Content Type')
-    priority_level = fields.Char(string='Priority Level')
-    project_number = fields.Char(string='Project Number')
-    retention_category = fields.Char(string='Retention Category')
-    search_keywords = fields.Char(string='Search Keywords')
-    service_date = fields.Date(string='Service Date')
-    service_type = fields.Char(string='Service Type')
-    special_dates = fields.Char(string='Special Dates')
-    value = fields.Char(string='Value')
     _name = 'records.container'
     _description = 'Records Container Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -267,6 +241,7 @@ class RecordsContainer(models.Model):
 
     def action_bulk_convert_container_type(self):
         """Bulk convert container types"""
+        self.ensure_one()
         return {
             "name": _("Bulk Convert Container Types"),
             "type": "ir.actions.act_window",
@@ -301,4 +276,3 @@ class RecordsContainer(models.Model):
                 and record.storage_start_date > record.destruction_due_date
             ):
                 raise ValidationError(_("Destruction date cannot be before storage start date"))
-

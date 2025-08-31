@@ -5,7 +5,7 @@
     <record id="mobile_bin_key_wizard_view_form" model="ir.ui.view">
         <field name="name">mobile.bin.key.wizard.view.form</field>
         <field name="model">mobile.bin.key.wizard</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Mobile Bin Key Management">
                 <div class="o_form_sheet" style="max-width: 100%; padding: 10px;">
@@ -153,7 +153,7 @@ action = {
         <field name="name">res.partner.view.form</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
 
             <!-- Tree view for Add -->
@@ -265,7 +265,7 @@ action = {
         <field name="name">res.partner.view.kanban</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.res_partner_kanban_view"/>
-        <field name="type">tree</field>
+        <field name="type">kanban</field>
         <field name="arch" type="xml">
 
             <!-- Kanban view for Add -->
@@ -311,7 +311,7 @@ action = {
         <field name="name">res.partner.view.search</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_res_partner_filter"/>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
 
             <!-- Tree view for Add -->

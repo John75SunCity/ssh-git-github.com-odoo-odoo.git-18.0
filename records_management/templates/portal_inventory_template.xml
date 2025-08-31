@@ -5,11 +5,11 @@
         <template id="portal_inventory_dashboard" name="Portal Inventory Dashboard">
             <t t-call="portal.portal_layout">
                 <t t-set="breadcrumbs_searchbar" t-value="True"/>
-                
+
                 <t t-call="portal.portal_searchbar">
                     <t t-set="title">Records Inventory</t>
                 </t>
-                
+
                 <div class="container-fluid mt-3">
                     <!-- Inventory Overview Cards -->
                     <div class="row mb-4">
@@ -150,7 +150,7 @@
                                                 <small><t t-esc="location.utilization_percent"/>%</small>
                                             </div>
                                             <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar" 
+                                                <div class="progress-bar"
                                                      t-att-style="'width: ' + str(location.utilization_percent) + '%'"
                                                      t-att-class="'bg-success' if location.utilization_percent &lt; 80 else 'bg-warning' if location.utilization_percent &lt; 95 else 'bg-danger'"/>
                                             </div>
@@ -165,15 +165,34 @@
                     <div class="row mt-4">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h5><i class="fa fa-search"/> Search Inventory</h5>
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fa fa-search"/> Search Inventory</h5>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="/my/inventory/export/excel" class="btn btn-success btn-sm" title="Export to Excel">
+                                            <i class="fa fa-file-excel-o"/> Excel
+                                        </a>
+                                        <a href="/my/inventory/export/pdf" class="btn btn-danger btn-sm" title="Export to PDF">
+                                            <i class="fa fa-file-pdf-o"/> PDF
+                                        </a>
+                                        <button type="button" class="btn btn-info btn-sm" onclick="window.print()" title="Print">
+                                            <i class="fa fa-print"/> Print
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="card-body">
-                                    <form method="get" class="form-inline">
-                                        <div class="form-group mr-3">
-                                            <input type="text" name="search" class="form-control" placeholder="Search boxes or documents..." value="{search or ''}"/>
+                                    <!-- Mobile-friendly search form -->
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <div class="input-group">
+                                                <input type="text" name="search" class="form-control" placeholder="Search boxes or documents..." value="{search or ''}"/>
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="fa fa-search"/>
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="form-group mr-3">
+                                        <div class="col-12 mb-3">
                                             <select name="department" class="form-control">
                                                 <option value="">All Departments</option>
                                                 <t t-foreach="departments" t-as="dept">
@@ -183,10 +202,37 @@
                                                 </t>
                                             </select>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fa fa-search"/> Search
-                                        </button>
-                                    </form>
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <input type="date" name="date_from" class="form-control" placeholder="From Date"/>
+                                                </div>
+                                                <div class="col-6">
+                                                    <input type="date" name="date_to" class="form-control" placeholder="To Date"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mobile Export Options -->
+                                    <div class="row mt-3 d-md-none">
+                                        <div class="col-12">
+                                            <div class="alert alert-info">
+                                                <strong><i class="fa fa-mobile"/> Mobile Export Options</strong>
+                                                <div class="mt-2">
+                                                    <a href="/my/inventory/export/excel?mobile=1" class="btn btn-success btn-sm mr-2">
+                                                        <i class="fa fa-file-excel-o"/> Excel
+                                                    </a>
+                                                    <a href="/my/inventory/export/pdf?mobile=1" class="btn btn-danger btn-sm mr-2">
+                                                        <i class="fa fa-file-pdf-o"/> PDF
+                                                    </a>
+                                                    <button type="button" class="btn btn-info btn-sm" onclick="window.print()">
+                                                        <i class="fa fa-print"/> Print
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -227,9 +273,54 @@
                                     <h6>Box Actions</h6>
                                 </div>
                                 <div class="card-body">
-                                    <a href="#" class="btn btn-primary btn-block mb-2">Request Retrieval</a>
-                                    <a href="#" class="btn btn-secondary btn-block mb-2">View Documents</a>
-                                    <a href="#" class="btn btn-info btn-block">Download Report</a>
+                                    <a href="#" class="btn btn-primary btn-block mb-2">
+                                        <i class="fa fa-hand-paper-o"/> Request Retrieval
+                                    </a>
+                                    <a href="#" class="btn btn-secondary btn-block mb-2">
+                                        <i class="fa fa-file-o"/> View Documents
+                                    </a>
+                                    <div class="btn-group-vertical btn-block" role="group">
+                                        <a href="/my/box/{box.id}/export/pdf" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-file-pdf-o"/> PDF Report
+                                        </a>
+                                        <a href="/my/box/{box.id}/export/excel" class="btn btn-success btn-sm">
+                                            <i class="fa fa-file-excel-o"/> Excel Details
+                                        </a>
+                                        <button type="button" class="btn btn-info btn-sm" onclick="window.print()">
+                                            <i class="fa fa-print"/> Print Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Mobile Quick Actions -->
+                            <div class="card mt-3 d-md-none">
+                                <div class="card-header">
+                                    <h6><i class="fa fa-mobile"/> Quick Actions</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <a href="tel:+1-555-0123" class="btn btn-outline-primary btn-sm btn-block">
+                                                <i class="fa fa-phone"/> Call
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="mailto:support@records.com" class="btn btn-outline-secondary btn-sm btn-block">
+                                                <i class="fa fa-envelope"/> Email
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-outline-info btn-sm btn-block" onclick="navigator.share({title: 'Box {box.name}', text: 'Box details from Records Management', url: window.location.href})">
+                                                <i class="fa fa-share"/> Share
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-outline-warning btn-sm btn-block" onclick="window.print()">
+                                                <i class="fa fa-print"/> Print
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

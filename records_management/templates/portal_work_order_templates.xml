@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Work Orders Portal Templates -->
-    
+
     <!-- Main work orders list template -->
     <template id="portal_my_work_orders" name="My Work Orders">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            
+
             <t t-call="portal.portal_searchbar">
                 <t t-set="title">Work Orders</t>
             </t>
-            
+
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
@@ -23,7 +23,7 @@
                                     </span>
                                 </h3>
                             </div>
-                            
+
                             <div class="card-body">
                                 <t t-if="not work_orders">
                                     <div class="alert alert-info text-center">
@@ -32,7 +32,7 @@
                                         Contact us to schedule services.
                                     </div>
                                 </t>
-                                
+
                                 <t t-else="">
                                     <div class="table-responsive">
                                         <table class="table table-hover">
@@ -75,7 +75,7 @@
                                                             </span>
                                                         </td>
                                                         <td>
-                                                            <a t-attf-href="/my/work_order/#{wo['model']}/#{wo['record'].id}" 
+                                                            <a t-attf-href="/my/work_order/#{wo['model']}/#{wo['record'].id}"
                                                                class="btn btn-sm btn-primary">
                                                                 <i class="fa fa-eye"/> View
                                                             </a>
@@ -85,7 +85,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    
+
                                     <!-- Pagination -->
                                     <t t-call="portal.pager"/>
                                 </t>
@@ -115,7 +115,7 @@
                                     </span>
                                 </div>
                             </div>
-                            
+
                             <div class="card-body">
                                 <!-- Basic Information -->
                                 <div class="row mb-4">
@@ -144,7 +144,7 @@
                                             </tr>
                                         </table>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <h5>Contact Information</h5>
                                         <table class="table table-borderless">
@@ -251,14 +251,14 @@
                                     </span>
                                 </h3>
                             </div>
-                            
+
                             <div class="card-body">
                                 <t t-if="not coordinators">
                                     <div class="alert alert-info text-center">
                                         <strong>No coordinators found.</strong>
                                     </div>
                                 </t>
-                                
+
                                 <t t-else="">
                                     <div class="table-responsive">
                                         <table class="table table-hover">
@@ -283,7 +283,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="progress" style="height: 20px;">
-                                                                <div class="progress-bar" role="progressbar" 
+                                                                <div class="progress-bar" role="progressbar"
                                                                      t-attf-style="width: #{coordinator.coordination_progress}%"
                                                                      t-attf-aria-valuenow="#{coordinator.coordination_progress}">
                                                                     <t t-esc="'%.0f%%' % coordinator.coordination_progress"/>
@@ -369,6 +369,202 @@
                 </a>
             </div>
         </xpath>
+    </template>
+
+    <!-- Mobile Work Order Creation Template -->
+    <template id="portal_mobile_work_order_create" name="Mobile Work Order Creation">
+        <t t-call="portal.portal_layout">
+            <t t-set="pageName" t-value="'mobile-work-order-create'"/>
+            <t t-set="title">New Work Order</t>
+
+            <div class="container-fluid p-2">
+                <!-- Mobile Header -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center py-3">
+                                <h5 class="mb-1">
+                                    <i class="fa fa-plus-circle me-2 text-primary"></i>
+                                    Create New Work Order
+                                </h5>
+                                <p class="text-muted small mb-0">Request services for your records</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Order Form -->
+                <form method="post" enctype="multipart/form-data" class="mobile-work-order-form">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Service Request Details</h6>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Service Type Selection -->
+                                    <div class="form-group mb-3">
+                                        <label for="service_type" class="form-label">Service Type</label>
+                                        <select name="service_type" id="service_type" class="form-control" required="required">
+                                            <option value="">Select Service Type</option>
+                                            <option value="pickup">Document/Box Pickup</option>
+                                            <option value="delivery">Document/Box Delivery</option>
+                                            <option value="shredding">Secure Shredding</option>
+                                            <option value="scanning">Document Scanning</option>
+                                            <option value="retrieval">Record Retrieval</option>
+                                            <option value="storage">Additional Storage</option>
+                                            <option value="other">Other Services</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Priority Selection -->
+                                    <div class="form-group mb-3">
+                                        <label for="priority" class="form-label">Priority Level</label>
+                                        <select name="priority" id="priority" class="form-control">
+                                            <option value="0">Low Priority</option>
+                                            <option value="1" selected="selected">Normal Priority</option>
+                                            <option value="2">High Priority</option>
+                                            <option value="3">Urgent</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Preferred Date/Time -->
+                                    <div class="form-group mb-3">
+                                        <label for="preferred_date" class="form-label">Preferred Date</label>
+                                        <input type="date" name="preferred_date" id="preferred_date" class="form-control"/>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="preferred_time" class="form-label">Preferred Time</label>
+                                        <select name="preferred_time" id="preferred_time" class="form-control">
+                                            <option value="">Any Time</option>
+                                            <option value="morning">Morning (8AM - 12PM)</option>
+                                            <option value="afternoon">Afternoon (12PM - 5PM)</option>
+                                            <option value="evening">Evening (5PM - 8PM)</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div class="form-group mb-3">
+                                        <label for="description" class="form-label">Description</label>
+                                        <textarea name="description" id="description" class="form-control" rows="3"
+                                                  placeholder="Please describe the service you need..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Contact Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group mb-3">
+                                        <label for="contact_name" class="form-label">Contact Name</label>
+                                        <input type="text" name="contact_name" id="contact_name" class="form-control"
+                                               placeholder="Your full name"/>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="contact_phone" class="form-label">Phone Number</label>
+                                        <input type="tel" name="contact_phone" id="contact_phone" class="form-control"
+                                               placeholder="(555) 123-4567"/>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="contact_email" class="form-label">Email Address</label>
+                                        <input type="email" name="contact_email" id="contact_email" class="form-control"
+                                               placeholder="your.email@company.com"/>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="location_details" class="form-label">Location Details</label>
+                                        <textarea name="location_details" id="location_details" class="form-control" rows="2"
+                                                  placeholder="Building, floor, room, or specific location details..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Photo/Document Upload -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Photos &amp; Documents (Optional)</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group mb-3">
+                                        <label for="photo_upload" class="form-label">
+                                            <i class="fa fa-camera me-2"></i>Take Photo or Upload Image
+                                        </label>
+                                        <input type="file" name="photo_upload" id="photo_upload" class="form-control"
+                                               accept="image/*" capture="environment" multiple="multiple"/>
+                                        <small class="form-text text-muted">You can take photos or select from gallery</small>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="document_upload" class="form-label">
+                                            <i class="fa fa-file me-2"></i>Upload Documents
+                                        </label>
+                                        <input type="file" name="document_upload" id="document_upload" class="form-control"
+                                               accept=".pdf,.doc,.docx,.jpg,.png" multiple="multiple"/>
+                                        <small class="form-text text-muted">Supported formats: PDF, DOC, DOCX, JPG, PNG</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Actions -->
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                                <i class="fa fa-paper-plane me-2"></i>Submit Request
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="/my/work_orders" class="btn btn-secondary btn-block btn-lg">
+                                                <i class="fa fa-times me-2"></i>Cancel
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <small class="text-muted">
+                                            You will receive a confirmation email with tracking information
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Mobile Quick Actions -->
+                <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1030;">
+                    <div class="btn-group-vertical" role="group">
+                        <button type="button" class="btn btn-success btn-lg rounded-circle mb-2" onclick="getCurrentLocation()">
+                            <i class="fa fa-map-marker fa-lg"/>
+                        </button>
+                        <button type="button" class="btn btn-info btn-lg rounded-circle mb-2" onclick="takePhoto()">
+                            <i class="fa fa-camera fa-lg"/>
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-lg rounded-circle" onclick="scrollToTop()">
+                            <i class="fa fa-arrow-up fa-lg"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </t>
     </template>
 
 </odoo>

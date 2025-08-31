@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Mobile Inventory Browser Template -->
+        <template id="portal_mobile_inventory_browser" name="Mobile Inventory Browser">
+            <t t-call="portal.portal_layout">
+                <t t-set="pageName" t-value="'mobile-inventory'"/>
+                <t t-set="title">Mobile Inventory</t>
+
+                <div class="container-fluid p-2">
+                    <!-- Mobile Header with Search -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body py-3">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Search inventory..." id="mobile-search"/>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fa fa-search"/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <select class="form-control form-control-sm" id="department-filter">
+                                                <option value="">All Departments</option>
+                                                <t t-foreach="departments" t-as="dept">
+                                                    <option t-att-value="dept.id"><t t-esc="dept.name"/></option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <select class="form-control form-control-sm" id="status-filter">
+                                                <option value="">All Status</option>
+                                                <option value="active">Active</option>
+                                                <option value="archived">Archived</option>
+                                                <option value="pending">Pending</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Inventory List -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div id="inventory-list">
+                                <t t-foreach="inventory_items" t-as="item">
+                                    <div class="card border-0 shadow-sm mb-2 inventory-item" t-att-data-id="item.id">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">
+                                                        <t t-if="item.item_type == 'box'">
+                                                            <i class="fa fa-archive text-primary me-2"/>
+                                                        </t>
+                                                        <t t-elif="item.item_type == 'document'">
+                                                            <i class="fa fa-file text-success me-2"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <i class="fa fa-folder text-info me-2"/>
+                                                        </t>
+                                                        <t t-esc="item.name"/>
+                                                    </h6>
+                                                    <p class="text-muted small mb-2">
+                                                        <t t-esc="item.location or 'No location'"/> •
+                                                        <t t-esc="item.department or 'No department'"/>
+                                                    </p>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <small class="text-muted">
+                                                            Updated: <t t-esc="item.last_update"/>
+                                                        </small>
+                                                        <span t-attf-class="badge badge-#{item.status == 'active' and 'success' or item.status == 'archived' and 'secondary' or 'warning'}">
+                                                            <t t-esc="item.status"/>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="ms-3">
+                                                    <div class="btn-group-vertical btn-group-sm">
+                                                        <button class="btn btn-outline-primary btn-sm" onclick="viewItem({item.id})">
+                                                            <i class="fa fa-eye"/>
+                                                        </button>
+                                                        <button class="btn btn-outline-success btn-sm" onclick="exportItem({item.id}, 'pdf')">
+                                                            <i class="fa fa-download"/>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Pagination -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <nav aria-label="Mobile inventory pagination">
+                                <ul class="pagination pagination-sm justify-content-center">
+                                    <li class="page-item" t-att-class="'disabled' if not pager.has_previous else ''">
+                                        <a class="page-link" href="#" onclick="loadPage(pager.previous_page_number)">
+                                            <i class="fa fa-chevron-left"/>
+                                        </a>
+                                    </li>
+                                    <li class="page-item active">
+                                        <span class="page-link">
+                                            <t t-esc="pager.number"/> of <t t-esc="pager.num_pages"/>
+                                        </span>
+                                    </li>
+                                    <li class="page-item" t-att-class="'disabled' if not pager.has_next else ''">
+                                        <a class="page-link" href="#" onclick="loadPage(pager.next_page_number)">
+                                            <i class="fa fa-chevron-right"/>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Quick Export -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm bg-light">
+                                <div class="card-body text-center py-3">
+                                    <h6 class="mb-3">Export Current View</h6>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="/my/inventory/export/excel?mobile=1" class="btn btn-success">
+                                            <i class="fa fa-file-excel-o me-1"/>Excel
+                                        </a>
+                                        <a href="/my/inventory/export/pdf?mobile=1" class="btn btn-danger">
+                                            <i class="fa fa-file-pdf-o me-1"/>PDF
+                                        </a>
+                                        <button type="button" class="btn btn-info" onclick="exportAll()">
+                                            <i class="fa fa-download me-1"/>All Items
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Floating Action Button -->
+                    <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1030;">
+                        <div class="btn-group-vertical" role="group">
+                            <button type="button" class="btn btn-primary btn-lg rounded-circle mb-2" onclick="showNewRequestModal()">
+                                <i class="fa fa-plus fa-lg"/>
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-lg rounded-circle" onclick="scrollToTop()">
+                                <i class="fa fa-arrow-up fa-lg"/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

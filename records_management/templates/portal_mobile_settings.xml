@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Mobile Customer Settings Template -->
+    <template id="portal_mobile_settings" name="Mobile Customer Settings">
+        <t t-call="portal.portal_layout">
+            <t t-set="pageName" t-value="'mobile-settings'"/>
+            <t t-set="title">Account Settings</t>
+
+            <div class="container-fluid p-2">
+                <!-- Mobile Header -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body text-center py-3">
+                                <h5 class="mb-1">
+                                    <i class="fa fa-cog me-2 text-primary"></i>
+                                    Account Settings
+                                </h5>
+                                <p class="text-muted small mb-0">Manage your preferences</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Form -->
+                <form method="post" class="mobile-settings-form">
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Personal Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Name -->
+                                    <div class="form-group mb-3">
+                                        <label for="name" class="form-label">Full Name</label>
+                                        <input type="text" name="name" id="name" class="form-control"
+                                               t-att-value="user.name" placeholder="Your full name"/>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="form-group mb-3">
+                                        <label for="email" class="form-label">Email Address</label>
+                                        <input type="email" name="email" id="email" class="form-control"
+                                               t-att-value="user.email" placeholder="your.email@company.com"/>
+                                    </div>
+
+                                    <!-- Phone -->
+                                    <div class="form-group mb-3">
+                                        <label for="phone" class="form-label">Phone Number</label>
+                                        <input type="tel" name="phone" id="phone" class="form-control"
+                                               t-att-value="user.phone" placeholder="(555) 123-4567"/>
+                                    </div>
+
+                                    <!-- Company -->
+                                    <div class="form-group mb-3">
+                                        <label for="company" class="form-label">Company</label>
+                                        <input type="text" name="company" id="company" class="form-control"
+                                               t-att-value="user.company_id.name" placeholder="Company name"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Preferences -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Notification Preferences</h6>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Email Notifications -->
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="email_notifications"
+                                               id="email_notifications" checked="checked"/>
+                                        <label class="form-check-label" for="email_notifications">
+                                            Email Notifications
+                                        </label>
+                                        <small class="form-text text-muted">Receive updates via email</small>
+                                    </div>
+
+                                    <!-- SMS Notifications -->
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="sms_notifications"
+                                               id="sms_notifications"/>
+                                        <label class="form-check-label" for="sms_notifications">
+                                            SMS Notifications
+                                        </label>
+                                        <small class="form-text text-muted">Receive text message updates</small>
+                                    </div>
+
+                                    <!-- Work Order Updates -->
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="work_order_updates"
+                                               id="work_order_updates" checked="checked"/>
+                                        <label class="form-check-label" for="work_order_updates">
+                                            Work Order Updates
+                                        </label>
+                                        <small class="form-text text-muted">Get notified about work order status changes</small>
+                                    </div>
+
+                                    <!-- Invoice Reminders -->
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="invoice_reminders"
+                                               id="invoice_reminders" checked="checked"/>
+                                        <label class="form-check-label" for="invoice_reminders">
+                                            Invoice Reminders
+                                        </label>
+                                        <small class="form-text text-muted">Receive payment reminders</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Portal Preferences -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Portal Preferences</h6>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Default View -->
+                                    <div class="form-group mb-3">
+                                        <label for="default_view" class="form-label">Default View</label>
+                                        <select name="default_view" id="default_view" class="form-control">
+                                            <option value="dashboard">Dashboard</option>
+                                            <option value="inventory">Inventory</option>
+                                            <option value="work_orders">Work Orders</option>
+                                            <option value="invoices">Invoices</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Items Per Page -->
+                                    <div class="form-group mb-3">
+                                        <label for="items_per_page" class="form-label">Items Per Page</label>
+                                        <select name="items_per_page" id="items_per_page" class="form-control">
+                                            <option value="10">10 items</option>
+                                            <option value="25" selected="selected">25 items</option>
+                                            <option value="50">50 items</option>
+                                            <option value="100">100 items</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Mobile Theme -->
+                                    <div class="form-group mb-3">
+                                        <label for="mobile_theme" class="form-label">Mobile Theme</label>
+                                        <select name="mobile_theme" id="mobile_theme" class="form-control">
+                                            <option value="light" selected="selected">Light Theme</option>
+                                            <option value="dark">Dark Theme</option>
+                                            <option value="auto">Auto (System)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Settings -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Security Settings</h6>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Change Password -->
+                                    <div class="form-group mb-3">
+                                        <label for="current_password" class="form-label">Current Password</label>
+                                        <input type="password" name="current_password" id="current_password"
+                                               class="form-control" placeholder="Enter current password"/>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="new_password" class="form-label">New Password</label>
+                                        <input type="password" name="new_password" id="new_password"
+                                               class="form-control" placeholder="Enter new password"/>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                                        <input type="password" name="confirm_password" id="confirm_password"
+                                               class="form-control" placeholder="Confirm new password"/>
+                                    </div>
+
+                                    <!-- Two-Factor Authentication -->
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" name="two_factor"
+                                               id="two_factor"/>
+                                        <label class="form-check-label" for="two_factor">
+                                            Enable Two-Factor Authentication
+                                        </label>
+                                        <small class="form-text text-muted">Add extra security to your account</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                                <i class="fa fa-save me-2"></i>Save Changes
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="/my/mobile" class="btn btn-secondary btn-block btn-lg">
+                                                <i class="fa fa-times me-2"></i>Cancel
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <small class="text-muted">
+                                            Changes will take effect immediately
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Mobile Quick Actions -->
+                <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1030;">
+                    <div class="btn-group-vertical" role="group">
+                        <button type="button" class="btn btn-success btn-lg rounded-circle mb-2" onclick="saveSettings()">
+                            <i class="fa fa-save fa-lg"/>
+                        </button>
+                        <button type="button" class="btn btn-info btn-lg rounded-circle mb-2" onclick="resetSettings()">
+                            <i class="fa fa-undo fa-lg"/>
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-lg rounded-circle" onclick="scrollToTop()">
+                            <i class="fa fa-arrow-up fa-lg"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>
