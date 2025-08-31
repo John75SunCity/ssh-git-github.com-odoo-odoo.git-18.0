@@ -1,20 +1,8 @@
-access_model_name_user,model.name.user,model_name,records_management.group_records_user,1,1,1,0
-access_model_name_manager,model.name.manager,model_name,records_management.group_records_manager,1,1,1,1
-access_model_name_dash_user,model.name.dash.user,model_name_dash,records_management.group_records_user,1,1,1,0
-access_model_name_dash_manager,model.name.dash.manager,model_name_dash,records_management.group_records_manager,1,1,1,1
-access_account_move_line_manager,account.move.line manager,account.move.line,records_management.group_records_manager,1,1,1,1
-access_account_move_line_user,account.move.line user,account.move.line,records_management.group_records_user,1,1,1,0
 access_advanced_billing_contact_manager,advanced.billing.contact.manager,advanced.billing.contact,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_contact_user,advanced.billing.contact.user,advanced.billing.contact,records_management.group_records_user,1,1,1,0
-access_advanced_billing_line_manager,advanced.billing.line.manager,advanced.billing.line,records_management.group_records_manager,1,1,1,1
-access_advanced_billing_line_user,advanced.billing.line.user,advanced.billing.line,records_management.group_records_user,1,1,1,0
 access_advanced_billing_manager,advanced.billing.manager,advanced.billing,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_profile_manager,advanced.billing.profile.manager,advanced.billing.profile,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_profile_user,advanced.billing.profile.user,advanced.billing.profile,records_management.group_records_user,1,1,1,0
-access_advanced_billing_service_line_manager,advanced.billing.service.line.manager,advanced.billing.service.line,records_management.group_records_manager,1,1,1,1
-access_advanced_billing_service_line_user,advanced.billing.service.line.user,advanced.billing.service.line,records_management.group_records_user,1,1,1,0
-access_advanced_billing_storage_line_manager,advanced.billing.storage.line.manager,advanced.billing.storage.line,records_management.group_records_manager,1,1,1,1
-access_advanced_billing_storage_line_user,advanced.billing.storage.line.user,advanced.billing.storage.line,records_management.group_records_user,1,1,1,0
 access_advanced_billing_user,advanced.billing.user,advanced.billing,records_management.group_records_user,1,1,1,0
 access_approval_history_manager,approval.history manager,approval.history,records_management.group_records_manager,1,1,1,1
 access_approval_history_user,approval.history user,approval.history,records_management.group_records_user,1,1,1,0
@@ -32,8 +20,6 @@ access_base_rate_manager,base.rate manager,base.rate,records_management.group_re
 access_base_rate_user,base.rate user,base.rate,records_management.group_records_user,1,1,1,0
 access_base_rates_manager,base.rates manager,base.rates,records_management.group_records_manager,1,1,1,1
 access_base_rates_user,base.rates user,base.rates,records_management.group_records_user,1,1,1,0
-access_billing_period_manager,billing.period manager,billing.period,records_management.group_records_manager,1,1,1,1
-access_billing_period_user,billing.period user,billing.period,records_management.group_records_user,1,1,1,0
 access_bin_barcode_inventory_manager,bin.barcode.inventory manager,bin.barcode.inventory,records_management.group_records_manager,1,1,1,1
 access_bin_barcode_inventory_user,bin.barcode.inventory user,bin.barcode.inventory,records_management.group_records_user,1,1,1,0
 access_bin_issue_record_manager,bin.issue.record manager,bin.issue.record,records_management.group_records_manager,1,1,1,1
@@ -48,10 +34,6 @@ access_bin_unlock_service_manager,bin.unlock.service manager,bin.unlock.service,
 access_bin_unlock_service_user,bin.unlock.service user,bin.unlock.service,records_management.group_records_user,1,1,1,0
 access_certificate_template_data_manager,certificate.template.data manager,certificate.template.data,records_management.group_records_manager,1,1,1,1
 access_certificate_template_data_user,certificate.template.data user,certificate.template.data,records_management.group_records_user,1,1,1,0
-access_chain_of_custody_manager,chain of custody,chain.of.custody,records_management.group_records_manager,1,1,1,1
-access_chain_of_custody_user,chain of custody,chain.of.custody,records_management.group_records_user,1,1,1,0
-access_container_access_activity_manager,container.access.activity manager,container.access.activity,records_management.group_records_manager,1,1,1,1
-access_container_access_activity_user,container.access.activity user,container.access.activity,records_management.group_records_user,1,1,1,0
 access_container_access_document_manager,container.access.document manager,container.access.document,records_management.group_records_manager,1,1,1,1
 access_container_access_document_user,container.access.document user,container.access.document,records_management.group_records_user,1,1,1,0
 access_container_access_photo_manager,container.access.photo manager,container.access.photo,records_management.group_records_manager,1,1,1,1
@@ -118,8 +100,6 @@ access_file_retrieval_work_order_item_manager,file.retrieval.work.order.item man
 access_file_retrieval_work_order_item_user,file.retrieval.work.order.item user,file.retrieval.work.order.item,records_management.group_records_user,1,1,1,0
 access_file_retrieval_work_order_manager,file.retrieval.work.order manager,file.retrieval.work.order,records_management.group_records_manager,1,1,1,1
 access_file_retrieval_work_order_user,file.retrieval.work.order user,file.retrieval.work.order,records_management.group_records_user,1,1,1,0
-access_fleet_vehicle_manager,fleet.vehicle manager,fleet.vehicle,records_management.group_records_manager,1,1,1,1
-access_fleet_vehicle_user,fleet.vehicle user,fleet.vehicle,records_management.group_records_user,1,1,1,0
 access_fsm_notification_manager_manager,fsm notification manager,fsm.notification.manager,records_management.group_records_manager,1,1,1,1
 access_fsm_notification_manager_user,fsm notification manager,fsm.notification.manager,records_management.group_records_user,1,1,1,0
 access_fsm_notification_manager,fsm notification,fsm.notification,records_management.group_records_manager,1,1,1,1
@@ -154,12 +134,6 @@ access_inventory_item_type_user,inventory.item.type user,inventory.item.type,rec
 access_inventory_item_user,inventory.item user,inventory.item,records_management.group_records_user,1,1,1,0
 access_invoice_generation_log_manager,invoice.generation.log manager,invoice.generation.log,records_management.group_records_manager,1,1,1,1
 access_invoice_generation_log_user,invoice.generation.log user,invoice.generation.log,records_management.group_records_user,1,1,1,0
-access_ir_attachment_manager,ir.attachment manager,ir.attachment,records_management.group_records_manager,1,1,1,1
-access_ir_attachment_user,ir.attachment user,ir.attachment,records_management.group_records_user,1,1,1,0
-access_ir_model_fields_manager,ir.model.fields manager,ir.model.fields,records_management.group_records_manager,1,1,1,1
-access_ir_model_fields_user,ir.model.fields user,ir.model.fields,records_management.group_records_user,1,1,1,0
-access_ir_model_manager,ir.model manager,ir.model,records_management.group_records_manager,1,1,1,1
-access_ir_model_user,ir.model user,ir.model,records_management.group_records_user,1,1,1,0
 access_key_inventory_manager,key.inventory manager,key.inventory,records_management.group_records_manager,1,1,1,1
 access_key_inventory_user,key.inventory user,key.inventory,records_management.group_records_user,1,1,1,0
 access_key_restriction_checker_manager,key.restriction.checker manager,key.restriction.checker,records_management.group_records_manager,1,1,1,1
@@ -178,10 +152,6 @@ access_media_type_manager,media.type manager,media.type,records_management.group
 access_media_type_user,media.type user,media.type,records_management.group_records_user,1,1,1,0
 access_mobile_bin_key_wizard_manager,mobile.bin.key.wizard manager,mobile.bin.key.wizard,records_management.group_records_manager,1,1,1,1
 access_mobile_bin_key_wizard_user,mobile.bin.key.wizard user,mobile.bin.key.wizard,records_management.group_records_user,1,1,1,0
-access_mobile_dashboard_widget_category_manager,mobile.dashboard.widget.category manager,mobile.dashboard.widget.category,records_management.group_records_manager,1,1,1,1
-access_mobile_dashboard_widget_category_user,mobile.dashboard.widget.category user,mobile.dashboard.widget.category,records_management.group_records_user,1,1,1,0
-access_mobile_dashboard_widget_manager,mobile.dashboard.widget manager,mobile.dashboard.widget,records_management.group_records_manager,1,1,1,1
-access_mobile_dashboard_widget_user,mobile.dashboard.widget user,mobile.dashboard.widget,records_management.group_records_user,1,1,1,0
 access_mobile_fsm_integration_manager,mobile.fsm.integration manager,mobile.fsm.integration,records_management.group_records_manager,1,1,1,1
 access_mobile_fsm_integration_user,mobile.fsm.integration user,mobile.fsm.integration,records_management.group_records_user,1,1,1,0
 access_mobile_photo_manager,mobile.photo manager,mobile.photo,records_management.group_records_manager,1,1,1,1
@@ -190,10 +160,6 @@ access_naid_audit_log_manager,naid audit log,naid.audit.log,records_management.g
 access_naid_audit_log_user,naid audit log,naid.audit.log,records_management.group_records_user,1,1,1,0
 access_naid_audit_requirement_manager,naid.audit.requirement.manager,naid.audit.requirement,records_management.group_records_manager,1,1,1,1
 access_naid_audit_requirement_user,naid.audit.requirement.user,naid.audit.requirement,records_management.group_records_user,1,1,1,0
-access_naid_certificate_item_manager,naid.certificate.item.manager,naid.certificate.item,records_management.group_records_manager,1,1,1,1
-access_naid_certificate_item_user,naid.certificate.item.user,naid.certificate.item,records_management.group_records_user,1,1,1,0
-access_naid_certificate_manager,naid certificate,naid.certificate,records_management.group_records_manager,1,1,1,1
-access_naid_certificate_user,naid certificate,naid.certificate,records_management.group_records_user,1,1,1,0
 access_naid_certification_level_manager,naid.certification.level.manager,naid.certification.level,records_management.group_records_manager,1,1,1,1
 access_naid_certification_level_user,naid.certification.level.user,naid.certification.level,records_management.group_records_user,1,1,1,0
 access_naid_compliance_action_plan_manager,naid.compliance.action.plan.manager,naid.compliance.action.plan,records_management.group_records_manager,1,1,1,1
@@ -282,10 +248,6 @@ access_processing_log_resolution_wizard_user,processing.log.resolution.wizard us
 access_processing_log_user,processing.log user,processing.log,records_management.group_records_user,1,1,1,0
 access_product_container_type_manager,product.container.type manager,product.container.type,records_management.group_records_manager,1,1,1,1
 access_product_container_type_user,product.container.type user,product.container.type,records_management.group_records_user,1,1,1,0
-access_product_product_manager,product.product manager,product.product,records_management.group_records_manager,1,1,1,1
-access_product_product_user,product.product user,product.product,records_management.group_records_user,1,1,1,0
-access_project_project_manager,project.project manager,project.project,records_management.group_records_manager,1,1,1,1
-access_project_project_user,project.project user,project.project,records_management.group_records_user,1,1,1,0
 access_project_task_manager,project.task manager,project.task,records_management.group_records_manager,1,1,1,1
 access_project_task_user,project.task user,project.task,records_management.group_records_user,1,1,1,0
 access_records_access_log_manager,records.access.log.manager,records.access.log,records_management.group_records_manager,1,1,1,1
@@ -300,10 +262,6 @@ access_records_audit_log_manager,records.audit.log.manager,records.audit.log,rec
 access_records_audit_log_user,records.audit.log.user,records.audit.log,records_management.group_records_user,1,1,1,0
 access_records_billing_config_manager,records.billing.config.manager,records.billing.config,records_management.group_records_manager,1,1,1,1
 access_records_billing_config_user,records.billing.config.user,records.billing.config,records_management.group_records_user,1,1,1,0
-access_records_billing_manager,records billing,records.billing,records_management.group_records_manager,1,1,1,1
-access_records_billing_rate_manager,records.billing.rate.manager,records.billing.rate,records_management.group_records_manager,1,1,1,1
-access_records_billing_rate_user,records.billing.rate.user,records.billing.rate,records_management.group_records_user,1,1,1,0
-access_records_billing_user,records billing,records.billing,records_management.group_records_user,1,1,1,0
 access_records_bulk_user_import_manager,records.bulk.user.import.manager,records.bulk.user.import,records_management.group_records_manager,1,1,1,1
 access_records_bulk_user_import_user,records.bulk.user.import.user,records.bulk.user.import,records_management.group_records_user,1,1,1,0
 access_records_category_manager,records.category.manager,records.category,records_management.group_records_manager,1,1,1,1
@@ -402,26 +360,10 @@ access_report_records_management_report_customer_inventory_manager,report.record
 access_report_records_management_report_customer_inventory_user,report.records_management.report_customer_inventory user,report.records_management.report_customer_inventory,records_management.group_records_user,1,1,1,0
 access_report_records_management_report_location_utilization_manager,report.records_management.report_location_utilization manager,report.records_management.report_location_utilization,records_management.group_records_manager,1,1,1,1
 access_report_records_management_report_location_utilization_user,report.records_management.report_location_utilization user,report.records_management.report_location_utilization,records_management.group_records_user,1,1,1,0
-access_report_records_management_revenue_forecasting_report_manager,report.records_management.revenue_forecasting_report manager,report.records_management.revenue_forecasting_report,records_management.group_records_manager,1,1,1,1
-access_report_records_management_revenue_forecasting_report_user,report.records_management.revenue_forecasting_report user,report.records_management.revenue_forecasting_report,records_management.group_records_user,1,1,1,0
 access_required_document_manager,required.document manager,required.document,records_management.group_records_manager,1,1,1,1
 access_required_document_user,required.document user,required.document,records_management.group_records_user,1,1,1,0
-access_res_company_manager,res.company manager,res.company,records_management.group_records_manager,1,1,1,1
-access_res_company_user,res.company user,res.company,records_management.group_records_user,1,1,1,0
-access_res_country_manager,res.country manager,res.country,records_management.group_records_manager,1,1,1,1
-access_res_country_state_manager,res.country.state manager,res.country.state,records_management.group_records_manager,1,1,1,1
-access_res_country_state_user,res.country.state user,res.country.state,records_management.group_records_user,1,1,1,0
-access_res_country_user,res.country user,res.country,records_management.group_records_user,1,1,1,0
-access_res_currency_manager,res.currency manager,res.currency,records_management.group_records_manager,1,1,1,1
-access_res_currency_user,res.currency user,res.currency,records_management.group_records_user,1,1,1,0
-access_res_groups_manager,res.groups manager,res.groups,records_management.group_records_manager,1,1,1,1
-access_res_groups_user,res.groups user,res.groups,records_management.group_records_user,1,1,1,0
 access_res_partner_key_restriction_manager,res.partner.key.restriction manager,res.partner.key.restriction,records_management.group_records_manager,1,1,1,1
 access_res_partner_key_restriction_user,res.partner.key.restriction user,res.partner.key.restriction,records_management.group_records_user,1,1,1,0
-access_res_partner_manager,res.partner manager,res.partner,records_management.group_records_manager,1,1,1,1
-access_res_partner_user,res.partner user,res.partner,records_management.group_records_user,1,1,1,0
-access_res_users_manager,res.users manager,res.users,records_management.group_records_manager,1,1,1,1
-access_res_users_user,res.users user,res.users,records_management.group_records_user,1,1,1,0
 access_retrieval_item_base_manager,retrieval.item.base manager,retrieval.item.base,records_management.group_records_manager,1,1,1,1
 access_retrieval_item_base_user,retrieval.item.base user,retrieval.item.base,records_management.group_records_user,1,1,1,0
 access_retrieval_metric_manager,retrieval.metric manager,retrieval.metric,records_management.group_records_manager,1,1,1,1
@@ -432,8 +374,6 @@ access_revenue_forecast_line_manager,revenue.forecast.line manager,revenue.forec
 access_revenue_forecast_line_user,revenue.forecast.line user,revenue.forecast.line,records_management.group_records_user,1,1,1,0
 access_revenue_forecast_manager,revenue.forecast manager,revenue.forecast,records_management.group_records_manager,1,1,1,1
 access_revenue_forecast_user,revenue.forecast user,revenue.forecast,records_management.group_records_user,1,1,1,0
-access_rm_module_configurator_manager,rm.module.configurator manager,rm.module.configurator,records_management.group_records_manager,1,1,1,1
-access_rm_module_configurator_user,rm.module.configurator user,rm.module.configurator,records_management.group_records_user,1,1,1,0
 access_route_optimizer_manager,route.optimizer manager,route.optimizer,records_management.group_records_manager,1,1,1,1
 access_route_optimizer_user,route.optimizer user,route.optimizer,records_management.group_records_user,1,1,1,0
 access_scan_digital_asset_manager,scan.digital.asset manager,scan.digital.asset,records_management.group_records_manager,1,1,1,1
@@ -474,22 +414,14 @@ access_signed_document_audit_manager,signed.document.audit manager,signed.docume
 access_signed_document_audit_user,signed.document.audit user,signed.document.audit,records_management.group_records_user,1,1,1,0
 access_signed_document_manager,signed.document manager,signed.document,records_management.group_records_manager,1,1,1,1
 access_signed_document_user,signed.document user,signed.document,records_management.group_records_user,1,1,1,0
-access_stock_location_manager,stock.location manager,stock.location,records_management.group_records_manager,1,1,1,1
-access_stock_location_user,stock.location user,stock.location,records_management.group_records_user,1,1,1,0
 access_stock_lot_attribute_manager,stock.lot.attribute manager,stock.lot.attribute,records_management.group_records_manager,1,1,1,1
 access_stock_lot_attribute_option_manager,stock.lot.attribute.option manager,stock.lot.attribute.option,records_management.group_records_manager,1,1,1,1
 access_stock_lot_attribute_option_user,stock.lot.attribute.option user,stock.lot.attribute.option,records_management.group_records_user,1,1,1,0
 access_stock_lot_attribute_user,stock.lot.attribute user,stock.lot.attribute,records_management.group_records_user,1,1,1,0
 access_stock_lot_attribute_value_manager,stock.lot.attribute.value manager,stock.lot.attribute.value,records_management.group_records_manager,1,1,1,1
 access_stock_lot_attribute_value_user,stock.lot.attribute.value user,stock.lot.attribute.value,records_management.group_records_user,1,1,1,0
-access_stock_lot_manager,stock.lot manager,stock.lot,records_management.group_records_manager,1,1,1,1
-access_stock_lot_user,stock.lot user,stock.lot,records_management.group_records_user,1,1,1,0
-access_stock_move_manager,stock.move manager,stock.move,records_management.group_records_manager,1,1,1,1
 access_stock_move_sms_validation_manager,stock.move.sms.validation manager,stock.move.sms.validation,records_management.group_records_manager,1,1,1,1
 access_stock_move_sms_validation_user,stock.move.sms.validation user,stock.move.sms.validation,records_management.group_records_user,1,1,1,0
-access_stock_move_user,stock.move user,stock.move,records_management.group_records_user,1,1,1,0
-access_stock_picking_manager,stock.picking manager,stock.picking,records_management.group_records_manager,1,1,1,1
-access_stock_picking_user,stock.picking user,stock.picking,records_management.group_records_user,1,1,1,0
 access_survey_feedback_theme_manager,survey.feedback.theme manager,survey.feedback.theme,records_management.group_records_manager,1,1,1,1
 access_survey_feedback_theme_user,survey.feedback.theme user,survey.feedback.theme,records_management.group_records_user,1,1,1,0
 access_survey_improvement_action_manager,survey.improvement.action manager,survey.improvement.action,records_management.group_records_manager,1,1,1,1
