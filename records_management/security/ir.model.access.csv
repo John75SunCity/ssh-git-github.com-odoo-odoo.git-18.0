@@ -522,3 +522,7 @@ access_work_order_shredding_manager,work.order.shredding manager,work.order.shre
 access_work_order_shredding_user,work.order.shredding user,work.order.shredding,records_management.group_records_user,1,1,1,0
 access_workflow_visualization_manager_manager,workflow visualization manager,workflow.visualization.manager,records_management.group_records_manager,1,1,1,1
 access_workflow_visualization_manager_user,workflow visualization manager,workflow.visualization.manager,records_management.group_records_user,1,1,1,0
+access_description_manager,description manager,description,records_management.group_records_manager,1,1,1,1
+access_description_user,description user,description,records_management.group_records_user,1,1,1,0
+access_display_name_manager,display name manager,display_name,records_management.group_records_manager,1,1,1,1
+access_display_name_user,display name user,display_name,records_management.group_records_user,1,1,1,0
