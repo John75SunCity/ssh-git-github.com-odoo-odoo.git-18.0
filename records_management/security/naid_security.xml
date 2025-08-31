@@ -48,7 +48,7 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <record id="access_naid_compliance_policy_manager" model="ir.rule">
+        <record id="access_naid_compliance_policy_rule_manager" model="ir.rule">
             <field name="name">NAID Compliance Policy: Manager</field>
             <field name="model_id" ref="records_management.model_naid_compliance_policy"/>
             <field name="domain_force">[(1, '=', 1)]</field>
