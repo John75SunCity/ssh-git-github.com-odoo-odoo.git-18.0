@@ -232,8 +232,8 @@
     </record>
 
     <!-- Enhanced form view for transitory.field.config -->
-    <record id="transitory_field_config_view_form_enhanced" model="ir.ui.view">
-        <field name="name">transitory.field.config.view.form.enhanced</field>
+    <record id="transitory_field_config_view_form" model="ir.ui.view">
+        <field name="name">transitory.field.config.view.form</field>
         <field name="model">transitory.field.config</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -327,7 +327,7 @@
 
     <!-- Inherited view for res.partner -->
     <record id="res_partner_view_form" model="ir.ui.view">
-        <field name="name">res.partner.view.form</field>
+        <field name="name">base.view_partner_form.inherit.records_management</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="type">form</field>
@@ -385,4 +385,3 @@ action = {
     </record>
 </odoo>
         <!-- =============================================================== -->
-

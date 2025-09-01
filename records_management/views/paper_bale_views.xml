@@ -2,7 +2,7 @@
 <odoo>
     <data>
 <!-- Tree view for ENTERPRISE -->
-    
+
     <!-- Kanban view for Paper -->
     <record id="paper_bale_view_kanban" model="ir.ui.view">
         <field name="name">paper.bale.view.kanban</field>
@@ -83,7 +83,7 @@
         <field name="model">paper.bale</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree decoration-success="bale_status == 'shipped' and loaded_on_trailer == True" 
+            <tree decoration-success="bale_status == 'shipped' and loaded_on_trailer == True"
                   decoration-warning="bale_status == 'ready_for_loading'"
                   decoration-info="quality_grade == 'A'">
                 <field name="name" string="📦 Bale ID"/>
@@ -96,11 +96,11 @@
                 <field name="loaded_on_trailer" string="🚚 Loaded" widget="boolean_toggle"/>
                 <field name="trailer_id" string="🚛 Trailer"/>
                 <field name="bale_status" string="🎯 Status" widget="badge"/>
-                <button name="action_weigh_bale" type="object" string="Weigh" 
-                        icon="fa-balance-scale" class="btn-link" 
+                <button name="action_weigh_bale" type="object" string="Weigh"
+                        icon="fa-balance-scale" class="btn-link"
                         invisible="bale_status in ('weighed', 'loaded', 'shipped')"/>
-                <button name="action_load_trailer" type="object" string="Load" 
-                        icon="fa-truck" class="btn-link" 
+                <button name="action_load_trailer" type="object" string="Load"
+                        icon="fa-truck" class="btn-link"
                         invisible="loaded_on_trailer"/>
             </tree>
         </field>
@@ -114,10 +114,10 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_weigh_bale" type="object" string="⚖️ Weigh Bale" 
+                    <button name="action_weigh_bale" type="object" string="⚖️ Weigh Bale"
                             class="btn-primary" invisible="bale_status in ('weighed', 'loaded', 'shipped')"/>
                     <button name="action_quality_inspection" type="object" string="🔍 Quality Inspection" class="btn-secondary"/>
-                    <button name="action_load_trailer" type="object" string="🚚 Load on Trailer" 
+                    <button name="action_load_trailer" type="object" string="🚚 Load on Trailer"
                             class="btn-info" invisible="loaded_on_trailer"/>
                     <button name="action_print_label" type="object" string="🏷️ Print Label" class="btn-success"/>
                     <field name="bale_status" widget="statusbar" statusbar_visible="created,weighed,ready_for_loading,loaded,shipped"/>
@@ -125,15 +125,15 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_source_documents" icon="fa-file-text">
-                            <field string="Source Documents" name="document_count" widget="statinfo"/>
+                            <field name="document_count" string="Source Documents" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_weight_history" icon="fa-history">
-                            <field string="Weight History" name="weight_history_count" widget="statinfo"/>
+                            <field name="weight_history_count" string="Weight History" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_trailer_info" icon="fa-truck">
-                            <field string="Trailer Info" name="trailer_load_count" widget="statinfo"/>
+                            <field name="trailer_load_count" string="Trailer Info" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-star" 
+                        <button class="oe_stat_button" icon="fa-star"
                                 invisible="quality_grade != 'A'">>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">⭐</span>
@@ -141,7 +141,7 @@
                             </div>
                         </button>
                     </div>
-                    
+
                     <group>
                         <group string="📦 Bale Identification">
                             <field name="name" placeholder="e.g., BALE-2024-001"/>
@@ -156,7 +156,7 @@
                             <field name="moisture_content"/>
                         </group>
                     </group>
-                    
+
                     <group>
                         <group string="⚖️ Weight Information">
                             <field name="weight"/>
@@ -171,7 +171,7 @@
                             <field name="quality_notes"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="📄 Source Documents" name="source_documents">
                             <field name="source_document_ids" mode="list">
@@ -293,31 +293,31 @@
                 <field name="paper_type"/>
                 <field name="source_facility"/>
                 <field name="trailer_id"/>
-                
+
                 <filter string="📦 Created" name="created" domain="[('bale_status', '=', 'created')]"/>
                 <filter string="⚖️ Weighed" name="weighed" domain="[('bale_status', '=', 'weighed')]"/>
                 <filter string="🚚 Ready for Loading" name="ready_loading" domain="[('bale_status', '=', 'ready_for_loading')]"/>
                 <filter string="🚛 Loaded" name="loaded" domain="[('bale_status', '=', 'loaded')]"/>
                 <filter string="📦 Shipped" name="shipped" domain="[('bale_status', '=', 'shipped')]"/>
-                
+
                 <separator/>
                 <filter string="⭐ Grade A" name="grade_a" domain="[('quality_grade', '=', 'A')]"/>
                 <filter string="🥈 Grade B" name="grade_b" domain="[('quality_grade', '=', 'B')]"/>
                 <filter string="🥉 Grade C" name="grade_c" domain="[('quality_grade', '=', 'C')]"/>
-                
+
                 <separator/>
                 <filter string="🚚 On Trailer" name="on_trailer" domain="[('loaded_on_trailer', '=', True)]"/>
                 <filter string="📦 In Storage" name="in_storage" domain="[('loaded_on_trailer', '=', False)]"/>
                 <filter string="🌱 Sustainable Source" name="sustainable" domain="[('sustainable_source', '=', True)]"/>
-                
+
                 <separator/>
                 <filter string="📅 Today" name="today" domain="[('creation_date', '=', context_today())]"/>
-                <filter string="📆 This Week" name="this_week" 
-                        domain="[('creation_date', '&amp;gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), 
+                <filter string="📆 This Week" name="this_week"
+                        domain="[('creation_date', '&amp;gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
                                 ('creation_date', '&lt;', (context_today() + relativedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
-                <filter string="🗓️ This Month" name="this_month" 
+                <filter string="🗓️ This Month" name="this_month"
                         domain="[('creation_date', '&amp;gt;=', context_today().strftime('%Y-%m-01'))]"/>
-                
+
                 <group expand="0" string="📊 Group By">
                     <filter string="Status" name="group_by_status" context="{'group_by': 'bale_status'}"/>
                     <filter string="Quality Grade" name="group_by_grade" context="{'group_by': 'quality_grade'}"/>

@@ -121,13 +121,13 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_audit_history" icon="fa-history">
-                            <field string="Audit History" name="audit_count" widget="statinfo"/>
+                            <field name="audit_count" string="Audit History" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_certificates" icon="fa-certificate">
-                            <field string="Certificates" name="certificate_count" widget="statinfo"/>
+                            <field name="certificate_count" string="Certificates" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_destruction_records" icon="fa-shredder">
-                            <field string="Destructions" name="destruction_count" widget="statinfo"/>
+                            <field name="destruction_count" string="Destructions" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-shield"
 invisible="naid_level != 'AAA'">

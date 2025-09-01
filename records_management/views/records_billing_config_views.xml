@@ -177,18 +177,19 @@
                     <button name="action_configure_rates" type="object" string="💰 Configure Rates" class="btn-secondary"/>
                     <button name="action_test_billing" type="object" string="🧪 Test Billing" class="btn-info"/>
                     <button name="action_view_analytics" type="object" string="📊 View Analytics" class="btn-success"/>
-                    <field name="active" widget="boolean_button" options="{'terminology': {'string_true': '🟢 Active', 'string_false': '⭕ Inactive'}}"/>
+                    <button name="action_view_invoices" type="object" string="📄 View Invoices" class="btn-secondary"/>
+                    <button name="action_view_billing_history" type="object" string="📋 View Billing History" class="btn-secondary"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_invoices" icon="fa-file-text">
-                            <field string="Invoices Generated" name="invoice_count" widget="statinfo"/>
+                            <field name="invoice_count" string="Invoices Generated" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_billing_history" icon="fa-history">
-                            <field string="Billing History" name="billing_history_count" widget="statinfo"/>
+                            <field name="billing_history_count" string="Billing History" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_revenue" icon="fa-money">
-                            <field string="Total Revenue" name="total_revenue" widget="statinfo"/>
+                            <field name="total_revenue" string="Total Revenue" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-check-circle"
                                 invisible="not auto_billing">
@@ -298,7 +299,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="🎯 Discounts &amp;amp; Promotions" name="discounts">
+                        <page string="🎯 Discounts &amp; Promotions" name="discounts">
                             <field name="discount_rule_ids" mode="list">
                                 <tree editable="bottom">
                                     <field name="rule_name"/>
@@ -309,7 +310,7 @@
                                     <field name="valid_until"/>
                                     <field name="auto_apply"/>
                                     <field name="active"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="📊 Revenue Analytics" name="analytics">
@@ -338,7 +339,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="🔔 Notifications &amp;amp; Alerts" name="notifications">
+                        <page string="🔔 Notifications &amp; Alerts" name="notifications">
                             <group>
                                 <group string="📱 Alert Settings">
                                     <field name="billing_failure_alerts"/>
@@ -362,7 +363,7 @@
                                     <field name="tax_calculation_method"/>
                                     <field name="multi_currency_support"/>
                                 </group>
-                                <group string="🔐 Security &amp;amp; Compliance">
+                                <group string="🔐 Security &amp; Compliance">
                                     <field name="audit_trail_enabled"/>
                                     <field name="data_retention_period"/>
                                     <field name="encryption_enabled"/>

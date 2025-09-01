@@ -555,7 +555,7 @@ Quick Actions</h6>
 <!-- ============================================================================ -->
 <!-- SYSTEM FLOWCHART WIZARD - COMPLETE STEP VIEW -->
 <!-- ============================================================================ -->
-<record id="system_flowchart_wizard_view_form_complete" model="ir.ui.view">
+<record id="records_management_system_flowchart_wizard_view_form_complete" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.form.complete</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="type">form</field>

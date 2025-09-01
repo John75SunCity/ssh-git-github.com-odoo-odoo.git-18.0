@@ -142,13 +142,13 @@
 
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_sales" icon="fa-line-chart">
-                            <field string="Sales Orders" name="sales_count" widget="statinfo"/>
+                            <field name="sales_count" string="Sales Orders" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_variants" icon="fa-th">
-                            <field string="Variants" name="product_variant_count" widget="statinfo"/>
+                            <field name="product_variant_count" string="Variants" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-money">
-                            <field string="Price Changes" name="price_history_count" widget="statinfo"/>
+                            <field name="price_history_count" string="Price Changes" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-star" invisible="not is_featured_service">>
                             <div class="o_field_widget o_stat_info">
