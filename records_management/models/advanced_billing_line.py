@@ -10,6 +10,9 @@ class AdvancedBillingLine(models.Model):
     billing_id = fields.Many2one(
         comodel_name="records.billing", string="Billing Document", ondelete="cascade", index=True
     )
+    billing_profile_id = fields.Many2one(
+        comodel_name="advanced.billing.profile", string="Billing Profile", ondelete="cascade", index=True
+    )
     currency_id = fields.Many2one(
         comodel_name="res.currency", store=True, readonly=True, related="billing_id.currency_id"
     )
