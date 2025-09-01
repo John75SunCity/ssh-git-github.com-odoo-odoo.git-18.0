@@ -2,15 +2,6 @@
 <odoo>
     <data>
 <!-- ============================================================================ -->
-<!-- ROOT MENU (Enhanced with modern styling) -->
-<!-- ============================================================================ -->
-<menuitem id="menu_records_management_root" name="Records Management" web_icon="records_management,static/description/icon.png" sequence="1"/>
-
-<!-- ============================================================================ -->
-<!-- CONFIGURATION SECTION (Enhanced hierarchy) -->
-<!-- ============================================================================ -->
-<menuitem id="menu_records_configuration" name="⚙️ Configuration" parent="menu_records_management_root" sequence="100"/>
-
 <!-- ============================================================================ -->
 <!-- SERVICE ITEMS SECTION (Enhanced with comprehensive structure) -->
 <!-- ============================================================================ -->

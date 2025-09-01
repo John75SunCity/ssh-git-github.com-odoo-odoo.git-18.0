@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree/List View for Destruction Certificates -->
+        <record id="destruction_certificate_view_tree" model="ir.ui.view">
+            <field name="name">destruction.certificate.view.tree</field>
+            <field name="model">destruction.certificate</field>
+            <field name="type">list</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="state == 'issued'" decoration-warning="state == 'expired'" decoration-danger="state == 'revoked'">
+                    <field name="certificate_number" string="🆔 Certificate #"/>
+                    <field name="partner_id" string="👤 Customer"/>
+                    <field name="destruction_date" string="🗑️ Destruction Date"/>
+                    <field name="destruction_method" string="🔧 Method"/>
+                    <field name="naid_verified" string="✅ NAID Verified" widget="boolean"/>
+                    <field name="issue_date" string="📅 Issued"/>
+                    <field name="expiry_date" string="⏰ Expires"/>
+                    <field name="state" string="🎯 Status" widget="badge"/>
+                    <field name="total_revenue" string="💰 Revenue" widget="monetary"/>
+                    <button name="action_view_details" type="object" string="View" icon="fa-eye" class="btn-link"/>
+                    <button name="action_print_certificate" type="object" string="Print" icon="fa-print" class="btn-link"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View for Destruction Certificates -->
+        <record id="destruction_certificate_view_form" model="ir.ui.view">
+            <field name="name">destruction.certificate.view.form</field>
+            <field name="model">destruction.certificate</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_issue_certificate" type="object" string="📋 Issue Certificate" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_revoke_certificate" type="object" string="🚫 Revoke Certificate" class="btn-danger" invisible="state not in ['issued', 'active']"/>
+                        <button name="action_print_certificate" type="object" string="🖨️ Print Certificate" class="btn-secondary"/>
+                        <button name="action_send_notification" type="object" string="📧 Send Notification" class="btn-info"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,issued,active,expired,revoked"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" icon="fa-file-text-o">
+                                <field name="certificate_item_count" string="Certificate Items" widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-money">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="total_profit" widget="monetary"/>
+                                    </span>
+                                    <span class="o_stat_text">Total Profit</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-calendar" invisible="not expiry_date">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="days_until_expiry"/>
+                                    </span>
+                                    <span class="o_stat_text">Days to Expiry</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <group>
+                            <group string="🆔 Certificate Information">
+                                <field name="certificate_number"/>
+                                <field name="partner_id"/>
+                                <field name="department_id"/>
+                                <field name="issue_date"/>
+                                <field name="expiry_date"/>
+                                <field name="state"/>
+                            </group>
+                            <group string="🗑️ Destruction Details">
+                                <field name="destruction_date"/>
+                                <field name="destruction_method"/>
+                                <field name="destruction_facility"/>
+                                <field name="destruction_weight" widget="numeric"/>
+                                <field name="naid_verified" widget="boolean_toggle"/>
+                                <field name="naid_certificate_number"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="👥 Authorized Personnel">
+                                <field name="authorized_by_id"/>
+                                <field name="witness_ids" widget="many2many_tags"/>
+                                <field name="operator_id"/>
+                                <field name="supervisor_id"/>
+                            </group>
+                            <group string="💰 Financial Summary">
+                                <field name="total_revenue" widget="monetary"/>
+                                <field name="total_cost" widget="monetary"/>
+                                <field name="total_profit" widget="monetary"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="📋 Certificate Items" name="items">
+                                <field name="certificate_item_ids">
+                                    <tree>
+                                        <field name="document_id"/>
+                                        <field name="container_id"/>
+                                        <field name="quantity"/>
+                                        <field name="weight"/>
+                                        <field name="description"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="document_id"/>
+                                            <field name="container_id"/>
+                                            <field name="quantity"/>
+                                            <field name="weight"/>
+                                            <field name="description"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+
+                            <page string="🔗 Chain of Custody" name="custody">
+                                <field name="custody_event_ids">
+                                    <tree>
+                                        <field name="event_date"/>
+                                        <field name="event_type"/>
+                                        <field name="responsible_person"/>
+                                        <field name="location"/>
+                                        <field name="signature_verified"/>
+                                        <field name="notes"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="📋 Audit Trail" name="audit">
+                                <field name="audit_log_ids">
+                                    <tree>
+                                        <field name="event_date"/>
+                                        <field name="event_type"/>
+                                        <field name="user_id"/>
+                                        <field name="description"/>
+                                        <field name="ip_address"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="📝 Notes &amp; Documentation" name="notes">
+                                <group>
+                                    <field name="notes" placeholder="Additional notes about the destruction process, special handling requirements, or compliance verification..."/>
+                                    <field name="special_handling_notes"/>
+                                    <field name="compliance_notes"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Kanban View for Destruction Certificates -->
+        <record id="destruction_certificate_view_kanban" model="ir.ui.view">
+            <field name="name">destruction.certificate.view.kanban</field>
+            <field name="model">destruction.certificate</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_certificate_dashboard">
+                    <field name="certificate_number"/>
+                    <field name="partner_id"/>
+                    <field name="destruction_date"/>
+                    <field name="naid_verified"/>
+                    <field name="state"/>
+                    <field name="total_revenue"/>
+                    <field name="expiry_date"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong>🆔 <field name="certificate_number"/></strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            👤 <field name="partner_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#">
+                                            <i class="fa fa-ellipsis-v" title="More options"/>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_content">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div>
+                                                <i class="fa fa-calendar"/>
+                                                <field name="destruction_date"/>
+                                            </div>
+                                            <div>
+                                                <i class="fa fa-money"/>
+                                                <field name="total_revenue" widget="monetary"/>
+                                            </div>
+                                            <div t-if="record.expiry_date.raw_value">
+                                                <i class="fa fa-clock-o"/>
+                                                <field name="expiry_date"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="text-center">
+                                                <field name="naid_verified" widget="boolean"/>
+                                                <div t-if="record.naid_verified.raw_value" class="text-success">
+                                                    <i class="fa fa-shield"/> NAID
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6">
+                                            <button class="btn btn-primary btn-sm" type="object" name="action_print_certificate">
+                                                🖨️ Print
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="btn btn-info btn-sm" type="object" name="action_send_notification">
+                                                📧 Notify
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Certificate</a>
+                                    <a role="menuitem" type="object" name="action_view_details" class="dropdown-item">📋 View Details</a>
+                                    <a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">🖨️ Print Certificate</a>
+                                    <a role="menuitem" type="object" name="action_send_notification" class="dropdown-item">📧 Send Notification</a>
+                                    <div class="dropdown-divider"/>
+                                    <a role="menuitem" type="object" name="action_revoke_certificate" class="dropdown-item" invisible="state not in ['issued', 'active']">🚫 Revoke Certificate</a>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Search View for Destruction Certificates -->
+        <record id="destruction_certificate_view_search" model="ir.ui.view">
+            <field name="name">destruction.certificate.view.search</field>
+            <field name="model">destruction.certificate</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="certificate_number" string="Certificate #" filter_domain="[('certificate_number', 'ilike', self)]"/>
+                    <field name="partner_id"/>
+                    <field name="authorized_by_id"/>
+                    <field name="destruction_method"/>
+                    <field name="naid_certificate_number"/>
+
+                    <filter string="📋 Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="📄 Issued" name="issued" domain="[('state', '=', 'issued')]"/>
+                    <filter string="✅ Active" name="active" domain="[('state', '=', 'active')]"/>
+                    <filter string="⏰ Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+                    <filter string="🚫 Revoked" name="revoked" domain="[('state', '=', 'revoked')]"/>
+
+                    <separator/>
+                    <filter string="✅ NAID Verified" name="naid_verified" domain="[('naid_verified', '=', True)]"/>
+                    <filter string="❌ Not NAID Verified" name="naid_not_verified" domain="[('naid_verified', '=', False)]"/>
+
+                    <separator/>
+                    <filter string="⚠️ Expiring Soon" name="expiring_soon" domain="[('expiry_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="📅 Expired" name="already_expired" domain="[('expiry_date', '&lt;', context_today())]"/>
+                    <filter string="💰 Profitable" name="profitable" domain="[('total_profit', '&gt;', 0)]"/>
+                    <filter string="📈 High Revenue" name="high_revenue" domain="[('total_revenue', '&gt;', 1000)]"/>
+
+                    <group expand="0" string="📊 Group By">
+                        <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Destruction Method" name="group_by_method" context="{'group_by': 'destruction_method'}"/>
+                        <filter string="Authorized By" name="group_by_authorized" context="{'group_by': 'authorized_by_id'}"/>
+                        <filter string="Issue Month" name="group_by_issue_month" context="{'group_by': 'issue_date:month'}"/>
+                        <filter string="Expiry Month" name="group_by_expiry_month" context="{'group_by': 'expiry_date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Calendar View for Destruction Certificates -->
+        <record id="destruction_certificate_view_calendar" model="ir.ui.view">
+            <field name="name">destruction.certificate.view.calendar</field>
+            <field name="model">destruction.certificate</field>
+            <field name="type">calendar</field>
+            <field name="arch" type="xml">
+                <calendar string="📅 Destruction Certificate Schedule" date_start="destruction_date" color="state">
+                    <field name="certificate_number"/>
+                    <field name="partner_id"/>
+                    <field name="destruction_method"/>
+                    <field name="total_revenue"/>
+                    <field name="naid_verified"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Action Window for Destruction Certificates -->
+        <record id="action_destruction_certificate" model="ir.actions.act_window">
+            <field name="name">🗑️ Destruction Certificates</field>
+            <field name="res_model">destruction.certificate</field>
+            <field name="view_mode">kanban,tree,form,calendar</field>
+            <field name="search_view_id" ref="destruction_certificate_view_search"/>
+            <field name="context">{
+                'search_default_active': 1,
+                'search_default_naid_verified': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    🗑️ Create your first destruction certificate!
+                </p>
+                <p>
+                    <b>NAID AAA Compliant Destruction Certificates:</b>
+                    <br/>
+                    • 🆔 Unique certificate numbering system<br/>
+                    • ✅ NAID verification and compliance tracking<br/>
+                    • 👥 Multi-signature authorization process<br/>
+                    • 📋 Detailed item-by-item destruction records<br/>
+                    • 🔗 Complete chain of custody integration<br/>
+                    • 📊 Financial tracking and profitability analysis<br/>
+                    • 📅 Automated expiry and renewal management<br/>
+                    • 🏆 Full audit trail for regulatory compliance
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
+<parameter name="filePath">/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/destruction_certificate_views.xml

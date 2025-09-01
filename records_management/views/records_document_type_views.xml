@@ -1,61 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for DOCUMENT -->
-
-    <!-- Tree view for Document -->
+<!-- Tree view for records.document.type -->
     <record id="records_document_type_view_tree" model="ir.ui.view">
         <field name="name">records.document.type.view.tree</field>
         <field name="model">records.document.type</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Document Types">
-                <field name="sequence"/>
-                <field name="name"/>
-                <field name="code"/>
-                <field name="category"/>
-                <field name="state"/>
-                <field name="active"/>
+            <tree decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
+                <field name="sequence" widget="handle"/>
+                <field name="name" string="📄 Document Type"/>
+                <field name="code" string="🔢 Code"/>
+                <field name="category" string="📂 Category"/>
+                <field name="confidentiality_level" string="🔒 Security Level"/>
+                <field name="effective_retention_years" string="📅 Retention (Years)"/>
+                <field name="document_count" string="📊 Documents" widget="integer"/>
+                <field name="container_count" string="📦 Containers" widget="integer"/>
+                <field name="state" string="🎯 Status" widget="badge"/>
+                <field name="active" string="✅ Active"/>
+                <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link"/>
             </tree>
         </field>
     </record>
 
-    <!-- Form view for Document -->
+    <!-- Form view for records.document.type -->
     <record id="records_document_type_view_form" model="ir.ui.view">
         <field name="name">records.document.type.view.form</field>
         <field name="model">records.document.type</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
-            <form string="Document Type">
+            <form string="Document Type Configuration">
                 <header>
+                    <button name="action_activate" string="Activate" type="object" class="btn-success"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}" groups="records_management.group_records_user"/>
+                    <button name="action_deprecate" string="Deprecate" type="object" class="btn-warning"
+                            attrs="{'invisible': [('state', '!=', 'active')]}" groups="records_management.group_records_manager"/>
+                    <button name="action_archive" string="Archive" type="object" class="btn-secondary"
+                            attrs="{'invisible': [('state', 'in', ['draft', 'deprecated'])]}" groups="records_management.group_records_manager"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,deprecated,archived"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <!-- Document count button removed - field not available in model -->
+                        <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
+                            <field name="document_count" string="Documents" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-cube">
+                            <field name="container_count" string="Containers" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-clock">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="effective_retention_years"/>
+                                </span>
+                                <span class="o_stat_text">Retention Years</span>
+                            </div>
+                        </button>
                     </div>
+
                     <div class="oe_title">
+                        <label for="name"/>
                         <h1>
-                            <field name="name" placeholder="Document Type Name"/>
+                            <field name="name" placeholder="Document Type Name..."/>
                         </h1>
                     </div>
+
                     <group>
-                        <group>
-                            <field name="code"/>
+                        <group string="📄 Basic Information">
+                            <field name="name" required="1"/>
+                            <field name="code" required="1"/>
                             <field name="description"/>
                             <field name="sequence"/>
-                            <field name="active"/>
+                            <field name="category" required="1"/>
+                            <field name="active" widget="boolean_toggle"/>
                         </group>
-                        <group>
-                            <field name="category"/>
-                            <field name="state"/>
-                            <field name="company_id"/>
+                        <group string="🏢 Organization">
                             <field name="parent_type_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="partner_id"/>
+                            <field name="department_id"/>
+                            <field name="category_id"/>
                         </group>
                     </group>
+
+                    <group>
+                        <group string="🔒 Security &amp; Compliance">
+                            <field name="confidentiality_level" required="1"/>
+                            <field name="naid_compliance" widget="boolean_toggle"/>
+                            <field name="hipaa_protected" widget="boolean_toggle"/>
+                            <field name="sox_compliance" widget="boolean_toggle"/>
+                            <field name="gdpr_applicable" widget="boolean_toggle"/>
+                        </group>
+                        <group string="📅 Retention &amp; Destruction">
+                            <field name="default_retention_years"/>
+                            <field name="retention_policy_id"/>
+                            <field name="effective_retention_years" readonly="1"/>
+                            <field name="requires_legal_hold" widget="boolean_toggle"/>
+                            <field name="destruction_method"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="📦 Physical Requirements">
+                            <field name="max_box_weight"/>
+                            <field name="storage_requirements"/>
+                            <field name="handling_instructions"/>
+                        </group>
+                        <group string="⚙️ Configuration">
+                            <field name="approval_required" widget="boolean_toggle"/>
+                            <field name="indexing_required" widget="boolean_toggle"/>
+                            <field name="barcode_required" widget="boolean_toggle"/>
+                            <field name="digital_copy_required" widget="boolean_toggle"/>
+                            <field name="encryption_required" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+
                     <notebook>
-                        <page string="Notes" name="notes">
-                            <field name="description" placeholder="Additional notes and description for this document type..."/>
+                        <page string="📋 Regulatory Requirements" name="regulatory">
+                            <field name="regulatory_requirements" placeholder="Specific regulatory requirements and compliance notes..."/>
+                        </page>
+                        <page string="📄 Documents" name="documents">
+                            <field name="document_ids" mode="list" limit="20">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="reference"/>
+                                    <field name="state"/>
+                                    <field name="received_date"/>
+                                    <field name="destruction_eligible_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="📦 Containers" name="containers">
+                            <field name="container_ids" mode="list" limit="20">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <field name="storage_start_date"/>
+                                    <field name="location_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="👥 Child Types" name="children">
+                            <field name="child_type_ids" mode="list">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="category"/>
+                                    <field name="state"/>
+                                    <field name="document_count"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="📋 Retention Rules" name="retention">
+                            <field name="retention_rule_ids" mode="list">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="retention_years"/>
+                                    <field name="destruction_trigger"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>
@@ -68,20 +171,33 @@
         </field>
     </record>
 
-    <!-- Kanban view for Document -->
+    <!-- Kanban view for records.document.type -->
     <record id="records_document_type_view_kanban" model="ir.ui.view">
         <field name="name">records.document.type.view.kanban</field>
         <field name="model">records.document.type</field>
-        <field name="type">search</field>
+        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="category" class="o_kanban_document_type">
                 <field name="name"/>
+                <field name="code"/>
                 <field name="category"/>
                 <field name="state"/>
                 <field name="active"/>
+                <field name="document_count"/>
+                <field name="container_count"/>
+                <field name="confidentiality_level"/>
+                <field name="effective_retention_years"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_button_box" name="button_box">
+                                <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
+                                    <field name="document_count" string="Documents" widget="statinfo"/>
+                                </button>
+                                <button class="oe_stat_button" icon="fa-cube">
+                                    <field name="container_count" string="Containers" widget="statinfo"/>
+                                </button>
+                            </div>
                             <div class="oe_kanban_card_header">
                                 <div class="oe_kanban_card_header_title">
                                     <div class="o_primary">
@@ -90,19 +206,56 @@
                                         </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <field name="category"/>
+                                        <field name="code"/>
                                     </div>
+                                </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#" title="More options">
+                                        <i class="fa fa-ellipsis-v"/>
+                                    </a>
                                 </div>
                             </div>
                             <div class="oe_kanban_card_content">
-                                <div>
-                                    <strong>Code:</strong>
-                                    <field name="code"/>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <span class="badge badge-primary">
+                                                <field name="document_count"/> 📄
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-center">
+                                            <span class="badge badge-info">
+                                                <field name="container_count"/> 📦
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <strong>Status:</strong>
-                                    <field name="state"/>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <small class="text-muted">
+                                            <i class="fa fa-shield"/>
+                                            <field name="confidentiality_level"/>
+                                        </small>
+                                    </div>
                                 </div>
+                                <div class="row mt-1">
+                                    <div class="col-12">
+                                        <small class="text-muted">
+                                            <i class="fa fa-clock"/>
+                                            <field name="effective_retention_years"/> years
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Type</a>
+                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">📄 View Documents</a>
+                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" attrs="{'invisible': [('state', '!=', 'draft')]}">✅ Activate</a>
+                                <a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" attrs="{'invisible': [('state', '!=', 'active')]}">⚠️ Deprecate</a>
+                                <div class="dropdown-divider"/>
+                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" attrs="{'invisible': [('state', 'in', ['draft', 'deprecated'])]}">📁 Archive</a>
                             </div>
                         </div>
                     </t>
@@ -111,44 +264,81 @@
         </field>
     </record>
 
-    <!-- Search view for Document -->
+    <!-- Search view for records.document.type -->
     <record id="records_document_type_view_search" model="ir.ui.view">
         <field name="name">records.document.type.view.search</field>
         <field name="model">records.document.type</field>
         <field name="type">search</field>
         <field name="arch" type="xml">
-            <search string="Document Types">
-                <field name="name"/>
+            <search string="Search Document Types">
+                <field name="name" string="Document Type" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
                 <field name="code"/>
-                <field name="description"/>
+                <field name="category"/>
+                <field name="confidentiality_level"/>
+                <field name="parent_type_id"/>
+                <field name="partner_id"/>
+                <field name="department_id"/>
+
+                <filter string="✅ Active Types" name="active" domain="[('active', '=', True)]"/>
+                <filter string="📁 Archived Types" name="inactive" domain="[('active', '=', False)]"/>
+
                 <separator/>
-                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
-                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <filter string="📝 Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="🎯 Active" name="active_state" domain="[('state', '=', 'active')]"/>
+                <filter string="⚠️ Deprecated" name="deprecated" domain="[('state', '=', 'deprecated')]"/>
+                <filter string="📦 Archived" name="archived" domain="[('state', '=', 'archived')]"/>
+
                 <separator/>
-                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="Active Types" name="active_types" domain="[('state', '=', 'active')]"/>
-                <filter string="Deprecated" name="deprecated" domain="[('state', '=', 'deprecated')]"/>
+                <filter string="🔒 High Security" name="high_security" domain="[('confidentiality_level', 'in', ['restricted', 'top_secret'])]"/>
+                <filter string="🏥 HIPAA Protected" name="hipaa" domain="[('hipaa_protected', '=', True)]"/>
+                <filter string="📊 SOX Compliant" name="sox" domain="[('sox_compliance', '=', True)]"/>
+                <filter string="🇪🇺 GDPR Applicable" name="gdpr" domain="[('gdpr_applicable', '=', True)]"/>
+                <filter string="🛡️ NAID Compliant" name="naid" domain="[('naid_compliance', '=', True)]"/>
+
                 <separator/>
-                <group expand="0" string="Group By">
+                <filter string="📄 Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
+                <filter string="📦 Has Containers" name="has_containers" domain="[('container_count', '>', 0)]"/>
+                <filter string="👥 Has Children" name="has_children" domain="[('child_count', '>', 0)]"/>
+
+                <separator/>
+                <filter string="🔐 Encryption Required" name="encryption" domain="[('encryption_required', '=', True)]"/>
+                <filter string="📷 Digital Copy Required" name="digital_copy" domain="[('digital_copy_required', '=', True)]"/>
+                <filter string="🏷️ Barcode Required" name="barcode" domain="[('barcode_required', '=', True)]"/>
+
+                <group expand="0" string="📊 Group By">
                     <filter string="Category" name="group_category" context="{'group_by': 'category'}"/>
-                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
+                    <filter string="Security Level" name="group_security" context="{'group_by': 'confidentiality_level'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Parent Type" name="group_parent" context="{'group_by': 'parent_type_id'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Department" name="group_department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Retention Years" name="group_retention" context="{'group_by': 'effective_retention_years'}"/>
                 </group>
             </search>
         </field>
     </record>
 
-    <!-- Tree view for Actions -->
+    <!-- Action for records.document.type -->
     <record id="action_records_document_type" model="ir.actions.act_window">
-        <field name="name">Document Types</field>
+        <field name="name">📄 Document Types</field>
+        <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.document.type</field>
-        <field name="view_mode">list,kanban,form</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="records_document_type_view_search"/>
+        <field name="context">{'search_default_active': 1, 'search_default_active_state': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first document type!
+                📄 Create your first document type!
             </p>
             <p>
-                Document types help classify and organize your records management system.
+                <b>Document Type Management:</b>
+                <br/>
+                • 📂 Organize documents by category and security level<br/>
+                • 🔒 Configure compliance requirements (NAID, HIPAA, SOX, GDPR)<br/>
+                • 📅 Set retention policies and destruction schedules<br/>
+                • 📦 Define physical storage requirements<br/>
+                • ⚙️ Configure indexing, barcoding, and encryption settings<br/>
+                • 🏆 NAID AAA certified document classification system
             </p>
         </field>
     </record>

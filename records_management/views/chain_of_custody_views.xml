@@ -1,38 +1,392 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
+        <!-- Enhanced Tree View for Chain of Custody -->
         <record id="chain_of_custody_view_tree" model="ir.ui.view">
             <field name="name">chain.of.custody.view.tree</field>
             <field name="model">chain.of.custody</field>
             <field name="type">tree</field>
-        <field name="arch" type="xml">
-                <tree string="Chain of Custody">
-                    <field name="name"/>
+            <field name="arch" type="xml">
+                <tree decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'rejected'" decoration-info="naid_compliant == True">
+                    <field name="name" string="📋 Transfer Reference"/>
+                    <field name="transfer_type" string="🔄 Type"/>
+                    <field name="document_id" string="📄 Document"/>
+                    <field name="container_id" string="📦 Container"/>
+                    <field name="custodian_from_id" string="👤 From"/>
+                    <field name="custodian_to_id" string="👤 To"/>
+                    <field name="transfer_date" string="📅 Transfer Date"/>
+                    <field name="state" string="🎯 Status" widget="badge"/>
+                    <field name="naid_compliant" string="✅ NAID" widget="boolean"/>
+                    <field name="security_level" string="🔒 Security"/>
+                    <button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'"/>
+                    <button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'confirmed'"/>
                 </tree>
             </field>
         </record>
 
+        <!-- Enhanced Form View for Chain of Custody -->
         <record id="chain_of_custody_view_form" model="ir.ui.view">
             <field name="name">chain.of.custody.view.form</field>
             <field name="model">chain.of.custody</field>
             <field name="type">form</field>
-        <field name="arch" type="xml">
-                <form string="Chain of Custody">
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_confirm_transfer" type="object" string="✅ Confirm Transfer" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_start_transfer" type="object" string="🚀 Start Transfer" class="btn-info" invisible="state not in ['draft', 'confirmed']"/>
+                        <button name="action_complete_transfer" type="object" string="✅ Complete Transfer" class="btn-success" invisible="state != 'in_transit'"/>
+                        <button name="action_reject_transfer" type="object" string="❌ Reject Transfer" class="btn-danger" invisible="state in ['completed', 'cancelled']"/>
+                        <button name="action_cancel_transfer" type="object" string="🚫 Cancel Transfer" class="btn-warning" invisible="state in ['completed', 'cancelled']"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_transit,completed,rejected,cancelled"/>
+                    </header>
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" icon="fa-file-text-o">
+                                <field name="audit_log_count" widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-shield" invisible="not naid_compliant">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">NAID</span>
+                                    <span class="o_stat_text">Compliant</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-clock-o" invisible="not transfer_duration">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="transfer_duration"/>
+                                    </span>
+                                    <span class="o_stat_text">Duration</span>
+                                </div>
+                            </button>
+                        </div>
+
                         <group>
-                            <field name="name"/>
+                            <group string="📋 Transfer Information">
+                                <field name="name"/>
+                                <field name="transfer_type"/>
+                                <field name="transfer_method"/>
+                                <field name="transfer_date"/>
+                                <field name="expected_completion_date"/>
+                                <field name="actual_completion_date" readonly="1"/>
+                            </group>
+                            <group string="🔒 Security &amp; Compliance">
+                                <field name="security_level"/>
+                                <field name="signature_required" widget="boolean_toggle"/>
+                                <field name="verification_code"/>
+                                <field name="naid_compliant" widget="boolean_toggle"/>
+                                <field name="compliance_officer_id"/>
+                            </group>
                         </group>
+
+                        <group>
+                            <group string="📍 Location Transfer">
+                                <field name="from_location_id"/>
+                                <field name="to_location_id"/>
+                                <field name="transfer_distance"/>
+                                <field name="transport_method"/>
+                                <field name="carrier_id"/>
+                            </group>
+                            <group string="👥 Custody Transfer">
+                                <field name="custodian_from_id"/>
+                                <field name="custodian_to_id"/>
+                                <field name="witness_ids" widget="many2many_tags"/>
+                                <field name="authorized_by_id"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="📦 Items in Transfer">
+                                <field name="document_id"/>
+                                <field name="container_id"/>
+                                <field name="item_count"/>
+                                <field name="total_weight"/>
+                                <field name="special_handling_required"/>
+                            </group>
+                            <group string="📊 Transfer Details">
+                                <field name="transfer_status"/>
+                                <field name="tracking_number"/>
+                                <field name="insurance_value" widget="monetary"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="📋 Transfer Documentation" name="documentation">
+                                <group>
+                                    <field name="transfer_purpose" placeholder="Purpose and justification for this transfer..."/>
+                                    <field name="special_instructions" placeholder="Special handling instructions, security requirements..."/>
+                                    <field name="compliance_notes" placeholder="NAID compliance notes and verification details..."/>
+                                </group>
+                            </page>
+
+                            <page string="🔗 Chain of Custody Events" name="events">
+                                <field name="custody_event_ids">
+                                    <tree>
+                                        <field name="event_date"/>
+                                        <field name="event_type"/>
+                                        <field name="responsible_person"/>
+                                        <field name="location"/>
+                                        <field name="signature_verified"/>
+                                        <field name="temperature"/>
+                                        <field name="humidity"/>
+                                        <field name="notes"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="event_date"/>
+                                            <field name="event_type"/>
+                                            <field name="responsible_person"/>
+                                            <field name="location"/>
+                                            <field name="signature_verified"/>
+                                            <field name="temperature"/>
+                                            <field name="humidity"/>
+                                            <field name="notes"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+
+                            <page string="📋 Audit Trail" name="audit">
+                                <field name="audit_log_ids">
+                                    <tree>
+                                        <field name="event_date"/>
+                                        <field name="event_type"/>
+                                        <field name="user_id"/>
+                                        <field name="description"/>
+                                        <field name="ip_address"/>
+                                        <field name="old_value"/>
+                                        <field name="new_value"/>
+                                    </tree>
+                                </field>
+                            </page>
+
+                            <page string="📦 Transfer Items" name="items">
+                                <field name="transfer_item_ids">
+                                    <tree>
+                                        <field name="document_id"/>
+                                        <field name="container_id"/>
+                                        <field name="item_type"/>
+                                        <field name="quantity"/>
+                                        <field name="condition"/>
+                                        <field name="serial_number"/>
+                                        <field name="value" widget="monetary"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="document_id"/>
+                                            <field name="container_id"/>
+                                            <field name="item_type"/>
+                                            <field name="quantity"/>
+                                            <field name="condition"/>
+                                            <field name="serial_number"/>
+                                            <field name="value"/>
+                                            <field name="notes"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+
+                            <page string="📊 Transfer Analytics" name="analytics">
+                                <group>
+                                    <group string="⏱️ Timing">
+                                        <field name="transfer_duration"/>
+                                        <field name="delay_reason"/>
+                                        <field name="estimated_duration"/>
+                                        <field name="actual_duration"/>
+                                    </group>
+                                    <group string="📈 Metrics">
+                                        <field name="transfer_efficiency"/>
+                                        <field name="compliance_score"/>
+                                        <field name="risk_level"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
                 </form>
             </field>
         </record>
 
-        <record id="action_chain_of_custody" model="ir.actions.act_window">
-            <field name="name">Chain of Custody</field>
-            <field name="res_model">chain.of.custody</field>
-            <field name="view_mode">list,form</field>
+        <!-- Kanban View for Chain of Custody -->
+        <record id="chain_of_custody_view_kanban" model="ir.ui.view">
+            <field name="name">chain.of.custody.view.kanban</field>
+            <field name="model">chain.of.custody</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_custody_dashboard">
+                    <field name="name"/>
+                    <field name="transfer_type"/>
+                    <field name="custodian_from_id"/>
+                    <field name="custodian_to_id"/>
+                    <field name="transfer_date"/>
+                    <field name="state"/>
+                    <field name="naid_compliant"/>
+                    <field name="security_level"/>
+                    <field name="document_id"/>
+                    <field name="container_id"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong><field name="name"/></strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            🔄 <field name="transfer_type"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#">
+                                            <i class="fa fa-ellipsis-v" title="More options"/>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_content">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div>
+                                                <i class="fa fa-user"/>
+                                                <field name="custodian_from_id"/> → <field name="custodian_to_id"/>
+                                            </div>
+                                            <div>
+                                                <i class="fa fa-calendar"/>
+                                                <field name="transfer_date"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-center">
+                                                <field name="naid_compliant" widget="boolean"/>
+                                                <div t-if="record.naid_compliant.raw_value" class="text-success">
+                                                    <i class="fa fa-shield"/> NAID
+                                                </div>
+                                            </div>
+                                            <div class="text-center mt-1">
+                                                <span t-attf-class="badge badge-{{record.security_level.raw_value == 'high' and 'danger' or record.security_level.raw_value == 'medium' and 'warning' or 'info'}}">
+                                                    <field name="security_level"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <div t-if="record.document_id.raw_value or record.container_id.raw_value">
+                                                <i class="fa fa-file"/>
+                                                <field name="document_id"/>
+                                                <field name="container_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6">
+                                            <button class="btn btn-primary btn-sm" type="object" name="action_confirm_transfer" t-if="record.state.raw_value == 'draft'">
+                                                ✅ Confirm
+                                            </button>
+                                            <button class="btn btn-success btn-sm" type="object" name="action_complete_transfer" t-if="record.state.raw_value == 'in_transit'">
+                                                ✅ Complete
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="btn btn-info btn-sm" type="object" name="action_start_transfer" t-if="record.state.raw_value in ['draft', 'confirmed']">
+                                                🚀 Start
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Transfer</a>
+                                    <a role="menuitem" type="object" name="action_confirm_transfer" class="dropdown-item">✅ Confirm Transfer</a>
+                                    <a role="menuitem" type="object" name="action_start_transfer" class="dropdown-item">🚀 Start Transfer</a>
+                                    <a role="menuitem" type="object" name="action_complete_transfer" class="dropdown-item">✅ Complete Transfer</a>
+                                    <div class="dropdown-divider"/>
+                                    <a role="menuitem" type="object" name="action_reject_transfer" class="dropdown-item">❌ Reject Transfer</a>
+                                    <a role="menuitem" type="object" name="action_cancel_transfer" class="dropdown-item">🚫 Cancel Transfer</a>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
         </record>
 
+        <!-- Search View for Chain of Custody -->
+        <record id="chain_of_custody_view_search" model="ir.ui.view">
+            <field name="name">chain.of.custody.view.search</field>
+            <field name="model">chain.of.custody</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Transfer Reference" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="custodian_from_id"/>
+                    <field name="custodian_to_id"/>
+                    <field name="document_id"/>
+                    <field name="container_id"/>
+                    <field name="transfer_type"/>
+                    <field name="verification_code"/>
+
+                    <filter string="📝 Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="✅ Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                    <filter string="🚚 In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
+                    <filter string="✅ Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <filter string="❌ Rejected" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                    <filter string="🚫 Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+
+                    <separator/>
+                    <filter string="✅ NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
+                    <filter string="🔒 High Security" name="high_security" domain="[('security_level', '=', 'high')]"/>
+                    <filter string="📋 Signature Required" name="signature_required" domain="[('signature_required', '=', True)]"/>
+                    <filter string="⚠️ Special Handling" name="special_handling" domain="[('special_handling_required', '=', True)]"/>
+                    <filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today())]"/>
+                    <filter string="🚨 High Risk" name="high_risk" domain="[('risk_level', '=', 'high')]"/>
+
+                    <group expand="0" string="📊 Group By">
+                        <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Transfer Type" name="group_by_type" context="{'group_by': 'transfer_type'}"/>
+                        <filter string="From Custodian" name="group_by_from" context="{'group_by': 'custodian_from_id'}"/>
+                        <filter string="To Custodian" name="group_by_to" context="{'group_by': 'custodian_to_id'}"/>
+                        <filter string="Security Level" name="group_by_security" context="{'group_by': 'security_level'}"/>
+                        <filter string="Transfer Month" name="group_by_month" context="{'group_by': 'transfer_date:month'}"/>
+                        <filter string="From Location" name="group_by_from_location" context="{'group_by': 'from_location_id'}"/>
+                        <filter string="To Location" name="group_by_to_location" context="{'group_by': 'to_location_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Enhanced Action Window for Chain of Custody -->
+        <record id="action_chain_of_custody" model="ir.actions.act_window">
+            <field name="name">🔗 Chain of Custody</field>
+            <field name="res_model">chain.of.custody</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="chain_of_custody_view_search"/>
+            <field name="context">{
+                'search_default_draft': 1,
+                'search_default_in_transit': 1,
+                'search_default_naid_compliant': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    🔗 Start managing chain of custody transfers!
+                </p>
+                <p>
+                    <b>NAID AAA Compliant Chain of Custody Management:</b>
+                    <br/>
+                    • 🔗 Complete custody transfer tracking with signatures<br/>
+                    • ✅ NAID compliance verification and certification<br/>
+                    • 🔒 Multi-level security with verification codes<br/>
+                    • 📍 Location-to-location transfer management<br/>
+                    • 👥 Custodian handoff with witness verification<br/>
+                    • 📋 Comprehensive audit trails for all transfers<br/>
+                    • ⏱️ Transfer timing and efficiency analytics<br/>
+                    • 📊 Risk assessment and compliance scoring<br/>
+                    • 🚨 Automated alerts for overdue transfers
+                </p>
+            </field>
+        </record>
     </data>
 </odoo>

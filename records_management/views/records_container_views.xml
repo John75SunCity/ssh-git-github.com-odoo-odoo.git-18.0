@@ -99,21 +99,24 @@
         <field name="model">records.container</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <list decoration-success="state == 'stored'" decoration-info="state == 'indexed'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'received'" multi_edit="1">
+            <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
                 <header>
                     <button name="action_bulk_convert_container_type" type="object" string="🔄 Bulk Convert Types" class="btn-primary"/>
                 </header>
                 <field name="name" string="📦 Container ID"/>
+                <field name="barcode" string="🏷️ Barcode"/>
                 <field name="container_type_id" string="📦 Container Type"/>
                 <field name="weight" string="⚖️ Weight"/>
                 <field name="partner_id" string="👤 Customer"/>
                 <field name="department_id" string="🏢 Department"/>
                 <field name="location_id" string="📍 Location"/>
                 <field name="state" string="🎯 Status" widget="badge"/>
-                <field name="create_date" string="📅 Created"/>
-                <field name="destruction_date" string="💥 Destruction" optional="hide"/>
-                <field name="barcode" string="🏷️ Barcode"/>
                 <field name="document_count" string="💾 Documents" sum="Total Documents"/>
+                <field name="storage_start_date" string="📅 Storage Start"/>
+                <field name="destruction_due_date" string="� Due Date"/>
+                <field name="is_due_for_destruction" string="Due" widget="boolean_toggle"/>
+                <field name="security_level" string="🔒 Security"/>
+                <field name="active" string="Active" widget="boolean_toggle"/>
                 <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text-o" class="btn-link"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
             </list>
@@ -128,66 +131,99 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_index_container" type="object" string="📋 Index Container" class="btn-primary" invisible="state != 'received'"/>
-                    <button name="action_store_container" type="object" string="📦 Store Container" class="btn-primary" invisible="state != 'indexed'"/>
-                    <button name="action_retrieve_container" type="object" string="📍 Retrieve Container" class="btn-secondary" invisible="state != 'stored'"/>
-                    <button name="action_destroy_container" type="object" string="🗑️ Destroy Container" class="btn-warning" invisible="state not in ['stored', 'retrieved']"/>
-                    <button name="action_generate_barcode" type="object" string="🏷️ Print Barcode" class="btn-info"/>
-                    <field name="state" widget="statusbar" statusbar_visible="received,indexed,stored,retrieved,destroyed"/>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_store_container" type="object" string="Store Container" class="btn-primary" invisible="state != 'active'"/>
+                    <button name="action_retrieve_container" type="object" string="Retrieve Container" class="btn-secondary" invisible="state != 'stored'"/>
+                    <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not is_due_for_destruction"/>
+                    <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" invisible="state != 'pending_destruction'"/>
+                    <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,stored,retrieved,pending_destruction,destroyed"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
-                            <field string="Documents" name="document_count" widget="statinfo"/>
+                            <field name="document_count" string="Documents" widget="statinfo"/>
                         </button>
                     </div>
 
                     <group>
-                        <group string="📦 Container Information">
+                        <group string="Container Information">
                             <field name="name" placeholder="e.g., CONT-2024-001"/>
+                            <field name="barcode" placeholder="Auto-generated on save"/>
                             <field name="container_type_id" required="1"/>
                             <field name="weight"/>
-                            <field name="partner_id"/>
-                            <field name="department_id"/>
-                            <field name="barcode" placeholder="Auto-generated on save"/>
+                            <field name="cubic_feet" readonly="1"/>
+                            <field name="is_full"/>
                         </group>
-                        <group string="📍 Location &amp;amp; Status">
+                        <group string="Customer & Location">
+                            <field name="partner_id" required="1"/>
+                            <field name="department_id"/>
                             <field name="location_id"/>
-                            <field name="state"/>
-                            <field name="create_date"/>
-                            <field name="destruction_date" invisible="not destruction_date"/>
+                            <field name="user_id"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Retention & Security">
+                            <field name="retention_policy_id"/>
+                            <field name="document_type_id"/>
+                            <field name="security_level"/>
+                            <field name="permanent_retention"/>
+                        </group>
+                        <group string="Important Dates">
+                            <field name="storage_start_date"/>
+                            <field name="last_access_date" readonly="1"/>
+                            <field name="destruction_due_date" readonly="1"/>
+                            <field name="destruction_date" readonly="1"/>
+                            <field name="is_due_for_destruction" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Content & Description">
+                            <field name="description" placeholder="Container contents, special instructions, or notes..."/>
+                            <field name="content_description"/>
+                            <field name="access_restrictions"/>
+                        </group>
+                        <group string="Additional Info">
+                            <field name="temp_inventory_id"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
 
                     <notebook>
-                        <page string="📄 Documents" name="documents">
-                            <field name="document_ids" mode="list">
-                                <list>
+                        <page string="Documents" name="documents">
+                            <field name="document_ids" mode="tree,form" context="{'default_container_id': active_id}">
+                                <tree string="Documents">
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="state"/>
+                                    <field name="file_size"/>
                                     <field name="create_date"/>
-                                </list>
+                                </tree>
+                                <form string="Document">
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="document_type_id"/>
+                                        <field name="state"/>
+                                        <field name="file_size"/>
+                                        <field name="description"/>
+                                    </group>
+                                </form>
                             </field>
                         </page>
-                        <page string="🚚 Movement History" name="movements">
-                            <field name="movement_ids" mode="list">
-                                <list>
-                                    <field name="movement_date"/>
-                                    <field name="from_location_id"/>
-                                    <field name="to_location_id"/>
+                        <page string="Movement History" name="movements">
+                            <field name="movement_ids" mode="tree">
+                                <tree string="Movement History">
+                                    <field name="create_date"/>
+                                    <field name="location_id"/>
+                                    <field name="destination_location_id"/>
                                     <field name="movement_type"/>
                                     <field name="user_id"/>
-                                </list>
+                                    <field name="notes"/>
+                                </tree>
                             </field>
-                        </page>
-                        <page string="📝 Notes &amp;amp; Details" name="details">
-                            <group>
-                                <field name="description" placeholder="Container contents, special instructions, or notes..."/>
-                                <field name="retention_policy_id"/>
-                                <field name="weight"/>
-                                <field name="cubic_feet"/>
-                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -206,10 +242,13 @@
         <field name="model">records.container</field>
         <field name="type">calendar</field>
         <field name="arch" type="xml">
-            <calendar string="📅 Container Storage Calendar" date_start="create_date" date_stop="destruction_date" color="partner_id">
+            <calendar string="Container Storage Calendar" date_start="storage_start_date" date_stop="destruction_due_date" color="partner_id">
                 <field name="name"/>
                 <field name="partner_id"/>
+                <field name="location_id"/>
                 <field name="state"/>
+                <field name="container_type_id"/>
+                <field name="document_count"/>
             </calendar>
         </field>
     </record>
@@ -220,9 +259,10 @@
         <field name="model">records.container</field>
         <field name="type">graph</field>
         <field name="arch" type="xml">
-            <graph string="📊 Container Analytics">
+            <graph string="Container Analytics">
                 <field name="partner_id" type="row"/>
                 <field name="state" type="col"/>
+                <field name="document_count" type="measure"/>
             </graph>
         </field>
     </record>
@@ -238,24 +278,43 @@
                 <field name="partner_id"/>
                 <field name="department_id"/>
                 <field name="location_id"/>
+                <field name="container_type_id"/>
+                <field name="retention_policy_id"/>
+                <field name="document_type_id"/>
+                <field name="state"/>
+                <field name="security_level"/>
+                <field name="is_due_for_destruction"/>
+                <field name="permanent_retention"/>
+                <field name="active"/>
 
-                <filter string="� Received Boxes" name="received" domain="[('state', '=', 'received')]"/>
-                <filter string="� Indexed Boxes" name="indexed" domain="[('state', '=', 'indexed')]"/>
-                <filter string="📦 Stored Boxes" name="stored" domain="[('state', '=', 'stored')]"/>
-                <filter string="📤 Retrieved Boxes" name="retrieved" domain="[('state', '=', 'retrieved')]"/>
-                <filter string="💥 Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Active" name="active_state" domain="[('state', '=', 'active')]"/>
+                <filter string="In Storage" name="stored" domain="[('state', '=', 'stored')]"/>
+                <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
+                <filter string="Retrieved" name="retrieved" domain="[('state', '=', 'retrieved')]"/>
+                <filter string="Pending Destruction" name="pending_destruction" domain="[('state', '=', 'pending_destruction')]"/>
+                <filter string="Destroyed" name="destroyed" domain="[('state', '=', 'destroyed')]"/>
 
                 <separator/>
-                <filter string="📅 Stored This Month" name="this_month" domain="[('create_date', '&amp;gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
-                <filter string="🗓️ Stored This Year" name="this_year" domain="[('create_date', '&amp;gt;=', context_today().strftime('%Y-01-01'))]"/>
-                <filter string="⚠️ Near Destruction" name="near_destruction" domain="[('destruction_date', '&amp;lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Due for Destruction" name="due_for_destruction" domain="[('is_due_for_destruction', '=', True)]"/>
+                <filter string="Permanent Retention" name="permanent_retention" domain="[('permanent_retention', '=', True)]"/>
+                <filter string="Active Only" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Inactive Only" name="inactive" domain="[('active', '=', False)]"/>
 
-                <group expand="0" string="📊 Group By">
+                <separator/>
+                <filter string="Stored This Month" name="this_month" domain="[('storage_start_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Stored This Year" name="this_year" domain="[('storage_start_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
+                <filter string="Due Within 6 Months" name="due_soon" domain="[('destruction_due_date', '&lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
+
+                <group expand="0" string="Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Location" name="group_by_location" context="{'group_by': 'location_id'}"/>
+                    <filter string="Container Type" name="group_by_type" context="{'group_by': 'container_type_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                    <filter string="Creation Date" name="group_by_creation_date" context="{'group_by': 'create_date:month'}"/>
+                    <filter string="Security Level" name="group_by_security" context="{'group_by': 'security_level'}"/>
+                    <filter string="Storage Month" name="group_by_storage_month" context="{'group_by': 'storage_start_date:month'}"/>
+                    <filter string="Due Month" name="group_by_due_month" context="{'group_by': 'destruction_due_date:month'}"/>
                 </group>
             </search>
         </field>
@@ -263,43 +322,32 @@
 
     <!-- Tree view for ENTERPRISE -->
     <record id="action_records_container" model="ir.actions.act_window">
-        <field name="name">📦 Storage Containers</field>
+        <field name="name">Storage Containers</field>
         <field name="res_model">records.container</field>
-        <field name="view_mode">kanban,list,form,calendar,graph</field>
-        <field name="search_view_id" ref="view_records_container_search"/>
+        <field name="view_mode">tree,kanban,form,calendar,graph</field>
+        <field name="view_id" ref="records_container_view_tree"/>
+        <field name="search_view_id" ref="records_container_view_search"/>
         <field name="context">{
             'search_default_stored': 1,
-            'search_default_this_year': 1
+            'search_default_active': 1
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                📦 Create your first storage container!
+                Create your first storage container!
             </p>
             <p>
                 <b>Enterprise Container Management:</b>
                 <br/>
-                • 📦 Visual kanban boards for container tracking<br/>
-                • 🏷️ Automated barcode generation and printing<br/>
-                • 📍 Real-time location tracking with movement history<br/>
-                • 📄 Document association and content management<br/>
-                • 🎯 Service request integration and workflows<br/>
-                • 📊 Advanced analytics and reporting<br/>
-                • 📱 Mobile-optimized for warehouse operations
-</p>
-</field>
-</record>
-
-<!-- Tree view for Main -->
-    <menuitem id="menu_records_management_root" name="Records Management" sequence="100"/>
-
-    <!-- Tree view for Records -->
-    <record id="action_records_box" model="ir.actions.act_window">
-        <field name="name">Records Boxes</field>
-        <field name="res_model">records.container</field>
-        <field name="view_mode">list,form</field>
+                • Visual kanban boards for container tracking<br/>
+                • Automated barcode generation and printing<br/>
+                • Real-time location tracking with movement history<br/>
+                • Document association and content management<br/>
+                • Service request integration and workflows<br/>
+                • Advanced analytics and reporting<br/>
+                • Mobile-optimized for warehouse operations
+            </p>
+        </field>
     </record>
 
-    <menuitem id="menu_records_box" name="Records Boxes" parent="menu_records_management_root" action="action_records_box" sequence="10"/>
-</data>
 
-</odoo>
+</data></odoo>
