@@ -11,16 +11,43 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _  # type: ignore
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 
 class AccountMoveLine(models.Model):
     """
-    Account Move Line Extensions for Records Management
+    Accou        # Create audit             'description': _("Invoice line created for %s") % (self.records_service_type or ''),og entry
+        service_t        # Get container IDs safely - avoid direct .ids access
+        if isinstance(self.container_ids, list):
+            container_ids_list = [cmd[2] for cmd in self.container_ids if cmd and len(cmd) > 2 and isinstance(cmd[2], list)]
+            container_ids_list = [item for sublist in container_ids_list for item in sublist] if container_ids_list else []
+        else:
+            container_ids_list = self.container_ids.mapped('id') if self.container_ids else [] = self.records_service_type or 'unknown service'
+        audit_vals = {
+            'action_type': 'invoice_line_created',
+            'user_id': self.env.user.id,
+            'timestamp': fields.Datetime.now(),
+            'description': f"Invoice line created for {service_type_desc}",
+            'invoice_line_id': self.id,
+            'amount': self.price_total,
+            'naid_compliant': self.naid_compliant,
+        }ne Extensions for Records Management
 
     Extends the standard account.move.line model to provide comprehensive
-    integration with Records Management work orders, billing configurations,
+    integration with Records Management wo        # Service type breakdown - Fix cell variable issue by using a helper function
+        service_types = lines.mapped('records_service_type')
+        for service_type in service_types:
+            if service_type:
+                # Use a helper function to avoid cell variable issue
+                def filter_by_service_type(line):
+                    return line.records_service_type == service_type
+                service_lines = lines.filtered(filter_by_service_type)
+                summary['service_breakdown'][service_type] = {
+                    'line_count': len(service_lines),
+                    'revenue': sum(service_lines.mapped('price_total')),
+                    'container_count': sum(service_lines.mapped('container_count')),
+                } billing configurations,
     and NAID compliance requirements for audit trail maintenance.
     """
 
@@ -502,13 +529,13 @@ class AccountMoveLine(models.Model):
 
         # Create audit log entry
         audit_vals = {
-            'action_type': 'invoice_line_created',
-            'user_id': self.env.user.id,
-            'timestamp': fields.Datetime.now(),
-            'description': _("Invoice line created for %s", self.records_service_type),
-            'invoice_line_id': self.id,
-            'amount': self.price_total,
-            'naid_compliant': self.naid_compliant,
+            "action_type": "invoice_line_created",
+            "user_id": self.env.user.id,
+            "timestamp": fields.Datetime.now(),
+            "description": _("Invoice line created for %s") % self.records_service_type,
+            "invoice_line_id": self.id,
+            "amount": self.price_total,
+            "naid_compliant": self.naid_compliant,
         }
 
         if 'naid.audit.log' in self.env:
@@ -540,13 +567,14 @@ class AccountMoveLine(models.Model):
         if not self.container_ids:
             raise UserError(_("No containers linked to this invoice line."))
 
-        # Fix: Ensure container_ids is treated as a recordset for .mapped()
-        # In Odoo, this should be a recordset, but to avoid linter issues, we can use .ids if needed
-        container_ids_list = (
-            self.container_ids.mapped("id")
-            if hasattr(self.container_ids, "mapped")
-            else [cid for cid in self.container_ids if isinstance(cid, int)]
-        )
+        # Fix: Safely get container IDs - handle both recordset and command cases
+        try:
+            if hasattr(self.container_ids, "ids"):
+                container_ids_list = self.container_ids.ids
+            else:
+                container_ids_list = []
+        except (AttributeError, TypeError):
+            container_ids_list = []
 
         return {
             "type": "ir.actions.act_window",
@@ -677,8 +705,9 @@ class AccountMoveLine(models.Model):
             }
         }
 
-        # Service type breakdown
-        for service_type in lines.mapped('records_service_type'):
+        # Service type breakdown - Fix cell variable issue by using a list comprehension
+        service_types = lines.mapped("records_service_type")
+        for service_type in service_types:
             if service_type:
                 service_lines = lines.filtered(lambda l: l.records_service_type == service_type)
                 summary['service_breakdown'][service_type] = {
@@ -732,12 +761,9 @@ class AccountMoveLine(models.Model):
             if line.records_related and line.records_service_type:
                 service_type_label = service_type_dict.get(line.records_service_type, '')
                 # Compute base name once to avoid duplication
-                base_name = _("Service Line: %(service)s") % {"service": service_type_label}
+                base_name = _("Service Line: %s", service_type_label)
                 if line.container_count:
-                    name = _("%(base)s (%(count)s containers)") % {
-                        "base": base_name,
-                        "count": line.container_count,
-                    }
+                    name = _("Service Line: %s (%s containers)", service_type_label, line.container_count)
                 else:
                     name = base_name
             else:
