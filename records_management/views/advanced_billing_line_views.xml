@@ -95,7 +95,7 @@
         <!-- Menu item for advanced.billing.line -->
         <menuitem id="advanced_billing_line_menu"
                   name="Billing Lines"
-                  parent="menu_records_billing"
+                  parent="records_management.menu_records_billing"
                   action="advanced_billing_line_action"
                   sequence="23"/>
     </data>
