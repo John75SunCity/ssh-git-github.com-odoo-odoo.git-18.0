@@ -99,5 +99,3 @@ access_partner_bin_key_user,partner.bin.key user,model_partner_bin_key,records_m
 access_partner_bin_key_manager,partner.bin.key manager,model_partner_bin_key,records_management.group_records_manager,1,1,1,0
 access_document_search_attempt_user,document.search.attempt user,model_document_search_attempt,records_management.group_records_user,1,1,0,0
 access_document_search_attempt_manager,document.search.attempt manager,model_document_search_attempt,records_management.group_records_manager,1,1,1,0
-access_x_model_external_ids_data_user,x.model.external.ids.data user,x_model_external_ids_data,records_management.group_records_user,1,1,1,0
-access_x_model_external_ids_data_manager,x.model.external.ids.data manager,x_model_external_ids_data,records_management.group_records_manager,1,1,1,1
