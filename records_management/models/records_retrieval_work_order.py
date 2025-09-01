@@ -85,4 +85,3 @@ class RecordsRetrievalWorkOrder(models.Model):
             raise UserError(_("Only cancelled work orders can be reset to draft."))
         self.write({'state': 'draft'})
         return True
-

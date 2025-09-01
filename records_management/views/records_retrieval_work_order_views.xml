@@ -1,257 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
+        <!-- ============================================================================ -->
+        <!-- RECORDS RETRIEVAL WORK ORDER - TREE VIEW -->
+        <!-- ============================================================================ -->
+        <record id="records_retrieval_work_order_view_tree" model="ir.ui.view">
+            <field name="name">records.retrieval.work.order.view.tree</field>
+            <field name="model">records.retrieval.work.order</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="equipment_id"/>
+                    <field name="status"/>
+                    <field name="requested_by"/>
+                    <field name="date_requested"/>
+                </tree>
+            </field>
+        </record>
 
-<data>
-<!-- ============================================================================ -->
-<!-- RECORDS RETRIEVAL WORK ORDER - TREE VIEW -->
-<!-- ============================================================================ -->
-    <record id="records_retrieval_work_order_view_tree" model="ir.ui.view">
-        <field name="name">records.retrieval.work.order.view.tree</field>
-        <field name="model">records.retrieval.work.order</field>
-        <field name="type">list</field>
-        <field name="arch" type="xml">
-            <list string="Records Retrieval Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'">
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="retrieval_team_id"/>
-                <field name="user_id"/>
-                <field name="delivery_method"/>
-                <field name="state" widget="badge" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'"/>
-                <field name="completion_date"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-            </list>
-        </field>
-    </record>
-
-<!-- ============================================================================ -->
-<!-- RECORDS RETRIEVAL WORK ORDER - FORM VIEW -->
-<!-- ============================================================================ -->
-    <record id="records_retrieval_work_order_view_form" model="ir.ui.view">
-        <field name="name">records.retrieval.work.order.view.form</field>
-        <field name="model">records.retrieval.work.order</field>
-        <field name="type">form</field>
-        <field name="arch" type="xml">
-            <form string="Records Retrieval Work Order">
-                <header>
-                    <button name="action_start_progress" string="Start Progress" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button name="action_complete" string="Complete" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
-                    <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])]}"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
-                </header>
-
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <!-- Future: Add stat buttons for related records -->
-                    </div>
-
-                    <widget name="web_ribbon" title="Cancelled" bg_color="bg-danger" attrs="{'invisible': [('state', '!=', 'cancelled')]}"/>
-                    <widget name="web_ribbon" title="Completed" bg_color="bg-success" attrs="{'invisible': [('state', '!=', 'completed')]}"/>
-
-                    <div class="oe_title">
-                        <label for="name" class="oe_edit_only"/>
-                        <h1>
-                            <field name="name" placeholder="Work Order Number..." readonly="1"/>
-                        </h1>
-                    </div>
-
-                    <group>
-                        <group name="customer_info" string="📋 Customer Information">
-                            <field name="partner_id" options="{'no_create': True}"/>
-                            <field name="company_id" groups="base.group_multi_company"/>
+        <!-- ============================================================================ -->
+        <!-- RECORDS RETRIEVAL WORK ORDER - FORM VIEW -->
+        <!-- ============================================================================ -->
+        <record id="records_retrieval_work_order_view_form" model="ir.ui.view">
+            <field name="name">records.retrieval.work.order.view.form</field>
+            <field name="model">records.retrieval.work.order</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="equipment_id"/>
+                            <field name="status"/>
+                            <field name="requested_by"/>
+                            <field name="date_requested"/>
+                            <field name="notes"/>
                         </group>
-                        <group name="assignment_info" string="👥 Assignment Information">
-                            <field name="retrieval_team_id"/>
-                            <field name="user_id" string="Assigned To"/>
-                            <field name="delivery_method"/>
-                        </group>
-                    </group>
-
-                    <notebook>
-                        <page name="details" string="📄 Retrieval Details">
-                            <group>
-                                <group name="dates" string="📅 Scheduling">
-                                    <field name="completion_date" attrs="{'readonly': [('state', '!=', 'in_progress')]}"/>
+                        <notebook>
+                            <page name="details" string="📋 Details">
+                                <group>
+                                    <group name="dates" string="📅 Scheduling">
+                                        <field name="completion_date" attrs="{'readonly': [('state', '!=', 'in_progress')]}"/>
+                                    </group>
+                                    <group name="financials" string="💰 Financial Information">
+                                        <field name="currency_id" invisible="1"/>
+                                        <!-- Future: Add cost/billing fields -->
+                                    </group>
                                 </group>
-                                <group name="financials" string="💰 Financial Information">
-                                    <field name="currency_id" invisible="1"/>
-                                    <!-- Future: Add cost/billing fields -->
+                                <separator string="📝 Retrieval Instructions"/>
+                                <field name="message_ids" widget="mail_thread"/>
+                            </page>
+                            <page name="tracking" string="📊 Tracking &amp; History">
+                                <group>
+                                    <group name="timestamps" string="⏰ Timestamps">
+                                        <field name="create_date" readonly="1"/>
+                                        <field name="write_date" readonly="1"/>
+                                    </group>
                                 </group>
-                            </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <!-- Chatter for communication history -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
 
-                            <separator string="📝 Retrieval Instructions"/>
-                            <field name="message_ids" widget="mail_thread"/>
-                        </page>
-
-                        <page name="tracking" string="📊 Tracking &amp; History">
-                            <group>
-                                <group name="timestamps" string="⏰ Timestamps">
-                                    <field name="create_date" readonly="1"/>
-                                    <field name="write_date" readonly="1"/>
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-
-                <!-- Chatter for communication history -->
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
-
-<!-- ============================================================================ -->
-<!-- RECORDS RETRIEVAL WORK ORDER - KANBAN VIEW -->
-<!-- ============================================================================ -->
-    <record id="records_retrieval_work_order_view_kanban" model="ir.ui.view">
-        <field name="name">records.retrieval.work.order.view.kanban</field>
-        <field name="model">records.retrieval.work.order</field>
-        <field name="type">search</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_small_column">
-                <field name="id"/>
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="user_id"/>
-                <field name="state"/>
-                <field name="delivery_method"/>
-                <field name="completion_date"/>
-
-                <templates>
-                    <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="oe_kanban_content">
-                                <div class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
-                                            <field name="name"/>
-                                        </strong>
-                                        <div class="o_kanban_record_subtitle">
-                                            <field name="partner_id"/>
-                                        </div>
-                                    </div>
-                                    <div class="o_kanban_manage_button_section">
-                                        <a class="o_kanban_manage_toggle_button" href="#">
-                                            <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="o_kanban_record_body">
-                                    <div class="o_kanban_record_bottom">
-                                        <div class="oe_kanban_bottom_left">
-                                            <div>
-                                                <i class="fa fa-user"/> <field name="user_id"/>
-                                            </div>
-                                            <div>
-                                                <i class="fa fa-truck"/> <field name="delivery_method"/>
+        <!-- ============================================================================ -->
+        <!-- RECORDS RETRIEVAL WORK ORDER - KANBAN VIEW -->
+        <!-- ============================================================================ -->
+        <record id="records_retrieval_work_order_view_kanban" model="ir.ui.view">
+            <field name="name">records.retrieval.work.order.view.kanban</field>
+            <field name="model">records.retrieval.work.order</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_small_column">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="state"/>
+                    <field name="delivery_method"/>
+                    <field name="completion_date"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_top">
+                                        <div class="o_kanban_record_headings">
+                                            <strong class="o_kanban_record_title">
+                                                <field name="name"/>
+                                            </strong>
+                                            <div class="o_kanban_record_subtitle">
+                                                <field name="partner_id"/>
                                             </div>
                                         </div>
-                                        <div class="oe_kanban_bottom_right">
-                                            <field name="completion_date" widget="date"/>
+                                        <div class="o_kanban_manage_button_section">
+                                            <a class="o_kanban_manage_toggle_button" href="#">
+                                                <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_record_body">
+                                        <div class="o_kanban_record_bottom">
+                                            <div class="oe_kanban_bottom_left">
+                                                <div>
+                                                    <i class="fa fa-user"/> <field name="user_id"/>
+                                                </div>
+                                                <div>
+                                                    <i class="fa fa-truck"/> <field name="delivery_method"/>
+                                                </div>
+                                            </div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <field name="completion_date" widget="date"/>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
 
-<!-- ============================================================================ -->
-<!-- RECORDS RETRIEVAL WORK ORDER - SEARCH VIEW -->
-<!-- ============================================================================ -->
-    <record id="records_retrieval_work_order_view_search" model="ir.ui.view">
-        <field name="name">records.retrieval.work.order.view.search</field>
-        <field name="model">records.retrieval.work.order</field>
-        <field name="type">search</field>
-        <field name="arch" type="xml">
-            <search string="Search Records Retrieval Work Orders">
-                <!-- Search Fields -->
-                <field name="name" string="Work Order" filter_domain="[('name', 'ilike', self)]"/>
-                <field name="partner_id" string="Customer"/>
-                <field name="user_id" string="Assigned To"/>
-                <field name="retrieval_team_id" string="Team"/>
+        <!-- ============================================================================ -->
+        <!-- RECORDS RETRIEVAL WORK ORDER - SEARCH VIEW -->
+        <!-- ============================================================================ -->
+        <record id="records_retrieval_work_order_view_search" model="ir.ui.view">
+            <field name="name">records.retrieval.work.order.view.search</field>
+            <field name="model">records.retrieval.work.order</field>
+            <field name="arch" type="xml">
+                <search string="Search Records Retrieval Work Orders">
+                    <!-- Search Fields -->
+                    <field name="name" string="Work Order" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="user_id" string="Assigned To"/>
+                    <field name="retrieval_team_id" string="Team"/>
+                    <!-- Filters -->
+                    <separator/>
+                    <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                    <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                    <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]"/>
+                    <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+                    <separator/>
+                    <filter name="scan_delivery" string="Scan &amp; Email" domain="[('delivery_method', '=', 'scan')]"/>
+                    <filter name="physical_delivery" string="Physical Delivery" domain="[('delivery_method', '=', 'physical')]"/>
+                    <separator/>
+                    <filter name="my_orders" string="My Orders" domain="[('user_id', '=', uid)]"/>
+                    <filter name="unassigned" string="Unassigned" domain="[('user_id', '=', False)]"/>
+                    <!-- Date Filters -->
+                    <separator/>
+                    <filter name="today" string="Today" domain="[('create_date', '!=', False)]"/>
+                    <filter name="this_week" string="This Week" domain="[('create_date', '!=', False)]"/>
+                    <!-- Group By -->
+                    <group expand="1" string="Group By">
+                        <filter string="Status" name="group_state" domain="[]" context="{'group_by': 'state'}"/>
+                        <filter string="Customer" name="group_customer" domain="[]" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Assigned To" name="group_user" domain="[]" context="{'group_by': 'user_id'}"/>
+                        <filter string="Team" name="group_team" domain="[]" context="{'group_by': 'retrieval_team_id'}"/>
+                        <filter string="Delivery Method" name="group_delivery" domain="[]" context="{'group_by': 'delivery_method'}"/>
+                        <filter string="Company" name="group_company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
-                <!-- Filters -->
-                <separator/>
-                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
-                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
-                <filter name="completed" string="Completed" domain="[('state', '=', 'completed')]"/>
-                <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+        <!-- ============================================================================ -->
+        <!-- RECORDS RETRIEVAL WORK ORDER - ACTIONS -->
+        <!-- ============================================================================ -->
+        <record id="action_records_retrieval_work_order" model="ir.actions.act_window">
+            <field name="name">Records Retrieval Work Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">records.retrieval.work.order</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{'search_default_in_progress': 1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new Records Retrieval Work Order.
+                </p>
+                <p>
+                    Records Retrieval Work Orders manage the process of retrieving specific documents
+                    or records from storage. These orders track the assignment, progress, and delivery
+                    of requested materials to customers.
+                </p>
+            </field>
+        </record>
 
-                <separator/>
-                <filter name="scan_delivery" string="Scan &amp; Email" domain="[('delivery_method', '=', 'scan')]"/>
-                <filter name="physical_delivery" string="Physical Delivery" domain="[('delivery_method', '=', 'physical')]"/>
+        <!-- My Records Retrieval Orders Action -->
+        <record id="action_my_records_retrieval_work_order" model="ir.actions.act_window">
+            <field name="name">My Records Retrieval Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">records.retrieval.work.order</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[('user_id', '=', uid)]</field>
+            <field name="context">{'search_default_in_progress': 1}</field>
+        </record>
 
-                <separator/>
-                <filter name="my_orders" string="My Orders" domain="[('user_id', '=', uid)]"/>
-                <filter name="unassigned" string="Unassigned" domain="[('user_id', '=', False)]"/>
-
-                <!-- Date Filters -->
-                <separator/>
-                <filter name="today" string="Today" domain="[('create_date', '!=', False)]"/>
-                <filter name="this_week" string="This Week" domain="[('create_date', '!=', False)]"/>
-
-                <!-- Group By -->
-                <group expand="1" string="Group By">
-                    <filter string="Status" name="group_state" domain="[]" context="{'group_by': 'state'}"/>
-                    <filter string="Customer" name="group_customer" domain="[]" context="{'group_by': 'partner_id'}"/>
-                    <filter string="Assigned To" name="group_user" domain="[]" context="{'group_by': 'user_id'}"/>
-                    <filter string="Team" name="group_team" domain="[]" context="{'group_by': 'retrieval_team_id'}"/>
-                    <filter string="Delivery Method" name="group_delivery" domain="[]" context="{'group_by': 'delivery_method'}"/>
-                    <filter string="Company" name="group_company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-<!-- ============================================================================ -->
-<!-- RECORDS RETRIEVAL WORK ORDER - ACTIONS -->
-<!-- ============================================================================ -->
-    <record id="action_records_retrieval_work_order" model="ir.actions.act_window">
-        <field name="name">Records Retrieval Work Orders</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">records.retrieval.work.order</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{'search_default_in_progress': 1}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                Click to create a new Records Retrieval Work Order.
-            </p>
-            <p>
-                Records Retrieval Work Orders manage the process of retrieving specific documents
-                or records from storage. These orders track the assignment, progress, and delivery
-                of requested materials to customers.
-            </p>
-        </field>
-    </record>
-
-    <!-- My Records Retrieval Orders Action -->
-    <record id="action_my_records_retrieval_work_order" model="ir.actions.act_window">
-        <field name="name">My Records Retrieval Orders</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">records.retrieval.work.order</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[('user_id', '=', uid)]</field>
-        <field name="context">{'search_default_in_progress': 1}</field>
-    </record>
-
-    <!-- Unassigned Records Retrieval Orders Action -->
-    <record id="action_unassigned_records_retrieval_work_order" model="ir.actions.act_window">
-        <field name="name">Unassigned Retrieval Orders</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">records.retrieval.work.order</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[('user_id', '=', False), ('state', 'in', ['draft', 'in_progress'])]</field>
-        <field name="context">{'default_state': 'draft'}</field>
-    </record>
-</data>
-
+        <!-- Unassigned Records Retrieval Orders Action -->
+        <record id="action_unassigned_records_retrieval_work_order" model="ir.actions.act_window">
+            <field name="name">Unassigned Retrieval Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">records.retrieval.work.order</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('user_id', '=', False), ('state', 'in', ['draft', 'in_progress'])]</field>
+            <field name="context">{'default_state': 'draft'}</field>
+        </record>
+    </data>
 </odoo>

@@ -249,4 +249,5 @@ from . import (
     workflow_visualization_manager,
     work_order_retrieval,
     work_order_shredding,
+    records_retrieval_work_order,
 )

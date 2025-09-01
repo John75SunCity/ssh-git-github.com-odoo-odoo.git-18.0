@@ -86,14 +86,16 @@ class CustomerInventoryReportWizard(models.TransientModel):
         try:
             self._generate_inventory_reports()
         except Exception as e:
-            self.env['ir.logging'].create({
-                'name': 'Monthly Report Generation Error',
-                'type': 'server',
-                'level': 'ERROR',
-                'message': _('Error generating monthly inventory reports: %s') % str(e),
-                'path': 'customer.inventory.report.wizard',
-                'func': 'generate_monthly_reports',
-            })
+            self.env["ir.logging"].create(
+                {
+                    "name": "Monthly Report Generation Error",
+                    "type": "server",
+                    "level": "ERROR",
+                    "message": _("Error generating monthly inventory reports: %s") % str(e),
+                    "path": "customer.inventory.report.wizard",
+                    "func": "generate_monthly_reports",
+                }
+            )
             raise
 
     def _generate_inventory_reports(self):
@@ -106,24 +108,28 @@ class CustomerInventoryReportWizard(models.TransientModel):
                 self._generate_customer_report(customer)
                 generated_reports += 1
             except Exception as e:
-                self.env['ir.logging'].create({
-                    'name': 'Customer Report Error',
-                    'type': 'server',
-                    'level': 'ERROR',
-                    'message': _('Error generating report for customer %s: %s') % (customer.name, str(e)),
-                    'path': 'customer.inventory.report.wizard',
-                    'func': '_generate_inventory_reports',
-                })
+                self.env["ir.logging"].create(
+                    {
+                        "name": "Customer Report Error",
+                        "type": "server",
+                        "level": "ERROR",
+                        "message": _("Error generating report for customer %s: %s") % (customer.name, str(e)),
+                        "path": "customer.inventory.report.wizard",
+                        "func": "_generate_inventory_reports",
+                    }
+                )
 
         # Log success
-        self.env['ir.logging'].create({
-            'name': 'Monthly Report Generation',
-            'type': 'server',
-            'level': 'INFO',
-            'message': _('Monthly inventory reports generated for %s customers') % generated_reports,
-            'path': 'customer.inventory.report.wizard',
-            'func': '_generate_inventory_reports',
-        })
+        self.env["ir.logging"].create(
+            {
+                "name": "Monthly Report Generation",
+                "type": "server",
+                "level": "INFO",
+                "message": _("Monthly inventory reports generated for %s customers") % generated_reports,
+                "path": "customer.inventory.report.wizard",
+                "func": "_generate_inventory_reports",
+            }
+        )
 
     def _generate_customer_report(self, customer):
         """Generate inventory report for a specific customer"""
@@ -145,24 +151,28 @@ class CustomerInventoryReportWizard(models.TransientModel):
         try:
             report_action = wizard.action_print_report()
             # Log individual report generation
-            self.env['ir.logging'].create({
-                'name': 'Customer Report Generated',
-                'type': 'server',
-                'level': 'INFO',
-                'message': _('Inventory report generated for customer %s with %s inventory records') % (
-                    customer.name, len(inventories)),
-                'path': 'customer.inventory.report.wizard',
-                'func': '_generate_customer_report',
-            })
+            self.env["ir.logging"].create(
+                {
+                    "name": "Customer Report Generated",
+                    "type": "server",
+                    "level": "INFO",
+                    "message": _("Inventory report generated for customer %s with %s inventory records")
+                    % (customer.name, len(inventories)),
+                    "path": "customer.inventory.report.wizard",
+                    "func": "_generate_customer_report",
+                }
+            )
         except Exception as e:
-            self.env['ir.logging'].create({
-                'name': 'Customer Report Generation Failed',
-                'type': 'server',
-                'level': 'ERROR',
-                'message': _('Failed to generate report for customer %s: %s') % (customer.name, str(e)),
-                'path': 'customer.inventory.report.wizard',
-                'func': '_generate_customer_report',
-            })
+            self.env["ir.logging"].create(
+                {
+                    "name": "Customer Report Generation Failed",
+                    "type": "server",
+                    "level": "ERROR",
+                    "message": _("Failed to generate report for customer %s: %s") % (customer.name, str(e)),
+                    "path": "customer.inventory.report.wizard",
+                    "func": "_generate_customer_report",
+                }
+            )
 
     @api.model
     def run_monthly_inventory_report_automation(self):
@@ -173,14 +183,16 @@ class CustomerInventoryReportWizard(models.TransientModel):
         try:
             self._run_inventory_report_workflow()
         except Exception as e:
-            self.env['ir.logging'].create({
-                'name': 'Inventory Report Workflow Error',
-                'type': 'server',
-                'level': 'ERROR',
-                'message': _('Error in inventory report automation workflow: %s') % str(e),
-                'path': 'customer.inventory.report.wizard',
-                'func': 'run_monthly_inventory_report_automation',
-            })
+            self.env["ir.logging"].create(
+                {
+                    "name": "Inventory Report Workflow Error",
+                    "type": "server",
+                    "level": "ERROR",
+                    "message": _("Error in inventory report automation workflow: %s") % str(e),
+                    "path": "customer.inventory.report.wizard",
+                    "func": "run_monthly_inventory_report_automation",
+                }
+            )
             raise
 
     def _run_inventory_report_workflow(self):
@@ -245,7 +257,6 @@ class CustomerInventoryReportWizard(models.TransientModel):
 
     def _archive_old_reports(self):
         """Archive reports older than retention period (e.g., 2 years)"""
-        retention_date = fields.Datetime.subtract(fields.Datetime.now(), days=730)  # 2 years
         retention_date = fields.Datetime.now() - timedelta(days=730)  # 2 years
         old_reports = self.env["customer.inventory.report"].search(
             [("create_date", "<", retention_date), ("active", "=", True)]
@@ -253,14 +264,14 @@ class CustomerInventoryReportWizard(models.TransientModel):
 
         if old_reports:
             old_reports.write({"active": False})
-            _logger.info("Archived %s old inventory reports" % len(old_reports))
+            _logger.info("Archived %s old inventory reports", len(old_reports))
 
     def _generate_summary_reports(self):
         """Generate executive summary reports for management"""
         # Use Odoo's date utilities to get the first day of the current month as a string
         today = fields.Date.context_today(self)
         month_start = today.replace(day=1)
-        month_start_str = fields.Datetime.to_string(fields.Datetime.from_string(str(month_start)))
+        month_start_str = fields.Datetime.to_string(fields.Datetime.combine(month_start, fields.Datetime.now().time()))
         summary_data = self.env["customer.inventory.report"].read_group(
             [("create_date", ">=", month_start_str)],
             ["partner_id", "total_containers", "total_documents"],
@@ -268,7 +279,7 @@ class CustomerInventoryReportWizard(models.TransientModel):
         )
 
         # Create summary in system parameter or log for now
-        summary_text = "Executive Summary Data: %s reports processed" % len(summary_data)
+        summary_text = _("Executive Summary Data: %s reports processed") % len(summary_data)
         self.env["ir.logging"].create(
             {
                 "name": "Executive Summary",
@@ -321,8 +332,5 @@ class CustomerInventoryReportWizard(models.TransientModel):
             wizard.run_monthly_inventory_report_automation()
             return True
         except Exception as e:
-            _logger.error("Error in monthly inventory report cron: %s" % e)
-            return False
-        except Exception as e:
-            _logger.error("Error in monthly inventory report cron: %s" % e)
+            _logger.error("Error in monthly inventory report cron: %s", e)
             return False

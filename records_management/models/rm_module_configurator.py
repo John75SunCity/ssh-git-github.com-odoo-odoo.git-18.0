@@ -873,3 +873,4 @@ class RmModuleConfigurator(models.Model):
     bulk_user_import_enabled = fields.Boolean(
         string="Enable Bulk User Import", default=True, help="Enable or disable bulk user import functionality."
     )
+    retrieval_work_order_enabled = fields.Boolean(string="Enable Retrieval Work Orders", default=True)
