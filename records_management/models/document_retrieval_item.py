@@ -140,6 +140,9 @@ class DocumentRetrievalItem(models.Model):
     state = fields.Selection(related='status', string='State')
     effective_priority = fields.Selection(related='priority', string='Effective Priority')
 
+    # Class-level constant for maintainability
+    DEFAULT_ACTIVE_STATUSES = ["pending", "searching", "located"]
+
     # ============================================================================
     # COMPUTED METHODS
     # ============================================================================
@@ -172,10 +175,13 @@ class DocumentRetrievalItem(models.Model):
         for item in self:
             retrieval_rate = 0.0
             if item.partner_id:
-                negotiated_rate = self.env["customer.negotiated.rates"].search([
-                    ("partner_id", "=", item.partner_id.id),
-                    ("active", "=", True),
-                ], limit=1)
+                negotiated_rate = self.env["customer.negotiated.rate"].search(
+                    [
+                        ("partner_id", "=", item.partner_id.id),
+                        ("active", "=", True),
+                    ],
+                    limit=1,
+                )
 
                 if negotiated_rate:
                     retrieval_rate = negotiated_rate.get_effective_rate("managed_retrieval_rate")
@@ -358,6 +364,7 @@ class DocumentRetrievalItem(models.Model):
         self.message_post(body=message_body, message_type="notification")
 
     def action_locate_item(self):
+        self.ensure_one()
         for item in self:
             if item.status != "pending":
                 raise UserError(_("Only pending items can be located."))
@@ -368,6 +375,7 @@ class DocumentRetrievalItem(models.Model):
             )
 
     def action_retrieve_item(self):
+        self.ensure_one()
         for item in self:
             if item.status != "located":
                 raise UserError(_("Item must be located before retrieval."))
@@ -378,12 +386,14 @@ class DocumentRetrievalItem(models.Model):
             )
 
     def action_package_item(self):
+        self.ensure_one()
         for item in self:
             if item.status != "retrieved":
                 raise UserError(_("Item must be retrieved before packaging."))
             item._update_status("packaged", _("Item packaged by %s", self.env.user.name))
 
     def action_deliver_item(self):
+        self.ensure_one()
         for item in self:
             if item.status != "packaged":
                 raise UserError(_("Item must be packaged before delivery."))
@@ -400,6 +410,7 @@ class DocumentRetrievalItem(models.Model):
     # SEARCH WORKFLOW ACTION METHODS
     # ============================================================================
     def action_begin_search_process(self):
+        self.ensure_one()
         for item in self:
             if item.status != "pending":
                 raise UserError(_("Only pending items can start the search process."))
@@ -434,6 +445,7 @@ class DocumentRetrievalItem(models.Model):
         return True
 
     def action_mark_not_found(self, reason="not_in_container", notes=""):
+        self.ensure_one()
         for item in self:
             reason_display = dict(item._fields["not_found_reason"].selection).get(reason, reason)
             message = _(
@@ -481,7 +493,7 @@ class DocumentRetrievalItem(models.Model):
     def search_items_by_status(self, status_list=None):
         """Search retrieval items by status"""
         if not status_list:
-            status_list = ['pending', 'searching', 'located']
+            status_list = self.DEFAULT_ACTIVE_STATUSES  # Use constant instead of hardcoded list
 
         domain = [('status', 'in', status_list)]
         return self.search(domain, order='priority desc, create_date desc')
@@ -508,9 +520,17 @@ class DocumentRetrievalItem(models.Model):
         return self.search(domain, limit=limit, order='priority desc, create_date desc')
 
     def get_high_priority_items(self, partner_id=None):
-        """Get high and very high priority items"""
-        domain = [('priority', 'in', ['2', '3']), ('status', 'in', ['pending', 'searching', 'located'])]
+        """
+        Return a recordset of high and very high priority retrieval items (priority '2' or '3'),
+        filtered by status ('pending', 'searching', or 'located'), and optionally filtered by partner.
+
+        :param partner_id: Optional partner ID to filter items by customer.
+        :return: recordset of document.retrieval.item records matching the criteria.
+        """
+        domain = [
+            ("priority", "in", ["2", "3"]),
+            ("status", "in", self.DEFAULT_ACTIVE_STATUSES),
+        ]  # Use constant instead of hardcoded list
         if partner_id:
             domain.append(('partner_id', '=', partner_id))
         return self.search(domain, order='priority desc, create_date desc')
-

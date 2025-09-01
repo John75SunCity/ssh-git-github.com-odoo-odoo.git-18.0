@@ -6,8 +6,6 @@ from . import (
     advanced_billing_contact,
     advanced_billing_line,
     advanced_billing_profile,
-    advanced_billing_service_line,
-    advanced_billing_storage_line,
     approval_history,
     barcode_generation_history,
     barcode_models_enhanced,

@@ -274,11 +274,47 @@ class CustomerNegotiatedRate(models.Model):
         ])
         rates_to_activate.action_activate()
 
-    @api.model
-    def _cron_expire_active_rates(self):
-        """Cron job to expire rates when their expiration date is reached."""
-        rates_to_expire = self.search([
-            ('state', 'in', ['active', 'approved']),
-            ('expiration_date', '<', fields.Date.today())
-        ])
-        rates_to_expire.action_expire()
+    # ============================================================================
+    # BUSINESS LOGIC METHODS
+    # ============================================================================
+    def get_effective_rate(self, rate_field):
+        """Get the effective rate for a specific field, considering discounts and current status"""
+        self.ensure_one()
+
+        if not self.is_current or self.state != "active":
+            return 0.0
+
+        # Get the base rate value
+        base_rate = getattr(self, rate_field, 0.0) or 0.0
+
+        # Apply discount if configured
+        if self.discount_percentage and base_rate > 0:
+            discount_amount = base_rate * (self.discount_percentage / 100)
+            return base_rate - discount_amount
+
+        return base_rate
+
+    def get_rate_comparison(self, base_rate_model=None):
+        """Compare negotiated rate to base rate for analytics"""
+        self.ensure_one()
+
+        comparison_data = {
+            "negotiated_rate": self.monthly_rate or 0.0,
+            "base_rate": 0.0,
+            "savings_amount": 0.0,
+            "savings_percentage": 0.0,
+        }
+
+        if base_rate_model:
+            # Try to find matching base rate
+            base_rate = base_rate_model.search([("service_type", "=", self.rate_type), ("active", "=", True)], limit=1)
+
+            if base_rate:
+                base_value = getattr(base_rate, "monthly_rate", 0.0) or getattr(base_rate, "standard_rate", 0.0) or 0.0
+                comparison_data["base_rate"] = base_value
+
+                if base_value > 0 and self.monthly_rate:
+                    comparison_data["savings_amount"] = base_value - self.monthly_rate
+                    comparison_data["savings_percentage"] = ((base_value - self.monthly_rate) / base_value) * 100
+
+        return comparison_data

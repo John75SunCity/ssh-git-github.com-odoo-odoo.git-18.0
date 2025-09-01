@@ -6,13 +6,13 @@
             <field name="name">advanced.billing.profile.view.tree</field>
             <field name="model">advanced.billing.profile</field>
             <field name="type">list</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <tree string="Billing Profiles">
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="billing_frequency"/>
                     <field name="state"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -20,8 +20,8 @@
         <record id="advanced_billing_profile_view_form" model="ir.ui.view">
             <field name="name">advanced.billing.profile.view.form</field>
             <field name="model">advanced.billing.profile</field>
-            <field name="type">list</field>
-        <field name="arch" type="xml">
+            <field name="type">form</field>
+            <field name="arch" type="xml">
                 <form string="Billing Profile">
                     <header>
                         <button name="action_activate" type="object" string="Activate" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
@@ -53,11 +53,11 @@
                             </page>
                             <page string="Contacts">
                                 <field name="billing_contact_ids">
-                                    <list>
+                                    <tree>
                                         <field name="name"/>
                                         <field name="email"/>
                                         <field name="phone"/>
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                             <page string="Services &amp; Pricing">
@@ -74,23 +74,16 @@
             </field>
         </record>
 
-        <!-- Action for advanced.billing.profile -->
-        <record id="advanced_billing_profile_action" model="ir.actions.act_window">
-            <field name="name">Billing Profiles</field>
-            <field name="res_model">advanced.billing.profile</field>
-            <field name="view_mode">list,form</field>
-        </record>
-
         <!-- List view for advanced.billing.profile -->
         <record id="advanced_billing_profile_view_list" model="ir.ui.view">
             <field name="name">advanced.billing.profile.view.list</field>
             <field name="model">advanced.billing.profile</field>
             <field name="type">list</field>
-        <field name="arch" type="xml">
-                <list>
+            <field name="arch" type="xml">
+                <tree>
                     <field name="name"/>
                     <field name="primary_contact_id"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -99,12 +92,29 @@
             <field name="name">advanced.billing.profile.view.search</field>
             <field name="model">advanced.billing.profile</field>
             <field name="type">search</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
                 </search>
             </field>
         </record>
 
+        <!-- Action for advanced.billing.profile -->
+        <record id="advanced_billing_profile_action" model="ir.actions.act_window">
+            <field name="name">Billing Profiles</field>
+            <field name="res_model">advanced.billing.profile</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="advanced_billing_profile_view_tree"/>
+            <field name="search_view_id" ref="advanced_billing_profile_view_search"/>
+            <field name="context">{'search_default_filter_active': 1}</field>
+            <field name="help">Manage customer billing profiles</field>
+        </record>
+
+        <!-- Menu item for advanced.billing.profile -->
+        <menuitem id="advanced_billing_profile_menu"
+                  name="Billing Profiles"
+                  parent="menu_records_billing"
+                  action="advanced_billing_profile_action"
+                  sequence="21"/>
     </data>
 </odoo>

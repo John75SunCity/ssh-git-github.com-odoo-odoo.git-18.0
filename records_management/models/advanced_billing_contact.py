@@ -78,12 +78,14 @@ class AdvancedBillingContact(models.Model):
 
     @api.model
     def _get_languages(self):
-        return self.env['res.lang'].get_installed()
+        """Get available languages for selection"""
+        langs = self.env["res.lang"].get_installed()
+        return [(lang["code"], lang["name"]) for lang in langs]
 
     @api.model
     def _tz_get(self):
-        # Simplified: directly use partner's timezone method
-        return self.env["res.partner"]._tz_get()
+        """Get available timezones for selection"""
+        return [(tz, tz) for tz in self.env["res.partner"]._tz_get()]
 
     @api.constrains('primary_contact')
     def _check_primary_contact(self):
@@ -118,18 +120,19 @@ class AdvancedBillingContact(models.Model):
         if "primary_contact" in vals and vals["primary_contact"]:
             for contact in self:
                 # Ensure only one primary per profile
-                contact.billing_profile_id.contact_ids.filtered(lambda c: c.id != contact.id).write(
-                    {"primary_contact": False}
-                )
+                contact_id = contact.id
+                other_contacts = contact.billing_profile_id.contact_ids.filtered(lambda c, cid=contact_id: c.id != cid)
+                other_contacts.write({"primary_contact": False})
         return super().write(vals)
 
     def action_set_primary(self):
         """Set this contact as primary"""
+        self.ensure_one()
         self.primary_contact = True
         # Ensure others are not primary
         self.billing_profile_id.contact_ids.filtered(lambda c: c.id != self.id).write({"primary_contact": False})
 
     def action_contact_now(self):
         """Record contact attempt"""
-        self.last_contact_date = fields.Datetime.now()
+        self.ensure_one()
         self.last_contact_date = fields.Datetime.now()

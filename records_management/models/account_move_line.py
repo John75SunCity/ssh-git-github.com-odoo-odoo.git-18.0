@@ -238,9 +238,7 @@ class AccountMoveLine(models.Model):
     )
 
     customer_rate_id = fields.Many2one(
-        "customer.negotiated.rates",
-        string="Customer Rate",
-        help="Customer-specific negotiated rate"
+        "customer.negotiated.rate", string="Customer Rate", help="Customer-specific negotiated rate"
     )
 
     rate_type = fields.Selection([
