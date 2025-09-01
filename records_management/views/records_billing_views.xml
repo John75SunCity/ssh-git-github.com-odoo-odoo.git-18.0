@@ -125,7 +125,7 @@
         <!-- Menu item for records.billing -->
         <menuitem id="records_billing_menu"
                   name="Billing Records"
-                  parent="menu_records_billing"
+                  parent="records_management.menu_records_billing"
                   action="records_billing_action"
                   sequence="10"/>
     </data>
