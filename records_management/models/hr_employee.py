@@ -4,7 +4,6 @@ from odoo.exceptions import UserError
 
 
 class HrEmployee(models.Model):
-    _name = 'hr.employee'
     _inherit = 'hr.employee'
     _description = 'Hr Employee Records Management Extension'
 
@@ -18,14 +17,14 @@ class HrEmployee(models.Model):
         ('level_2', 'Level 2 (Confidential)'),
         ('level_3', 'Level 3 (Top Secret)')
     ], string="NAID Security Clearance", default='none')
-    
+
     records_access_level = fields.Selection([
         ('none', 'No Access'),
         ('read', 'Read-Only'),
         ('write', 'Read/Write'),
         ('admin', 'Administrator')
     ], string="Records Access Level", default='none', tracking=True)
-    
+
     records_notes = fields.Text(string='Records Management Notes')
     naid_certification_date = fields.Date(string='NAID Certification Date')
     certification_status = fields.Selection([
@@ -34,7 +33,7 @@ class HrEmployee(models.Model):
         ('expiring', 'Expiring Soon'),
         ('expired', 'Expired')
     ], string="Certification Status", compute='_compute_certification_status', store=True)
-    
+
     access_description = fields.Char(string="Access Description", compute='_compute_access_description')
 
     # ============================================================================
@@ -84,5 +83,3 @@ class HrEmployee(models.Model):
         """Revoke all records access from the employee."""
         self.ensure_one()
         self.records_access_level = "none"
-
-
