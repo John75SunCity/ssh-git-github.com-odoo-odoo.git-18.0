@@ -1,56 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for ENTERPRISE -->
-
-    <!-- Kanban view for Enhanced -->
-    <record id="records_location_view_kanban" model="ir.ui.view">
-        <field name="name">records.location.view.kanban</field>
-        <field name="model">records.location</field>
-        <field name="type">kanban</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
-                <field name="name"/>
-                <field name="location_type"/>
-                <field name="current_utilization"/>
-                <field name="storage_capacity"/>
-                <field name="available_spaces"/>
-                <field name="utilization_percentage"/>
-                <field name="active"/>
-                <templates>
-                    <t t-name="card">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_kanban_card_header">
-                                <div class="o_kanban_card_header_title">
-                                    <div class="o_primary">
-                                        <strong>
-                                            <field name="name"/>
-                                        </strong>
-                                    </div>
-                                    <div class="o_secondary">
-                                        <i class="fa fa-building-o" title="Location Type"/>
-                                        <field name="location_type"/>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-                                        <i class="fa fa-ellipsis-v" title="More options"/>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="o_kanban_card_content">
-                                <div class="o_kanban_primary_left">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <button class="btn btn-primary btn-sm" type="object" name="action_view_containers">
-                                                <i class="fa fa-cube"/>
- View Containers
-                                            </button>
+        <!-- Kanban view for Enhanced -->
+        <record id="records_location_view_kanban" model="ir.ui.view">
+            <field name="name">records.location.view.kanban</field>
+            <field name="model">records.location</field>
+            <field name="type">kanban</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="location_type" class="o_kanban_location_dashboard">
+                    <field name="name"/>
+                    <field name="location_type"/>
+                    <field name="current_utilization"/>
+                    <field name="storage_capacity"/>
+                    <field name="available_spaces"/>
+                    <field name="utilization_percentage"/>
+                    <field name="active"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong>
+                                                <field name="name"/>
+                                            </strong>
                                         </div>
-                                        <div class="col-6">
-                                            <div class="text-right">
-                                                <span class="badge badge-info">
-                                                    <field name="current_utilization"/>
+                                        <div class="o_secondary">
+                                            <i class="fa fa-building-o" title="Location Type"/>
+                                            <field name="location_type"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#" title="More options">
+                                            <i class="fa fa-ellipsis-v" title="More options"/>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_content">
+                                    <div class="o_kanban_primary_left">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <button class="btn btn-primary btn-sm" type="object" name="action_view_containers">
+                                                    <i class="fa fa-cube"/>
+ View Containers
+                                                </button>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-right">
+                                                    <span class="badge badge-info">
+                                                        <field name="current_utilization"/>
 /                                                    <field name="storage_capacity"/>
  Used
                                                 </span>
@@ -63,7 +61,7 @@
                                         </div>
                                     </div>
                                     <div class="progress mt-2" style="height: 8px;">
-                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + record.utilization_percentage.raw_value + '%'"/>
+                                        <div class="progress-bar bg-info" role="progressbar" t-att-style="'width: ' + (record.utilization_percentage.raw_value or 0) + '%'"/>
                                     </div>
                                 </div>
                             </div>
@@ -233,5 +231,7 @@
 </p>
 </field>
 </record>
+</data>
+</odoo>
 </data>
 </odoo>

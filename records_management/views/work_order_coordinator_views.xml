@@ -1,33 +1,4 @@
-<?xml versi        <field name="arch" type="xml">
-            <tree string="Work Order Coordinators" decoration-in        <field name="current_work_orde        <field name="certification_ids" nolabel="1">
-            <tree editable="bottom">
-                <field name="name"/>
-                <field name="certification_type"/>
-                <field name="issue_date"/>
-                <field name="expiry_date"/>
-                <field name="is_active" widget="boolean_toggle"/>
-            </tree>
-        </field>label="1">
-            <tree editable="bottom">
-                <field name="name"/>
-                <field name="work_order_type"/>
-                <field name="partner_id"/>
-                <field name="priority" widget="priority"/>
-                <field name="scheduled_date"/>
-                <field name="state" widget="badge"/>
-            </tree>
-        </field>='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
-                <field name="name"/>
-                <field name="employee_id"/>
-                <field name="department_id"/>
-                <field name="coordinator_type"/>
-                <field name="active_work_orders"/>
-                <field name="specialization"/>
-                <field name="priority" widget="priority"/>
-                <field name="state" widget="badge" decoration-info="state=='available'" decoration-warning="state=='busy'" decoration-danger="state=='unavailable'"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-            </tree>
-        </field>ing="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
 <data>
@@ -39,19 +10,18 @@
         <field name="model">work.order.coordinator</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-<tree string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
-                <field name="name"/>
-<field name="employee_id"/>
-<field name="department_id"/>
-<field name="coordinator_type"/>
-<field name="active_work_orders"/>
-<field name="specialization"/>
-<field name="priority" widget="priority"/>
-<field name="state" widget="badge" decoration-info="state=='available'" decoration-warning="state=='busy'" decoration-danger="state=='unavailable'"/>
-<field name="company_id" groups="base.group_multi_company"/>
-
-            </list>
-        </field>
+                <tree string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="coordinator_type"/>
+                    <field name="active_work_orders"/>
+                    <field name="specialization"/>
+                    <field name="priority" widget="priority"/>
+                    <field name="state" widget="badge" decoration-info="state=='available'" decoration-warning="state=='busy'" decoration-danger="state=='unavailable'"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
     </record>
 
 <!-- ============================================================================ -->
@@ -137,7 +107,7 @@
                 <field name="priority" widget="priority"/>
                 <field name="scheduled_date"/>
                 <field name="state" widget="badge"/>
-            </list>
+            </tree>
         </field>
     </page>
 
@@ -165,7 +135,7 @@
                 <field name="issue_date"/>
                 <field name="expiry_date"/>
                 <field name="is_active" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </page>
 
@@ -297,14 +267,13 @@
                         <div class="o_kanban_image">
                             <img t-att-src="kanban_image('work.order.coordinator', 'image_128', record.id.raw_value)" alt="Coordinator"/>
                         </div>
-
                         <div class="oe_kanban_details">
                             <strong class="o_kanban_record_title">
                                 <field name="name"/>
                             </strong>
                             <div class="o_kanban_record_subtitle">
                                 <field name="employee_id"/>
- -                                <field name="department_id"/>
+                                <field name="department_id"/>
                             </div>
 
                             <div class="oe_kanban_bottom_left">
@@ -325,9 +294,11 @@
                             </div>
                         </div>
                     </div>
+                    </div>
                 </t>
             </templates>
         </kanban>
+        </field>
     </record>
 
 <!-- ============================================================================ -->
