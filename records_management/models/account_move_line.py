@@ -443,7 +443,7 @@ class AccountMoveLine(models.Model):
             if hasattr(work_order, 'container_ids'):
                 container_records = work_order.container_ids
                 if container_records:
-                    self.container_ids = [(6, 0, container_records.mapped("id"))]
+                    self.container_ids = [(6, 0, container_records.ids)]
                     self.container_count = len(container_records)
                 else:
                     self.container_ids = [(5, 0, 0)]
@@ -481,7 +481,12 @@ class AccountMoveLine(models.Model):
             pickup = self.pickup_request_id
             self.records_service_type = 'pickup'
             self.pickup_date = pickup.pickup_date if hasattr(pickup, 'pickup_date') else False
-            self.container_count = len(pickup.container_ids) if hasattr(pickup, 'container_ids') else 0
+            if hasattr(pickup, "container_ids") and pickup.container_ids:
+                self.container_ids = [(6, 0, pickup.container_ids.mapped("id"))]
+                self.container_count = len(pickup.container_ids)
+            else:
+                self.container_ids = [(5, 0, 0)]
+                self.container_count = 0
 
     # ============================================================================
     # ACTION METHODS
@@ -698,7 +703,7 @@ class AccountMoveLine(models.Model):
             if vals.get('records_service_type') in ['destruction', 'retrieval']:
                 vals['naid_audit_required'] = True
             elif 'naid_audit_required' not in vals:
-                # Explicitly set to False if not destruction/retrieval
+                # Explicitly set to False if not destruction/retrieval and field not already present in vals
                 vals['naid_audit_required'] = False
 
         return super(AccountMoveLine, self).create(vals_list)
@@ -715,7 +720,7 @@ class AccountMoveLine(models.Model):
 
         if any(field in vals for field in audit_trigger_fields):
             for line in self.filtered('records_related'):
-                if hasattr(line, 'action_create_audit_trail') and line.naid_audit_required and not line.audit_trail_created:
+                if line.naid_audit_required and not line.audit_trail_created:
                     line.action_create_audit_trail()
 
         return result
@@ -726,9 +731,15 @@ class AccountMoveLine(models.Model):
         for line in self:
             if line.records_related and line.records_service_type:
                 service_type_label = service_type_dict.get(line.records_service_type, '')
-                name = _("Service Line: %s", service_type_label)
+                # Compute base name once to avoid duplication
+                base_name = _("Service Line: %(service)s") % {"service": service_type_label}
                 if line.container_count:
-                    name = _("Service Line: %s (%s containers)", service_type_label, line.container_count)
+                    name = _("%(base)s (%(count)s containers)") % {
+                        "base": base_name,
+                        "count": line.container_count,
+                    }
+                else:
+                    name = base_name
             else:
                 name = line.name or _('Invoice Line')
             result.append((line.id, name))
