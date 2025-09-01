@@ -12,7 +12,7 @@
     "odooServer.trace.server": "off",
     "odoo.disablePythonLanguageServerPopup": true,
     "odoo.addonsPath": "./records_management,./addons",
-    "odoo.pythonPath": "./venv312/bin/python",
+    "odoo.pythonPath": "/usr/bin/python3",
     "odoo.disableOdooExtensionWarnings": true,
     "odoo.disableTranslationWarnings": true,
     "odoo.ignoreTranslationFalsePositives": true,
@@ -29,12 +29,9 @@
     "python.analysis.diagnosticMode": "workspace",
     "python.analysis.stubPath": "./typings",
     "python.analysis.extraPaths": [
-        "/home/odoo/src/odoo",
-        "/home/odoo/src/user",
         "./records_management",
         "./records_management_fsm",
-        "./addons",
-        "./typings"
+        "./addons"
     ],
     "ruff.enable": false,
     "ruff.organizeImports": false,
@@ -49,10 +46,15 @@
     "python.sortImports.args": ["--profile", "black", "--line-length", "120"],
     "python.linting.mypyEnabled": true,
     "python.linting.mypyArgs": [
+        "--config-file",
+        "mypy.ini",
         "--python-version",
-        "3.12",
+        "3.9",
         "--ignore-missing-imports",
-        "--no-strict-optional"
+        "--no-strict-optional",
+        "--no-error-summary",
+        "--show-error-codes",
+        "--warn-unused-ignores"
     ],
     "python.linting.banditEnabled": true,
     "python.linting.banditArgs": ["-c", "pyproject.toml"],
@@ -155,12 +157,12 @@
     "scm.inputFontFamily": "default",
     "terminal.integrated.shell.osx": "/bin/zsh",
     "terminal.integrated.env.osx": {
-        "PYTHONPATH": "${workspaceFolder}/records_management:${workspaceFolder}/addons"
+        "PYTHONPATH": "${workspaceFolder}/records_management:${workspaceFolder}/records_management_fsm:${workspaceFolder}/addons",
+        "PYTHONUNBUFFERED": "1"
     },
-    "python.defaultInterpreterPath": "./venv312/bin/python",
-    "python.pythonPath": "./venv312/bin/python",
+    "python.defaultInterpreterPath": "/usr/bin/python3",
+    "python.pythonPath": "/usr/bin/python3",
     "extensions.ignoreRecommendations": false,
-    "extensions.showRecommendationsOnlyOnDemand": false,
     "odoo-shortcuts.openFiles": true,
     "odoo-shortcuts.sites": [
         {

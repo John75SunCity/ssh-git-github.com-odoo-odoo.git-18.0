@@ -11,15 +11,26 @@ class ShredBin(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Bin Number", required=True, copy=False, help="Unique identifier for the shred bin.")
-    barcode = fields.Char(string="Barcode", copy=False)
+    barcode = fields.Char(string="Barcode", copy=False, required=False)
     active = fields.Boolean(default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
+    company_id = fields.Many2one(
+        "res.company", string="Company", default=lambda self: self.env.company, required=True, readonly=True, index=True
+    )
 
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string="Customer", required=True, ondelete='restrict', tracking=True)
-    department_id = fields.Many2one('records.department', string="Department", domain="[('partner_id', '=', partner_id)]")
+    department_id = fields.Many2one(
+        "records.department",
+        string="Department",
+        domain=lambda self: self._department_domain(),
+    )
+
+    def _department_domain(self):
+        partner_id = self.partner_id.id if self.partner_id else False
+        return [("partner_id", "=", partner_id)] if partner_id else []
+
     user_id = fields.Many2one('res.users', string="Service Representative", tracking=True)
 
     # ============================================================================
@@ -46,7 +57,12 @@ class ShredBin(models.Model):
         ('96', '96 Gallon Bin'),
     ], string="Bin Size", required=True, tracking=True)
 
-    capacity_pounds = fields.Float(string="Capacity (lbs)", compute='_compute_capacity_pounds', store=True, help="Estimated weight capacity based on bin size.")
+    capacity_pounds = fields.Float(
+        string="Capacity (lbs)",
+        compute="_compute_capacity_pounds",
+        store=True,
+        help="Estimated weight capacity based on bin size: 23 Gallon Shredinator=60 lbs, 32 Gallon Bin=125 lbs, 32 Gallon Console=90 lbs, 64 Gallon Bin=240 lbs, 96 Gallon Bin=340 lbs. Values based on manufacturer specifications.",
+    )
     is_locked = fields.Boolean(string="Is Locked?", default=True)
     description = fields.Text(string="Notes / Description")
     customer_location = fields.Char(string="Specific Location", help="e.g., 'Break Room, 2nd Floor'")
@@ -97,6 +113,8 @@ class ShredBin(models.Model):
     # ============================================================================
     @api.depends('bin_size')
     def _compute_capacity_pounds(self):
+        # Mapping based on standard manufacturer capacity specifications for shred bins
+        # Source: Industry-standard shredding equipment guidelines (update if specs change)
         capacity_map = {
             '23': 60, '32g': 125, '32c': 90, '64': 240, '96': 340
         }

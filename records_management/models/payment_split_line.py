@@ -15,13 +15,15 @@ class PaymentSplitLine(models.Model):
 
     name = fields.Char(string='Description', required=True)
     amount = fields.Monetary(string='Amount', required=True)
-    currency_id = fields.Many2one('res.currency', related='split_id.currency_id', string='Currency', readonly=True)
+    currency_id = fields.Many2one(
+        "res.currency", related="split_id.currency_id", string="Currency", readonly=True, store=True
+    )
 
     partner_id = fields.Many2one('res.partner', string='Destination Partner')
     invoice_id = fields.Many2one(
-        'account.move',
-        string='Destination Invoice',
-        domain="[('move_type', '=', 'out_invoice'), ('partner_id', '=', partner_id), ('payment_state', '!=', 'paid')]"
+        "account.move",
+        string="Destination Invoice",
+        domain="[('move_type', '=', 'out_invoice'), ('partner_id', '=', partner_id), ('payment_state', '!=', 'paid')]",
     )
 
     processed = fields.Boolean(string='Processed', readonly=True, default=False, copy=False)
@@ -54,5 +56,3 @@ class PaymentSplitLine(models.Model):
         else:
             self.name = False
             self.amount = 0.0
-
-

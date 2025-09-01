@@ -6,6 +6,14 @@ This model generates data for an interactive organizational diagram,
 visualizing the relationships between companies, departments, and users
 for customer portal users.
 
+Features:
+- Hierarchical and force-directed layouts
+- Filtering by customer, department, and search query
+- Access control for portal users
+
+Known limitations:
+- Search query filtering is implemented for basic substring matching on node labels/titles
+
 Author: Records Management System
 Version: 18.0.6.0.0
 License: LGPL-3
@@ -39,7 +47,9 @@ class CustomerPortalDiagram(models.Model):
     # FILTER & DISPLAY OPTIONS
     # ============================================================================
     search_partner_id = fields.Many2one('res.partner', string="Filter by Customer")
-    search_department_id = fields.Many2one('records.department', string="Filter by Department", domain="[('partner_id', '=', search_partner_id)]")
+    search_department_id = fields.Many2one(
+        "records.department", string="Filter by Department", domain="[('partner_id', '=', search_partner_id)]"
+    )
     search_query = fields.Char(string="Search Query")
     show_access_rights = fields.Boolean(string="Show Access Rights", default=False)
     layout_type = fields.Selection([
@@ -55,6 +65,9 @@ class CustomerPortalDiagram(models.Model):
         """
         Compute the diagram nodes and edges data for the interactive visualization.
         This method orchestrates the generation of the entire diagram structure.
+
+        Note: Filtering based on search_query is implemented for basic substring matching
+        on node labels and titles (case-insensitive).
         """
         for record in self:
             nodes = []
@@ -65,6 +78,12 @@ class CustomerPortalDiagram(models.Model):
             if record.search_partner_id:
                 partner_scope = record.search_partner_id
 
+            # Ensure partner_scope is always a recordset
+            if partner_scope and not hasattr(partner_scope, "__len__"):
+                partner_scope = (
+                    self.env["res.partner"].browse([partner_scope.id]) if partner_scope else self.env["res.partner"]
+                )
+
             if not partner_scope:
                 record.diagram_data = json.dumps({'nodes': [], 'edges': []})
                 continue
@@ -74,8 +93,20 @@ class CustomerPortalDiagram(models.Model):
             nodes, edges = self._generate_department_nodes(nodes, edges, partner_scope)
             nodes, edges = self._generate_user_nodes(nodes, edges, partner_scope)
 
-            # Apply filtering if any search criteria is provided
-            # Note: A full implementation would filter nodes/edges here based on search_query
+            # Apply filtering if search_query is provided
+            if record.search_query:
+                query = record.search_query.lower()
+                # Filter nodes based on label or title matching the query
+                filtered_nodes = []
+                node_ids = set()
+                for node in nodes:
+                    if query in node.get("label", "").lower() or query in node.get("title", "").lower():
+                        filtered_nodes.append(node)
+                        node_ids.add(node["id"])
+                nodes = filtered_nodes
+
+                # Filter edges to only include those connecting remaining nodes
+                edges = [edge for edge in edges if edge.get("from") in node_ids and edge.get("to") in node_ids]
 
             record.diagram_data = json.dumps({'nodes': nodes, 'edges': edges})
 

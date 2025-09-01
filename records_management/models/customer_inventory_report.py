@@ -46,7 +46,9 @@ class CustomerInventoryReportWizard(models.TransientModel):
     # WIZARD FIELDS
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Customer', required=True)
-    department_id = fields.Many2one('records.department', string='Department', domain="[('partner_id', '=', partner_id)]")
+    department_id = fields.Many2one(
+        "records.department", string="Department", domain="[('partner_id', '=', partner_id)]"
+    )
     inventory_date_from = fields.Date(string='From Date')
     inventory_date_to = fields.Date(string='To Date', default=fields.Date.context_today)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
@@ -228,8 +230,9 @@ class CustomerInventoryReportWizard(models.TransientModel):
 
     def _send_reports_to_customers(self):
         """Send generated reports to customers via email using Odoo 18.0 mail system"""
+        month_start = fields.Datetime.to_string(fields.Date.today().replace(day=1))
         recent_reports = self.env["customer.inventory.report"].search(
-            [("create_date", ">=", fields.Datetime.now().replace(day=1)), ("state", "=", "completed")]
+            [("create_date", ">=", month_start), ("state", "=", "completed")]
         )
 
         for report in recent_reports:
@@ -242,7 +245,7 @@ class CustomerInventoryReportWizard(models.TransientModel):
 
     def _archive_old_reports(self):
         """Archive reports older than retention period (e.g., 2 years)"""
-
+        retention_date = fields.Datetime.subtract(fields.Datetime.now(), days=730)  # 2 years
         retention_date = fields.Datetime.now() - timedelta(days=730)  # 2 years
         old_reports = self.env["customer.inventory.report"].search(
             [("create_date", "<", retention_date), ("active", "=", True)]
@@ -254,8 +257,12 @@ class CustomerInventoryReportWizard(models.TransientModel):
 
     def _generate_summary_reports(self):
         """Generate executive summary reports for management"""
+        # Use Odoo's date utilities to get the first day of the current month as a string
+        today = fields.Date.context_today(self)
+        month_start = today.replace(day=1)
+        month_start_str = fields.Datetime.to_string(fields.Datetime.from_string(str(month_start)))
         summary_data = self.env["customer.inventory.report"].read_group(
-            [("create_date", ">=", fields.Datetime.now().replace(day=1))],
+            [("create_date", ">=", month_start_str)],
             ["partner_id", "total_containers", "total_documents"],
             ["partner_id"],
         )
@@ -275,8 +282,9 @@ class CustomerInventoryReportWizard(models.TransientModel):
     def _create_followup_activities(self):
         """Create follow-up activities for incomplete or problematic reports"""
 
+        month_start = fields.Datetime.to_string(fields.Date.today().replace(day=1))
         incomplete_reports = self.env["customer.inventory.report"].search(
-            [("create_date", ">=", fields.Datetime.now().replace(day=1)), ("state", "in", ["draft", "error"])]
+            [("create_date", ">=", month_start), ("state", "in", ["draft", "error"])]
         )
 
         activity_type = self.env.ref("mail.mail_activity_data_todo", raise_if_not_found=False)
@@ -300,11 +308,8 @@ class CustomerInventoryReportWizard(models.TransientModel):
                     {
                         "res_model": "customer.inventory.report",
                         "res_id": report.id,
-                        "activity_type_id": activity_type.id,
-                        "summary": "Follow-up required: %s" % report.name,
-                        "note": "Inventory report for %s needs attention" % report.partner_id.name,
                         "user_id": self.env.user.id,
-                        "date_deadline": fields.Date.today() + timedelta(days=3),
+                        "date_deadline": (fields.Date.to_date(fields.Date.today()) + timedelta(days=3)),
                     }
                 )
 
@@ -313,8 +318,11 @@ class CustomerInventoryReportWizard(models.TransientModel):
         """Cron job to automatically generate monthly inventory reports"""
         try:
             wizard = self.create({})
-            wizard.run_inventory_report_automation()
+            wizard.run_monthly_inventory_report_automation()
             return True
+        except Exception as e:
+            _logger.error("Error in monthly inventory report cron: %s" % e)
+            return False
         except Exception as e:
             _logger.error("Error in monthly inventory report cron: %s" % e)
             return False

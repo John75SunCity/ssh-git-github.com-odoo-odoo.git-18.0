@@ -17,7 +17,9 @@ class PartnerBinKey(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
 
     partner_id = fields.Many2one('res.partner', string='Assigned Customer', tracking=True)
-    assigned_contact_id = fields.Many2one('res.partner', string='Assigned Contact', domain="[('parent_id', '=', partner_id)]", tracking=True)
+    assigned_contact_id = fields.Many2one(
+        "res.partner", string="Assigned Contact", domain="[('parent_id', '=', partner_id)]", tracking=True
+    )
 
     status = fields.Selection([
         ('available', 'Available'),
@@ -43,12 +45,19 @@ class PartnerBinKey(models.Model):
             else:
                 key.name = _("Key %s") % key.key_number
 
-    @api.constrains('key_number', 'company_id')
-    def _check_unique_key_number(self):
-        for key in self:
-            domain = [('key_number', '=', key.key_number), ('company_id', '=', key.company_id.id), ('id', '!=', key.id)]
-            if self.search_count(domain) > 0:
-                raise ValidationError(_("Key Number must be unique per company."))
+    @api.constrains("key_number", "company_id", "active")
+    def _check_unique_key_number_active(self):
+        for record in self:
+            if record.active:
+                domain = [
+                    ("key_number", "=", record.key_number),
+                    ("company_id", "=", record.company_id.id),
+                    ("active", "=", True),
+                    ("id", "!=", record.id),
+                ]
+                count = self.search_count(domain)
+                if count > 0:
+                    raise ValidationError(_("Key Number must be unique per company for active records."))
 
     @api.constrains('status', 'partner_id', 'assigned_contact_id', 'issue_date')
     def _check_assignment_consistency(self):

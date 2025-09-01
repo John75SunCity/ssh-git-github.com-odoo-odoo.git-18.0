@@ -207,7 +207,7 @@ class RecordsDocument(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.document') or _('New')
         docs = super().create(vals_list)
         for doc in docs:
-            doc.message_post(body=_('Document "%s" created') % doc.name)
+            doc.message_post(body=_('Document "%s" created', doc.name))
         return docs
 
     def write(self, vals):
@@ -692,7 +692,7 @@ class RecordsDocument(models.Model):
         self.env['naid.audit.log'].create({
             'document_id': self.id,
             'event_type': 'checkout',
-            'event_description': f'Document checked out by {self.env.user.name}',
+            'event_description': _('Document checked out by %s', self.env.user.name),
             'user_id': self.env.user.id,
             'event_date': checkout_date,
         })
@@ -727,7 +727,7 @@ class RecordsDocument(models.Model):
         self.env['naid.audit.log'].create({
             'document_id': self.id,
             'event_type': 'return',
-            'event_description': f'Document returned by {self.env.user.name}',
+            'event_description': _('Document returned by %s', self.env.user.name),
             'user_id': self.env.user.id,
             'event_date': return_date,
         })
@@ -747,7 +747,7 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # BUSINESS LOGIC HELPER METHODS
     # ============================================================================
-    def is_overdue(self):
+    def is_document_overdue(self):  # Renamed from is_overdue to avoid conflict with field
         self.ensure_one()
         return (
             self.state == 'checked_out' and
@@ -855,7 +855,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error viewing attachments: %s') % str(e)) from e
+            raise ValidationError(_('Error viewing attachments: %s', str(e))) from e
 
     def action_view_digital_scans(self):
         """Smart button action to view digital scans"""
@@ -872,7 +872,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error viewing digital scans: %s') % str(e)) from e
+            raise ValidationError(_('Error viewing digital scans: %s', str(e))) from e
 
     def action_toggle_favorite(self):
         """Action to toggle favorite status"""
@@ -889,7 +889,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error toggling favorite status: %s') % str(e)) from e
+            raise ValidationError(_('Error toggling favorite status: %s', str(e))) from e
 
     def action_refresh_data(self):
         """Action to refresh document data and computed fields"""
@@ -912,7 +912,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error refreshing document data: %s') % str(e)) from e
+            raise ValidationError(_('Error refreshing document data: %s', str(e))) from e
 
     def action_generate_qr_code(self):
         """Action to generate/regenerate QR code for document"""
@@ -928,7 +928,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error generating QR code: %s') % str(e)) from e
+            raise ValidationError(_('Error generating QR code: %s', str(e))) from e
 
     def action_print_document_label(self):
         """Action to print document identification label"""
@@ -943,7 +943,7 @@ class RecordsDocument(models.Model):
                 'context': self.env.context,
             }
         except Exception as e:
-            raise ValidationError(_('Error printing document label: %s') % str(e)) from e
+            raise ValidationError(_('Error printing document label: %s', str(e))) from e
 
     def action_schedule_review(self):
         """Action to schedule document review"""
@@ -963,7 +963,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error scheduling document review: %s') % str(e)) from e
+            raise ValidationError(_('Error scheduling document review: %s', str(e))) from e
 
     def action_send_notification(self):
         """Action to send notification about document"""
@@ -982,7 +982,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error sending notification: %s') % str(e)) from e
+            raise ValidationError(_('Error sending notification: %s', str(e))) from e
 
     def _validate_business_rules(self):
         """Validate all business rules for the document"""
@@ -1007,102 +1007,7 @@ class RecordsDocument(models.Model):
             if errors:
                 raise ValidationError('\n'.join(errors))
         except Exception as e:
-            raise ValidationError(_("Error validating business rules: %s") % str(e))
-
-    def _prepare_destruction_data(self):
-        """Prepare data for destruction processing"""
-        try:
-            return {
-                'document_id': self.id,
-                'reference': self.reference,
-                'partner_id': self.partner_id.id if self.partner_id else False,
-                'department_id': self.department_id.id if self.department_id else False,
-                'container_id': self.container_id.id if self.container_id else False,
-                'destruction_date': fields.Date.today(),
-                'destruction_method': getattr(self, 'destruction_method', 'standard'),
-                'is_permanent': self.is_permanent,
-                'permanent_destruction_reason': self.permanent_destruction_reason,
-            }
-        except Exception:
-            return {}
-
-    def _get_document_summary(self):
-        """Get a summary of document information for reporting"""
-        try:
-            return {
-                'id': self.id,
-                'name': self.name,
-                'reference': self.reference,
-                'state': self.state,
-                'partner': self.partner_id.name if self.partner_id else '',
-                'department': self.department_id.name if self.department_id else '',
-                'container': self.container_id.name if self.container_id else '',
-                'received_date': self.received_date,
-                'destruction_eligible_date': self.destruction_eligible_date,
-                'is_permanent': self.is_permanent,
-                'scan_count': self.scan_count,
-                'audit_log_count': self.audit_log_count,
-            }
-        except Exception:
-            return {'error': 'Failed to generate summary'}
-
-    def _create_access_log(self, action, details=None):
-        """Create an access log entry for the document"""
-        try:
-            self.env['naid.audit.log'].create({
-                'document_id': self.id,
-                'action': action,
-                'user_id': self.env.user.id,
-                'timestamp': fields.Datetime.now(),
-                'details': details or '',
-            })
-        except Exception:
-            pass  # Don't fail the main operation if logging fails
-
-    def _notify_stakeholders(self, message, urgency='normal'):
-        """Send notifications to relevant stakeholders"""
-        try:
-            # Notify partner if exists
-            if self.partner_id:
-                self.message_post(
-                    body=message,
-                    partner_ids=[self.partner_id.id],
-                    subtype_xmlid='mail.mt_comment'
-                )
-
-            # Notify department users if configured
-            if self.department_id and hasattr(self.department_id, 'notification_user_ids'):
-                self.message_post(
-                    body=message,
-                    partner_ids=self.department_id.notification_user_ids.partner_id.ids,
-                    subtype_xmlid='mail.mt_comment'
-                )
-        except Exception:
-            pass  # Don't fail the main operation if notifications fail
-    def _validate_business_rules(self):
-        """Validate all business rules for the document"""
-        errors = []
-
-        try:
-            # Check destruction of permanent documents
-            if self.is_permanent and self.state == 'destroyed':
-                if not self.permanent_destruction_reason:
-                    errors.append(_('Permanent documents require a destruction reason.'))
-
-            # Check checkout dates
-            if self.checked_out_date and self.expected_return_date:
-                if self.expected_return_date < self.checked_out_date:
-                    errors.append(_('Expected return date cannot be before checkout date.'))
-
-            # Check destruction dates
-            if self.destruction_eligible_date and self.actual_destruction_date:
-                if self.actual_destruction_date < self.destruction_eligible_date and not self.is_permanent:
-                    errors.append(_('Destruction date cannot be before eligible destruction date.'))
-
-            if errors:
-                raise ValidationError('\n'.join(errors))
-        except Exception as e:
-            raise ValidationError(_('Error validating business rules: %s') % str(e))
+            raise ValidationError(_('Error validating business rules: %s', str(e))) from e
 
     def _prepare_destruction_data(self):
         """Prepare data for destruction processing"""
