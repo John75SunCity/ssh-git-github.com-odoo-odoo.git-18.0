@@ -166,6 +166,7 @@ from . import (
     records_department,
     records_department_billing_approval,
     records_department_billing_contact,
+    records_department_sharing,
     records_destruction,
     records_destruction_job,
     records_digital_scan,
