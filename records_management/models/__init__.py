@@ -64,7 +64,6 @@ from . import (
     file_retrieval_work_order,
     file_retrieval_work_order_item,
     full_customization_name,
-    generated_model,
     hard_drive_scan_wizard,
     hr_employee,
     inventory_adjustment_reason,
@@ -247,6 +246,6 @@ from . import (
     unlock_service_part,
     visitor,
     workflow_visualization_manager,
-    workflow_visualization_manager,
     work_order_retrieval,
+    work_order_shredding,
 )

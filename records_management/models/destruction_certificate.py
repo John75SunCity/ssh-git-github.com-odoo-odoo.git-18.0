@@ -52,9 +52,9 @@ class DestructionCertificate(models.Model):
     # ============================================================================
     # SERVICE TRACKING
     # ============================================================================
-    fsm_task_id = fields.Many2one("project.task", string="FSM Task", readonly=True)
-    shredding_team_id = fields.Many2one("shredding.team", string="Shredding Team")
-    work_order_id = fields.Many2one("work.order.shredding", string="Work Order")
+    fsm_task_id = fields.Many2one(comodel_name="project.task", string="FSM Task", readonly=True)
+    shredding_team_id = fields.Many2one(comodel_name="shredding.team", string="Shredding Team")
+    work_order_id = fields.Many2one(comodel_name="work.order.shredding", string="Work Order")
 
     # ============================================================================
     # DOCUMENTATION

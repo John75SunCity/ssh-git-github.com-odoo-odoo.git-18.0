@@ -71,7 +71,6 @@
         "data/intelligent_search_indexes_data.xml",
         "data/load_data.xml",
         "data/mail_activity_data_todo.xml",
-        "data/x_model_external_ids_data.xml",
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
         "data/paper_shred_configurator_data.xml",

@@ -2,7 +2,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
 class WorkOrderShredding(models.Model):
-    _name = 'work.order.shredding'
+    _name = "work.order.shredding"
     _description = 'Shredding Work Order Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'priority desc, scheduled_date asc, name'
@@ -211,4 +211,3 @@ class WorkOrderShredding(models.Model):
                 raise ValidationError(_("Estimated weight cannot be negative."))
             if order.actual_weight and order.actual_weight < 0:
                 raise ValidationError(_("Actual weight cannot be negative."))
-

@@ -13,8 +13,6 @@
         - Automated actions
         - Any XML data that references models
 
-        Generated automatically - do not edit manually.
-        Use development-tools/generate_complete_model_external_ids.py to regenerate.
         -->
 
         <!-- Billing & Finance Models -->
