@@ -1,7 +1,7 @@
 from odoo import models, fields, api
 
+
 class MaintenanceTeam(models.Model):
-    _name = 'maintenance.team'
     _inherit = 'maintenance.team'
     _description = 'Maintenance Team Management'
 
