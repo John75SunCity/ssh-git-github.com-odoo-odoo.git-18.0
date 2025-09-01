@@ -2,7 +2,7 @@
 """
 Generate Complete Model External IDs for Records Management
 
-This script automatically generates a complete model_external_ids.xml file
+This script automatically generates a complete model_external_ids_data.xml file
 containing all the model external ID references needed by the Records Management module.
 """
 
@@ -94,7 +94,7 @@ def categorize_models(models):
     return categories
 
 def generate_model_external_ids_xml():
-    """Generate the complete model_external_ids.xml file."""
+    """Generate the complete model_external_ids_data.xml file."""
     # Get all custom models and referenced models
     custom_models = extract_custom_models()
     referenced_models = extract_referenced_models()
@@ -183,7 +183,7 @@ def main():
     xml_content = generate_model_external_ids_xml()
 
     # Write to file
-    output_file = 'records_management/data/model_external_ids.xml'
+    output_file = "records_management/data/model_external_ids_data.xml"
     with open(output_file, 'w') as f:
         f.write(xml_content)
 

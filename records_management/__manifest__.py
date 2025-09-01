@@ -12,8 +12,12 @@
     "author": "John75SunCity",
     "website": "https://github.com/John75SunCity",
     "license": "LGPL-3",
+    # Core Odoo modules - Essential and always available
+    # Standard modules - Usually available
+    # Conservative enterprise modules - Only the most essential ones
+    # Removed potentially unavailable modules to prevent installation failures
+    # Add back individual modules only after confirming availability in target environment
     "depends": [
-        # Core Odoo modules - Essential and always available
         "base",
         "mail",
         "web",
@@ -34,7 +38,6 @@
         "purchase",
         "point_of_sale",
         "repair",
-        # Standard modules - Usually available
         "board",
         "resource",
         "barcodes",
@@ -47,20 +50,17 @@
         "http_routing",
         "base_setup",
         "base_import",
-        # Conservative enterprise modules - Only the most essential ones
-        # Removed potentially unavailable modules to prevent installation failures
-        # Add back individual modules only after confirming availability in target environment
-        "industry_fsm",  # Critical for FSM integration
-        "sign",  # Critical for e-signatures
-        "survey",  # Critical for feedback system
-        "documents",  # Critical for document management
-        "helpdesk",  # Important for customer support
-        "mass_mailing",  # Important for notifications
-        "website_sale",  # Important for portal features
-        "sale_management",  # Important for sales integration
-        "account_payment",  # Important for billing
-        "delivery",  # Important for shipping
-        "quality",  # Important for compliance
+        "industry_fsm",
+        "sign",
+        "survey",
+        "documents",
+        "helpdesk",
+        "mass_mailing",
+        "website_sale",
+        "sale_management",
+        "account_payment",
+        "delivery",
+        "quality",
     ],
     "data": [
         "data/container_types_base_rates.xml",
@@ -71,6 +71,7 @@
         "data/intelligent_search_indexes_data.xml",
         "data/load_data.xml",
         "data/mail_activity_data_todo.xml",
+        "data/model_external_ids_data.xml",
         "data/naid_certificate_data.xml",
         "data/paper_products_data.xml",
         "data/paper_shred_configurator_data.xml",
