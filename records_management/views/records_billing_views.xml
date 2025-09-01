@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree view for records.billing -->
+        <record id="records_billing_view_tree" model="ir.ui.view">
+            <field name="name">records.billing.view.tree</field>
+            <field name="model">records.billing</field>
+            <field name="type">list</field>
+            <field name="arch" type="xml">
+                <list string="Billing Records" default_order="date desc">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="amount_total"/>
+                    <field name="currency_id"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form view for records.billing -->
+        <record id="records_billing_view_form" model="ir.ui.view">
+            <field name="name">records.billing.view.form</field>
+            <field name="model">records.billing</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Billing Record">
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object"
+                                class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_create_invoice" string="Create Invoice" type="object"
+                                class="btn-secondary" attrs="{'invisible': [('state', 'not in', ['confirmed', 'billed'])]}"/>
+                        <button name="action_cancel" string="Cancel" type="object"
+                                class="btn-danger" attrs="{'invisible': [('state', 'in', ['paid', 'cancelled'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,billed,paid"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Billing Reference"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Basic Information">
+                                <field name="date" required="1"/>
+                                <field name="partner_id" required="1"/>
+                                <field name="billing_config_id" required="1"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                            </group>
+                            <group string="Financial Information">
+                                <field name="currency_id" required="1"/>
+                                <field name="amount_untaxed" readonly="1"/>
+                                <field name="amount_tax" readonly="1"/>
+                                <field name="amount_total" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Billing Lines">
+                                <field name="billing_line_ids">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="amount"/>
+                                        <field name="currency_id"/>
+                                        <field name="billing_profile_id"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Invoice">
+                                <group>
+                                    <field name="invoice_id" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                        <field name="notes"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search view for records.billing -->
+        <record id="records_billing_view_search" model="ir.ui.view">
+            <field name="name">records.billing.view.search</field>
+            <field name="model">records.billing</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="Search Billing Records">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="date"/>
+                    <field name="billing_config_id"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_partner" string="Customer" context="{'group_by': 'partner_id'}"/>
+                        <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                        <filter name="group_by_date" string="Date" context="{'group_by': 'date'}"/>
+                        <filter name="group_by_config" string="Billing Config" context="{'group_by': 'billing_config_id'}"/>
+                    </group>
+                    <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
+                    <filter name="filter_billed" string="Billed" domain="[('state', '=', 'billed')]"/>
+                    <filter name="filter_paid" string="Paid" domain="[('state', '=', 'paid')]"/>
+                    <filter name="filter_cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for records.billing -->
+        <record id="records_billing_action" model="ir.actions.act_window">
+            <field name="name">Billing Records</field>
+            <field name="res_model">records.billing</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="records_billing_view_tree"/>
+            <field name="search_view_id" ref="records_billing_view_search"/>
+            <field name="context">{'search_default_filter_draft': 1}</field>
+            <field name="help">Manage billing records for the Records Management system</field>
+        </record>
+
+        <!-- Menu item for records.billing -->
+        <menuitem id="records_billing_menu"
+                  name="Billing Records"
+                  parent="menu_records_billing"
+                  action="records_billing_action"
+                  sequence="10"/>
+    </data>
+</odoo>

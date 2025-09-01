@@ -18,11 +18,6 @@
         -->
 
         <!-- Billing & Finance Models -->
-        <record id="model_advanced_billing" model="ir.model">
-            <field name="model">advanced.billing</field>
-            <field name="name">Advanced Billing</field>
-        </record>
-
         <record id="model_advanced_billing_contact" model="ir.model">
             <field name="model">advanced.billing.contact</field>
             <field name="name">Advanced Billing Contact</field>
@@ -36,16 +31,6 @@
         <record id="model_advanced_billing_profile" model="ir.model">
             <field name="model">advanced.billing.profile</field>
             <field name="name">Advanced Billing Profile</field>
-        </record>
-
-        <record id="model_advanced_billing_service_line" model="ir.model">
-            <field name="model">advanced.billing.service.line</field>
-            <field name="name">Advanced Billing Service Line</field>
-        </record>
-
-        <record id="model_advanced_billing_storage_line" model="ir.model">
-            <field name="model">advanced.billing.storage.line</field>
-            <field name="name">Advanced Billing Storage Line</field>
         </record>
 
         <record id="model_base_rate" model="ir.model">
