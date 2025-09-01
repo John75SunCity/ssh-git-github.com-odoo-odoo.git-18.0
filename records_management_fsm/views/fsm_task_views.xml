@@ -191,7 +191,7 @@
                         </page>
 <page string="Containers" attrs="{'invisible': [('container_count', '=', 0)]}">
     <field name="container_ids" mode="tree" readonly="1">
-        <tree>
+        <list>
             <field name="name"/>
             <field name="container_type"/>
             <field name="partner_id"/>
@@ -199,7 +199,7 @@
             <field name="volume_cf"/>
             <field name="weight_lbs"/>
             <field name="naid_compliant" widget="boolean"/>
-        </tree>
+        </list>
     </field>
 </page>
 
@@ -219,13 +219,13 @@
 <page string="NAID Compliance" attrs="{'invisible': [('naid_compliant', '=', False)]}">
     <group>
         <field name="naid_audit_log_ids" mode="tree" readonly="1">
-            <tree>
+            <list>
                 <field name="event_type"/>
                 <field name="event_description"/>
                 <field name="event_timestamp"/>
                 <field name="user_id"/>
                 <field name="compliance_verified" widget="boolean"/>
-            </tree>
+            </list>
         </field>
     </group>
 </page>

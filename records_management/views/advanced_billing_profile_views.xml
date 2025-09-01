@@ -53,11 +53,11 @@
                             </page>
                             <page string="Contacts">
                                 <field name="billing_contact_ids">
-                                    <tree>
+                                    <list>
                                         <field name="name"/>
                                         <field name="email"/>
                                         <field name="phone"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                             <page string="Services &amp; Pricing">
@@ -80,10 +80,10 @@
             <field name="model">advanced.billing.profile</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <tree>
+                <list>
                     <field name="name"/>
                     <field name="primary_contact_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 
