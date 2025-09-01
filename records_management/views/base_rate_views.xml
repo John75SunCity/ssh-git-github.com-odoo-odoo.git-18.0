@@ -80,7 +80,7 @@
                     <field name="negotiated_rate_count" string="Negotiated Users"/>
                     <field name="average_service_rate" widget="monetary" string="Avg. Rate"/>
                     <field name="company_id" optional="hide"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -88,7 +88,7 @@
             <field name="name">base.rate.view.form</field>
             <field name="model">base.rate</field>
             <field name="type">list</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <form string="Base Rates">
                     <header>
                         <button name="action_activate" string="Activate Rate" type="object" class="oe_highlight" states="draft"/>
@@ -251,7 +251,7 @@
             <field name="name">revenue.forecaster.view.form</field>
             <field name="model">revenue.forecaster</field>
             <field name="type">list</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <form string="Revenue Forecaster">
                     <header>
                         <button name="action_run_forecast" string="🚀 Run Forecast Analysis" type="object" class="oe_highlight" attrs="{'invisible': [('analysis_complete', '=', True)]}"/>
@@ -272,7 +272,7 @@
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <h5 class="card-title">Current Revenue</h5>
-                                            <h3 class="text-primary">$<field name="current_monthly_revenue" nolabel="1"/>/mo</h3>
+                                            <h3 class="text-primary"><field name="current_monthly_revenue" nolabel="1" widget="monetary"/></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -280,7 +280,7 @@
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <h5 class="card-title">Projected Revenue</h5>
-                                            <h3 class="text-success">$<field name="projected_monthly_revenue" nolabel="1"/>/mo</h3>
+                                            <h3 class="text-success"><field name="projected_monthly_revenue" nolabel="1" widget="monetary"/></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -288,7 +288,7 @@
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <h5 class="card-title">Monthly Change</h5>
-                                            <h3 class="text-info">$<field name="revenue_difference" nolabel="1"/></h3>
+                                            <h3 class="text-info"><field name="revenue_difference" nolabel="1" widget="monetary"/></h3>
                                             <small class="text-muted"><field name="revenue_percentage_change" nolabel="1"/>%</small>
                                         </div>
                                     </div>
@@ -297,7 +297,7 @@
                                     <div class="card text-center">
                                         <div class="card-body">
                                             <h5 class="card-title">Annual Impact</h5>
-                                            <h3 class="text-warning">$<field name="annual_revenue_impact" nolabel="1"/></h3>
+                                            <h3 class="text-warning"><field name="annual_revenue_impact" nolabel="1" widget="monetary"/></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -361,7 +361,7 @@
                                         <field name="revenue_change"/>
                                         <field name="revenue_change_percentage"/>
                                         <field name="risk_level" widget="badge"/>
-                                    </list>
+                                    </tree>
                                 </field>
                             </page>
                         </notebook>
@@ -375,7 +375,7 @@
             <field name="name">rate.change.confirmation.wizard.view.form</field>
             <field name="model">rate.change.confirmation.wizard</field>
             <field name="type">form</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <form string="Rate Change Implementation">
                     <header>
                         <button name="action_approve_changes" string="✅ Approve Changes" type="object" class="oe_highlight" attrs="{'invisible': [('approved_by', '!=', False)]}" groups="records_management.group_records_manager"/>

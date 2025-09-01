@@ -5,11 +5,11 @@
 <!-- ============================================================================ -->
 <!-- SYSTEM FLOWCHART WIZARD - WELCOME STEP VIEW -->
 <!-- ============================================================================ -->
-<record id="system_flowchart_wizard_view_welcome" model="ir.ui.view">
-    <field name="name">system.flowchart.wizard.view.welcome</field>
+<record id="records_management_system_flowchart_wizard_view_form_welcome" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.form.welcome</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="type">form</field>
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
         <form string="System Flowchart - Welcome">
             <header>
                 <button name="action_next_step" string="Get Started" type="object" class="btn-primary"/>
@@ -180,11 +180,11 @@ System Overview</h6>
 <!-- ============================================================================ -->
 <!-- SYSTEM FLOWCHART WIZARD - CONFIGURATION STEP VIEW -->
 <!-- ============================================================================ -->
-<record id="system_flowchart_wizard_view_configure" model="ir.ui.view">
-    <field name="name">system.flowchart.wizard.view.configure</field>
+<record id="records_management_system_flowchart_wizard_view_form_configure" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.form.configure</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="type">form</field>
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
         <form string="System Flowchart - Configure">
             <header>
                 <button name="action_previous_step" string="Back" type="object"/>
@@ -354,11 +354,11 @@ System Overview</h6>
 <!-- ============================================================================ -->
 <!-- SYSTEM FLOWCHART WIZARD - PREVIEW STEP VIEW -->
 <!-- ============================================================================ -->
-<record id="system_flowchart_wizard_view_preview" model="ir.ui.view">
-    <field name="name">system.flowchart.wizard.view.preview</field>
+<record id="records_management_system_flowchart_wizard_view_form_preview" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.form.preview</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="type">form</field>
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
         <form string="System Flowchart - Preview">
             <header>
                 <button name="action_previous_step" string="Back" type="object"/>
@@ -473,7 +473,7 @@ Expected Output</h5>
     <div class="d-flex align-items-center">
         <field name="show_companies" readonly="1" widget="boolean_toggle" size="small"/>
         <label for="show_companies" class="ms-2 small">Companies</label>
-</div>
+    </div>
 </div>
 <div class="col-6">
     <div class="d-flex align-items-center">
@@ -516,11 +516,11 @@ s</span>
 Generated Configuration (Advanced)</h6>
 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('generated_config').value)">
     <i class="fa fa-copy"/>
- Copy
+    Copy
 </button>
 </div>
 <div class="card-body">
-<field name="generated_config" readonly="1" widget="ace" ace_mode="json" height="250" id="generated_config"/>
+<field name="generated_config" readonly="1" widget="ace" ace_mode="json" height="250"/>
 </div>
 </div>
 </div>
@@ -555,11 +555,11 @@ Quick Actions</h6>
 <!-- ============================================================================ -->
 <!-- SYSTEM FLOWCHART WIZARD - COMPLETE STEP VIEW -->
 <!-- ============================================================================ -->
-<record id="system_flowchart_wizard_view_complete" model="ir.ui.view">
-    <field name="name">system.flowchart.wizard.view.complete</field>
+<record id="system_flowchart_wizard_view_form_complete" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.form.complete</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="type">form</field>
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
         <form string="System Flowchart - Complete">
             <header>
 <button name="action_open_flowchart" string="Open Interactive Flowchart" type="object" class="btn-primary btn-lg"/>
@@ -726,11 +726,11 @@ Interactive Tutorial Enabled</h6>
 <!-- ============================================================================ -->
 <!-- MAIN WIZARD FORM VIEW (DYNAMIC STEP SWITCHING) -->
 <!-- ============================================================================ -->
-<record id="system_flowchart_wizard_view_form" model="ir.ui.view">
+<record id="records_management_system_flowchart_wizard_view_form" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.form</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="type">form</field>
-        <field name="arch" type="xml">
+    <field name="arch" type="xml">
 <form string="System Architecture Flowchart Configuration">
     <header>
 <button name="action_previous_step" string="← Back" type="object" attrs="{'invisible': [('step', '=', 'welcome')]}" class="btn btn-secondary"/>
@@ -789,13 +789,13 @@ Ready to Launch!</h3>
 <!-- ============================================================================ -->
 <!-- WINDOW ACTIONS -->
 <!-- ============================================================================ -->
-<record id="action.system.flowchart.wizard" model="ir.actions.act_window">
-<field name="name">System Architecture Flowchart</field>
-<field name="res_model">system.flowchart.wizard</field>
-<field name="view_mode">form</field>
-<field name="target">new</field>
-<field name="view_id" ref="system_flowchart_wizard_view_form"/>
-<field name="context">{
+<record id="system_flowchart_wizard_action" model="ir.actions.act_window">
+    <field name="name">System Architecture Flowchart</field>
+    <field name="res_model">system.flowchart.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="view_id" ref="records_management_system_flowchart_wizard_view_form"/>
+    <field name="context">{
                 'default_step': 'welcome',
                 'default_search_scenario': 'system_overview',
                 'default_layout_style': 'hierarchical',
@@ -805,13 +805,13 @@ Ready to Launch!</h3>
 </record>
 
 <!-- Alternative Action for Direct Advanced Configuration -->
-<record id="action.system.flowchart.wizard.advanced" model="ir.actions.act_window">
-<field name="name">Advanced Flowchart Configuration</field>
-<field name="res_model">system.flowchart.wizard</field>
-<field name="view_mode">form</field>
-<field name="target">new</field>
-<field name="view_id" ref="system_flowchart_wizard_view_configure"/>
-<field name="context">{
+<record id="system_flowchart_wizard_action_advanced" model="ir.actions.act_window">
+    <field name="name">Advanced Flowchart Configuration</field>
+    <field name="res_model">system.flowchart.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="view_id" ref="records_management_system_flowchart_wizard_view_form_configure"/>
+    <field name="context">{
                 'default_step': 'configure',
                 'default_search_scenario': 'custom',
                 'default_show_tutorial': False
@@ -821,11 +821,10 @@ Ready to Launch!</h3>
 <!-- ============================================================================ -->
 <!-- MENU ITEMS -->
 <!-- ============================================================================ -->
-<menuitem id="menu.system.flowchart.wizard" name="📊 System Flowchart" parent="menu_records_management_root" action="action.system.flowchart.wizard" sequence="15" groups="records_management.group_records_manager"/>
+<menuitem id="system_flowchart_wizard_menu" name="📊 System Flowchart" parent="menu_records_management_root" action="system_flowchart_wizard_action" sequence="15" groups="records_management.group_records_manager"/>
 
-<menuitem id="menu.system.flowchart.wizard.advanced" name="⚙️ Advanced Flowchart Config" parent="menu_records_configuration" action="action.system.flowchart.wizard.advanced" sequence="35" groups="records_management.group_records_manager"/>
+<menuitem id="system_flowchart_wizard_menu_advanced" name="⚙️ Advanced Flowchart Config" parent="menu_records_configuration" action="system_flowchart_wizard_action_advanced" sequence="35" groups="records_management.group_records_manager"/>
 
 
 </data>
-</odoo>
 </odoo>
