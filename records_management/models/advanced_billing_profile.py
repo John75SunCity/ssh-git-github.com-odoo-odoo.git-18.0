@@ -90,7 +90,7 @@ class AdvancedBillingProfile(models.Model):
             else:
                 profile.total_monthly_amount = discounted_amount
 
-    @api.depends("contact_ids", "contact_ids.id")
+    @api.depends("contact_ids")
     def _compute_counts(self):
         for profile in self:
             profile.contact_count = len(profile.contact_ids)

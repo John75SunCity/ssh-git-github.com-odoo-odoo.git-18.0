@@ -2,7 +2,6 @@
 # Import addon models (sorted alphabetically by filename)
 from . import (
     account_move_line,
-    advanced_billing,
     advanced_billing_contact,
     advanced_billing_line,
     advanced_billing_profile,
