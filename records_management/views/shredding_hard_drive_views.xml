@@ -138,7 +138,7 @@
                 <field name="destruction_date"/>
                 <field name="destruction_method"/>
                 <field name="included_in_certificate" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </record>
 

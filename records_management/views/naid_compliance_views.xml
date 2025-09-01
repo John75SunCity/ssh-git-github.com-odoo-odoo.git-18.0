@@ -2,7 +2,7 @@
 <odoo>
     <data>
 <!-- Tree view for ENTERPRISE -->
-    
+
     <!-- Kanban view for NAID -->
     <record id="naid_compliance_view_kanban" model="ir.ui.view">
         <field name="name">naid.compliance.view.kanban</field>
@@ -83,7 +83,7 @@
         <field name="model">naid.compliance</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree decoration-success="compliance_status == 'certified' and certificate_valid == True" 
+            <tree decoration-success="compliance_status == 'certified' and certificate_valid == True"
                   decoration-warning="compliance_status == 'pending_audit'"
                   decoration-danger="certificate_valid == False or expiry_date &amp;lt; context_today()"
                   decoration-info="naid_level == 'AAA'">
@@ -96,16 +96,14 @@
                 <field name="certificate_valid" string="✅ Valid" widget="boolean_toggle"/>
                 <field name="audit_required" string="🔍 Audit Due" widget="boolean_toggle"/>
                 <field name="last_audit_date" string="📋 Last Audit"/>
-                <button name="action_conduct_audit" type="object" string="Audit" 
-                        icon="fa-search" class="btn-link" 
+                <button name="action_conduct_audit" type="object" string="Audit"
+                        icon="fa-search" class="btn-link"
                         invisible="not audit_required"/>
-                <button name="action_renew_certificate" type="object" string="Renew" 
-                        icon="fa-refresh" class="btn-link"/>
-            </list>
+                <button name="action_renew_certificate" type="object" string="Renew"
+                                                                                                            icon="fa-refresh" class="btn-link"/>
+            </tree>
         </field>
-    </record>
-
-    <!-- Form view for Enhanced -->
+    </record>    <!-- Form view for Enhanced -->
     <record id="naid_compliance_view_form" model="ir.ui.view">
         <field name="name">naid.compliance.view.form</field>
         <field name="model">naid.compliance</field>
@@ -113,7 +111,7 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_conduct_audit" type="object" string="🔍 Conduct Audit" 
+                    <button name="action_conduct_audit" type="object" string="🔍 Conduct Audit"
                             class="btn-primary" invisible="not audit_required"/>
                     <button name="action_generate_certificate" type="object" string="📜 Generate Certificate" class="btn-secondary"/>
                     <button name="action_renew_certificate" type="object" string="🔄 Renew Certificate" class="btn-info"/>
@@ -131,7 +129,7 @@
                         <button class="oe_stat_button" type="object" name="action_view_destruction_records" icon="fa-shredder">
                             <field string="Destructions" name="destruction_count" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-shield" 
+                        <button class="oe_stat_button" icon="fa-shield"
 invisible="naid_level != 'AAA'">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">🏆</span>
@@ -139,7 +137,7 @@ invisible="naid_level != 'AAA'">
                             </div>
                         </button>
                     </div>
-                    
+
                     <group>
                         <group string="🏆 NAID Certification">
                             <field name="name" placeholder="e.g., NAID-2024-AAA-001"/>
@@ -154,7 +152,7 @@ invisible="naid_level != 'AAA'">
                             <field name="auto_renewal"/>
                         </group>
                     </group>
-                    
+
                     <group>
                         <group string="🔍 Audit Requirements">
                             <field name="audit_required"/>
@@ -169,7 +167,7 @@ invisible="naid_level != 'AAA'">
                             <field name="third_party_auditor"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="🎖️ NAID Standards" name="standards">
                             <group>
@@ -251,7 +249,7 @@ invisible="naid_level != 'AAA'">
                                     <field name="verification_method"/>
                                     <field name="responsible_person"/>
                                     <field name="notes"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="📊 Performance Metrics" name="metrics">
@@ -313,8 +311,8 @@ invisible="naid_level != 'AAA'">
         <field name="model">naid.compliance</field>
         <field name="type">search</field>
         <field name="arch" type="xml">
-            <calendar string="📅 NAID Audit Schedule" 
-                      date_start="next_audit_date" 
+            <calendar string="📅 NAID Audit Schedule"
+                      date_start="next_audit_date"
                       date_stop="expiry_date"
                       color="naid_level">
                 <field name="name"/>
@@ -337,28 +335,28 @@ invisible="naid_level != 'AAA'">
                 <field name="facility_name"/>
                 <field name="naid_member_id"/>
                 <field name="compliance_officer"/>
-                
+
                 <filter string="✅ Certified" name="certified" domain="[('compliance_status', '=', 'certified')]"/>
                 <filter string="📋 Pending Audit" name="pending_audit" domain="[('compliance_status', '=', 'pending_audit')]"/>
                 <filter string="❌ Non-Compliant" name="non_compliant" domain="[('compliance_status', '=', 'non_compliant')]"/>
                 <filter string="⏰ Expired" name="expired" domain="[('compliance_status', '=', 'expired')]"/>
-                
+
                 <separator/>
                 <filter string="🏆 NAID AAA" name="naid_aa" domain="[('naid_level', '=', 'AAA')]"/>
                 <filter string="🥈 NAID AA" name="naid_aa" domain="[('naid_level', '=', 'AA')]"/>
                 <filter string="🥉 NAID A" name="naid_a" domain="[('naid_level', '=', 'A')]"/>
-                
+
                 <separator/>
                 <filter string="✅ Valid Certificates" name="valid_certs" domain="[('certificate_valid', '=', True)]"/>
                 <filter string="🔍 Audit Required" name="audit_required" domain="[('audit_required', '=', True)]"/>
                 <filter string="🔄 Auto Renewal" name="auto_renewal" domain="[('auto_renewal', '=', True)]"/>
-                
+
                 <separator/>
-                <filter string="📅 Expiring Soon (30 days)" name="expiring_soon" 
+                <filter string="📅 Expiring Soon (30 days)" name="expiring_soon"
                         domain="[('expiry_date', '&amp;lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter string="⚠️ Overdue Audit" name="overdue_audit" 
+                <filter string="⚠️ Overdue Audit" name="overdue_audit"
                         domain="[('next_audit_date', '&amp;lt;', context_today().strftime('%Y-%m-%d'))]"/>
-                
+
                 <group expand="0" string="📊 Group By">
                     <filter string="NAID Level" name="group_by_naid_level" context="{'group_by': 'naid_level'}"/>
                     <filter string="Compliance Status" name="group_by_status" context="{'group_by': 'compliance_status'}"/>

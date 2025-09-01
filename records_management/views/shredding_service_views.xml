@@ -152,7 +152,7 @@
                                     <field name="weight"/>
                                     <field name="container_type"/>
                                     <field name="destruction_status"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Service Details">

@@ -114,7 +114,7 @@
                 <field name="active" string="🎯 Status" widget="boolean_toggle"/>
                 <button name="action_view_sales" type="object" string="Sales" icon="fa-line-chart" class="btn-link"/>
                 <button name="action_configure_pricing" type="object" string="Pricing" icon="fa-money" class="btn-link"/>
-            </list>
+            </tree>
         </field>
     </record>
 

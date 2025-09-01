@@ -161,7 +161,7 @@
                         icon="fa-file-text" class="btn-link"/>
                 <button name="action_view_analytics" type="object" string="Analytics"
                         icon="fa-bar-chart" class="btn-link"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -241,7 +241,7 @@
                                     <field name="discount_percentage"/>
                                     <field name="effective_date"/>
                                     <field name="active"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="📊 Usage Tracking" name="usage">

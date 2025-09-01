@@ -84,7 +84,7 @@
 <field name="company_id" optional="hide" groups="base.group_multi_company"/>
 <field name="active" optional="hide"/>
 
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -356,7 +356,7 @@
 
                 <field name="technician_id"/>
                 <field name="invoice_created" widget="boolean_toggle"/>
-            </list>
+            </tree>
         </field>
     </record>
 

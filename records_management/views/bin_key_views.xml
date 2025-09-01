@@ -20,7 +20,7 @@
 <field name="company_id" optional="hide"/>
 <field name="active" optional="hide"/>
 
-            </list>
+            </tree>
         </field>
     </record>
 

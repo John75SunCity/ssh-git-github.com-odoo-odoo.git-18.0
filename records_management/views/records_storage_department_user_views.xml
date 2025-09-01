@@ -17,7 +17,7 @@
 <field name="state" widget="badge" decoration-success="state=='done'" decoration-info="state=='confirmed'" decoration-muted="state=='draft'"/>
 <field name="company_id" groups="base.group_multi_company"/>
 
-            </list>
+            </tree>
         </field>
     </record>
 

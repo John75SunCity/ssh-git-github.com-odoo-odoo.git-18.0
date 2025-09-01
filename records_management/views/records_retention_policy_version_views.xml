@@ -15,7 +15,7 @@
                 <field name="created_by"/>
                 <field name="approval_status"/>
                 <field name="create_date" string="Created"/>
-            </list>
+            </tree>
         </field>
     </record>
 
