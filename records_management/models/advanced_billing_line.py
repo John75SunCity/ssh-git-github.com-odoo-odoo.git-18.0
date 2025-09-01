@@ -8,7 +8,7 @@ class AdvancedBillingLine(models.Model):
 
     name = fields.Char(string="Description", required=True, help="Description of the billing line item")
     billing_id = fields.Many2one(
-        comodel_name="advanced.billing", string="Billing Document", ondelete="cascade", index=True
+        comodel_name="records.billing", string="Billing Document", ondelete="cascade", index=True
     )
     billing_profile_id = fields.Many2one(
         comodel_name="advanced.billing.profile", string="Billing Profile", ondelete="cascade", index=True

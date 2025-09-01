@@ -12,11 +12,9 @@ License: LGPL-3
 """
 
 import re
-import logging
+from collections import Counter  # Added for efficient counting
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
-
-_logger = logging.getLogger(__name__)
 
 class BarcodeProduct(models.Model):
     """
@@ -111,10 +109,7 @@ class BarcodeProduct(models.Model):
         digits=(12, 3)
     )
     weight_lbs = fields.Float(
-        string='Average Weight (lbs)',
-        compute='_compute_specifications',
-        store=True,
-        digits='Stock Weight'
+        string="Average Weight (lbs)", compute="_compute_specifications", store=True, digits=(12, 3)
     )
     dimensions = fields.Char(
         string='Dimensions',
@@ -153,9 +148,15 @@ class BarcodeProduct(models.Model):
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
-    activity_ids = fields.One2many('mail.activity', 'res_id', string='Activities')
-    message_follower_ids = fields.One2many('mail.followers', 'res_id', string='Followers')
-    message_ids = fields.One2many('mail.message', 'res_id', string='Messages')
+    activity_ids = fields.One2many(
+        "mail.activity", "res_id", string="Activities", domain=lambda self: [("res_model", "=", self._name)]
+    )
+    message_follower_ids = fields.One2many(
+        "mail.followers", "res_id", string="Followers", domain=lambda self: [("res_model", "=", self._name)]
+    )
+    message_ids = fields.One2many(
+        "mail.message", "res_id", string="Messages", domain=lambda self: [("model", "=", self._name)]
+    )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -227,6 +228,18 @@ class BarcodeProduct(models.Model):
     @api.depends('barcode', 'product_category', 'container_type')
     def _compute_is_valid(self):
         """Validate barcode according to a comprehensive set of business rules."""
+        # Build a counter for barcodes in the current batch to check for duplicates efficiently
+        barcode_counts = Counter(record.barcode for record in self if record.barcode)
+
+        # Batch uniqueness check: Collect all barcodes and query existing ones once
+        all_barcodes = {record.barcode for record in self if record.barcode}
+        existing_barcodes = set()
+        if all_barcodes:
+            existing_records = self.search(
+                [("barcode", "in", list(all_barcodes)), ("id", "not in", [r.id for r in self if r.id])]
+            )
+            existing_barcodes = {rec.barcode for rec in existing_records}
+
         for record in self:
             messages = []
             if not record.barcode:
@@ -247,9 +260,11 @@ class BarcodeProduct(models.Model):
             if record.product_category == "container_box" and not record.container_type:
                 messages.append(_("A container type is required for container box barcodes."))
 
-            existing = self.search([('barcode', '=', barcode), ('id', '!=', record.id or 0)])
-            if existing:
-                messages.append(_("This barcode already exists for product: %s") % existing.name)
+            # Optimized uniqueness check: Use batched results for global duplicates
+            if barcode_counts.get(barcode, 0) > 1:
+                messages.append(_("This barcode already exists in the current batch."))
+            elif barcode in existing_barcodes:
+                messages.append(_("This barcode already exists for another product."))
 
             record.is_valid = not messages
             record.validation_message = '; '.join(messages) if messages else _("Barcode is valid.")
@@ -272,7 +287,7 @@ class BarcodeProduct(models.Model):
     def _onchange_barcode(self):
         """Auto-populate fields when barcode changes."""
         if self.barcode:
-            self.barcode = self.barcode.strip()  # Removed .upper() to preserve original casing
+            self.barcode = self.barcode.strip()  # Strip leading/trailing whitespace from barcode
             if self.product_category == "container_box" and not self.container_type:
                 self.container_type = "type_01"  # Default to most common type
 
@@ -325,12 +340,14 @@ class BarcodeProduct(models.Model):
 
     def action_activate(self):
         """Activate the barcode product."""
+        self.ensure_one()  # Added as per Odoo standard
         self.write({"state": "active"})
         for record in self:
             record.message_post(body=_("Barcode product activated."))
 
     def action_archive(self):
         """Archive the barcode product."""
+        self.ensure_one()  # Added as per Odoo standard
         self.write({"state": "archived", "active": False})
         for record in self:
             record.message_post(body=_("Barcode product archived."))
@@ -433,3 +450,4 @@ class BarcodeProduct(models.Model):
                     raise ValidationError(
                         _("Barcode length %s suggests category '%s', but category '%s' is selected. Please correct the category or barcode.") % (length, expected_category, record.product_category)
                     )
+
