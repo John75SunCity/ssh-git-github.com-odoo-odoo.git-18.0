@@ -53,7 +53,9 @@
                                         </div>
                                     </div>
                                     <div class="col-4">
-                                        <!-- Tree view for Certified -->
+                                        <span class="badge" t-att-class="record.state.raw_value === 'active' ? 'badge-success' : record.state.raw_value === 'pending_destruction' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
+                                            <field name="state"/>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -103,7 +105,7 @@
                 <button name="action_mark_permanent" type="object" string="Mark Permanent" icon="fa-shield" class="btn-link" invisible="is_permanent" groups="records_management.group_records_user"/>
                 <button name="action_unmark_permanent" type="object" string="Remove Permanent" icon="fa-shield" class="btn-link" invisible="not is_permanent" groups="base.group_system"/>
                 <button name="action_schedule_destruction" type="object" string="Destroy" icon="fa-trash" class="btn-link" invisible="not destruction_eligible_date or is_permanent"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -125,10 +127,10 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_chain_of_custody" icon="fa-link">
-                            <field string="Chain Events" name="chain_of_custody_count" widget="statinfo"/>
+                            <field name="chain_of_custody_count" string="Chain Events" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_audit_trail" icon="fa-history">
-                            <field string="Audit Events" name="audit_trail_count" widget="statinfo"/>
+                            <field name="audit_trail_count" string="Audit Events" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fa-calendar-times" invisible="not destruction_eligible_date">
                             <div class="o_field_widget o_stat_info">
@@ -294,7 +296,7 @@
         <field name="name">📄 Document Management</field>
         <field name="res_model">records.document</field>
         <field name="view_mode">kanban,list,form,calendar</field>
-        <field name="search_view_id" ref="view_records_document_search"/>
+        <field name="search_view_id" ref="records_document_view_search"/>
         <field name="context">{
             'search_default_active': 1
         }</field>

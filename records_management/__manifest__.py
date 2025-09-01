@@ -113,6 +113,8 @@
         "views/shredding_bin_barcode_wizard_views.xml",
         "views/shredding_service_bin_views.xml",
         "views/shredding_service_event_views.xml",
+        "views/system_flowchart_wizard_views.xml",
+        "views/work_order_coordinator_views.xml",
         "views/workflow_visualization_manager_views.xml",
         "templates/portal_mobile_template.xml",
         "templates/portal_mobile_inventory_template.xml",

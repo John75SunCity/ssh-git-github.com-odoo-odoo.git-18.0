@@ -6,7 +6,7 @@
             <field name="name">records.storage.box.tree</field>
             <field name="model">records.storage.box</field>
             <field name="type">tree</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <tree string="Storage Boxes">
                     <field name="name"/>
                     <field name="box_size"/>
@@ -22,7 +22,7 @@
             <field name="name">records.storage.box.form</field>
             <field name="model">records.storage.box</field>
             <field name="type">form</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <form string="Storage Box">
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,in_use,archived"/>
@@ -61,7 +61,7 @@
             <field name="name">records.storage.box.search</field>
             <field name="model">records.storage.box</field>
             <field name="type">search</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <search string="Search Storage Boxes">
                     <field name="name"/>
                     <field name="box_size"/>
@@ -92,7 +92,7 @@
         <!-- Menu -->
         <menuitem id="menu_records_storage_box"
                   name="Storage Boxes"
-                  parent="records_management.menu_records_management_inventory"
+                  parent="records_management.menu_records_inventory"
                   action="action_records_storage_box"
                   sequence="20"/>
 

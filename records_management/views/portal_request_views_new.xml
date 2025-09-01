@@ -67,20 +67,14 @@
         <field name="model">portal.request</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree decoration-muted="not active" decoration-info="state == 'draft'" decoration-warning="state == 'submitted'" decoration-success="state == 'approved'" decoration-danger="state in ('rejected', 'cancelled')">
+            <tree string="Portal Requests" decoration-info="state == 'draft'" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'">
                 <field name="name"/>
-                <field name="partner_id" optional="show"/>
-                <field name="request_type" optional="show"/>
-                <field name="priority" widget="priority" optional="show"/>
+                <field name="request_type"/>
+                <field name="partner_id"/>
+                <field name="create_date"/>
+                <field name="priority"/>
                 <field name="state"/>
-                <field name="requested_date" optional="show"/>
-                <field name="deadline" optional="show"/>
-                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
-                <field name="estimated_cost" widget="monetary" optional="show"/>
-                <field name="billing_status" optional="show"/>
-                <field name="requires_naid_compliance" optional="show"/>
-                <field name="active" invisible="1"/>
-                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="assigned_to_id"/>
             </tree>
         </field>
     </record>
@@ -279,13 +273,13 @@
 <!-- Enhanced Menu Structure -->
     <menuitem id="portal_request_menu"
               name="Portal Requests"
-              parent="menu_records_management_root"
+              parent="records_management.menu_records_management_root"
               action="action_portal_request"
               sequence="10"
               groups="records_management.group_records_manager"/>
 
 <!-- Additional Menu Items for Better Navigation -->
-    <menuitem id="portal_request_draft_menu" name="Draft Requests" parent="portal_request_menu" action="action_portal_request" sequence="1" groups="records_management.group_records_user"/>
-    <menuitem id="portal_request_submitted_menu" name="Submitted Requests" parent="portal_request_menu" action="action_portal_request" sequence="2" groups="records_management.group_records_manager"/>
+    <menuitem id="portal_request_draft_menu" name="Draft Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="1" groups="records_management.group_records_user"/>
+    <menuitem id="portal_request_submitted_menu" name="Submitted Requests" parent="records_management.portal_request_menu" action="action_portal_request" sequence="2" groups="records_management.group_records_manager"/>
 </data>
 </odoo>

@@ -113,7 +113,7 @@
         <!-- Menu item for advanced.billing.profile -->
         <menuitem id="advanced_billing_profile_menu"
                   name="Billing Profiles"
-                  parent="records_management.menu_records_billing"
+                  parent="menu_records_billing"
                   action="advanced_billing_profile_action"
                   sequence="21"/>
     </data>

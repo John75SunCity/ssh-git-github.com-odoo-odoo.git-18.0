@@ -29,40 +29,34 @@
             <form string="NAID Chain of Custody Event">
                 <sheet>
                     <div class="oe_title">
-                        <label for="description"/>
                         <h1>
-                            <field name="description" placeholder="Event description..."/>
+                            <field name="name" placeholder="Custody Event Reference"/>
                         </h1>
-                        <div class="oe_title">
-                            <span class="badge badge-primary">
-                                <field name="event_type"/>
-                            </span>
-                        </div>
                     </div>
-
                     <group>
                         <group string="Event Details">
                             <field name="event_date"/>
                             <field name="event_type"/>
-                            <field name="user_id"/>
-                            <field name="location_id"/>
-                        </group>
-                        <group string="Document Information">
                             <field name="document_id"/>
-                            <field name="partner_id"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group string="Location &amp; Verification">
+                            <field name="location"/>
+                            <field name="signature_verified"/>
+                            <field name="witness_present"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
-
-                    <group string="Event Description">
-                        <field name="description" nolabel="1" widget="text" placeholder="Detailed description of the custody event..."/>
+                    <group string="Additional Information">
+                        <field name="notes" placeholder="Additional notes about this custody event..."/>
+                        <field name="temperature"/>
+                        <field name="humidity"/>
+                        <field name="security_measures"/>
                     </group>
-
-                    <div class="alert alert-info" role="alert">
-                        <strong>NAID AAA Compliance:</strong> This custody event is part of the immutable chain of custody required for NAID AAA certification.
-                    </div>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
                     <field name="message_ids"/>
                 </div>
             </form>
@@ -77,66 +71,34 @@
         <field name="arch" type="xml">
             <kanban default_group_by="event_type" class="o_kanban_custody">
                 <field name="event_date"/>
-                <field name="document_id"/>
                 <field name="event_type"/>
+                <field name="document_id"/>
                 <field name="user_id"/>
-                <field name="location_id"/>
-                <field name="partner_id"/>
-                <field name="description"/>
+                <field name="location"/>
+                <field name="signature_verified"/>
                 <templates>
                     <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="oe_kanban_card_header">
-                                <div class="oe_kanban_card_header_title">
-                                    <div class="o_primary">
-                                        <strong>
-                                            <field name="event_type"/>
-                                        </strong>
-                                    </div>
-                                    <div class="o_secondary">
-                                        <field name="event_date" widget="datetime"/>
-                                    </div>
+                            <div class="o_kanban_card_header">
+                                <div class="o_primary">
+                                    <field name="event_type"/>
+                                </div>
+                                <div class="o_secondary">
+                                    <field name="event_date"/>
                                 </div>
                             </div>
-                            <div class="oe_kanban_card_content">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <small class="text-muted">
-                                            <i class="fa fa-file"/>
-                                            <field name="document_id"/>
-                                        </small>
-                                    </div>
+                            <div class="o_kanban_card_content">
+                                <div>
+                                    📄 <field name="document_id"/>
                                 </div>
-                                <div class="row mt-1">
-                                    <div class="col-12">
-                                        <small class="text-muted">
-                                            <i class="fa fa-user"/>
-                                            <field name="user_id"/>
-                                        </small>
-                                    </div>
+                                <div>
+                                    👤 <field name="user_id"/>
                                 </div>
-                                <div class="row mt-1">
-                                    <div class="col-12">
-                                        <small class="text-muted">
-                                            <i class="fa fa-map-marker"/>
-                                            <field name="location_id"/>
-                                        </small>
-                                    </div>
+                                <div>
+                                    📍 <field name="location"/>
                                 </div>
-                                <div class="row mt-1">
-                                    <div class="col-12">
-                                        <small class="text-muted">
-                                            <i class="fa fa-building"/>
-                                            <field name="partner_id"/>
-                                        </small>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-12">
-                                        <p class="text-truncate">
-                                            <field name="description"/>
-                                        </p>
-                                    </div>
+                                <div t-if="record.signature_verified.raw_value">
+                                    ✅ <span class="text-success">Verified</span>
                                 </div>
                             </div>
                         </div>
@@ -213,6 +175,13 @@
             </p>
         </field>
     </record>
+
+    <!-- Menu item for NAID custody -->
+    <menuitem id="menu_naid_custody"
+              name="Chain of Custody"
+              parent="records_management.menu_records_compliance"
+              action="action_naid_custody"
+              sequence="35"/>
 </data>
 
 </odoo>

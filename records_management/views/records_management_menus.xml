@@ -36,6 +36,11 @@
 
 <menuitem id="menu_stock_lots" name="Serial Numbers" parent="menu_records_operations" action="action_stock_lot" sequence="50" groups="records_management.group_records_user"/>
 
+<!-- Work Order Management -->
+<menuitem id="menu_work_order_coordinators" name="Work Order Coordinators" parent="menu_records_operations" action="action_work_order_coordinator" sequence="55" groups="records_management.group_records_user"/>
+
+<menuitem id="menu_workflow_visualizations" name="Workflow Visualizations" parent="menu_records_operations" action="action_workflow_visualization_manager" sequence="60" groups="records_management.group_records_manager"/>
+
 <!-- ========================================== -->
 <!-- CUSTOMER PORTAL MENU (Level 1) -->
 <!-- ========================================== -->

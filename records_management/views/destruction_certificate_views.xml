@@ -7,19 +7,14 @@
             <field name="model">destruction.certificate</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <tree decoration-success="state == 'issued'" decoration-warning="state == 'expired'" decoration-danger="state == 'revoked'">
-                    <field name="certificate_number" string="🆔 Certificate #"/>
-                    <field name="partner_id" string="👤 Customer"/>
-                    <field name="destruction_date" string="🗑️ Destruction Date"/>
-                    <field name="destruction_method" string="🔧 Method"/>
-                    <field name="naid_verified" string="✅ NAID Verified" widget="boolean"/>
-                    <field name="issue_date" string="📅 Issued"/>
-                    <field name="expiry_date" string="⏰ Expires"/>
-                    <field name="state" string="🎯 Status" widget="badge"/>
-                    <field name="total_revenue" string="💰 Revenue" widget="monetary"/>
-                    <button name="action_view_details" type="object" string="View" icon="fa-eye" class="btn-link"/>
-                    <button name="action_print_certificate" type="object" string="Print" icon="fa-print" class="btn-link"/>
-                </tree>
+                <list string="Destruction Certificates" default_order="date desc">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="certificate_number"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </list>
             </field>
         </record>
 
@@ -329,6 +324,13 @@
                 </p>
             </field>
         </record>
+
+        <!-- Menu item for destruction certificates -->
+        <menuitem id="menu_destruction_certificates"
+                  name="Destruction Certificates"
+                  parent="records_management.menu_records_compliance"
+                  action="action_destruction_certificate"
+                  sequence="25"/>
     </data>
 </odoo>
 <parameter name="filePath">/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/destruction_certificate_views.xml

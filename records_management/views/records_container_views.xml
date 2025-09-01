@@ -3,7 +3,7 @@
     <data>
 <!-- Tree view for ENTERPRISE -->
 
-    <!-- Kanban view for Kanban -->
+    <!-- Kanban view fo                <field name="destruction_due_date" string="📅 Due Date"/> Kanban -->
     <record id="records_container_view_kanban" model="ir.ui.view">
         <field name="name">records.container.view.kanban</field>
         <field name="model">records.container</field>

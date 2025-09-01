@@ -32,7 +32,7 @@
     <i class="fa fa-info-circle me-2"/>
 Interactive System Visualization</h4>
 <p class="mb-3">
-                                        This advanced tool provides a comprehensive, interactive visual representation of your complete 
+                                        This advanced tool provides a comprehensive, interactive visual representation of your complete
                                         Records Management System architecture, including:
 </p>
 <ul class="mb-0">
@@ -210,9 +210,9 @@ System Overview</h6>
 
 </group>
 <group string="Focus Targets">
-    <field name="target_user" attrs="{'invisible': [('search_scenario', '!=', 'user_access')], 'required': [('search_scenario', '=', 'user_access')]}" domain="[('active', '=', True)]"/>
-    <field name="target_company" attrs="{'invisible': [('search_scenario', '!=', 'company_structure')], 'required': [('search_scenario', '=', 'company_structure')]}"/>
-    <field name="target_model" attrs="{'invisible': [('search_scenario', '!=', 'model_relationships')]}" domain="[('model', 'like', 'records.%')]"/>
+    <field name="target_user_id" attrs="{'invisible': [('search_scenario', '!=', 'user_access')], 'required': [('search_scenario', '=', 'user_access')]}" domain="[('active', '=', True)]"/>
+    <field name="target_company_id" attrs="{'invisible': [('search_scenario', '!=', 'company_structure')], 'required': [('search_scenario', '=', 'company_structure')]}"/>
+    <field name="target_model_id" attrs="{'invisible': [('search_scenario', '!=', 'model_relationships')]}" domain="[('model', 'like', 'records.%')]"/>
 </group>
 </div>
 <div class="col-lg-6">
@@ -414,10 +414,10 @@ Configuration Summary</h5>
 
 <div class="mt-3" attrs="{'invisible': [('target_user', '=', False), ('target_company', '=', False), ('target_model', '=', False)]}">
     <h6>Focus Targets:</h6>
-    <field name="target_user" readonly="1" attrs="{'invisible': [('target_user', '=', False)]}"/>
-    <field name="target_company" readonly="1" attrs="{'invisible': [('target_company', '=', False)]}"/>
+    <field name="target_user_id" readonly="1" attrs="{'invisible': [('target_user_id', '=', False)]}"/>
+    <field name="target_company_id" readonly="1" attrs="{'invisible': [('target_company_id', '=', False)]}"/>
 
-<field name="target_model" readonly="1" attrs="{'invisible': [('target_model', '=', False)]}"/>
+<field name="target_model_id" readonly="1" attrs="{'invisible': [('target_model_id', '=', False)]}"/>
 </div>
 
 <!-- Configuration Validation -->
@@ -583,7 +583,7 @@ Quick Actions</h6>
         <i class="fa fa-rocket me-2"/>
 Configuration Complete</h4>
     <p class="mb-0">
-                                Your interactive system flowchart has been successfully configured with your selected options. 
+                                Your interactive system flowchart has been successfully configured with your selected options.
                                 Click "Open Interactive Flowchart" to start exploring your Records Management System architecture.
     </p>
 </div>
@@ -695,7 +695,7 @@ Session Information</h6>
     <i class="fa fa-graduation-cap me-2"/>
 Interactive Tutorial Enabled</h6>
 <p class="mb-2">
-                                        The guided tutorial will automatically start when you open the flowchart. It will walk you through 
+                                        The guided tutorial will automatically start when you open the flowchart. It will walk you through
                                         all the features and help you get the most out of your system visualization.
 </p>
 <div class="form-check">

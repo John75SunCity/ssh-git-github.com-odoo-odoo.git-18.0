@@ -236,6 +236,7 @@ from . import (
     survey_feedback_theme,
     survey_improvement_action,
     system_diagram_data,
+    system_flowchart_wizard,
     temp_inventory,
     temp_inventory_audit,
     temp_inventory_movement,
@@ -245,7 +246,6 @@ from . import (
     unlock_service_history,
     unlock_service_part,
     visitor,
-    work_order_retrieval,
-    work_order_shredding,
+    workflow_visualization_manager,
     workflow_visualization_manager,
 )
