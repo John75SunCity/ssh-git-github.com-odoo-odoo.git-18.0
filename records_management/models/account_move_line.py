@@ -11,7 +11,7 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _  # type: ignore
 from odoo.exceptions import UserError, ValidationError
 
 
@@ -431,7 +431,9 @@ class AccountMoveLine(models.Model):
                 'pickup.request': 'pickup',
             }
             model_name = getattr(self.work_order_id, '_name', None)
-            self.records_service_type = model_service_type_map.get(model_name, False)
+            # Updated to resolve Pylance type mismatch: Retrieve value first, then assign False if not found
+            service_type = model_service_type_map.get(model_name) if model_name else None
+            self.records_service_type = service_type if service_type else False
 
             # Set partner information
             if hasattr(work_order, 'partner_id') and work_order.partner_id:
@@ -439,8 +441,13 @@ class AccountMoveLine(models.Model):
 
             # Set container_ids and container_count from work order if available
             if hasattr(work_order, 'container_ids'):
-                self.container_ids = [(6, 0, work_order.container_ids.ids)]
-                self.container_count = len(work_order.container_ids)
+                container_records = work_order.container_ids
+                if container_records:
+                    self.container_ids = [(6, 0, container_records.mapped("id"))]
+                    self.container_count = len(container_records)
+                else:
+                    self.container_ids = [(5, 0, 0)]
+                    self.container_count = 0
             else:
                 self.container_ids = [(5, 0, 0)]
                 self.container_count = 0
@@ -528,13 +535,21 @@ class AccountMoveLine(models.Model):
         if not self.container_ids:
             raise UserError(_("No containers linked to this invoice line."))
 
+        # Fix: Ensure container_ids is treated as a recordset for .mapped()
+        # In Odoo, this should be a recordset, but to avoid linter issues, we can use .ids if needed
+        container_ids_list = (
+            self.container_ids.mapped("id")
+            if hasattr(self.container_ids, "mapped")
+            else [cid for cid in self.container_ids if isinstance(cid, int)]
+        )
+
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Related Containers'),
-            'res_model': 'records.container',
-            'view_mode': 'tree,form',
-            'domain': [('id', 'in', self.container_ids.ids)],
-            'context': {'default_partner_id': self.partner_id.id if self.partner_id else False},
+            "type": "ir.actions.act_window",
+            "name": _("Related Containers"),
+            "res_model": "records.container",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", container_ids_list)],
+            "context": {"default_partner_id": self.partner_id.id if self.partner_id else False},
         }
 
     def action_view_destruction_certificate(self):
