@@ -537,10 +537,20 @@ class FieldLabelAdminController(http.Controller):
                     headers=[("Content-Type", "application/json")],
                 )
 
+            # Validate and convert customer_id to int if provided
+            if customer_id:
+                try:
+                    customer_id = int(customer_id)
+                except ValueError:
+                    return Response(
+                        '{"error": "Invalid customer_id - must be a valid integer"}',
+                        headers=[("Content-Type", "application/json")],
+                    )
+
             # Build domain for export
             domain = [("active", "=", True)]
             if customer_id:
-                domain.append(("customer_id", "=", int(customer_id)))
+                domain.append(("customer_id", "=", customer_id))  # Now using the converted int
 
             # Set a reasonable limit to avoid performance issues
             EXPORT_LIMIT = 10000  # Adjust as needed
@@ -593,7 +603,7 @@ class FieldLabelAdminController(http.Controller):
 
         filename = "field_labels"
         if customer_id:
-            customer = request.env["res.partner"].browse(customer_id)
+            customer = request.env["res.partner"].browse(customer_id)  # Now customer_id is int
             customer_name = customer.name if customer.exists() else None
             if customer_name:
                 # Sanitize filename: allow only alphanumeric, underscore, hyphen
@@ -657,7 +667,7 @@ class FieldLabelAdminController(http.Controller):
         workbook.close()
         filename = "field_labels"
         if customer_id:
-            customer = request.env["res.partner"].browse(customer_id)
+            customer = request.env["res.partner"].browse(customer_id)  # Now customer_id is int
             customer_name = customer.name if customer.exists() else None
             if customer_name:
                 # Sanitize filename: allow only alphanumeric, underscore, hyphen
