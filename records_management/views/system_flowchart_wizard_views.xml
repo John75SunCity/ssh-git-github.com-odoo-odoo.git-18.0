@@ -437,7 +437,6 @@ Configuration Summary</h5>
 </div>
 </div>
 </div>
-</div>
 <div class="col-lg-6">
 <div class="card">
     <div class="card-header">
@@ -542,6 +541,7 @@ Quick Actions</h6>
     <button name="action_save_preset" string="Save as Preset" type="object" class="btn btn-outline-secondary"/>
     <button name="action_export_config" string="Export Config" type="object" class="btn btn-outline-info"/>
     <button name="action_validate_config" string="Validate" type="object" class="btn btn-outline-success"/>
+</div>
 </div>
 </div>
 </div>
@@ -789,7 +789,7 @@ Ready to Launch!</h3>
 <!-- ============================================================================ -->
 <!-- WINDOW ACTIONS -->
 <!-- ============================================================================ -->
-<record id="action_system_flowchart_wizard" model="ir.actions.act_window">
+<record id="action.system.flowchart.wizard" model="ir.actions.act_window">
 <field name="name">System Architecture Flowchart</field>
 <field name="res_model">system.flowchart.wizard</field>
 <field name="view_mode">form</field>
@@ -805,7 +805,7 @@ Ready to Launch!</h3>
 </record>
 
 <!-- Alternative Action for Direct Advanced Configuration -->
-<record id="action_system_flowchart_wizard_advanced" model="ir.actions.act_window">
+<record id="action.system.flowchart.wizard.advanced" model="ir.actions.act_window">
 <field name="name">Advanced Flowchart Configuration</field>
 <field name="res_model">system.flowchart.wizard</field>
 <field name="view_mode">form</field>
@@ -821,10 +821,11 @@ Ready to Launch!</h3>
 <!-- ============================================================================ -->
 <!-- MENU ITEMS -->
 <!-- ============================================================================ -->
-<menuitem id="menu_system_flowchart_wizard" name="📊 System Flowchart" parent="menu_records_management_root" action="action_system_flowchart_wizard" sequence="15" groups="records_management.group_records_manager"/>
+<menuitem id="menu.system.flowchart.wizard" name="📊 System Flowchart" parent="menu_records_management_root" action="action.system.flowchart.wizard" sequence="15" groups="records_management.group_records_manager"/>
 
-<menuitem id="menu_system_flowchart_wizard_advanced" name="⚙️ Advanced Flowchart Config" parent="menu_records_configuration" action="action_system_flowchart_wizard_advanced" sequence="35" groups="records_management.group_records_manager"/>
+<menuitem id="menu.system.flowchart.wizard.advanced" name="⚙️ Advanced Flowchart Config" parent="menu_records_configuration" action="action.system.flowchart.wizard.advanced" sequence="35" groups="records_management.group_records_manager"/>
 
 
 </data>
+</odoo>
 </odoo>

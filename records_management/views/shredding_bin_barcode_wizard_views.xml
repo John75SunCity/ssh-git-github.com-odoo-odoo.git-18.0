@@ -3,8 +3,8 @@
 
     <data>
 <!-- View shredding.bin.barcode.wizard View List -->
-    <record id="view_shredding_bin_barcode_wizard_list" model="ir.ui.view">
-        <field name="name">view.shredding.bin.barcode.wizard.list</field>
+    <record id="shredding_bin_barcode_wizard_view_list" model="ir.ui.view">
+        <field name="name">shredding.bin.barcode.wizard.view.list</field>
         <field name="model">shredding.bin.barcode.wizard</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
@@ -15,8 +15,8 @@
     </record>
 
     <!-- View shredding.bin.barcode.wizard form -->
-    <record id="view_shredding_bin_barcode_wizard_form" model="ir.ui.view">
-        <field name="name">view.shredding.bin.barcode.wizard.form</field>
+    <record id="shredding_bin_barcode_wizard_view_form" model="ir.ui.view">
+        <field name="name">shredding.bin.barcode.wizard.view.form</field>
         <field name="model">shredding.bin.barcode.wizard</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -34,8 +34,8 @@
     </record>
 
     <!-- View shredding.bin.barcode.wizard search -->
-    <record id="view_shredding_bin_barcode_wizard_search" model="ir.ui.view">
-        <field name="name">view.shredding.bin.barcode.wizard.search</field>
+    <record id="shredding_bin_barcode_wizard_view_search" model="ir.ui.view">
+        <field name="name">shredding.bin.barcode.wizard.view.search</field>
         <field name="model">shredding.bin.barcode.wizard</field>
         <field name="type">search</field>
         <field name="arch" type="xml">
@@ -48,7 +48,7 @@
     </record>
 
     <!-- Action shredding.bin.barcode.wizard -->
-    <record id="action_shredding_bin_barcode_wizard" model="ir.actions.act_window">
+    <record id="shredding_bin_barcode_wizard_action" model="ir.actions.act_window">
         <field name="name">Shredding Bin Barcode Wizard</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">shredding.bin.barcode.wizard</field>

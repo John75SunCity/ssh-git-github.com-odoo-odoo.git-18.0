@@ -3,8 +3,8 @@
 
     <data>
 <!-- View shredding.service.event View List -->
-    <record id="view_shredding_service_event_list" model="ir.ui.view">
-        <field name="name">view.shredding.service.event.list</field>
+    <record id="shredding_service_event_view_list" model="ir.ui.view">
+        <field name="name">shredding.service.event.view.list</field>
         <field name="model">shredding.service.event</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
@@ -15,8 +15,8 @@
     </record>
 
     <!-- View shredding.service.event form -->
-    <record id="view_shredding_service_event_form" model="ir.ui.view">
-        <field name="name">view.shredding.service.event.form</field>
+    <record id="shredding_service_event_view_form" model="ir.ui.view">
+        <field name="name">shredding.service.event.view.form</field>
         <field name="model">shredding.service.event</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -34,8 +34,8 @@
     </record>
 
     <!-- View shredding.service.event search -->
-    <record id="view_shredding_service_event_search" model="ir.ui.view">
-        <field name="name">view.shredding.service.event.search</field>
+    <record id="shredding_service_event_view_search" model="ir.ui.view">
+        <field name="name">shredding.service.event.view.search</field>
         <field name="model">shredding.service.event</field>
         <field name="type">search</field>
         <field name="arch" type="xml">

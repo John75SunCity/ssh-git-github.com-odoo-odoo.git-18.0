@@ -40,23 +40,25 @@
                                     <div class="o_kanban_primary_left">
                                         <div class="row">
                                             <div class="col-6">
-                                                <button class="btn btn-primary btn-sm" type="object" name="action_view_containers">
+                                                <button name="action_view_containers" type="object" class="btn btn-primary btn-sm">
                                                     <i class="fa fa-cube"/>
- View Containers
+                                                    View Containers
                                                 </button>
                                             </div>
                                             <div class="col-6">
                                                 <div class="text-right">
                                                     <span class="badge badge-info">
                                                         <field name="current_utilization"/>
-/                                                    <field name="storage_capacity"/>
- Used
-                                                </span>
-                                                <br/>
-                                                <span class="badge badge-success">
-                                                    <field name="available_spaces"/>
- Available
-                                                </span>
+                                                        /
+                                                        <field name="storage_capacity"/>
+                                                        Used
+                                                    </span>
+                                                    <br/>
+                                                    <span class="badge badge-success">
+                                                        <field name="available_spaces"/>
+                                                        Available
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -72,166 +74,164 @@
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="delete" class="dropdown-item">🗑️ Archive</a>
                             </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Tree view for Enhanced -->
+        <record id="records_location_view_tree" model="ir.ui.view">
+            <field name="name">records.location.view.tree</field>
+            <field name="model">records.location</field>
+            <field name="type">list</field>
+            <field name="arch" type="xml">
+                <tree decoration-success="current_utilization &amp;lt; storage_capacity * 0.8" decoration-warning="current_utilization &amp;gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &amp;gt;= storage_capacity">
+                    <field name="name" string="🏢 Location Name"/>
+                    <field name="location_type" string="📂 Type"/>
+                    <field name="storage_capacity" string="🔢 Capacity"/>
+                    <field name="current_utilization" string="📦 Current Usage"/>
+                    <field name="available_spaces" string="🆓 Available Spaces"/>
+                    <field name="utilization_percentage" string="📊 Utilization %" widget="percentage"/>
+                    <field name="active" string="✅ Active"/>
+                    <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form view for Enhanced -->
+        <record id="records_location_view_form" model="ir.ui.view">
+            <field name="name">records.location.view.form</field>
+            <field name="model">records.location</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_view_containers" type="object" string="📦 View Containers" class="btn-primary"/>
+                        <button name="action_location_report" type="object" string="📊 Generate Report" class="btn-secondary"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_containers" type="object" class="oe_stat_button" icon="fa-cube">
+                                <field name="current_utilization" string="Containers" widget="statinfo"/>
+                            </button>
+                            <button name="action_location_report" type="object" class="oe_stat_button" icon="fa-bar-chart">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="utilization_percentage"/>
+                                        %
+                                    </span>
+                                    <span class="o_stat_text">Utilization</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-check-circle" style="color: green;">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="available_spaces"/>
+                                    </span>
+                                    <span class="o_stat_text">Available</span>
+                                </div>
+                            </button>
                         </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
 
-    <!-- Tree view for Enhanced -->
-    <record id="records_location_view_tree" model="ir.ui.view">
-        <field name="name">records.location.view.tree</field>
-        <field name="model">records.location</field>
-        <field name="type">list</field>
-        <field name="arch" type="xml">
-            <tree decoration-success="current_utilization &amp;lt; storage_capacity * 0.8" decoration-warning="current_utilization &amp;gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &amp;gt;= storage_capacity">
-                <field name="name" string="🏢 Location Name"/>
-                <field name="location_type" string="📂 Type"/>
-                <field name="storage_capacity" string="🔢 Capacity"/>
-                <field name="current_utilization" string="📦 Current Usage"/>
-                <field name="available_spaces" string="🆓 Available Spaces"/>
-                <field name="utilization_percentage" string="📊 Utilization %" widget="percentage"/>
-                <field name="active" string="✅ Active"/>
-                <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
-            </tree>
-        </field>
-    </record>
-
-    <!-- Form view for Enhanced -->
-    <record id="records_location_view_form" model="ir.ui.view">
-        <field name="name">records.location.view.form</field>
-        <field name="model">records.location</field>
-        <field name="type">form</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <button name="action_view_containers" type="object" string="📦 View Containers" class="btn-primary"/>
-                    <button name="action_location_report" type="object" string="📊 Generate Report" class="btn-secondary"/>
-                    <field name="active" widget="boolean_toggle"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-cube">
-                            <field string="Containers" name="current_utilization" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_location_report" icon="fa-bar-chart">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="utilization_percentage"/>
-%</span>
-                                <span class="o_stat_text">Utilization</span>
-                            </div>
-                        </button>
-                        <button class="oe_stat_button" icon="fa-check-circle" style="color: green;">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="available_spaces"/>
-                                </span>
-                                <span class="o_stat_text">Available</span>
-                            </div>
-                        </button>
-                    </div>
-
-                    <group>
-                        <group string="🏢 Location Information">
-                            <field name="name" placeholder="e.g., Building A - Section 1"/>
-                            <field name="location_type"/>
-                            <field name="parent_location_id" string="Parent Location"/>
-                        </group>
-                        <group string="📊 Capacity &amp;amp; Usage">
-                            <field name="storage_capacity"/>
-                            <field name="current_utilization"/>
-                            <field name="available_spaces"/>
-                            <field name="utilization_percentage" widget="percentage"/>
-                        </group>
-                    </group>
-
-                    <notebook>
-                        <page string="📦 Stored Containers" name="containers">
-                            <field name="container_ids" mode="list">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="partner_id"/>
-                                    <field name="state"/>
-                                    <field name="storage_start_date"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="📋 Details &amp;amp; Notes" name="details">
-                            <group>
-                                <field name="description" placeholder="Location description and special instructions..."/>
-                                <field name="access_instructions"/>
-                                <field name="security_level"/>
+                        <group>
+                            <group string="🏢 Location Information">
+                                <field name="name" placeholder="e.g., Building A - Section 1"/>
+                                <field name="location_type"/>
+                                <field name="parent_location_id" string="Parent Location"/>
                             </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
+                            <group string="📊 Capacity &amp; Usage">
+                                <field name="storage_capacity"/>
+                                <field name="current_utilization"/>
+                                <field name="available_spaces"/>
+                                <field name="utilization_percentage" widget="percentage"/>
+                            </group>
+                        </group>
 
-    <!-- Search view for Enhanced -->
-    <record id="records_location_view_search" model="ir.ui.view">
-        <field name="name">records.location.view.search</field>
-        <field name="model">records.location</field>
-        <field name="type">search</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
-                <field name="location_type"/>
+                        <notebook>
+                            <page name="containers" string="📦 Stored Containers">
+                                <field name="container_ids" mode="list">
+                                    <list>
+                                        <field name="name"/>
+                                        <field name="partner_id"/>
+                                        <field name="state"/>
+                                        <field name="storage_start_date"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page name="details" string="📋 Details &amp; Notes">
+                                <group>
+                                    <field name="description" placeholder="Location description and special instructions..."/>
+                                    <field name="access_instructions"/>
+                                    <field name="security_level"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
 
-                <filter string="🟢 Available Space" name="available_space" domain="[('available_spaces', '&amp;gt;', 0)]"/>
-                <filter string="🟡 Near Capacity" name="near_capacity" domain="[('utilization_percentage', '&amp;gt;=', 80)]"/>
-                <filter string="🔴 At Capacity" name="at_capacity" domain="[('current_utilization', '&amp;gt;=', 'storage_capacity')]"/>
+        <!-- Search view for Enhanced -->
+        <record id="records_location_view_search" model="ir.ui.view">
+            <field name="name">records.location.view.search</field>
+            <field name="model">records.location</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
+                    <field name="location_type"/>
 
-                <separator/>
-                <filter string="🎯 Optimal Load (20-80%)" name="optimal_load" domain="[('utilization_percentage', '&amp;gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
-                <filter string="🆓 Lots of Space (&amp;gt;10)" name="lots_of_space" domain="[('available_spaces', '&amp;gt;', 10)]"/>
+                    <filter name="available_space" string="🟢 Available Space" domain="[('available_spaces', '&amp;gt;', 0)]"/>
+                    <filter name="near_capacity" string="🟡 Near Capacity" domain="[('utilization_percentage', '&amp;gt;=', 80)]"/>
+                    <filter name="at_capacity" string="🔴 At Capacity" domain="[('current_utilization', '&amp;gt;=', 'storage_capacity')]"/>
 
-                <separator/>
-                <filter string="📦 Active Locations" name="active" domain="[('active', '=', True)]"/>
-                <filter string="📁 Archived Locations" name="inactive" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <filter name="optimal_load" string="🎯 Optimal Load (20-80%)" domain="[('utilization_percentage', '&amp;gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
+                    <filter name="lots_of_space" string="🆓 Lots of Space (&amp;gt;10)" domain="[('available_spaces', '&amp;gt;', 10)]"/>
 
-                <group expand="0" string="📊 Group By">
-                    <filter string="Type" name="group_by_type" context="{'group_by': 'location_type'}"/>
-                    <filter string="Parent Location" name="group_by_parent" context="{'group_by': 'parent_location_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+                    <separator/>
+                    <filter name="active" string="📦 Active Locations" domain="[('active', '=', True)]"/>
+                    <filter name="inactive" string="📁 Archived Locations" domain="[('active', '=', False)]"/>
 
-    <!-- Tree view for ENTERPRISE -->
-    <record id="action_records_location" model="ir.actions.act_window">
-        <field name="name">🏢 Storage Locations</field>
-        <field name="res_model">records.location</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="search_view_id" ref="records_location_view_search"/>
-        <field name="context">{
-            'search_default_active': 1,
-            'search_default_available_space': 1
-        }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                🏢 Create your first storage location!
-            </p>
-            <p>
-                <b>Enterprise Storage Management:</b>
-                <br/>
-                • 📦 Track box locations with visual kanban boards<br/>
-                • 📊 Monitor capacity utilization in real-time<br/>
-                • 🔍 Smart search with advanced filters<br/>
-                • 🏢 Hierarchical location organization<br/>
-                • 📱 Mobile-optimized for facility operations
-</p>
-</field>
-</record>
-</data>
-</odoo>
-</data>
+                    <group string="📊 Group By" expand="0">
+                        <filter name="group_by_type" string="Type" context="{'group_by': 'location_type'}"/>
+                        <filter name="group_by_parent" string="Parent Location" context="{'group_by': 'parent_location_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for ENTERPRISE -->
+        <record id="action_records_location" model="ir.actions.act_window">
+            <field name="name">🏢 Storage Locations</field>
+            <field name="res_model">records.location</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="records_location_view_search"/>
+            <field name="context">{
+                'search_default_active': 1,
+                'search_default_available_space': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    🏢 Create your first storage location!
+                </p>
+                <p>
+                    <b>Enterprise Storage Management:</b>
+                    <br/>
+                    • 📦 Track box locations with visual kanban boards<br/>
+                    • 📊 Monitor capacity utilization in real-time<br/>
+                    • 🔍 Smart search with advanced filters<br/>
+                    • 🏢 Hierarchical location organization<br/>
+                    • 📱 Mobile-optimized for facility operations
+                </p>
+            </field>
+        </record>
+    </data>
 </odoo>

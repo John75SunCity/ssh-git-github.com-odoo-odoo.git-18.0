@@ -155,7 +155,7 @@
                             <field name="cubic_feet" readonly="1"/>
                             <field name="is_full"/>
                         </group>
-                        <group string="Customer & Location">
+                        <group string="Customer &amp; Location">
                             <field name="partner_id" required="1"/>
                             <field name="department_id"/>
                             <field name="location_id"/>
@@ -164,7 +164,7 @@
                     </group>
 
                     <group>
-                        <group string="Retention & Security">
+                        <group string="Retention &amp; Security">
                             <field name="retention_policy_id"/>
                             <field name="document_type_id"/>
                             <field name="security_level"/>
@@ -180,7 +180,7 @@
                     </group>
 
                     <group>
-                        <group string="Content & Description">
+                        <group string="Content &amp; Description">
                             <field name="description" placeholder="Container contents, special instructions, or notes..."/>
                             <field name="content_description"/>
                             <field name="access_restrictions"/>

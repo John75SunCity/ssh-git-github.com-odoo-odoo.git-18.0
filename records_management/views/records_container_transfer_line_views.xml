@@ -3,8 +3,8 @@
 
     <data>
 <!-- View records.container.transfer.line View List -->
-    <record id="view_records_container_transfer_line_list" model="ir.ui.view">
-        <field name="name">view.records.container.transfer.line.list</field>
+    <record id="records_container_transfer_line_view_list" model="ir.ui.view">
+        <field name="name">records.container.transfer.line.view.list</field>
         <field name="model">records.container.transfer.line</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
@@ -15,8 +15,8 @@
     </record>
 
     <!-- View records.container.transfer.line form -->
-    <record id="view_records_container_transfer_line_form" model="ir.ui.view">
-        <field name="name">view.records.container.transfer.line.form</field>
+    <record id="records_container_transfer_line_view_form" model="ir.ui.view">
+        <field name="name">records.container.transfer.line.view.form</field>
         <field name="model">records.container.transfer.line</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -34,8 +34,8 @@
     </record>
 
     <!-- View records.container.transfer.line search -->
-    <record id="view_records_container_transfer_line_search" model="ir.ui.view">
-        <field name="name">view.records.container.transfer.line.search</field>
+    <record id="records_container_transfer_line_view_search" model="ir.ui.view">
+        <field name="name">records.container.transfer.line.view.search</field>
         <field name="model">records.container.transfer.line</field>
         <field name="type">search</field>
         <field name="arch" type="xml">
@@ -48,7 +48,7 @@
     </record>
 
     <!-- Action records.container.transfer.line -->
-    <record id="action_records_container_transfer_line" model="ir.actions.act_window">
+    <record id="records_container_transfer_line_action" model="ir.actions.act_window">
         <field name="name">Records Container Transfer Line</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.container.transfer.line</field>

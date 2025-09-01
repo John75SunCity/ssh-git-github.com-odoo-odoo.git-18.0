@@ -3,8 +3,8 @@
 
     <data>
 <!-- Tree view for naid.custody -->
-    <record id="view_naid_custody_list" model="ir.ui.view">
-        <field name="name">view.naid.custody.list</field>
+    <record id="naid_custody_view_tree" model="ir.ui.view">
+        <field name="name">naid.custody.view.tree</field>
         <field name="model">naid.custody</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
@@ -41,7 +41,7 @@
                             <field name="user_id"/>
                         </group>
                         <group string="Location &amp; Verification">
-                            <field name="location"/>
+                            <field name="location_id"/>
                             <field name="signature_verified"/>
                             <field name="witness_present"/>
                             <field name="company_id" groups="base.group_multi_company"/>
@@ -74,7 +74,7 @@
                 <field name="event_type"/>
                 <field name="document_id"/>
                 <field name="user_id"/>
-                <field name="location"/>
+                <field name="location_id"/>
                 <field name="signature_verified"/>
                 <templates>
                     <t t-name="card">
@@ -95,7 +95,7 @@
                                     👤 <field name="user_id"/>
                                 </div>
                                 <div>
-                                    📍 <field name="location"/>
+                                    📍 <field name="location_id"/>
                                 </div>
                                 <div t-if="record.signature_verified.raw_value">
                                     ✅ <span class="text-success">Verified</span>

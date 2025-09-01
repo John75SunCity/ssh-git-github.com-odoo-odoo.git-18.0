@@ -7,9 +7,9 @@
             <field name="model">destruction.certificate</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <list string="Destruction Certificates" default_order="date desc">
+                <list string="Destruction Certificates" default_order="issue_date desc">
                     <field name="name"/>
-                    <field name="date"/>
+                    <field name="issue_date"/>
                     <field name="certificate_number"/>
                     <field name="partner_id"/>
                     <field name="state"/>
@@ -70,7 +70,7 @@
                                 <field name="destruction_facility"/>
                                 <field name="destruction_weight" widget="numeric"/>
                                 <field name="naid_verified" widget="boolean_toggle"/>
-                                <field name="naid_certificate_number"/>
+                                <field name="naid_certificate_number" placeholder="Enter NAID certificate number (placeholder for development)"/>
                             </group>
                         </group>
 
@@ -333,4 +333,3 @@
                   sequence="25"/>
     </data>
 </odoo>
-<parameter name="filePath">/Users/johncope/Documents/ssh-git-github.com-odoo-odoo.git-18.0/records_management/views/destruction_certificate_views.xml
