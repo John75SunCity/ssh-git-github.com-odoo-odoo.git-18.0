@@ -113,6 +113,7 @@ class RecordsDocument(models.Model):
     document_category = fields.Char("Document Category", tracking=True)
     media_type = fields.Char("Media Type", tracking=True)
     original_format = fields.Char("Original Format", tracking=True)
+    file_size = fields.Integer(string="File Size (KB)", help="Size of the digital file in kilobytes", tracking=True)
     digitized = fields.Boolean("Digitized", tracking=True)
     digital_scan_ids = fields.One2many('records.digital.scan', 'document_id', string="Digital Scans")
     scan_count = fields.Integer(string="Scan Count", compute='_compute_scan_count', store=True)

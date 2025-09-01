@@ -380,8 +380,10 @@ class ModelValidator:
             # Check if all models have security rules
             for model_name in models_to_check:
                 model_found = False
+                # Convert dots to underscores for CSV matching
+                csv_model_name = model_name.replace(".", "_")
                 for line in lines[1:]:  # Skip header
-                    if f"model_{model_name}" in line or model_name in line:
+                    if f"model_{csv_model_name}" in line or csv_model_name in line:
                         model_found = True
                         break
 
