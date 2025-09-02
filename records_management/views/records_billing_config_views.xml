@@ -18,7 +18,7 @@
     <record id="records_billing_config_view_form" model="ir.ui.view">
         <field name="name">records.billing.config.view.form</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Records Billing Config">
                 <sheet>
@@ -37,7 +37,7 @@
     <record id="records_billing_config_view_search" model="ir.ui.view">
         <field name="name">records.billing.config.view.search</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -68,7 +68,7 @@
     <record id="records_billing_config_view_kanban" model="ir.ui.view">
         <field name="name">records.billing.config.view.kanban</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="billing_model" class="o_kanban_billing_config_dashboard">
                 <field name="name"/>
@@ -169,7 +169,7 @@
     <record id="records_billing_config_view_form" model="ir.ui.view">
         <field name="name">records.billing.config.view.form</field>
         <field name="model">records.billing.config</field>
-        <field name="type">list</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -386,7 +386,7 @@
     <record id="records_billing_config_view_calendar" model="ir.ui.view">
         <field name="name">records.billing.config.view.calendar</field>
         <field name="model">records.billing.config</field>
-        <field name="type">search</field>
+        <field name="type">calendar</field>
         <field name="arch" type="xml">
             <calendar string="📅 Billing Schedule"
                       date_start="next_billing_date"
@@ -445,7 +445,7 @@
         <field name="name">💳 Billing Configuration</field>
         <field name="res_model">records.billing.config</field>
         <field name="view_mode">kanban,list,form,calendar</field>
-        <field name="search_view_id" ref="view_billing_config_search"/>
+        <field name="search_view_id" ref="records_billing_config_view_search"/>
         <field name="context">{
             'search_default_active': 1
         }</field>
