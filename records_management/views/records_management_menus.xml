@@ -61,7 +61,7 @@
 
 <menuitem id="menu_customer_inventory" name="Customer Inventory" parent="menu_records_inventory" action="action_customer_inventory_report" sequence="10" groups="records_management.group_records_user"/>
 
-<menuitem id="menu_inventory_documents" name="Inventory Documents" parent="menu_records_inventory" action="action_inventory_documents" sequence="15" groups="records_management.group_records_user"/>
+<menuitem id="menu_inventory_documents" name="Inventory Documents" parent="menu_records_inventory" action="action_inventory_item" sequence="15" groups="records_management.group_records_user"/>
 
 <menuitem id="menu_records_retention" name="Retention Policies" parent="menu_records_inventory" action="action_records_retention_policy" sequence="20" groups="records_management.group_records_manager"/>
 
@@ -103,7 +103,7 @@
 
 <menuitem id="menu_inventory_reports" name="Inventory Reports" parent="menu_records_reporting" action="action_customer_inventory_report" sequence="20" groups="records_management.group_records_user"/>
 
-<menuitem id="menu_compliance_reports" name="Compliance Reports" parent="menu_records_reporting" action="action_naid_compliance_report" sequence="30" groups="records_management.group_records_manager"/>
+<menuitem id="menu_compliance_reports" name="Compliance Reports" parent="menu_records_reporting" action="action_report_naid_compliance" sequence="30" groups="records_management.group_records_manager"/>
 
 <menuitem id="menu_revenue_forecaster" name="Revenue Forecasting" parent="menu_records_reporting" action="action_revenue_forecaster" sequence="40" groups="records_management.group_records_manager"/>
 
