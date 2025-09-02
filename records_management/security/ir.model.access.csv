@@ -314,8 +314,8 @@ access_bin_unlock_service_user,bin.unlock.service user,model_bin_unlock_service,
 access_bin_unlock_service_manager,bin.unlock.service manager,model_bin_unlock_service,records_management.group_records_manager,1,1,1,0
 access_records_location_report_wizard_user,records.location.report.wizard user,model_records_location_report_wizard,records_management.group_records_user,1,1,0,0
 access_records_location_report_wizard_manager,records.location.report.wizard manager,model_records_location_report_wizard,records_management.group_records_manager,1,1,1,0
-access_records_retrieval_work_order_user,records.retrieval.work.order.user,model_records_retrieval_work_order,records_management.group_records_user,1,1,1,0
-access_records_retrieval_work_order_manager,records.retrieval.work.order.manager,model_records_retrieval_work_order,records_management.group_records_manager,1,1,1,1
+access_records_retrieval_work_order_user,records.retrieval.work.order user,model_records.retrieval.work.order,records_management.group_records_user,1,1,1,0
+access_records_retrieval_work_order_manager,records.retrieval.work.order manager,model_records.retrieval.work.order,records_management.group_records_manager,1,1,1,1
 access_survey_improvement_action_user,survey.improvement.action user,model_survey_improvement_action,records_management.group_records_user,1,1,0,0
 access_survey_improvement_action_manager,survey.improvement.action manager,model_survey_improvement_action,records_management.group_records_manager,1,1,1,0
 access_customer_billing_profile_user,customer.billing.profile user,model_customer_billing_profile,records_management.group_records_user,1,1,0,0
@@ -460,10 +460,46 @@ access_shredding_certificate_user,shredding.certificate user,model_shredding_cer
 access_shredding_certificate_manager,shredding.certificate manager,model_shredding_certificate,records_management.group_records_manager,1,1,1,0
 access_certificate_template_data_user,certificate.template.data user,model_certificate_template_data,records_management.group_records_user,1,1,0,0
 access_certificate_template_data_manager,certificate.template.data manager,model_certificate_template_data,records_management.group_records_manager,1,1,1,0
-access_, _user,,  user,model_, ,records_management.group_records_user,1,1,0,0
-access_, _manager,,  manager,model_, ,records_management.group_records_manager,1,1,1,0
-access_account_move_line_user,account_move_line user,model_account.move.line,records_management.group_records_user,1,1,0,0
-access_account_move_line_manager,account_move_line manager,model_account.move.line,records_management.group_records_manager,1,1,1,0
+access_customer_inventory_report_model_user,customer.inventory.report.model user,model_customer.inventory.report.model,records_management.group_records_user,1,1,0,0
+access_customer_inventory_report_model_manager,customer.inventory.report.model manager,model_customer.inventory.report.model,records_management.group_records_manager,1,1,1,0
+access_display_name_user,display.name user,model_display.name,records_management.group_records_user,1,1,0,0
+access_display_name_manager,display.name manager,model_display.name,records_management.group_records_manager,1,1,1,0
+access_document_retrieval_equipment_user,document.retrieval.equipment user,model_document.retrieval.equipment,records_management.group_records_user,1,1,0,0
+access_document_retrieval_equipment_manager,document.retrieval.equipment manager,model_document.retrieval.equipment,records_management.group_records_manager,1,1,1,0
+access_document_retrieval_team_user,document.retrieval.team user,model_document.retrieval.team,records_management.group_records_user,1,1,0,0
+access_document_retrieval_team_manager,document.retrieval.team manager,model_document.retrieval.team,records_management.group_records_manager,1,1,1,0
+access_hr_employee_user,hr.employee user,model_hr.employee,records_management.group_records_user,1,1,0,0
+access_hr_employee_manager,hr.employee manager,model_hr.employee,records_management.group_records_manager,1,1,1,0
+access_maintenance_request_user,maintenance.request user,model_maintenance.request,records_management.group_records_user,1,1,0,0
+access_maintenance_request_manager,maintenance.request manager,model_maintenance.request,records_management.group_records_manager,1,1,1,0
+access_naidaudit_log_user,naidaudit.log user,model_naidaudit.log,records_management.group_records_user,1,1,0,0
+access_naidaudit_log_manager,naidaudit.log manager,model_naidaudit.log,records_management.group_records_manager,1,1,1,0
+access_naidcustody_event_user,naidcustody.event user,model_naidcustody.event,records_management.group_records_user,1,1,0,0
+access_naidcustody_event_manager,naidcustody.event manager,model_naidcustody.event,records_management.group_records_manager,1,1,1,0
+access_paper_bale_load_user,paper.bale.load user,model_paper.bale.load,records_management.group_records_user,1,1,0,0
+access_paper_bale_load_manager,paper.bale.load manager,model_paper.bale.load,records_management.group_records_manager,1,1,1,0
+access_paper_model_bale_user,paper.model.bale user,model_paper.model.bale,records_management.group_records_user,1,1,0,0
+access_paper_model_bale_manager,paper.model.bale manager,model_paper.model.bale,records_management.group_records_manager,1,1,1,0
+access_pos_config_user,pos.config user,model_pos.config,records_management.group_records_user,1,1,0,0
+access_pos_config_manager,pos.config manager,model_pos.config,records_management.group_records_manager,1,1,1,0
+access_product_template_user,product.template user,model_product.template,records_management.group_records_user,1,1,0,0
+access_product_template_manager,product.template manager,model_product.template,records_management.group_records_manager,1,1,1,0
+access_records_config_settings_user,records.config.settings user,model_records.config.settings,records_management.group_records_user,1,1,0,0
+access_records_config_settings_manager,records.config.settings manager,model_records.config.settings,records_management.group_records_manager,1,1,1,0
+access_records_vehicle_user,records.vehicle user,model_records.vehicle,records_management.group_records_user,1,1,0,0
+access_records_vehicle_manager,records.vehicle manager,model_records.vehicle,records_management.group_records_manager,1,1,1,0
+access_res_config_settings_user,res.config.settings user,model_res.config.settings,records_management.group_records_user,1,1,0,0
+access_res_config_settings_manager,res.config.settings manager,model_res.config.settings,records_management.group_records_manager,1,1,1,0
+access_revenue_forecasting_reports_user,revenue.forecasting.reports user,model_revenue.forecasting.reports,records_management.group_records_user,1,1,0,0
+access_revenue_forecasting_reports_manager,revenue.forecasting.reports manager,model_revenue.forecasting.reports,records_management.group_records_manager,1,1,1,0
+access_shred_model_bin_user,shred.model.bin user,model_shred.model.bin,records_management.group_records_user,1,1,0,0
+access_shred_model_bin_manager,shred.model.bin manager,model_shred.model.bin,records_management.group_records_manager,1,1,1,0
+access_shredding_hard_drive_user,shredding.hard.drive user,model_shredding.hard.drive,records_management.group_records_user,1,1,0,0
+access_shredding_hard_drive_manager,shredding.hard.drive manager,model_shredding.hard.drive,records_management.group_records_manager,1,1,1,0
+access_stock_move_smsvalidation_user,stock.move.smsvalidation user,model_stock.move.smsvalidation,records_management.group_records_user,1,1,0,0
+access_stock_move_smsvalidation_manager,stock.move.smsvalidation manager,model_stock.move.smsvalidation,records_management.group_records_manager,1,1,1,0
+access_account_move_line_user,account.move.line user,model_account.move.line,records_management.group_records_user,1,1,1,0
+access_account_move_line_manager,account.move.line manager,model_account.move.line,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_contact_user,advanced_billing_contact user,model_advanced.billing.contact,records_management.group_records_user,1,1,0,0
 access_advanced_billing_contact_manager,advanced_billing_contact manager,model_advanced.billing.contact,records_management.group_records_manager,1,1,1,0
 access_advanced_billing_line_user,advanced_billing_line user,model_advanced.billing.line,records_management.group_records_user,1,1,0,0

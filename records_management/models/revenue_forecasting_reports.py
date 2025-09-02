@@ -23,6 +23,14 @@ class RevenueForecastingReport(models.AbstractModel):
     _name = "report.records_management.revenue_forecasting_report"
     _description = "Revenue Forecasting Report - Records Management"
 
+    company_id = fields.Many2one(
+        comodel_name="res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+        readonly=True,
+    )
+
     @api.model
     def _get_report_values(self, docids, data=None):
         """
@@ -99,17 +107,9 @@ class RevenueForecastingReport(models.AbstractModel):
                 "doc_ids": docids,
                 "doc_model": "account.move",
                 "docs": self._default_revenue_data(),
-                "error": _("Error generating report: %s") % str(e),
-                "date_from": (
-                    date_from.strftime("%Y-%m-%d")
-                    if "date_from" in locals()
-                    else ""
-                ),
-                "date_to": (
-                    date_to.strftime("%Y-%m-%d")
-                    if "date_to" in locals()
-                    else ""
-                ),
+                "error": _("Error generating report: %s", str(e)),
+                "date_from": (date_from.strftime("%Y-%m-%d") if "date_from" in locals() else ""),
+                "date_to": (date_to.strftime("%Y-%m-%d") if "date_to" in locals() else ""),
             }
 
     def _compute_revenue_metrics(self, invoices, date_from, date_to):
@@ -361,9 +361,7 @@ class RevenueForecastingReport(models.AbstractModel):
                 "type_04",
                 "type_06",
             ]:
-                type_containers = containers.filtered(
-                    lambda c: c.container_type == container_type
-                )
+                type_containers = containers.filtered(lambda c, ct=container_type: c.container_type == ct)
                 container_count = len(type_containers)
 
                 # Estimate revenue based on container specifications and business rates

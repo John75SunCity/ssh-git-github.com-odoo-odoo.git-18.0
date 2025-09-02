@@ -41,6 +41,13 @@ class ShredModelBin(models.Model):
     location_id = fields.Many2one("records.location", string="Location", tracking=True)
     last_emptied = fields.Date(string="Last Emptied", tracking=True)
     notes = fields.Text(string="Notes")
+    company_id = fields.Many2one(
+        comodel_name="res.company",
+        string="Company",
+        default=lambda self: self.env.company,
+        required=True,
+        readonly=True,
+    )
 
     # ============================================================================
     # CONSTRAINTS & VALIDATION
@@ -58,7 +65,6 @@ class ShredModelBin(models.Model):
                 if not record.barcode.replace("-", "").replace("_", "").isalnum():
                     raise ValidationError(_("Barcode can only contain letters, numbers, hyphens, and underscores"))
 
-                # Check minimum length for identification purposes
                 if len(record.barcode) < 3:
                     raise ValidationError(_("Barcode must be at least 3 characters long"))
 
