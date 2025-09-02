@@ -165,9 +165,9 @@ class BinIssueReportWizard(models.TransientModel):
     )
 
     assigned_technician_id = fields.Many2one(
-        comodel_name='res.users',
+        comodel_name="res.users",
         string="Assigned Technician",
-        domain=[('groups_id', 'in', [lambda self: self.env.ref('records_management.group_records_user').id])]
+        domain=lambda self: [("groups_id", "in", [self.env.ref("records_management.group_records_user").id])],
     )
 
     # ============================================================================

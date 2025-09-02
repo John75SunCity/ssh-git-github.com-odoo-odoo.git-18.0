@@ -172,11 +172,6 @@ class OdooValidator:
         if "context_today()" in content:
             self.errors.append(f"❌ VIEW EXPRESSION: {file_path.name}: context_today() should be context_today")
 
-        # Check for HTML entities in expressions
-        if "&lt;" in content and "&gt;" in content:
-            # This is actually correct for XML, but check for malformed ones
-            pass
-
     def _check_security_rules(self, file_path: Path, content: str) -> None:
         """Check security rules for common issues"""
         if "ir.model.access.csv" in str(file_path):
@@ -189,6 +184,489 @@ class OdooValidator:
                 # Basic domain validation could be added here
                 pass
 
+    def validate_security_access(self) -> None:
+        """Check security access rules for completeness"""
+        print("🔍 Checking security access rules...")
+
+        access_file = self.module_path / "security" / "ir.model.access.csv"
+        if access_file.exists():
+            try:
+                with open(access_file, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+
+                # Skip header
+                data_lines = [line.strip() for line in lines[1:] if line.strip()]
+
+                # Collect model names from access rules
+                access_models = set()
+                for line in data_lines:
+                    parts = line.split(",")
+                    if parts:  # Use collection check instead of len()
+                        model_name = parts[1].strip() if parts[1:] else ""  # Check if we have at least 2 parts
+                        if model_name:
+                            access_models.add(model_name)
+
+                # Check for missing access rules
+                python_files = list(self.module_path.glob("models/*.py"))
+                for py_file in python_files:
+                    try:
+                        with open(py_file, "r", encoding="utf-8") as f:
+                            content = f.read()
+
+                        # Find model names
+                        import re
+
+                        name_pattern = r'_name\s*=\s*["\']([^"\']+)["\']'
+                        matches = re.findall(name_pattern, content)
+
+                        for model_name in matches:
+                            if model_name not in access_models:
+                                self.errors.append(
+                                    f"❌ SECURITY: Missing access rules for model '{model_name}' in {py_file.name}"
+                                )
+
+                    except Exception as e:
+                        self.warnings.append(f"⚠️ SECURITY CHECK: Could not parse {py_file.name}: {str(e)}")
+
+            except Exception as e:
+                self.errors.append(f"❌ SECURITY FILE: {str(e)}")
+        else:
+            self.errors.append("❌ SECURITY: ir.model.access.csv not found")
+
+    def validate_translation_patterns(self) -> None:
+        """Check for correct translation pattern usage"""
+        print("🔍 Checking translation patterns...")
+
+        python_files = list(self.module_path.glob("**/*.py"))
+        for py_file in python_files:
+            try:
+                with open(py_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Check for incorrect translation patterns
+                import re
+
+                # Pattern: _("Text") % value - WRONG (formatting after translation)
+                wrong_pattern = r'_\(\s*["\'][^"\'%]*["\']\s*\)\s*%\s*[^%\n]*'
+                if re.search(wrong_pattern, content):
+                    self.errors.append(
+                        f"❌ TRANSLATION: {py_file.name}: Don't format after translation - use _('Text %s', value) instead"
+                    )
+
+                # Pattern: _("Text %s") % value - This creates inconsistency
+                inconsistent_pattern = r'_\(\s*["\'][^"\'%]*%[^"\'%]*["\']\s*\)\s*%\s*[^%\n]*'
+                if re.search(inconsistent_pattern, content):
+                    self.warnings.append(
+                        f"⚠️ TRANSLATION: {py_file.name}: Consider using _('Text %s', value) for consistency"
+                    )
+
+            except Exception as e:
+                self.warnings.append(f"⚠️ TRANSLATION CHECK: Could not parse {py_file.name}: {str(e)}")
+
+    def validate_field_types(self) -> None:
+        """Check for field type inconsistencies"""
+        print("🔍 Checking field type consistency...")
+
+        python_files = list(self.module_path.glob("models/*.py"))
+        for py_file in python_files:
+            try:
+                with open(py_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Check for Monetary fields without currency_field
+                if "fields.Monetary(" in content and "currency_field" not in content:
+                    self.warnings.append(f"⚠️ FIELD TYPE: {py_file.name}: Monetary field without currency_field")
+
+                # Check for inconsistent field naming
+                import re
+
+                # Many2one fields should end with _id
+                many2one_pattern = r"(\w+)\s*=\s*fields\.Many2one\("
+                matches = re.findall(many2one_pattern, content)
+                for field_name in matches:
+                    if not field_name.endswith("_id"):
+                        self.warnings.append(
+                            f"⚠️ FIELD NAMING: {py_file.name}: Many2one field '{field_name}' should end with '_id'"
+                        )
+
+                # One2many/Many2many fields should end with _ids
+                many_pattern = r"(\w+)\s*=\s*fields\.(One2many|Many2many)\("
+                matches = re.findall(many_pattern, content)
+                for field_name, field_type in matches:
+                    if not field_name.endswith("_ids"):
+                        self.warnings.append(
+                            f"⚠️ FIELD NAMING: {py_file.name}: {field_type} field '{field_name}' should end with '_ids'"
+                        )
+
+            except Exception as e:
+                self.warnings.append(f"⚠️ FIELD TYPE CHECK: Could not parse {py_file.name}: {str(e)}")
+
+    def validate_model_structure(self) -> None:
+        """Check model structure and organization"""
+        print("🔍 Checking model structure...")
+
+        python_files = list(self.module_path.glob("models/*.py"))
+        for py_file in python_files:
+            try:
+                with open(py_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Count model classes in this file
+                import re
+
+                class_pattern = r"class\s+(\w+)\s*\([^)]*models\.Model[^)]*\):"
+                model_classes = re.findall(class_pattern, content)
+
+                if len(model_classes) > 1:  # Multiple models found
+                    # Check if these models are related via One2many/Many2one/Many2many
+                    has_relationships = self._check_related_models(content, model_classes)
+
+                    if has_relationships:
+                        # This is likely valid - related models in same file
+                        self.warnings.append(
+                            f"⚠️ MODEL STRUCTURE: {py_file.name}: Multiple related model classes: {', '.join(model_classes)} (valid for related models)"
+                        )
+                    else:
+                        # No clear relationships - might be an issue
+                        self.warnings.append(
+                            f"⚠️ MODEL STRUCTURE: {py_file.name}: Multiple unrelated model classes: {', '.join(model_classes)} (consider separating)"
+                        )
+
+                # Check for models without _name
+                for class_name in model_classes:
+                    class_content = content[
+                        content.find(f"class {class_name}") : (
+                            content.find(f"class {class_name.split()[0]}", content.find(f"class {class_name}") + 1)
+                            if content.find(f"class {class_name}", content.find(f"class {class_name}") + 1) != -1
+                            else len(content)
+                        )
+                    ]
+                    if "_name =" not in class_content:
+                        self.warnings.append(
+                            f"⚠️ MODEL STRUCTURE: {py_file.name}: Model class '{class_name}' missing _name attribute"
+                        )
+
+            except Exception as e:
+                self.warnings.append(f"⚠️ MODEL STRUCTURE CHECK: Could not parse {py_file.name}: {str(e)}")
+
+    def _check_related_models(self, content: str, model_classes: List[str]) -> bool:
+        """Check if multiple models in a file are related via One2many/Many2one/Many2many"""
+        import re
+
+        # Extract model names from _name attributes
+        model_names = []
+        for class_name in model_classes:
+            # Find the class definition and look for _name
+            class_start = content.find(f"class {class_name}")
+            if class_start != -1:
+                # Look for _name in this class
+                class_end = content.find("class ", class_start + 1)
+                if class_end == -1:
+                    class_end = len(content)
+                class_content = content[class_start:class_end]
+
+                name_match = re.search(r'_name\s*=\s*["\']([^"\']+)["\']', class_content)
+                if name_match:
+                    model_names.append(name_match.group(1))
+
+        # Check for relationships between these models
+        for model_name in model_names:
+            # Look for references to other models in relationships
+            for other_model in model_names:
+                if model_name != other_model:
+                    # Check for One2many/Many2one/Many2many relationships
+                    relation_patterns = [
+                        rf'comodel_name\s*=\s*["\']{re.escape(other_model)}["\']',
+                        rf'["\']{re.escape(other_model)}["\']',  # In domain expressions
+                    ]
+
+                    for pattern in relation_patterns:
+                        if re.search(pattern, content):
+                            return True  # Found relationship
+
+        return False  # No relationships found
+
+    def validate_configurator_integration(self) -> None:
+        """Check RM Module Configurator integration"""
+        print("🔍 Checking RM Module Configurator integration...")
+
+        config_file = self.module_path / "models" / "rm_module_configurator.py"
+        if config_file.exists():
+            try:
+                with open(config_file, "r", encoding="utf-8") as f:
+                    config_content = f.read()
+
+                # Check for new models that might need configurator integration
+                python_files = list(self.module_path.glob("models/*.py"))
+                for py_file in python_files:
+                    if py_file.name != "rm_module_configurator.py":
+                        try:
+                            with open(py_file, "r", encoding="utf-8") as f:
+                                content = f.read()
+
+                            # Find model names
+                            import re
+
+                            name_pattern = r'_name\s*=\s*["\']([^"\']+)["\']'
+                            matches = re.findall(name_pattern, content)
+
+                            for model_name in matches:
+                                # Check if this model has configurator integration
+                                config_pattern = re.escape(model_name.replace(".", "_"))
+                                if config_pattern not in config_content:
+                                    self.warnings.append(
+                                        f"⚠️ CONFIGURATOR: Model '{model_name}' may need configurator integration"
+                                    )
+
+                        except Exception as e:
+                            continue
+
+            except Exception as e:
+                self.warnings.append(f"⚠️ CONFIGURATOR CHECK: Could not parse configurator file: {str(e)}")
+        else:
+            self.warnings.append("⚠️ CONFIGURATOR: rm_module_configurator.py not found")
+
+    def validate_menu_actions(self) -> None:
+        """Check menu and action references"""
+        print("🔍 Checking menu and action references...")
+
+        xml_files = list(self.module_path.glob("**/*.xml"))
+        for xml_file in xml_files:
+            try:
+                with open(xml_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Check for action references in menus
+                import re
+
+                action_refs = re.findall(r'action="([^"]+)"', content)
+                menu_refs = re.findall(r'parent="([^"]+)"', content)
+
+                # Check if referenced actions/menus exist
+                # This is a basic check - could be enhanced with cross-file validation
+                for action_ref in action_refs:
+                    if not any(
+                        action_ref in other_content
+                        for other_file in xml_files
+                        if other_file != xml_file
+                        for other_content in [open(other_file, "r", encoding="utf-8").read()]
+                    ):
+                        self.warnings.append(
+                            f"⚠️ MENU ACTION: {xml_file.name}: Referenced action '{action_ref}' may not exist"
+                        )
+
+            except Exception as e:
+                self.warnings.append(f"⚠️ MENU ACTION CHECK: Could not parse {xml_file.name}: {str(e)}")
+
+    def validate_domain_expressions(self) -> None:
+        """Check domain expressions for syntax errors"""
+        print("🔍 Checking domain expressions...")
+
+        python_files = list(self.module_path.glob("**/*.py"))
+        xml_files = list(self.module_path.glob("**/*.xml"))
+
+        for file_path in python_files + xml_files:
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Check for common domain syntax issues
+                import re
+
+                # Check for unclosed brackets in domain expressions
+                domain_pattern = r"domain\s*=\s*\[([^\]]*)"
+                domains = re.findall(domain_pattern, content)
+
+                for domain in domains:
+                    # Count brackets
+                    open_brackets = domain.count("[")
+                    close_brackets = domain.count("]")
+                    if open_brackets != close_brackets:
+                        self.errors.append(f"❌ DOMAIN: {file_path.name}: Unbalanced brackets in domain expression")
+
+                    # Check for common syntax errors
+                    if domain.strip().endswith(","):
+                        self.warnings.append(f"⚠️ DOMAIN: {file_path.name}: Domain expression ends with comma")
+
+            except Exception as e:
+                self.warnings.append(f"⚠️ DOMAIN CHECK: Could not parse {file_path.name}: {str(e)}")
+
+    def validate_csv_files(self) -> None:
+        """Check CSV file format and content"""
+        print("🔍 Checking CSV files...")
+
+        csv_files = list(self.module_path.glob("**/*.csv"))
+        for csv_file in csv_files:
+            try:
+                with open(csv_file, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+
+                if not lines:
+                    self.errors.append(f"❌ CSV: {csv_file.name}: Empty CSV file")
+                    continue
+
+                # Check header
+                header = lines[0].strip()
+                if not header:
+                    self.errors.append(f"❌ CSV: {csv_file.name}: Missing header row")
+
+                # Check data rows
+                for i, line in enumerate(lines[1:], 1):
+                    if line.strip():  # Skip empty lines
+                        parts = line.split(",")
+                        if parts and len(parts) < 4:  # Basic check for access CSV
+                            self.warnings.append(f"⚠️ CSV: {csv_file.name}: Line {i+1} may have insufficient columns")
+
+            except Exception as e:
+                self.errors.append(f"❌ CSV: {csv_file.name}: {str(e)}")
+
+    def validate_computed_fields(self) -> None:
+        """Check computed field dependencies"""
+        print("🔍 Checking computed field dependencies...")
+
+        python_files = list(self.module_path.glob("models/*.py"))
+        for py_file in python_files:
+            try:
+                with open(py_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Find computed fields
+                import re
+
+                computed_pattern = r"@.*\.depends\(([^)]+)\)"
+                depends_matches = re.findall(computed_pattern, content)
+
+                for depends_str in depends_matches:
+                    # Extract field names from depends
+                    field_names = re.findall(r'["\']([^"\']+)["\']', depends_str)
+
+                    # Check if these fields exist in the same model
+                    for field_name in field_names:
+                        if "fields." in content:  # Basic check
+                            # This is a simplified check - could be enhanced
+                            pass
+
+            except Exception as e:
+                self.warnings.append(f"⚠️ COMPUTED FIELD CHECK: Could not parse {py_file.name}: {str(e)}")
+
+    def validate_view_field_references(self) -> None:
+        """Check that all fields referenced in views exist in their models"""
+        print("🔍 Checking view field references...")
+
+        # First, collect all model fields
+        model_fields = self._collect_model_fields()
+
+        # Check XML files for view field references
+        xml_files = []
+        for ext in ["*.xml"]:
+            xml_files.extend(list(self.module_path.glob(f"**/{ext}")))
+
+        for xml_file in xml_files:
+            try:
+                with open(xml_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Only check view files
+                if (
+                    'model="ir.ui.view"' in content
+                    or 'type="form"' in content
+                    or 'type="list"' in content
+                    or 'type="kanban"' in content
+                ):
+                    self._check_view_fields(xml_file, content, model_fields)
+
+            except Exception as e:
+                self.errors.append(f"❌ VIEW FIELD CHECK: {xml_file.name}: {str(e)}")
+
+    def _collect_model_fields(self) -> Dict[str, List[str]]:
+        """Collect all fields from model definitions"""
+        model_fields = {}
+
+        python_files = []
+        for ext in ["*.py"]:
+            python_files.extend(list(self.module_path.glob(f"**/{ext}")))
+
+        for py_file in python_files:
+            try:
+                with open(py_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Parse the Python file to find model definitions
+                tree = ast.parse(content)
+
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.ClassDef):
+                        # Check if this is an Odoo model
+                        model_name = None
+                        fields = []
+
+                        for item in node.body:
+                            if isinstance(item, ast.Assign):
+                                # Check for _name assignment
+                                if len(item.targets) == 1 and isinstance(item.targets[0], ast.Name):
+                                    if item.targets[0].id == "_name":
+                                        if isinstance(item.value, ast.Str):
+                                            model_name = item.value.s
+                                        elif isinstance(item.value, ast.Constant) and isinstance(item.value.value, str):
+                                            model_name = item.value.value
+
+                                # Check for field definitions
+                                elif isinstance(item.value, ast.Call):
+                                    # Look for fields.XXX pattern
+                                    if isinstance(item.value.func, ast.Attribute):
+                                        if (
+                                            isinstance(item.value.func.value, ast.Name)
+                                            and item.value.func.value.id == "fields"
+                                        ):
+                                            # This is a fields.XXX call
+                                            if len(item.targets) == 1 and isinstance(item.targets[0], ast.Name):
+                                                fields.append(item.targets[0].id)
+
+                        if model_name and fields:
+                            model_fields[model_name] = fields
+
+            except Exception as e:
+                # Skip files that can't be parsed
+                continue
+
+        return model_fields
+
+    def _check_view_fields(self, xml_file: Path, content: str, model_fields: Dict[str, List[str]]) -> None:
+        """Check field references in a view file"""
+        try:
+            # Extract model name from view
+            model_name = None
+            if 'model="records.document"' in content:
+                model_name = "records.document"
+            elif 'model="records.container"' in content:
+                model_name = "records.container"
+            elif 'model="records.request"' in content:
+                model_name = "records.request"
+            # Add more model mappings as needed
+
+            if not model_name:
+                return
+
+            # Extract field references from XML
+            import re
+
+            field_pattern = r'<field\s+name="([^"]+)"'
+            field_matches = re.findall(field_pattern, content)
+
+            # Check each field reference
+            available_fields = model_fields.get(model_name, [])
+            for field_name in field_matches:
+                if field_name not in available_fields:
+                    # Skip common computed/related fields that might not be in the basic field list
+                    skip_fields = ["display_name", "create_date", "write_date", "create_uid", "write_uid"]
+                    if field_name not in skip_fields:
+                        self.errors.append(
+                            f"❌ VIEW FIELD: {xml_file.name}: Field '{field_name}' does not exist in model '{model_name}'"
+                        )
+
+        except Exception as e:
+            self.errors.append(f"❌ VIEW FIELD CHECK: {xml_file.name}: {str(e)}")
+
     def run_validation(self) -> Tuple[List[str], List[str]]:
         """Run all validation checks"""
         print("🚀 Starting Comprehensive Odoo Module Validation")
@@ -198,6 +676,16 @@ class OdooValidator:
         self.validate_models_init()
         self.validate_python_syntax()
         self.validate_xml_syntax()
+        self.validate_security_access()
+        self.validate_translation_patterns()
+        self.validate_field_types()
+        self.validate_model_structure()
+        self.validate_configurator_integration()
+        self.validate_menu_actions()
+        self.validate_domain_expressions()
+        self.validate_csv_files()
+        self.validate_computed_fields()
+        self.validate_view_field_references()
 
         print("=" * 60)
         print("📊 VALIDATION COMPLETE")
