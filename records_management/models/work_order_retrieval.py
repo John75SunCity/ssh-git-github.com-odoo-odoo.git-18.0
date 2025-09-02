@@ -185,15 +185,16 @@ class WorkOrderRetrieval(models.Model):
     # BUSINESS METHODS
     # ============================================================================
     def action_confirm(self):
-        """Confirm the work order"""
+        """Confirm the work order(s)"""
         for record in self:
-            if record.state != 'draft':
+            if record.state != "draft":
                 raise UserError(_("Only draft work orders can be confirmed."))
-            record.state = 'confirmed'
+            record.state = "confirmed"
             record.message_post(body=_("Work order confirmed."))
 
     def action_assign(self):
         """Assign the work order to a team"""
+        self.ensure_one()
         for record in self:
             if record.state != 'confirmed':
                 raise UserError(_("Only confirmed work orders can be assigned."))
@@ -259,4 +260,3 @@ class WorkOrderRetrieval(models.Model):
         for record in self:
             if record.state == 'assigned':
                 record.action_start()
-
