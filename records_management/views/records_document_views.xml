@@ -153,7 +153,7 @@
                             <field name="chain_of_custody_count" string="Chain Events" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_audit_trail" icon="fas fa-history">
-                            <field name="audit_trail_count" string="Audit Events" widget="statinfo"/>
+                            <field name="audit_log_count" string="Audit Events" widget="statinfo"/>
                         </button>
                         <button class="oe_stat_button" icon="fas fa-calendar-times" invisible="not destruction_eligible_date">
                             <div class="o_field_widget o_stat_info">
