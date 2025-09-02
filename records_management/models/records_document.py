@@ -113,10 +113,14 @@ class RecordsDocument(models.Model):
     document_category = fields.Char("Document Category", tracking=True)
     media_type = fields.Char("Media Type", tracking=True)
     original_format = fields.Char("Original Format", tracking=True)
-    file_size = fields.Integer(string="File Size (KB)", help="Size of the digital file in kilobytes", tracking=True)
     digitized = fields.Boolean("Digitized", tracking=True)
     digital_scan_ids = fields.One2many('records.digital.scan', 'document_id', string="Digital Scans")
     scan_count = fields.Integer(string="Scan Count", compute='_compute_scan_count', store=True)
+    total_scan_size_kb = fields.Integer(
+        string="Total Scan Size (KB)",
+        compute="_compute_total_scan_size",
+        help="Total size of all digital scans for this document in kilobytes",
+    )
     audit_log_ids = fields.One2many('naid.audit.log', 'document_id', string="Audit Logs")
     audit_log_count = fields.Integer(string="Audit Log Count", compute='_compute_audit_log_count', store=True)
     chain_of_custody_ids = fields.One2many('naid.custody', 'document_id', string="Chain of Custody")
@@ -283,6 +287,17 @@ class RecordsDocument(models.Model):
                 record.scan_count = len(record.digital_scan_ids) if record.digital_scan_ids else 0
             except Exception:
                 record.scan_count = 0
+
+    @api.depends("digital_scan_ids.file_size")
+    def _compute_total_scan_size(self):
+        """Compute total file size of all digital scans for this document."""
+        for record in self:
+            try:
+                # Sum all scan file sizes (in MB) and convert to KB
+                total_mb = sum(record.digital_scan_ids.mapped("file_size") or [0])
+                record.total_scan_size_kb = int(total_mb * 1024)  # Convert MB to KB
+            except Exception:
+                record.total_scan_size_kb = 0
 
     @api.depends('audit_log_ids')
     def _compute_audit_log_count(self):

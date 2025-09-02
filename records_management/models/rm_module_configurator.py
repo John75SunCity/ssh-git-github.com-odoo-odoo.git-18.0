@@ -710,12 +710,20 @@ class RmModuleConfigurator(models.Model):
                 "description": "Enable paper model bale management and tracking.",
             },
             {
-                "name": "Enable Shred Model Bins",
-                "config_key": "shred_model_bin_enabled",
+                "name": "Enable Digital Scanning",
+                "config_key": "digital_scanning_enabled",
                 "category": "workflow",
                 "config_type": "feature_toggle",
                 "value_boolean": True,
-                "description": "Enable shred model bin management and capacity tracking.",
+                "description": "Enable digital scanning and document digitization features.",
+            },
+            {
+                "name": "Show Total Scan Size",
+                "config_key": "total_scan_size_visible",
+                "category": "ui",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Show total file size of all digital scans for documents.",
             },
             # ============================================================================
             # ENHANCED FEATURES CONFIGURATIONS

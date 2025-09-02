@@ -199,7 +199,6 @@
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="state"/>
-                                    <field name="file_size" optional="show"/>
                                     <field name="create_date"/>
                                 </tree>
                                 <form string="Document">
@@ -207,7 +206,6 @@
                                         <field name="name"/>
                                         <field name="document_type_id"/>
                                         <field name="state"/>
-                                        <field name="file_size"/>
                                         <field name="description"/>
                                     </group>
                                 </form>

@@ -51,6 +51,10 @@
                                             <i class="fa fa-calendar-times"/>
                                             <field name="destruction_eligible_date"/>
                                         </div>
+                                        <div t-if="record.total_scan_size_kb.raw_value and record.total_scan_size_visible.raw_value">
+                                            <i class="fa fa-file"/>
+                                            <field name="total_scan_size_kb"/> KB
+                                        </div>
                                     </div>
                                     <div class="col-4">
                                         <span class="badge" t-att-class="record.state.raw_value === 'active' ? 'badge-success' : record.state.raw_value === 'pending_destruction' ? 'badge-warning' : record.state.raw_value === 'destroyed' ? 'badge-danger' : 'badge-secondary'">
@@ -118,7 +122,7 @@
             <form>
                 <header>
                     <button name="action_view_chain_of_custody" type="object" string="🔗 View Chain of Custody" class="btn-primary"/>
-                    <button name="action_scan_document" type="object" string="📷 Scan/Image Document" class="btn-secondary"/>
+                    <button name="action_scan_document" type="object" string="📷 Scan/Image Document" class="btn-secondary" attrs="{'invisible': [('digital_scanning_enabled', '=', False)]}"/>
                     <button name="action_mark_permanent" type="object" string="🛡️ Mark as Permanent" class="btn-success" invisible="is_permanent" groups="records_management.group_records_user"/>
                     <button name="action_unmark_permanent" type="object" string="⚠️ Remove Permanent Flag" class="btn-warning" invisible="not is_permanent" groups="base.group_system"/>
                     <button name="action_schedule_destruction" type="object" string="💥 Schedule Destruction" class="btn-warning" invisible="not destruction_eligible_date or is_permanent"/>
@@ -175,6 +179,8 @@
                                     <field name="media_type"/>
                                     <field name="original_format"/>
                                     <field name="digitized"/>
+                                    <field name="scan_count" readonly="1"/>
+                                    <field name="total_scan_size_kb" readonly="1" widget="integer" attrs="{'invisible': ['|', ('scan_count', '=', 0), ('total_scan_size_visible', '=', False)]}"/>
                                 </group>
                             </group>
                             <field name="description" placeholder="Document description, contents, and special handling notes..."/>
@@ -218,7 +224,7 @@
                             </group>
                             <field name="destruction_notes" placeholder="Destruction process notes and compliance verification..."/>
                         </page>
-                        <page string="📷 Digital Scans" name="digital">
+                        <page string="📷 Digital Scans" name="digital" attrs="{'invisible': [('digital_scanning_enabled', '=', False)]}">
                             <field name="digital_scan_ids" mode="list">
                                 <list>
                                     <field name="scan_date"/>
