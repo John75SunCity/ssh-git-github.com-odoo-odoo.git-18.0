@@ -111,7 +111,7 @@
         <field name="model">records.document</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <list decoration-danger="destruction_eligible_date &amp;lt;= context_today()" decoration-warning="destruction_eligible_date &amp;lt;= (context_today() + relativedelta(days=30))" decoration-success="is_permanent == True">
+            <list decoration-danger="destruction_eligible_date &lt;= context_today" decoration-warning="destruction_eligible_date &lt;= (context_today + relativedelta(days=30))" decoration-success="is_permanent == True">
                 <field name="name" string="Document"/>
                 <field name="document_type_id" string="Type"/>
                 <field name="partner_id" string="Customer"/>
@@ -301,9 +301,9 @@
                 <filter string="Non-Permanent Records" name="non_permanent" domain="[('is_permanent', '=', False)]"/>
 
                 <separator/>
-                <filter string="Destruction Due" name="destruction_due" domain="[('destruction_eligible_date', '&amp;lt;=', context_today())]"/>
-                <filter string="Destruction This Month" name="destruction_this_month" domain="[('destruction_eligible_date', '&amp;lt;=', (context_today() + relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
-                <filter string="Recent Activity" name="recent_access" domain="[('last_access_date', '&amp;gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Destruction Due" name="destruction_due" domain="[('destruction_eligible_date', '&lt;=', context_today)]"/>
+                <filter string="Destruction This Month" name="destruction_this_month" domain="[('destruction_eligible_date', '&lt;=', (context_today + relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Recent Activity" name="recent_access" domain="[('last_access_date', '&gt;=', (context_today - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
