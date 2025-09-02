@@ -30,7 +30,7 @@
                                 <div class="card-body text-center py-3">
                                     <i class="fa fa-file-invoice-dollar fa-2x text-primary mb-2"></i>
                                     <h6 class="mb-0">Invoices</h6>
-                                    <small class="text-muted">View & Pay</small>
+                                    <small class="text-muted">View &amp; Pay</small>
                                 </div>
                             </div>
                         </a>
@@ -41,7 +41,7 @@
                                 <div class="card-body text-center py-3">
                                     <i class="fa fa-clipboard-list fa-2x text-success mb-2"></i>
                                     <h6 class="mb-0">Requests</h6>
-                                    <small class="text-muted">New & Track</small>
+                                    <small class="text-muted">New &amp; Track</small>
                                 </div>
                             </div>
                         </a>
@@ -63,7 +63,7 @@
                                 <div class="card-body text-center py-3">
                                     <i class="fa fa-download fa-2x text-info mb-2"></i>
                                     <h6 class="mb-0">Export Data</h6>
-                                    <small class="text-muted">Excel & PDF</small>
+                                    <small class="text-muted">Excel &amp; PDF</small>
                                 </div>
                             </div>
                         </a>
@@ -90,14 +90,14 @@
                                                 </span>
                                             </div>
                                             <div class="flex-grow-1">
-                                                <div class="fw-bold small"><t t-esc="activity.title"/></div>
-                                                <div class="text-muted small"><t t-esc="activity.description"/></div>
-                                                <div class="text-muted small"><t t-esc="activity.date"/></div>
+                                                <div class="fw-bold small" t-esc="activity.title"/>
+                                                <div class="text-muted small" t-esc="activity.description"/>
+                                                <div class="text-muted small" t-esc="activity.date"/>
                                             </div>
                                         </div>
                                     </t>
                                 </t>
-                                <t t-else>
+                                <t t-else="">
                                     <div class="text-center py-4">
                                         <i class="fa fa-inbox fa-2x text-muted mb-2"></i>
                                         <p class="text-muted small mb-0">No recent activity</p>
@@ -113,7 +113,7 @@
                     <div class="col-6">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body text-center py-2">
-                                <div class="h4 mb-0 text-primary" t-esc="stats.pending_invoices or 0"/>
+                                <div class="h4 mb-0 text-primary"><t t-esc="stats.pending_invoices or 0"/></div>
                                 <div class="small text-muted">Pending Invoices</div>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                     <div class="col-6">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body text-center py-2">
-                                <div class="h4 mb-0 text-success" t-esc="stats.active_requests or 0"/>
+                                <div class="h4 mb-0 text-success"><t t-esc="stats.active_requests or 0"/></div>
                                 <div class="small text-muted">Active Requests</div>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                     <div class="col-6">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body text-center py-2">
-                                <div class="h4 mb-0 text-info" t-esc="stats.storage_items or 0"/>
+                                <div class="h4 mb-0 text-info"><t t-esc="stats.storage_items or 0"/></div>
                                 <div class="small text-muted">Storage Items</div>
                             </div>
                         </div>
@@ -137,7 +137,7 @@
                     <div class="col-6">
                         <div class="card border-0 shadow-sm">
                             <div class="card-body text-center py-2">
-                                <div class="h4 mb-0 text-warning" t-esc="stats.documents or 0"/>
+                                <div class="h4 mb-0 text-warning"><t t-esc="stats.documents or 0"/></div>
                                 <div class="small text-muted">Documents</div>
                             </div>
                         </div>

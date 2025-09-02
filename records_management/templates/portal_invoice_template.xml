@@ -97,7 +97,7 @@
                                                     <t t-foreach="invoice.invoice_line_ids" t-as="line">
                                                         <tr>
                                                             <td>
-                                                                <strong t-esc="line.name"/>
+                                                                <strong><t t-esc="line.name"/></strong>
                                                                 <t t-if="line.product_id">
                                                                     <br/><small class="text-muted"><t t-esc="line.product_id.name"/></small>
                                                                 </t>
@@ -108,7 +108,7 @@
                                                                 <t t-if="line.discount">
                                                                     <t t-esc="'{:.1f}%'.format(line.discount)"/>
                                                                 </t>
-                                                                <t t-else>-</t>
+                                                                <t t-else="">-</t>
                                                             </td>
                                                             <td class="text-end">
                                                                 <t t-if="line.tax_ids">
@@ -116,7 +116,7 @@
                                                                         <t t-esc="tax.name"/><br/>
                                                                     </t>
                                                                 </t>
-                                                                <t t-else>-</t>
+                                                                <t t-else="">-</t>
                                                             </td>
                                                             <td class="text-end"><strong><t t-esc="'${:,.2f}'.format(line.price_total)"/></strong></td>
                                                         </tr>
@@ -209,7 +209,7 @@
                                                         <i class="fa fa-credit-card me-2"></i>Pay Now
                                                     </a>
                                                 </t>
-                                                <t t-else>
+                                                <t t-else="">
                                                     <button class="btn btn-primary" onclick="window.print()">
                                                         <i class="fa fa-print me-2"></i>Print Invoice
                                                     </button>

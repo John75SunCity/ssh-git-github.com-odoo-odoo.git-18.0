@@ -162,7 +162,7 @@
                                                         <t t-elif="barcode.document_id">
                                                             <strong>Document:</strong> <t t-esc="barcode.document_id.name"/>
                                                         </t>
-                                                        <t t-else>
+                                                        <t t-else="">
                                                             <span class="text-muted">Not assigned</span>
                                                         </t>
                                                     </td>
@@ -170,7 +170,7 @@
                                                         <t t-if="barcode.current_location">
                                                             <t t-esc="barcode.current_location"/>
                                                         </t>
-                                                        <t t-else>
+                                                        <t t-else="">
                                                             <span class="text-muted">-</span>
                                                         </t>
                                                     </td>
@@ -178,7 +178,7 @@
                                                         <t t-if="barcode.active">
                                                             <span class="badge badge-success">Active</span>
                                                         </t>
-                                                        <t t-else>
+                                                        <t t-else="">
                                                             <span class="badge badge-secondary">Inactive</span>
                                                         </t>
                                                     </td>
@@ -193,7 +193,7 @@
                                                             <br/>
                                                             <small class="text-muted"><t t-esc="barcode.last_scanned.strftime('%H:%M')"/></small>
                                                         </t>
-                                                        <t t-else>
+                                                        <t t-else="">
                                                             <span class="text-muted">Never</span>
                                                         </t>
                                                     </td>
@@ -292,7 +292,7 @@
                                                         <t t-if="history.success">
                                                             <span class="badge badge-success">Success</span>
                                                         </t>
-                                                        <t t-else>
+                                                        <t t-else="">
                                                             <span class="badge badge-danger">Failed</span>
                                                         </t>
                                                     </td>
@@ -422,7 +422,7 @@
                         const matchesType = !typeFilter || typeText.includes(typeFilter.toLowerCase());
                         const matchesStatus = !statusFilter || statusText.includes(statusFilter.toLowerCase());
 
-                        if (matchesSearch && matchesType && matchesStatus) {
+                        if (matchesSearch &amp;&amp; matchesType &amp;&amp; matchesStatus) {
                             row.show();
                         } else {
                             row.hide();
@@ -441,7 +441,7 @@
                     // Implementation for printing barcode image
                     const printWindow = window.open('', '_blank');
                     const barcodeImage = $('#modalBarcodeImage').attr('src');
-                    printWindow.document.write(`&lt;img src="${barcodeImage}" style="max-width: 100%;"/&gt;`);
+                    printWindow.document.write('<img src="' + barcodeImage + '" style="max-width: 100%;"/>');
                     printWindow.document.close();
                     printWindow.print();
                 }

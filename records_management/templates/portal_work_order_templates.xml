@@ -150,7 +150,7 @@
                                         <table class="table table-borderless">
                                             <tr t-if="work_order.assigned_technician">
                                                 <td><strong>Technician:</strong></td>
-                                                <td t-esc="work_order.assigned_technician.name"/>
+                                                <td><t t-esc="work_order.assigned_technician.name"/></td>
                                             </tr>
                                             <tr t-if="work_order.phone">
                                                 <td><strong>Contact Phone:</strong></td>
@@ -184,12 +184,12 @@
                                             <tbody>
                                                 <t t-foreach="work_order.container_ids" t-as="container">
                                                     <tr>
-                                                        <td t-esc="container.name"/>
-                                                        <td t-esc="container.current_location_id.name"/>
+                                                        <td><t t-esc="container.name"/></td>
+                                                        <td><t t-esc="container.current_location_id.name"/></td>
                                                         <td>
-                                                            <span class="badge badge-info" t-esc="container.state"/>
+                                                            <span class="badge badge-info"><t t-esc="container.state"/></span>
                                                         </td>
-                                                        <td t-esc="container.write_date" t-options='{"widget": "datetime"}'/>
+                                                        <td><t t-esc="container.write_date" t-options='{"widget": "datetime"}'/></td>
                                                     </tr>
                                                 </t>
                                             </tbody>
@@ -205,8 +205,8 @@
                                             <div class="timeline-item">
                                                 <div class="timeline-marker bg-primary"></div>
                                                 <div class="timeline-content">
-                                                    <h6 class="timeline-title" t-esc="message.subject or 'Status Update'"/>
-                                                    <p t-esc="message.body"/>
+                                                    <h6 class="timeline-title"><t t-esc="message.subject or 'Status Update'"/></h6>
+                                                    <p><t t-esc="message.body"/></p>
                                                     <small class="text-muted">
                                                         <t t-esc="message.date" t-options='{"widget": "datetime"}'/>
                                                     </small>
@@ -276,10 +276,10 @@
                                                 <t t-foreach="coordinators" t-as="coordinator">
                                                     <tr>
                                                         <td>
-                                                            <strong t-esc="coordinator.name"/>
+                                                            <strong><t t-esc="coordinator.name"/></strong>
                                                         </td>
                                                         <td>
-                                                            <span class="badge badge-info" t-esc="coordinator.coordination_type.replace('_', ' ').title()"/>
+                                                            <span class="badge badge-info"><t t-esc="coordinator.coordination_type.replace('_', ' ').title()"/></span>
                                                         </td>
                                                         <td>
                                                             <div class="progress" style="height: 20px;">

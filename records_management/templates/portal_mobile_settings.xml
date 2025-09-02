@@ -42,21 +42,21 @@
                                     <div class="form-group mb-3">
                                         <label for="email" class="form-label">Email Address</label>
                                         <input type="email" name="email" id="email" class="form-control"
-                                               t-att-value="user.email" placeholder="your.email@company.com"/>
+                                               t-attf-value="{{ user.email }}" placeholder="your.email@company.com"/>
                                     </div>
 
                                     <!-- Phone -->
                                     <div class="form-group mb-3">
                                         <label for="phone" class="form-label">Phone Number</label>
                                         <input type="tel" name="phone" id="phone" class="form-control"
-                                               t-att-value="user.phone" placeholder="(555) 123-4567"/>
+                                               t-attf-value="{{ user.phone }}" placeholder="(555) 123-4567"/>
                                     </div>
 
                                     <!-- Company -->
                                     <div class="form-group mb-3">
                                         <label for="company" class="form-label">Company</label>
                                         <input type="text" name="company" id="company" class="form-control"
-                                               t-att-value="user.company_id.name" placeholder="Company name"/>
+                                               t-attf-value="{{ user.company_id.name }}" placeholder="Company name"/>
                                     </div>
                                 </div>
                             </div>

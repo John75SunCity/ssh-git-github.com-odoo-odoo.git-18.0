@@ -101,7 +101,7 @@
                         <div class="col-12">
                             <nav aria-label="Mobile inventory pagination">
                                 <ul class="pagination pagination-sm justify-content-center">
-                                    <li class="page-item" t-att-class="'disabled' if not pager.has_previous else ''">
+                                    <li class="page-item" t-attf-class="page-item {{ 'disabled' if not pager.has_previous else '' }}">
                                         <a class="page-link" href="#" onclick="loadPage(pager.previous_page_number)">
                                             <i class="fa fa-chevron-left"/>
                                         </a>
@@ -111,7 +111,7 @@
                                             <t t-esc="pager.number"/> of <t t-esc="pager.num_pages"/>
                                         </span>
                                     </li>
-                                    <li class="page-item" t-att-class="'disabled' if not pager.has_next else ''">
+                                    <li class="page-item" t-attf-class="page-item {{ 'disabled' if not pager.has_next else '' }}">
                                         <a class="page-link" href="#" onclick="loadPage(pager.next_page_number)">
                                             <i class="fa fa-chevron-right"/>
                                         </a>

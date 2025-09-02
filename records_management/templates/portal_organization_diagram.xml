@@ -4,7 +4,7 @@
     <template id="portal_organization_diagram" name="Organization Diagram">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
-            
+
             <div class="container-fluid o_portal_organization_diagram">
                 <!-- Header Section -->
                 <div class="row mb-3">
@@ -43,7 +43,7 @@
                                         <div class="form-group">
                                             <label for="search-query">Search People &amp; Departments</label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control" id="search-query" 
+                                                <input type="text" class="form-control" id="search-query"
                                                        placeholder="Search by name, department, or role..."
                                                        t-att-value="diagram.search_query or ''"/>
                                                 <div class="input-group-append">
@@ -173,7 +173,7 @@
                             <div class="modal-header">
                                 <h5 class="modal-title" id="node-modal-title">Node Details</h5>
                                 <button type="button" class="close" data-dismiss="modal">
-                                    <span>&times;</span>
+                                    <span>&#215;</span>
                                 </button>
                             </div>
                             <div class="modal-body" id="node-modal-body">
@@ -196,7 +196,7 @@
                             <div class="modal-header">
                                 <h5 class="modal-title">Organization Diagram Help</h5>
                                 <button type="button" class="close" data-dismiss="modal">
-                                    <span>&times;</span>
+                                    <span>&#215;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
@@ -280,34 +280,34 @@
                 .o_portal_organization_diagram {
                     min-height: 100vh;
                 }
-                
+
                 .badge-pink {
                     background-color: #ff69b4;
                     color: white;
                 }
-                
+
                 .loading-overlay {
                     z-index: 1000;
                 }
-                
+
                 #organization-diagram-container {
                     border: 1px solid #dee2e6;
                     border-radius: 0 0 0.375rem 0.375rem;
                 }
-                
+
                 .diagram-legend .badge {
                     margin-right: 0.5rem;
                 }
-                
+
                 .card .card-body h4 {
                     font-weight: bold;
                 }
-                
+
                 @media (max-width: 768px) {
                     #organization-diagram-container {
                         height: 400px !important;
                     }
-                    
+
                     .btn-toolbar {
                         margin-top: 1rem;
                         width: 100%;

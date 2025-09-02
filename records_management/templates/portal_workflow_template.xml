@@ -100,7 +100,7 @@
                                                     <td>
                                                         <strong t-esc="workflow.request_type"/>
                                                         <br/>
-                                                        <small class="text-muted"><t t-esc="workflow.description"/></small>
+                                                        <small class="text-muted" t-esc="workflow.description"/>
                                                     </td>
                                                     <td>
                                                         <code t-esc="workflow.reference"/>
@@ -126,7 +126,7 @@
                                                                 <i class="fa fa-minus"></i> Medium
                                                             </span>
                                                         </t>
-                                                        <t t-else>
+                                                        <t t-else="">
                                                             <span class="badge badge-secondary">
                                                                 <i class="fa fa-arrow-down"></i> Low
                                                             </span>
@@ -135,7 +135,7 @@
                                                     <td>
                                                         <t t-esc="workflow.create_date.strftime('%m/%d/%Y')"/>
                                                         <br/>
-                                                        <small class="text-muted"><t t-esc="workflow.create_date.strftime('%H:%M')"/></small>
+                                                        <small class="text-muted" t-esc="workflow.create_date.strftime('%H:%M')"/>
                                                     </td>
                                                     <td>
                                                         <div class="btn-group" role="group">
@@ -181,8 +181,8 @@
                                                             <t t-elif="step.current">
                                                                 <i class="fa fa-clock text-white"></i>
                                                             </t>
-                                                            <t t-else>
-                                                                <span class="step-number"><t t-esc="step.sequence"/></span>
+                                                            <t t-else="">
+                                                                <span class="step-number" t-esc="step.sequence"/>
                                                             </t>
                                                         </div>
                                                     </div>
@@ -194,7 +194,7 @@
                                                                     <span class="badge badge-danger ms-2">Required</span>
                                                                 </t>
                                                             </h6>
-                                                            <p class="text-muted small mb-1"><t t-esc="step.description"/></p>
+                                                            <p class="text-muted small mb-1" t-esc="step.description"/>
                                                             <div class="step-meta">
                                                                 <small class="text-muted">
                                                                     <t t-if="step.assigned_to">
@@ -220,7 +220,7 @@
                                                                 In Progress
                                                             </span>
                                                         </t>
-                                                        <t t-else>
+                                                        <t t-else="">
                                                             <span class="badge badge-secondary">
                                                                 Pending
                                                             </span>
@@ -234,7 +234,7 @@
                                         </t>
                                     </div>
                                 </t>
-                                <t t-else>
+                                <t t-else="">
                                     <div class="text-center py-5">
                                         <i class="fa fa-project-diagram fa-3x text-muted mb-3"></i>
                                         <h5 class="text-muted">No Active Workflow</h5>
@@ -274,9 +274,9 @@
                                                     <td>
                                                         <strong t-esc="approval.request_name"/>
                                                         <br/>
-                                                        <small class="text-muted"><t t-esc="approval.request_type"/></small>
+                                                        <small class="text-muted" t-esc="approval.request_type"/>
                                                     </td>
-                                                    <td><t t-esc="approval.approved_by"/></td>
+                                                    <td t-esc="approval.approved_by"/>
                                                     <td>
                                                         <t t-if="approval.decision == 'approved'">
                                                             <span class="badge badge-success">
@@ -288,20 +288,20 @@
                                                                 <i class="fa fa-times"></i> Rejected
                                                             </span>
                                                         </t>
-                                                        <t t-else>
+                                                        <t t-else="">
                                                             <span class="badge badge-warning">
                                                                 <i class="fa fa-clock"></i> Pending
                                                             </span>
                                                         </t>
                                                     </td>
-                                                    <td><t t-esc="approval.date.strftime('%m/%d/%Y %H:%M')"/></td>
+                                                    <td t-esc="approval.date.strftime('%m/%d/%Y %H:%M')"/>
                                                     <td>
                                                         <t t-if="approval.comments">
-                                                            <span title="approval.comments">
+                                                            <span t-att-title="approval.comments">
                                                                 <t t-esc="approval.comments[:50]"/>...
                                                             </span>
                                                         </t>
-                                                        <t t-else>-</t>
+                                                        <t t-else="">-</t>
                                                     </td>
                                                 </tr>
                                             </t>
