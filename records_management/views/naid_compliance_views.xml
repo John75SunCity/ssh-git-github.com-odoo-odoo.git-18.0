@@ -85,7 +85,7 @@
         <field name="arch" type="xml">
             <list decoration-success="compliance_status == 'certified' and certificate_valid == True"
                   decoration-warning="compliance_status == 'pending_audit'"
-                  decoration-danger="certificate_valid == False or expiry_date &amp;lt; context_today()"
+                  decoration-danger="certificate_valid == False or expiry_date &amp;lt; context_today"
                   decoration-info="naid_level == 'AAA'">
                 <field name="name" string="🏆 Compliance Record"/>
                 <field name="facility_name" string="🏢 Facility"/>
@@ -353,9 +353,9 @@ invisible="naid_level != 'AAA'">
 
                 <separator/>
                 <filter string="📅 Expiring Soon (30 days)" name="expiring_soon"
-                        domain="[('expiry_date', '&amp;lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                        domain="[('expiry_date', '&amp;lt;=', (context_today + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]"/>
                 <filter string="⚠️ Overdue Audit" name="overdue_audit"
-                        domain="[('next_audit_date', '&amp;lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                        domain="[('next_audit_date', '&amp;lt;', context_today.strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="📊 Group By">
                     <filter string="NAID Level" name="group_by_naid_level" context="{'group_by': 'naid_level'}"/>

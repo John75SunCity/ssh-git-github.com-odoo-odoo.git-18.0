@@ -176,11 +176,11 @@ Found <strong t-out="total"/> recommended containers
                         <i class="fa fa-map-marker mr-1"></i>
                         <t t-out="recommendation.location"/>
                         <t t-if="recommendation.document_count">
-                        <t t-if="recommendation.document_count">
                             | <i class="fa fa-files-o ml-2 mr-1"></i>
                             <t t-out="recommendation.document_count"/>
- documents
+documents
                         </t>
+                    </div>
                     <div class="small">
                         <t t-if="recommendation.alpha_range">
                             <span class="badge badge-light mr-1">

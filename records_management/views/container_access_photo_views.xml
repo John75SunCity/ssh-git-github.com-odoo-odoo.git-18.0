@@ -88,9 +88,9 @@
 
                 <separator/>
                 <filter string="Today" name="today"
-                        domain="[('photo_timestamp', '>=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
+                        domain="[('photo_timestamp', '>=', datetime.datetime.combine(context_today, datetime.time(0,0,0)))]"/>
                 <filter string="This Week" name="this_week"
-                        domain="[('photo_timestamp', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                        domain="[('photo_timestamp', '>=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="1" string="Group By">
                     <filter string="Activity" name="group_activity" domain="[]" context="{'group_by': 'activity_id'}"/>

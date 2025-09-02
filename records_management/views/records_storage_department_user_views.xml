@@ -140,8 +140,8 @@
 <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
 <separator/>
 <filter string="My Assignments" name="my_assignments" domain="[('user_id', '=', uid)]"/>
-<filter string="This Month" name="this_month" domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
-                                ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+<filter string="This Month" name="this_month" domain="[('date', '&gt;=', (context_today - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                ('date', '&lt;', (context_today + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
 
 
                 <group expand="1" string="Group By">

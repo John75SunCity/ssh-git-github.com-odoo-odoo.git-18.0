@@ -341,7 +341,7 @@
                     <filter string="🔒 High Security" name="high_security" domain="[('security_level', '=', 'high')]"/>
                     <filter string="📋 Signature Required" name="signature_required" domain="[('signature_required', '=', True)]"/>
                     <filter string="⚠️ Special Handling" name="special_handling" domain="[('special_handling_required', '=', True)]"/>
-                    <filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today())]"/>
+                    <filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today)]"/>
                     <filter string="🚨 High Risk" name="high_risk" domain="[('risk_level', '=', 'high')]"/>
 
                     <group expand="0" string="📊 Group By">

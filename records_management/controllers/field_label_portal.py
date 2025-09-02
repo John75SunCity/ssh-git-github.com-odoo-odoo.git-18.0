@@ -550,7 +550,7 @@ class FieldLabelAdminController(http.Controller):
             # Build domain for export
             domain = [("active", "=", True)]
             if customer_id:
-                domain.append(("customer_id", "=", customer_id))  # Now using the converted int
+                domain.append(("customer_id", "=", customer_id))  # type: ignore
 
             # Set a reasonable limit to avoid performance issues
             EXPORT_LIMIT = 10000  # Adjust as needed

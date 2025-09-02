@@ -279,16 +279,16 @@
 <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
 <filter string="Urgent" name="urgent" domain="[('priority', '=', 'urgent')]"/>
 <separator/>
-<filter string="Today" name="today" domain="[('scheduled_time', '>=', context_today().strftime('%Y-%m-%d')), ('scheduled_time', '&lt;', (context_today() + relativedelta(days=1)).strftime('%Y-%m-%d'))]"/>
-<filter string="This Week" name="this_week" domain="[('scheduled_time', '>=', (context_today() - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
-<filter string="Overdue" name="overdue" domain="[('scheduled_time', '&lt;', context_today().strftime('%Y-%m-%d')), ('state', 'in', ['pending', 'in_progress'])]"/>
+<filter string="Today" name="today" domain="[('scheduled_time', '>=', context_today.strftime('%Y-%m-%d')), ('scheduled_time', '&lt;', (context_today + relativedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+<filter string="This Week" name="this_week" domain="[('scheduled_time', '>=', (context_today - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
+<filter string="Overdue" name="overdue" domain="[('scheduled_time', '&lt;', context_today.strftime('%Y-%m-%d')), ('state', 'in', ['pending', 'in_progress'])]"/>
 <separator/>
 <filter string="My Stops" name="my_stops" domain="[('user_id', '=', uid)]"/>
 <filter string="Active" name="active" domain="[('active', '=', True)]"/>
 <separator/>
-<filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('my_activity_date_deadline', '&lt;', context_today())]" help="Show all records which have next action date is before today"/>
-<filter invisible="1" string="Today Activities" name="activities_today" domain="[('my_activity_date_deadline', '=', context_today())]"/>
-<filter invisible="1" string="Future Activities" name="activities_upcoming_all" domain="[('my_activity_date_deadline', '&gt;', context_today())]"/>
+<filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('my_activity_date_deadline', '&lt;', context_today)]" help="Show all records which have next action date is before today"/>
+<filter invisible="1" string="Today Activities" name="activities_today" domain="[('my_activity_date_deadline', '=', context_today)]"/>
+<filter invisible="1" string="Future Activities" name="activities_upcoming_all" domain="[('my_activity_date_deadline', '&gt;', context_today)]"/>
 <group expand="0" string="Group By">
     <filter string="Status" name="state" context="{'group_by': 'state'}"/>
     <filter string="Priority" name="priority" context="{'group_by': 'priority'}"/>

@@ -291,9 +291,9 @@
                 <filter string="Mobile Manifest" name="mobile_manifest" domain="[('mobile_manifest', '=', True)]"/>
 
                 <separator/>
-                <filter string="Today" name="today" domain="[('pickup_date', '=', context_today())]"/>
-                <filter string="This Week" name="this_week" domain="[('pickup_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <filter string="This Month" name="this_month" domain="[('pickup_date', '&amp;gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Today" name="today" domain="[('pickup_date', '=', context_today)]"/>
+                <filter string="This Week" name="this_week" domain="[('pickup_date', '&amp;gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('pickup_date', '&amp;gt;=', (context_today.replace(day=1)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>

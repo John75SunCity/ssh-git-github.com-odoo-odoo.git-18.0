@@ -96,7 +96,7 @@
 
 <filter name="naid_compliant" string="NAID Compliant" domain="[('naid_compliant', '=', True)]"/>
 <filter name="destruction_required" string="Destruction Certificate Required" domain="[('destruction_certificate_required', '=', True)]"/>
-<filter name="certification_expiring" string="Certification Expiring Soon" domain="[('naid_certification_expiry', '&lt;=', (context_today() + relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
+<filter name="certification_expiring" string="Certification Expiring Soon" domain="[('naid_certification_expiry', '&lt;=', (context_today + relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
 <filter name="shredding_equipment" string="Shredding Equipment" domain="[('equipment_category', '=', 'shredding')]"/>
 </xpath>
 

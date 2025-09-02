@@ -277,9 +277,9 @@
 <!-- Priority and date filters -->
 <filter string="Urgent Priority" name="urgent_priority" domain="[('priority', '=', 'urgent')]"/>
 <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-<filter string="Today's Routes" name="today" domain="[('route_date', '=', context_today())]"/>
-<filter string="This Week" name="this_week" domain="[('route_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('route_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
-<filter string="Overdue" name="overdue" domain="[('route_date', '&lt;', context_today()), ('state', 'not in', ['completed', 'cancelled'])]"/>
+<filter string="Today's Routes" name="today" domain="[('route_date', '=', context_today)]"/>
+<filter string="This Week" name="this_week" domain="[('route_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')), ('route_date', '&lt;=', (context_today + datetime.timedelta(days=6-context_today.weekday())).strftime('%Y-%m-%d'))]"/>
+<filter string="Overdue" name="overdue" domain="[('route_date', '&lt;', context_today), ('state', 'not in', ['completed', 'cancelled'])]"/>
 
 <separator/>
 <filter string="Active Routes" name="active" domain="[('active', '=', True)]"/>

@@ -252,11 +252,11 @@
                 <field name="service_type" string="Service Type"/>
 
                 <filter string="Today" name="today"
-                        domain="[('wizard_start_time', '&gt;=', datetime.datetime.combine(context_today(), datetime.time.min)),
-                                ('wizard_start_time', '&lt;=', datetime.datetime.combine(context_today(), datetime.time.max))]"/>
+                        domain="[('wizard_start_time', '&gt;=', datetime.datetime.combine(context_today, datetime.time.min)),
+                                ('wizard_start_time', '&lt;=', datetime.datetime.combine(context_today, datetime.time.max))]"/>
                 <filter string="This Week" name="week"
-                        domain="[('wizard_start_time', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%%Y-%%m-%%d')),
-                                ('wizard_start_time', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%%Y-%%m-%%d'))]"/>
+                        domain="[('wizard_start_time', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%%Y-%%m-%%d')),
+                                ('wizard_start_time', '&lt;=', (context_today + datetime.timedelta(days=6-context_today.weekday())).strftime('%%Y-%%m-%%d'))]"/>
                 <filter string="My Processing" name="my_processing" domain="[('processed_by', '=', uid)]"/>
 
                 <separator/>

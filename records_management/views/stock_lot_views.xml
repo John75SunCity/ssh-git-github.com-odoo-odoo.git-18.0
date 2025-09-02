@@ -92,7 +92,7 @@
     <field name="model">stock.lot</field>
     <field name="type">list</field>
         <field name="arch" type="xml">
-<list decoration-success="product_qty &gt; 0" decoration-warning="expiration_date and expiration_date &lt; context_today()" decoration-info="ref != False">
+<list decoration-success="product_qty &gt; 0" decoration-warning="expiration_date and expiration_date &lt; context_today" decoration-info="ref != False">
     <field name="name" string="📦 Serial/Lot Number"/>
     <field name="product_id" string="🏷️ Product"/>
     <field name="product_qty" string="📊 Quantity"/>
@@ -194,17 +194,17 @@
         <filter string="📤 Out of Stock" name="out_of_stock" domain="[('product_qty', '=', 0)]"/>
 
         <separator/>
-        <filter string="⚠️ Expired" name="expired" domain="[('expiration_date', '&lt;', context_today())]"/>
-        <filter string="🔔 Expiring Soon (30 days)" name="expiring_soon" domain="[('expiration_date', '&lt;=', (context_today() + datetime.timedelta(days=30)).strftime('%Y-%m-%d')), ('expiration_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-        <filter string="🕒 Valid" name="valid" domain="[('expiration_date', '&gt;=', context_today())]"/>
+        <filter string="⚠️ Expired" name="expired" domain="[('expiration_date', '&lt;', context_today)]"/>
+        <filter string="🔔 Expiring Soon (30 days)" name="expiring_soon" domain="[('expiration_date', '&lt;=', (context_today + datetime.timedelta(days=30)).strftime('%Y-%m-%d')), ('expiration_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]"/>
+        <filter string="🕒 Valid" name="valid" domain="[('expiration_date', '&gt;=', context_today)]"/>
 
         <separator/>
         <filter string="🔗 With Reference" name="with_reference" domain="[('ref', '!=', False)]"/>
 
         <separator/>
-        <filter string="📅 Created Today" name="created_today" domain="[('create_date', '&gt;=', context_today())]"/>
-        <filter string="📆 Created This Week" name="created_this_week" domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
-        <filter string="🗓️ Created This Month" name="created_this_month" domain="[('create_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+        <filter string="📅 Created Today" name="created_today" domain="[('create_date', '&gt;=', context_today)]"/>
+        <filter string="📆 Created This Week" name="created_this_week" domain="[('create_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
+        <filter string="🗓️ Created This Month" name="created_this_month" domain="[('create_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
 
         <group expand="0" string="📊 Group By">
             <filter string="Product" name="group_by_product" context="{'group_by': 'product_id'}"/>

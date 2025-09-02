@@ -427,7 +427,7 @@
                 <separator/>
                 <filter string="💰 High Value (&amp;gt;$1000)" name="high_value" domain="[('base_rate', '&amp;gt;', 1000)]"/>
                 <filter string="⚡ Due This Week" name="due_this_week"
-                        domain="[('next_billing_date', '&amp;gt;=', context_today()), ('next_billing_date', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                        domain="[('next_billing_date', '&amp;gt;=', context_today), ('next_billing_date', '&lt;=', (context_today + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="📊 Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>

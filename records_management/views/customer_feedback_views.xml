@@ -293,7 +293,7 @@
                     <filter string="🚨 High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
                     <filter string="⚠️ Escalated" name="escalated" domain="[('escalation_level', '!=', False)]"/>
                     <filter string="⚠️ Critical" name="critical" domain="[('escalation_level', '=', 'critical')]"/>
-                    <filter string="⏰ Overdue" name="overdue" domain="[('expected_resolution_date', '&lt;', context_today())]"/>
+                    <filter string="⏰ Overdue" name="overdue" domain="[('expected_resolution_date', '&lt;', context_today)]"/>
                     <filter string="📞 Needs Follow-up" name="needs_followup" domain="[('follow_up_required', '=', True)]"/>
 
                     <group expand="0" string="📊 Group By">

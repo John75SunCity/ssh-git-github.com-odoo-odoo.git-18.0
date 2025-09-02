@@ -311,12 +311,12 @@
                 <filter string="🌱 Sustainable Source" name="sustainable" domain="[('sustainable_source', '=', True)]"/>
 
                 <separator/>
-                <filter string="📅 Today" name="today" domain="[('creation_date', '=', context_today())]"/>
+                <filter string="📅 Today" name="today" domain="[('creation_date', '=', context_today)]"/>
                 <filter string="📆 This Week" name="this_week"
-                        domain="[('creation_date', '&amp;gt;=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
-                                ('creation_date', '&lt;', (context_today() + relativedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                        domain="[('creation_date', '&amp;gt;=', (context_today - relativedelta(days=context_today.weekday())).strftime('%Y-%m-%d')),
+                                ('creation_date', '&lt;', (context_today + relativedelta(days=7-context_today.weekday())).strftime('%Y-%m-%d'))]"/>
                 <filter string="🗓️ This Month" name="this_month"
-                        domain="[('creation_date', '&amp;gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                        domain="[('creation_date', '&amp;gt;=', context_today.strftime('%Y-%m-01'))]"/>
 
                 <group expand="0" string="📊 Group By">
                     <filter string="Status" name="group_by_status" context="{'group_by': 'bale_status'}"/>

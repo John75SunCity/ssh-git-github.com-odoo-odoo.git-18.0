@@ -118,8 +118,8 @@
                 <filter name="filter_high_impact" string="High Financial Impact" domain="[('financial_impact', '>', 1000)]"/>
                 <separator/>
                 <filter name="filter_today" string="Today" domain="[('audit_date', '=', today)]"/>
-                <filter name="filter_this_week" string="This Week" domain="[('audit_date', '>=', (context_today() - datetime.timedelta(days=7)))]"/>
-                <filter name="filter_this_month" string="This Month" domain="[('audit_date', '>=', (context_today().replace(day=1)))]"/>
+                <filter name="filter_this_week" string="This Week" domain="[('audit_date', '>=', (context_today - datetime.timedelta(days=7)))]"/>
+                <filter name="filter_this_month" string="This Month" domain="[('audit_date', '>=', (context_today.replace(day=1)))]"/>
                 <separator/>
                 <group expand="0" string="Group By">
                     <filter name="group_action_type" string="Action Type" context="{'group_by': 'action_type'}"/>

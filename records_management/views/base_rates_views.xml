@@ -77,7 +77,7 @@
                     <field name="company_id"/>
                     <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                     <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
-                    <filter string="Current" name="current" domain="[('effective_date', '&lt;=', context_today().strftime('%Y-%m-%d')), '|', ('expiry_date', '=', False), ('expiry_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Current" name="current" domain="[('effective_date', '&lt;=', context_today.strftime('%Y-%m-%d')), '|', ('expiry_date', '=', False), ('expiry_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]"/>
                     <group expand="0" string="Group By">
                         <filter string="Rate Type" name="group_rate_type" context="{'group_by': 'rate_type'}"/>
                         <filter string="Unit Type" name="group_unit_type" context="{'group_by': 'unit_type'}"/>

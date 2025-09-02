@@ -151,7 +151,7 @@
 
     <separator/>
 
-    <filter name="recent" string="🕐 Recent (Last 7 days)" domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+    <filter name="recent" string="🕐 Recent (Last 7 days)" domain="[('create_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
     <filter name="my_diagrams" string="👤 My Diagrams" domain="[('user_id', '=', uid)]"/>
 
     <group expand="0" string="📊 Group By">

@@ -305,12 +305,12 @@
         </record>
 
         <!-- NAID Model XML ID definitions for security rules -->
-                    }
-                        ]]></field>
+        <record id="naid_model_external_ids" model="ir.model.data">
+            <field name="name">naid_compliance_models</field>
+            <field name="model">ir.model</field>
+            <field name="module">records_management</field>
+            <field name="res_id" ref="records_management.model_naid_compliance_policy"/>
         </record>
-
-    </data>
-</odoo>
 
         <!-- NAID Integration Parameters -->
         <record id="config_naid_integration" model="ir.config_parameter">
@@ -328,14 +328,14 @@
 
         <record id="config_security_levels" model="ir.config_parameter">
             <field name="key">naid.security.levels</field>
-                        <field name="value"><![CDATA[
+            <field name="value"><![CDATA[
             {
                 "low": {"particle_size": "10mm", "witnesses": 1, "tracking": "basic"},
                 "medium": {"particle_size": "6mm", "witnesses": 1, "tracking": "enhanced"},
                 "high": {"particle_size": "2mm", "witnesses": 2, "tracking": "full_audit"},
                 "top_secret": {"particle_size": "0.8mm", "witnesses": 3, "tracking": "military_grade"}
             }
-                        ]]></field>
+            ]]></field>
         </record>
 
     </data>

@@ -302,9 +302,9 @@
                 <filter string="Inactive Only" name="inactive" domain="[('active', '=', False)]"/>
 
                 <separator/>
-                <filter string="Stored This Month" name="this_month" domain="[('storage_start_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
-                <filter string="Stored This Year" name="this_year" domain="[('storage_start_date', '&gt;=', context_today().strftime('%Y-01-01'))]"/>
-                <filter string="Due Within 6 Months" name="due_soon" domain="[('destruction_due_date', '&lt;=', (context_today() + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Stored This Month" name="this_month" domain="[('storage_start_date', '&gt;=', (context_today - relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Stored This Year" name="this_year" domain="[('storage_start_date', '&gt;=', context_today.strftime('%Y-01-01'))]"/>
+                <filter string="Due Within 6 Months" name="due_soon" domain="[('destruction_due_date', '&lt;=', (context_today + relativedelta(months=6)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>

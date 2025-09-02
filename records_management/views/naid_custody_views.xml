@@ -132,11 +132,11 @@
                 <filter string="Other Events" name="other_events" domain="[('event_type', '=', 'other')]"/>
 
                 <separator/>
-                <filter string="Today" name="filter_today" domain="[('event_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter string="This Week" name="filter_this_week" domain="[('event_date', '&gt;=', (context_today() - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
-                <filter string="This Month" name="filter_this_month" domain="[('event_date', '&gt;=', (context_today() - relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
-                <filter string="Last 7 Days" name="filter_last_7_days" domain="[('event_date', '&gt;=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <filter string="Last 30 Days" name="filter_last_30_days" domain="[('event_date', '&gt;=', (context_today() - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Today" name="filter_today" domain="[('event_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="filter_this_week" domain="[('event_date', '&gt;=', (context_today - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="filter_this_month" domain="[('event_date', '&gt;=', (context_today - relativedelta(months=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Last 7 Days" name="filter_last_7_days" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Last 30 Days" name="filter_last_30_days" domain="[('event_date', '&gt;=', (context_today - relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Event Type" name="group_by_event_type" context="{'group_by':'event_type'}"/>

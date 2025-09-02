@@ -184,9 +184,9 @@
                 <filter string="Has Contamination" name="contamination" domain="[('contamination', '=', True)]"/>
 
                 <separator/>
-                <filter string="Today" name="today" domain="[('production_date', '=', context_today())]"/>
-                <filter string="This Week" name="this_week" domain="[('production_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <filter string="This Month" name="this_month" domain="[('production_date', '&amp;gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Today" name="today" domain="[('production_date', '=', context_today)]"/>
+                <filter string="This Week" name="this_week" domain="[('production_date', '&amp;gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('production_date', '&amp;gt;=', (context_today.replace(day=1)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Paper Grade" name="group_paper_grade" context="{'group_by': 'paper_grade'}"/>

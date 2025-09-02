@@ -263,8 +263,8 @@
                     <filter string="❌ Not NAID Verified" name="naid_not_verified" domain="[('naid_verified', '=', False)]"/>
 
                     <separator/>
-                    <filter string="⚠️ Expiring Soon" name="expiring_soon" domain="[('expiry_date', '&lt;=', (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
-                    <filter string="📅 Expired" name="already_expired" domain="[('expiry_date', '&lt;', context_today())]"/>
+                    <filter string="⚠️ Expiring Soon" name="expiring_soon" domain="[('expiry_date', '&lt;=', (context_today + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="📅 Expired" name="already_expired" domain="[('expiry_date', '&lt;', context_today)]"/>
                     <filter string="💰 Profitable" name="profitable" domain="[('total_profit', '&gt;', 0)]"/>
                     <filter string="📈 High Revenue" name="high_revenue" domain="[('total_revenue', '&gt;', 1000)]"/>
 

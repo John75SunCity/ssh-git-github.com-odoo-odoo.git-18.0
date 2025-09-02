@@ -109,11 +109,11 @@
 
             <separator/>
             <filter string="Emergency Contacts" name="emergency" domain="[('emergency_contact', '=', True)]"/>
-            <filter string="Overdue Returns" name="overdue" domain="[('expected_return_date', '&lt;', context_today()), ('status', '=', 'issued')]"/>
+            <filter string="Overdue Returns" name="overdue" domain="[('expected_return_date', '&lt;', context_today), ('status', '=', 'issued')]"/>
 
             <separator/>
-            <filter string="Issued This Week" name="this_week" domain="[('issue_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-            <filter string="Issued This Month" name="this_month" domain="[('issue_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+            <filter string="Issued This Week" name="this_week" domain="[('issue_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+            <filter string="Issued This Month" name="this_month" domain="[('issue_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
 
             <separator/>
             <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
@@ -322,9 +322,9 @@
             <filter string="Not Invoiced" name="not_invoiced" domain="[('invoice_created', '=', False)]"/>
 
             <separator/>
-            <filter string="Today" name="today" domain="[('service_date', '=', context_today())]"/>
-            <filter string="This Week" name="this_week" domain="[('service_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-            <filter string="This Month" name="this_month" domain="[('service_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+            <filter string="Today" name="today" domain="[('service_date', '=', context_today)]"/>
+            <filter string="This Week" name="this_week" domain="[('service_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+            <filter string="This Month" name="this_month" domain="[('service_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
 
             <group expand="1" string="Group By">
                 <filter string="Customer" name="group_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
@@ -681,7 +681,7 @@ Perfect for managing emergency access and generating additional revenue.
         <xpath expr="//filter[@name='supplier']" position="after">
             <separator/>
             <filter name="key_restricted" string="Key Restricted" domain="[('key_issuance_allowed', '=', False)]"/>
-            <filter name="recent_restrictions" string="Recently Restricted" domain="[('key_restriction_date', '>=', (context_today()-relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+            <filter name="recent_restrictions" string="Recently Restricted" domain="[('key_restriction_date', '>=', (context_today-relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
         </xpath>
     </field>
 </record>

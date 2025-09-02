@@ -218,18 +218,24 @@ class RecordsDocument(models.Model):
     # ============================================================================
     # FILTERS & GROUPING FIELDS (for advanced search and reporting)
     # ============================================================================
-    pending_destruction = fields.Boolean(string="Pending Destruction", compute='_compute_pending_destruction', store=True, search='_search_pending_destruction', help="True if the document is eligible for destruction but not yet destroyed.")
-    recently_accessed = fields.Boolean(string="Recently Accessed", compute='_compute_recent_access', search='_search_recent_access', help="True if the document was accessed in the last 30 days.")
-    group_by_customer_id = fields.Many2one(related='partner_id', string="Group by Customer", store=False, readonly=True, comodel_name='res.partner')
-    group_by_department_id = fields.Many2one(related='department_id', string="Group by Department", store=False, readonly=True, comodel_name='records.department')
-    group_by_location_id = fields.Many2one(related='location_id', string="Group by Location", store=False, readonly=True, comodel_name='stock.location')
-    group_by_doc_type_id = fields.Many2one(related='document_type_id', string="Group by Document Type", store=False, readonly=True, comodel_name='records.document.type')
+    pending_destruction = fields.Boolean(
+        string="Pending Destruction",
+        compute="_compute_pending_destruction",
+        store=True,
+        search="_search_pending_destruction",
+        help="True if the document is eligible for destruction but not yet destroyed.",
+    )
+    group_by_customer_id = fields.Many2one(
+        related="partner_id", string="Group by Customer", store=False, readonly=True, comodel_name="res.partner"
+    )
+    group_by_location_id = fields.Many2one(
+        related="location_id", string="Group by Location", store=False, readonly=True, comodel_name="stock.location"
+    )
     destroyed = fields.Boolean(string="Is Destroyed", compute='_compute_destroyed', store=True, help="True if the document's state is 'destroyed'.")
 
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
-    @api.model_create_multi
     def create(self, vals_list):
         """Override create to set sequence and log creation."""
         for vals in vals_list:
@@ -573,49 +579,6 @@ class RecordsDocument(models.Model):
 
     # ============================================================================
     # FILTERS & GROUPING FIELDS (for advanced search and reporting)
-    # ============================================================================
-    pending_destruction = fields.Boolean(
-        string="Pending Destruction",
-        compute="_compute_pending_destruction",
-        store=True,
-        search="_search_pending_destruction",
-        help="True if the document is eligible for destruction but not yet destroyed.",
-    )
-    recently_accessed = fields.Boolean(
-        string="Recently Accessed",
-        compute="_compute_recent_access",
-        search="_search_recent_access",
-        help="True if the document was accessed in the last 30 days.",
-    )
-    group_by_customer_id = fields.Many2one(
-        related="partner_id", string="Group by Customer", store=False, readonly=True, comodel_name="res.partner"
-    )
-    group_by_department_id = fields.Many2one(
-        related="department_id",
-        string="Group by Department",
-        store=False,
-        readonly=True,
-        comodel_name="records.department",
-    )
-    group_by_location_id = fields.Many2one(
-        related="location_id", string="Group by Location", store=False, readonly=True, comodel_name="stock.location"
-    )
-    group_by_doc_type_id = fields.Many2one(
-        related="document_type_id",
-        string="Group by Document Type",
-        store=False,
-        readonly=True,
-        comodel_name="records.document.type",
-    )
-    destroyed = fields.Boolean(
-        string="Is Destroyed",
-        compute="_compute_destroyed",
-        store=True,
-        help="True if the document's state is 'destroyed'.",
-    )
-
-    # ============================================================================
-    # CONSTRAINTS
     # ============================================================================
     @api.constrains('is_permanent', 'permanent_reason')
     def _check_permanent_reason(self):
@@ -970,7 +933,7 @@ class RecordsDocument(models.Model):
             from io import BytesIO
 
             buffer = BytesIO()
-            img.save(buffer, format="PNG")
+            img.save(buffer, format="PNG")  # pyright: ignore[reportCallIssue]
             return buffer.getvalue()
 
         except ImportError:
@@ -1046,10 +1009,12 @@ class RecordsDocument(models.Model):
             raise ValueError(_("Destruction date must be set"))
         # Fix: Change 'pending_destruction' to 'awaiting_destruction' to match the state selection
         self.write({"state": "awaiting_destruction"})
-        self._create_audit_log(
-            "destruction_scheduled", _("Destruction scheduled for %s", self.destruction_eligible_date)
-        )
+        action_type, description = self.schedule_destruction_message()
+        self._create_audit_log(action_type, description)
         return {"type": "ir.actions.act_window_close"}
+
+    def schedule_destruction_message(self):
+        return "destruction_scheduled", _("Destruction scheduled for %s", self.destruction_eligible_date)
 
     def _create_audit_log(self, action_type, description):
         """Helper to create audit log entries"""

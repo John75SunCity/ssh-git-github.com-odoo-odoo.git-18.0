@@ -238,8 +238,8 @@
                 <filter string="Custom Rates" name="custom_rates" domain="[('has_custom_rates', '=', True)]"/>
 
                 <separator/>
-                <filter string="Today" name="today" domain="[('request_date', '&amp;gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)))]"/>
-                <filter string="This Week" name="this_week" domain="[('request_date', '&amp;gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                <filter string="Today" name="today" domain="[('request_date', '&amp;gt;=', datetime.datetime.combine(context_today, datetime.time(0,0,0)))]"/>
+                <filter string="This Week" name="this_week" domain="[('request_date', '&amp;gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>

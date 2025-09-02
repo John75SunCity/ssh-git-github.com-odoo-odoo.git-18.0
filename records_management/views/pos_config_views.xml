@@ -329,7 +329,7 @@
                 
                 <separator/>
                 <filter string="My Sessions" name="my_sessions" domain="[('session_user_id', '=', uid)]"/>
-                <filter string="Today's Sales" name="today_sales" domain="[('current_session_id.start_at', '&amp;gt;=', datetime.datetime.combine(context_today(), datetime.time.min))]"/>
+                <filter string="Today's Sales" name="today_sales" domain="[('current_session_id.start_at', '&amp;gt;=', datetime.datetime.combine(context_today, datetime.time.min))]"/>
                 
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>

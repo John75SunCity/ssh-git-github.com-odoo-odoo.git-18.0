@@ -211,8 +211,8 @@
                 <filter string="Witness Required" name="witness_required" domain="[('witness_required', '=', True)]"/>
 
                 <separator/>
-<filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
-                                ('scheduled_date', '&lt;', (context_today() + datetime.timedelta(days=7-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+<filter string="This Week" name="this_week" domain="[('scheduled_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')),
+                                ('scheduled_date', '&lt;', (context_today + datetime.timedelta(days=7-context_today.weekday())).strftime('%Y-%m-%d'))]"/>
 
 
                 <group expand="0" string="Group By">
