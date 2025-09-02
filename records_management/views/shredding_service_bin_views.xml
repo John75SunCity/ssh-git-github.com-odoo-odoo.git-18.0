@@ -7,8 +7,8 @@
     <!-- ============================================================================ -->
 
     <!-- List View -->
-    <record id="view_shredding_service_bin_list" model="ir.ui.view">
-        <field name="name">shredding.service.bin.list</field>
+    <record id="shredding_service_bin_view_list" model="ir.ui.view">
+        <field name="name">shredding.service.bin.view.list</field>
         <field name="model">shredding.service.bin</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
@@ -29,10 +29,10 @@
     </record>
 
     <!-- Form View -->
-    <record id="view_shredding_service_bin_form" model="ir.ui.view">
-        <field name="name">shredding.service.bin.form</field>
+    <record id="shredding_service_bin_view_form" model="ir.ui.view">
+        <field name="name">shredding.service.bin.view.form</field>
         <field name="model">shredding.service.bin</field>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Shredding Service Bin">
                 <header>
@@ -186,8 +186,8 @@
     </record>
 
     <!-- Search View -->
-    <record id="view_shredding_service_bin_search" model="ir.ui.view">
-        <field name="name">shredding.service.bin.search</field>
+    <record id="shredding_service_bin_view_search" model="ir.ui.view">
+        <field name="name">shredding.service.bin.view.search</field>
         <field name="model">shredding.service.bin</field>
         <field name="type">search</field>
         <field name="arch" type="xml">
@@ -221,8 +221,8 @@
     </record>
 
     <!-- Kanban View -->
-    <record id="view_shredding_service_bin_kanban" model="ir.ui.view">
-        <field name="name">shredding.service.bin.kanban</field>
+    <record id="shredding_service_bin_view_kanban" model="ir.ui.view">
+        <field name="name">shredding.service.bin.view.kanban</field>
         <field name="model">shredding.service.bin</field>
         <field name="type">kanban</field>
         <field name="arch" type="xml">

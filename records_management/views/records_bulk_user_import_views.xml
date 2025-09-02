@@ -3,7 +3,7 @@
     <data>
         <!-- List View -->
         <record id="records_bulk_user_import_view_list" model="ir.ui.view">
-            <field name="name">records.bulk.user.import.list</field>
+            <field name="name">records.bulk.user.import.view.list</field>
             <field name="model">records.bulk.user.import</field>
             <field name="type">list</field>
         <field name="arch" type="xml">
@@ -18,7 +18,7 @@
 
         <!-- Form View -->
         <record id="records_bulk_user_import_view_form" model="ir.ui.view">
-            <field name="name">records.bulk.user.import.form</field>
+            <field name="name">records.bulk.user.import.view.form</field>
             <field name="model">records.bulk.user.import</field>
             <field name="type">form</field>
         <field name="arch" type="xml">
@@ -47,7 +47,7 @@
 
         <!-- Search View -->
         <record id="records_bulk_user_import_view_search" model="ir.ui.view">
-            <field name="name">records.bulk.user.import.search</field>
+            <field name="name">records.bulk.user.import.view.search</field>
             <field name="model">records.bulk.user.import</field>
             <field name="type">search</field>
         <field name="arch" type="xml">

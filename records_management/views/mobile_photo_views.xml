@@ -3,8 +3,8 @@
 
     <data>
 <!-- View mobile.photo View List -->
-    <record id="view_mobile_photo_list" model="ir.ui.view">
-        <field name="name">view.mobile.photo.list</field>
+    <record id="mobile_photo_view_list" model="ir.ui.view">
+        <field name="name">mobile.photo.view.list</field>
         <field name="model">mobile.photo</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
@@ -15,8 +15,8 @@
     </record>
 
     <!-- View mobile.photo form -->
-    <record id="view_mobile_photo_form" model="ir.ui.view">
-        <field name="name">view.mobile.photo.form</field>
+    <record id="mobile_photo_view_form" model="ir.ui.view">
+        <field name="name">mobile.photo.view.form</field>
         <field name="model">mobile.photo</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -34,8 +34,8 @@
     </record>
 
     <!-- View mobile.photo search -->
-    <record id="view_mobile_photo_search" model="ir.ui.view">
-        <field name="name">view.mobile.photo.search</field>
+    <record id="mobile_photo_view_search" model="ir.ui.view">
+        <field name="name">mobile.photo.view.search</field>
         <field name="model">mobile.photo</field>
         <field name="type">search</field>
         <field name="arch" type="xml">

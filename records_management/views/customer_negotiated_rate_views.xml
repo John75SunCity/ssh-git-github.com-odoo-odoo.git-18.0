@@ -3,8 +3,8 @@
 
     <data>
 <!-- View customer.negotiated.rate View List -->
-    <record id="view_customer_negotiated_rate_list" model="ir.ui.view">
-        <field name="name">view.customer.negotiated.rate.list</field>
+    <record id="customer_negotiated_rate_view_list" model="ir.ui.view">
+        <field name="name">customer.negotiated.rate.view.list</field>
         <field name="model">customer.negotiated.rate</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
@@ -15,8 +15,8 @@
     </record>
 
     <!-- View customer.negotiated.rate form -->
-    <record id="view_customer_negotiated_rate_form" model="ir.ui.view">
-        <field name="name">view.customer.negotiated.rate.form</field>
+    <record id="customer_negotiated_rate_view_form" model="ir.ui.view">
+        <field name="name">customer.negotiated.rate.view.form</field>
         <field name="model">customer.negotiated.rate</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -34,8 +34,8 @@
     </record>
 
     <!-- View customer.negotiated.rate search -->
-    <record id="view_customer_negotiated_rate_search" model="ir.ui.view">
-        <field name="name">view.customer.negotiated.rate.search</field>
+    <record id="customer_negotiated_rate_view_search" model="ir.ui.view">
+        <field name="name">customer.negotiated.rate.view.search</field>
         <field name="model">customer.negotiated.rate</field>
         <field name="type">search</field>
         <field name="arch" type="xml">

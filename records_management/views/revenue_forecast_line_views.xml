@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
     <data>
 <!-- Revenue Forecast Line Tree View -->
-    <record id="view_revenue_forecast_line_tree" model="ir.ui.view">
-        <field name="name">revenue.forecast.line.tree</field>
+    <record id="revenue_forecast_line_view_tree" model="ir.ui.view">
+        <field name="name">revenue.forecast.line.view.tree</field>
         <field name="model">revenue.forecast.line</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Revenue Forecast Lines" 
-                  decoration-success="status=='achieved'" 
+            <tree string="Revenue Forecast Lines"
+                  decoration-success="status=='achieved'"
                   decoration-warning="status=='in_progress'"
                   decoration-danger="status=='missed'">
                 <field name="customer_id"/>
@@ -27,23 +27,23 @@
     </record>
 
     <!-- Revenue Forecast Line Form View -->
-    <record id="view_revenue_forecast_line_form" model="ir.ui.view">
-        <field name="name">revenue.forecast.line.form</field>
+    <record id="revenue_forecast_line_view_form" model="ir.ui.view">
+        <field name="name">revenue.forecast.line.view.form</field>
         <field name="model">revenue.forecast.line</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Revenue Forecast Line">
                 <header>
-                    <button name="action_confirm_forecast" type="object" 
+                    <button name="action_confirm_forecast" type="object"
                             string="Confirm" class="oe_highlight"
                             attrs="{'invisible': [('status', '!=', 'draft')]}"/>
-                    <button name="action_start_tracking" type="object" 
+                    <button name="action_start_tracking" type="object"
                             string="Start Tracking"
                             attrs="{'invisible': [('status', '!=', 'confirmed')]}"/>
-                    <button name="action_mark_achieved" type="object" 
+                    <button name="action_mark_achieved" type="object"
                             string="Mark Achieved" class="oe_highlight"
                             attrs="{'invisible': [('status', '!=', 'in_progress')]}"/>
-                    <button name="action_mark_missed" type="object" 
+                    <button name="action_mark_missed" type="object"
                             string="Mark Missed"
                             attrs="{'invisible': [('status', '!=', 'in_progress')]}"/>
                     <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,achieved"/>
@@ -92,8 +92,8 @@
     </record>
 
     <!-- Revenue Forecast Line Search View -->
-    <record id="view_revenue_forecast_line_search" model="ir.ui.view">
-        <field name="name">revenue.forecast.line.search</field>
+    <record id="revenue_forecast_line_view_search" model="ir.ui.view">
+        <field name="name">revenue.forecast.line.view.search</field>
         <field name="model">revenue.forecast.line</field>
         <field name="type">search</field>
         <field name="arch" type="xml">
@@ -102,21 +102,21 @@
                 <field name="service_type"/>
                 <field name="status"/>
                 <field name="forecast_id"/>
-                
+
                 <filter string="Draft" name="draft" domain="[('status', '=', 'draft')]"/>
                 <filter string="Confirmed" name="confirmed" domain="[('status', '=', 'confirmed')]"/>
                 <filter string="In Progress" name="in_progress" domain="[('status', '=', 'in_progress')]"/>
                 <filter string="Achieved" name="achieved" domain="[('status', '=', 'achieved')]"/>
                 <filter string="Missed" name="missed" domain="[('status', '=', 'missed')]"/>
-                
+
                 <separator/>
-                <filter string="High Confidence" name="high_confidence" 
+                <filter string="High Confidence" name="high_confidence"
                         domain="[('confidence_level', 'in', ['high', 'very_high'])]"/>
-                <filter string="Storage Services" name="storage" 
+                <filter string="Storage Services" name="storage"
                         domain="[('service_type', '=', 'storage')]"/>
-                <filter string="Destruction Services" name="destruction" 
+                <filter string="Destruction Services" name="destruction"
                         domain="[('service_type', '=', 'destruction')]"/>
-                
+
                 <group expand="1" string="Group By">
                     <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
                     <filter string="Service Type" name="group_service" context="{'group_by': 'service_type'}"/>
@@ -146,11 +146,11 @@
 <!-- Sub-Model Menu Items and Actions -->
 
     <!-- Revenue Forecasting Menu -->
-    <menuitem id="menu_revenue_forecasting" 
-              name="Revenue Forecasting" 
+    <menuitem id="menu_revenue_forecasting"
+              name="Revenue Forecasting"
               parent="records_management.menu_records_billing"
               sequence="30"/>
-    
+
     <menuitem id="menu_revenue_forecast_lines"
               name="Forecast Lines"
               parent="menu_revenue_forecasting"
@@ -158,17 +158,17 @@
               sequence="10"/>
 
     <!-- Billing Configuration Menu -->
-    <menuitem id="menu_billing_configuration" 
-              name="Billing Configuration" 
+    <menuitem id="menu_billing_configuration"
+              name="Billing Configuration"
               parent="records_management.menu_records_billing"
               sequence="40"/>
-              
+
     <menuitem id="menu_billing_config_lines"
               name="Configuration Lines"
               parent="menu_billing_configuration"
               action="action_records_billing_config_line"
               sequence="10"/>
-              
+
     <menuitem id="menu_billing_config_audit"
               name="Configuration Audit"
               parent="menu_billing_configuration"
@@ -176,11 +176,11 @@
               sequence="20"/>
 
     <!-- FSM Service Management Menu -->
-    <menuitem id="menu_fsm_service_management" 
-              name="FSM Services" 
+    <menuitem id="menu_fsm_service_management"
+              name="FSM Services"
               parent="records_management.menu_fsm"
               sequence="50"/>
-              
+
     <menuitem id="menu_fsm_service_lines"
               name="Service Lines"
               parent="menu_fsm_service_management"
@@ -188,11 +188,11 @@
               sequence="10"/>
 
     <!-- Performance Analytics Menu -->
-    <menuitem id="menu_performance_analytics" 
-              name="Performance Analytics" 
+    <menuitem id="menu_performance_analytics"
+              name="Performance Analytics"
               parent="records_management.menu_reports"
               sequence="60"/>
-              
+
     <menuitem id="menu_document_retrieval_metrics"
               name="Retrieval Metrics"
               parent="menu_performance_analytics"
@@ -200,11 +200,11 @@
               sequence="10"/>
 
     <!-- Payment Management Menu -->
-    <menuitem id="menu_payment_management" 
-              name="Payment Management" 
+    <menuitem id="menu_payment_management"
+              name="Payment Management"
               parent="records_management.menu_records_billing"
               sequence="50"/>
-              
+
     <menuitem id="menu_payment_split_lines"
               name="Payment Splits"
               parent="menu_payment_management"
@@ -212,11 +212,11 @@
               sequence="10"/>
 
     <!-- Shredding Documentation Menu -->
-    <menuitem id="menu_shredding_documentation" 
-              name="Shredding Documentation" 
+    <menuitem id="menu_shredding_documentation"
+              name="Shredding Documentation"
               parent="records_management.menu_shredding"
               sequence="70"/>
-              
+
     <menuitem id="menu_shredding_service_photos"
               name="Service Photos"
               parent="menu_shredding_documentation"
@@ -224,7 +224,7 @@
               sequence="10"/>
 
     <!-- Additional Window Actions for Integration -->
-    
+
     <!-- Revenue Forecast Line Action (if not already defined) -->
     <record id="action_revenue_forecast_line" model="ir.actions.act_window">
         <field name="name">Revenue Forecast Lines</field>
@@ -243,7 +243,7 @@
     </record>
 
     <!-- Server Actions for Batch Operations -->
-    
+
     <!-- Batch Approve Billing Config Audits -->
     <record id="action_batch_approve_billing_audit" model="ir.actions.server">
         <field name="name">Batch Approve Audits</field>

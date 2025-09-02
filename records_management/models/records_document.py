@@ -2,6 +2,10 @@ from dateutil.relativedelta import relativedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 from datetime import datetime, date, timedelta
+import barcode
+import qrcode
+import io
+import base64
 
 
 class RecordsDocument(models.Model):
@@ -212,7 +216,7 @@ class RecordsDocument(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.document') or _('New')
         docs = super().create(vals_list)
         for doc in docs:
-            doc.message_post(body=_('Document "%s" created', doc.name))
+            doc.message_post(body=_('Document "%s" created') % doc.name)
         return docs
 
     def write(self, vals):
@@ -545,6 +549,49 @@ class RecordsDocument(models.Model):
                 record.digitization_status = 'not_started'
 
     # ============================================================================
+    # FILTERS & GROUPING FIELDS (for advanced search and reporting)
+    # ============================================================================
+    pending_destruction = fields.Boolean(
+        string="Pending Destruction",
+        compute="_compute_pending_destruction",
+        store=True,
+        search="_search_pending_destruction",
+        help="True if the document is eligible for destruction but not yet destroyed.",
+    )
+    recently_accessed = fields.Boolean(
+        string="Recently Accessed",
+        compute="_compute_recent_access",
+        search="_search_recent_access",
+        help="True if the document was accessed in the last 30 days.",
+    )
+    group_by_customer_id = fields.Many2one(
+        related="partner_id", string="Group by Customer", store=False, readonly=True, comodel_name="res.partner"
+    )
+    group_by_department_id = fields.Many2one(
+        related="department_id",
+        string="Group by Department",
+        store=False,
+        readonly=True,
+        comodel_name="records.department",
+    )
+    group_by_location_id = fields.Many2one(
+        related="location_id", string="Group by Location", store=False, readonly=True, comodel_name="stock.location"
+    )
+    group_by_doc_type_id = fields.Many2one(
+        related="document_type_id",
+        string="Group by Document Type",
+        store=False,
+        readonly=True,
+        comodel_name="records.document.type",
+    )
+    destroyed = fields.Boolean(
+        string="Is Destroyed",
+        compute="_compute_destroyed",
+        store=True,
+        help="True if the document's state is 'destroyed'.",
+    )
+
+    # ============================================================================
     # CONSTRAINTS
     # ============================================================================
     @api.constrains('is_permanent', 'permanent_reason')
@@ -760,6 +807,154 @@ class RecordsDocument(models.Model):
             }
         }
 
+    def action_generate_document_barcode(self):
+        """Generate barcode for the document (NAID AAA compliant)"""
+        self.ensure_one()
+        if not self.name:
+            raise ValueError(_("Document name is required for barcode generation"))
+
+        # Generate Code128 barcode
+        code = barcode.get("code128", self.name)
+        fp = io.BytesIO()
+        code.write(fp)
+        fp.seek(0)
+
+        # Create attachment
+        attachment = self.env["ir.attachment"].create(
+            {
+                "name": f"Barcode_{self.name}.png",
+                "type": "binary",
+                "datas": base64.b64encode(fp.getvalue()).decode(),
+                "res_model": "records.document",
+                "res_id": self.id,
+            }
+        )
+
+        # Log audit event
+        self._create_audit_log("barcode_generated", _("Barcode generated for document %s") % self.name)
+
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "ir.attachment",
+            "view_mode": "form",
+            "res_id": attachment.id,
+            "target": "new",
+        }
+
+    def action_generate_document_qr(self):
+        """Generate QR code for the document"""
+        self.ensure_one()
+        if not self.name:
+            raise ValueError(_("Document name is required for QR code generation"))
+
+        # Generate QR code
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data(self.name)
+        qr.make(fit=True)
+        img = qr.make_image(fill="black", back_color="white")
+
+        # Save to buffer
+        fp = io.BytesIO()
+        img.save(fp, format="PNG")  # type: ignore
+        fp.seek(0)
+
+        # Create attachment
+        attachment = self.env["ir.attachment"].create(
+            {
+                "name": f"QR_{self.name}.png",
+                "type": "binary",
+                "datas": base64.b64encode(fp.getvalue()).decode(),
+                "res_model": "records.document",
+                "res_id": self.id,
+            }
+        )
+
+        # Log audit event
+        self._create_audit_log("qr_generated", _("QR code generated for document %s") % self.name)
+
+        return {
+            "type": "ir.actions.act_window",
+            "res_model": "ir.attachment",
+            "view_mode": "form",
+            "res_id": attachment.id,
+            "target": "new",
+        }
+
+    def action_audit_trail(self):
+        """View audit trail for the document"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Audit Trail"),
+            "res_model": "naid.audit.log",
+            "view_mode": "tree,form",
+            "domain": [("document_id", "=", self.id)],
+        }
+
+    def action_scan_document(self):
+        """Initiate document scanning (placeholder for integration)"""
+        self.ensure_one()
+        # Placeholder: Integrate with scanning hardware/API
+        self.message_post(body=_("Document scanning initiated for %s") % self.name)
+        self._create_audit_log("scan_initiated", _("Document scan initiated"))
+        return {"type": "ir.actions.act_window_close"}
+
+    def action_mark_permanent(self):
+        """Mark document as permanent record"""
+        self.ensure_one()
+        if self.is_permanent:
+            raise ValueError(_("Document is already marked as permanent"))
+        self.write(
+            {
+                "is_permanent": True,
+                "permanent_user_id": self.env.user.id,
+                "permanent_date": datetime.now(),
+            }
+        )
+        self._create_audit_log("marked_permanent", _("Document marked as permanent"))
+        return {"type": "ir.actions.act_window_close"}
+
+    def action_unmark_permanent(self):
+        """Remove permanent flag (admin only)"""
+        self.ensure_one()
+        if not self.env.user.has_group("base.group_system"):
+            raise ValueError(_("Only system administrators can remove permanent flags"))
+        self.write(
+            {
+                "is_permanent": False,
+                "permanent_user_id": False,
+                "permanent_date": False,
+            }
+        )
+        self._create_audit_log("unmarked_permanent", _("Permanent flag removed"))
+        return {"type": "ir.actions.act_window_close"}
+
+    def action_schedule_destruction(self):
+        """Schedule document for destruction"""
+        self.ensure_one()
+        if self.is_permanent:
+            raise ValueError(_("Permanent documents cannot be scheduled for destruction"))
+        if not self.destruction_eligible_date:
+            raise ValueError(_("Destruction date must be set"))
+        # Fix: Change 'pending_destruction' to 'awaiting_destruction' to match the state selection
+        self.write({"state": "awaiting_destruction"})
+        self._create_audit_log(
+            "destruction_scheduled", _("Destruction scheduled for %s") % self.destruction_eligible_date
+        )
+        return {"type": "ir.actions.act_window_close"}
+
+    def _create_audit_log(self, action_type, description):
+        """Helper to create audit log entries"""
+        self.env["naid.audit.log"].create(
+            {
+                "document_id": self.id,
+                "action_type": action_type,
+                "user_id": self.env.user.id,
+                "description": description,
+                "event_date": datetime.now(),  # Fixed: Changed 'timestamp' to 'event_date' for consistency
+            }
+        )
+
     # ============================================================================
     # BUSINESS LOGIC HELPER METHODS
     # ============================================================================
@@ -871,7 +1066,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error viewing attachments: %s', str(e))) from e
+            raise ValidationError(_("Error viewing attachments: %s") % str(e)) from e
 
     def action_view_digital_scans(self):
         """Smart button action to view digital scans"""
@@ -888,7 +1083,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error viewing digital scans: %s', str(e))) from e
+            raise ValidationError(_("Error viewing digital scans: %s") % str(e)) from e
 
     def action_toggle_favorite(self):
         """Action to toggle favorite status"""
@@ -905,7 +1100,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error toggling favorite status: %s', str(e))) from e
+            raise ValidationError(_("Error toggling favorite status: %s") % str(e)) from e
 
     def action_refresh_data(self):
         """Action to refresh document data and computed fields"""
@@ -928,7 +1123,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error refreshing document data: %s', str(e))) from e
+            raise ValidationError(_("Error refreshing document data: %s") % str(e)) from e
 
     def action_generate_qr_code(self):
         """Action to generate/regenerate QR code for document"""
@@ -944,7 +1139,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error generating QR code: %s', str(e))) from e
+            raise ValidationError(_("Error generating QR code: %s") % str(e)) from e
 
     def action_print_document_label(self):
         """Action to print document identification label"""
@@ -959,7 +1154,7 @@ class RecordsDocument(models.Model):
                 'context': self.env.context,
             }
         except Exception as e:
-            raise ValidationError(_('Error printing document label: %s', str(e))) from e
+            raise ValidationError(_("Error printing document label: %s") % str(e)) from e
 
     def action_schedule_review(self):
         """Action to schedule document review"""
@@ -979,7 +1174,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_('Error scheduling document review: %s', str(e))) from e
+            raise ValidationError(_("Error scheduling document review: %s") % str(e)) from e
 
     def action_send_notification(self):
         """Action to send notification about document"""
@@ -987,77 +1182,22 @@ class RecordsDocument(models.Model):
         try:
             # This would typically open a wizard to compose and send notifications
             return {
-                'name': _('Send Document Notification'),
-                'type': 'ir.actions.act_window',
-                'view_mode': 'form',
-                'res_model': 'document.notification.wizard',
-                'target': 'new',
-                'context': {
-                    'default_document_id': self.id,
-                    'default_partner_id': self.partner_id.id if self.partner_id else False,
-                }
+                "name": _("Send Document Notification"),
+                "type": "ir.actions.act_window",
+                "view_mode": "form",
+                "res_model": "document.notification.wizard",
+                "target": "new",
+                "context": {
+                    "default_document_id": self.id,
+                    "default_document_name": self.display_name,
+                },
             }
         except Exception as e:
-            raise ValidationError(_('Error sending notification: %s', str(e))) from e
+            raise ValidationError(_("Error sending notification: %s") % str(e)) from e
 
-    def _validate_business_rules(self):
-        """Validate all business rules for the document"""
-        errors = []
-
-        try:
-            # Check destruction of permanent documents
-            if self.is_permanent and self.state == 'destroyed':
-                if not self.permanent_destruction_reason:
-                    errors.append(_('Permanent documents require a destruction reason.'))
-
-            # Check checkout dates
-            if self.checked_out_date and self.expected_return_date:
-                if self.expected_return_date < self.checked_out_date:
-                    errors.append(_('Expected return date cannot be before checkout date.'))
-
-            # Check destruction dates
-            if self.destruction_eligible_date and self.actual_destruction_date:
-                if self.actual_destruction_date < self.destruction_eligible_date and not self.is_permanent:
-                    errors.append(_('Destruction date cannot be before eligible destruction date.'))
-
-            if errors:
-                raise ValidationError('\n'.join(errors))
-        except Exception as e:
-            raise ValidationError(_('Error validating business rules: %s', str(e))) from e
-
-    def _prepare_destruction_data(self):
-        """Prepare data for destruction processing"""
-        try:
-            return {
-                'document_id': self.id,
-                'reference': self.reference,
-                'partner_id': self.partner_id.id if self.partner_id else False,
-                'department_id': self.department_id.id if self.department_id else False,
-                'container_id': self.container_id.id if self.container_id else False,
-                'destruction_date': fields.Date.today(),
-                'destruction_method': getattr(self, 'destruction_method', 'standard'),
-                'is_permanent': self.is_permanent,
-                'permanent_destruction_reason': self.permanent_destruction_reason,
-            }
-        except Exception:
-            return {}
-
-    def _get_document_summary(self):
-        """Get a summary of document information for reporting"""
-        try:
-            return {
-                'id': self.id,
-                'name': self.name,
-                'reference': self.reference,
-                'state': self.state,
-                'partner': self.partner_id.name if self.partner_id else '',
-                'department': self.department_id.name if self.department_id else '',
-                'container': self.container_id.name if self.container_id else '',
-                'received_date': self.received_date,
-                'destruction_eligible_date': self.destruction_eligible_date,
-                'is_permanent': self.is_permanent,
-                'scan_count': self.scan_count,
-                'audit_log_count': self.audit_log_count,
-            }
-        except Exception:
-            return {'error': 'Failed to generate summary'}
+    # New constraint method added for validation (if needed for checkout conditions)
+    @api.constrains("state", "is_missing")
+    def _check_checkout_conditions(self):
+        for record in self:
+            if record.state == "checked_out" and record.is_missing:
+                raise ValidationError(_("Cannot check out a missing document."))

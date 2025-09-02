@@ -2,8 +2,8 @@
     <data>
 
         <!-- Tree View -->
-        <record id="view_records_request_tree" model="ir.ui.view">
-            <field name="name">records.request.tree</field>
+        <record id="records_request_view_tree" model="ir.ui.view">
+            <field name="name">records.request.view.tree</field>
             <field name="model">records.request</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
@@ -17,8 +17,8 @@
         </record>
 
         <!-- Form View -->
-        <record id="view_records_request_form" model="ir.ui.view">
-            <field name="name">records.request.form</field>
+        <record id="records_request_view_form" model="ir.ui.view">
+            <field name="name">records.request.view.form</field>
             <field name="model">records.request</field>
             <field name="type">form</field>
         <field name="arch" type="xml">
@@ -63,8 +63,8 @@
         </record>
 
         <!-- Search View -->
-        <record id="view_records_request_search" model="ir.ui.view">
-            <field name="name">records.request.search</field>
+        <record id="records_request_view_search" model="ir.ui.view">
+            <field name="name">records.request.view.search</field>
             <field name="model">records.request</field>
             <field name="type">search</field>
         <field name="arch" type="xml">

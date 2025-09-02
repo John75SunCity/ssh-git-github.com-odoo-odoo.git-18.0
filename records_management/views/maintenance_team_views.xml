@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
     <data>
 <!-- View maintenance.team form -->
-    <record id="view_maintenance_team_form" model="ir.ui.view">
-        <field name="name">view.maintenance.team.form</field>
+    <record id="maintenance_team_view_form" model="ir.ui.view">
+        <field name="name">maintenance.team.view.form.inherit.records_management</field>
         <field name="model">maintenance.team</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
+        <field name="type">form</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -16,8 +16,8 @@
 
 
     <!-- View maintenance.team list -->
-    <record id="view_maintenance_team_list" model="ir.ui.view">
-        <field name="name">view.maintenance.team.list</field>
+    <record id="maintenance_team_view_list" model="ir.ui.view">
+        <field name="name">maintenance.team.view.list.inherit.records_management</field>
         <field name="model">maintenance.team</field>
         <field name="inherit_id" ref=""/>
         <field name="type">tree</field>
@@ -29,11 +29,11 @@
 
 
     <!-- View maintenance.team search -->
-    <record id="view_maintenance_team_search" model="ir.ui.view">
-        <field name="name">view.maintenance.team.search</field>
+    <record id="maintenance_team_view_search" model="ir.ui.view">
+        <field name="name">maintenance.team.view.search.inherit.records_management</field>
         <field name="model">maintenance.team</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
+        <field name="type">search</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -42,11 +42,11 @@
 
 
     <!-- View maintenance.team kanban -->
-    <record id="view_maintenance_team_kanban" model="ir.ui.view">
-        <field name="name">view.maintenance.team.kanban</field>
+    <record id="maintenance_team_view_kanban" model="ir.ui.view">
+        <field name="name">maintenance.team.view.kanban.inherit.records_management</field>
         <field name="model">maintenance.team</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
+        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -55,11 +55,11 @@
 
 
     <!-- View maintenance.team graph -->
-    <record id="view_maintenance_team_graph" model="ir.ui.view">
-        <field name="name">view.maintenance.team.graph</field>
+    <record id="maintenance_team_view_graph" model="ir.ui.view">
+        <field name="name">maintenance.team.view.graph.inherit.records_management</field>
         <field name="model">maintenance.team</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
+        <field name="type">graph</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -68,11 +68,11 @@
 
 
     <!-- View maintenance.team pivot -->
-    <record id="view_maintenance_team_pivot" model="ir.ui.view">
-        <field name="name">view.maintenance.team.pivot</field>
+    <record id="maintenance_team_view_pivot" model="ir.ui.view">
+        <field name="name">maintenance.team.view.pivot.inherit.records_management</field>
         <field name="model">maintenance.team</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
+        <field name="type">pivot</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -81,11 +81,11 @@
 
 
     <!-- View maintenance.team calendar -->
-    <record id="view_maintenance_team_calendar" model="ir.ui.view">
-        <field name="name">view.maintenance.team.calendar</field>
+    <record id="maintenance_team_view_calendar" model="ir.ui.view">
+        <field name="name">maintenance.team.view.calendar.inherit.records_management</field>
         <field name="model">maintenance.team</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
+        <field name="type">calendar</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>

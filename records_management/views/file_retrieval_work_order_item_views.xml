@@ -3,8 +3,8 @@
 
     <data>
 <!-- View file.retrieval.work.order.item View List -->
-    <record id="view_file_retrieval_work_order_item_list" model="ir.ui.view">
-        <field name="name">view.file.retrieval.work.order.item.list</field>
+    <record id="file_retrieval_work_order_item_view_list" model="ir.ui.view">
+        <field name="name">file.retrieval.work.order.item.view.list</field>
         <field name="model">file.retrieval.work.order.item</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
@@ -15,8 +15,8 @@
     </record>
 
     <!-- View file.retrieval.work.order.item form -->
-    <record id="view_file_retrieval_work_order_item_form" model="ir.ui.view">
-        <field name="name">view.file.retrieval.work.order.item.form</field>
+    <record id="file_retrieval_work_order_item_view_form" model="ir.ui.view">
+        <field name="name">file.retrieval.work.order.item.view.form</field>
         <field name="model">file.retrieval.work.order.item</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
@@ -34,8 +34,8 @@
     </record>
 
     <!-- View file.retrieval.work.order.item search -->
-    <record id="view_file_retrieval_work_order_item_search" model="ir.ui.view">
-        <field name="name">view.file.retrieval.work.order.item.search</field>
+    <record id="file_retrieval_work_order_item_view_search" model="ir.ui.view">
+        <field name="name">file.retrieval.work.order.item.view.search</field>
         <field name="model">file.retrieval.work.order.item</field>
         <field name="type">search</field>
         <field name="arch" type="xml">
