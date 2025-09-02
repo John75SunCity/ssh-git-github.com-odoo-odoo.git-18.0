@@ -25,11 +25,12 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong>📦                                            <field name="name"/>
-                                        </strong>
+                                        <i class="fa fa-cube"/>
+                                        <field name="name"/>
                                     </div>
                                     <div class="o_secondary">
-                                        👤                                        <field name="partner_id"/>
+                                        <i class="fa fa-user"/>
+                                        <field name="partner_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
@@ -68,23 +69,23 @@
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <button class="btn btn-primary btn-sm" type="object" name="action_view_documents">
-                                            📄 Documents
+                                            <i class="fa fa-file-text-o"/> Documents
                                         </button>
                                     </div>
                                     <div class="col-6">
                                         <button class="btn btn-info btn-sm" type="object" name="action_generate_barcode">
-                                            🏷️ Barcode
+                                            <i class="fa fa-barcode"/> Barcode
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Container</a>
-                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">📄 View Documents</a>
-                                <a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item">📍 Retrieve Container</a>
-                                <a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item">🏷️ Print Barcode</a>
+                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit"/> Edit Container</a>
+                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item"><i class="fa fa-file-text-o"/> View Documents</a>
+                                <a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item"><i class="fa fa-map-marker"/> Retrieve Container</a>
+                                <a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item"><i class="fa fa-barcode"/> Print Barcode</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_destroy_container" class="dropdown-item">🗑️ Destroy Container</a>
+                                <a role="menuitem" type="object" name="action_destroy_container" class="dropdown-item"><i class="fa fa-trash"/> Destroy Container</a>
                             </div>
                         </div>
                     </t>
@@ -97,25 +98,25 @@
     <record id="records_container_view_tree" model="ir.ui.view">
         <field name="name">records.container.view.tree</field>
         <field name="model">records.container</field>
-        <field name="type">tree</field>
+        <field name="type">list</field>
         <field name="arch" type="xml">
             <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
                 <header>
-                    <button name="action_bulk_convert_container_type" type="object" string="🔄 Bulk Convert Types" class="btn-primary"/>
+                    <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh"/>
                 </header>
-                <field name="name" string="📦 Container ID"/>
-                <field name="barcode" string="🏷️ Barcode"/>
-                <field name="container_type_id" string="📦 Container Type"/>
-                <field name="weight" string="⚖️ Weight"/>
-                <field name="partner_id" string="👤 Customer"/>
-                <field name="department_id" string="🏢 Department"/>
-                <field name="location_id" string="📍 Location"/>
-                <field name="state" string="🎯 Status" widget="badge"/>
-                <field name="document_count" string="💾 Documents" sum="Total Documents"/>
-                <field name="storage_start_date" string="📅 Storage Start"/>
-                <field name="destruction_due_date" string="� Due Date"/>
+                <field name="name" string="Container ID"/>
+                <field name="barcode" string="Barcode"/>
+                <field name="container_type_id" string="Container Type"/>
+                <field name="weight" string="Weight"/>
+                <field name="partner_id" string="Customer"/>
+                <field name="department_id" string="Department"/>
+                <field name="location_id" string="Location"/>
+                <field name="state" string="Status" widget="badge"/>
+                <field name="document_count" string="Documents" sum="Total Documents"/>
+                <field name="storage_start_date" string="Storage Start"/>
+                <field name="destruction_due_date" string="Due Date"/>
                 <field name="is_due_for_destruction" string="Due" widget="boolean_toggle"/>
-                <field name="security_level" string="🔒 Security"/>
+                <field name="security_level" string="Security"/>
                 <field name="active" string="Active" widget="boolean_toggle"/>
                 <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text-o" class="btn-link"/>
                 <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
