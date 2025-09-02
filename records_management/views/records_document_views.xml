@@ -66,23 +66,37 @@
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <button class="btn btn-primary btn-sm" type="object" name="action_view_chain_of_custody">
-                                            <i class="fa fa-link"/> Chain
+                                            <i class="fas fa-link" title="Chain of Custody"/> Chain
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-info btn-sm" type="object" name="action_generate_document_barcode">
+                                            <i class="fas fa-barcode" title="Generate Barcode"/> Barcode
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-6">
+                                        <button class="btn btn-success btn-sm" type="object" name="action_generate_document_qr">
+                                            <i class="fas fa-qrcode" title="Generate QR Code"/> QR Code
                                         </button>
                                     </div>
                                     <div class="col-6">
                                         <button class="btn btn-warning btn-sm" type="object" name="action_schedule_destruction" t-if="record.destruction_eligible_date.raw_value">
-                                            <i class="fa fa-trash"/> Destroy
+                                            <i class="fas fa-trash" title="Schedule Destruction"/> Destroy
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit"/> Edit Document</a>
-                                <a role="menuitem" type="object" name="action_view_chain_of_custody" class="dropdown-item"><i class="fa fa-link"/> Chain of Custody</a>
-                                <a role="menuitem" type="object" name="action_scan_document" class="dropdown-item"><i class="fa fa-camera"/> Scan/Image</a>
-                                <a role="menuitem" type="object" name="action_audit_trail" class="dropdown-item"><i class="fa fa-history"/> Audit Trail</a>
+                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fas fa-edit" title="Edit Document"/> Edit Document</a>
+                                <a role="menuitem" type="object" name="action_view_chain_of_custody" class="dropdown-item"><i class="fas fa-link" title="Chain of Custody"/> Chain of Custody</a>
+                                <a role="menuitem" type="object" name="action_scan_document" class="dropdown-item"><i class="fas fa-camera" title="Scan Document"/> Scan/Image</a>
+                                <a role="menuitem" type="object" name="action_audit_trail" class="dropdown-item"><i class="fas fa-history" title="Audit Trail"/> Audit Trail</a>
+                                <a role="menuitem" type="object" name="action_generate_document_barcode" class="dropdown-item"><i class="fas fa-barcode" title="Generate Barcode"/> Generate Barcode</a>
+                                <a role="menuitem" type="object" name="action_generate_document_qr" class="dropdown-item"><i class="fas fa-qrcode" title="Generate QR Code"/> Generate QR Code</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_schedule_destruction" class="dropdown-item"><i class="fa fa-bomb"/> Schedule Destruction</a>
+                                <a role="menuitem" type="object" name="action_schedule_destruction" class="dropdown-item"><i class="fas fa-bomb" title="Schedule Destruction"/> Schedule Destruction</a>
                             </div>
                         </div>
                     </t>
@@ -106,10 +120,12 @@
                 <field name="retention_policy_id" string="Retention Policy"/>
                 <field name="destruction_eligible_date" string="Destruction Date"/>
                 <field name="state" string="Status" widget="badge"/>
-                <button name="action_view_chain_of_custody" type="object" string="Chain" icon="fa-link" class="btn-link"/>
-                <button name="action_mark_permanent" type="object" string="Mark Permanent" icon="fa-shield" class="btn-link" invisible="is_permanent" groups="records_management.group_records_user"/>
-                <button name="action_unmark_permanent" type="object" string="Remove Permanent" icon="fa-shield" class="btn-link" invisible="not is_permanent" groups="base.group_system"/>
-                <button name="action_schedule_destruction" type="object" string="Destroy" icon="fa-trash" class="btn-link" invisible="not destruction_eligible_date or is_permanent"/>
+                <button name="action_view_chain_of_custody" type="object" string="Chain" icon="fas fa-link" class="btn-link"/>
+                <button name="action_generate_document_barcode" type="object" string="Barcode" icon="fas fa-barcode" class="btn-link"/>
+                <button name="action_generate_document_qr" type="object" string="QR" icon="fas fa-qrcode" class="btn-link"/>
+                <button name="action_mark_permanent" type="object" string="Mark Permanent" icon="fas fa-shield" class="btn-link" invisible="is_permanent" groups="records_management.group_records_user"/>
+                <button name="action_unmark_permanent" type="object" string="Remove Permanent" icon="fas fa-shield" class="btn-link" invisible="not is_permanent" groups="base.group_system"/>
+                <button name="action_schedule_destruction" type="object" string="Destroy" icon="fas fa-trash" class="btn-link" invisible="not destruction_eligible_date or is_permanent"/>
             </tree>
         </field>
     </record>
@@ -124,6 +140,8 @@
                 <header>
                     <button name="action_view_chain_of_custody" type="object" string="View Chain of Custody" class="btn-primary"/>
                     <button name="action_scan_document" type="object" string="Scan/Image Document" class="btn-secondary" attrs="{'invisible': [('digital_scanning_enabled', '=', False)]}"/>
+                    <button name="action_generate_document_barcode" type="object" string="Generate Barcode" class="btn-info"/>
+                    <button name="action_generate_document_qr" type="object" string="Generate QR Code" class="btn-success"/>
                     <button name="action_mark_permanent" type="object" string="Mark as Permanent" class="btn-success" invisible="is_permanent" groups="records_management.group_records_user"/>
                     <button name="action_unmark_permanent" type="object" string="Remove Permanent Flag" class="btn-warning" invisible="not is_permanent" groups="base.group_system"/>
                     <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not destruction_eligible_date or is_permanent"/>
@@ -131,13 +149,13 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_chain_of_custody" icon="fa-link">
+                        <button class="oe_stat_button" type="object" name="action_view_chain_of_custody" icon="fas fa-link">
                             <field name="chain_of_custody_count" string="Chain Events" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_audit_trail" icon="fa-history">
+                        <button class="oe_stat_button" type="object" name="action_audit_trail" icon="fas fa-history">
                             <field name="audit_trail_count" string="Audit Events" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-calendar-times" invisible="not destruction_eligible_date">
+                        <button class="oe_stat_button" icon="fas fa-calendar-times" invisible="not destruction_eligible_date">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
                                     <field name="days_until_destruction"/>
@@ -162,7 +180,7 @@
                             <field name="retention_policy_id"/>
                             <field name="destruction_eligible_date"/>
                             <field name="state"/>
-                            <div colspan="2" style="font-weight: bold; color: #28a745; padding: 5px;"><i class="fa fa-certificate"/> NAID AAA Certified Facility</div>
+                            <div colspan="2" style="font-weight: bold; color: #28a745; padding: 5px;"><i class="fas fa-certificate" title="NAID AAA Certified"/> NAID AAA Certified Facility</div>
                         </group>
                     </group>
 
@@ -233,7 +251,7 @@
                                     <field name="resolution"/>
                                     <field name="file_size"/>
                                     <field name="storage_location"/>
-                                    <button name="action_download" type="object" string="Download" icon="fa-download" class="btn-link"/>
+                                    <button name="action_download" type="object" string="Download" icon="fas fa-download" class="btn-link"/>
                                 </list>
                             </field>
                         </page>
@@ -321,6 +339,7 @@
                 • Secure destruction scheduling and verification<br/>
                 • NAID AAA certification compliance<br/>
                 • Digital imaging and document scanning<br/>
+                • Barcode and QR code generation for mobile access<br/>
                 • Mobile access for field operations
 </p>
 </field>

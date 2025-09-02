@@ -88,8 +88,8 @@
         "security/portal_request_security.xml",
         # Core Records Management Actions (must load before menus)
         "views/records_container_views.xml",
-        "views/records_management_menus.xml",
         "views/records_document_views.xml",
+        "views/records_management_menus.xml",
         "views/records_location_views.xml",
         "views/records_department_views.xml",
         "views/records_tag_views.xml",

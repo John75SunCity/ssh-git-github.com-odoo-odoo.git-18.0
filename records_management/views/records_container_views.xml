@@ -69,23 +69,31 @@
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <button class="btn btn-primary btn-sm" type="object" name="action_view_documents">
-                                            <i class="fa fa-file-text-o"/> Documents
+                                            <i class="fas fa-file-text-o" title="View Documents"/> Documents
                                         </button>
                                     </div>
                                     <div class="col-6">
                                         <button class="btn btn-info btn-sm" type="object" name="action_generate_barcode">
-                                            <i class="fa fa-barcode"/> Barcode
+                                            <i class="fas fa-barcode" title="Generate Barcode"/> Barcode
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-12">
+                                        <button class="btn btn-success btn-sm" type="object" name="action_generate_qr_code">
+                                            <i class="fas fa-qrcode" title="Generate QR Code"/> QR Code
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-edit"/> Edit Container</a>
-                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item"><i class="fa fa-file-text-o"/> View Documents</a>
-                                <a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item"><i class="fa fa-map-marker"/> Retrieve Container</a>
-                                <a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item"><i class="fa fa-barcode"/> Print Barcode</a>
+                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fas fa-edit" title="Edit Container"/> Edit Container</a>
+                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item"><i class="fas fa-file-text-o" title="View Documents"/> View Documents</a>
+                                <a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item"><i class="fas fa-map-marker" title="Retrieve Container"/> Retrieve Container</a>
+                                <a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item"><i class="fas fa-barcode" title="Print Barcode"/> Print Barcode</a>
+                                <a role="menuitem" type="object" name="action_generate_qr_code" class="dropdown-item"><i class="fas fa-qrcode" title="Generate QR Code"/> Generate QR Code</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_destroy_container" class="dropdown-item"><i class="fa fa-trash"/> Destroy Container</a>
+                                <a role="menuitem" type="object" name="action_destroy_container" class="dropdown-item"><i class="fas fa-trash" title="Destroy Container"/> Destroy Container</a>
                             </div>
                         </div>
                     </t>
@@ -118,8 +126,9 @@
                 <field name="is_due_for_destruction" string="Due" widget="boolean_toggle"/>
                 <field name="security_level" string="Security"/>
                 <field name="active" string="Active" widget="boolean_toggle"/>
-                <button name="action_view_documents" type="object" string="View Docs" icon="fa-file-text-o" class="btn-link"/>
-                <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fa-barcode" class="btn-link"/>
+                <button name="action_view_documents" type="object" string="View Docs" icon="fas fa-file-text-o" class="btn-link"/>
+                <button name="action_generate_barcode" type="object" string="Print Barcode" icon="fas fa-barcode" class="btn-link"/>
+                <button name="action_generate_qr_code" type="object" string="QR Code" icon="fas fa-qrcode" class="btn-link"/>
             </list>
         </field>
     </record>
@@ -138,6 +147,7 @@
                     <button name="action_schedule_destruction" type="object" string="Schedule Destruction" class="btn-warning" invisible="not is_due_for_destruction"/>
                     <button name="action_destroy" type="object" string="Destroy Container" class="btn-danger" invisible="state != 'pending_destruction'"/>
                     <button name="action_generate_barcode" type="object" string="Print Barcode" class="btn-info"/>
+                    <button name="action_generate_qr_code" type="object" string="Generate QR Code" class="btn-success"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,stored,retrieved,pending_destruction,destroyed"/>
                 </header>
                 <sheet>
@@ -330,6 +340,7 @@
                 <br/>
                 • Visual kanban boards for container tracking<br/>
                 • Automated barcode generation and printing<br/>
+                • QR code generation for mobile scanning<br/>
                 • Real-time location tracking with movement history<br/>
                 • Document association and content management<br/>
                 • Service request integration and workflows<br/>
