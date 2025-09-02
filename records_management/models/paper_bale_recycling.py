@@ -58,10 +58,14 @@ class PaperBaleRecycling(models.Model):
 
     # Financial Fields
     currency_id = fields.Many2one('res.currency', related='company_id.currency_id')
-    market_price_per_ton = fields.Monetary(string="Market Price per Ton", tracking=True)
-    total_revenue = fields.Monetary(compute='_compute_financials', string="Total Revenue", store=True)
-    processing_cost = fields.Monetary(string="Processing Cost", tracking=True)
-    net_profit = fields.Monetary(compute='_compute_financials', string="Net Profit", store=True)
+    market_price_per_ton = fields.Monetary(string="Market Price per Ton", currency_field="currency_id", tracking=True)
+    total_revenue = fields.Monetary(
+        compute="_compute_financials", string="Total Revenue", currency_field="currency_id", store=True
+    )
+    processing_cost = fields.Monetary(string="Processing Cost", currency_field="currency_id", tracking=True)
+    net_profit = fields.Monetary(
+        compute="_compute_financials", string="Net Profit", currency_field="currency_id", store=True
+    )
 
     # Environmental Impact Fields
     carbon_footprint_reduction = fields.Float(string="CO2 Reduction (kg)", help="Estimated carbon footprint reduction.")
@@ -120,4 +124,3 @@ class PaperBaleRecycling(models.Model):
             raise ValidationError(_("Cannot cancel a record that has already been processed."))
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Recycling record has been cancelled."))
-
