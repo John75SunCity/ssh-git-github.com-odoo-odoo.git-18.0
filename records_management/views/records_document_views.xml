@@ -94,7 +94,7 @@
     <record id="records_document_view_tree" model="ir.ui.view">
         <field name="name">records.document.view.tree</field>
         <field name="model">records.document</field>
-        <field name="type">list</field>
+        <field name="type">tree</field>
         <field name="arch" type="xml">
             <tree decoration-danger="destruction_eligible_date &amp;lt;= context_today()" decoration-warning="destruction_eligible_date &amp;lt;= (context_today() + relativedelta(days=30))" decoration-success="is_permanent == True">
                 <field name="name" string="📄 Document"/>

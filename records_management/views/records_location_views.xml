@@ -84,7 +84,7 @@
         <record id="records_location_view_tree" model="ir.ui.view">
             <field name="name">records.location.view.tree</field>
             <field name="model">records.location</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree decoration-success="current_utilization &amp;lt; storage_capacity * 0.8" decoration-warning="current_utilization &amp;gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &amp;gt;= storage_capacity">
                     <field name="name" string="🏢 Location Name"/>

@@ -5,7 +5,7 @@
         <record id="records_billing_view_tree" model="ir.ui.view">
             <field name="name">records.billing.view.tree</field>
             <field name="model">records.billing</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
             <field name="arch" type="xml">
                 <list string="Billing Records" default_order="date desc">
                     <field name="name"/>

@@ -6,7 +6,7 @@
         <record id="records_container_log_view_tree" model="ir.ui.view">
             <field name="name">records.container.log.view.tree</field>
             <field name="model">records.container.log</field>
-            <field name="type">list</field>
+            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <list string="Records Container Log">
                     <field name="name"/>
