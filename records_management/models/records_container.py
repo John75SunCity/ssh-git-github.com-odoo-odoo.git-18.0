@@ -1,6 +1,9 @@
-from dateutil.relativedelta import relativedelta
+from dateutil.relativedelta import relativedelta # type: ignore
+import qrcode # type: ignore
+import base64
+from io import BytesIO
 
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _ # pyright: ignore[reportMissingModuleSource, reportAttributeAccessIssue]
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -223,7 +226,7 @@ class RecordsContainer(models.Model):
         """View all documents in this container"""
         self.ensure_one()
         return {
-            "name": _("Documents in Container %s", self.name),
+            "name": _("Documents in Container %s") % self.name,
             "type": "ir.actions.act_window",
             "res_model": "records.document",
             "view_mode": "tree,form",
@@ -272,6 +275,31 @@ class RecordsContainer(models.Model):
             "view_mode": "form",
             "target": "new",
             "context": {"default_container_ids": [(6, 0, self.ids)]},
+        }
+
+    def action_generate_qr_code(self):
+        """Generate QR code for the container and return download action."""
+        self.ensure_one()
+        # Generate QR code data (e.g., container ID or barcode)
+        qr_data = f"Container ID: {self.id}\nBarcode: {self.barcode or 'N/A'}"
+
+        # Create QR code image
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data(qr_data)
+        qr.make(fit=True)
+        img = qr.make_image(fill="black", back_color="white")
+
+        # Convert to base64 for download
+        buffer = BytesIO()
+        img.save(buffer, "PNG")  # Changed: Use positional argument for format to avoid keyword error
+        img_str = base64.b64encode(buffer.getvalue()).decode()
+
+        # Return action to download the QR code
+        return {
+            "type": "ir.actions.act_url",
+            "url": f"data:image/png;base64,{img_str}",
+            "target": "new",
+            "name": f"QR Code - {self.name}",
         }
 
     # ============================================================================

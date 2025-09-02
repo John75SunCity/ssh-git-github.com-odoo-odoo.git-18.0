@@ -85,13 +85,13 @@
 
 <menuitem id="menu_records_billing" name="Billing &amp; Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager"/>
 
-<menuitem id="menu_billing_config" name="Billing Configuration" parent="records_management.menu_records_billing" action="action_records_billing_config" sequence="10" groups="records_management.group_records_manager"/>
+<menuitem id="menu_billing_config" name="Billing Configuration" parent="menu_records_billing" action="action_records_billing_config" sequence="10" groups="records_management.group_records_manager"/>
 
-<menuitem id="menu_advanced_billing" name="Advanced Billing" parent="records_management.menu_records_billing" action="advanced_billing_profile_action" sequence="20" groups="records_management.group_records_manager"/>
+<menuitem id="menu_advanced_billing" name="Advanced Billing" parent="menu_records_billing" action="advanced_billing_profile_action" sequence="20" groups="records_management.group_records_manager"/>
 
-<menuitem id="menu_base_rates" name="Base Rates" parent="records_management.menu_records_billing" action="action_base_rates" sequence="30" groups="records_management.group_records_manager"/>
+<menuitem id="menu_base_rates" name="Base Rates" parent="menu_records_billing" action="action_base_rates" sequence="30" groups="records_management.group_records_manager"/>
 
-<menuitem id="menu_customer_rates" name="Customer Rates" parent="records_management.menu_records_billing" action="action_customer_negotiated_rates" sequence="40" groups="records_management.group_records_manager"/>
+<menuitem id="menu_customer_rates" name="Customer Rates" parent="menu_records_billing" action="action_customer_negotiated_rates" sequence="40" groups="records_management.group_records_manager"/>
 
 <!-- ========================================== -->
 <!-- REPORTING MENU (Level 1) -->
