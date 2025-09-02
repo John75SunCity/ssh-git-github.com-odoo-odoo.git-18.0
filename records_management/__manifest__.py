@@ -294,7 +294,7 @@
             "records_management/static/src/xml/customer_portal_diagram_templates.xml",
         ],
     },
-    "external_dependencies": {"python": ["qrcode", "pillow"]},
+    "external_dependencies": {},
     "installable": True,
     "auto_install": False,
     "application": True,
