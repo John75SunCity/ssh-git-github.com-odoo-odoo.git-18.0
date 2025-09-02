@@ -1,5 +1,4 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_visitor_admin,visitor admin,model_visitor,records_management.group_records_admin,1,1,1,1
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlinkaccess_visitor_admin,visitor admin,model_visitor,records_management.group_records_admin,1,1,1,1
 access_visitor_manager,visitor manager,model_visitor,records_management.group_records_manager,1,1,1,0
 access_visitor_user,visitor user,model_visitor,records_management.group_records_user,1,1,0,0
 access_visitor_read,visitor read,model_visitor,records_management.group_records_readonly,1,0,0,0
@@ -461,19 +460,8 @@ access_shredding_certificate_user,shredding.certificate user,model_shredding_cer
 access_shredding_certificate_manager,shredding.certificate manager,model_shredding_certificate,records_management.group_records_manager,1,1,1,0
 access_certificate_template_data_user,certificate.template.data user,model_certificate_template_data,records_management.group_records_user,1,1,0,0
 access_certificate_template_data_manager,certificate.template.data manager,model_certificate_template_data,records_management.group_records_manager,1,1,1,0
-
-access_ _user,  user,model_ ,records_management.group_records_user,1,1,0,0
-access_ _manager,  manager,model_ ,records_management.group_records_manager,1,1,1,0
-access_ - _user, -  user,model_ - ,records_management.group_records_user,1,1,0,0
-access_ - _manager, -  manager,model_ - ,records_management.group_records_manager,1,1,1,0
-access_%s - %s_user,%s - %s user,model_%s - %s,records_management.group_records_user,1,1,0,0
-access_%s - %s_manager,%s - %s manager,model_%s - %s,records_management.group_records_manager,1,1,1,0
-access_%s / %s_user,%s / %s user,model_%s / %s,records_management.group_records_user,1,1,0,0
-access_%s / %s_manager,%s / %s manager,model_%s / %s,records_management.group_records_manager,1,1,1,0
 access_, _user,,  user,model_, ,records_management.group_records_user,1,1,0,0
 access_, _manager,,  manager,model_, ,records_management.group_records_manager,1,1,1,0
-access_[%s] %s_user,[%s] %s user,model_[%s] %s,records_management.group_records_user,1,1,0,0
-access_[%s] %s_manager,[%s] %s manager,model_[%s] %s,records_management.group_records_manager,1,1,1,0
 access_account_move_line_user,account_move_line user,model_account.move.line,records_management.group_records_user,1,1,0,0
 access_account_move_line_manager,account_move_line manager,model_account.move.line,records_management.group_records_manager,1,1,1,0
 access_advanced_billing_contact_user,advanced_billing_contact user,model_advanced.billing.contact,records_management.group_records_user,1,1,0,0
