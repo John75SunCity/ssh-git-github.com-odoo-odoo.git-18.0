@@ -65,7 +65,7 @@
         <field name="model">service.item</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Service Items" decoration-muted="not active">
+            <list string="Service Items" decoration-muted="not active">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="service_category"/>
@@ -78,7 +78,7 @@
                 <field name="active" widget="boolean_toggle"/>
                 <field name="activity_ids" widget="list_activity"/>
                 <field name="company_id" column_invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -175,7 +175,7 @@
                         </page>
                         <page string="Pricing Rules" name="pricing_rules">
                             <field name="pricing_rule_ids" nolabel="1">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="name"/>
                                     <field name="condition_field"/>
                                     <field name="condition_operator"/>
@@ -183,7 +183,7 @@
                                     <field name="price_adjustment" widget="monetary"/>
                                     <field name="adjustment_type"/>
                                     <field name="active" widget="boolean_toggle"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Customer Portal" name="portal_settings">

@@ -7,7 +7,7 @@
             <field name="model">records.request.line</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree decoration-info="state=='draft'"
+                <list decoration-info="state=='draft'"
                       decoration-warning="state=='in_progress'"
                       decoration-success="state=='done'"
                       decoration-muted="state=='cancelled'">
@@ -19,7 +19,7 @@
                     <field name="request_type_id"/>
                     <field name="state" widget="badge"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 

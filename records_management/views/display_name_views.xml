@@ -8,14 +8,14 @@
             <field name="model">display_name</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Display Name">
+                <list string="Display Name">
                     <field name="name"/>
                     <field name="model_name"/>
                     <field name="pattern"/>
                     <field name="description"/>
                     <field name="active"/>
                     <field name="company_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 

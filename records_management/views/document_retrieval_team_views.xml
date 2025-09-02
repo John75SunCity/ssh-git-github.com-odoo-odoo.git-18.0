@@ -8,7 +8,7 @@
         <field name="model">document.retrieval.team</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree decoration-success="active==True" decoration-muted="active==False" decoration-info="state=='available'" decoration-warning="state=='busy'">
+            <list decoration-success="active==True" decoration-muted="active==False" decoration-info="state=='available'" decoration-warning="state=='busy'">
                 <field name="name"/>
                 <field name="team_leader_id"/>
                 <field name="member_count" string="Members"/>
@@ -18,7 +18,7 @@
                 <field name="specialization" string="Specialization"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="active" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -77,19 +77,19 @@
                     <notebook>
                         <page string="Team Members" name="team_members">
                             <field name="member_ids" nolabel="1">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="user_id" required="1"/>
                                     <field name="role" required="1"/>
                                     <field name="date_joined"/>
                                     <field name="specialization"/>
                                     <field name="active"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
 
                         <page string="Current Work Orders" name="current_orders">
                             <field name="current_workorder_ids" nolabel="1">
-                                <tree decoration-info="state=='locating'" decoration-warning="state=='retrieving'" decoration-success="state=='completed'" create="false" edit="false">
+                                <list decoration-info="state=='locating'" decoration-warning="state=='retrieving'" decoration-success="state=='completed'" create="false" edit="false">
                                     <field name="name"/>
                                     <field name="partner_id" string="Customer"/>
                                     <field name="priority" widget="priority"/>
@@ -97,7 +97,7 @@
                                     <field name="item_count" string="Items"/>
                                     <field name="state" widget="badge"/>
                                     <button name="action_view_work_order" type="object" string="View Details" icon="fa-external-link"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
 

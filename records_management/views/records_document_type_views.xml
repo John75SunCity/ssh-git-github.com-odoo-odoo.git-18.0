@@ -7,7 +7,7 @@
         <field name="model">records.document.type</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
                 <field name="sequence" widget="handle"/>
                 <field name="name" string="📄 Document Type"/>
                 <field name="code" string="🔢 Code"/>
@@ -19,7 +19,7 @@
                 <field name="state" string="🎯 Status" widget="badge"/>
                 <field name="active" string="✅ Active"/>
                 <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -7,7 +7,7 @@
         <field name="model">records.retention.policy</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="is_expired == True" decoration-info="state == 'draft'">
+            <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="is_expired == True" decoration-info="state == 'draft'">
                 <field name="sequence" widget="handle"/>
                 <field name="name" string="📋 Policy Name"/>
                 <field name="code" string="🔢 Code"/>
@@ -20,7 +20,7 @@
                 <field name="rule_count" string="📋 Rules" widget="integer"/>
                 <field name="active" string="✅ Active"/>
                 <button name="action_view_rules" type="object" string="View Rules" icon="fa-list" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 

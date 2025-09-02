@@ -93,7 +93,7 @@
             <field name="model">bin.barcode.inventory</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Bin Barcode Inventory"
+                <list string="Bin Barcode Inventory"
                       decoration-success="state == 'available'"
                       decoration-warning="state == 'in_use'"
                       decoration-danger="state == 'full'"
@@ -113,7 +113,7 @@
                     <field name="last_service_date"/>
                     <field name="is_imported" widget="boolean_toggle"/>
                     <field name="is_generated" widget="boolean_toggle"/>
-                </tree>
+                </list>
             </field>
         </record>
 

@@ -90,14 +90,14 @@
         <field name="model">customer.portal.diagram</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Portal Diagrams" create="true" delete="true">
+            <list string="Portal Diagrams" create="true" delete="true">
                 <field name="name"/>
                 <field name="user_id"/>
                 <field name="company_id"/>
                 <field name="show_access_rights"/>
                 <field name="show_messaging"/>
                 <field name="layout_type"/>
-            </tree>
+            </list>
         </field>
     </record>
 

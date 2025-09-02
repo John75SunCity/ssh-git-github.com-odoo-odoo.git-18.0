@@ -9,7 +9,7 @@
         <field name="model">records.billing.config.audit</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Billing Config Audit" default_order="audit_date desc">
+            <list string="Billing Config Audit" default_order="audit_date desc">
                 <field name="name"/>
                 <field name="audit_date"/>
                 <field name="action_type"/>
@@ -17,7 +17,7 @@
                 <field name="approval_status"/>
                 <field name="financial_impact" sum="Total Impact"/>
                 <field name="currency_id" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>
 

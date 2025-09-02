@@ -7,14 +7,14 @@
         <field name="model">container.access.photo</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Container Access Photos" decoration-info="is_primary==True">
+            <list string="Container Access Photos" decoration-info="is_primary==True">
                 <field name="activity_id"/>
                 <field name="photo_type"/>
                 <field name="description"/>
                 <field name="is_primary"/>
                 <field name="photo_timestamp"/>
                 <field name="create_date" string="Created"/>
-            </tree>
+            </list>
         </field>
     </record>
 

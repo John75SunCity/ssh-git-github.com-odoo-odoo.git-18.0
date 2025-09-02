@@ -6,7 +6,7 @@
             <field name="model">destruction.item</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Destruction Item">
+                <list string="Destruction Item">
                     <field name="name"/>
                     <field name="item_description"/>
                     <field name="records_destruction_id"/>
@@ -16,7 +16,7 @@
                     <field name="partner_id"/>
                     <field name="sequence"/>
                     <field name="active"/>
-                </tree>
+                </list>
             </field>
         </record>
         <record id="destruction_item_view_form" model="ir.ui.view">

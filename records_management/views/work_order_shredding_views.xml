@@ -10,7 +10,7 @@
         <field name="model">work.order.shredding</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
+            <list string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
                 <header>
                     <button name="action_bulk_confirm" string="Bulk Confirm" type="object" class="btn-primary"/>
                     <button name="action_bulk_start" string="Bulk Start" type="object" class="btn-warning"/>
@@ -26,7 +26,7 @@
                 <field name="state" widget="badge" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'"/>
                 <field name="completion_percentage" widget="progressbar"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -106,7 +106,7 @@
 <notebook>
 <page name="containers" string="📦 Containers &amp; Items">
     <field name="container_ids">
-        <tree editable="bottom" decoration-muted="is_shredded">
+        <list editable="bottom" decoration-muted="is_shredded">
             <field name="name"/>
             <field name="container_type"/>
             <field name="location_id"/>
@@ -115,7 +115,7 @@
             <field name="shredding_priority" widget="priority"/>
             <field name="is_shredded" widget="boolean_toggle"/>
             <field name="shredded_date"/>
-        </tree>
+        </list>
     </field>
     <group class="oe_subtotal_footer">
         <field name="total_weight" class="oe_subtotal_footer_separator"/>
@@ -159,25 +159,25 @@
     </group>
     <separator string="📋 Compliance Checklist"/>
     <field name="compliance_checklist_ids">
-        <tree editable="bottom">
+        <list editable="bottom">
             <field name="check_item"/>
             <field name="is_completed" widget="boolean_toggle"/>
             <field name="completed_by"/>
             <field name="completion_date"/>
             <field name="notes"/>
-        </tree>
+        </list>
     </field>
 </page>
 
 <page name="timeline" string="⏱️ Timeline &amp; Tracking">
     <field name="timeline_ids">
-        <tree create="false" delete="false">
+        <list create="false" delete="false">
             <field name="timestamp"/>
             <field name="event_type"/>
             <field name="description"/>
             <field name="user_id"/>
             <field name="duration"/>
-        </tree>
+        </list>
     </field>
 </page>
 

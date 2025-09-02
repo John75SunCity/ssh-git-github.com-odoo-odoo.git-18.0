@@ -7,13 +7,13 @@
             <field name="model">records.series</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Records Series">
+                <list string="Records Series">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="retention_policy_id"/>
                     <field name="document_count"/>
                     <field name="active"/>
-                </tree>
+                </list>
             </field>
         </record>
 

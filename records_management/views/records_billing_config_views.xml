@@ -145,7 +145,7 @@
         <field name="model">records.billing.config</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree decoration-success="active == True and auto_billing == True"
+            <list decoration-success="active == True and auto_billing == True"
                   decoration-warning="billing_model == 'custom'"
                   decoration-info="payment_terms == 'net_30'">
                 <field name="name" string="💳 Configuration Name"/>
@@ -161,7 +161,7 @@
                         icon="fa-file-text" class="btn-link"/>
                 <button name="action_view_analytics" type="object" string="Analytics"
                         icon="fa-bar-chart" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -233,7 +233,7 @@
                     <notebook>
                         <page string="💰 Rate Structure" name="rates">
                             <field name="billing_rate_ids" mode="list">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="service_type"/>
                                     <field name="rate_type"/>
                                     <field name="base_rate"/>
@@ -242,7 +242,7 @@
                                     <field name="discount_percentage"/>
                                     <field name="effective_date"/>
                                     <field name="active"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📊 Usage Tracking" name="usage">
@@ -301,7 +301,7 @@
                         </page>
                         <page string="🎯 Discounts &amp; Promotions" name="discounts">
                             <field name="discount_rule_ids" mode="list">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="rule_name"/>
                                     <field name="discount_type"/>
                                     <field name="discount_value"/>
@@ -310,7 +310,7 @@
                                     <field name="valid_until"/>
                                     <field name="auto_apply"/>
                                     <field name="active"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📊 Revenue Analytics" name="analytics">

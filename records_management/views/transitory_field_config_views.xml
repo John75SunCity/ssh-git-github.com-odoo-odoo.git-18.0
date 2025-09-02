@@ -172,7 +172,7 @@
         <field name="model">field.label.customization</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree string="Field Label Customizations">
+            <list string="Field Label Customizations">
                 <field name="name"/>
                 <field name="scope_display"/>
                 <field name="partner_id"/>
@@ -180,7 +180,7 @@
                 <field name="priority"/>
                 <field name="customized_label_count"/>
                 <field name="active"/>
-            </tree>
+            </list>
         </field>
     </record>
 

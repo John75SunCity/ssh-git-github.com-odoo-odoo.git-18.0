@@ -9,7 +9,7 @@
         <field name="model">system.diagram.data</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-<tree string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
+<list string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
                 <field name="name"/>
 <field name="search_type" widget="badge"/>
 <field name="search_query"/>
@@ -20,7 +20,7 @@
 <field name="company_id" groups="base.group_multi_company"/>
 <button name="action_generate_diagram" type="object" string="Generate" class="btn-primary" icon="fa-refresh"/>
 
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -370,7 +370,7 @@
         <field name="model">system.diagram.data</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="System Architecture Diagrams" decoration-success="nodes_data and edges_data" decoration-warning="not nodes_data or not edges_data" create="true" edit="true" delete="true">
+            <list string="System Architecture Diagrams" decoration-success="nodes_data and edges_data" decoration-warning="not nodes_data or not edges_data" create="true" edit="true" delete="true">
                 <field name="name" string="Diagram Name"/>
                 <field name="search_type" string="Focus Type" widget="badge"/>
                 <field name="search_query" string="Query/Target"/>
@@ -385,7 +385,7 @@
                 <button name="action_generate_diagram" type="object" title="Generate Interactive Flowchart" icon="fa-sitemap" class="btn-primary"/>
                 <button name="action_export_diagram" type="object" title="Export Diagram Data" icon="fa-download" class="btn-secondary"/>
                 <button name="action_refresh_data" type="object" title="Refresh Diagram Data" icon="fa-refresh" class="btn-outline-primary"/>
-            </tree>
+            </list>
         </field>
     </record>
 

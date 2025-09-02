@@ -10,7 +10,7 @@
         <field name="model">work.order.coordinator</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-                <tree string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
+                <list string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
                     <field name="name"/>
                     <field name="employee_id"/>
                     <field name="department_id"/>
@@ -20,7 +20,7 @@
                     <field name="priority" widget="priority"/>
                     <field name="state" widget="badge" decoration-info="state=='available'" decoration-warning="state=='busy'" decoration-danger="state=='unavailable'"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
     </record>
 
@@ -100,14 +100,14 @@
 
         <separator string="Current Work Orders"/>
         <field name="current_work_order_ids" nolabel="1">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="name"/>
                 <field name="work_order_type"/>
                 <field name="partner_id"/>
                 <field name="priority" widget="priority"/>
                 <field name="scheduled_date"/>
                 <field name="state" widget="badge"/>
-            </tree>
+            </list>
         </field>
     </page>
 
@@ -129,13 +129,13 @@
 
         <separator string="Certifications &amp; Training"/>
         <field name="certification_ids" nolabel="1">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="name"/>
                 <field name="certification_type"/>
                 <field name="issue_date"/>
                 <field name="expiry_date"/>
                 <field name="is_active" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </page>
 
@@ -156,13 +156,13 @@
 
         <separator string="Assigned Equipment"/>
         <field name="assigned_equipment_ids" nolabel="1">
-            <tree>
+            <list>
                 <field name="name"/>
                 <field name="equipment_type"/>
                 <field name="serial_number"/>
                 <field name="last_maintenance_date"/>
                 <field name="next_maintenance_due"/>
-            </tree>
+            </list>
         </field>
     </page>
 

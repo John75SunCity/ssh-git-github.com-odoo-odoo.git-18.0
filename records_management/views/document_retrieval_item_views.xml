@@ -7,7 +7,7 @@
         <field name="model">document.retrieval.item</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="priority=='3'" decoration-warning="priority=='2'" decoration-muted="status=='not_found'">
+            <list decoration-danger="priority=='3'" decoration-warning="priority=='2'" decoration-muted="status=='not_found'">
                 <field name="priority" widget="priority" optional="show"/>
                 <field name="name"/>
                 <field name="item_type"/>
@@ -17,7 +17,7 @@
                 <field name="retrieval_cost" optional="show" sum="Total Cost"/>
                 <field name="effective_priority" invisible="1"/>
                 <field name="sequence" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>
 

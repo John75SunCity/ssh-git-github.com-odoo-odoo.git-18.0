@@ -101,7 +101,7 @@
         <field name="model">product.template</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
+            <list decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
                 <field name="name" string="💼 Product Name"/>
                 <field name="default_code" string="🏷️ Internal Reference"/>
                 <field name="categ_id" string="📂 Category"/>
@@ -114,7 +114,7 @@
                 <field name="active" string="🎯 Status" widget="boolean_toggle"/>
                 <button name="action_view_sales" type="object" string="Sales" icon="fa-line-chart" class="btn-link"/>
                 <button name="action_configure_pricing" type="object" string="Pricing" icon="fa-money" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -7,12 +7,12 @@
             <field name="model">advanced.billing.profile</field>
             <field name="type">list</field>
             <field name="arch" type="xml">
-                <tree string="Billing Profiles">
+                <list string="Billing Profiles">
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="billing_frequency"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
 

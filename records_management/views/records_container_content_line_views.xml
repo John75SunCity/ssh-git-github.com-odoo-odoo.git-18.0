@@ -8,7 +8,7 @@
             <field name="model">records.container.content.line</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Records Container Content Line">
+                <list string="Records Container Content Line">
                     <field name="content_id"/>
                     <field name="name"/>
                     <field name="document_type"/>
@@ -17,7 +17,7 @@
                     <field name="notes"/>
                     <field name="company_id"/>
                     <field name="active"/>
-                </tree>
+                </list>
             </field>
         </record>
 

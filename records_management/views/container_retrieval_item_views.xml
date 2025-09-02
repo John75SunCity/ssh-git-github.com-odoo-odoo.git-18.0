@@ -7,7 +7,7 @@
             <field name="model">container.retrieval.item</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Container Retrieval Item">
+                <list string="Container Retrieval Item">
                     <field name="display_name"/>
                     <field name="container_id"/>
                     <field name="storage_location_id"/>
@@ -15,7 +15,7 @@
                     <field name="actual_weight"/>
                     <field name="dimensions"/>
                     <field name="status"/>
-                </tree>
+                </list>
             </field>
         </record>
 

@@ -8,7 +8,7 @@
         <field name="model">bin.key.history</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-<tree string="Bin Key History" decoration-info="action_type == 'assigned'" decoration-success="action_type == 'returned'" decoration-warning="action_type == 'lost'" decoration-danger="action_type == 'emergency_override'">
+<list string="Bin Key History" decoration-info="action_type == 'assigned'" decoration-success="action_type == 'returned'" decoration-warning="action_type == 'lost'" decoration-danger="action_type == 'emergency_override'">
     <field name="key_id"/>
     <field name="assigned_to"/>
     <field name="action_type" widget="badge"/>
@@ -18,7 +18,7 @@
     <field name="authorized_by"/>
     <field name="company_id" groups="base.group_multi_company"/>
 
-            </tree>
+            </list>
         </field>
     </record>
 

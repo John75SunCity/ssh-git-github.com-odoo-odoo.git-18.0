@@ -44,14 +44,14 @@
         <field name="model">stock.move.sms.validation</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="SMS Validations">
+            <list string="SMS Validations">
                 <field name="name"/>
                 <field name="picking_id"/>
                 <field name="user_id"/>
                 <field name="is_validated"/>
                 <field name="validation_date"/>
                 <field name="company_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 

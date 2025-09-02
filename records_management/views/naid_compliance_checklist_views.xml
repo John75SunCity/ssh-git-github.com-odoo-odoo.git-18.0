@@ -8,13 +8,13 @@
         <field name="model">naid.compliance.checklist</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-<tree decoration-muted="active == False">
+<list decoration-muted="active == False">
                 <field name="name"/>
 <field name="category"/>
 <field name="active" widget="boolean_toggle"/>
 <field name="company_id" groups="base.group_multi_company"/>
 
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -52,12 +52,12 @@
 <notebook>
     <page string="Checklist Items" name="checklist_items">
         <field name="checklist_item_ids">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="sequence" widget="handle"/>
                 <field name="name"/>
                 <field name="description"/>
                 <field name="is_required"/>
-            </tree>
+            </list>
         </field>
     </page>
 </notebook>

@@ -7,13 +7,13 @@
             <field name="model">description</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Description">
+                <list string="Description">
                     <field name="name"/>
                     <field name="category"/>
                     <field name="description"/>
                     <field name="active"/>
                     <field name="company_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 

@@ -7,7 +7,7 @@
             <field name="model">temp.inventory</field>
             <field name="type">list</field>
         <field name="arch" type="xml">
-                <tree string="Temporary Inventory" decoration-bf="state=='active'" decoration-warning="state=='full'" decoration-danger="state=='archived'">
+                <list string="Temporary Inventory" decoration-bf="state=='active'" decoration-warning="state=='full'" decoration-danger="state=='archived'">
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="inventory_type"/>
@@ -20,7 +20,7 @@
                     <field name="priority"/>
                     <field name="user_id"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -193,14 +193,14 @@
             <field name="model">temp.inventory.movement</field>
             <field name="type">list</field>
         <field name="arch" type="xml">
-                <tree string="Inventory Movements" create="false" edit="false">
+                <list string="Inventory Movements" create="false" edit="false">
                     <field name="date"/>
                     <field name="inventory_id"/>
                     <field name="movement_type"/>
                     <field name="user_id"/>
                     <field name="description"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -232,13 +232,13 @@
             <field name="model">temp.inventory.audit</field>
             <field name="type">list</field>
         <field name="arch" type="xml">
-                <tree string="Inventory Audit Trail" create="false" edit="false">
+                <list string="Inventory Audit Trail" create="false" edit="false">
                     <field name="date"/>
                     <field name="inventory_id"/>
                     <field name="user_id"/>
                     <field name="description"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
+                </list>
             </field>
         </record>
 

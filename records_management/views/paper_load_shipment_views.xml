@@ -9,7 +9,7 @@
         <field name="model">paper.load.shipment</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Load Shipments" decoration-success="status=='paid'" decoration-info="status=='delivered'" decoration-warning="status=='in_transit'" decoration-primary="status=='ready_pickup'" sample="1">
+            <list string="Load Shipments" decoration-success="status=='paid'" decoration-info="status=='delivered'" decoration-warning="status=='in_transit'" decoration-primary="status=='ready_pickup'" sample="1">
                 <field name="load_number"/>
                 <field name="pickup_date"/>
                 <field name="driver_name"/>
@@ -23,7 +23,7 @@
                 <field name="status" widget="badge" decoration-success="status=='paid'" decoration-info="status=='delivered'" decoration-warning="status=='in_transit'"/>
                 <field name="manifest_generated" widget="boolean_toggle"/>
                 <field name="mobile_manifest" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -169,7 +169,7 @@
                     <notebook>
                         <page string="Bales in Load" name="bales">
                             <field name="bale_ids" context="{'default_load_shipment_id': active_id}">
-                                <tree string="Paper Bales" editable="bottom">
+                                <list string="Paper Bales" editable="bottom">
                                     <field name="display_name"/>
                                     <field name="bale_number"/>
                                     <field name="paper_grade"/>
@@ -178,7 +178,7 @@
                                     <field name="weighed_by"/>
                                     <field name="status"/>
                                     <field name="mobile_entry" widget="boolean_toggle"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>

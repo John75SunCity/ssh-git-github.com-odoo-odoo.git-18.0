@@ -8,7 +8,7 @@
             <field name="model">media.type</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Media Type">
+                <list string="Media Type">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="category"/>
@@ -16,7 +16,7 @@
                     <field name="destruction_method"/>
                     <field name="is_electronic"/>
                     <field name="active"/>
-                </tree>
+                </list>
             </field>
         </record>
 

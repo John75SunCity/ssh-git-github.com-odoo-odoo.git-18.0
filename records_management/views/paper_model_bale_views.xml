@@ -10,7 +10,7 @@
     <field name="name">paper.model.bale.view.tree</field>
     <field name="model">paper.model_bale</field>
     <field name="arch" type="xml">
-        <tree string="Paper Model Bales" decoration-danger="status=='full'" decoration-success="status=='empty'">
+        <list string="Paper Model Bales" decoration-danger="status=='full'" decoration-success="status=='empty'">
             <field name="name"/>
             <field name="bale_number"/>
             <field name="weight"/>
@@ -19,7 +19,7 @@
             <field name="status"/>
             <field name="date_created"/>
             <field name="location_id"/>
-        </tree>
+        </list>
     </field>
 </record>
 

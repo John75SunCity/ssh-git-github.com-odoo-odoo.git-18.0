@@ -7,7 +7,7 @@
             <field name="model">customer.inventory.line</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Customer Inventory Line">
+                <list string="Customer Inventory Line">
                     container_id
                     location_id
                     file_count
@@ -19,7 +19,7 @@
                     has_variance
                     variance_amount
                     variance_percentage
-                </tree>
+                </list>
             </field>
         </record>
 

@@ -8,7 +8,7 @@
             <field name="model">container.access.visitor</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Container Access Visitor">
+                <list string="Container Access Visitor">
                     name
                     visitor_type
                     company_name
@@ -18,7 +18,7 @@
                     contact_email
                     company_id
                     active
-                </tree>
+                </list>
             </field>
         </record>
 

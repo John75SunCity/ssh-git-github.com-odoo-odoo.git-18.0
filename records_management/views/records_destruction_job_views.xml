@@ -8,13 +8,13 @@
             <field name="model">records.destruction.job</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Records Destruction Job">
+                <list string="Records Destruction Job">
                     <field name="name"/>
                     <field name="destruction_date"/>
                     <field name="state"/>
                     <field name="user_id"/>
                     <field name="company_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 

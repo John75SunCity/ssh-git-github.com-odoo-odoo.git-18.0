@@ -8,7 +8,7 @@
             <field name="model">container.content</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Container Content">
+                <list string="Container Content">
                     <field name="name"/>
                     <field name="container_id"/>
                     <field name="document_type_id"/>
@@ -18,7 +18,7 @@
                     <field name="document_count"/>
                     <field name="retention_until"/>
                     <field name="is_overdue"/>
-                </tree>
+                </list>
             </field>
         </record>
 

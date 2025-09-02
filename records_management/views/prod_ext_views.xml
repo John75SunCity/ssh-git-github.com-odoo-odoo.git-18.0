@@ -8,7 +8,7 @@
         <field name="model">prod.ext</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-<tree decoration-muted="not active" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'">
+<list decoration-muted="not active" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'">
                 <field name="name"/>
 <field name="product_id" optional="show"/>
 <field name="extension_type" optional="show"/>
@@ -19,7 +19,7 @@
 <field name="active" invisible="1"/>
 <field name="activity_ids" widget="list_activity" optional="show"/>
 
-            </tree>
+            </list>
         </field>
     </record>
 

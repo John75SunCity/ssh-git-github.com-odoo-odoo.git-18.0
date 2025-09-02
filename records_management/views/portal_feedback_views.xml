@@ -66,7 +66,7 @@
         <field name="model">portal.feedback</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
+            <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
                 <header>
                     <button name="action_mark_reviewed" type="object" string="Mark Reviewed"/>
                     <button name="action_respond" type="object" string="Respond"/>
@@ -84,7 +84,7 @@
                 <field name="state" widget="badge"/>
                 <field name="assigned_to_id" widget="many2one_avatar_user"/>
                 <field name="activity_exception_decoration" widget="activity_exception"/>
-            </tree>
+            </list>
         </field>
     </record>
 

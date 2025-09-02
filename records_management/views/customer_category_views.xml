@@ -7,7 +7,7 @@
             <field name="model">customer.category</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Customer Category">
+                <list string="Customer Category">
                     <field name="name"/>
                     <field name="description"/>
                     <field name="default_billing_model"/>
@@ -16,7 +16,7 @@
                     <field name="customer_count"/>
                     <field name="active"/>
                     <field name="company_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -47,12 +47,12 @@
                         <notebook>
                             <page string="Customers" name="customers">
                                 <field name="partner_ids" nolabel="1">
-                                    <tree string="Customers">
+                                    <list string="Customers">
                                         <field name="name"/>
                                         <field name="email"/>
                                         <field name="phone"/>
                                         <field name="is_company"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

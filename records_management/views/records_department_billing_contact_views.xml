@@ -152,7 +152,7 @@
         <field name="model">records.department.billing.contact</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="budget_utilization &amp;gt; 90" decoration-warning="budget_utilization &amp;gt; 75" decoration-success="budget_utilization &amp;lt;= 50">
+            <list decoration-danger="budget_utilization &amp;gt; 90" decoration-warning="budget_utilization &amp;gt; 75" decoration-success="budget_utilization &amp;lt;= 50">
                 <field name="contact_name" string="💼 Contact"/>
                 <field name="department_id" string="🏢 Department"/>
                 <field name="billing_role" string="🎯 Role"/>
@@ -164,7 +164,7 @@
                 <field name="approval_authority" string="✅ Approver" widget="boolean_toggle"/>
                 <field name="active" string="🔄 Active" widget="boolean_toggle"/>
                 <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>
 

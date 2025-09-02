@@ -8,13 +8,13 @@
             <field name="model">location.group</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Location Group">
+                <list string="Location Group">
                     name
                     code
                     manager_id
                     company_id
                     active
-                </tree>
+                </list>
             </field>
         </record>
 

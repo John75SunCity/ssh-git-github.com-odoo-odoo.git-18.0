@@ -8,7 +8,7 @@
             <field name="model">pickup.request.line</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Pickup Request Line">
+                <list string="Pickup Request Line">
                     request_id
                     container_id
                     item_description
@@ -17,7 +17,7 @@
                     notes
                     company_id
                     active
-                </tree>
+                </list>
             </field>
         </record>
 

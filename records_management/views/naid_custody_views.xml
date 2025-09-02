@@ -8,7 +8,7 @@
         <field name="model">naid.custody</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree decoration-success="event_type == 'creation'" decoration-info="event_type == 'pickup'" decoration-warning="event_type == 'transfer'" decoration-danger="event_type == 'destruction'">
+            <list decoration-success="event_type == 'creation'" decoration-info="event_type == 'pickup'" decoration-warning="event_type == 'transfer'" decoration-danger="event_type == 'destruction'">
                 <field name="event_date" string="Event Date" widget="datetime"/>
                 <field name="document_id" string="Document"/>
                 <field name="event_type" string="Event Type" widget="badge"/>
@@ -16,7 +16,7 @@
                 <field name="location_id" string="Location" optional="hide"/>
                 <field name="partner_id" string="Customer" optional="hide"/>
                 <field name="description" string="Description" optional="show"/>
-            </tree>
+            </list>
         </field>
     </record>
 

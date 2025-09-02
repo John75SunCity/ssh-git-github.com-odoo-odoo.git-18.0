@@ -92,13 +92,13 @@
                         <notebook>
                             <page string="📋 Certificate Items" name="items">
                                 <field name="certificate_item_ids">
-                                    <tree>
+                                    <list>
                                         <field name="document_id"/>
                                         <field name="container_id"/>
                                         <field name="quantity"/>
                                         <field name="weight"/>
                                         <field name="description"/>
-                                    </tree>
+                                    </list>
                                     <form>
                                         <group>
                                             <field name="document_id"/>
@@ -113,26 +113,26 @@
 
                             <page string="🔗 Chain of Custody" name="custody">
                                 <field name="custody_event_ids">
-                                    <tree>
+                                    <list>
                                         <field name="event_date"/>
                                         <field name="event_type"/>
                                         <field name="responsible_person"/>
                                         <field name="location"/>
                                         <field name="signature_verified"/>
                                         <field name="notes"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
 
                             <page string="📋 Audit Trail" name="audit">
                                 <field name="audit_log_ids">
-                                    <tree>
+                                    <list>
                                         <field name="event_date"/>
                                         <field name="event_type"/>
                                         <field name="user_id"/>
                                         <field name="description"/>
                                         <field name="ip_address"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
 

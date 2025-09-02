@@ -7,7 +7,7 @@
             <field name="model">chain.of.custody</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'rejected'" decoration-info="naid_compliant == True">
+                <list decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'rejected'" decoration-info="naid_compliant == True">
                     <field name="name" string="📋 Transfer Reference"/>
                     <field name="transfer_type" string="🔄 Type"/>
                     <field name="document_id" string="📄 Document"/>
@@ -20,7 +20,7 @@
                     <field name="security_level" string="🔒 Security"/>
                     <button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'"/>
                     <button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'confirmed'"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -121,7 +121,7 @@
 
                             <page string="🔗 Chain of Custody Events" name="events">
                                 <field name="custody_event_ids">
-                                    <tree>
+                                    <list>
                                         <field name="event_date"/>
                                         <field name="event_type"/>
                                         <field name="responsible_person"/>
@@ -130,7 +130,7 @@
                                         <field name="temperature"/>
                                         <field name="humidity"/>
                                         <field name="notes"/>
-                                    </tree>
+                                    </list>
                                     <form>
                                         <group>
                                             <field name="event_date"/>
@@ -148,7 +148,7 @@
 
                             <page string="📋 Audit Trail" name="audit">
                                 <field name="audit_log_ids">
-                                    <tree>
+                                    <list>
                                         <field name="event_date"/>
                                         <field name="event_type"/>
                                         <field name="user_id"/>
@@ -156,13 +156,13 @@
                                         <field name="ip_address"/>
                                         <field name="old_value"/>
                                         <field name="new_value"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
 
                             <page string="📦 Transfer Items" name="items">
                                 <field name="transfer_item_ids">
-                                    <tree>
+                                    <list>
                                         <field name="document_id"/>
                                         <field name="container_id"/>
                                         <field name="item_type"/>
@@ -170,7 +170,7 @@
                                         <field name="condition"/>
                                         <field name="serial_number"/>
                                         <field name="value" widget="monetary"/>
-                                    </tree>
+                                    </list>
                                     <form>
                                         <group>
                                             <field name="document_id"/>

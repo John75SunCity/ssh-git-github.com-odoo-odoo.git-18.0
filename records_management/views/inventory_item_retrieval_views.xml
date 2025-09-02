@@ -20,12 +20,12 @@ These definitions allow users to manage inventory item retrieval operations dire
             <field name="model">inventory.item.retrieval</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Inventory Item Retrieval">
+                <list string="Inventory Item Retrieval">
                     <field name="name"/>
                     <field name="retrieval_date"/>
                     <field name="responsible_id"/>
                     <field name="state"/>
-                </tree>
+                </list>
             </field>
         </record>
 

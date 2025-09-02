@@ -83,7 +83,7 @@
                             </group>
                             <separator string="Service Items"/>
                             <field name="service_item_ids" mode="list" widget="one2many">
-                                <tree string="Service Items" editable="bottom" decoration-info="discount_percent > 0">
+                                <list string="Service Items" editable="bottom" decoration-info="discount_percent > 0">
                                     <field name="product_id" required="1" options="{'no_create': True}"/>
                                     <field name="quantity" required="1" sum="Total Qty"/>
                                     <field name="unit_price" widget="monetary"/>
@@ -91,7 +91,7 @@
                                     <field name="subtotal" widget="monetary" sum="Total" readonly="1"/>
                                     <field name="tax_id" widget="many2many_tags" optional="hide"/>
                                     <field name="notes" optional="hide"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Pricing and Payment" name="pricing_payment">
@@ -113,13 +113,13 @@
                             </group>
                             <separator string="💵 Payment Split" invisible="payment_method_id == False"/>
                             <field name="payment_split_ids" mode="list" invisible="payment_method_id == False" widget="one2many">
-                                <tree string="Payment Methods" editable="bottom">
+                                <list string="Payment Methods" editable="bottom">
                                     <field name="payment_method_id" options="{'no_create': True}"/>
                                     <field name="amount" widget="monetary" sum="Total"/>
                                     <field name="payment_reference"/>
                                     <field name="transaction_id" optional="hide"/>
                                     <field name="authorization_code" optional="hide"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Audit and Compliance" name="audit_compliance">
@@ -139,14 +139,14 @@
                             </group>
                             <separator string="📄 Required Documentation"/>
                             <field name="required_document_ids" mode="list" widget="one2many">
-                                <tree string="Required Documents" editable="bottom" decoration-success="collected == True" decoration-warning="required == True and collected == False">
+                                <list string="Required Documents" editable="bottom" decoration-success="collected == True" decoration-warning="required == True and collected == False">
                                     <field name="document_type"/>
                                     <field name="document_name"/>
                                     <field name="required" widget="boolean_toggle"/>
                                     <field name="collected" widget="boolean_toggle"/>
                                     <field name="collection_date" widget="datetime" readonly="collected == False"/>
                                     <field name="notes" optional="hide"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Processing History" name="processing_history">
@@ -166,14 +166,14 @@
                             </group>
                             <separator string="📝 Processing Log"/>
                             <field name="processing_log_ids" mode="list" readonly="1" widget="one2many">
-                                <tree string="Processing Steps" decoration-success="step_status == 'completed'" decoration-warning="step_status == 'in_progress'" decoration-danger="step_status == 'failed'">
+                                <list string="Processing Steps" decoration-success="step_status == 'completed'" decoration-warning="step_status == 'in_progress'" decoration-danger="step_status == 'failed'">
                                     <field name="step_time" widget="datetime"/>
                                     <field name="step_name"/>
                                     <field name="step_description"/>
                                     <field name="processed_by"/>
                                     <field name="step_status" widget="badge" decoration-success="step_status == 'completed'" decoration-warning="step_status == 'in_progress'" decoration-danger="step_status == 'failed'"/>
                                     <field name="duration_seconds" widget="integer" string="Duration (sec)"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Integration Status" name="integration_status">
@@ -196,14 +196,14 @@
                             </group>
                             <separator string="⚠️ Integration Errors" invisible="integration_errors == False"/>
                             <field name="integration_error_ids" mode="list" readonly="1" invisible="integration_errors == False" widget="one2many">
-                                <tree string="Integration Errors" decoration-danger="resolved == False" decoration-muted="resolved == True">
+                                <list string="Integration Errors" decoration-danger="resolved == False" decoration-muted="resolved == True">
                                     <field name="error_time" widget="datetime"/>
                                     <field name="error_type"/>
                                     <field name="error_message"/>
                                     <field name="error_details" optional="hide"/>
                                     <field name="resolved" widget="boolean_toggle"/>
                                     <field name="resolution_notes" optional="hide"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
@@ -223,7 +223,7 @@
         <field name="model">visitor.pos.wizard</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
+            <list string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
                 <field name="wizard_start_time" string="Processing Date" widget="datetime"/>
                 <field name="visitor_name" string="Visitor"/>
                 <field name="service_type" string="Service Type"/>
@@ -235,7 +235,7 @@
                 <field name="customer_record_created" string="Customer Created" widget="boolean_toggle"/>
                 <field name="naid_compliance_required" string="NAID Required" widget="boolean_toggle"/>
                 <field name="total_processing_time" string="Processing Time" widget="float"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -124,7 +124,7 @@
         <field name="model">shredding.hard_drive</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree string="Hard Drives for Shredding" decoration-success="destroyed" 
+            <list string="Hard Drives for Shredding" decoration-success="destroyed" 
                   decoration-warning="verified_before_destruction and not destroyed"
                   decoration-info="scanned_at_customer and not verified_before_destruction">
                 <field name="serial_number"/>
@@ -138,7 +138,7 @@
                 <field name="destruction_date"/>
                 <field name="destruction_method"/>
                 <field name="included_in_certificate" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </record>
 

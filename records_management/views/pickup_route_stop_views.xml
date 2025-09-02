@@ -109,7 +109,7 @@
         <field name="model">pickup.route.stop</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-<tree decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" decoration-danger="priority == 'urgent'">
+<list decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" decoration-danger="priority == 'urgent'">
     <field name="stop_sequence"/>
 
                 <field name="name"/>
@@ -125,7 +125,7 @@
 <field name="pickup_request_id"/>
 <field name="company_id" groups="base.group_multi_company"/>
 
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -76,7 +76,7 @@
     </record>
 
     <!-- Enhanced Fleet Vehicle Tree View with Records Information -->
-    <record id="fleet_vehicle_view_tree_records" model="ir.ui.view">
+    <record id="fleet_vehicle_view_list_records" model="ir.ui.view">
         <field name="name">fleet.vehicle.view.tree.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>

@@ -146,13 +146,13 @@
                     <notebook>
                         <page string="Destruction Items">
                             <field name="destruction_item_ids" mode="list">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="item_description"/>
                                     <field name="quantity"/>
                                     <field name="weight"/>
                                     <field name="container_type"/>
                                     <field name="destruction_status"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Service Details">

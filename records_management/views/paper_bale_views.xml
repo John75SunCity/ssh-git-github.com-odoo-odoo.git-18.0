@@ -83,7 +83,7 @@
         <field name="model">paper.bale</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree decoration-success="bale_status == 'shipped' and loaded_on_trailer == True"
+            <list decoration-success="bale_status == 'shipped' and loaded_on_trailer == True"
                   decoration-warning="bale_status == 'ready_for_loading'"
                   decoration-info="quality_grade == 'A'">
                 <field name="name" string="📦 Bale ID"/>
@@ -102,7 +102,7 @@
                 <button name="action_load_trailer" type="object" string="Load"
                         icon="fa-truck" class="btn-link"
                         invisible="loaded_on_trailer"/>
-            </tree>
+            </list>
         </field>
     </record>
 

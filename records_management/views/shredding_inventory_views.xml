@@ -7,7 +7,7 @@
             <field name="model">shredding.inventory.item</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Shredding Inventory Items">
+                <list string="Shredding Inventory Items">
                     <field name="display_name"/>
                     <field name="container_id"/>
                     <field name="document_id"/>
@@ -15,7 +15,7 @@
                     <field name="status"/>
                     <field name="total_cost"/>
                     <field name="work_order_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -100,7 +100,7 @@
             <field name="model">shredding.picklist.item</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Picklist Items" editable="bottom">
+                <list string="Picklist Items" editable="bottom">
                     <field name="display_name"/>
                     <field name="container_id"/>
                     <field name="document_id"/>
@@ -111,7 +111,7 @@
                     <field name="notes"/>
                     <button name="action_mark_picked" type="object" string="Mark Picked" icon="fa-check" invisible="status != 'pending_pickup'"/>
                     <button name="action_mark_not_found" type="object" string="Not Found" icon="fa-exclamation-triangle" invisible="status != 'pending_pickup'"/>
-                </tree>
+                </list>
             </field>
         </record>
 

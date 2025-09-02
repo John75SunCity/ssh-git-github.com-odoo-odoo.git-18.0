@@ -7,7 +7,7 @@
             <field name="model">customer.feedback</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree decoration-success="state == 'resolved'" decoration-warning="state == 'in_progress'" decoration-danger="escalation_level == 'critical'" decoration-info="sentiment_category == 'negative'">
+                <list decoration-success="state == 'resolved'" decoration-warning="state == 'in_progress'" decoration-danger="escalation_level == 'critical'" decoration-info="sentiment_category == 'negative'">
                     <field name="name" string="📝 Feedback"/>
                     <field name="partner_id" string="👤 Customer"/>
                     <field name="rating" string="⭐ Rating" widget="star_rating"/>
@@ -20,7 +20,7 @@
                     <field name="response_time" string="⏱️ Response Time"/>
                     <button name="action_acknowledge" type="object" string="Ack" icon="fa-check" class="btn-link" invisible="state != 'new'"/>
                     <button name="action_resolve" type="object" string="Resolve" icon="fa-check-circle" class="btn-link" invisible="state not in ['new', 'acknowledged', 'in_progress']"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -115,14 +115,14 @@
 
                             <page string="📧 Communications" name="communications">
                                 <field name="communication_ids">
-                                    <tree>
+                                    <list>
                                         <field name="communication_date"/>
                                         <field name="communication_type"/>
                                         <field name="subject"/>
                                         <field name="sent_by_id"/>
                                         <field name="recipient_ids"/>
                                         <field name="is_response"/>
-                                    </tree>
+                                    </list>
                                     <form>
                                         <group>
                                             <field name="communication_date"/>

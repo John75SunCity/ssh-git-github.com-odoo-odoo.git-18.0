@@ -7,7 +7,7 @@
             <field name="model">container.retrieval</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Container Retrieval">
+                <list string="Container Retrieval">
                     <field name="name"/>
                     <field name="container_id"/>
                     <field name="partner_id"/>
@@ -20,7 +20,7 @@
                     <field name="retrieval_cost"/>
                     <field name="currency_id"/>
                     <field name="active"/>
-                </tree>
+                </list>
             </field>
         </record>
 

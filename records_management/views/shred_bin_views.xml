@@ -12,7 +12,7 @@
         <field name="model">shred.bin</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="current_fill_level &amp;gt;= 75 and state=='in_service'" decoration-success="state=='in_service' and current_fill_level &amp;lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
+            <list string="Customer Shred Bins" decoration-danger="state=='full'" decoration-warning="current_fill_level &amp;gt;= 75 and state=='in_service'" decoration-success="state=='in_service' and current_fill_level &amp;lt; 75" decoration-info="state=='deployed'" decoration-muted="state=='retired'" decoration-bf="state=='maintenance'" class="o_list_view_shred_bins">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="bin_size"/>
@@ -24,7 +24,7 @@
                 <field name="service_count"/>
                 <field name="user_id"/>
                 <field name="active" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>    <!-- ============================================================================ -->
     <!-- Form view for SHRED -->
@@ -285,7 +285,7 @@
         <field name="context">{'create': False, 'delete': False, 'edit': False}</field>
         <field name="view_ids" eval="[(5, 0, 0),
                                       (0, 0, {'view_mode': 'kanban', 'view_id': ref('shred_bin_view_kanban_portal')}),
-                                      (0, 0, {'view_mode': 'tree', 'view_id': ref('shred_bin_view_tree_portal')}),
+                                      (0, 0, {'view_mode': 'tree', 'view_id': ref('shred_bin_view_list_portal')}),
                                       (0, 0, {'view_mode': 'form', 'view_id': ref('shred_bin_view_form_portal')})]"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

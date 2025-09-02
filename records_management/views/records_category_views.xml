@@ -6,12 +6,12 @@
             <field name="model">records.category</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Records Categories">
+                <list string="Records Categories">
                     <field name="name"/>
                     <field name="complete_name"/>
                     <field name="parent_id"/>
                     <field name="document_count"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -30,11 +30,11 @@
                         <notebook>
                             <page string="Document Types">
                                 <field name="document_type_ids">
-                                    <tree string="Document Types">
+                                    <list string="Document Types">
                                         <field name="name"/>
                                         <field name="code"/>
                                         <field name="state"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>

@@ -9,7 +9,7 @@
         <field name="model">document.retrieval.work.order</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Document Retrieval Work Orders" decoration-info="state=='draft'" decoration-warning="state=='confirmed'" decoration-success="state=='completed'">
+            <list string="Document Retrieval Work Orders" decoration-info="state=='draft'" decoration-warning="state=='confirmed'" decoration-success="state=='completed'">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="priority"/>
@@ -19,7 +19,7 @@
                 <field name="has_custom_rates" widget="boolean_toggle"/>
                 <field name="state" widget="badge"/>
                 <field name="technician_id"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -100,7 +100,7 @@
                     <notebook>
                         <page string="Items to Retrieve" name="items">
                             <field name="retrieval_item_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="item_type"/>
                                     <field name="box_id" attrs="{'required': [('item_type', '=', 'box')], 'invisible': [('item_type', '!=', 'box')]}"/>
                                     <field name="document_id" attrs="{'required': [('item_type', '=', 'document')], 'invisible': [('item_type', '!=', 'document')]}"/>
@@ -109,7 +109,7 @@
                                     <field name="current_location"/>
                                     <field name="status" widget="badge"/>
                                     <field name="retrieval_notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
 

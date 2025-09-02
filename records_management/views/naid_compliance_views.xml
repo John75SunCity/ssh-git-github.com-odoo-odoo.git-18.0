@@ -83,7 +83,7 @@
         <field name="model">naid.compliance</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-            <tree decoration-success="compliance_status == 'certified' and certificate_valid == True"
+            <list decoration-success="compliance_status == 'certified' and certificate_valid == True"
                   decoration-warning="compliance_status == 'pending_audit'"
                   decoration-danger="certificate_valid == False or expiry_date &amp;lt; context_today()"
                   decoration-info="naid_level == 'AAA'">
@@ -101,7 +101,7 @@
                         invisible="not audit_required"/>
                 <button name="action_renew_certificate" type="object" string="Renew"
                                                                                                             icon="fa-refresh" class="btn-link"/>
-            </tree>
+            </list>
         </field>
     </record>    <!-- Form view for Enhanced -->
     <record id="naid_compliance_view_form" model="ir.ui.view">
@@ -241,7 +241,7 @@ invisible="naid_level != 'AAA'">
                         </page>
                         <page string="📋 Compliance Checklist" name="checklist">
                             <field name="compliance_checklist_ids" mode="list">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="requirement_name"/>
                                     <field name="requirement_type"/>
                                     <field name="compliance_status"/>
@@ -249,7 +249,7 @@ invisible="naid_level != 'AAA'">
                                     <field name="verification_method"/>
                                     <field name="responsible_person"/>
                                     <field name="notes"/>
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="📊 Performance Metrics" name="metrics">

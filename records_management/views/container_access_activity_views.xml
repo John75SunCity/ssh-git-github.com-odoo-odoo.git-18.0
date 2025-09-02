@@ -21,7 +21,7 @@
             <field name="type">tree</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
+                <list string="Container Access Activity" decoration-info="status == 'in_progress'" decoration-success="status == 'completed'">
                     <field name="name"/>
                     <field name="visitor_id"/>
                     <field name="container_id"/>
@@ -30,7 +30,7 @@
                     <field name="description"/>
                     <field name="status"/>
                     <field name="authorized_by_id"/>
-                </tree>
+                </list>
             </field>
         </record>
 

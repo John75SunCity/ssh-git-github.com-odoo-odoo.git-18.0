@@ -8,7 +8,7 @@
         <field name="model">revenue.forecast.line</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Revenue Forecast Lines"
+            <list string="Revenue Forecast Lines"
                   decoration-success="status=='achieved'"
                   decoration-warning="status=='in_progress'"
                   decoration-danger="status=='missed'">
@@ -22,7 +22,7 @@
                 <field name="confidence_level"/>
                 <field name="status"/>
                 <field name="currency_id" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>
 

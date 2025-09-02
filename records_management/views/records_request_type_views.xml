@@ -7,11 +7,11 @@
             <field name="model">records.request.type</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Request Types">
+                <list string="Request Types">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="active"/>
-                </tree>
+                </list>
             </field>
         </record>
 

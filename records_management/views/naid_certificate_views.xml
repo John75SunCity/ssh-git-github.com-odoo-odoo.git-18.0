@@ -8,7 +8,7 @@
         <field name="model">naid.certificate</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-<tree decoration-success="state=='issued'" decoration-muted="state=='cancelled'" decoration-info="state=='draft'">
+<list decoration-success="state=='issued'" decoration-muted="state=='cancelled'" decoration-info="state=='draft'">
                 <field name="name"/>
 <field name="partner_id"/>
 <field name="issue_date"/>
@@ -17,7 +17,7 @@
 <field name="state" widget="badge" decoration-success="state == 'issued'" decoration-info="state == 'draft'"/>
 <field name="company_id" groups="base.group_multi_company"/>
 
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -64,13 +64,13 @@
 <notebook>
     <page string="Destroyed Items" name="destroyed_items">
         <field name="destruction_item_ids">
-            <tree editable="bottom">
+            <list editable="bottom">
                 <field name="name"/>
                 <field name="material_type"/>
                 <field name="quantity"/>
                 <field name="uom_id"/>
                 <field name="weight" sum="Total Weight"/>
-            </tree>
+            </list>
         </field>
         <separator string="Destroyed Containers"/>
         <field name="container_ids" widget="many2many_tags" options="{'no_create': True}" placeholder="Add containers..."/>

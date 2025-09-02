@@ -8,10 +8,10 @@
             <field name="model">hard.drive.scan.wizard.line</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Hard Drive Scan Wizard Line">
+                <list string="Hard Drive Scan Wizard Line">
                     <field name="wizard_id"/>
                     <field name="serial_number"/>
-                </tree>
+                </list>
             </field>
         </record>
 

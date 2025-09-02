@@ -53,7 +53,7 @@
                     <div class="mt-3">
                         <h4>📋 Selected Documents:</h4>
                         <field name="document_ids" mode="list" nolabel="1">
-                            <tree decoration-success="permanent_flag == True" 
+                            <list decoration-success="permanent_flag == True" 
                                   decoration-muted="permanent_flag == False">
                                 <field name="name"/>
                                 <field name="partner_id"/>
@@ -63,7 +63,7 @@
                                        invisible="not permanent_flag"/>
                                 <field name="permanent_flag_set_date" string="Set Date"
                                        invisible="not permanent_flag"/>
-                            </tree>
+                            </list>
                         </field>
                     </div>
                 </sheet>

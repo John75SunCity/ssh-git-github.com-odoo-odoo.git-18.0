@@ -206,12 +206,12 @@
                     <notebook>
                         <page string="Documents" name="documents">
                             <field name="document_ids" mode="tree,form" context="{'default_container_id': id}">
-                                <tree string="Documents">
+                                <list string="Documents">
                                     <field name="name"/>
                                     <field name="document_type_id"/>
                                     <field name="state"/>
                                     <field name="create_date"/>
-                                </tree>
+                                </list>
                                 <form string="Document">
                                     <group>
                                         <field name="name"/>

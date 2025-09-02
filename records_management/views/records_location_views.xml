@@ -86,7 +86,7 @@
             <field name="model">records.location</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree decoration-success="current_utilization &amp;lt; storage_capacity * 0.8" decoration-warning="current_utilization &amp;gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &amp;gt;= storage_capacity">
+                <list decoration-success="current_utilization &amp;lt; storage_capacity * 0.8" decoration-warning="current_utilization &amp;gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &amp;gt;= storage_capacity">
                     <field name="name" string="🏢 Location Name"/>
                     <field name="location_type" string="📂 Type"/>
                     <field name="storage_capacity" string="🔢 Capacity"/>
@@ -95,7 +95,7 @@
                     <field name="utilization_percentage" string="📊 Utilization %" widget="percentage"/>
                     <field name="active" string="✅ Active"/>
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
-                </tree>
+                </list>
             </field>
         </record>
 

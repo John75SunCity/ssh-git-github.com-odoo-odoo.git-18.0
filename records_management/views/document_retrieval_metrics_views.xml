@@ -9,7 +9,7 @@
         <field name="model">document.retrieval.metrics</field>
         <field name="type">tree</field>
         <field name="arch" type="xml">
-            <tree string="Retrieval Metrics" default_order="retrieval_date desc">
+            <list string="Retrieval Metrics" default_order="retrieval_date desc">
                 <field name="name"/>
                 <field name="metric_type"/>
                 <field name="metric_value"/>
@@ -17,7 +17,7 @@
                 <field name="performance_rating"/>
                 <field name="quality_score"/>
                 <field name="retrieval_date"/>
-            </tree>
+            </list>
         </field>
     </record>
 

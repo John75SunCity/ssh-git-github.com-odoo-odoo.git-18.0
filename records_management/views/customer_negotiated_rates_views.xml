@@ -7,7 +7,7 @@
             <field name="model">customer.negotiated.rates</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree decoration-info="state == 'draft'" decoration-warning="state == 'negotiating'" decoration-success="state == 'active'" decoration-danger="state == 'expired'" decoration-muted="state == 'cancelled'">
+                <list decoration-info="state == 'draft'" decoration-warning="state == 'negotiating'" decoration-success="state == 'active'" decoration-danger="state == 'expired'" decoration-muted="state == 'cancelled'">
                     <field name="partner_id"/>
                     <field name="name"/>
                     <field name="base_rate_id"/>
@@ -19,7 +19,7 @@
                     <field name="global_discount_percent" widget="percentage"/>
                     <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'negotiating'" decoration-success="state == 'active'" decoration-danger="state == 'expired'" decoration-muted="state == 'cancelled'"/>
                     <field name="contract_reference"/>
-                </tree>
+                </list>
             </field>
         </record>
 

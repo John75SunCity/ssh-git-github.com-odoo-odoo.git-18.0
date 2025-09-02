@@ -68,7 +68,7 @@
         <field name="model">bin.key.management</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-<tree string="Bin Key Management" decoration-success="status == 'issued'" decoration-warning="status == 'lost'" decoration-danger="status == 'replaced'" decoration-info="status == 'returned'">
+<list string="Bin Key Management" decoration-success="status == 'issued'" decoration-warning="status == 'lost'" decoration-danger="status == 'replaced'" decoration-info="status == 'returned'">
                 <field name="key_number"/>
                 <field name="partner_id"/>
                 <field name="partner_company"/>
@@ -84,7 +84,7 @@
 <field name="company_id" optional="hide" groups="base.group_multi_company"/>
 <field name="active" optional="hide"/>
 
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -343,7 +343,7 @@
         <field name="model">bin.unlock.service</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
-<tree string="Bin Unlock Services" decoration-success="billable == True and invoice_created == True" decoration-warning="billable == False" decoration-info="completed == True">
+<list string="Bin Unlock Services" decoration-success="billable == True and invoice_created == True" decoration-warning="billable == False" decoration-info="completed == True">
                 <field name="service_number"/>
                 <field name="partner_id"/>
                 <field name="service_date"/>
@@ -356,7 +356,7 @@
 
                 <field name="technician_id"/>
                 <field name="invoice_created" widget="boolean_toggle"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -578,7 +578,7 @@ Perfect for managing emergency access and generating additional revenue.
     </record>
 
 <!-- Customer Partner Tree View Extension for Key Restrictions -->
-<record id="res_partner_view_tree_key_restrictions" model="ir.ui.view">
+<record id="res_partner_view_list_key_restrictions" model="ir.ui.view">
     <field name="name">base.view_partner_tree.inherit.key.restrictions</field>  <!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_tree"/>
@@ -687,7 +687,7 @@ Perfect for managing emergency access and generating additional revenue.
 </record>
 
 <!-- Bin Unlock Service Tree View Extension -->
-<record id="bin_unlock_service_view_tree_key_restrictions" model="ir.ui.view">
+<record id="bin_unlock_service_view_list_key_restrictions" model="ir.ui.view">
     <field name="name">bin_unlock_service_view_tree.inherit.key.restrictions</field>  <!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_tree"/>  <!-- Updated: Corrected to match the exact XML ID of the view being inherited -->

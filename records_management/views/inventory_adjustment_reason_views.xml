@@ -8,12 +8,12 @@
             <field name="model">inventory.adjustment.reason</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Inventory Adjustment Reason">
+                <list string="Inventory Adjustment Reason">
                     <field name="name"/>
                     <field name="code"/>
                     <field name="description"/>
                     <field name="active"/>
-                </tree>
+                </list>
             </field>
         </record>
 

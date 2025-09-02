@@ -8,13 +8,13 @@
             <field name="model">inventory.item</field>
             <field name="type">tree</field>
         <field name="arch" type="xml">
-                <tree string="Inventory Item">
+                <list string="Inventory Item">
                     <field name="name"/>
                     <field name="product_id"/>
                     <field name="serial_number"/>
                     <field name="location_id"/>
                     <field name="status"/>
-                </tree>
+                </list>
             </field>
         </record>
 
