@@ -7,6 +7,7 @@ class RecordsRequest(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Name', required=True, copy=False, readonly=True, index=True, default=lambda self: _('New'))
+    active = fields.Boolean(default=True, tracking=True)
     request_type_id = fields.Many2one('records.request.type', string='Request Type', required=True, tracking=True)
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
     state = fields.Selection([

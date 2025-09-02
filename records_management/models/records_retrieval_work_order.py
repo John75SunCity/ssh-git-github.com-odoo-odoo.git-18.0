@@ -11,6 +11,7 @@ class RecordsRetrievalWorkOrder(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Work Order', required=True, readonly=True)
+    active = fields.Boolean(default=True, tracking=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('in_progress', 'In Progress'),

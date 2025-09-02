@@ -7,6 +7,7 @@ class RecordsTagCategory(models.Model):
     _order = 'sequence, name'
 
     name = fields.Char(string='Category Name', required=True, translate=True)
+    active = fields.Boolean(default=True, tracking=True)
     sequence = fields.Integer(string='Sequence', default=10)
     tag_ids = fields.One2many('records.tag', 'category_id', string='Tags')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
@@ -14,4 +15,3 @@ class RecordsTagCategory(models.Model):
     _sql_constraints = [
         ('name_uniq', 'unique (name, company_id)', "A tag category with this name already exists in this company."),
     ]
-
