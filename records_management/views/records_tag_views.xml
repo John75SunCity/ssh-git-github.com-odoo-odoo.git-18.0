@@ -2,7 +2,7 @@
 <odoo>
     <data>
 <!-- Tree view for Minimal -->
-    
+
     <!-- Tree view for base.rate -->
     <record id="records_tag_view_tree" model="ir.ui.view">
         <field name="name">records.tag.view.tree</field>
@@ -50,8 +50,8 @@
         <field name="name">Records Tags</field>
         <field name="res_model">records.tag</field>
         <field name="view_mode">list,form</field>
-        <field name="view_id" ref="records_tag_tree_view_simple"/>
-        <field name="search_view_id" ref="records_tag_search_view_simple"/>
+        <field name="view_id" ref="records_tag_view_tree"/>
+        <field name="search_view_id" ref="records_tag_view_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first record tag!

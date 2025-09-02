@@ -215,8 +215,8 @@
                             <field name="movement_ids" mode="tree">
                                 <tree string="Movement History">
                                     <field name="create_date"/>
-                                    <field name="location_id"/>
-                                    <field name="destination_location_id"/>
+                                    <field name="from_location_id"/>
+                                    <field name="to_location_id"/>
                                     <field name="movement_type"/>
                                     <field name="user_id"/>
                                     <field name="notes"/>
