@@ -34,7 +34,7 @@ class RecordsContainer(models.Model):
         "records.location",
         string="Current Location",
         tracking=True,
-        domain="[('active', '=', True), ('state', '=', 'active')]" ,
+        domain="[('active', '=', True), ('state', '=', 'active')]",
     )
     container_type_id = fields.Many2one("records.container.type", string="Container Type", required=True)
     retention_policy_id = fields.Many2one("records.retention.policy", string="Retention Policy")

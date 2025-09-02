@@ -245,10 +245,8 @@ class RecordsChainOfCustody(models.Model):
         self.ensure_one()
 
         # Check for previous custody records:
-        previous_records = self.search([
-                ("document_id", "=", self.document_id.id),
-                ("custody_date", "<", self.custody_date),
-            ],
+        previous_records = self.search(
+            [("document_id", "=", self.document_id.id), ("custody_date", "<", self.custody_date)],
             order="custody_date desc",
             limit=1,
         )
@@ -495,4 +493,3 @@ class RecordsChainOfCustody(models.Model):
         custody_record.verify_custody_integrity()
 
         return custody_record
-

@@ -607,11 +607,7 @@ class ChainOfCustody(models.Model):
     def get_full_chain(self):
         domain = []
         if self.container_id and self.document_id:
-            domain = [
-                "|",
-                ("container_id", "=", self.container_id.id),
-                ("document_id", "=", self.document_id.id),
-            ]
+            domain = ["|", ("container_id", "=", self.container_id.id), ("document_id", "=", self.document_id.id)]
         elif self.container_id:
             domain = [("container_id", "=", self.container_id.id)]
         elif self.document_id:

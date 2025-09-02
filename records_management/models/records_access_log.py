@@ -174,13 +174,11 @@ class RecordsAccessLog(models.Model):
             if record.access_date and record.access_date > fields.Datetime.now():
                 raise ValidationError(_("Access date cannot be in the future."))
 
-
     def _check_risk_score(self):
         """Validate risk score is within valid range"""
         for record in self:
             if not 0 <= record.risk_score <= 100:
                 raise ValidationError(_("Risk score must be between 0 and 100."))
-
 
     def _check_duration(self):
         """Validate access duration is reasonable"""
@@ -191,7 +189,6 @@ class RecordsAccessLog(models.Model):
                 record.message_post(
                     body=_("Warning: Unusually long access duration detected: %s seconds") % record.duration_seconds
                 )
-
 
     # ============================================================================
     # UTILITY METHODS
@@ -217,14 +214,14 @@ class RecordsAccessLog(models.Model):
 
         if name:
             domain = [
-                "|", "|",
+                "|",
+                "|",
                 ("name", operator, name),
                 ("container_id.name", operator, name),
                 ("user_id.name", operator, name),
             ]
 
         return self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
-
 
     def get_access_statistics(self, domain=None, group_by="access_type"):
         """Get access statistics for reporting"""
@@ -247,7 +244,6 @@ class RecordsAccessLog(models.Model):
             item["%s_count" % group_by]
             for item in grouped_data
         }
-
 
     def cleanup_old_logs(self, days=365):
         """Clean up old access logs based on retention policy"""
@@ -305,7 +301,6 @@ class RecordsAccessLog(models.Model):
             'access_logs': access_logs.ids,
         }
 
-
     def action_export_audit_data(self):
         """Export audit data for compliance reporting"""
         self.ensure_one()
@@ -328,7 +323,6 @@ class RecordsAccessLog(models.Model):
         }
 
         return export_data
-
 
     def get_security_dashboard_data(self):
         """Get data for security monitoring dashboard"""

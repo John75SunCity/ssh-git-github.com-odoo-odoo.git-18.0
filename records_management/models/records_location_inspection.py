@@ -80,10 +80,10 @@ class RecordsLocationInspection(models.Model):
     def _check_unique_inspection_per_day(self):
         for record in self:
             domain = [
-                ('id', '!=', record.id),
-                ('location_id', '=', record.location_id.id),
-                ('inspection_date', '=', record.inspection_date),
-                ('state', '!=', 'cancelled'),
+                ("id", "!=", record.id),
+                ("location_id", "=", record.location_id.id),
+                ("inspection_date", "=", record.inspection_date),
+                ("state", "!=", "cancelled"),
             ]
             if self.search_count(domain) > 0:
                 raise ValidationError(_("An inspection for this location on this date already exists."))

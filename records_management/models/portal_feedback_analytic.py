@@ -1,4 +1,3 @@
-
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -175,4 +174,3 @@ class PortalFeedbackAnalytic(models.Model):
             "improvement_trend": 'insufficient_data',
             "trend_percentage": 0.0,
         })
-
