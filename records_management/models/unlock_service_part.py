@@ -33,9 +33,15 @@ class UnlockServicePart(models.Model):
     markup_percentage = fields.Float(string="Markup (%)", default=20.0)
 
     currency_id = fields.Many2one('res.currency', string="Currency", related='company_id.currency_id')
-    service_price = fields.Monetary(string="Service Price", compute='_compute_service_price', store=True)
-    total_cost = fields.Monetary(string="Total Cost", compute='_compute_total_amounts', store=True)
-    total_price = fields.Monetary(string="Total Price", compute='_compute_total_amounts', store=True)
+    service_price = fields.Monetary(
+        string="Service Price", compute="_compute_service_price", store=True, currency_field="currency_id"
+    )
+    total_cost = fields.Monetary(
+        string="Total Cost", compute="_compute_total_amounts", store=True, currency_field="currency_id"
+    )
+    total_price = fields.Monetary(
+        string="Total Price", compute="_compute_total_amounts", store=True, currency_field="currency_id"
+    )
 
     state = fields.Selection([
         ('draft', 'Draft'),

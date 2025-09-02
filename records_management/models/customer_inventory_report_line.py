@@ -68,8 +68,10 @@ class CustomerInventoryReportLine(models.Model):
     # FINANCIALS
     # ============================================================================
     currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', comodel_name='res.currency')
-    monthly_storage_cost = fields.Monetary(string='Monthly Storage Cost')
-    total_storage_cost = fields.Monetary(string='Total Storage Cost', compute='_compute_total_storage_cost', store=True)
+    monthly_storage_cost = fields.Monetary(string="Monthly Storage Cost", currency_field="currency_id")
+    total_storage_cost = fields.Monetary(
+        string="Total Storage Cost", currency_field="currency_id", compute="_compute_total_storage_cost", store=True
+    )
     storage_months = fields.Integer(string='Months in Storage', compute='_compute_storage_months', store=True)
 
     # ============================================================================
@@ -244,5 +246,3 @@ class CustomerInventoryReportLine(models.Model):
             name = line.display_name
             result.append((line.id, name))
         return result
-
-

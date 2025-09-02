@@ -47,7 +47,9 @@ class DiscountRule(models.Model):
     threshold = fields.Float(string='Minimum Threshold', help="Minimum quantity or volume to trigger the discount.", tracking=True)
 
     discount_percentage = fields.Float(string='Discount (%)', help="Percentage-based discount.", tracking=True)
-    discount_amount = fields.Monetary(string='Fixed Discount Amount', help="Fixed amount discount.", tracking=True)
+    discount_amount = fields.Monetary(
+        string="Fixed Discount Amount", help="Fixed amount discount.", tracking=True, currency_field="currency_id"
+    )
 
     start_date = fields.Date(string='Start Date', help="The date from which this rule is effective.", tracking=True)
     end_date = fields.Date(string='End Date', help="The date until which this rule is effective.", tracking=True)

@@ -201,9 +201,10 @@ class OdooValidator:
                 access_models = set()
                 for line in data_lines:
                     parts = line.split(",")
-                    if parts:  # Use collection check instead of len()
-                        model_name = parts[1].strip() if parts[1:] else ""  # Check if we have at least 2 parts
-                        if model_name:
+                    if parts and len(parts) >= 3:  # Need at least id, name, model_id:id
+                        model_ref = parts[2].strip()  # model_id:id column
+                        if model_ref.startswith("model_"):
+                            model_name = model_ref[6:]  # Remove 'model_' prefix
                             access_models.add(model_name)
 
                 # Check for missing access rules
@@ -213,11 +214,11 @@ class OdooValidator:
                         with open(py_file, "r", encoding="utf-8") as f:
                             content = f.read()
 
-                        # Find model names
+                        # Find model names - more specific pattern to avoid false matches
                         import re
 
-                        name_pattern = r'_name\s*=\s*["\']([^"\']+)["\']'
-                        matches = re.findall(name_pattern, content)
+                        name_pattern = r'^\s*_name\s*=\s*["\']([^"\']+)["\']'
+                        matches = re.findall(name_pattern, content, re.MULTILINE)
 
                         for model_name in matches:
                             if model_name not in access_models:
@@ -473,20 +474,69 @@ class OdooValidator:
                 # Check for common domain syntax issues
                 import re
 
-                # Check for unclosed brackets in domain expressions
-                domain_pattern = r"domain\s*=\s*\[([^\]]*)"
-                domains = re.findall(domain_pattern, content)
+                # Find domain assignments - handle multi-line domains properly
+                # Look for domain = [ patterns
+                domain_pattern = r"domain\s*=\s*\["
+                domain_starts = list(re.finditer(domain_pattern, content))
 
-                for domain in domains:
-                    # Count brackets
-                    open_brackets = domain.count("[")
-                    close_brackets = domain.count("]")
-                    if open_brackets != close_brackets:
-                        self.errors.append(f"❌ DOMAIN: {file_path.name}: Unbalanced brackets in domain expression")
+                for match in domain_starts:
+                    start_pos = match.end() - 1  # Position of the opening bracket
 
-                    # Check for common syntax errors
-                    if domain.strip().endswith(","):
-                        self.warnings.append(f"⚠️ DOMAIN: {file_path.name}: Domain expression ends with comma")
+                    # Find the matching closing bracket
+                    bracket_count = 0
+                    end_pos = start_pos
+                    in_string = False
+                    string_char = None
+
+                    while end_pos < len(content):
+                        char = content[end_pos]
+
+                        # Handle string literals
+                        if not in_string and char in ['"', "'"]:
+                            in_string = True
+                            string_char = char
+                        elif in_string and char == string_char:
+                            # Check for escaped quotes
+                            escape_count = 0
+                            check_pos = end_pos - 1
+                            while check_pos >= 0 and content[check_pos] == "":
+                                escape_count += 1
+                                check_pos -= 1
+                            if escape_count % 2 == 0:  # Not escaped
+                                in_string = False
+                                string_char = None
+                        elif not in_string:
+                            if char == "[":
+                                bracket_count += 1
+                            elif char == "]":
+                                bracket_count -= 1
+                                if bracket_count == 0:
+                                    # Found the matching closing bracket
+                                    domain_expr = content[start_pos : end_pos + 1]
+
+                                    # Count brackets in the domain expression
+                                    open_brackets = domain_expr.count("[")
+                                    close_brackets = domain_expr.count("]")
+                                    if open_brackets != close_brackets:
+                                        self.errors.append(
+                                            f"❌ DOMAIN: {file_path.name}: Unbalanced brackets in domain expression"
+                                        )
+
+                                    # Check for common syntax errors
+                                    if domain_expr.strip().endswith(","):
+                                        self.warnings.append(
+                                            f"⚠️ DOMAIN: {file_path.name}: Domain expression ends with comma"
+                                        )
+
+                                    break
+
+                        end_pos += 1
+
+                    # If we didn't find a matching bracket, it's an error
+                    if bracket_count != 0:
+                        self.errors.append(
+                            f"❌ DOMAIN: {file_path.name}: Unclosed domain expression starting at position {start_pos}"
+                        )
 
             except Exception as e:
                 self.warnings.append(f"⚠️ DOMAIN CHECK: Could not parse {file_path.name}: {str(e)}")

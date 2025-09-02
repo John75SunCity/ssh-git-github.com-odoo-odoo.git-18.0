@@ -36,14 +36,14 @@ class RecordsDepartmentBillingContact(models.Model):
         ('approver', 'Approver'),
     ], string='Billing Role', default='manager', required=True)
 
-    monthly_budget = fields.Monetary(string='Monthly Budget')
-    current_month_charges = fields.Monetary(string='Current Month Charges')
+    monthly_budget = fields.Monetary(string="Monthly Budget", currency_field="currency_id")
+    current_month_charges = fields.Monetary(string="Current Month Charges", currency_field="currency_id")
     currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', store=True, readonly=True, comodel_name='res.currency')
     budget_utilization = fields.Float(string='Budget Utilization %', compute='_compute_budget_utilization', store=True)
 
     # Approvals
     approval_authority = fields.Boolean(string='Approval Authority')
-    approval_limit = fields.Monetary(string='Approval Limit')
+    approval_limit = fields.Monetary(string="Approval Limit", currency_field="currency_id")
     approval_history_ids = fields.One2many(
         comodel_name='records.department.billing.approval',
         inverse_name='billing_contact_id',
@@ -52,15 +52,19 @@ class RecordsDepartmentBillingContact(models.Model):
     approval_count = fields.Integer(string='Approvals', compute='_compute_approval_count', store=True)
 
     # Analytics - Current period
-    current_month_budget = fields.Monetary(string='Current Month Budget')
-    current_month_actual = fields.Monetary(string='Current Month Actual')
-    current_month_variance = fields.Monetary(string='Current Month Variance', compute='_compute_variances', store=True)
-    current_month_forecast = fields.Monetary(string='Current Month Forecast')
+    current_month_budget = fields.Monetary(string="Current Month Budget", currency_field="currency_id")
+    current_month_actual = fields.Monetary(string="Current Month Actual", currency_field="currency_id")
+    current_month_variance = fields.Monetary(
+        string="Current Month Variance", compute="_compute_variances", store=True, currency_field="currency_id"
+    )
+    current_month_forecast = fields.Monetary(string="Current Month Forecast", currency_field="currency_id")
 
     # Analytics - YTD
-    ytd_budget = fields.Monetary(string='YTD Budget')
-    ytd_actual = fields.Monetary(string='YTD Actual')
-    ytd_variance = fields.Monetary(string='YTD Variance', compute='_compute_variances', store=True)
+    ytd_budget = fields.Monetary(string="YTD Budget", currency_field="currency_id")
+    ytd_actual = fields.Monetary(string="YTD Actual", currency_field="currency_id")
+    ytd_variance = fields.Monetary(
+        string="YTD Variance", compute="_compute_variances", store=True, currency_field="currency_id"
+    )
     ytd_variance_percentage = fields.Float(string='YTD Variance %', compute='_compute_variances', store=True)
 
     # Notifications
@@ -140,6 +144,6 @@ class RecordsDepartmentBillingContact(models.Model):
 
     def action_send_bill_notification(self):
         # Placeholder for email notification logic
+        self.ensure_one()
         self.message_post(body=_('Billing notification sent.'))
         return True
-

@@ -64,7 +64,9 @@ class ProductContainerType(models.Model):
     # ============================================================================
     container_count = fields.Integer(string="Total Containers", compute='_compute_usage_stats', store=True)
     active_containers = fields.Integer(string="Active Containers", compute='_compute_usage_stats', store=True)
-    monthly_revenue = fields.Monetary(string="Est. Monthly Revenue", compute='_compute_usage_stats', store=True)
+    monthly_revenue = fields.Monetary(
+        string="Est. Monthly Revenue", compute="_compute_usage_stats", store=True, currency_field="currency_id"
+    )
     customer_count = fields.Integer(string="Active Customers", compute='_compute_usage_stats', store=True)
 
     # ============================================================================
@@ -93,7 +95,9 @@ class ProductContainerType(models.Model):
     def _compute_dimensions_display(self):
         for record in self:
             if record.length_inches and record.width_inches and record.height_inches:
-                record.dimensions_display = _('%0.1f" L x %0.1f" W x %0.1f" H') % (record.length_inches, record.width_inches, record.height_inches)
+                record.dimensions_display = _(
+                    '%.1f" L x %.1f" W x %.1f" H', record.length_inches, record.width_inches, record.height_inches
+                )
             else:
                 record.dimensions_display = _('N/A')
 
@@ -118,15 +122,12 @@ class ProductContainerType(models.Model):
     def action_view_containers(self):
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Containers - %s') % self.name,
-            'res_model': 'records.container',
-            'view_mode': 'tree,form,kanban',
-            'domain': [('container_type_id', '=', self.id)],
-            'context': {
-                'default_container_type_id': self.id,
-                'default_company_id': self.company_id.id
-            }
+            "type": "ir.actions.act_window",
+            "name": _("Containers - %s", self.name),
+            "res_model": "records.container",
+            "view_mode": "tree,form,kanban",
+            "domain": [("container_type_id", "=", self.id)],
+            "context": {"default_container_type_id": self.id, "default_company_id": self.company_id.id},
         }
 
     def action_update_stats(self):

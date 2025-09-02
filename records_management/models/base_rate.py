@@ -42,23 +42,35 @@ class BaseRate(models.Model):
     # ============================================================================
     # CONTAINER STORAGE RATES (Based on Business Rules)
     # ============================================================================
-    standard_box_rate = fields.Monetary(string='Standard Box Rate (Type 01)', help="Rate for 1.2 CF Standard Box.")
-    legal_box_rate = fields.Monetary(string='Legal/Banker Box Rate (Type 02)', help="Rate for 2.4 CF Legal/Banker Box.")
-    map_box_rate = fields.Monetary(string='Map Box Rate (Type 03)', help="Rate for 0.875 CF Map Box.")
-    odd_size_rate = fields.Monetary(string='Odd Size/Temp Box Rate (Type 04)', help="Rate for 5.0 CF Odd Size/Temp Box.")
-    pathology_rate = fields.Monetary(string='Pathology Box Rate (Type 06)', help="Rate for 0.042 CF Pathology Box.")
+    standard_box_rate = fields.Monetary(
+        string="Standard Box Rate (Type 01)", help="Rate for 1.2 CF Standard Box.", currency_field="currency_id"
+    )
+    legal_box_rate = fields.Monetary(
+        string="Legal/Banker Box Rate (Type 02)", help="Rate for 2.4 CF Legal/Banker Box.", currency_field="currency_id"
+    )
+    map_box_rate = fields.Monetary(
+        string="Map Box Rate (Type 03)", help="Rate for 0.875 CF Map Box.", currency_field="currency_id"
+    )
+    odd_size_rate = fields.Monetary(
+        string="Odd Size/Temp Box Rate (Type 04)",
+        help="Rate for 5.0 CF Odd Size/Temp Box.",
+        currency_field="currency_id",
+    )
+    pathology_rate = fields.Monetary(
+        string="Pathology Box Rate (Type 06)", help="Rate for 0.042 CF Pathology Box.", currency_field="currency_id"
+    )
 
     # ============================================================================
     # SERVICE & HOURLY RATES
     # ============================================================================
-    pickup_rate = fields.Monetary(string='Pickup Rate')
-    delivery_rate = fields.Monetary(string='Delivery Rate')
-    destruction_rate = fields.Monetary(string='Destruction Rate')
-    document_retrieval_rate = fields.Monetary(string='Document Retrieval Rate')
-    scanning_rate = fields.Monetary(string='Scanning Rate (per page)')
-    indexing_rate = fields.Monetary(string='Indexing Rate (per item)')
-    technician_hourly_rate = fields.Monetary(string='Technician Hourly Rate')
-    supervisor_hourly_rate = fields.Monetary(string='Supervisor Hourly Rate')
+    pickup_rate = fields.Monetary(string="Pickup Rate", currency_field="currency_id")
+    delivery_rate = fields.Monetary(string="Delivery Rate", currency_field="currency_id")
+    destruction_rate = fields.Monetary(string="Destruction Rate", currency_field="currency_id")
+    document_retrieval_rate = fields.Monetary(string="Document Retrieval Rate", currency_field="currency_id")
+    scanning_rate = fields.Monetary(string="Scanning Rate (per page)", currency_field="currency_id")
+    indexing_rate = fields.Monetary(string="Indexing Rate (per item)", currency_field="currency_id")
+    technician_hourly_rate = fields.Monetary(string="Technician Hourly Rate", currency_field="currency_id")
+    supervisor_hourly_rate = fields.Monetary(string="Supervisor Hourly Rate", currency_field="currency_id")
 
     # ============================================================================
     # ONE-TIME FEES
@@ -259,5 +271,3 @@ class BaseRate(models.Model):
                 company_name = company_name or (self.env.company.name if self.env.company else '')
                 vals['name'] = _('Base Rates for %s') % company_name
         return super().create(vals_list)
-
-

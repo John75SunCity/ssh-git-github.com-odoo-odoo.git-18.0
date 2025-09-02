@@ -69,7 +69,7 @@ class BinKey(models.Model):
     # FINANCIALS
     # ============================================================================
     currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', comodel_name='res.currency')
-    replacement_fee = fields.Monetary(string='Replacement Fee')
+    replacement_fee = fields.Monetary(string="Replacement Fee", currency_field="currency_id")
 
     # ============================================================================
     # RELATIONSHIPS

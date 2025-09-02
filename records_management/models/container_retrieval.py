@@ -46,7 +46,9 @@ class ContainerRetrieval(models.Model):
     retrieved_by_id = fields.Many2one('res.users', string='Retrieved By')
 
     # Cost tracking
-    retrieval_cost = fields.Monetary(string='Retrieval Cost', compute='_compute_retrieval_cost')
+    retrieval_cost = fields.Monetary(
+        string="Retrieval Cost", compute="_compute_retrieval_cost", currency_field="currency_id"
+    )
     currency_id = fields.Many2one('res.currency', string='Currency', compute='_compute_currency_id')
 
     # Display and related fields
@@ -73,6 +75,7 @@ class ContainerRetrieval(models.Model):
 
     def action_locate_container(self):
         """Mark container as located"""
+        self.ensure_one()
         for record in self:
             if record.status != 'pending':
                 raise UserError(_("Only pending retrievals can be located."))
@@ -85,6 +88,7 @@ class ContainerRetrieval(models.Model):
 
     def action_retrieve_container(self):
         """Mark container as retrieved"""
+        self.ensure_one()
         for record in self:
             if record.status != 'located':
                 raise UserError(_("Container must be located before retrieval."))

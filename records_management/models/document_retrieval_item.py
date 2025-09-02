@@ -129,9 +129,13 @@ class DocumentRetrievalItem(models.Model):
     return_date = fields.Date(string='Return Date')
     return_location_id = fields.Many2one('records.location', string='Return Location')
     return_notes = fields.Text(string='Return Notes')
-    retrieval_cost = fields.Monetary(string='Retrieval Cost', compute='_compute_retrieval_cost')
-    container_access_cost = fields.Monetary(string='Container Access Cost', compute='_compute_container_access_cost')
-    total_cost = fields.Monetary(string='Total Cost', compute='_compute_total_cost')
+    retrieval_cost = fields.Monetary(
+        string="Retrieval Cost", compute="_compute_retrieval_cost", currency_field="currency_id"
+    )
+    container_access_cost = fields.Monetary(
+        string="Container Access Cost", compute="_compute_container_access_cost", currency_field="currency_id"
+    )
+    total_cost = fields.Monetary(string="Total Cost", compute="_compute_total_cost", currency_field="currency_id")
     currency_id = fields.Many2one('res.currency', string='Currency', compute='_compute_currency_id')
     tracking_number = fields.Char(string='Tracking Number')
     audit_trail = fields.Text(string='Audit Trail')

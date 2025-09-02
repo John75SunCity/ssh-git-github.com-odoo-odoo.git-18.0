@@ -95,8 +95,8 @@ class WorkOrderRetrieval(models.Model):
     supervisor_approval = fields.Boolean(string='Supervisor Approval')
 
     # Financial
-    estimated_cost = fields.Monetary(string='Estimated Cost')
-    actual_cost = fields.Monetary(string='Actual Cost')
+    estimated_cost = fields.Monetary(string="Estimated Cost", currency_field="currency_id")
+    actual_cost = fields.Monetary(string="Actual Cost", currency_field="currency_id")
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda self: self.env.company.currency_id)
     billable = fields.Boolean(string='Billable', default=True)
