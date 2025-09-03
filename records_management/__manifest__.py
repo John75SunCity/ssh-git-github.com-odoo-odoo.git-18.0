@@ -80,12 +80,12 @@
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
         "data/temp_inventory_configurator_data.xml",
+        "security/records_management_security.xml",
         "security/additional_models_security.xml",
         "security/intelligent_search_security.xml",
         "security/ir.model.access.csv",
         "security/naid_security.xml",
         "security/portal_request_security.xml",
-        "security/records_management_security.xml",
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_profile_views.xml",
         "views/approval_history_views.xml",
@@ -230,7 +230,7 @@
         "templates/portal_mobile_inventory_template.xml",
         "templates/portal_mobile_settings.xml",
         "templates/portal_mobile_template.xml",
-        "templates/portal_work_order_templates.xml"
+        "templates/portal_work_order_templates.xml",
     ],
     "demo": [
         "demo/customer_inventory_demo.xml",
