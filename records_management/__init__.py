@@ -10,5 +10,3 @@ from . import models  # noqa: F401 - Required for module loading
 from . import controllers  # noqa: F401 - Required for module loading
 from . import wizards  # noqa: F401 - Required for module loading
 from . import report  # noqa: F401 - Required for module loading
-
-from . import reports
