@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<odoo noupdate="1">
+        <record id="access_fsm_task_service_line_admin" model="ir.model.access">
+            <field name="name">fsm.task.service.line admin</field>
+            <field name="model_id:id">model_fsm_task_service_line</field>
+            <field name="group_id:id">records_management.group_records_admin</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+        <record id="access_fsm_task_service_line_manager" model="ir.model.access">
+            <field name="name">fsm.task.service.line manager</field>
+            <field name="model_id:id">model_fsm_task_service_line</field>
+            <field name="group_id:id">records_management.group_records_manager</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_task_service_line_user" model="ir.model.access">
+            <field name="name">fsm.task.service.line user</field>
+            <field name="model_id:id">model_fsm_task_service_line</field>
+            <field name="group_id:id">records_management.group_records_user</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_task_service_line_read" model="ir.model.access">
+            <field name="name">fsm.task.service.line read</field>
+            <field name="model_id:id">model_fsm_task_service_line</field>
+            <field name="group_id:id">records_management.group_records_readonly</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">0</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_shredding_service_admin" model="ir.model.access">
+            <field name="name">shredding.service admin</field>
+            <field name="model_id:id">model_shredding_service</field>
+            <field name="group_id:id">records_management.group_records_admin</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+        <record id="access_shredding_service_manager" model="ir.model.access">
+            <field name="name">shredding.service manager</field>
+            <field name="model_id:id">model_shredding_service</field>
+            <field name="group_id:id">records_management.group_records_manager</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_shredding_service_user" model="ir.model.access">
+            <field name="name">shredding.service user</field>
+            <field name="model_id:id">model_shredding_service</field>
+            <field name="group_id:id">records_management.group_records_user</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_shredding_service_read" model="ir.model.access">
+            <field name="name">shredding.service read</field>
+            <field name="model_id:id">model_shredding_service</field>
+            <field name="group_id:id">records_management.group_records_readonly</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">0</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_notification_admin" model="ir.model.access">
+            <field name="name">fsm notification admin</field>
+            <field name="model_id:id">model_fsm_notification</field>
+            <field name="group_id:id">records_management.group_records_admin</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+        <record id="access_fsm_notification_manager" model="ir.model.access">
+            <field name="name">fsm notification manager</field>
+            <field name="model_id:id">model_fsm_notification</field>
+            <field name="group_id:id">records_management.group_records_manager</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_notification_user" model="ir.model.access">
+            <field name="name">fsm notification user</field>
+            <field name="model_id:id">model_fsm_notification</field>
+            <field name="group_id:id">records_management.group_records_user</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_notification_read" model="ir.model.access">
+            <field name="name">fsm notification read</field>
+            <field name="model_id:id">model_fsm_notification</field>
+            <field name="group_id:id">records_management.group_records_readonly</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">0</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_notification_manager_admin" model="ir.model.access">
+            <field name="name">fsm notification manager admin</field>
+            <field name="model_id:id">model_fsm_notification_manager</field>
+            <field name="group_id:id">records_management.group_records_admin</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+        <record id="access_fsm_notification_manager_manager" model="ir.model.access">
+            <field name="name">fsm notification manager manager</field>
+            <field name="model_id:id">model_fsm_notification_manager</field>
+            <field name="group_id:id">records_management.group_records_manager</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_notification_manager_user" model="ir.model.access">
+            <field name="name">fsm notification manager user</field>
+            <field name="model_id:id">model_fsm_notification_manager</field>
+            <field name="group_id:id">records_management.group_records_user</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_notification_manager_read" model="ir.model.access">
+            <field name="name">fsm notification manager read</field>
+            <field name="model_id:id">model_fsm_notification_manager</field>
+            <field name="group_id:id">records_management.group_records_readonly</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">0</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_reschedule_wizard_admin" model="ir.model.access">
+            <field name="name">fsm reschedule wizard admin</field>
+            <field name="model_id:id">model_fsm_reschedule_wizard</field>
+            <field name="group_id:id">records_management.group_records_admin</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+        <record id="access_fsm_reschedule_wizard_manager" model="ir.model.access">
+            <field name="name">fsm reschedule wizard manager</field>
+            <field name="model_id:id">model_fsm_reschedule_wizard</field>
+            <field name="group_id:id">records_management.group_records_manager</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_reschedule_wizard_user" model="ir.model.access">
+            <field name="name">fsm reschedule wizard user</field>
+            <field name="model_id:id">model_fsm_reschedule_wizard</field>
+            <field name="group_id:id">records_management.group_records_user</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_fsm_reschedule_wizard_read" model="ir.model.access">
+            <field name="name">fsm reschedule wizard read</field>
+            <field name="model_id:id">model_fsm_reschedule_wizard</field>
+            <field name="group_id:id">records_management.group_records_readonly</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">0</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_project_task_fsm_admin" model="ir.model.access">
+            <field name="name">project.task fsm admin</field>
+            <field name="model_id:id">model_project_task</field>
+            <field name="group_id:id">records_management.group_records_admin</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">1</field>
+        </record>
+        <record id="access_project_task_fsm_manager" model="ir.model.access">
+            <field name="name">project.task fsm manager</field>
+            <field name="model_id:id">model_project_task</field>
+            <field name="group_id:id">records_management.group_records_manager</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">1</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_project_task_fsm_user" model="ir.model.access">
+            <field name="name">project.task fsm user</field>
+            <field name="model_id:id">model_project_task</field>
+            <field name="group_id:id">records_management.group_records_user</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">1</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+        <record id="access_project_task_fsm_read" model="ir.model.access">
+            <field name="name">project.task fsm read</field>
+            <field name="model_id:id">model_project_task</field>
+            <field name="group_id:id">records_management.group_records_readonly</field>
+            <field name="perm_read">1</field>
+            <field name="perm_write">0</field>
+            <field name="perm_create">0</field>
+            <field name="perm_unlink">0</field>
+        </record>
+</odoo>

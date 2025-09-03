@@ -1,16 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Enhanced import handling for development environment
-try:
-    from odoo.tests.common import TransactionCase
-    from odoo.exceptions import AccessError, UserError, ValidationError
-except ImportError:
-    # Development/testing environment fallback
-    TransactionCase = object
-    ValidationError = Exception
-    AccessError = Exception
-    UserError = Exception
-
+# Standard Odoo imports for test cases
+from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tests.common import TransactionCase
 
 
 class TestRecordsManagement(TransactionCase):
@@ -45,19 +37,19 @@ class TestRecordsManagement(TransactionCase):
         self.assertEqual(pickup_request.customer_id, self.partner)
         self.assertIn(self.lot, pickup_request.item_ids)
         self.assertEqual(pickup_request.state, "draft")
-    def test_search_records_management_records(self):
-        """Test searching records_management records"""
+
+    def test_search_records(self):
+        """Test searching records.container records"""
         # GitHub Copilot Pattern: Search and read operations
-        record = self.env['records_management'].create({
+        record = self.env['records.container'].create({
             'name': 'Searchable Record'
         })
 
-        found_records = self.env['records_management'].search([
+        found_records = self.env['records.container'].search([
             ('name', '=', 'Searchable Record')
         ])
 
         self.assertIn(record, found_records)
-
 
     def test_update_records_management_fields(self):
         """Test updating records_management record fields"""
@@ -69,7 +61,6 @@ class TestRecordsManagement(TransactionCase):
         record.write({'name': 'Updated Name'})
 
         self.assertEqual(record.name, 'Updated Name')
-
 
     def test_delete_records_management_record(self):
         """Test deleting records_management record"""
@@ -83,7 +74,6 @@ class TestRecordsManagement(TransactionCase):
 
         self.assertFalse(self.env['records_management'].browse(record_id).exists())
 
-
     def test_validation_records_management_constraints(self):
         """Test validation constraints for records_management"""
         # GitHub Copilot Pattern: Validation testing with assertRaises
@@ -91,8 +81,6 @@ class TestRecordsManagement(TransactionCase):
             self.env['records_management'].create({
                 # Add invalid data that should trigger validation
             })
-
-
 
     def test_pickup_request_validation(self):
         """Test validation constraints."""
@@ -201,6 +189,18 @@ class TestRecordsManagement(TransactionCase):
         """Test that negative capacity is not allowed."""
         with self.assertRaises(ValidationError):
             self.RecordsLocation.create({
+                'name': 'Invalid Location',
+                'max_capacity': -10,
+            })
+
+    def test_utilization_percentage(self):
+        """Test computation of utilization percentage."""
+        location = self.RecordsLocation.create({
+            'name': 'Utilization Test',
+            'max_capacity': 100,
+        })
+        location.container_ids = [(0, 0, {'name': 'Container 1'})]
+        self.assertEqual(location.utilization_percentage, 1)
                 'name': 'Invalid Location',
                 'max_capacity': -10,
             })
