@@ -63,6 +63,7 @@
         "quality",
     ],
     "data": [
+        "data/x_model_external_ids_data.xml",
         "data/container_types_base_rates.xml",
         "data/core_records_data.xml",
         "data/document_retrieval_rates_data.xml",
