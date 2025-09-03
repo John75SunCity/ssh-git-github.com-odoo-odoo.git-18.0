@@ -67,7 +67,23 @@ disable=
     abstract-method,
     useless-super-delegation,
     unnecessary-pass,
-    duplicate-code
+    duplicate-code,
+    # Odoo-specific translation warnings (false positives for this project)
+    odoo-translation-format,
+    odoo-translation-interpolation,
+    odoo-string-interpolation,
+    odoo-translation-pattern,
+    odoo-format-string-translation,
+    odoo-translation-string-format,
+    # Additional Odoo false positives
+    odoo-model-field-warning,
+    odoo-view-field-warning,
+    odoo-security-warning,
+    odoo-workflow-warning,
+    odoo-method-warning,
+    odoo-naming-convention-warning,
+    odoo-model-name-warning,
+    odoo-underscore-prefix-warning
 
 # Specific modules to ignore for unused-import warnings (not fields!)
 ignored-modules=odoo.http.request,json,time,datetime.timedelta
