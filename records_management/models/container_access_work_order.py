@@ -345,8 +345,8 @@ class ContainerAccessWorkOrder(models.Model):
             raise UserError(_("Please set a scheduled start time before scheduling."))
         self.write({'state': 'scheduled'})
         self.message_post(
-            body=_("Access session scheduled for %s") % self.scheduled_access_date.strftime('%Y-%m-%d %H:%M'),
-            message_type='notification'
+            body=_("Access session scheduled for %s", self.scheduled_access_date.strftime("%Y-%m-%d %H:%M")),
+            message_type="notification",
         )
 
     def action_start_access(self):
@@ -418,8 +418,8 @@ class ContainerAccessWorkOrder(models.Model):
             'pickup_confirmation_date': fields.Datetime.now()
         })
         self.message_post(
-            body=_("Customer pickup confirmed for %s items.") % (self.pickup_contact_name or 'customer'),
-            message_type='notification'
+            body=_("Customer pickup confirmed for %s items.", (self.pickup_contact_name or "customer")),
+            message_type="notification",
         )
 
     def action_schedule_pickup(self):

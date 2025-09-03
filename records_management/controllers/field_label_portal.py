@@ -93,7 +93,7 @@ class FieldLabelPortalController(CustomerPortal):
             return {"error": _("Access denied")}
         except Exception as e:
             _logger.error("Error in get_field_labels: %s", str(e))
-            return {"error": _("Failed to retrieve field labels: %s") % str(e)}
+            return {"error": _("Failed to retrieve field labels: %s", str(e)})
 
     @http.route(
         ["/portal/field-labels/transitory-config"],
@@ -150,7 +150,7 @@ class FieldLabelPortalController(CustomerPortal):
             return {"error": _("Access denied")}
         except Exception as e:
             _logger.error("Error in get_transitory_field_config: %s", str(e))
-            return {"error": _("Failed to retrieve field configuration: %s") % str(e)}
+            return {"error": _("Failed to retrieve field configuration: %s", str(e)})
 
     @http.route(
         ["/portal/field-labels/validate"],
@@ -215,7 +215,7 @@ class FieldLabelPortalController(CustomerPortal):
 
         except Exception as e:
             _logger.error("Error in validate_field_values: %s", str(e))
-            return {"error": _("Validation failed: %s") % str(e)}
+            return {"error": _("Validation failed: %s", str(e)})
 
     # ============================================================================
     # HELPER METHODS
@@ -370,7 +370,7 @@ class FieldLabelAdminController(http.Controller):
             return {"error": _("Access denied")}
         except Exception as e:
             _logger.error("Error in preview_field_labels: %s", str(e))
-            return {"error": _("Preview failed: %s") % str(e)}
+            return {"error": _("Preview failed: %s", str(e)})
 
     @http.route(
         ["/records/admin/field-labels/apply-preset"],
@@ -414,7 +414,7 @@ class FieldLabelAdminController(http.Controller):
 
             # Apply selected preset
             if preset_name not in preset_methods:
-                return {"error": _("Unknown preset: %s") % preset_name}
+                return {"error": _("Unknown preset: %s", preset_name})
 
             preset_methods[preset_name]()
 
@@ -428,7 +428,7 @@ class FieldLabelAdminController(http.Controller):
 
             return {
                 "success": True,
-                "message": _("%s preset applied successfully") % preset_name.title(),
+                "message": _("%s preset applied successfully", preset_name.title(),)
                 "preset_applied": preset_name,
                 "config_id": config_id,
             }
@@ -438,7 +438,7 @@ class FieldLabelAdminController(http.Controller):
             return {"error": _("Access denied")}
         except Exception as e:
             _logger.error("Error applying preset %s: %s", preset_name, str(e))
-            return {"error": _("Failed to apply preset: %s") % str(e)}
+            return {"error": _("Failed to apply preset: %s", str(e)})
 
     @http.route(
         ["/records/admin/field-labels/bulk-update"],

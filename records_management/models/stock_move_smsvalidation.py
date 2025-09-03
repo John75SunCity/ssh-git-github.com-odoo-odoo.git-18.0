@@ -97,12 +97,12 @@ class StockMoveSMSValidation(models.Model):
         """Sends the validation code via SMS to the responsible user."""
         self.ensure_one()
         if not self.user_id.mobile:
-            raise UserError(_("The responsible user (%s) does not have a mobile number configured.") % self.user_id.name)
+            raise UserError(_("The responsible user (%s) does not have a mobile number configured.", self.user_id.name))
 
         # This assumes the 'sms' module is installed and configured.
         body = _("Your validation code for transfer %s is: %s") % (self.picking_id.name, self.sms_code)
         self.env['sms.api']._send_sms([self.user_id.mobile], body)
-        self.message_post(body=_("Validation SMS sent to %s.") % self.user_id.name)
+        self.message_post(body=_("Validation SMS sent to %s.", self.user_id.name))
         return True
 
     def action_validate(self, provided_code):
@@ -116,8 +116,8 @@ class StockMoveSMSValidation(models.Model):
                 'is_validated': True,
                 'validation_date': fields.Datetime.now(),
             })
-            self.message_post(body=_("Successfully validated by %s.") % self.env.user.name)
+            self.message_post(body=_("Successfully validated by %s.", self.env.user.name))
             return True
 
-        self.message_post(body=_("Failed validation attempt by %s.") % self.env.user.name)
+        self.message_post(body=_("Failed validation attempt by %s.", self.env.user.name))
         raise UserError(_("The provided validation code is incorrect."))

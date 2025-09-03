@@ -120,10 +120,10 @@ class ProcessingLog(models.Model):
         self.message_post(body=_("Log entry escalated for further review."))
         # You could create an activity for a manager here
         self.activity_schedule(
-            'mail.mail_activity_data_todo',
-            summary=_('Escalated Log: %s') % self.name,
-            note=_('Please review this escalated log entry.'),
-            user_id=self.env.user.id # Or a specific manager
+            "mail.mail_activity_data_todo",
+            summary=_("Escalated Log: %s", self.name),
+            note=_("Please review this escalated log entry."),
+            user_id=self.env.user.id,  # Or a specific manager
         )
 
     def action_view_related_record(self):
@@ -156,5 +156,5 @@ class ProcessingLogResolutionWizard(models.TransientModel):
             'resolved_by_id': self.env.user.id,
             'resolved_date': fields.Datetime.now(),
         })
-        self.log_id.message_post(body=_("Log marked as resolved.<br/>Notes: %s") % self.resolution_notes)
+        self.log_id.message_post(body=_("Log marked as resolved.<br/>Notes: %s", self.resolution_notes))
         return {'type': 'ir.actions.act_window_close'}

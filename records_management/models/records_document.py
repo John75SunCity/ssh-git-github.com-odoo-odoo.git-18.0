@@ -746,14 +746,14 @@ class RecordsDocument(models.Model):
             'event_date': checkout_date,
         })
 
-        self.message_post(body=_('Document checked out by %s') % self.env.user.name)
+        self.message_post(body=_('Document checked out by %s', self.env.user.name))
 
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': _("Document Checked Out"),
-                'message': _("Document %s has been checked out successfully") % self.display_name,
+                'message': _("Document %s has been checked out successfully", self.display_name),
                 'sticky': False,
             }
         }
@@ -781,14 +781,14 @@ class RecordsDocument(models.Model):
             'event_date': return_date,
         })
 
-        self.message_post(body=_('Document returned by %s') % self.env.user.name)
+        self.message_post(body=_('Document returned by %s', self.env.user.name))
 
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': _("Document Returned"),
-                'message': _("Document %s has been returned to storage") % self.display_name,
+                'message': _("Document %s has been returned to storage", self.display_name),
                 'sticky': False,
             }
         }
@@ -1139,7 +1139,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error viewing attachments: %s") % str(e)) from e
+            raise ValidationError(_("Error viewing attachments: %s", str(e)))
 
     def action_view_digital_scans(self):
         """Smart button action to view digital scans"""
@@ -1156,7 +1156,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error viewing digital scans: %s") % str(e)) from e
+            raise ValidationError(_("Error viewing digital scans: %s", str(e)))
 
     def action_toggle_favorite(self):
         """Action to toggle favorite status"""
@@ -1173,7 +1173,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error toggling favorite status: %s") % str(e)) from e
+            raise ValidationError(_("Error toggling favorite status: %s", str(e)))
 
     def action_refresh_data(self):
         """Action to refresh document data and computed fields"""
@@ -1196,7 +1196,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error refreshing document data: %s") % str(e)) from e
+            raise ValidationError(_("Error refreshing document data: %s", str(e)))
 
     def action_generate_qr_code(self):
         """Action to generate/regenerate QR code for document"""
@@ -1212,7 +1212,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error generating QR code: %s") % str(e)) from e
+            raise ValidationError(_("Error generating QR code: %s", str(e)))
 
     def action_print_document_label(self):
         """Action to print document identification label"""
@@ -1227,7 +1227,7 @@ class RecordsDocument(models.Model):
                 'context': self.env.context,
             }
         except Exception as e:
-            raise ValidationError(_("Error printing document label: %s") % str(e)) from e
+            raise ValidationError(_("Error printing document label: %s", str(e)))
 
     def action_schedule_review(self):
         """Action to schedule document review"""
@@ -1247,7 +1247,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error scheduling document review: %s") % str(e)) from e
+            raise ValidationError(_("Error scheduling document review: %s", str(e)))
 
     def action_send_notification(self):
         """Action to send notification about document"""
@@ -1263,10 +1263,10 @@ class RecordsDocument(models.Model):
                 "context": {
                     "default_document_id": self.id,
                     "default_document_name": self.display_name,
-                },
+                }
             }
         except Exception as e:
-            raise ValidationError(_("Error sending notification: %s") % str(e)) from e
+            raise ValidationError(_("Error sending notification: %s", str(e)))
 
     # New constraint method added for validation (if needed for checkout conditions)
     @api.constrains("state", "is_missing")

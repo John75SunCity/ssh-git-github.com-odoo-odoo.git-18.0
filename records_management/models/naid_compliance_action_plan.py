@@ -90,7 +90,7 @@ class NaidComplianceActionPlan(models.Model):
 
     def action_approve(self):
         self.write({'state': 'approved'})
-        self.message_post(body=_("Action plan approved by %s.") % self.env.user.name)
+        self.message_post(body=_("Action plan approved by %s.", self.env.user.name))
 
     def action_start(self):
         self.write({

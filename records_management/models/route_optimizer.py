@@ -215,8 +215,8 @@ class RouteOptimizer(models.Model):
             self.message_post(body=_('Route optimization completed successfully.'))
         except Exception as exc:
             self.write({'status': 'failed'})
-            self.message_post(body=_('Route optimization failed: %s') % str(exc))
-            raise UserError(_('Optimization failed: %s') % str(exc)) from exc
+            self.message_post(body=_("Route optimization failed: %s", str(exc)))
+            raise UserError(_("Optimization failed: %s", str(exc)))
 
     def action_apply_optimization(self):
         """
@@ -235,7 +235,7 @@ class RouteOptimizer(models.Model):
             self.write({'status': 'applied'})
             self.message_post(body=_('Optimization results applied - routes created.'))
         except Exception as exc:
-            raise UserError(_('Failed to apply optimization: %s') % str(exc)) from exc
+            raise UserError(_("Failed to apply optimization: %s", str(exc)))
 
     def action_cancel_optimization(self):
         """
@@ -368,9 +368,7 @@ class RouteOptimizer(models.Model):
                 )) from exc
 
         if created_routes:
-            self.message_post(
-                body=_('Created %s optimized routes successfully.') % len(created_routes)
-            )
+            self.message_post(body=_("Created %s optimized routes successfully.", len(created_routes)))
         else:
             raise UserError(_('No routes were created from optimization results.'))
 

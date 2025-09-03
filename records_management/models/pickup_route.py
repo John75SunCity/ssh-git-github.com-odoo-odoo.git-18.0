@@ -8,7 +8,7 @@ class PickupRoute(models.Model):
 
     This model is designed to manage and optimize routes for records pickup operations.
     It integrates with Odoo's Field Service Management (FSM) module to leverage standard
-    task management workflows while providing specialized logic for route planning,
+    task management workflows while providing specialized route planning,
     optimization, and execution.
 
     Key Features:
@@ -264,7 +264,7 @@ class PickupRoute(models.Model):
         self._generate_route_stops()
 
         self.write({"state": "planned"})
-        self.message_post(body=_("Route planned with %s stops") % len(self.route_stop_ids))
+        self.message_post(body=_("Route planned with %s stops", len(self.route_stop_ids)))
         return True
 
     def action_start_route(self):
@@ -277,7 +277,7 @@ class PickupRoute(models.Model):
             "state": "in_progress",
             "actual_start_time": fields.Datetime.now()
         })
-        self.message_post(body=_("Route started by %s") % self.env.user.name)
+        self.message_post(body=_("Route started by %s", self.env.user.name))
         return True
 
     def action_complete_route(self):
@@ -292,9 +292,9 @@ class PickupRoute(models.Model):
         )
 
         if incomplete_requests:
-            raise UserError(_(
-                "Cannot complete route with incomplete requests: %s"
-            ) % ", ".join(incomplete_requests.mapped("name")))
+            raise UserError(
+                _("Cannot complete route with incomplete requests: %s", ", ".join(incomplete_requests.mapped("name")))
+            )
 
         self.write({
             "state": "completed",
@@ -422,25 +422,28 @@ class PickupRoute(models.Model):
 
         # Create FSM task
         task_vals = {
-            'name': _("Pickup Route: %s") % self.name,
-            'project_id': fsm_project.id,
-            'user_ids': [(6, 0, [self.user_id.id])] if self.user_id else [],
-            'date_start': self.planned_start_time,
-            'date_end': self.planned_end_time,
-            'partner_id': next((partner.id for partner in self.route_stop_ids.mapped('partner_id') if partner), False),
-            'description': _("""
+            "name": _("Pickup Route: %s", self.name),
+            "project_id": fsm_project.id,
+            "user_ids": [(6, 0, [self.user_id.id])] if self.user_id else [],
+            "date_start": self.planned_start_time,
+            "date_end": self.planned_end_time,
+            "partner_id": next((partner.id for partner in self.route_stop_ids.mapped("partner_id") if partner), False),
+            "description": _(
+                """
                 Pickup Route Details:
                 - Route Date: %s
                 - Vehicle: %s
                 - Stops: %s
                 - Notes: %s
-            """) % (
+            """
+            )
+            % (
                 self.route_date,
-                (self.vehicle_id.license_plate or 'TBD') if self.vehicle_id else 'TBD',
+                (self.vehicle_id.license_plate or "TBD") if self.vehicle_id else "TBD",
                 len(self.route_stop_ids),
-                self.notes or 'No special notes'
+                self.notes or "No special notes",
             ),
-            'is_fsm': True,  # Mark as field service task
+            "is_fsm": True,  # Mark as field service task
         }
 
         fsm_task = self.env['project.task'].create(task_vals)
@@ -456,9 +459,9 @@ class PickupRoute(models.Model):
             return
 
         sync_vals = {
-            'name': _("Pickup Route: %s") % self.name,
-            'date_start': self.planned_start_time,
-            'date_end': self.planned_end_time,
+            "name": _("Pickup Route: %s", self.name),
+            "date_start": self.planned_start_time,
+            "date_end": self.planned_end_time,
         }
 
         # Sync state changes

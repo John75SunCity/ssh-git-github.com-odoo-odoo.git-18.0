@@ -269,5 +269,5 @@ class BaseRate(models.Model):
                     company = self.env['res.company'].browse(vals.get('company_id'))
                     company_name = company.name if company else None
                 company_name = company_name or (self.env.company.name if self.env.company else '')
-                vals['name'] = _('Base Rates for %s') % company_name
+                vals['name'] = _('Base Rates for %s', company_name)
         return super().create(vals_list)

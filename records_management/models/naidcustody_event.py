@@ -93,7 +93,7 @@ class NAIDCustodyEvent(models.Model):
         self.write({
             'signature_verified': True,
         })
-        self.message_post(body=_("Digital signature marked as verified by %s.") % self.env.user.name)
+        self.message_post(body=_("Digital signature marked as verified by %s.", self.env.user.name))
         self._log_custody_event('signature_verified')
 
     # ============================================================================

@@ -8,7 +8,24 @@ automatic work order creation, and billing integration based on fault determinat
 Features:
 - Photo documentation using existing mobile.photo system
 - Automatic work order creation with appropriate priority
-- Customer fault billing vs. company maintenance
+- Custo        r        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Issue Photos: %s', self.bin_id.barcode),
+            'res_model': 'mobile.photo',
+            'view_mode': 'kanban,list,form',
+            'domain': [('wizard_reference', '=', str(self.id))],
+            'context': {
+                'search_default_group_by_type': 1,
+            },
+        }          'type': 'ir.actions.act_window',
+            'name': _('Issue Photos: %s', self.bin_id.barcode),
+            'res_model': 'mobile.photo',
+            'view_mode': 'kanban,list,form',
+            'domain': [('wizard_reference', '=', str(self.id))],
+            'context': {
+                'search_default_group_by_type': 1,
+            },
+        }billing vs. company maintenance
 - Integration with base.rates for pricing
 - NAID compliance audit logging
 """
@@ -320,20 +337,20 @@ class BinIssueReportWizard(models.TransientModel):
         self.ensure_one()
 
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Take Issue Photo'),
-            'res_model': 'mobile.photo',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_name': _('Bin Issue: %s - %s') % (self.bin_id.barcode, self.issue_type or 'Unknown'),
-                'default_photo_type': 'damage_report',
-                'default_wizard_reference': str(self.id),
-                'default_partner_id': self.customer_id.id if self.customer_id else False,
-                'default_gps_latitude': self.gps_latitude,
-                'default_gps_longitude': self.gps_longitude,
-                'default_compliance_notes': self.issue_description,
-                'default_is_compliance_photo': True,
+            "type": "ir.actions.act_window",
+            "name": _("Take Issue Photo"),
+            "res_model": "mobile.photo",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_name": _("Bin Issue: %s - %s", self.bin_id.barcode, self.issue_type or "Unknown"),
+                "default_photo_type": "damage_report",
+                "default_wizard_reference": str(self.id),
+                "default_partner_id": self.customer_id.id if self.customer_id else False,
+                "default_gps_latitude": self.gps_latitude,
+                "default_gps_longitude": self.gps_longitude,
+                "default_compliance_notes": self.issue_description,
+                "default_is_compliance_photo": True,
             },
         }
 
@@ -342,13 +359,16 @@ class BinIssueReportWizard(models.TransientModel):
         self.ensure_one()
 
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Issue Photos: %s') % self.bin_id.barcode,
-            'res_model': 'mobile.photo',
-            'view_mode': 'kanban,list,form',
-            'domain': [('wizard_reference', '=', str(self.id))],
-            'context': {
-                'search_default_group_by_type': 1,
+            "type": "ir.actions.act_window",
+            "name": _(
+                "Issue Photos: %s",
+                self.bin_id.barcode,
+            ),
+            "res_model": "mobile.photo",
+            "view_mode": "kanban,list,form",
+            "domain": [("wizard_reference", "=", str(self.id))],
+            "context": {
+                "search_default_group_by_type": 1,
             },
         }
 
@@ -454,9 +474,15 @@ class BinIssueReportWizard(models.TransientModel):
         description = [
             _("BIN ISSUE REPORT"),
             _("=" * 50),
-            _("Bin: %s (%s)") % (self.bin_id.barcode, self.bin_id.bin_size),
-            _("Issue Type: %s") % dict(self.issue_type and self._fields['issue_type'].selection).get(self.issue_type, ''),
-            _("Severity: %s") % dict(self._fields['issue_severity'].selection).get(self.issue_severity, ''),
+            _("Bin: %s (%s)", self.bin_id.barcode, self.bin_id.bin_size),
+            _(
+                "Issue Type: %s",
+                dict(self.issue_type and self._fields["issue_type"].selection).get(self.issue_type, ""),
+            ),
+            _(
+                "Severity: %s",
+                dict(self._fields["issue_severity"].selection).get(self.issue_severity, ""),
+            ),
             "",
             _("ISSUE DESCRIPTION:"),
             self.issue_description or _("No description provided"),
@@ -464,20 +490,36 @@ class BinIssueReportWizard(models.TransientModel):
         ]
 
         if self.customer_id:
-            description.extend([
-                _("LOCATION DETAILS:"),
-                _("Customer: %s") % self.customer_id.name,
-                _("Address: %s") % self._format_address(),
-                "",
-            ])
+            description.extend(
+                [
+                    _("LOCATION DETAILS:"),
+                    _(
+                        "Customer: %s",
+                        self.customer_id.name,
+                    ),
+                    _(
+                        "Address: %s",
+                        self._format_address(),
+                    ),
+                    "",
+                ]
+            )
 
         if self.gps_latitude and self.gps_longitude:
-            description.extend([
-                _("GPS COORDINATES:"),
-                _("Latitude: %s") % self.gps_latitude,
-                _("Longitude: %s") % self.gps_longitude,
-                "",
-            ])
+            description.extend(
+                [
+                    _("GPS COORDINATES:"),
+                    _(
+                        "Latitude: %s",
+                        self.gps_latitude,
+                    ),
+                    _(
+                        "Longitude: %s",
+                        self.gps_longitude,
+                    ),
+                    "",
+                ]
+            )
 
         if self.fault_evidence:
             description.extend([
@@ -487,20 +529,27 @@ class BinIssueReportWizard(models.TransientModel):
             ])
 
         if self.bill_customer:
-            description.extend([
-                _("BILLING INFORMATION:"),
-                _("Customer Fault: Yes"),
-                _("Estimated Cost: %s %s") % (self.billing_amount, self.currency_id.symbol),
-                "",
-            ])
+            description.extend(
+                [
+                    _("BILLING INFORMATION:"),
+                    _("Customer Fault: Yes"),
+                    _("Estimated Cost: %s %s", self.billing_amount, self.currency_id.symbol),
+                    "",
+                ]
+            )
 
         if self.photo_count > 0:
-            description.extend([
-                _("DOCUMENTATION:"),
-                _("Photos attached: %s") % self.photo_count,
-                _("View photos in work order attachments"),
-                "",
-            ])
+            description.extend(
+                [
+                    _("DOCUMENTATION:"),
+                    _(
+                        "Photos attached: %s",
+                        self.photo_count,
+                    ),
+                    _("View photos in work order attachments"),
+                    "",
+                ]
+            )
 
         return "\n".join(description)
 
@@ -539,11 +588,14 @@ class BinIssueReportWizard(models.TransientModel):
 
         # Create mail message
         template_values = {
-            'subject': _('Shred Bin Issue Report - %s') % self.bin_id.barcode,
-            'body_html': self._format_customer_email(),
-            'partner_ids': [(6, 0, [self.customer_id.id])],
-            'model': 'shredding.service.bin',
-            'res_id': self.bin_id.id,
+            "subject": _(
+                "Shred Bin Issue Report - %s",
+                self.bin_id.barcode,
+            ),
+            "body_html": self._format_customer_email(),
+            "partner_ids": [(6, 0, [self.customer_id.id])],
+            "model": "shredding.service.bin",
+            "res_id": self.bin_id.id,
         }
 
         mail = self.env['mail.mail'].create(template_values)
@@ -595,21 +647,21 @@ class BinIssueReportWizard(models.TransientModel):
     def _create_issue_record(self, work_order):
         """Create permanent issue record for tracking."""
         issue_vals = {
-            'name': _("Issue: %s - %s") % (self.bin_id.barcode, self.issue_type),
-            'bin_id': self.bin_id.id,
-            'issue_type': self.issue_type,
-            'issue_severity': self.issue_severity,
-            'description': self.issue_description,
-            'customer_id': self.customer_id.id if self.customer_id else False,
-            'location_id': self.location_id.id if self.location_id else False,
-            'work_order_id': work_order.id if work_order else False,
-            'reported_by_id': self.env.user.id,
-            'report_date': fields.Datetime.now(),
-            'customer_fault': self.customer_fault_confirmed,
-            'billing_amount': self.billing_amount if self.bill_customer else 0.0,
-            'resolution_status': 'reported',
-            'gps_latitude': self.gps_latitude,
-            'gps_longitude': self.gps_longitude,
+            "name": _("Issue: %s - %s", self.bin_id.barcode, self.issue_type),
+            "bin_id": self.bin_id.id,
+            "issue_type": self.issue_type,
+            "issue_severity": self.issue_severity,
+            "description": self.issue_description,
+            "customer_id": self.customer_id.id if self.customer_id else False,
+            "location_id": self.location_id.id if self.location_id else False,
+            "work_order_id": work_order.id if work_order else False,
+            "reported_by_id": self.env.user.id,
+            "report_date": fields.Datetime.now(),
+            "customer_fault": self.customer_fault_confirmed,
+            "billing_amount": self.billing_amount if self.bill_customer else 0.0,
+            "resolution_status": "reported",
+            "gps_latitude": self.gps_latitude,
+            "gps_longitude": self.gps_longitude,
         }
 
         return self.env['bin.issue.record'].create(issue_vals)
@@ -623,11 +675,11 @@ class BinIssueReportWizard(models.TransientModel):
 
     def _create_audit_log(self, issue_record, work_order):
         """Create NAID compliance audit log."""
-        description = _("Bin issue reported: %s") % issue_record.name
+        description = _("Bin issue reported: %s", issue_record.name)
         if work_order:
-            description += _(" - Work Order %s created") % work_order.name
+            description += _(" - Work Order %s created", work_order.name)
         if self.bill_customer:
-            description += _(" - Customer billing required: %s %s") % (self.billing_amount, self.currency_id.symbol)
+            description += _(" - Customer billing required: %s %s", self.billing_amount, self.currency_id.symbol)
 
         self.bin_id._create_service_audit_log('issue_reported', description)
 
@@ -789,12 +841,15 @@ class BinIssueRecord(models.Model):
         """View the related bin."""
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Bin: %s') % self.bin_id.barcode,
-            'res_model': 'shredding.service.bin',
-            'res_id': self.bin_id.id,
-            'view_mode': 'form',
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": _(
+                "Bin: %s",
+                self.bin_id.barcode,
+            ),
+            "res_model": "shredding.service.bin",
+            "res_id": self.bin_id.id,
+            "view_mode": "form",
+            "target": "current",
         }
 
     def action_view_work_order(self):
@@ -804,12 +859,15 @@ class BinIssueRecord(models.Model):
             raise UserError(_("No work order associated with this issue."))
 
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Work Order: %s') % self.work_order_id.name,
-            'res_model': 'project.task',
-            'res_id': self.work_order_id.id,
-            'view_mode': 'form',
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": _(
+                "Work Order: %s",
+                self.work_order_id.name,
+            ),
+            "res_model": "project.task",
+            "res_id": self.work_order_id.id,
+            "view_mode": "form",
+            "target": "current",
         }
 
     def action_mark_resolved(self):
@@ -819,7 +877,7 @@ class BinIssueRecord(models.Model):
             'resolution_status': 'resolved',
             'resolution_date': fields.Datetime.now(),
         })
-        self.message_post(body=_("Issue marked as resolved by %s") % self.env.user.name)
+        self.message_post(body=_("Issue marked as resolved by %s", self.env.user.name))
 
     def action_mark_billed(self):
         """Mark customer as billed."""
@@ -828,7 +886,7 @@ class BinIssueRecord(models.Model):
             raise UserError(_("Cannot mark as billed - no customer billing required for this issue."))
 
         self.write({'billed': True})
-        self.message_post(body=_("Customer billed %s %s for bin issue") % (self.billing_amount, self.currency_id.symbol))
+        self.message_post(body=_("Customer billed %s %s for bin issue", self.billing_amount, self.currency_id.symbol))
 
     def action_mark_paid(self):
         """Mark payment as received."""

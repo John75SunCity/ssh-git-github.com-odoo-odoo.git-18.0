@@ -192,16 +192,16 @@ class ServiceItem(models.Model):
         self.message_post(body=_("Status set to Under Maintenance."))
         if 'maintenance.request' in self.env:
             return {
-                'type': 'ir.actions.act_window',
-                'name': _('New Maintenance Request'),
-                'res_model': 'maintenance.request',
-                'view_mode': 'form',
-                'target': 'new',
-                'context': {
-                    'default_name': _('Maintenance for %s') % self.name,
-                    'default_equipment_id': self.id,
-                    'default_maintenance_type': 'corrective' if self.is_maintenance_due else 'preventive',
-                }
+                "type": "ir.actions.act_window",
+                "name": _("New Maintenance Request"),
+                "res_model": "maintenance.request",
+                "view_mode": "form",
+                "target": "new",
+                "context": {
+                    "default_name": _("Maintenance for %s", self.name),
+                    "default_equipment_id": self.id,
+                    "default_maintenance_type": "corrective" if self.is_maintenance_due else "preventive",
+                },
             }
 
     def action_retire(self):
@@ -246,7 +246,7 @@ class ServiceItem(models.Model):
             if user:
                 item.activity_schedule(
                     activity_type_id=activity_type.id,
-                    summary=_("Maintenance Due: %s") % item.display_name,
+                    summary=_("Maintenance Due: %s", item.display_name),
                     note=_("Preventive maintenance is due for this item."),
                     user_id=user.id,
                     date_deadline=fields.Date.today(),

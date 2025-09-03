@@ -105,7 +105,7 @@ class RecordsDepartmentSharing(models.Model):
 
         # Create approval notification
         self.message_post(
-            body=_("Sharing request submitted for approval to %s department") % self.target_department_id.name,
+            body=_("Sharing request submitted for approval to %s department", self.target_department_id.name),
             message_type="notification",
         )
 
@@ -132,7 +132,7 @@ class RecordsDepartmentSharing(models.Model):
         )
 
         # Notify requesting department
-        self.message_post(body=_("Sharing request approved by %s") % self.env.user.name, message_type="notification")
+        self.message_post(body=_("Sharing request approved by %s", self.env.user.name), message_type="notification")
 
     def action_reject(self):
         """Reject the sharing request"""
@@ -298,7 +298,7 @@ class RecordsDepartmentSharingInvite(models.Model):
 
         # Send notification to invited department
         self.message_post(
-            body=_("Sharing invitation sent to %s department") % self.invited_department_id.name,
+            body=_("Sharing invitation sent to %s department", self.invited_department_id.name),
             message_type="notification",
         )
 
@@ -317,7 +317,7 @@ class RecordsDepartmentSharingInvite(models.Model):
         # Create the sharing agreement
         sharing = self.env["records.department.sharing"].create(
             {
-                "name": _("Sharing Agreement: %s") % self.name,
+                "name": _("Sharing Agreement: %s", self.name),
                 "description": self.description,
                 "requesting_department_id": self.inviting_department_id.id,
                 "target_department_id": self.invited_department_id.id,

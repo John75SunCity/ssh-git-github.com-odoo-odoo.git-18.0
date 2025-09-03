@@ -196,11 +196,13 @@ class BarcodeModelsEnhanced(models.Model):
         if existing:
             return existing
 
-        return self.create({
-            'name': _("Scanned Barcode Type: %s") % barcode_type,
-            'barcode': barcode,
-            'state': 'active',
-        })
+        return self.create(
+            {
+                "name": _("Scanned Barcode Type: %s", barcode_type),
+                "barcode": barcode,
+                "state": "active",
+            }
+        )
 
     @api.model
     def _get_barcode_type_from_length(self, length):

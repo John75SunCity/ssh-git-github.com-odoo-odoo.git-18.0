@@ -31,7 +31,7 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
     name = fields.Char(
         string="Conversion Name",
         required=True,
-        default=lambda self: _("Container Type Conversion - %s") % fields.Date.today(),
+        default=lambda self: _("Container Type Conversion - %s", fields.Date.today()),
         help="Name for this conversion operation"
     )
 
@@ -265,7 +265,7 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
         self.ensure_one()
 
         log_vals = {
-            'name': _("Container Type Conversion: %s") % self.name,
+            'name': _("Container Type Conversion: %s", self.name,)
             'event_type': 'container_conversion',
             'event_date': fields.Datetime.now(),
             'user_id': self.env.user.id,

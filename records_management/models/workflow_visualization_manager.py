@@ -83,21 +83,23 @@ class WorkflowVisualizationManager(models.Model):
         try:
             return self._generate_process_flow(model_name)
         except Exception as e:
-            self.env['ir.logging'].create({
-                'name': 'Process Flow Generation Error',
-                'type': 'server',
-                'level': 'ERROR',
-                'message': _('Error generating process flow diagram: %s') % str(e),
-                'path': 'workflow.visualization.manager',
-                'func': 'generate_process_flow_diagram',
-            })
+            self.env["ir.logging"].create(
+                {
+                    "name": "Process Flow Generation Error",
+                    "type": "server",
+                    "level": "ERROR",
+                    "message": _("Error generating process flow diagram: %s", str(e)),
+                    "path": "workflow.visualization.manager",
+                    "func": "generate_process_flow_diagram",
+                }
+            )
             raise
 
     def _generate_process_flow(self, model_name):
         """Internal method to generate process flow diagram"""
         model = self.env['ir.model'].search([('model', '=', model_name)], limit=1)
         if not model:
-            raise UserError(_('Model %s not found') % model_name)
+            raise UserError(_("Model %s not found", model_name))
 
         # Get workflow states and transitions
         states = []
@@ -154,14 +156,16 @@ class WorkflowVisualizationManager(models.Model):
         }
 
         # Log analytics generation
-        self.env['ir.logging'].create({
-            'name': 'Workflow Analytics',
-            'type': 'server',
-            'level': 'INFO',
-            'message': _('Generated workflow analytics for model %s') % model_name,
-            'path': 'workflow.visualization.manager',
-            'func': 'get_workflow_analytics',
-        })
+        self.env["ir.logging"].create(
+            {
+                "name": "Workflow Analytics",
+                "type": "server",
+                "level": "INFO",
+                "message": _("Generated workflow analytics for model %s", model_name),
+                "path": "workflow.visualization.manager",
+                "func": "get_workflow_analytics",
+            }
+        )
 
         return analytics
 

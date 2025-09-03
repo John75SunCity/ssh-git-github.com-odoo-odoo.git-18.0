@@ -141,12 +141,12 @@ class MobilePhoto(models.Model):
         """Open photo in a new form view."""
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Photo: %s') % self.name,
-            'res_model': 'mobile.photo',
-            'res_id': self.id,
-            'view_mode': 'form',
-            'target': 'new',
+            "type": "ir.actions.act_window",
+            "name": _("Photo: %s", self.name),
+            "res_model": "mobile.photo",
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "new",
         }
 
     def action_view_related_fsm_task(self):
@@ -156,12 +156,12 @@ class MobilePhoto(models.Model):
             raise UserError(_('No FSM task linked to this photo.'))
 
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('FSM Task: %s') % self.fsm_task_id.name,
-            'res_model': 'project.task',
-            'res_id': self.fsm_task_id.id,
-            'view_mode': 'form',
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": _("FSM Task: %s", self.fsm_task_id.name),
+            "res_model": "project.task",
+            "res_id": self.fsm_task_id.id,
+            "view_mode": "form",
+            "target": "current",
         }
 
     def action_view_related_work_order(self):
@@ -171,12 +171,12 @@ class MobilePhoto(models.Model):
             raise UserError(_('No work order linked to this photo.'))
 
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Work Order: %s') % self.work_order_reference.name,
-            'res_model': self.work_order_reference._name,
-            'res_id': self.work_order_reference.id,
-            'view_mode': 'form',
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": _("Work Order: %s", self.work_order_reference.name),
+            "res_model": self.work_order_reference._name,
+            "res_id": self.work_order_reference.id,
+            "view_mode": "form",
+            "target": "current",
         }
 
     # ============================================================================
@@ -306,4 +306,3 @@ class MobilePhoto(models.Model):
                 domain.append(('destruction_request_id', '=', entity_id))
 
         return self.search(domain)
-

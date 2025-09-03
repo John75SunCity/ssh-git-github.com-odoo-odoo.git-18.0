@@ -520,14 +520,14 @@ class FileRetrievalItem(models.Model):
         """Mark file as not found"""
         self.ensure_one()
         if not notes:
-            notes = _("File not found after search on %s") % fields.Datetime.now().strftime('%Y-%m-%d %H:%M')
+            notes = _("File not found after search on %s", fields.Datetime.now().strftime("%Y-%m-%d %H:%M"))
 
         self.write({
             'status': 'not_found',
             'not_found_reason': reason,
             'not_found_notes': notes
         })
-        self.message_post(body=_("File marked as not found: %s") % notes)
+        self.message_post(body=_("File marked as not found: %s", notes))
         return True
 
     def action_cancel(self):
@@ -585,9 +585,9 @@ class FileRetrievalItem(models.Model):
                 'status': 'located',
                 'discovery_container_id': container.id,
             })
-            self.message_post(body=_("File located in container %s") % container.name)
+            self.message_post(body=_("File located in container %s", container.name))
         else:
-            self.message_post(body=_("Container %s searched. File not found") % container.name)
+            self.message_post(body=_("Container %s searched. File not found", container.name))
 
         return True
 

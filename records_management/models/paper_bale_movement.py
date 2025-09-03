@@ -122,7 +122,7 @@ class PaperBaleMovement(models.Model):
             raise ValidationError(_("Only movements that are in transit can be completed."))
         self.write({"state": "completed"})
         self.bale_id.write({'location_id': self.destination_location_id.id})
-        self.message_post(body=_("Movement completed. Bale is now at: %s") % self.destination_location_id.display_name)
+        self.message_post(body=_("Movement completed. Bale is now at: %s", self.destination_location_id.display_name))
 
     def action_cancel_movement(self):
         """Cancels the movement if it's in a draft state."""

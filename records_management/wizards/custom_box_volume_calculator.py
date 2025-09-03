@@ -476,9 +476,9 @@ class CustomBoxVolumeCalculator(models.TransientModel):
 
         # Create audit log entry
         self.env['naid.audit.log'].create({
-            'name': _('Volume Calculation: %s') % self.name,
+            'name': _('Volume Calculation: %s', self.name,)
             'event_type': 'volume_calculation',
-            'description': _('Custom box volume calculation performed by %s') % self.user_id.name,
+            'description': _('Custom box volume calculation performed by %s', self.user_id.name,)
             'user_id': self.user_id.id,
             'company_id': self.company_id.id,
             'details': {

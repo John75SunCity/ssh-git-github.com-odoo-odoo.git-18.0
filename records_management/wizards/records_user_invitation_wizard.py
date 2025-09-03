@@ -51,7 +51,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
             'name': _('Portal Invitation Sent'),
             'event_type': 'access_grant',
             'user_id': self.env.user.id,
-            'description': _('Invited %s users to the portal.') % len(internal_users),
+            'description': _('Invited %s users to the portal.', len(internal_users),)
         })
 
         return {'type': 'ir.actions.act_window_close'}

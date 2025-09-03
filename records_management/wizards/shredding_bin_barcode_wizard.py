@@ -61,7 +61,7 @@ class ShreddingBinBarcodeWizard(models.TransientModel):
                 'barcode_scan_status': 'unreadable'
             })
 
-            message = _("Manual override applied with bin size: %s") % dict(self._fields['manual_bin_size'].selection).get(self.manual_bin_size)
+            message = _("Manual override applied with bin size: %s", dict(self._fields['manual_bin_size'].selection).get(self.manual_bin_size))
 
         else:
             if not self.new_barcode:
@@ -77,7 +77,7 @@ class ShreddingBinBarcodeWizard(models.TransientModel):
                 'manual_size_override': False
             })
 
-            message = _("Barcode corrected to: %s") % new_barcode
+            message = _("Barcode corrected to: %s", new_barcode)
 
         return {
             'type': 'ir.actions.client',

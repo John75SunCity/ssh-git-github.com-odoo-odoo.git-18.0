@@ -136,7 +136,7 @@ class MobileBinKeyWizard(models.TransientModel):
             'operation_start_time': fields.Datetime.now()
         })
         self._create_audit_log('operation_started')
-        self.message_post(body=_("Mobile operation started by %s.") % self.user_id.name)
+        self.message_post(body=_("Mobile operation started by %s.", self.user_id.name))
         return self._return_mobile_interface()
 
     def action_complete_operation(self):
@@ -189,10 +189,11 @@ class MobileBinKeyWizard(models.TransientModel):
             raise UserError(_("The 'Records Manager' security group could not be found."))
 
         self.activity_schedule(
-            'mail.mail_activity_data_todo',
-            summary=_("Authorization Required: %s") % self.name,
-            note=_("Mobile operation '%s' by %s requires supervisor authorization.") % (self.action_type, self.user_id.name),
-            user_id=manager_group.users[0].id if manager_group.users else self.env.ref('base.user_admin').id
+            "mail.mail_activity_data_todo",
+            summary=_("Authorization Required: %s", self.name),
+            note=_("Mobile operation '%s' by %s requires supervisor authorization.")
+            % (self.action_type, self.user_id.name),
+            user_id=manager_group.users[0].id if manager_group.users else self.env.ref("base.user_admin").id,
         )
         self.message_post(body=_("Authorization requested from supervisors."))
         return self._return_mobile_interface()
@@ -207,7 +208,7 @@ class MobileBinKeyWizard(models.TransientModel):
             'state': 'draft'
         })
         self._create_audit_log('operation_authorized')
-        self.message_post(body=_("Operation authorized by %s.") % self.env.user.name)
+        self.message_post(body=_("Operation authorized by %s.", self.env.user.name))
         return self._return_mobile_interface()
 
     # ============================================================================
@@ -234,10 +235,10 @@ class MobileBinKeyWizard(models.TransientModel):
 
         lines = []
         if containers:
-            lines.append(_("CONTAINERS FOUND (%d):") % len(containers))
+            lines.append(_("CONTAINERS FOUND (%d):", len(containers)))
             lines.extend([f"- {c.name} (Location: {c.location_id.name or 'N/A'})" for c in containers])
         if documents:
-            lines.append(_("\nDOCUMENTS FOUND (%d):") % len(documents))
+            lines.append(_("\nDOCUMENTS FOUND (%d):", len(documents)))
             lines.extend([f"- {d.name} (Container: {d.container_id.name or 'N/A'})" for d in documents])
 
         results['formatted_results'] = '\n'.join(lines) if lines else _("No results found.")
@@ -257,13 +258,15 @@ class MobileBinKeyWizard(models.TransientModel):
     def _create_chain_of_custody_record(self):
         self.ensure_one()
         if 'records.chain.of.custody' in self.env:
-            custody = self.env['records.chain.of.custody'].create({
-                'name': _("Mobile Operation: %s") % self.name,
-                'event_type': 'mobile_access',
-                'responsible_user_id': self.user_id.id,
-                'location_id': self.bin_location_id.id if self.bin_location_id else False,
-                'description': self.operation_description or '',
-            })
+            custody = self.env["records.chain.of.custody"].create(
+                {
+                    "name": _("Mobile Operation: %s", self.name),
+                    "event_type": "mobile_access",
+                    "responsible_user_id": self.user_id.id,
+                    "location_id": self.bin_location_id.id if self.bin_location_id else False,
+                    "description": self.operation_description or "",
+                }
+            )
             self.chain_of_custody_id = custody.id
 
     def _create_billing_record(self):
@@ -271,15 +274,23 @@ class MobileBinKeyWizard(models.TransientModel):
         if not self.billable or not self.service_charge > 0 or not self.partner_id:
             return
         # Simplified invoice creation. A real implementation would use products.
-        self.env['account.move'].create({
-            'partner_id': self.partner_id.id,
-            'move_type': 'out_invoice',
-            'invoice_line_ids': [(0, 0, {
-                'name': _("Mobile Bin Key Service: %s") % self.action_type,
-                'quantity': 1,
-                'price_unit': self.service_charge,
-            })]
-        })
+        self.env["account.move"].create(
+            {
+                "partner_id": self.partner_id.id,
+                "move_type": "out_invoice",
+                "invoice_line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "name": _("Mobile Bin Key Service: %s", self.action_type),
+                            "quantity": 1,
+                            "price_unit": self.service_charge,
+                        },
+                    )
+                ],
+            }
+        )
 
     def _return_mobile_interface(self):
         self.ensure_one()
@@ -312,4 +323,3 @@ class MobileBinKeyWizard(models.TransientModel):
                 name = f"{name} - {action_label} [{state_label}]"
             result.append((wizard.id, name))
         return result
-

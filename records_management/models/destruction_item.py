@@ -71,7 +71,7 @@ class DestructionItem(models.Model):
             if record.item_description:
                 record.name = record.item_description
             else:
-                record.name = _("Item #%s") % (record.id or 0)
+                record.name = _("Item #%s", (record.id or 0))
 
     # ============================================================================
     # ACTION METHODS
@@ -97,7 +97,7 @@ class DestructionItem(models.Model):
                 'date_verified': fields.Datetime.now(),
                 'verified_by_id': self.env.user.id,
             })
-            record.message_post(body=_("Destruction verified by %s.") % self.env.user.name)
+            record.message_post(body=_("Destruction verified by %s.", self.env.user.name))
 
     # ============================================================================
     # OVERRIDE METHODS

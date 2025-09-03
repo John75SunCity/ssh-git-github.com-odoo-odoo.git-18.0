@@ -95,7 +95,7 @@ class RequiredDocument(models.Model):
             'verified_by_id': self.env.user.id,
             'verification_date': fields.Datetime.now()
         })
-        self.message_post(body=_("Document verified by %s.") % self.env.user.name)
+        self.message_post(body=_("Document verified by %s.", self.env.user.name))
 
     def action_reject(self):
         """Mark document as rejected."""
@@ -129,8 +129,8 @@ class RequiredDocument(models.Model):
                 doc.message_post(body=_("This document has expired."))
                 # Optionally, create an activity for follow-up
                 doc.activity_schedule(
-                    'mail.mail_activity_data_todo',
-                    summary=_('Expired Document: %s') % doc.name,
-                    note=_('Please upload a new version of this required document.'),
-                    user_id=doc.create_uid.id # Notify the creator
+                    "mail.mail_activity_data_todo",
+                    summary=_("Expired Document: %s", doc.name),
+                    note=_("Please upload a new version of this required document."),
+                    user_id=doc.create_uid.id,  # Notify the creator
                 )

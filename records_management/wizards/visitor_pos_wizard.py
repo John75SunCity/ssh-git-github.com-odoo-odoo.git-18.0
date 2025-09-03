@@ -144,5 +144,5 @@ class VisitorPosWizard(models.TransientModel):
         }
         new_partner = self.env["res.partner"].create(partner_vals)
         self.visitor_id.partner_id = new_partner.id  # Link back to visitor
-        self.message_post(body=_("Created new customer: %s") % new_partner.name)
+        self.message_post(body=_("Created new customer: %s", new_partner.name))
         return new_partner

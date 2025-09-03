@@ -75,7 +75,7 @@ class NaidComplianceAlert(models.Model):
         if self.status != 'new':
             raise UserError(_("Only new alerts can be acknowledged."))
         self.write({'status': 'acknowledged'})
-        self.message_post(body=_("Alert acknowledged by %s.") % self.env.user.name)
+        self.message_post(body=_("Alert acknowledged by %s.", self.env.user.name))
 
     def action_resolve(self):
         self.ensure_one()
@@ -87,7 +87,7 @@ class NaidComplianceAlert(models.Model):
             'resolved_date': fields.Datetime.now(),
             'active': False,
         })
-        self.message_post(body=_("Alert resolved by %s.") % self.env.user.name)
+        self.message_post(body=_("Alert resolved by %s.", self.env.user.name))
 
     def action_dismiss(self):
         self.ensure_one()
@@ -99,7 +99,7 @@ class NaidComplianceAlert(models.Model):
             'resolved_date': fields.Datetime.now(),
             'active': False,
         })
-        self.message_post(body=_("Alert dismissed by %s.") % self.env.user.name)
+        self.message_post(body=_("Alert dismissed by %s.", self.env.user.name))
 
     def action_escalate(self):
         self.ensure_one()
@@ -118,12 +118,12 @@ class NaidComplianceAlert(models.Model):
             'escalation_date': fields.Datetime.now(),
         })
         self.activity_schedule(
-            'mail.mail_activity_data_todo',
-            summary=_("Escalated Alert: %s") % self.title,
+            "mail.mail_activity_data_todo",
+            summary=_("Escalated Alert: %s", self.title),
             note=_("A compliance alert has been escalated for your review."),
-            user_id=target_user.id
+            user_id=target_user.id,
         )
-        self.message_post(body=_("Alert escalated to %s.") % target_user.name)
+        self.message_post(body=_("Alert escalated to %s.", target_user.name))
 
     # ============================================================================
     # AUTOMATION
@@ -153,7 +153,7 @@ class NaidComplianceAlert(models.Model):
         manager_group = self.env.ref('records_management.group_records_manager', raise_if_not_found=False)
         for alert in alerts.filtered(lambda a: a.severity == 'critical'):
             alert.message_post(
-                body=_("A new critical compliance alert has been created: %s") % alert.title,
-                partner_ids=manager_group.users.partner_id.ids if manager_group else []
+                body=_("A new critical compliance alert has been created: %s", alert.title),
+                partner_ids=manager_group.users.partner_id.ids if manager_group else [],
             )
         return alerts

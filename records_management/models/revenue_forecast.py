@@ -121,12 +121,14 @@ class RevenueForecast(models.Model):
                 if period_end > end_date:
                     period_end = end_date
 
-                lines_to_create.append({
-                    'name': _("Forecast for %s") % period_start.strftime('%B %Y'),
-                    'date_start': period_start,
-                    'date_end': period_end,
-                    'forecast_id': self.id,
-                })
+                lines_to_create.append(
+                    {
+                        "name": _("Forecast for %s", period_start.strftime("%B %Y")),
+                        "date_start": period_start,
+                        "date_end": period_end,
+                        "forecast_id": self.id,
+                    }
+                )
                 current_date += relativedelta(months=1)
 
         elif self.period_type == 'quarterly':
@@ -150,15 +152,17 @@ class RevenueForecast(models.Model):
                 year = current_date.year
 
         elif self.period_type == 'annual':
-            lines_to_create.append({
-                'name': _("Forecast for %s") % start_date.strftime('%Y'),
-                'date_start': start_date,
-                'date_end': end_date,
-                'forecast_id': self.id,
-            })
+            lines_to_create.append(
+                {
+                    "name": _("Forecast for %s", start_date.strftime("%Y")),
+                    "date_start": start_date,
+                    "date_end": end_date,
+                    "forecast_id": self.id,
+                }
+            )
 
         if lines_to_create:
             self.env['revenue.forecast.line'].create(lines_to_create)
-            self.message_post(body=_("%s forecast lines have been generated.") % len(lines_to_create))
+            self.message_post(body=_("%s forecast lines have been generated.", len(lines_to_create)))
 
         return True

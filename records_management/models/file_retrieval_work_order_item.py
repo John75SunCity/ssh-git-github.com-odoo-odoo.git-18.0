@@ -340,11 +340,7 @@ class FileRetrievalWorkOrderItem(models.Model):
 
         except Exception as e:
             _logger.error("Barcode scan error for item %s: %s", self.name, str(e))
-            return {
-                'success': False,
-                'message': _('Error retrieving file: %s') % str(e),
-                'item_name': self.file_name
-            }
+            return {"success": False, "message": _("Error retrieving file: %s", str(e)), "item_name": self.file_name}
 
     def barcode_scan_deliver(self, delivery_confirmation=None):
         """
@@ -396,9 +392,9 @@ class FileRetrievalWorkOrderItem(models.Model):
         except Exception as e:
             _logger.error("Delivery scan error for item %s: %s", self.name, str(e))
             return {
-                'success': False,
-                'message': _('Error confirming delivery: %s') % str(e),
-                'item_name': self.file_name
+                "success": False,
+                "message": _("Error confirming delivery: %s", str(e)),
+                "item_name": self.file_name,
             }
 
     def mark_not_found(self, reason=None):
@@ -492,7 +488,7 @@ class FileRetrievalWorkOrderItem(models.Model):
                 self.file_name, self.work_order_id.name
             )
             if self.tracking_number:
-                message += _(" Tracking: %s") % self.tracking_number
+                message += _(" Tracking: %s", self.tracking_number)
             self._send_sms_notification(message)
 
     def _send_sms_notification(self, message):

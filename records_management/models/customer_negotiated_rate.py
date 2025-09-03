@@ -170,7 +170,7 @@ class CustomerNegotiatedRate(models.Model):
         """Update fields when customer changes."""
         if self.partner_id:
             if not self.name or self.name == _('New'):
-                self.name = _('Rate for %s') % self.partner_id.name
+                self.name = _('Rate for %s', self.partner_id.name)
 
             billing_profile = self.env['customer.billing.profile'].search([
                 ('partner_id', '=', self.partner_id.id),
@@ -234,7 +234,7 @@ class CustomerNegotiatedRate(models.Model):
             'approval_date': fields.Datetime.now()
         }
         self.write(vals)
-        self.message_post(body=_("Rate approved by %s.") % self.env.user.name)
+        self.message_post(body=_("Rate approved by %s.", self.env.user.name))
 
         # Automatically activate if the effective date is today or in the past
         if self.effective_date <= fields.Date.today():
@@ -243,14 +243,14 @@ class CustomerNegotiatedRate(models.Model):
     def action_reject(self):
         self.ensure_one()
         self.write({'state': 'rejected'})
-        self.message_post(body=_("Rate rejected by %s.") % self.env.user.name)
+        self.message_post(body=_("Rate rejected by %s.", self.env.user.name))
 
     def action_activate(self):
         for rate in self:
             if rate.state != 'approved':
                 raise UserError(_('Only approved rates can be activated.'))
             if rate.effective_date > fields.Date.today():
-                raise UserError(_('Cannot activate rate before its effective date (%s).') % rate.effective_date)
+                raise UserError(_('Cannot activate rate before its effective date (%s).', rate.effective_date))
             rate.write({'state': 'active'})
             rate.message_post(body=_("Rate activated."))
 

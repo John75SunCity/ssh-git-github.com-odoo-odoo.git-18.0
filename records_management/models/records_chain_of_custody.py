@@ -161,7 +161,7 @@ class RecordsChainOfCustody(models.Model):
             if record.custody_event:
                 event_label = dict(record._fields["custody_event"].selection).get(record.custody_event, record.custody_event)
                 if event_label:
-                    parts.append(_("(%s)") % event_label)
+                    parts.append(_("(%s)", event_label))
             if record.custody_date:
                 parts.append(record.custody_date.strftime("%Y-%m-%d %H:%M"))
             record.display_name = " - ".join(parts) if parts else _("New Custody Record")
@@ -237,7 +237,7 @@ class RecordsChainOfCustody(models.Model):
         )
         verification_hash = hashlib.sha256(data_string.encode()).hexdigest()[:12].upper()
 
-        self.verification_code = _("COC-%s") % verification_hash
+        self.verification_code = _("COC-%s", verification_hash)
         return self.verification_code
 
     def verify_custody_integrity(self):
@@ -271,7 +271,7 @@ class RecordsChainOfCustody(models.Model):
 
         # Create certificate record
         certificate_vals = {
-            "name": _("Custody Certificate - %s") % self.name,
+            "name": _("Custody Certificate - %s", self.name),
             "certificate_type": "custody",
             "customer_id": self.customer_id.id,
             "document_ids": [(6, 0, [self.document_id.id])] if self.document_id else [],
@@ -283,7 +283,7 @@ class RecordsChainOfCustody(models.Model):
         certificate = self.env["naid.certificate"].create(certificate_vals)
 
         self.message_post(
-            body=_("Custody certificate generated: %s") % certificate.name,
+            body=_("Custody certificate generated: %s", certificate.name),
             message_type="notification",
         )
 
@@ -304,7 +304,7 @@ class RecordsChainOfCustody(models.Model):
         })
         self.verify_custody_integrity()
         self.message_post(
-            body=_("Custody event confirmed by %s") % self.env.user.name,
+            body=_("Custody event confirmed by %s", self.env.user.name),
             message_type="notification",
         )
 
@@ -332,7 +332,7 @@ class RecordsChainOfCustody(models.Model):
             "supervisor_approval": True,
         })
         self.message_post(
-            body=_("Custody record verified by supervisor: %s") % self.env.user.name,
+            body=_("Custody record verified by supervisor: %s", self.env.user.name),
             message_type="notification",
         )
 
@@ -343,7 +343,7 @@ class RecordsChainOfCustody(models.Model):
             raise ValidationError(_("Cannot cancel completed or verified custody records."))
         self.write({"state": "cancelled"})
         self.message_post(
-            body=_("Custody record cancelled by %s") % self.env.user.name,
+            body=_("Custody record cancelled by %s", self.env.user.name),
             message_type="comment",
         )
 
@@ -431,10 +431,10 @@ class RecordsChainOfCustody(models.Model):
 
             if record.custody_event:
                 event_label = dict(record._fields["custody_event"].selection).get(record.custody_event, _("Unknown Event"))
-                name_parts.append(_("(%s)") % event_label)
+                name_parts.append(_("(%s)", event_label))
 
             if record.customer_id:
-                name_parts.append(_("- %s") % record.customer_id.name)
+                name_parts.append(_("- %s", record.customer_id.name))
 
             result.append((record.id, " ".join(name_parts)))
         return result
@@ -483,7 +483,7 @@ class RecordsChainOfCustody(models.Model):
             "customer_id": document.customer_id.id,
             "custody_event": event_type,
             "custody_date": fields.Datetime.now(),
-            "description": description or _("Automatic %s event") % event_type,
+            "description": description or _("Automatic %s event", event_type),
             "custody_from_id": user_from.id if user_from else False,
             "custody_to_id": user_to.id if user_to else False,
             "state": "confirmed",

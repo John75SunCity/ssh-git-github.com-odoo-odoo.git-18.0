@@ -177,7 +177,7 @@ class BarcodeProduct(models.Model):
                 else:
                     pattern_parts.append("Mixed")
 
-                pattern_parts.append(_("Length: %s") % length)
+                pattern_parts.append(_("Length: %s", length))
                 record.barcode_pattern = " - ".join(pattern_parts)
             else:
                 record.barcode_pattern = ""
@@ -311,7 +311,7 @@ class BarcodeProduct(models.Model):
             message = _("Barcode validation successful.")
             message_type = "success"
         else:
-            message = _("Barcode validation failed: %s") % self.validation_message
+            message = _("Barcode validation failed: %s", self.validation_message)
             message_type = "warning"
 
         return {
@@ -336,7 +336,7 @@ class BarcodeProduct(models.Model):
         elif self.product_category == "location":
             return self._create_location_record()
         else:
-            raise UserError(_("Record creation is not supported for this category: %s") % self.product_category)
+            raise UserError(_("Record creation is not supported for this category: %s", self.product_category))
 
     def action_activate(self):
         """Activate the barcode product."""
@@ -362,7 +362,7 @@ class BarcodeProduct(models.Model):
             raise UserError(_("A container type must be specified before creating a container record."))
 
         container_vals = {
-            "name": _("Container %s") % self.barcode,
+            "name": _("Container %s", self.barcode),
             "barcode": self.barcode,
             "container_type_id": self._get_container_type_id(),
             "created_from_barcode_id": self.id,
@@ -384,7 +384,7 @@ class BarcodeProduct(models.Model):
         """Private method to create a records.location from the barcode."""
         self.ensure_one()
         location_vals = {
-            "name": _("Location %s") % self.barcode,
+            "name": _("Location %s", self.barcode),
             "location_code": self.barcode,
             "created_from_barcode_id": self.id,
         }
@@ -450,4 +450,3 @@ class BarcodeProduct(models.Model):
                     raise ValidationError(
                         _("Barcode length %s suggests category '%s', but category '%s' is selected. Please correct the category or barcode.") % (length, expected_category, record.product_category)
                     )
-

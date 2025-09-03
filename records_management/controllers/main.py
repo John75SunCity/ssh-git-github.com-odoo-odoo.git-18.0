@@ -75,9 +75,9 @@ class RecordsManagementController(http.Controller):
         except AccessError:
             return request.redirect('/web/login?redirect=/records/dashboard')
         except Exception as e:
-            return request.render('records_management.dashboard_error', {
-                'error_message': _('Dashboard loading failed: %s') % str(e)
-            })
+            return request.render(
+                "records_management.dashboard_error", {"error_message": _("Dashboard loading failed: %s", str(e))}
+            )
 
     @http.route(['/records/api/dashboard_data'], type='json', auth='user')
     def get_dashboard_data_json(self, filters=None, **kw):
@@ -114,7 +114,7 @@ class RecordsManagementController(http.Controller):
             return data
 
         except Exception as e:
-            return {'error': _('Failed to load dashboard data: %s') % str(e)}
+            return {"error": _("Failed to load dashboard data: %s", str(e))}
 
     @http.route(['/records/container/<int:container_id>'], type='http', auth='user', website=True)
     def container_detail(self, container_id, **kw):
@@ -306,20 +306,24 @@ class RecordsManagementController(http.Controller):
         ])
 
         if overdue_pickups > 0:
-            notifications.append({
-                'type': 'warning',
-                'message': _('%d pickup requests are overdue') % overdue_pickups,
-                'action_url': '/records/pickup_requests?filter=overdue'
-            })
+            notifications.append(
+                {
+                    "type": "warning",
+                    "message": _("%d pickup requests are overdue", overdue_pickups),
+                    "action_url": "/records/pickup_requests?filter=overdue",
+                }
+            )
 
         # Check for capacity alerts
         locations_near_capacity = self._get_locations_near_capacity()
         if locations_near_capacity:
-            notifications.append({
-                'type': 'info',
-                'message': _('%d locations are near capacity') % len(locations_near_capacity),
-                'action_url': '/records/locations?filter=near_capacity'
-            })
+            notifications.append(
+                {
+                    "type": "info",
+                    "message": _("%d locations are near capacity", len(locations_near_capacity)),
+                    "action_url": "/records/locations?filter=near_capacity",
+                }
+            )
 
         return {'notifications': notifications}
 

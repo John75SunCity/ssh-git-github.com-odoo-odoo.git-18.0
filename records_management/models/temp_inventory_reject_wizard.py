@@ -26,7 +26,7 @@ class TempInventoryRejectWizard(models.TransientModel):
         })
 
         self.inventory_id.message_post(
-            body=_("Inventory rejected. Reason: %s") % self.rejection_reason
+            body=_("Inventory rejected. Reason: %s", self.rejection_reason)
         )
 
         return {"type": "ir.actions.act_window_close"}

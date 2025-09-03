@@ -22,7 +22,6 @@ from odoo import http, fields, _
 from odoo.exceptions import ValidationError
 
 
-
 _logger = logging.getLogger(__name__)
 
 # Constants
@@ -140,12 +139,12 @@ class RecordsManagementController(http.Controller):
         """
         try:
             audit_vals = {
-                'name': _("Customer Portal Action: %s") % action_type,
-                'action_type': action_type,
-                'partner_id': partner_id,
-                'user_id': request.env.user.id,
-                'action_date': fields.Datetime.now(),
-                'notes': notes or '',
+                "name": _("Customer Portal Action: %s", action_type),
+                "action_type": action_type,
+                "partner_id": partner_id,
+                "user_id": request.env.user.id,
+                "action_date": fields.Datetime.now(),
+                "notes": notes or "",
             }
 
             if item_ids:
@@ -200,14 +199,14 @@ class RecordsManagementController(http.Controller):
 
             # Create pickup request
             pickup_vals = {
-                'name': _("Portal Pickup Request - %s") % partner.name,
-                'partner_id': partner.id,
-                'request_type': 'pickup',
-                'priority': 'normal',
-                'state': 'submitted',
-                'requested_by': current_user.id,
-                'notes': post.get('notes', ''),
-                'pickup_date': post.get('preferred_date'),
+                "name": _("Portal Pickup Request - %s", partner.name),
+                "partner_id": partner.id,
+                "request_type": "pickup",
+                "priority": "normal",
+                "state": "submitted",
+                "requested_by": current_user.id,
+                "notes": post.get("notes", ""),
+                "pickup_date": post.get("preferred_date"),
             }
 
             pickup_request = request.env['portal.request'].create(pickup_vals)
@@ -224,16 +223,16 @@ class RecordsManagementController(http.Controller):
 
             # Create NAID audit log
             self._create_naid_audit_log(
-                'pickup_request_submitted',
+                "pickup_request_submitted",
                 partner.id,
                 item_ids,
-                _("Portal pickup request created: %s") % pickup_request.name
+                _("Portal pickup request created: %s", pickup_request.name),
             )
 
             # Send notification to operations team
             pickup_request.message_post(
-                body=_("New pickup request submitted via customer portal by %s") % current_user.name,
-                message_type='notification'
+                body=_("New pickup request submitted via customer portal by %s", current_user.name),
+                message_type="notification",
             )
 
             _logger.info('Pickup request %s created for items %s by partner %s',
@@ -517,9 +516,7 @@ class RecordsManagementController(http.Controller):
 
             # Create audit log
             self._create_naid_audit_log(
-                'request_cancelled',
-                partner.id,
-                notes=_("Request cancelled by customer: %s") % customer_request.name
+                "request_cancelled", partner.id, notes=_("Request cancelled by customer: %s", customer_request.name)
             )
 
             return request.redirect('/my/requests?success=request_cancelled')
@@ -538,21 +535,19 @@ class RecordsManagementController(http.Controller):
         if request.httprequest.method == 'POST':
             try:
                 feedback_vals = {
-                    'name': post.get('subject', _("Feedback from %s") % partner.name),
-                    'partner_id': partner.id,
-                    'rating': post.get('rating'),
-                    'comments': post.get('comments', ''),
-                    'feedback_type': post.get('feedback_type', 'general'),
-                    'submitted_via': 'portal',
+                    "name": post.get("subject", _("Feedback from %s", partner.name)),
+                    "partner_id": partner.id,
+                    "rating": post.get("rating"),
+                    "comments": post.get("comments", ""),
+                    "feedback_type": post.get("feedback_type", "general"),
+                    "submitted_via": "portal",
                 }
 
                 feedback = request.env['customer.feedback'].create(feedback_vals)
 
                 # Create audit log
                 self._create_naid_audit_log(
-                    'feedback_submitted',
-                    partner.id,
-                    notes=_("Customer feedback submitted: %s") % feedback.name
+                    "feedback_submitted", partner.id, notes=_("Customer feedback submitted: %s", feedback.name)
                 )
 
                 return request.redirect('/my/feedback?success=feedback_submitted')

@@ -190,7 +190,7 @@ class ScanRetrievalWorkOrder(models.Model):
             if record.partner_id:
                 parts.append(record.partner_id.name)
             if record.total_pages_to_scan > 0:
-                parts.append(_("(%s pages)") % record.total_pages_to_scan)
+                parts.append(_("(%s pages)", record.total_pages_to_scan))
             record.display_name = " - ".join(filter(None, parts))
 
     @api.depends('scan_item_ids', 'scan_item_ids.page_count')
@@ -330,7 +330,7 @@ class ScanRetrievalWorkOrder(models.Model):
 
         # Placeholder for electronic transmission logic
         transmission_method_str = dict(self._fields['transmission_method'].selection).get(self.transmission_method)
-        self.message_post(body=_("Transmitting files electronically via %s.") % transmission_method_str)
+        self.message_post(body=_("Transmitting files electronically via %s.", transmission_method_str))
         self.write({'state': 'delivered'})
 
     def action_confirm_transmission(self):

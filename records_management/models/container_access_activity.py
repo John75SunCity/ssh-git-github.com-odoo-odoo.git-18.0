@@ -408,7 +408,7 @@ class ContainerAccessActivity(models.Model):
             if activity.container_id:
                 parts.append(activity.container_id.name)
             if activity.visitor_id:
-                parts.append(_("by %s") % activity.visitor_id.name)
+                parts.append(_("by %s", activity.visitor_id.name))
 
             activity.display_name = " - ".join(parts) if parts else _("New Activity")
 
@@ -431,7 +431,7 @@ class ContainerAccessActivity(models.Model):
         if self.container_id:
             # Set default activity name
             if not self.name or self.name == _("New Activity"):
-                self.name = _("Access: %s") % self.container_id.name
+                self.name = _("Access: %s", self.container_id.name)
 
             # Set access level based on container
             if hasattr(self.container_id, 'access_level'):
@@ -482,7 +482,7 @@ class ContainerAccessActivity(models.Model):
             'access_granted_time': fields.Datetime.now()
         })
         self._create_audit_log('activity_started')
-        self.message_post(body=_("Activity started by %s") % self.visitor_id.name)
+        self.message_post(body=_("Activity started by %s", self.visitor_id.name))
 
     def action_complete_activity(self):
         """Complete the activity"""
@@ -533,7 +533,7 @@ class ContainerAccessActivity(models.Model):
             'approval_date': fields.Datetime.now()
         })
         self._create_audit_log('activity_approved')
-        self.message_post(body=_("Activity approved by %s") % self.env.user.name)
+        self.message_post(body=_("Activity approved by %s", self.env.user.name))
 
     def action_cancel_activity(self):
         """Cancel the activity"""
@@ -553,12 +553,12 @@ class ContainerAccessActivity(models.Model):
         self.ensure_one()
 
         follow_up_vals = {
-            'name': _("Follow-up: %s") % self.name,
-            'container_id': self.container_id.id,
-            'visitor_id': self.visitor_id.id,
-            'activity_type': self.activity_type,
-            'description': _("Follow-up to activity %s") % self.name,
-            'priority': 'high',
+            "name": _("Follow-up: %s", self.name),
+            "container_id": self.container_id.id,
+            "visitor_id": self.visitor_id.id,
+            "activity_type": self.activity_type,
+            "description": _("Follow-up to activity %s", self.name),
+            "priority": "high",
         }
 
         follow_up = self.create(follow_up_vals)
@@ -640,14 +640,14 @@ class ContainerAccessActivity(models.Model):
 
         if 'naid.audit.log' in self.env:
             audit_vals = {
-                'action_type': action_type,
-                'user_id': self.env.user.id,
-                'timestamp': fields.Datetime.now(),
-                'description': _("Container access activity: %s") % action_type,
-                'container_id': self.container_id.id,
-                'access_activity_id': self.id,
-                'visitor_id': self.visitor_id.id if self.visitor_id else False,
-                'naid_compliant': self.naid_compliant,
+                "action_type": action_type,
+                "user_id": self.env.user.id,
+                "timestamp": fields.Datetime.now(),
+                "description": _("Container access activity: %s", action_type),
+                "container_id": self.container_id.id,
+                "access_activity_id": self.id,
+                "visitor_id": self.visitor_id.id if self.visitor_id else False,
+                "naid_compliant": self.naid_compliant,
             }
             self.env['naid.audit.log'].create(audit_vals)
             self.audit_trail_created = True
@@ -658,13 +658,13 @@ class ContainerAccessActivity(models.Model):
 
         if 'chain.of.custody' in self.env:
             custody_vals = {
-                'name': _("Container Access: %s") % self.name,
-                'event_type': 'container_access',
-                'responsible_user_id': self.visitor_id.user_id.id if self.visitor_id.user_id else self.env.user.id,
-                'event_date': self.activity_time,
-                'container_id': self.container_id.id,
-                'description': self.description,
-                'access_activity_id': self.id,
+                "name": _("Container Access: %s", self.name),
+                "event_type": "container_access",
+                "responsible_user_id": self.visitor_id.user_id.id if self.visitor_id.user_id else self.env.user.id,
+                "event_date": self.activity_time,
+                "container_id": self.container_id.id,
+                "description": self.description,
+                "access_activity_id": self.id,
             }
             custody_record = self.env['chain.of.custody'].create(custody_vals)
             self.chain_of_custody_id = custody_record.id
@@ -737,7 +737,7 @@ class ContainerAccessActivity(models.Model):
         for vals in vals_list:
             if not vals.get('name') or vals['name'] == _("New Activity"):
                 sequence = self.env['ir.sequence'].next_by_code('container.access.activity')
-                vals['name'] = sequence or _('Activity %s') % fields.Datetime.now().strftime('%Y%m%d-%H%M%S')
+                vals["name"] = sequence or _("Activity %s", fields.Datetime.now().strftime("%Y%m%d-%H%M%S"))
 
         activities = super().create(vals_list)
 
@@ -753,7 +753,7 @@ class ContainerAccessActivity(models.Model):
         if 'status' in vals:
             for activity in self:
                 status_label = dict(activity._fields['status'].selection)[activity.status]
-                activity.message_post(body=_("Status changed to %s") % status_label)
+                activity.message_post(body=_("Status changed to %s", status_label))
 
         return result
 

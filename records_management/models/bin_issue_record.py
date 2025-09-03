@@ -147,12 +147,12 @@ class BinIssueRecord(models.Model):
         """View the related bin."""
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Bin: %s') % self.bin_id.barcode,
-            'res_model': 'shredding.service.bin',
-            'res_id': self.bin_id.id,
-            'view_mode': 'form',
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": _("Bin: %s", self.bin_id.barcode),
+            "res_model": "shredding.service.bin",
+            "res_id": self.bin_id.id,
+            "view_mode": "form",
+            "target": "current",
         }
 
     def action_view_work_order(self):
@@ -162,12 +162,12 @@ class BinIssueRecord(models.Model):
             raise UserError(_("No work order associated with this issue."))
 
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Work Order: %s') % self.work_order_id.name,
-            'res_model': 'project.task',
-            'res_id': self.work_order_id.id,
-            'view_mode': 'form',
-            'target': 'current',
+            "type": "ir.actions.act_window",
+            "name": _("Work Order: %s", self.work_order_id.name),
+            "res_model": "project.task",
+            "res_id": self.work_order_id.id,
+            "view_mode": "form",
+            "target": "current",
         }
 
     def action_mark_resolved(self):
@@ -177,7 +177,7 @@ class BinIssueRecord(models.Model):
             'resolution_status': 'resolved',
             'resolution_date': fields.Datetime.now(),
         })
-        self.message_post(body=_("Issue marked as resolved by %s") % self.env.user.name)
+        self.message_post(body=_("Issue marked as resolved by %s", self.env.user.name))
 
     def action_mark_billed(self):
         """Mark customer as billed."""

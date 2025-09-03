@@ -243,7 +243,7 @@ class ProjectTask(models.Model):
             report_action = self.env.ref('records_management.action_report_certificate_of_destruction')
             pdf_content, _ = report_action._render_qweb_pdf(res_ids=self.ids)
 
-            certificate_name = _("Certificate-of-Destruction-%s.pdf") % self.name
+            certificate_name = _("Certificate-of-Destruction-%s.pdf", self.name)
             attachment = self.env['ir.attachment'].create({
                 'name': certificate_name,
                 'type': 'binary',
@@ -260,7 +260,7 @@ class ProjectTask(models.Model):
             )
         except Exception as e:
             _logger.error("Failed to generate certificate for task %s: %s", self.name, e)
-            raise UserError(_("Failed to generate Certificate of Destruction: %s") % str(e))
+            raise UserError(_("Failed to generate Certificate of Destruction: %s", str(e)))
 
     # ============================================================================
     # ORM OVERRIDES
@@ -279,7 +279,7 @@ class ProjectTask(models.Model):
         tasks = super().create(vals_list)
         for task in tasks:
             if task.naid_compliant:
-                description = _('Task created: %s') % task.name
+                description = _('Task created: %s', task.name)
                 task._create_audit_log('task_created', description)
         return tasks
 
@@ -299,7 +299,7 @@ class ProjectTask(models.Model):
             stage = self.env['project.task.type'].browse(vals['stage_id'])
             for task in self:
                 if task.naid_compliant:
-                    description = _('Stage changed to: %s') % stage.name
+                    description = _('Stage changed to: %s', stage.name)
                     task._create_audit_log('stage_change', description)
 
         if 'user_ids' in vals:

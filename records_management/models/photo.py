@@ -88,7 +88,7 @@ class Photo(models.Model):
         self.ensure_one()
         for record in self:
             record.state = 'validated'
-            record.message_post(body=_("Photo validated: %s") % record.name)
+            record.message_post(body=_("Photo validated: %s", record.name))
 
     def action_archive_photo(self):
         """Archive the photo"""
@@ -96,7 +96,7 @@ class Photo(models.Model):
         for record in self:
             record.state = 'archived'
             record.active = False
-            record.message_post(body=_("Photo archived: %s") % record.name)
+            record.message_post(body=_("Photo archived: %s", record.name))
 
     def action_unarchive_photo(self):
         """Unarchive the photo"""
@@ -104,7 +104,7 @@ class Photo(models.Model):
         for record in self:
             record.state = 'draft'
             record.active = True
-            record.message_post(body=_("Photo unarchived: %s") % record.name)
+            record.message_post(body=_("Photo unarchived: %s", record.name))
 
     def action_download_photo(self):
         """Download the photo"""
@@ -181,10 +181,7 @@ class Photo(models.Model):
     def duplicate_photo(self):
         """Create a duplicate of this photo, including its image."""
         self.ensure_one()
-        return self.copy({
-            'name': _('%s (Copy)') % self.name,
-            'state': 'draft'
-        })
+        return self.copy({"name": _("%s (Copy)", self.name), "state": "draft"})
 
     def get_image_thumbnail(self, size=(150, 150)):
         """Get a thumbnail version of the image."""
@@ -222,7 +219,7 @@ class Photo(models.Model):
 
         photos = super().create(vals_list)
         for photo in photos:
-            photo.message_post(body=_("Photo created: %s") % photo.name)
+            photo.message_post(body=_("Photo created: %s", photo.name))
         return photos
 
     def write(self, vals):
@@ -232,11 +229,11 @@ class Photo(models.Model):
         # Log significant changes
         if 'state' in vals:
             for record in self:
-                record.message_post(body=_("Photo state changed to: %s") % record.state)
+                record.message_post(body=_("Photo state changed to: %s", record.state))
 
         if 'category' in vals:
             for record in self:
-                record.message_post(body=_("Photo category changed to: %s") % record.category)
+                record.message_post(body=_("Photo category changed to: %s", record.category))
 
         return result
 
@@ -306,9 +303,9 @@ class Photo(models.Model):
             if record.image_filename:
                 file_extension = record.image_filename.split('.')[-1].lower()
                 if file_extension not in allowed_extensions:
-                    raise ValidationError(_(
-                        "The image file must be one of the following types: %s."
-                    ) % ', '.join(allowed_extensions))
+                    raise ValidationError(
+                        _("The image file must be one of the following types: %s.", ", ".join(allowed_extensions))
+                    )
 
     # ============================================================================
     # SEARCH METHODS

@@ -377,10 +377,7 @@ class ShreddingCertificate(models.Model):
         """
         self.write({'state': 'archived', 'active': False})
         self.message_post(
-            body=_("Certificate has been archived on %(date)s") % {
-                'date': fields.Date.context_today(self)
-            },
-            message_type='notification'
+            body=_("Certificate has been archived on %s", fields.Date.context_today(self)), message_type="notification"
         )
 
     def action_reset_to_draft(self):
@@ -391,10 +388,8 @@ class ShreddingCertificate(models.Model):
         """
         self.write({'state': 'draft', 'active': True})
         self.message_post(
-            body=_("Certificate has been reset to draft on %(date)s") % {
-                'date': fields.Date.context_today(self)
-            },
-            message_type='notification'
+            body=_("Certificate has been reset to draft on %(date)s", {"date": fields.Date.context_today(self)}),
+            message_type="notification",
         )
 
     def action_print_certificate(self):
@@ -431,11 +426,7 @@ class ShreddingCertificate(models.Model):
         }
 
         duplicate = self.create(duplicate_vals)
-        duplicate.message_post(
-            body=_("Certificate duplicated from %(original)s") % {
-                'original': self.name
-            }
-        )
+        duplicate.message_post(body=_("Certificate duplicated from %(original)s", {"original": self.name}))
 
         return duplicate
 
@@ -468,10 +459,8 @@ class ShreddingCertificate(models.Model):
 
         # Log success
         self.message_post(
-            body=_("Certificate sent to %(email)s via email") % {
-                'email': self.partner_id.email
-            },
-            message_type='notification'
+            body=_("Certificate sent to %(email)s via email", {"email": self.partner_id.email}),
+            message_type="notification",
         )
 
     def _prepare_portal_delivery(self):

@@ -133,7 +133,7 @@ class SignedDocument(models.Model):
         if not self.signatory_name:
             raise UserError(_("Please specify the signatory name."))
         self.write({"state": "signed", "signature_date": fields.Datetime.now()})
-        self.message_post(body=_("Document signed by %s") % self.signatory_name)
+        self.message_post(body=_("Document signed by %s", self.signatory_name))
         self._create_audit_log("document_signed")
 
     def action_verify_signature(self):

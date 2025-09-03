@@ -151,7 +151,7 @@ class CustomerInventory(models.Model):
                 if invalid_locations:
                     raise ValidationError(_(
                         "Selected locations must belong to the same department: %s"
-                    ) % ', '.join(invalid_locations.mapped('name')))
+                    , ', '.join(invalid_locations.mapped('name'))))
 
     # ============================================================================
     # ACTION METHODS
@@ -221,7 +221,7 @@ class CustomerInventory(models.Model):
             'verification_date': fields.Datetime.now()
         })
 
-        self.message_post(body=_("Bulk verification completed for %s lines.") % len(unverified_lines))
+        self.message_post(body=_("Bulk verification completed for %s lines.", len(unverified_lines)))
 
     def action_submit_for_review(self):
         """Submit inventory for review."""
@@ -324,7 +324,7 @@ class CustomerInventory(models.Model):
         for record in records:
             record.message_post(body=_(
                 "Inventory created with type: %s"
-            ) % dict(record._fields['inventory_type'].selection)[record.inventory_type])
+            , dict(record._fields['inventory_type'].selection)[record.inventory_type]))
 
         return records
 

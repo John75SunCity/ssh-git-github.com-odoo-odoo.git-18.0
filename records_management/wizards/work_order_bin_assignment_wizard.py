@@ -26,11 +26,11 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     # CORE IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(
-        string='Assignment Name',
+        string="Assignment Name",
         required=True,
-        default=lambda self: _('Bin Assignment - %s') % fields.Date.today(),
+        default=lambda self: _("Bin Assignment - %s", fields.Date.today()),
         tracking=True,
-        help='Name for this bin assignment operation'
+        help="Name for this bin assignment operation",
     )
 
     company_id = fields.Many2one(
@@ -206,9 +206,12 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         ])
 
         if existing_assignments:
-            raise UserError(_('Some selected bins are already assigned to other active work orders: %s') % (
-                ', '.join(existing_assignments.mapped('name'))
-            ))
+            raise UserError(
+                _(
+                    "Some selected bins are already assigned to other active work orders: %s",
+                    ", ".join(existing_assignments.mapped("name")),
+                )
+            )
 
         return True
 
@@ -356,17 +359,22 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     # ============================================================================
     def _create_naid_audit_log(self, work_order, assigned_bins):
         """Create NAID compliance audit log for bin assignment"""
-        self.env['naid.audit.log'].create({
-            'name': _('Bin Assignment: %s') % work_order.name,
-            'activity_type': 'bin_assignment',
-            'work_order_id': work_order.id,
-            'container_ids': [(6, 0, assigned_bins.ids)],
-            'performed_by': self.env.user.id,
-            'activity_date': fields.Datetime.now(),
-            'description': _('Assigned %d bins to work order %s via wizard') % (
-                           len(assigned_bins), work_order.name),
-            'compliance_level': 'standard'
-        })
+        self.env["naid.audit.log"].create(
+            {
+                "name": _(
+                    "Bin Assignment: %s",
+                    work_order.name,
+                ),
+                "activity_type": "bin_assignment",
+                "work_order_id": work_order.id,
+                "container_ids": [(6, 0, assigned_bins.ids)],
+                "performed_by": self.env.user.id,
+                "activity_date": fields.Datetime.now(),
+                "description": _("Assigned %d bins to work order %s via wizard")
+                % (len(assigned_bins), work_order.name),
+                "compliance_level": "standard",
+            }
+        )
 
     def _return_wizard_form(self):
         """Return to wizard form view"""

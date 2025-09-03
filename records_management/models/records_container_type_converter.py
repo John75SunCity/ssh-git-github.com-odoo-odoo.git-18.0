@@ -61,10 +61,9 @@ class RecordsContainerTypeConverter(models.TransientModel):
             raise UserError(_("You must select a new container type."))
 
         # Prepare a log message for the chatter of each container
-        log_message = _("Container type converted from <b>%s</b> to <b>%s</b> by %s.") % (
-            self.source_container_type_id.name,
-            self.target_container_type_id.name,
-            self.env.user.name)
+        log_message = _(
+            "Container type converted from <b>%s</b> to <b>%s</b> by %s.",
+        ) % (self.source_container_type_id.name, self.target_container_type_id.name, self.env.user.name)
 
         # Perform the bulk update
         self.container_ids.write({

@@ -49,12 +49,12 @@ class FeedbackImprovementArea(models.Model):
         """Action method to open a view of all feedback related to this area."""
         self.ensure_one()
         return {
-            'name': _('Feedback for %s') % self.name,
-            'type': 'ir.actions.act_window',
-            'res_model': 'customer.feedback',
-            'view_mode': 'tree,form,kanban',
-            'domain': [('id', 'in', self.feedback_ids.ids)],
-            'context': {'default_improvement_area_ids': [(6, 0, [self.id])]}
+            "name": _("Feedback for %s", self.name),
+            "type": "ir.actions.act_window",
+            "res_model": "customer.feedback",
+            "view_mode": "tree,form,kanban",
+            "domain": [("id", "in", self.feedback_ids.ids)],
+            "context": {"default_improvement_area_ids": [(6, 0, [self.id])]},
         }
 
     def action_create_improvement_plan(self):
@@ -63,13 +63,13 @@ class FeedbackImprovementArea(models.Model):
         # This is an example assuming you use project tasks for improvement plans.
         # You could create a dedicated 'improvement.plan' model instead.
         return {
-            'name': _('New Improvement Plan'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'project.task',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_name': _('Improvement Plan for: %s') % self.name,
-                'default_description': self.description,
-            }
+            "name": _("New Improvement Plan"),
+            "type": "ir.actions.act_window",
+            "res_model": "project.task",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_name": _("Improvement Plan for: %s", self.name),
+                "default_description": self.description,
+            },
         }

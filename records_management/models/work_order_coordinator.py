@@ -1,4 +1,3 @@
-
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -126,17 +125,17 @@ class WorkOrderCoordinator(models.Model):
                 order.write(order_vals)
 
         self.write({'state': 'in_progress'})
-        self.message_post(body=_("Coordination started for %s work orders.") % len(all_orders))
+        self.message_post(body=_("Coordination started for %s work orders.", len(all_orders)))
 
     def action_create_fsm_tasks(self):
         """Creates FSM tasks for all linked work orders."""
         self.ensure_one()
         if not self.fsm_project_id:
             project_vals = {
-                'name': _("Records Management - %s") % self.partner_id.name,
-                'is_fsm': True,
-                'partner_id': self.partner_id.id,
-                'allow_timesheets': True,
+                "name": _("Records Management - %s", self.partner_id.name),
+                "is_fsm": True,
+                "partner_id": self.partner_id.id,
+                "allow_timesheets": True,
             }
             self.fsm_project_id = self.env['project.project'].create(project_vals)
 
@@ -146,7 +145,7 @@ class WorkOrderCoordinator(models.Model):
                 order.create_fsm_task(self.fsm_project_id.id)
                 task_count += 1
 
-        self.message_post(body=_("Created %s FSM tasks for coordinated work orders.") % task_count)
+        self.message_post(body=_("Created %s FSM tasks for coordinated work orders.", task_count))
 
     def action_consolidate_billing(self):
         """Creates a single consolidated invoice for all billable work orders."""
@@ -154,7 +153,7 @@ class WorkOrderCoordinator(models.Model):
         if not self.consolidated_billing:
             raise UserError(_("Consolidated billing is not enabled for this coordination."))
         if self.invoice_id:
-            raise UserError(_("A consolidated invoice already exists: %s") % self.invoice_id.name)
+            raise UserError(_("A consolidated invoice already exists: %s", self.invoice_id.name))
 
         invoice_lines = []
         for order in self._get_all_work_orders():
@@ -198,4 +197,3 @@ class WorkOrderCoordinator(models.Model):
         all_orders.extend(self.scan_retrieval_ids)
         all_orders.extend(self.destruction_ids)
         return self.env[next(iter(all_orders), self.env['mail.thread'])].union(*all_orders) if all_orders else self.env['mail.thread']
-

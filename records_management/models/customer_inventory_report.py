@@ -91,7 +91,7 @@ class CustomerInventoryReportWizard(models.TransientModel):
                     "name": "Monthly Report Generation Error",
                     "type": "server",
                     "level": "ERROR",
-                    "message": _("Error generating monthly inventory reports: %s") % str(e),
+                    "message": _("Error generating monthly inventory reports: %s", str(e)),
                     "path": "customer.inventory.report.wizard",
                     "func": "generate_monthly_reports",
                 }
@@ -125,7 +125,7 @@ class CustomerInventoryReportWizard(models.TransientModel):
                 "name": "Monthly Report Generation",
                 "type": "server",
                 "level": "INFO",
-                "message": _("Monthly inventory reports generated for %s customers") % generated_reports,
+                "message": _("Monthly inventory reports generated for %s customers", generated_reports),
                 "path": "customer.inventory.report.wizard",
                 "func": "_generate_inventory_reports",
             }
@@ -188,7 +188,7 @@ class CustomerInventoryReportWizard(models.TransientModel):
                     "name": "Inventory Report Workflow Error",
                     "type": "server",
                     "level": "ERROR",
-                    "message": _("Error in inventory report automation workflow: %s") % str(e),
+                    "message": _("Error in inventory report automation workflow: %s", str(e)),
                     "path": "customer.inventory.report.wizard",
                     "func": "run_monthly_inventory_report_automation",
                 }
@@ -279,7 +279,7 @@ class CustomerInventoryReportWizard(models.TransientModel):
         )
 
         # Create summary in system parameter or log for now
-        summary_text = _("Executive Summary Data: %s reports processed") % len(summary_data)
+        summary_text = _("Executive Summary Data: %s reports processed", len(summary_data))
         self.env["ir.logging"].create(
             {
                 "name": "Executive Summary",

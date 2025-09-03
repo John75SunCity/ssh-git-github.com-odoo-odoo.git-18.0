@@ -96,7 +96,7 @@ class RecordsLocationInspection(models.Model):
         if self.state != 'draft':
             raise UserError(_("Only draft inspections can be started."))
         self.write({'state': 'in_progress'})
-        self.message_post(body=_("Inspection started by %s.") % self.env.user.name)
+        self.message_post(body=_("Inspection started by %s.", self.env.user.name))
 
     def action_complete_inspection(self):
         self.ensure_one()
@@ -105,7 +105,7 @@ class RecordsLocationInspection(models.Model):
 
         final_state = 'failed' if self.overall_result == 'fail' else 'done'
         self.write({'state': final_state})
-        self.message_post(body=_("Inspection completed with result: %s.") % self.overall_result)
+        self.message_post(body=_("Inspection completed with result: %s.", self.overall_result))
 
     def action_cancel(self):
         self.ensure_one()

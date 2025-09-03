@@ -153,10 +153,10 @@ class PaperLoadShipment(models.Model):
         """Returns an action to view the bales associated with this shipment."""
         self.ensure_one()
         return {
-            'type': 'ir.actions.act_window',
-            'name': _('Bales in Shipment %s') % self.name,
-            'res_model': 'paper.bale',
-            'view_mode': 'tree,form',
-            'domain': [('id', 'in', self.bale_ids.ids)],
-            'context': {'create': False},
+            "type": "ir.actions.act_window",
+            "name": _("Bales in Shipment %s", self.name),
+            "res_model": "paper.bale",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", self.bale_ids.ids)],
+            "context": {"create": False},
         }

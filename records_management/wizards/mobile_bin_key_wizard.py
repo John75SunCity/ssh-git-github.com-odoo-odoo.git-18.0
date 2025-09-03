@@ -336,7 +336,7 @@ class MobileBinKeyWizard(models.TransientModel):
 
         # Create unlock service record
         service_vals = {
-            "name": _("Unlock Service - %s") % self.contact_id.name,
+            "name": _("Unlock Service - %s", self.contact_id.name,)
             "partner_id": self.contact_id.id,
             "unlock_reason": self.unlock_reason,
             "unlock_reason_description": self.unlock_reason_description,

@@ -414,14 +414,16 @@ class ShreddingServiceBin(models.Model):
         for record in self:
             if record.barcode and record.bin_size:
                 size_label = dict(record._fields['bin_size'].selection).get(record.bin_size, 'Unknown')
-                tips_text = "" if record.current_period_services == 0 else _(" (%s tips)") % record.current_period_services
+                tips_text = (
+                    "" if record.current_period_services == 0 else _(" (%s tips)", record.current_period_services)
+                )
 
                 # Add location info if available
                 location_text = ""
                 if record.current_customer_id:
-                    location_text = _(" @ %s") % record.current_customer_id.name
+                    location_text = _(" @ %s", record.current_customer_id.name)
                 elif record.last_scan_customer_id:
-                    location_text = _(" (last @ %s)") % record.last_scan_customer_id.name
+                    location_text = _(" (last @ %s)", record.last_scan_customer_id.name)
 
                 record.display_name = _("Bin %s - %s%s%s") % (record.barcode, size_label, tips_text, location_text)
             else:
@@ -436,13 +438,13 @@ class ShreddingServiceBin(models.Model):
                 continue
 
             summary_parts = [
-                _("Total Services: %s") % record.total_services_count,
-                _("This Period: %s") % record.current_period_services
+                _("Total Services: %s", record.total_services_count),
+                _("This Period: %s", record.current_period_services),
             ]
 
             if record.last_service_date:
                 days_since = (datetime.now() - record.last_service_date).days
-                summary_parts.append(_("Last Service: %s days ago") % days_since)
+                summary_parts.append(_("Last Service: %s days ago", days_since))
 
             record.service_summary = " | ".join(summary_parts)
 
@@ -459,12 +461,12 @@ class ShreddingServiceBin(models.Model):
             if len(cleaned_barcode) == 10 and cleaned_barcode.isdigit():
                 self.barcode = cleaned_barcode
                 return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                        'message': _('Barcode cleaned and corrected to: %s') % cleaned_barcode,
-                        'type': 'success',
-                    }
+                    "type": "ir.actions.client",
+                    "tag": "display_notification",
+                    "params": {
+                        "message": _("Barcode cleaned and corrected to: %s", cleaned_barcode),
+                        "type": "success",
+                    },
                 }
 
         # If can't auto-fix, open dialog for manual entry
@@ -516,9 +518,12 @@ class ShreddingServiceBin(models.Model):
                 }
             if len(self.barcode.strip()) != 10:
                 return {
-                    'warning': {
-                        'title': _('Invalid Barcode Length'),
-                        'message': _('Shred bin barcodes must be exactly 10 digits. Current length: %s. Please check the barcode.') % len(self.barcode.strip())
+                    "warning": {
+                        "title": _("Invalid Barcode Length"),
+                        "message": _(
+                            "Shred bin barcodes must be exactly 10 digits. Current length: %s. Please check the barcode.",
+                            len(self.barcode.strip()),
+                        ),
                     }
                 }
             if not self.barcode.strip().isdigit():
@@ -553,7 +558,7 @@ class ShreddingServiceBin(models.Model):
         self.ensure_one()
 
         if self.status not in ['available', 'in_service', 'full']:
-            raise UserError(_("Cannot service bin in current status: %s") % self.status)
+            raise UserError(_("Cannot service bin in current status: %s", self.status))
 
         # Update location tracking from scan
         update_vals = {}
@@ -712,9 +717,12 @@ class ShreddingServiceBin(models.Model):
                     ) % (record.barcode, len(barcode_clean)))
 
                 if not barcode_clean.isdigit():
-                    raise ValidationError(_(
-                        "Shredding bin barcodes must contain only digits. Current: %s. Enable manual override if barcode is unreadable."
-                    ) % record.barcode)
+                    raise ValidationError(
+                        _(
+                            "Shredding bin barcodes must contain only digits. Current: %s. Enable manual override if barcode is unreadable.",
+                            record.barcode,
+                        )
+                    )
 
             # If manual override is enabled, require bin size to be set
             if record.manual_size_override and not record.bin_size:

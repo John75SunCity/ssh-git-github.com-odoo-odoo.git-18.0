@@ -147,9 +147,9 @@ class ShreddingServiceEvent(models.Model):
                 # Add customer location if available
                 location_text = ""
                 if record.service_customer_id:
-                    location_text = _(" @ %s") % record.service_customer_id.name
+                    location_text = _(" @ %s", record.service_customer_id.name)
                 elif record.bin_id.current_customer_id:
-                    location_text = _(" @ %s") % record.bin_id.current_customer_id.name
+                    location_text = _(" @ %s", record.bin_id.current_customer_id.name)
 
                 record.display_name = _("Bin %s - %s (%s)%s") % (
                     record.bin_id.barcode,

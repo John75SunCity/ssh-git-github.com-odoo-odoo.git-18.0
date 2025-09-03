@@ -95,13 +95,18 @@ class RecordsDocumentFlagPermanentWizard(models.TransientModel):
 
         # Create audit log entry
         if hasattr(self.env, 'naid.audit.log'):
-            self.env['naid.audit.log'].sudo().create({
-                'document_id': self.document_id.id,
-                'event_type': 'permanent_flag',
-                'event_description': _("Document flagged as permanent: %s") % self.permanent_reason,
-                'user_id': self.env.user.id,
-                'event_date': fields.Datetime.now(),
-            })
+            self.env["naid.audit.log"].sudo().create(
+                {
+                    "document_id": self.document_id.id,
+                    "event_type": "permanent_flag",
+                    "event_description": _(
+                        "Document flagged as permanent: %s",
+                        self.permanent_reason,
+                    ),
+                    "user_id": self.env.user.id,
+                    "event_date": fields.Datetime.now(),
+                }
+            )
 
         # Return success notification
         return {

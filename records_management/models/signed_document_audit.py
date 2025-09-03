@@ -248,8 +248,7 @@ class SignedDocumentAudit(models.Model):
 
         if failed_verifications:
             raise UserError(
-                _("Integrity verification failed for the following audit entries:\n%s") %
-                '\n'.join(failed_verifications)
+                _("Integrity verification failed for the following audit entries:\n%s", '\n'.join(failed_verifications))
             )
         else:
             return {

@@ -303,7 +303,7 @@ class RecordsDocumentType(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Documents for %s") % self.name,
+            "name": _("Documents for %s", self.name),
             "res_model": "records.document",
             "view_mode": "tree,form,kanban",
             "domain": [("document_type_id", "=", self.id)],

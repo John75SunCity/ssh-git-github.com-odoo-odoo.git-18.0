@@ -13,10 +13,10 @@ class NaidRiskAssessment(models.Model):
     name = fields.Char(string='Risk Title', required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)
     active = fields.Boolean(string='Active', default=True)
-    
+
     assessment_date = fields.Date(string='Assessment Date', required=True, default=fields.Date.context_today, tracking=True)
     assessor_id = fields.Many2one('res.users', string='Assessor', default=lambda self: self.env.user, required=True, tracking=True)
-    
+
     risk_category = fields.Selection([
         ('physical_security', 'Physical Security'),
         ('information_security', 'Information Security'),
@@ -24,16 +24,16 @@ class NaidRiskAssessment(models.Model):
         ('operational', 'Operational'),
         ('compliance', 'Compliance'),
     ], string='Risk Category', required=True, tracking=True)
-    
+
     risk_description = fields.Text(string='Risk Description', required=True)
-    
+
     impact_level = fields.Selection([
         ('1', 'Low'),
         ('2', 'Medium'),
         ('3', 'High'),
         ('4', 'Critical')
     ], string='Impact Level', required=True, tracking=True, default='2')
-    
+
     probability = fields.Selection([
         ('1', 'Rare'),
         ('2', 'Unlikely'),
@@ -41,7 +41,7 @@ class NaidRiskAssessment(models.Model):
         ('4', 'Likely'),
         ('5', 'Certain')
     ], string='Probability', required=True, tracking=True, default='3')
-    
+
     risk_score = fields.Integer(string='Risk Score', compute='_compute_risk_score', store=True, readonly=True)
     risk_level = fields.Selection([
         ('low', 'Low'),
@@ -49,9 +49,9 @@ class NaidRiskAssessment(models.Model):
         ('high', 'High'),
         ('critical', 'Critical')
     ], string='Risk Level', compute='_compute_risk_level', store=True, readonly=True)
-    
+
     mitigation_plan_id = fields.Many2one('naid.compliance.action.plan', string='Mitigation Action Plan', readonly=True)
-    
+
     status = fields.Selection([
         ('draft', 'Draft'),
         ('identified', 'Identified'),
@@ -60,7 +60,7 @@ class NaidRiskAssessment(models.Model):
         ('accepted', 'Risk Accepted'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', readonly=True, tracking=True)
-    
+
     review_date = fields.Date(string='Next Review Date', tracking=True)
 
     # ============================================================================
@@ -102,20 +102,22 @@ class NaidRiskAssessment(models.Model):
 
     def action_create_mitigation_plan(self):
         self.ensure_one()
-        action_plan = self.env['naid.compliance.action.plan'].create({
-            'name': _("Mitigation for Risk: %s") % self.name,
-            'description': self.risk_description,
-            'priority': '3' if self.risk_level == 'critical' else '2',
-            'due_date': self.review_date or fields.Date.add(fields.Date.context_today(self), months=1),
-            'responsible_user_id': self.assessor_id.id,
-            'res_model': self._name,
-            'res_id': self.id,
-        })
+        action_plan = self.env["naid.compliance.action.plan"].create(
+            {
+                "name": _("Mitigation for Risk: %s", self.name),
+                "description": self.risk_description,
+                "priority": "3" if self.risk_level == "critical" else "2",
+                "due_date": self.review_date or fields.Date.add(fields.Date.context_today(self), months=1),
+                "responsible_user_id": self.assessor_id.id,
+                "res_model": self._name,
+                "res_id": self.id,
+            }
+        )
         self.write({
             'mitigation_plan_id': action_plan.id,
             'status': 'in_mitigation',
         })
-        self.message_post(body=_("Mitigation action plan created by %s.") % self.env.user.name)
+        self.message_post(body=_("Mitigation action plan created by %s.", self.env.user.name))
         return {
             'name': _('Mitigation Action Plan'),
             'type': 'ir.actions.act_window',
@@ -130,7 +132,7 @@ class NaidRiskAssessment(models.Model):
         if self.risk_level in ('high', 'critical'):
             raise ValidationError(_("High and Critical risks cannot be accepted without a mitigation plan or explicit manager approval."))
         self.write({'status': 'accepted'})
-        self.message_post(body=_("Risk accepted by %s.") % self.env.user.name)
+        self.message_post(body=_("Risk accepted by %s.", self.env.user.name))
 
     def action_reset_to_draft(self):
         self.ensure_one()

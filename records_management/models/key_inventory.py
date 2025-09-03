@@ -38,4 +38,4 @@ class KeyInventory(models.Model):
         allowed_statuses = {'available', 'assigned', 'lost', 'retired'}
         for record in self:
             if record.status not in allowed_statuses:
-                raise ValidationError(_("Invalid status: %s") % record.status)
+                raise ValidationError(_("Invalid status: %s", record.status))

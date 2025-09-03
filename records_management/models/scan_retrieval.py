@@ -90,7 +90,7 @@ class ScanRetrieval(models.Model):
                 'status': 'scanning',
                 'scan_date': fields.Datetime.now()
             })
-            record.message_post(body=_("Scanning started by %s") % self.env.user.name)
+            record.message_post(body=_("Scanning started by %s", self.env.user.name))
 
     def action_complete_scan(self):
         """Mark scanning as completed"""
@@ -101,7 +101,7 @@ class ScanRetrieval(models.Model):
                 'status': 'completed',
                 'scan_completed': True
             })
-            record.message_post(body=_("Scanning completed by %s") % self.env.user.name)
+            record.message_post(body=_("Scanning completed by %s", self.env.user.name))
 
     def action_quality_check(self):
         """Perform quality check on scanned documents"""
@@ -112,4 +112,4 @@ class ScanRetrieval(models.Model):
                 'status': 'quality_check',
                 'quality_checked': True
             })
-            record.message_post(body=_("Quality check performed by %s") % self.env.user.name)
+            record.message_post(body=_("Quality check performed by %s", self.env.user.name))

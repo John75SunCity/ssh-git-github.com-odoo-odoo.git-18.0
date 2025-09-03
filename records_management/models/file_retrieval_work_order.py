@@ -1333,7 +1333,7 @@ class FileRetrievalWorkOrder(models.Model):
                 pages_per_item = record.estimated_pages / record.item_count
                 if pages_per_item > 2000:  # 2000 pages per item seems excessive
                     raise ValidationError(
-                        _("Estimated pages per item (%d) seems unreasonably high. Please verify.") % pages_per_item
+                        _("Estimated pages per item (%d) seems unreasonably high. Please verify.", pages_per_item)
                     )
 
             # Cost reasonableness (if specified)
@@ -1341,7 +1341,7 @@ class FileRetrievalWorkOrder(models.Model):
                 cost_per_item = record.estimated_cost / record.item_count
                 if cost_per_item > 10000:  # $10,000 per item seems excessive
                     raise ValidationError(
-                        _("Estimated cost per item (%.2f) seems unreasonably high. Please verify.") % cost_per_item
+                        _("Estimated cost per item (%.2f) seems unreasonably high. Please verify.", cost_per_item)
                     )
 
     @api.constrains('state', 'urgency_score', 'priority')
@@ -1394,8 +1394,10 @@ class FileRetrievalWorkOrder(models.Model):
             if record.confidentiality_level in ['restricted', 'top_secret']:
                 if not record.special_instructions:
                     raise ValidationError(
-                        _("Special instructions are required for %s documents.") %
-                        dict(record._fields['confidentiality_level'].selection)[record.confidentiality_level]
+                        _(
+                            "Special instructions are required for %s documents.",
+                            dict(record._fields["confidentiality_level"].selection)[record.confidentiality_level],
+                        )
                     )
 
     # ============================================================================
@@ -1870,9 +1872,7 @@ class FileRetrievalWorkOrder(models.Model):
             # Generate completion report
             completion_report = record._generate_completion_report()
             record.message_post(
-                body=completion_report,
-                message_type='notification',
-                subject=_("Work Order Completed - %s") % record.name
+                body=completion_report, message_type="notification", subject=_("Work Order Completed - %s", record.name)
             )
 
             # Auto-create invoice if configured
@@ -1951,7 +1951,7 @@ class FileRetrievalWorkOrder(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Retrieval Items - %s") % self.name,
+            "name": _("Retrieval Items - %s", self.name),
             "res_model": "file.retrieval.item",
             "view_mode": "tree,form,kanban",
             "domain": [("work_order_id", "=", self.id)],
@@ -1975,7 +1975,7 @@ class FileRetrievalWorkOrder(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Related Containers - %s") % self.name,
+            "name": _("Related Containers - %s", self.name),
             "res_model": "records.container",
             "view_mode": "tree,form,kanban",
             "domain": [("id", "in", self.container_ids.ids)],
@@ -1997,7 +1997,7 @@ class FileRetrievalWorkOrder(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Storage Locations - %s") % self.name,
+            "name": _("Storage Locations - %s", self.name),
             "res_model": "records.location",
             "view_mode": "tree,form,map",
             "domain": [("id", "in", self.location_ids.ids)],
@@ -2016,7 +2016,7 @@ class FileRetrievalWorkOrder(models.Model):
         try:
             return {
                 "type": "ir.actions.act_window",
-                "name": _("Audit Logs - %s") % self.name,
+                "name": _("Audit Logs - %s", self.name),
                 "res_model": "naid.audit.log",
                 "view_mode": "tree,form",
                 "domain": [
@@ -2041,7 +2041,7 @@ class FileRetrievalWorkOrder(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Performance Dashboard - %s") % self.name,
+            "name": _("Performance Dashboard - %s", self.name),
             "res_model": "file.retrieval.work.order",
             "view_mode": "form",
             "res_id": self.id,
@@ -2065,7 +2065,7 @@ class FileRetrievalWorkOrder(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Export Work Order Data - %s") % self.name,
+            "name": _("Export Work Order Data - %s", self.name),
             "res_model": "file.retrieval.export.wizard",
             "view_mode": "form",
             "context": {
@@ -2124,10 +2124,7 @@ class FileRetrievalWorkOrder(models.Model):
 
             return invoice
         except Exception as e:
-            self.message_post(
-                body=_("Failed to create invoice: %s") % str(e),
-                message_type='notification'
-            )
+            self.message_post(body=_("Failed to create invoice: %s", str(e)), message_type="notification")
             return False
 
     def _calculate_invoice_lines(self):
@@ -2143,10 +2140,10 @@ class FileRetrievalWorkOrder(models.Model):
         if hasattr(rate, 'rate_type'):
             if rate.rate_type == 'per_page':
                 quantity = self.estimated_pages or 0
-                description = _("File retrieval service - %s pages") % quantity
+                description = _("File retrieval service - %s pages", quantity)
             elif rate.rate_type == 'per_item':
                 quantity = self.item_count or 0
-                description = _("File retrieval service - %s items") % quantity
+                description = _("File retrieval service - %s items", quantity)
             else:
                 quantity = 1
                 description = _("File retrieval service - flat rate")
@@ -2334,13 +2331,12 @@ class FileRetrievalWorkOrder(models.Model):
         for location in self.location_ids:
             try:
                 self.activity_schedule(
-                    'mail.mail_activity_data_call',
+                    "mail.mail_activity_data_call",
                     user_id=self.coordinator_id.id,
-                    summary=_("Coordinate Access - %s") % location.name,
-                    note=_("Coordinate access to location %s for work order %s. Estimated %d items to retrieve.") % (
-                        location.name, self.name, self.item_count
-                    ),
-                    date_deadline=self.scheduled_date.date() if self.scheduled_date else fields.Date.today()
+                    summary=_("Coordinate Access - %s", location.name),
+                    note=_("Coordinate access to location %s for work order %s. Estimated %d items to retrieve.")
+                    % (location.name, self.name, self.item_count),
+                    date_deadline=self.scheduled_date.date() if self.scheduled_date else fields.Date.today(),
                 )
             except Exception:
                 continue
@@ -2358,12 +2354,11 @@ class FileRetrievalWorkOrder(models.Model):
             if location_items:
                 try:
                     self.activity_schedule(
-                        'mail.mail_activity_data_todo',
+                        "mail.mail_activity_data_todo",
                         user_id=self.user_id.id,
-                        summary=_("Locate Files - %s") % location.name,
-                        note=_("Locate %d items at %s for work order %s") % (
-                            len(location_items), location.name, self.name
-                        )
+                        summary=_("Locate Files - %s", location.name),
+                        note=_("Locate %d items at %s for work order %s")
+                        % (len(location_items), location.name, self.name),
                     )
                 except Exception:
                     continue
@@ -2375,12 +2370,14 @@ class FileRetrievalWorkOrder(models.Model):
             for team_member in self.retrieval_team_ids:
                 try:
                     self.activity_schedule(
-                        'mail.mail_activity_data_todo',
+                        "mail.mail_activity_data_todo",
                         user_id=team_member.id,
-                        summary=_("Retrieve Files - %s") % self.name,
-                        note=_("Retrieve located files for work order %s. %d items ready for retrieval.") % (
-                            self.name, self.files_located_count
-                        )
+                        summary=_(
+                            "Retrieve Files - %s",
+                            self.name,
+                        ),
+                        note=_("Retrieve located files for work order %s. %d items ready for retrieval.")
+                        % (self.name, self.files_located_count),
                     )
                 except Exception:
                     continue
@@ -2388,12 +2385,13 @@ class FileRetrievalWorkOrder(models.Model):
             # Assign to main user
             try:
                 self.activity_schedule(
-                    'mail.mail_activity_data_todo',
+                    "mail.mail_activity_data_todo",
                     user_id=self.user_id.id,
-                    summary=_("Retrieve Files - %s") % self.name,
-                    note=_("Retrieve %d located files for work order %s") % (
-                        self.files_located_count, self.name
-                    )
+                    summary=_(
+                        "Retrieve Files - %s",
+                        self.name,
+                    ),
+                    note=_("Retrieve %d located files for work order %s") % (self.files_located_count, self.name),
                 )
             except Exception:
                 pass
@@ -2404,10 +2402,13 @@ class FileRetrievalWorkOrder(models.Model):
         if self.quality_inspector_id:
             try:
                 self.activity_schedule(
-                    'mail.mail_activity_data_todo',
+                    "mail.mail_activity_data_todo",
                     user_id=self.quality_inspector_id.id,
-                    summary=_("Quality Control - %s") % self.name,
-                    note=_("Perform quality control and packaging for %d retrieved files.") % self.files_retrieved_count
+                    summary=_(
+                        "Quality Control - %s",
+                        self.name,
+                    ),
+                    note=_("Perform quality control and packaging for %d retrieved files.", self.files_retrieved_count),
                 )
             except Exception:
                 pass
@@ -2415,14 +2416,18 @@ class FileRetrievalWorkOrder(models.Model):
         # Packaging activity
         try:
             self.activity_schedule(
-                'mail.mail_activity_data_todo',
+                "mail.mail_activity_data_todo",
                 user_id=self.user_id.id,
-                summary=_("Package Files - %s") % self.name,
-                note=_("Package %d files using %s for %s delivery.") % (
+                summary=_(
+                    "Package Files - %s",
+                    self.name,
+                ),
+                note=_("Package %d files using %s for %s delivery.")
+                % (
                     self.files_retrieved_count,
-                    dict(self._fields['packaging_type'].selection).get(self.packaging_type, 'standard packaging'),
-                    dict(self._fields['delivery_method'].selection).get(self.delivery_method, 'unknown')
-                )
+                    dict(self._fields["packaging_type"].selection).get(self.packaging_type, "standard packaging"),
+                    dict(self._fields["delivery_method"].selection).get(self.delivery_method, "unknown"),
+                ),
             )
         except Exception:
             pass
@@ -2432,11 +2437,11 @@ class FileRetrievalWorkOrder(models.Model):
         # Customer satisfaction survey
         try:
             self.activity_schedule(
-                'mail.mail_activity_data_email',
+                "mail.mail_activity_data_email",
                 user_id=self.user_id.id,
-                summary=_("Customer Satisfaction Survey - %s") % self.partner_id.name,
-                note=_("Send customer satisfaction survey for work order %s") % self.name,
-                date_deadline=fields.Date.today() + timedelta(days=1)
+                summary=_("Customer Satisfaction Survey - %s", self.partner_id.name),
+                note=_("Send customer satisfaction survey for work order %s", self.name),
+                date_deadline=fields.Date.today() + timedelta(days=1),
             )
         except Exception:
             pass
@@ -2445,13 +2450,15 @@ class FileRetrievalWorkOrder(models.Model):
         if self.missing_files_count > 0 or self.damaged_files_count > 0:
             try:
                 self.activity_schedule(
-                    'mail.mail_activity_data_call',
+                    "mail.mail_activity_data_call",
                     user_id=self.user_id.id,
-                    summary=_("Quality Follow-up - %s") % self.name,
-                    note=_("Follow up on quality issues: %d missing, %d damaged files") % (
-                        self.missing_files_count, self.damaged_files_count
+                    summary=_(
+                        "Quality Follow-up - %s",
+                        self.name,
                     ),
-                    date_deadline=fields.Date.today() + timedelta(days=2)
+                    note=_("Follow up on quality issues: %d missing, %d damaged files")
+                    % (self.missing_files_count, self.damaged_files_count),
+                    date_deadline=fields.Date.today() + timedelta(days=2),
                 )
             except Exception:
                 pass
@@ -2659,11 +2666,11 @@ class FileRetrievalWorkOrder(models.Model):
         """Schedule customer satisfaction survey"""
         try:
             self.activity_schedule(
-                'mail.mail_activity_data_email',
+                "mail.mail_activity_data_email",
                 user_id=self.user_id.id,
                 summary=_("Customer Satisfaction Survey"),
-                note=_("Send customer satisfaction survey for completed work order %s") % self.name,
-                date_deadline=fields.Date.today() + timedelta(days=1)
+                note=_("Send customer satisfaction survey for completed work order %s", self.name),
+                date_deadline=fields.Date.today() + timedelta(days=1),
             )
         except Exception:
             pass
@@ -3115,4 +3122,3 @@ class FileRetrievalWorkOrder(models.Model):
             'created_date': self.create_date.isoformat(),
             'last_updated': self.write_date.isoformat(),
         }
-

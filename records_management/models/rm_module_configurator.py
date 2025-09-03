@@ -227,7 +227,7 @@ class RmModuleConfigurator(models.Model):
 
         # Log creation in chatter
         for record in records:
-            record.message_post(body=_("Configuration created: %s") % record.name)
+            record.message_post(body=_("Configuration created: %s", record.name))
 
         return records
 
@@ -439,7 +439,7 @@ class RmModuleConfigurator(models.Model):
 
             # Log the application
             self.message_post(
-                body=_("Configuration applied successfully: %s") % self.name
+                body=_("Configuration applied successfully: %s", self.name)
             )
 
             return {
@@ -488,7 +488,7 @@ class RmModuleConfigurator(models.Model):
 
         self.write(vals)
         self.message_post(
-            body=_("Configuration reset to default values: %s") % self.name
+            body=_("Configuration reset to default values: %s", self.name)
         )
 
     # ============================================================================

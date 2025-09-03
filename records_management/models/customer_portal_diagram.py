@@ -139,14 +139,16 @@ class CustomerPortalDiagram(models.Model):
     def _generate_partner_nodes(self, nodes, edges, partners):
         """Generate partner (customer) nodes for the diagram."""
         for partner in partners:
-            nodes.append({
-                'id': f'partner_{partner.id}',
-                'label': partner.name,
-                'title': _("Customer: %s") % partner.name,
-                'group': 'partner',
-                'level': 0,
-                'shape': 'box',
-            })
+            nodes.append(
+                {
+                    "id": f"partner_{partner.id}",
+                    "label": partner.name,
+                    "title": _("Customer: %s", partner.name),
+                    "group": "partner",
+                    "level": 0,
+                    "shape": "box",
+                }
+            )
         return nodes, edges
 
     def _generate_department_nodes(self, nodes, edges, partners):
@@ -157,14 +159,16 @@ class CustomerPortalDiagram(models.Model):
 
         departments = self.env['records.department'].search(domain)
         for dept in departments:
-            nodes.append({
-                'id': f'dept_{dept.id}',
-                'label': dept.name,
-                'title': _("Department: %s\nCustomer: %s") % (dept.name, dept.partner_id.name),
-                'group': 'department',
-                'level': 1,
-                'shape': 'ellipse',
-            })
+            nodes.append(
+                {
+                    "id": f"dept_{dept.id}",
+                    "label": dept.name,
+                    "title": _("Department: %s\nCustomer: %s", dept.name, dept.partner_id.name),
+                    "group": "department",
+                    "level": 1,
+                    "shape": "ellipse",
+                }
+            )
             edges.append({
                 'from': f'partner_{dept.partner_id.id}',
                 'to': f'dept_{dept.id}',
@@ -181,14 +185,16 @@ class CustomerPortalDiagram(models.Model):
                 # A more specific link might be needed here depending on your model structure
             ], limit=1)
 
-            nodes.append({
-                'id': f'user_{user.id}',
-                'label': user.name,
-                'title': _("User: %s") % user.name,
-                'group': 'user',
-                'level': 2,
-                'shape': 'circle',
-            })
+            nodes.append(
+                {
+                    "id": f"user_{user.id}",
+                    "label": user.name,
+                    "title": _("User: %s", user.name),
+                    "group": "user",
+                    "level": 2,
+                    "shape": "circle",
+                }
+            )
 
             # Link user to a department or directly to the partner
             if department:

@@ -125,7 +125,7 @@ class BinBarcodeInventory(models.Model):
 
         sequence_code = sequence_map.get(bin_size)
         if not sequence_code:
-            raise UserError(_("No sequence defined for bin size: %s") % bin_size)
+            raise UserError(_("No sequence defined for bin size: %s", bin_size))
 
         return self.env['ir.sequence'].next_by_code(sequence_code)
 

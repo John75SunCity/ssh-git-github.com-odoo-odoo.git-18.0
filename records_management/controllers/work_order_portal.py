@@ -379,7 +379,7 @@ class WorkOrderPortal(CustomerPortal):
             'res_id': work_order.id,
             'res_model_id': request.env['ir.model']._get(work_order._name).id,
             'user_id': work_order.user_id.id or request.env.user.id,
-            'summary': _("Follow up on work order: %s") % work_order.name,
+            'summary': _("Follow up on work order: %s", work_order.name,)
             'note': _('Customer portal activity for work order follow-up'),
         }
 
@@ -444,7 +444,7 @@ class WorkOrderPortal(CustomerPortal):
         report = request.env.ref('records_management.work_order_report')
         if report:
             pdf_content, content_type = report._render_qweb_pdf([work_order.id])
-            pdf_name = _("Work_Order_%s.pdf") % work_order.name
+            pdf_name = _("Work_Order_%s.pdf", work_order.name)
 
             return request.make_response(
                 pdf_content,

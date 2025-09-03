@@ -87,7 +87,7 @@ class DocumentSearchAttempt(models.Model):
                 parts.append(attempt.name)
 
             if attempt.container_id:
-                parts.append(_("in %s") % attempt.container_id.name)
+                parts.append(_("in %s", attempt.container_id.name))
 
             status = _("Found") if attempt.found else _("Not Found")
             parts.append("[%s]" % status)
@@ -114,7 +114,7 @@ class DocumentSearchAttempt(models.Model):
             raise UserError(_("Please provide search notes before completing."))
         status_msg = _("found") if self.found else _("not found")
         self.write({'state': 'completed'})
-        self.message_post(body=_("Search completed. Document was %s.") % status_msg)  # Fixed translation formatting
+        self.message_post(body=_("Search completed. Document was %s.", status_msg))  # Fixed translation formatting
         return True
 
     def action_create_retrieval_request(self):
@@ -156,7 +156,7 @@ class DocumentSearchAttempt(models.Model):
                     "location_id": self.location_id.id,
                     "assigned_to_id": self.searched_by_id.id,
                     "state": "assigned",
-                    "notes": _("Work order for search attempt: %s") % self.name,  # Fixed translation formatting
+                    "notes": _("Work order for search attempt: %s", self.name),  # Fixed translation formatting
                 }
             )
             self.work_order_id = work_order.id
@@ -186,5 +186,5 @@ class DocumentSearchAttempt(models.Model):
             for attempt in self:
                 state_label = dict(attempt._fields['state'].selection).get(attempt.state)
                 if state_label:
-                    attempt.message_post(body=_("Status changed to %s") % state_label)
+                    attempt.message_post(body=_("Status changed to %s", state_label))
         return res

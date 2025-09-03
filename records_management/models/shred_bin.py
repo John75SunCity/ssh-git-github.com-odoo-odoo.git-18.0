@@ -141,21 +141,21 @@ class ShredBin(models.Model):
         if not self.partner_id:
             raise UserError(_("Cannot deploy bin without assigned customer."))
         self.write({'state': 'deployed'})
-        self.message_post(body=_("Bin deployed by %s.") % self.env.user.name)
+        self.message_post(body=_("Bin deployed by %s.", self.env.user.name))
 
     def action_mark_full(self):
         self.ensure_one()
         if self.state not in ['in_service', 'deployed']:
             raise UserError(_("Only bins in service or deployed can be marked as full."))
         self.write({'state': 'full'})
-        self.message_post(body=_("Bin marked as full by %s.") % self.env.user.name)
+        self.message_post(body=_("Bin marked as full by %s.", self.env.user.name))
 
     def action_start_collection(self):
         self.ensure_one()
         if self.state != 'full':
             raise UserError(_("Only full bins can be collected."))
         self.write({'state': 'collecting'})
-        self.message_post(body=_("Bin collection started by %s.") % self.env.user.name)
+        self.message_post(body=_("Bin collection started by %s.", self.env.user.name))
 
     def action_complete_service(self):
         self.ensure_one()
@@ -165,7 +165,7 @@ class ShredBin(models.Model):
             'state': 'in_service',
             'last_service_date': fields.Datetime.now()
         })
-        self.message_post(body=_("Bin service completed by %s.") % self.env.user.name)
+        self.message_post(body=_("Bin service completed by %s.", self.env.user.name))
 
     def action_view_services(self):
         self.ensure_one()

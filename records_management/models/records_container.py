@@ -226,7 +226,7 @@ class RecordsContainer(models.Model):
         """View all documents in this container"""
         self.ensure_one()
         return {
-            "name": _("Documents in Container %s") % self.name,
+            "name": _("Documents in Container %s", self.name),
             "type": "ir.actions.act_window",
             "res_model": "records.document",
             "view_mode": "tree,form",

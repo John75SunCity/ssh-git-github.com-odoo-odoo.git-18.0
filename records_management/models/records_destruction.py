@@ -204,12 +204,12 @@ class RecordsDestruction(models.Model):
         # Create NAID certificate if not exists
         if not self.certificate_generated:
             certificate_vals = {
-                'name': _('Destruction Certificate - %s') % self.name,
-                'partner_id': self.partner_id.id,
-                'destruction_date': self.destruction_date,
-                'destruction_method': self.destruction_method,
-                'total_weight': self.total_weight,
-                'destruction_id': self.id,
+                "name": _("Destruction Certificate - %s", self.name),
+                "partner_id": self.partner_id.id,
+                "destruction_date": self.destruction_date,
+                "destruction_method": self.destruction_method,
+                "total_weight": self.total_weight,
+                "destruction_id": self.id,
             }
 
             certificate = self.env['naid.certificate'].create(certificate_vals)
@@ -241,5 +241,3 @@ class RecordsDestruction(models.Model):
         for record in self:
             if record.state in ['in_progress', 'completed'] and not record.destruction_item_ids:
                 raise ValidationError(_('Destruction must have at least one item to process'))
-
-
