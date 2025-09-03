@@ -74,8 +74,7 @@ class RecordsDestruction(models.Model):
     )
     certificate_generated = fields.Boolean(
         string='Certificate Generated',
-        default=False,
-        tracking=True
+        default=False
     )
     notes = fields.Text(
         string='Notes',

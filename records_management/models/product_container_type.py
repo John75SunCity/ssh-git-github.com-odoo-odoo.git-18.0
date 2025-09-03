@@ -16,7 +16,7 @@ class ProductContainerType(models.Model):
     code = fields.Char(string="Type Code", required=True, tracking=True, help="Unique code for this container type (e.g., 'BOX01').")
     product_id = fields.Many2one('product.product', string="Related Service Product", ondelete='restrict', help="Service product used for billing this container type.")
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
 
     # --- Physical Specs ---
@@ -50,8 +50,8 @@ class ProductContainerType(models.Model):
     # OPERATIONAL FIELDS
     # ============================================================================
     barcode_prefix = fields.Char(string="Barcode Prefix", help="Prefix for generating new container barcodes of this type.")
-    requires_special_handling = fields.Boolean(string="Requires Special Handling", tracking=True)
-    climate_controlled_only = fields.Boolean(string="Climate Controlled Only", tracking=True)
+    requires_special_handling = fields.Boolean(string="Requires Special Handling")
+    climate_controlled_only = fields.Boolean(string="Climate Controlled Only")
     security_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),

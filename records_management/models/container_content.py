@@ -27,7 +27,7 @@ class ContainerContent(models.Model):
     name = fields.Char(string='Content Name', required=True, tracking=True)
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     sequence = fields.Integer(string='Sequence', default=10)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     container_id = fields.Many2one(
         'records.container',
         string='Container',

@@ -68,8 +68,8 @@ class RecordsInventoryDashboard(models.Model):
 
     # Financial Metrics
     currency_id = fields.Many2one(related='company_id.currency_id', readonly=True, comodel_name='res.currency')
-    monthly_revenue = fields.Monetary(string="Revenue in Period", compute='_compute_all_metrics')
-    total_billed_amount = fields.Monetary(string="Total Billed (All Time)", compute='_compute_all_metrics')
+    monthly_revenue = fields.Monetary(string="Revenue in Period", compute='_compute_all_metrics', currency_field='currency_id')
+    total_billed_amount = fields.Monetary(string="Total Billed (All Time, currency_field='currency_id')", compute='_compute_all_metrics')
 
     # Alert Metrics
     alert_count = fields.Integer(string="Total Alerts", compute='_compute_all_metrics')

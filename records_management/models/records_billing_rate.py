@@ -50,4 +50,4 @@ class RecordsBillingRate(models.Model):
     tier_threshold = fields.Float(string="Tier Threshold", digits=(10, 2))
     discount_percentage = fields.Float(string="Discount %", digits=(5, 2))
     effective_date = fields.Date(string="Effective Date")
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)

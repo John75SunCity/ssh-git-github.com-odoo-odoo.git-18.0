@@ -35,8 +35,7 @@ class RecordsVehicleInheritance(models.Model):
     naid_compliant = fields.Boolean(
         string="NAID Compliant Vehicle",
         default=False,
-        help="Vehicle meets NAID AAA compliance standards for secure document transport.",
-        tracking=True
+        help="Vehicle meets NAID AAA compliance standards for secure document transport."
     )
 
     # Specialized Vehicle Types for Records Business

@@ -48,7 +48,7 @@ class FileRetrievalWorkOrder(models.Model):
         help="User responsible for overseeing this work order"
     )
 
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
 
     # ============================================================================
     # FIELDS - STATE AND WORKFLOW
@@ -188,7 +188,6 @@ class FileRetrievalWorkOrder(models.Model):
 
     access_coordination_needed = fields.Boolean(
         string='Access Coordination Required',
-        tracking=True,
         help="Indicates if special access coordination is needed for restricted areas"
     )
 

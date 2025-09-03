@@ -85,7 +85,7 @@ class RecordsDepartmentSharing(models.Model):
     )
 
     # Audit trail
-    sharing_logs = fields.One2many("records.department.sharing.log", "sharing_id", string="Sharing Logs")
+    sharing_log_ids = fields.One2many("records.department.sharing.log", "sharing_id", string="Sharing Logs")
 
     @api.constrains("requesting_department_id", "target_department_id")
     def _check_departments(self):

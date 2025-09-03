@@ -33,7 +33,7 @@ class CustomerInventory(models.Model):
     name = fields.Char(string='Inventory Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('in_progress', 'In Progress'),

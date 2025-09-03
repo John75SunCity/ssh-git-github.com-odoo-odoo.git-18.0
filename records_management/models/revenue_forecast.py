@@ -44,9 +44,9 @@ class RevenueForecast(models.Model):
     # ============================================================================
     # AGGREGATED FINANCIAL METRICS (COMPUTED)
     # ============================================================================
-    total_forecasted_amount = fields.Monetary(string="Total Forecasted Revenue", compute='_compute_aggregated_amounts', store=True)
-    total_actual_amount = fields.Monetary(string="Total Actual Revenue", compute='_compute_aggregated_amounts', store=True)
-    total_variance_amount = fields.Monetary(string="Total Variance", compute='_compute_aggregated_amounts', store=True)
+    total_forecasted_amount = fields.Monetary(string="Total Forecasted Revenue", compute='_compute_aggregated_amounts', store=True, currency_field='currency_id')
+    total_actual_amount = fields.Monetary(string="Total Actual Revenue", compute='_compute_aggregated_amounts', store=True, currency_field='currency_id')
+    total_variance_amount = fields.Monetary(string="Total Variance", compute='_compute_aggregated_amounts', store=True, currency_field='currency_id')
     achievement_percentage = fields.Float(string="Achievement (%)", compute='_compute_aggregated_amounts', store=True, aggregator="avg")
 
     # ============================================================================

@@ -44,7 +44,7 @@ class CustodyTransferEvent(models.Model):
         default=lambda self: self.env.company,
         required=True
     )
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
 
     # ============================================================================
     # RELATIONSHIP & CONTEXT FIELDS

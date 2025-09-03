@@ -37,16 +37,16 @@ class AdvancedBillingContact(models.Model):
 
     # Contact preferences
     receive_storage_invoices = fields.Boolean(string='Receive Storage Invoices',
-                                             default=True, tracking=True)
+                                             default=True)
     receive_service_invoices = fields.Boolean(string='Receive Service Invoices',
-                                             default=True, tracking=True)
+                                             default=True)
     receive_statements = fields.Boolean(string='Receive Statements',
-                                       default=True, tracking=True)
+                                       default=True)
     receive_reminders = fields.Boolean(string='Receive Payment Reminders',
-                                      default=True, tracking=True)
+                                      default=True)
 
     # Contact role and priority
-    primary_contact = fields.Boolean(string='Primary Contact', default=False, tracking=True)
+    primary_contact = fields.Boolean(string='Primary Contact', default=False)
     contact_type = fields.Selection([
         ('billing', 'Billing Contact'),
         ('accounting', 'Accounting Contact'),
@@ -57,7 +57,7 @@ class AdvancedBillingContact(models.Model):
 
     sequence = fields.Integer(string='Sequence', default=10,
                              help='Order of contact priority')
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
 
     # Communication preferences
     preferred_communication = fields.Selection([

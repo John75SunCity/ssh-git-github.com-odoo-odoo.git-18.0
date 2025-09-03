@@ -91,7 +91,7 @@ class NaidDestructionRecord(models.Model):
     # ============================================================================
     certificate_number = fields.Char(string='Certificate Number', readonly=True)
     certificate_issued_date = fields.Date(string='Certificate Issued Date')
-    certificate_issued_by = fields.Many2one('res.users', string='Certificate Issued By')
+    certificate_issued_by_id = fields.Many2one("res.users", string="Certificate Issued By")
 
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS (REQUIRED for mail.thread inheritance)
@@ -188,12 +188,14 @@ class NaidDestructionRecord(models.Model):
 
         certificate = self.env['naid.certificate'].create(certificate_vals)
 
-        self.write({
-            'state': 'certified',
-            'certificate_id': certificate.id,
-            'certificate_issued_date': fields.Date.today(),
-            'certificate_issued_by': self.env.user.id
-        })
+        self.write(
+            {
+                "state": "certified",
+                "certificate_id": certificate.id,
+                "certificate_issued_date": fields.Date.today(),
+                "certificate_issued_by_id": self.env.user.id,
+            }
+        )
 
         self.message_post(body=_('NAID Certificate generated: %s', self.certificate_number))
         return certificate

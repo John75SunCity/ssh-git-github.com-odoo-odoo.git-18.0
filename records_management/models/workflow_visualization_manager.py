@@ -3,7 +3,7 @@
 Workflow Visualization Manager
 
 This model manages workflow visualizations, process diagrams, and workflow analytics
-for the Records Management module. It provides tools for visualizing business processes,
+for the Records Management module. It                       'target_model_id': self.env.ref('records_management.model_pickup_request').id,         'target_model_id': self.env.ref('records_management.model_records_document').id,rovides tools for visualizing business processes,
 workflow states, and system interactions.
 """
 
@@ -26,7 +26,7 @@ class WorkflowVisualizationManager(models.Model):
 
     name = fields.Char(string='Visualization Name', required=True, tracking=True)
     description = fields.Text(string='Description', help='Description of this workflow visualization')
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
 
     # Visualization settings
     visualization_type = fields.Selection([
@@ -37,11 +37,7 @@ class WorkflowVisualizationManager(models.Model):
         ('system_architecture', 'System Architecture'),
     ], string='Visualization Type', required=True, default='process_flow')
 
-    target_model = fields.Many2one(
-        'ir.model',
-        string='Target Model',
-        help='Model to visualize workflow for'
-    )
+    target_model_id = fields.Many2one("ir.model", string="Target Model", help="Model to visualize workflow for")
 
     include_states = fields.Boolean(
         string='Include States',
@@ -176,22 +172,22 @@ class WorkflowVisualizationManager(models.Model):
         """
         default_visualizations = [
             {
-                'name': 'Container Lifecycle Process',
-                'description': 'Complete lifecycle process for records containers',
-                'visualization_type': 'process_flow',
-                'target_model': self.env.ref('records_management.model_records_container').id,
+                "name": "Container Lifecycle Process",
+                "description": "Complete lifecycle process for records containers",
+                "visualization_type": "process_flow",
+                "target_model_id": self.env.ref("records_management.model_records_container").id,
             },
             {
-                'name': 'Document Management Workflow',
-                'description': 'Document processing and management workflow',
-                'visualization_type': 'process_flow',
-                'target_model': self.env.ref('records_management.model_records_document').id,
+                "name": "Document Management Workflow",
+                "description": "Document processing and management workflow",
+                "visualization_type": "process_flow",
+                "target_model": self.env.ref("records_management.model_records_document").id,
             },
             {
-                'name': 'Pickup Request Process',
-                'description': 'Customer pickup request processing workflow',
-                'visualization_type': 'user_journey',
-                'target_model': self.env.ref('records_management.model_pickup_request').id,
+                "name": "Pickup Request Process",
+                "description": "Customer pickup request processing workflow",
+                "visualization_type": "user_journey",
+                "target_model": self.env.ref("records_management.model_pickup_request").id,
             },
         ]
 

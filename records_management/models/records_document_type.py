@@ -20,7 +20,7 @@ class RecordsDocumentType(models.Model):
     code = fields.Char(string="Code", required=True, copy=False, readonly=True, default=lambda self: _('New'))
     description = fields.Text(string="Description")
     sequence = fields.Integer(string="Sequence", default=10)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 
     state = fields.Selection([

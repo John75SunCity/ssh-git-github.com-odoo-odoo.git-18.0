@@ -42,7 +42,7 @@ class NAIDOperatorCertification(models.Model):
     scope_of_certification = fields.Text(string='Scope of Certification')
     notes = fields.Text(string='Notes')
     attachment_ids = fields.Many2many('ir.attachment', 'naid_certification_attachment_rel', 'certification_id', 'attachment_id', string='Certification Documents')
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
 
     @api.depends('expiry_date')

@@ -21,7 +21,6 @@ class StockLot(models.Model):
     destruction_eligible = fields.Boolean(
         string="Eligible for Destruction",
         default=False,
-        tracking=True,
         help="Indicates if this box has passed its retention period and can be destroyed."
     )
     retention_date = fields.Date(

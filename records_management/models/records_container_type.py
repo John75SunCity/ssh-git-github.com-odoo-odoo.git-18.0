@@ -12,7 +12,7 @@ class RecordsContainerType(models.Model):
     # ============================================================================
     name = fields.Char(string="Type Name", required=True, index=True)
     code = fields.Char(string="Type Code", required=True, index=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     sequence = fields.Integer(string="Sequence", default=10)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     currency_id = fields.Many2one(related='company_id.currency_id', readonly=True, comodel_name='res.currency')
@@ -32,10 +32,10 @@ class RecordsContainerType(models.Model):
     # ============================================================================
     # PRICING & BILLING
     # ============================================================================
-    standard_rate = fields.Monetary(string="Standard Monthly Rate", tracking=True)
-    setup_fee = fields.Monetary(string="Setup Fee", tracking=True)
-    handling_fee = fields.Monetary(string="Handling Fee", tracking=True)
-    destruction_fee = fields.Monetary(string="Destruction Fee", tracking=True)
+    standard_rate = fields.Monetary(string="Standard Monthly Rate", currency_field="currency_id", tracking=True)
+    setup_fee = fields.Monetary(string="Setup Fee", currency_field="currency_id", tracking=True)
+    handling_fee = fields.Monetary(string="Handling Fee", currency_field="currency_id", tracking=True)
+    destruction_fee = fields.Monetary(string="Destruction Fee", currency_field="currency_id", tracking=True)
 
     # ============================================================================
     # RELATIONSHIPS & STATISTICS
@@ -131,4 +131,3 @@ class RecordsContainerType(models.Model):
         for record in self:
             if record.standard_rate < 0 or record.setup_fee < 0 or record.handling_fee < 0 or record.destruction_fee < 0:
                 raise ValidationError(_("Pricing fields cannot be negative."))
-

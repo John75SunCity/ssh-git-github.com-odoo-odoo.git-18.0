@@ -48,7 +48,7 @@ class PortalFeedbackResolution(models.Model):
         ('1', 'Very Unsatisfied'),
     ], string='Customer Satisfaction', tracking=True)
 
-    follow_up_required = fields.Boolean(string='Follow-up Required?', tracking=True)
+    follow_up_required = fields.Boolean(string='Follow-up Required?')
     follow_up_date = fields.Date(string='Follow-up Date', tracking=True)
     follow_up_notes = fields.Text(string='Follow-up Notes')
 

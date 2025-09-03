@@ -24,7 +24,6 @@ class RecordsTag(models.Model):
     active = fields.Boolean(
         string='Active',
         default=True,
-        tracking=True,
         help="If unchecked, tag is hidden from selection."
     )
     color = fields.Integer(

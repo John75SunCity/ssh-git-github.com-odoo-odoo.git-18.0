@@ -20,7 +20,7 @@ class PaymentSplit(models.Model):
     journal_id = fields.Many2one('account.journal', string='Journal', required=True)
     currency_id = fields.Many2one('res.currency', related='journal_id.currency_id', string='Currency', readonly=True)
 
-    total_amount = fields.Monetary(string='Total Amount to Split', required=True)
+    total_amount = fields.Monetary(string='Total Amount to Split', required=True, currency_field='currency_id')
     payment_date = fields.Date(string='Payment Date', default=fields.Date.context_today, required=True)
 
     state = fields.Selection([
@@ -33,8 +33,8 @@ class PaymentSplit(models.Model):
 
     split_line_ids = fields.One2many('payment.split.line', 'split_id', string='Split Lines')
 
-    split_total = fields.Monetary(string='Split Total', compute='_compute_split_total', store=True)
-    remaining_balance = fields.Monetary(string='Remaining Balance', compute='_compute_split_total', store=True)
+    split_total = fields.Monetary(string='Split Total', compute='_compute_split_total', store=True, currency_field='currency_id')
+    remaining_balance = fields.Monetary(string='Remaining Balance', compute='_compute_split_total', store=True, currency_field='currency_id')
 
     # ============================================================================
     # METHODS

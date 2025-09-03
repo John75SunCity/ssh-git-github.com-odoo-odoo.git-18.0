@@ -31,10 +31,10 @@ class NaidCompliancePolicy(models.Model):
     ], string='Policy Type', required=True, tracking=True)
 
     description = fields.Text(string='Policy Description', required=True)
-    mandatory = fields.Boolean(string='Mandatory', default=True, tracking=True)
+    mandatory = fields.Boolean(string='Mandatory', default=True)
 
     # Compliance checking configuration
-    automated_check = fields.Boolean(string='Automated Check', default=False, tracking=True)
+    automated_check = fields.Boolean(string='Automated Check', default=False)
     check_frequency = fields.Selection([
         ('daily', 'Daily'),
         ('weekly', 'Weekly'),

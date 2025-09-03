@@ -10,7 +10,6 @@ class ResPartner(models.Model):
     is_records_customer = fields.Boolean(
         string="Is a Records Management Customer",
         default=False,
-        tracking=True,
         help="Check this box if this partner is a customer of the records management services."
     )
 

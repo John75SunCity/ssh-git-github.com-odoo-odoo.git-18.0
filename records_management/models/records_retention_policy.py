@@ -45,7 +45,7 @@ class RecordsRetentionPolicy(models.Model):
     sequence = fields.Integer(string='Sequence', default=10)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     description = fields.Text(string="Description")
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Policy Owner", default=lambda self: self.env.user, tracking=True)
 

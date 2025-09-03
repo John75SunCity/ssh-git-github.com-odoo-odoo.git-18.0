@@ -56,7 +56,7 @@ class ShreddingCertificate(models.Model):
         default=lambda self: self.env.user,
         tracking=True
     )
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('issued', 'Issued'),
@@ -109,7 +109,7 @@ class ShreddingCertificate(models.Model):
         domain="[('parent_id', '=', partner_id), ('type', '=', 'contact')]"
     )
     service_location = fields.Char(string="Service Location", tracking=True)
-    witness_required = fields.Boolean(string="Witness Required", default=False, tracking=True)
+    witness_required = fields.Boolean(string="Witness Required", default=False)
     witness_name = fields.Char(string="Witness Name", tracking=True)
     witness_title = fields.Char(string="Witness Title", tracking=True)
 

@@ -43,7 +43,7 @@ class RecordsUsageTracking(models.Model):
         string="Total Cost", currency_field="currency_id", compute="_compute_total_cost", store=True
     )
     currency_id = fields.Many2one('res.currency', string='Currency', related='company_id.currency_id', readonly=True)
-    billable = fields.Boolean(string="Billable", default=True, tracking=True)
+    billable = fields.Boolean(string="Billable", default=True)
     invoice_status = fields.Selection(
         [
             ("pending", "Pending"),

@@ -71,8 +71,8 @@ class RecordsDeletionRequest(models.Model):
     approval_date = fields.Datetime(string="Approval Date", readonly=True, tracking=True)
     rejection_reason = fields.Text(string="Rejection Reason", readonly=True, tracking=True)
     legal_hold_check = fields.Boolean(string="Legal Hold Cleared", default=False)
-    retention_policy_verified = fields.Boolean(string="Retention Policy Verified", default=False, tracking=True)
-    customer_authorization = fields.Boolean(string="Customer Authorization Received", default=False, tracking=True)
+    retention_policy_verified = fields.Boolean(string="Retention Policy Verified", default=False)
+    customer_authorization = fields.Boolean(string="Customer Authorization Received", default=False)
     naid_compliant = fields.Boolean(string="NAID Compliant Process", default=True)
     chain_of_custody_id = fields.Many2one('naid.custody', string="Chain of Custody")
     certificate_of_deletion_id = fields.Many2one('shredding.certificate', string="Certificate of Deletion", readonly=True)
@@ -82,8 +82,8 @@ class RecordsDeletionRequest(models.Model):
     # BILLING
     # ============================================================================
     billable = fields.Boolean(string="Billable", default=True)
-    estimated_cost = fields.Monetary(string="Estimated Cost", tracking=True)
-    actual_cost = fields.Monetary(string="Actual Cost", tracking=True)
+    estimated_cost = fields.Monetary(string="Estimated Cost", tracking=True, currency_field='currency_id')
+    actual_cost = fields.Monetary(string="Actual Cost", tracking=True, currency_field='currency_id')
 
     # ============================================================================
     # ORM OVERRIDES

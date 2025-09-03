@@ -121,8 +121,8 @@ class BinIssueRecord(models.Model):
         readonly=True
     )
 
-    billed = fields.Boolean(string="Billed to Customer", tracking=True)
-    payment_received = fields.Boolean(string="Payment Received", tracking=True)
+    billed = fields.Boolean(string="Billed to Customer")
+    payment_received = fields.Boolean(string="Payment Received")
 
     # ============================================================================
     # LOCATION DATA

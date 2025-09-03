@@ -14,7 +14,7 @@ class PaymentSplitLine(models.Model):
     sequence = fields.Integer(default=10)
 
     name = fields.Char(string='Description', required=True)
-    amount = fields.Monetary(string='Amount', required=True)
+    amount = fields.Monetary(string='Amount', required=True, currency_field='currency_id')
     currency_id = fields.Many2one(
         "res.currency", related="split_id.currency_id", string="Currency", readonly=True, store=True
     )

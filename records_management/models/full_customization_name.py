@@ -21,7 +21,6 @@ class FullCustomizationName(models.Model):
     active = fields.Boolean(
         string='Active',
         default=True,
-        tracking=True,
         help="Uncheck to disable this customization without deleting it"
     )
     

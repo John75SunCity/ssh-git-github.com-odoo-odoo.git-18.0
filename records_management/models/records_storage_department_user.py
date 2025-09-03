@@ -12,7 +12,7 @@ class RecordsStorageDepartmentUser(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(related='department_id.company_id', store=True, readonly=True, comodel_name='res.company')
 
     # ============================================================================

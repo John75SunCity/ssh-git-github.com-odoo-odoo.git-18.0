@@ -38,7 +38,7 @@ class BinKey(models.Model):
         required=True,
         default=lambda self: self.env.company
     )
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('available', 'Available'),
         ('assigned', 'Assigned'),

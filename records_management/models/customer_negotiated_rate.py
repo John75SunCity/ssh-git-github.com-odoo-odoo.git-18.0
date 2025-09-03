@@ -27,7 +27,7 @@ class CustomerNegotiatedRate(models.Model):
     name = fields.Char(string="Rate Name", required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user, tracking=True)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted for Approval'),
@@ -66,12 +66,12 @@ class CustomerNegotiatedRate(models.Model):
     # FINANCIALS & PRICING
     # ============================================================================
     currency_id = fields.Many2one('res.currency', related='company_id.currency_id', string='Currency')
-    monthly_rate = fields.Monetary(string='Monthly Rate', tracking=True)
-    annual_rate = fields.Monetary(string='Annual Rate', compute='_compute_annual_rate', inverse='_inverse_annual_rate', store=True)
-    setup_fee = fields.Monetary(string='One-Time Setup Fee')
-    per_service_rate = fields.Monetary(string='Per Service Rate')
-    per_hour_rate = fields.Monetary(string='Per Hour Rate')
-    per_document_rate = fields.Monetary(string='Per Document Rate')
+    monthly_rate = fields.Monetary(string='Monthly Rate', tracking=True, currency_field='currency_id')
+    annual_rate = fields.Monetary(string='Annual Rate', compute='_compute_annual_rate', inverse='_inverse_annual_rate', store=True, currency_field='currency_id')
+    setup_fee = fields.Monetary(string='One-Time Setup Fee', currency_field='currency_id')
+    per_service_rate = fields.Monetary(string='Per Service Rate', currency_field='currency_id')
+    per_hour_rate = fields.Monetary(string='Per Hour Rate', currency_field='currency_id')
+    per_document_rate = fields.Monetary(string='Per Document Rate', currency_field='currency_id')
     minimum_volume = fields.Integer(string='Minimum Volume/Quantity')
     maximum_volume = fields.Integer(string='Maximum Volume/Quantity')
     discount_percentage = fields.Float(string='Discount (%)')
@@ -86,11 +86,11 @@ class CustomerNegotiatedRate(models.Model):
     # ============================================================================
     # ANALYTICS & COMPARISON
     # ============================================================================
-    base_rate_comparison = fields.Monetary(string='Base Rate Comparison', compute='_compute_rate_comparison', store=True)
-    savings_amount = fields.Monetary(string='Savings Amount', compute='_compute_rate_comparison', store=True)
+    base_rate_comparison = fields.Monetary(string='Base Rate Comparison', compute='_compute_rate_comparison', store=True, currency_field='currency_id')
+    savings_amount = fields.Monetary(string='Savings Amount', compute='_compute_rate_comparison', store=True, currency_field='currency_id')
     savings_percentage = fields.Float(string='Savings (%)', compute='_compute_rate_comparison', store=True)
     containers_using_rate = fields.Integer(string='Containers Using Rate', compute='_compute_usage_stats')
-    monthly_revenue_impact = fields.Monetary(string='Monthly Revenue Impact', compute='_compute_usage_stats')
+    monthly_revenue_impact = fields.Monetary(string='Monthly Revenue Impact', compute='_compute_usage_stats', currency_field='currency_id')
 
     # ============================================================================
     # COMPUTE METHODS

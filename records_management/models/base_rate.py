@@ -27,7 +27,7 @@ class BaseRate(models.Model):
     name = fields.Char(string='Rate Name', required=True, tracking=True, default="Default Base Rates")
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Rate Manager', default=lambda self: self.env.user, tracking=True)
-    active = fields.Boolean(string='Active', default=True, tracking=True, help="Indicates if this rate card is currently active.")
+    active = fields.Boolean(string='Active', default=True, help="Indicates if this rate card is currently active.")
     effective_date = fields.Date(string='Effective Date', default=fields.Date.context_today, required=True, tracking=True)
     expiration_date = fields.Date(string='Expiration Date', tracking=True)
     version = fields.Char(string='Version', default='1.0', tracking=True)
@@ -82,7 +82,7 @@ class BaseRate(models.Model):
     # ============================================================================
     # VOLUME-BASED PRICING MODIFIERS
     # ============================================================================
-    enable_volume_tiers = fields.Boolean(string='Enable Volume Tiers', tracking=True)
+    enable_volume_tiers = fields.Boolean(string='Enable Volume Tiers')
     small_volume_threshold = fields.Integer(string='Small Volume Threshold', help="Upper limit for small volume pricing.")
     small_volume_multiplier = fields.Float(string='Small Volume Multiplier', default=1.0)
     large_volume_threshold = fields.Integer(string='Large Volume Threshold', help="Lower limit for large volume discount.")
@@ -93,7 +93,7 @@ class BaseRate(models.Model):
     # ============================================================================
     # LOCATION-BASED PRICING MODIFIERS
     # ============================================================================
-    enable_location_modifiers = fields.Boolean(string='Enable Location Modifiers', tracking=True)
+    enable_location_modifiers = fields.Boolean(string='Enable Location Modifiers')
     premium_location_multiplier = fields.Float(string='Premium Location Multiplier', default=1.2)
     standard_location_multiplier = fields.Float(string='Standard Location Multiplier', default=1.0)
     economy_location_multiplier = fields.Float(string='Economy Location Multiplier', default=0.9)

@@ -54,7 +54,7 @@ class BarcodeStorageBox(models.Model):
         default=lambda self: self.env.user,
         tracking=True
     )
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),

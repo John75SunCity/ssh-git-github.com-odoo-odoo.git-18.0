@@ -9,7 +9,7 @@ class RecordsSeries(models.Model):
     name = fields.Char(string='Name', required=True, tracking=True)
     code = fields.Char(string='Code', required=True, tracking=True)
     description = fields.Text(string='Description')
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     document_type_ids = fields.Many2many(

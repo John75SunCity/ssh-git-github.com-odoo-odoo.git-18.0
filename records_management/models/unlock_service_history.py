@@ -46,7 +46,7 @@ class UnlockServiceHistory(models.Model):
     parts_used_ids = fields.One2many('unlock.service.part', 'service_history_id', string="Parts Used")
 
     billable = fields.Boolean(string="Billable", default=True)
-    cost = fields.Monetary(string="Total Cost", compute='_compute_total_cost', store=True)
+    cost = fields.Monetary(string="Total Cost", compute='_compute_total_cost', store=True, currency_field='currency_id')
     invoice_id = fields.Many2one('account.move', string="Invoice", readonly=True, copy=False)
 
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)

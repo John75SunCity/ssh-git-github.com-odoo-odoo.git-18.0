@@ -24,7 +24,7 @@ class AdvancedBillingProfile(models.Model):
 
     name = fields.Char(string='Profile Name', required=True, tracking=True)
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
 
     # Billing Configuration
     billing_frequency = fields.Selection(
@@ -37,7 +37,7 @@ class AdvancedBillingProfile(models.Model):
 
     billing_cycle_day = fields.Integer(string='Billing Cycle Day', default=1,
                                       help='Day of the month/quarter/year when billing occurs')
-    auto_billing = fields.Boolean(string='Auto Billing', default=True, tracking=True)
+    auto_billing = fields.Boolean(string='Auto Billing', default=True)
     discount_percentage = fields.Float(string="Discount Percentage", default=0.0, tracking=True)
 
     # Related billing configuration

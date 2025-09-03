@@ -32,7 +32,7 @@ class DiscountRule(models.Model):
     )
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     currency_id = fields.Many2one(related='config_id.currency_id', string='Currency', store=True, comodel_name='res.currency')
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     priority = fields.Integer(string='Priority', default=10, help="Lower number indicates higher priority.")
 
     # ============================================================================

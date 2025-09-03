@@ -68,9 +68,9 @@ class ServiceItem(models.Model):
     # FINANCIALS
     # ============================================================================
     currency_id = fields.Many2one(related='company_id.currency_id', comodel_name='res.currency')
-    purchase_cost = fields.Monetary(string="Purchase Cost", tracking=True)
-    current_value = fields.Monetary(string="Current Value", compute='_compute_current_value', store=True)
-    maintenance_cost = fields.Monetary(string="Total Maintenance Cost", compute='_compute_maintenance_cost', store=True)
+    purchase_cost = fields.Monetary(string="Purchase Cost", tracking=True, currency_field='currency_id')
+    current_value = fields.Monetary(string="Current Value", compute='_compute_current_value', store=True, currency_field='currency_id')
+    maintenance_cost = fields.Monetary(string="Total Maintenance Cost", compute='_compute_maintenance_cost', store=True, currency_field='currency_id')
     purchase_date = fields.Date(string="Purchase Date", tracking=True)
     warranty_expiry = fields.Date(string="Warranty Expiry", tracking=True)
     depreciation_rate = fields.Float(string="Annual Depreciation Rate (%)", default=10.0)

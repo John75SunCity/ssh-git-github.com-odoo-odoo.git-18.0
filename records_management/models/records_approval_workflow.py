@@ -11,7 +11,7 @@ class RecordsApprovalWorkflow(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string='Workflow Name', required=True, tracking=True, help="A descriptive name for the approval workflow, e.g., 'High-Value Destruction Approval'.")
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 
     # ============================================================================

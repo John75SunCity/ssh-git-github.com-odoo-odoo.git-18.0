@@ -31,7 +31,7 @@ class RecordsBilling(models.Model):
     name = fields.Char(string="Billing Reference", required=True, copy=False, readonly=True, index=True, default="New")
 
     date = fields.Date(string="Billing Date", required=True, default=fields.Date.context_today, index=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     company_id = fields.Many2one(
         "res.company", string="Company", required=True, default=lambda self: self.env.company, index=True
     )

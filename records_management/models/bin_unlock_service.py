@@ -49,7 +49,7 @@ class BinUnlockService(models.Model):
     )
 
     sequence = fields.Integer(string='Sequence', default=10)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(
         'res.company',
         string='Company',
@@ -177,14 +177,14 @@ class BinUnlockService(models.Model):
         related='company_id.currency_id',
         store=True
     )
-    service_cost = fields.Monetary(string='Service Cost', tracking=True)
-    emergency_surcharge = fields.Monetary(string='Emergency Surcharge', tracking=True)
+    service_cost = fields.Monetary(string='Service Cost', tracking=True, currency_field='currency_id')
+    emergency_surcharge = fields.Monetary(string='Emergency Surcharge', tracking=True, currency_field='currency_id')
     total_cost = fields.Monetary(
         string='Total Cost',
         compute='_compute_total_cost',
         store=True,
         tracking=True
-    )
+    , currency_field='currency_id')
     service_rate = fields.Float(string='Service Rate (per hour)')
     invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True, copy=False)
 

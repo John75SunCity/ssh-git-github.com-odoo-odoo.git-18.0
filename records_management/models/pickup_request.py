@@ -83,7 +83,7 @@ class PickupRequest(models.Model):
     estimated_weight = fields.Float(string='Estimated Weight (lbs)', tracking=True)
 
     # Billing Information
-    billable = fields.Boolean(string='Billable', default=True, tracking=True)
+    billable = fields.Boolean(string='Billable', default=True)
     estimated_cost = fields.Monetary(string='Estimated Cost', currency_field='currency_id', tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
 

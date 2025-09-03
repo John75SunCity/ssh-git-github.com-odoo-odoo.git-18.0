@@ -163,7 +163,6 @@ class FileRetrievalItem(models.Model):
     access_authorized = fields.Boolean(
         string='Access Authorized',
         default=True,
-        tracking=True,
         help="Whether access to this file has been authorized"
     )
 

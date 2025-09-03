@@ -51,7 +51,7 @@ class PaperBaleInspection(models.Model):
         ('other', 'Other'),
     ], string="Inspection Type", required=True, tracking=True)
 
-    passed = fields.Boolean(string='Passed', tracking=True)
+    passed = fields.Boolean(string='Passed')
     rejection_reason = fields.Text(string='Rejection Reason', tracking=True)
     notes = fields.Text(string='Inspection Notes')
 

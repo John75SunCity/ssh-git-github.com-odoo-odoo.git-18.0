@@ -13,7 +13,7 @@ class RecordsAuditLog(models.Model):
     # Note: Most fields are readonly to ensure log integrity.
     user_id = fields.Many2one('res.users', string="User", readonly=True, required=True, ondelete='restrict')
     timestamp = fields.Datetime(string="Timestamp", default=fields.Datetime.now, readonly=True, required=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True, required=True)
 
     # ============================================================================

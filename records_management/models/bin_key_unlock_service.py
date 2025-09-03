@@ -36,7 +36,7 @@ class BinKeyUnlockService(models.Model):
         required=True,
         default=lambda self: self.env.company
     )
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -75,7 +75,7 @@ class BinKeyUnlockService(models.Model):
     # FINANCIALS
     # ============================================================================
     currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', comodel_name='res.currency')
-    unlock_charge = fields.Monetary(string='Service Charge', tracking=True)
+    unlock_charge = fields.Monetary(string='Service Charge', tracking=True, currency_field='currency_id')
     billable = fields.Boolean(string='Billable Service', default=True)
     invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True, copy=False)
 

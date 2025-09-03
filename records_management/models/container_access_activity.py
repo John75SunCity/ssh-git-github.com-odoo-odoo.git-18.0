@@ -208,7 +208,6 @@ class ContainerAccessActivity(models.Model):
     issues_found = fields.Boolean(
         string="Issues Found",
         default=False,
-        tracking=True,
         help="Whether any issues were discovered during the activity"
     )
 
@@ -241,7 +240,6 @@ class ContainerAccessActivity(models.Model):
         string="Approved",
         default=False,
         readonly=True,
-        tracking=True,
         help="Whether the activity has been approved"
     )
 

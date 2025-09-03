@@ -34,7 +34,6 @@ class ShreddingService(models.Model):
     active = fields.Boolean(
         string='Active',
         default=True,
-        tracking=True,
         help="Uncheck to archive this service"
     )
 
@@ -66,7 +65,6 @@ class ShreddingService(models.Model):
     naid_compliant = fields.Boolean(
         string='NAID AAA Compliant',
         default=True,
-        tracking=True,
         help="Whether this service meets NAID AAA compliance standards"
     )
 

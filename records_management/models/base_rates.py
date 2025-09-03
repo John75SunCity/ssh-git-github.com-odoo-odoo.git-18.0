@@ -65,7 +65,7 @@ class BaseRates(models.Model):
 
     # Additional fields
     description = fields.Text(string='Description')
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(
         comodel_name='res.company', 
         string='Company', 

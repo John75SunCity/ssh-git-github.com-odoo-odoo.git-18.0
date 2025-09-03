@@ -43,8 +43,8 @@ class ProductTemplate(models.Model):
     container_weight_lbs = fields.Float(string="Avg. Weight (lbs)")
 
     # --- Compliance ---
-    naid_compliant = fields.Boolean(string="NAID Compliant", tracking=True)
-    hipaa_compliant = fields.Boolean(string="HIPAA Compliant", tracking=True)
+    naid_compliant = fields.Boolean(string="NAID Compliant")
+    hipaa_compliant = fields.Boolean(string="HIPAA Compliant")
 
     # --- Service Level ---
     requires_appointment = fields.Boolean(string="Requires Appointment")

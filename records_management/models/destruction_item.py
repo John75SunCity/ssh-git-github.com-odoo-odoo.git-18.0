@@ -29,7 +29,7 @@ class DestructionItem(models.Model):
     item_description = fields.Char(string="Description", required=True, tracking=True)
     sequence = fields.Integer(string='Sequence', default=10)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     partner_id = fields.Many2one(related='records_destruction_id.partner_id', string='Customer', store=True, comodel_name='res.partner')
 
     # Link to the parent destruction order

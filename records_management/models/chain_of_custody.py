@@ -53,7 +53,6 @@ class ChainOfCustody(models.Model):
     active = fields.Boolean(
         string="Active",
         default=True,
-        tracking=True,
         help="Uncheck to archive this custody record",
     )
 
@@ -204,7 +203,6 @@ class ChainOfCustody(models.Model):
     naid_compliant = fields.Boolean(
         string="NAID AAA Compliant",
         default=True,
-        tracking=True,
         help="Whether this transfer meets NAID AAA standards",
     )
 
@@ -270,7 +268,6 @@ class ChainOfCustody(models.Model):
     is_verified = fields.Boolean(
         string="Verified",
         default=False,
-        tracking=True,
         help="Whether this transfer has been verified",
     )
 

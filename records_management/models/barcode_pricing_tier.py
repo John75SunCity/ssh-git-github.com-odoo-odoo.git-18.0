@@ -84,7 +84,7 @@ class BarcodePricingTier(models.Model):
         required=True,
         tracking=True,
         help="The standard price before any discounts."
-    )
+    , currency_field='currency_id')
     volume_discount = fields.Float(
         string='Volume Discount (%)',
         tracking=True,
@@ -95,7 +95,7 @@ class BarcodePricingTier(models.Model):
         compute='_compute_discounted_price',
         store=True,
         help="Price after applying the volume discount."
-    )
+    , currency_field='currency_id')
 
     # ============================================================================
     # QUANTITY & VALIDITY

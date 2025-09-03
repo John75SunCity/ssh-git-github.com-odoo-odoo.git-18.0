@@ -51,7 +51,7 @@ class BarcodeProduct(models.Model):
         default=lambda self: self.env.user,
         tracking=True
     )
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     sequence = fields.Integer(string='Sequence', default=10)
     state = fields.Selection([
         ('draft', 'Draft'),

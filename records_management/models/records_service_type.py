@@ -25,7 +25,7 @@ class RecordsServiceType(models.Model):
     name = fields.Char(string='Service Type Name', required=True, tracking=True)
     code = fields.Char(string='Code', required=True, tracking=True)
     sequence = fields.Integer(string='Sequence', default=10, help="Used to order service types")
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     description = fields.Text(string='Description')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 

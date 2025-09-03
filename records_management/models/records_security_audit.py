@@ -13,7 +13,7 @@ class RecordsSecurityAudit(models.Model):
     # ============================================================================
     name = fields.Char(string="Event Summary", required=True, readonly=True)
     event_date = fields.Datetime(string="Event Timestamp", default=fields.Datetime.now, required=True, readonly=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
 
     # ============================================================================
     # EVENT DETAILS

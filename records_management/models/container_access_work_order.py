@@ -192,7 +192,6 @@ class ContainerAccessWorkOrder(models.Model):
     pickup_confirmed = fields.Boolean(
         string='Pickup Confirmed',
         default=False,
-        tracking=True,
         help="Whether the customer pickup has been confirmed."
     )
     pickup_confirmation_date = fields.Datetime(

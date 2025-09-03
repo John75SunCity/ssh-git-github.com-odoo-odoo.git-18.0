@@ -7,7 +7,7 @@ class RecordsTagCategory(models.Model):
     _order = 'sequence, name'
 
     name = fields.Char(string='Category Name', required=True, translate=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     sequence = fields.Integer(string='Sequence', default=10)
     tag_ids = fields.One2many('records.tag', 'category_id', string='Tags')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, readonly=True)

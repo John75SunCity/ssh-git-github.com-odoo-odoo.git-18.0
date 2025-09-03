@@ -151,7 +151,7 @@ class RecordsBillingConfig(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Configuration Name', required=True, tracking=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
 
     # Billing settings
     auto_compute_storage_fees = fields.Boolean(
@@ -224,7 +224,7 @@ class RecordsBillingConfig(models.Model):
     billing_cycle_start = fields.Date(string="Billing Cycle Start")
     next_billing_date = fields.Date(string="Next Billing Date", tracking=True)
     last_invoice_date = fields.Date(string="Last Invoice Date", readonly=True)
-    auto_billing = fields.Boolean(string="Auto Billing", default=False, tracking=True)
+    auto_billing = fields.Boolean(string="Auto Billing", default=False)
 
     # Payment terms
     payment_terms = fields.Selection(

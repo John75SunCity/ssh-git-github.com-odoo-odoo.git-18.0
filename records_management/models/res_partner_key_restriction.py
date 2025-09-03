@@ -14,7 +14,7 @@ class ResPartnerKeyRestriction(models.Model):
     # ============================================================================
     name = fields.Char(string='Restriction Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
     partner_id = fields.Many2one('res.partner', string="Customer/Contact", required=True, ondelete='cascade', tracking=True)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
 
     # ============================================================================
@@ -23,7 +23,6 @@ class ResPartnerKeyRestriction(models.Model):
     key_issuance_allowed = fields.Boolean(
         string="Key Issuance Allowed",
         default=False,
-        tracking=True,
         help="Check this box if the partner is allowed to be issued physical keys. Uncheck to restrict access."
     )
     restriction_reason = fields.Text(string="Reason for Restriction", help="Explain why key issuance is restricted for this partner.")

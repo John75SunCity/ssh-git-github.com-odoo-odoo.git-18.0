@@ -17,7 +17,7 @@ class RecordsContainer(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Container Name", required=True, copy=False, readonly=True, default=lambda self: _("New"))
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     company_id = fields.Many2one(
         "res.company", string="Company", default=lambda self: self.env.company, required=True, readonly=True
     )

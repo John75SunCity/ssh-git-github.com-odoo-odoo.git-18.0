@@ -13,7 +13,7 @@ class TempInventory(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Inventory Name", required=True, copy=False, default=lambda self: _('New'))
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
     partner_id = fields.Many2one('res.partner', string="Customer/Owner", help="Optional: Link this inventory to a specific customer.")

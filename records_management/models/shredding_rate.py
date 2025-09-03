@@ -27,7 +27,7 @@ class ShreddingRate(models.Model):
     # ============================================================================
     # STATUS & LIFECYCLE FIELDS
     # ============================================================================
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    active = fields.Boolean(string='Active', default=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('active', 'Active'),

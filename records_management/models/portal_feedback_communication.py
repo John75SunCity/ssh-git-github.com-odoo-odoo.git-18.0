@@ -34,7 +34,7 @@ class PortalFeedbackCommunication(models.Model):
     sender_id = fields.Many2one('res.users', string='Sender (Internal)', default=lambda self: self.env.user)
     recipient_id = fields.Many2one('res.partner', string='Recipient (Customer)')
 
-    response_required = fields.Boolean(string='Response Required?', tracking=True)
+    response_required = fields.Boolean(string='Response Required?')
     response_deadline = fields.Datetime(string='Response Deadline', tracking=True)
     is_responded = fields.Boolean(string='Responded', readonly=True)
 

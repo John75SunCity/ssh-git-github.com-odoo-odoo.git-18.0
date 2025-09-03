@@ -131,7 +131,6 @@ class ScanRetrievalWorkOrder(models.Model):
     transmission_confirmed = fields.Boolean(
         string='Transmission Confirmed',
         default=False,
-        tracking=True,
         help="Whether the electronic transmission has been confirmed as received."
     )
     transmission_confirmation_date = fields.Datetime(

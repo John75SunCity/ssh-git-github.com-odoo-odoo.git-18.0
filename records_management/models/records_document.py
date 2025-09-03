@@ -52,7 +52,7 @@ class RecordsDocument(models.Model):
     # ============================================================================
     name = fields.Char(string="Document Name", required=True, tracking=True)
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
-    active = fields.Boolean(default=True, tracking=True)
+    active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     responsible_person_id = fields.Many2one('res.users', string='Responsible')
     reference = fields.Char(string="Reference / Barcode", copy=False, tracking=True)
@@ -138,7 +138,7 @@ class RecordsDocument(models.Model):
     document_category = fields.Char("Document Category", tracking=True)
     media_type = fields.Char("Media Type", tracking=True)
     original_format = fields.Char("Original Format", tracking=True)
-    digitized = fields.Boolean("Digitized", tracking=True)
+    digitized = fields.Boolean("Digitized")
     digital_scan_ids = fields.One2many('records.digital.scan', 'document_id', string="Digital Scans")
     scan_count = fields.Integer(string="Scan Count", compute='_compute_scan_count', store=True)
     total_scan_size_kb = fields.Integer(
