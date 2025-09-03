@@ -5,49 +5,7 @@ Comprehensive Odoo Module Validation - Catches Real Issues
 This script performs comprehensive validation of Odoo modules including:
 - Python syntax errors
 - XML syntax and structure validation
--                    #                    # Find model names - more specific pattern to avoid false matches
-                    import re
-
-                    name_pattern = r'^\s*_name\s*=\s*["\']([^"\']+)["\']'
-                    matches = re.findall(name_pattern, content, re.MULTILINE)
-
-                    # Filter out false positives like _rec_name, _inherit, etc.
-                    valid_models = []
-                    for match in matches:
-                        # Check if this is actually a _name assignment, not _rec_name or other similar patterns
-                        # Look for the context around this match
-                        lines = content.split('\n')
-                        for i, line in enumerate(lines):
-                            if f'_name = "{match}"' in line or f"_name = '{match}'" in line:
-                                # Check the previous lines to make sure this is a class definition
-                                for j in range(max(0, i-5), i):
-                                    if 'class ' in lines[j] and 'models.Model' in lines[j]:
-                                        valid_models.append(match)
-                                        break
-                                break
-
-                    for model_name in valid_models:odel names - more specific pattern to avoid false matches
-                    import re
-
-                    name_pattern = r'^\s*_name\s*=\s*["\']([^"\']+)["\']'
-                    matches = re.findall(name_pattern, content, re.MULTILINE)
-
-                    # Filter out false positives like _rec_name, _inherit, etc.
-                    valid_models = []
-                    for match in matches:
-                        # Check if this is actually a _name assignment, not _rec_name or other similar patterns
-                        # Look for the context around this match
-                        lines = content.split('\n')
-                        for i, line in enumerate(lines):
-                            if f'_name = "{match}"' in line or f"_name = '{match}'" in line:
-                                # Check the previous lines to make sure this is a class definition
-                                for j in range(max(0, i-5), i):
-                                    if 'class ' in lines[j] and 'models.Model' in lines[j]:
-                                        valid_models.append(match)
-                                        break
-                                break
-
-                    for model_name in valid_models:efinition issues
+- Model definition issues
 - Security rule validation
 - Model/field reference validation
 - Import order validation
@@ -253,6 +211,9 @@ class OdooValidator:
                             model_name = model_ref[6:]  # Remove 'model_' prefix
                             # Keep underscores as-is for model name matching
                             access_models.add(model_name)
+                        else:
+                            # Handle direct model names (correct Odoo format)
+                            access_models.add(model_ref)
 
                 # Check for missing access rules
                 python_files = list(self.module_path.glob("models/*.py"))
