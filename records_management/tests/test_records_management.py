@@ -201,15 +201,3 @@ class TestRecordsManagement(TransactionCase):
         })
         location.container_ids = [(0, 0, {'name': 'Container 1'})]
         self.assertEqual(location.utilization_percentage, 1)
-                'name': 'Invalid Location',
-                'max_capacity': -10,
-            })
-
-    def test_utilization_percentage(self):
-        """Test computation of utilization percentage."""
-        location = self.RecordsLocation.create({
-            'name': 'Utilization Test',
-            'max_capacity': 100,
-        })
-        location.container_ids = [(0, 0, {'name': 'Container 1'})]
-        self.assertEqual(location.utilization_percentage, 1)
