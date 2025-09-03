@@ -116,7 +116,7 @@
         <field name="perm_unlink" eval="True"/>
     </record>
     <!-- IR Actions Report (inherited) -->
-    <record id="ir_actions_report_rule_manager_all" model="ir.rule">
+<record id="ir_actions_report_action_manager" model="ir.rule">
         <field name="name">IR Actions Report: Manager Full Access</field>
         <field name="model_id" ref="base.model_ir_actions_report"/>
         <field name="domain_force">[(1, '=', 1)]</field>
