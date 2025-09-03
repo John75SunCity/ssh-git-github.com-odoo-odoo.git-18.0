@@ -62,7 +62,6 @@ access_records_management_container_retrieval_manager,records_management.contain
 access_records_management_cross_department_sharing_user,records_management.cross_department_sharing.user,model_records_management_cross_department_sharing,records_management.group_records_user,1,1,1,0
 access_records_management_cross_department_sharing_manager,records_management.cross_department_sharing.manager,model_records_management_cross_department_sharing,records_management.group_records_manager,1,1,1,1
 access_records_management_cross_department_sharing_rule_user,records_management.cross_department_sharing_rule.user,model_records_management_cross_department_sharing_rule,records_management.group_records_user,1,1,1,0
-access_records_management_cross_department_sharing_rule_manager,records_management.cross_department_sharing_rule.manager,model_records_management_cross_department_sharing_rule,records_management.group_records_manager,1,1,1,"1""access_records_management_retrieval_item_base","_user""","""records_management.retrieval_item_base",".user""","""model_records_management_retrieval_item_base","""",records_management.group_records_user,1,1,1,"0""access_records_management_retrieval_item_base","_manager""","""records_management.retrieval_item_base",".manager""","""model_records_management_retrieval_item_base","""",records_management.group_records_manager,1,1,1,"1""access_records_management_work_order_coordinator","_user""","""records_management.work_order_coordinator",".user""","""model_records_management_work_order_coordinator","""",records_management.group_records_user,1,1,1,"0""access_records_management_work_order_coordinator","_manager""","""records_management.work_order_coordinator",".manager""","""model_records_management_work_order_coordinator","""",records_management.group_records_manager,1,1,1,1
 access_records_management_container_retrieval_item_user,records_management.container_retrieval_item.user,model_records_management_container_retrieval_item,records_management.group_records_user,1,1,1,0
 access_records_management_container_retrieval_item_manager,records_management.container_retrieval_item.manager,model_records_management_container_retrieval_item,records_management.group_records_manager,1,1,1,1
 access_records_management_container_retrieval_work_order_user,records_management.container_retrieval_work_order.user,model_records_management_container_retrieval_work_order,records_management.group_records_user,1,1,1,0
@@ -623,16 +622,6 @@ access_partner_bin_key_user,partner.bin.key,model_partner_bin_key,records_manage
 access_partner_bin_key_manager,partner.bin.key,model_partner_bin_key,records_management.group_records_manager,1,1,1,1
 access_document_search_attempt_user,document.search.attempt,model_document_search_attempt,records_management.group_records_user,1,1,1,0
 access_document_search_attempt_manager,document.search.attempt,model_document_search_attempt,records_management.group_records_manager,1,1,1,1
-access_ _user, .user,model_ ,records_management.group_records_user,1,1,1,0
-access_ _manager, .manager,model_ ,records_management.group_records_manager,1,1,1,1
-access_ - _user, - .user,model_ - ,records_management.group_records_user,1,1,1,0
-access_ - _manager, - .manager,model_ - ,records_management.group_records_manager,1,1,1,1
-access_%s - %s_user,%s - %s.user,model_%s - %s,records_management.group_records_user,1,1,1,0
-access_%s - %s_manager,%s - %s.manager,model_%s - %s,records_management.group_records_manager,1,1,1,1
-access_%s / %s_user,%s / %s.user,model_%s / %s,records_management.group_records_user,1,1,1,0
-access_%s / %s_manager,%s / %s.manager,model_%s / %s,records_management.group_records_manager,1,1,1,1
-access_, _user,, .user,model_, ,records_management.group_records_user,1,1,1,0
-access_, _manager,, .manager,model_, ,records_management.group_records_manager,1,1,1,1
 access_[%s] %s_user,[%s] %s.user,model_[%s] %s,records_management.group_records_user,1,1,1,0
 access_[%s] %s_manager,[%s] %s.manager,model_[%s] %s,records_management.group_records_manager,1,1,1,1
 access_account_move_line_user,account.move.line.user,model_account.move.line,records_management.group_records_user,1,1,1,0
