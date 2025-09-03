@@ -469,8 +469,8 @@ class RmModuleConfigurator(models.Model):
             status = _("activated") if record.active else _("deactivated")
             record.message_post(body=_("Configuration %s: %s") % (status, record.name))
 
-    def action_reset_to_default(self):
-        """Reset configuration values to default."""
+    def _default_configuration(self):
+        """Reset configuration values to default for this record."""
         self.ensure_one()
 
         vals = {
@@ -882,3 +882,49 @@ class RmModuleConfigurator(models.Model):
         string="Enable Bulk User Import", default=True, help="Enable or disable bulk user import functionality."
     )
     retrieval_work_order_enabled = fields.Boolean(string="Enable Retrieval Work Orders", default=True)
+
+    photo_enabled = fields.Boolean(
+        string="Enable Photo Documentation", default=True, help="Allow technicians to capture and manage photos"
+    )
+    photo_portal_access = fields.Boolean(
+        string="Portal Photo Access", default=False, help="Allow customers to view linked photos"
+    )
+
+    @api.model
+    def set_config_parameter(self, config_key, value, config_type="parameter", name=None, category=None):
+        """
+        Sets a configuration parameter by key. Updates existing record or creates a new one.
+
+        :param config_key: Unique key for the config parameter (e.g., 'naid.compliance.enabled')
+        :param value: The value to set (boolean, int, str, etc.)
+        :param config_type: Type of config ('feature_toggle', 'parameter', etc.)
+        :param name: Human-readable name (optional, defaults to config_key)
+        :param category: Category for grouping (optional)
+        :return: The config record (created or updated)
+        """
+        # Search for existing config by key
+        existing = self.search([("config_key", "=", config_key)], limit=1)
+
+        # Prepare values based on type
+        vals = {
+            "config_key": config_key,
+            "config_type": config_type,
+            "name": name or config_key.replace(".", " ").title(),
+            "category": category or "general",
+        }
+
+        # Set the appropriate value field based on type
+        if config_type == "feature_toggle" and isinstance(value, bool):
+            vals["value_boolean"] = value
+        elif config_type == "parameter" and isinstance(value, (int, float)):
+            vals["value_number"] = value
+        elif config_type == "parameter" and isinstance(value, str):
+            vals["value_text"] = value
+        else:
+            raise ValueError(f"Unsupported config_type '{config_type}' or value type for key '{config_key}'")
+
+        if existing:
+            existing.write(vals)
+            return existing
+        else:
+            return self.create(vals)

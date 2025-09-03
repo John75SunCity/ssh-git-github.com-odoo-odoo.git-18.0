@@ -33,6 +33,8 @@ from . import (
     container_retrieval,
     cross_department_sharing,
     cross_department_sharing_rule,
+    photo,
+    records_description,
     retrieval_item_base,  # BASE CLASS - must be before container_retrieval_item, file_retrieval_item, scan_retrieval_item
     work_order_coordinator,  # COORDINATOR - must be before work orders that reference it
     container_retrieval_item,
@@ -48,7 +50,6 @@ from . import (
     customer_negotiated_rate,
     customer_negotiated_rates,
     customer_portal_diagram,
-    description,
     destruction_certificate,
     destruction_item,
     discount_rule,
@@ -118,7 +119,6 @@ from . import (
     payment_split,
     payment_split_line,
     paper_model_bale,
-    photo,
     pickup_location,
     pickup_request,
     pickup_request_item,

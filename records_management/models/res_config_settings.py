@@ -51,19 +51,22 @@ class ResConfigSettings(models.TransientModel):
         super(ResConfigSettings, self).set_values()
         Config = self.env['rm.module.configurator']
 
-        # This is a simplified example. A real implementation would likely have a helper
-        # method on rm.module.configurator to handle the create/write logic.
-        # For example: Config.set_config_parameter(key, value)
+        # Use the new set_config_parameter method for better reusability
+        Config.set_config_parameter(
+            'naid.compliance.enabled',
+            self.naid_compliance_enabled,
+            config_type='feature_toggle',
+            name='Enable NAID Compliance',
+            category='compliance'
+        )
 
-        # Update or create the NAID compliance toggle
-        naid_toggle = Config.search([('config_key', '=', 'naid.compliance.enabled')], limit=1)
-        if naid_toggle:
-            naid_toggle.value_boolean = self.naid_compliance_enabled
-        else:
-            Config.create({
-                'name': 'Enable NAID Compliance',
-                'config_key': 'naid.compliance.enabled',
-                'config_type': 'feature_toggle',
+        Config.set_config_parameter(
+            'naid.audit.retention_days',
+            self.naid_audit_retention_days,
+            config_type='parameter',
+            name='NAID Audit Retention (Days)',
+            category='compliance'
+        )
                 'value_boolean': self.naid_compliance_enabled,
                 'category': 'compliance',
             })
