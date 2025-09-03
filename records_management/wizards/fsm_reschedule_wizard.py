@@ -43,7 +43,7 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
                 ])
 
                 if same_day_tasks:
-                    impact_notes.append(_("Found %d other tasks on the same day", len(same_day_tasks)))
+                    impact_notes.append(_("Found %d other tasks on the same day") % len(same_day_tasks))
 
                 # Check for route optimization impact
                 if record.task_id.partner_id:
@@ -52,7 +52,7 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
                         lambda task, record=record: task.partner_id and task.partner_id.city == record.task_id.partner_id.city
                     )
                     if nearby_tasks:
-                        impact_notes.append(_("Route optimization possible with %d nearby tasks", len(nearby_tasks)))
+                        impact_notes.append(_("Route optimization possible with %d nearby tasks") % len(nearby_tasks))
 
             record.route_impact = "\n".join(impact_notes) if impact_notes else _("No significant route impact identified")
 
@@ -110,7 +110,7 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
         if not self.partner_id:
             return
 
-        subject = _("Service Appointment Rescheduled - %s", self.task_id.name)
+        subject = _("Service Appointment Rescheduled - %s") % self.task_id.name
 
         # Format dates properly for email
         formatted_original_date = original_date.strftime('%m/%d %I:%M %p') if original_date else _("Not specified")
@@ -157,22 +157,13 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
             return
 
         notification_data = {
-            "name": _(
-                "Reschedule Notification - %s",
-                self.task_id.name,
-            ),
+            "name": _("Reschedule Notification - %s") % self.task_id.name,
             "notification_type": "reschedule",
             "partner_id": self.partner_id.id,
             "task_id": self.task_id.id,
             "delivery_method": self.notification_method,
-            "subject": _(
-                "Service Rescheduled - %s",
-                self.task_id.name,
-            ),
-            "message_body": _(
-                "Your service appointment has been rescheduled to %s",
-                self.new_date,
-            ),
+            "subject": _("Service Rescheduled - %s") % self.task_id.name,
+            "message_body": _("Your service appointment has been rescheduled to %s") % self.new_date,
             "service_date": self.new_date.date(),
             "state": "sent",
             "sent_datetime": fields.Datetime.now(),
@@ -186,10 +177,7 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
 
         reason_label = dict(self._fields['reason'].selection)[self.reason]
         audit_data = {
-            "name": _(
-                "FSM Task Reschedule - %s",
-                self.task_id.name,
-            ),
+            "name": _("FSM Task Reschedule - %s") % self.task_id.name,
             "model_name": "fsm.task",
             "record_id": self.task_id.id,
             "action_type": "reschedule",
@@ -215,14 +203,11 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
         ])
 
         if managers:
-            note_content = _("Please review and approve the reschedule for task: %s", self.task_id.name)
+            note_content = _("Please review and approve the reschedule for task: %s") % self.task_id.name
 
             self.activity_schedule(
                 "mail.mail_activity_data_todo",
-                summary=_(
-                    "Approve FSM Reschedule: %s",
-                    self.task_id.name,
-                ),
+                summary=_("Approve FSM Reschedule: %s") % self.task_id.name,
                 note=note_content,
                 user_id=managers[0].id,
             )

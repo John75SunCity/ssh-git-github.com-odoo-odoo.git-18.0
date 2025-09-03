@@ -4,7 +4,10 @@ Records Permanent Flag Wizard
 """
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exception        if not is_setting_flag:
+            log_message = _("Permanent flag removed by %s.") % self.env.user.name
+            if self.reason:
+                log_message += _(" Reason: %s") % self.reasonport UserError
 
 
 class RecordsPermanentFlagWizard(models.TransientModel):
@@ -116,14 +119,14 @@ class RecordsPermanentFlagWizard(models.TransientModel):
 
         is_setting_flag = self.operation_type == 'set'
 
-        log_message = _("Permanent flag set by %s.", self.env.user.name)
+        log_message = _("Permanent flag set by %s.") % self.env.user.name
         if self.reason:
-            log_message += _(" Reason: %s", self.reason)
+            log_message += _(" Reason: %s") % self.reason
 
         if not is_setting_flag:
-            log_message = _("Permanent flag removed by %s.", self.env.user.name)
+            log_message = _("Permanent flag removed by %s.") % self.env.user.name
             if self.reason:
-                log_message += _(" Reason: %s", self.reason)
+                log_message += _(" Reason: %s") % self.reason
 
         # Apply changes and log the action on each document
         for doc in self.document_ids:

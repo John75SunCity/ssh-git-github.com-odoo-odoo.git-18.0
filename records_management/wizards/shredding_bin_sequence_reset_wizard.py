@@ -78,7 +78,9 @@ class ShreddingBinSequenceResetWizard(models.TransientModel):
         ], limit=1)
 
         if not sequence:
-            raise UserError(_("Sequence not found for bin size %s", dict(self._fields['bin_size'].selection)[self.bin_size]))
+            raise UserError(
+                _("Sequence not found for bin size %s") % dict(self._fields["bin_size"].selection)[self.bin_size]
+            )
 
         # Store old value for audit
         old_number = sequence.number_next

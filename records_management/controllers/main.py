@@ -76,7 +76,7 @@ class RecordsManagementController(http.Controller):
             return request.redirect('/web/login?redirect=/records/dashboard')
         except Exception as e:
             return request.render(
-                "records_management.dashboard_error", {"error_message": _("Dashboard loading failed: %s", str(e))}
+                "records_management.dashboard_error", {"error_message": _("Dashboard loading failed: %s") % str(e)}
             )
 
     @http.route(['/records/api/dashboard_data'], type='json', auth='user')
@@ -114,7 +114,7 @@ class RecordsManagementController(http.Controller):
             return data
 
         except Exception as e:
-            return {"error": _("Failed to load dashboard data: %s", str(e))}
+            return {"error": _("Failed to load dashboard data: %s") % str(e)}
 
     @http.route(['/records/container/<int:container_id>'], type='http', auth='user', website=True)
     def container_detail(self, container_id, **kw):
@@ -309,7 +309,7 @@ class RecordsManagementController(http.Controller):
             notifications.append(
                 {
                     "type": "warning",
-                    "message": _("%d pickup requests are overdue", overdue_pickups),
+                    "message": _("%d pickup requests are overdue") % overdue_pickups,
                     "action_url": "/records/pickup_requests?filter=overdue",
                 }
             )
@@ -320,7 +320,7 @@ class RecordsManagementController(http.Controller):
             notifications.append(
                 {
                     "type": "info",
-                    "message": _("%d locations are near capacity", len(locations_near_capacity)),
+                    "message": _("%d locations are near capacity") % len(locations_near_capacity),
                     "action_url": "/records/locations?filter=near_capacity",
                 }
             )
@@ -429,12 +429,15 @@ class RecordsManagementController(http.Controller):
         )
 
         for movement in movements:
-            activities.append({
-                'type': 'movement',
-                'description': _('Container %s moved to %s') % (movement.container_id.name, movement.location_id.name),
-                'datetime': movement.create_date,
-                'user': movement.create_uid.name,
-            })
+            activities.append(
+                {
+                    "type": "movement",
+                    "description": _("Container %s moved to %s")
+                    % (movement.container_id.name, movement.location_id.name),
+                    "datetime": movement.create_date,
+                    "user": movement.create_uid.name,
+                }
+            )
 
         return activities
 
