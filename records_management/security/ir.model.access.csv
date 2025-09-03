@@ -425,8 +425,8 @@ access_shred_bin_user,shred.bin,shred.bin,records_management.group_records_user,
 access_shred_bin_manager,shred.bin,shred.bin,records_management.group_records_manager,1,1,1,1
 access_shredding_certificate_user,shredding_certificate.user,shredding.certificate,records_management.group_records_user,1,1,1,0
 access_shredding_certificate_manager,shredding_certificate.manager,shredding.certificate,records_management.group_records_manager,1,1,1,1
-access_shredding_hard_drive_user,shredding.hard_drive,shredding.hard.drive,records_management.group_records_user,1,1,1,0
-access_shredding_hard_drive_manager,shredding.hard_drive,shredding.hard.drive,records_management.group_records_manager,1,1,1,1
+access_shredding_hard_drive_user,shredding.hard_drive,shredding.hard_drive,records_management.group_records_user,1,1,1,0
+access_shredding_hard_drive_manager,shredding.hard_drive,shredding.hard_drive,records_management.group_records_manager,1,1,1,1
 access_shredding_inventory_batch_user,shredding.inventory.batch,shredding.inventory.batch,records_management.group_records_user,1,1,1,0
 access_shredding_inventory_batch_manager,shredding.inventory.batch,shredding.inventory.batch,records_management.group_records_manager,1,1,1,1
 access_shredding_picklist_item_user,shredding.picklist.item,shredding.picklist.item,records_management.group_records_user,1,1,1,0
@@ -503,8 +503,8 @@ access_customer_inventory_report_user,customer_inventory_report_model.user,custo
 access_customer_inventory_report_manager,customer_inventory_report_model.manager,customer.inventory.report.model,records_management.group_records_manager,1,1,1,1
 access_destruction_certificate_user,destruction_certificate.user,destruction.certificate,records_management.group_records_user,1,1,1,0
 access_destruction_certificate_manager,destruction_certificate.manager,destruction.certificate,records_management.group_records_manager,1,1,1,1
-access_display_name_user,display_name.user,display.name,records_management.group_records_user,1,1,1,0
-access_display_name_manager,display_name.manager,display.name,records_management.group_records_manager,1,1,1,1
+access_display_name_user,display_name.user,display_name,records_management.group_records_user,1,1,1,0
+access_display_name_manager,display_name.manager,display_name,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_equipment_user,document_retrieval_equipment.user,document.retrieval.equipment,records_management.group_records_user,1,1,1,0
 access_document_retrieval_equipment_manager,document_retrieval_equipment.manager,document.retrieval.equipment,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_team_user,document_retrieval_team.user,document.retrieval.team,records_management.group_records_user,1,1,1,0
