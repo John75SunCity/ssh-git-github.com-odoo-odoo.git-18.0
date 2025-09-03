@@ -61,15 +61,12 @@ class ResConfigSettings(models.TransientModel):
         )
 
         Config.set_config_parameter(
-            'naid.audit.retention_days',
+            "naid.audit.retention_days",
             self.naid_audit_retention_days,
-            config_type='parameter',
-            name='NAID Audit Retention (Days)',
-            category='compliance'
+            config_type="parameter",
+            name="NAID Audit Retention (Days)",
+            category="compliance",
         )
-                'value_boolean': self.naid_compliance_enabled,
-                'category': 'compliance',
-            })
 
         # Update or create the retention days parameter
         retention_param = Config.search([('config_key', '=', 'naid.audit.retention_days')], limit=1)

@@ -91,7 +91,7 @@
         "editor.detectIndentation": false,
         "editor.formatOnSave": true,
         "editor.formatOnPaste": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "DotJoshJohnson.xml"
     },
     "[json]": {
         "editor.tabSize": 2,

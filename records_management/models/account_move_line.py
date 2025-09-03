@@ -646,9 +646,9 @@ class AccountMoveLine(models.Model):
             if line.records_related and line.records_service_type:
                 service_type_label = service_type_dict.get(line.records_service_type, "")
                 if line.container_count:
-                    name = _("Service Line: %s (%s containers)", service_type_label, line.container_count)
+                    name = _("Service Line: %s (%s containers)") % (service_type_label, line.container_count)
                 else:
-                    name = _("Service Line: %s", service_type_label)
+                    name = _("Service Line: %s") % service_type_label
             else:
                 name = line.name or _("Invoice Line")
             result.append((line.id, name))
