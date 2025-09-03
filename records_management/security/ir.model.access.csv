@@ -1,6 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_account_move_line_user,account.move.line,account.move.line,records_management.group_records_user,1,1,1,0
-access_account_move_line_manager,account.move.line,account.move.line,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_contact_user,advanced.billing.contact,advanced.billing.contact,records_management.group_records_user,1,1,1,0
 access_advanced_billing_contact_manager,advanced.billing.contact,advanced.billing.contact,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_line_user,advanced.billing.line,advanced.billing.line,records_management.group_records_user,1,1,1,0
@@ -37,6 +35,8 @@ access_bin_key_unlock_service_user,bin.key.unlock.service,bin.key.unlock.service
 access_bin_key_unlock_service_manager,bin.key.unlock.service,bin.key.unlock.service,records_management.group_records_manager,1,1,1,1
 access_bin_unlock_service_user,bin.unlock.service,bin.unlock.service,records_management.group_records_user,1,1,1,0
 access_bin_unlock_service_manager,bin.unlock.service,bin.unlock.service,records_management.group_records_manager,1,1,1,1
+access_certificate_template_data_user,certificate.template.data,certificate.template.data,records_management.group_records_user,1,1,1,0
+access_certificate_template_data_manager,certificate.template.data,certificate.template.data,records_management.group_records_manager,1,1,1,1
 access_chain_of_custody_user,chain.of.custody,chain.of.custody,records_management.group_records_user,1,1,1,0
 access_chain_of_custody_manager,chain.of.custody,chain.of.custody,records_management.group_records_manager,1,1,1,1
 access_container_access_activity_user,container.access.activity,container.access.activity,records_management.group_records_user,1,1,1,0
@@ -89,10 +89,14 @@ access_customer_negotiated_rates_user,customer.negotiated.rates,customer.negotia
 access_customer_negotiated_rates_manager,customer.negotiated.rates,customer.negotiated.rates,records_management.group_records_manager,1,1,1,1
 access_customer_portal_diagram_user,customer.portal.diagram,customer.portal.diagram,records_management.group_records_user,1,1,1,0
 access_customer_portal_diagram_manager,customer.portal.diagram,customer.portal.diagram,records_management.group_records_manager,1,1,1,1
+access_destruction_certificate_user,destruction.certificate,destruction.certificate,records_management.group_records_user,1,1,1,0
+access_destruction_certificate_manager,destruction.certificate,destruction.certificate,records_management.group_records_manager,1,1,1,1
 access_destruction_item_user,destruction.item,destruction.item,records_management.group_records_user,1,1,1,0
 access_destruction_item_manager,destruction.item,destruction.item,records_management.group_records_manager,1,1,1,1
 access_discount_rule_user,discount.rule,discount.rule,records_management.group_records_user,1,1,1,0
 access_discount_rule_manager,discount.rule,discount.rule,records_management.group_records_manager,1,1,1,1
+access_display_name_user,display_name,display_name,records_management.group_records_user,1,1,1,0
+access_display_name_manager,display_name,display_name,records_management.group_records_manager,1,1,1,1
 access_document_retrieval_item_user,document.retrieval.item,document.retrieval.item,records_management.group_records_user,1,1,1,0
 access_document_retrieval_item_manager,document.retrieval.item,document.retrieval.item,records_management.group_records_manager,1,1,1,1
 access_document_search_attempt_user,document.search.attempt,document.search.attempt,records_management.group_records_user,1,1,1,0
@@ -109,8 +113,6 @@ access_file_retrieval_work_order_user,file.retrieval.work.order,file.retrieval.w
 access_file_retrieval_work_order_manager,file.retrieval.work.order,file.retrieval.work.order,records_management.group_records_manager,1,1,1,1
 access_file_retrieval_work_order_item_user,file.retrieval.work.order.item,file.retrieval.work.order.item,records_management.group_records_user,1,1,1,0
 access_file_retrieval_work_order_item_manager,file.retrieval.work.order.item,file.retrieval.work.order.item,records_management.group_records_manager,1,1,1,1
-access_fleet_vehicle_user,fleet.vehicle,fleet.vehicle,records_management.group_records_user,1,1,1,0
-access_fleet_vehicle_manager,fleet.vehicle,fleet.vehicle,records_management.group_records_manager,1,1,1,1
 access_full_customization_name_user,full.customization.name,full.customization.name,records_management.group_records_user,1,1,1,0
 access_full_customization_name_manager,full.customization.name,full.customization.name,records_management.group_records_manager,1,1,1,1
 access_hard_drive_scan_wizard_user,hard.drive.scan.wizard,hard.drive.scan.wizard,records_management.group_records_user,1,1,1,0
@@ -137,24 +139,16 @@ access_inventory_item_type_user,inventory.item.type,inventory.item.type,records_
 access_inventory_item_type_manager,inventory.item.type,inventory.item.type,records_management.group_records_manager,1,1,1,1
 access_invoice_generation_log_user,invoice.generation.log,invoice.generation.log,records_management.group_records_user,1,1,1,0
 access_invoice_generation_log_manager,invoice.generation.log,invoice.generation.log,records_management.group_records_manager,1,1,1,1
-access_ir_attachment_user,ir.attachment,ir.attachment,records_management.group_records_user,1,1,1,0
-access_ir_attachment_manager,ir.attachment,ir.attachment,records_management.group_records_manager,1,1,1,1
-access_ir_user,ir.model,ir.model,records_management.group_records_user,1,1,1,0
-access_ir_manager,ir.model,ir.model,records_management.group_records_manager,1,1,1,1
-access_ir_fields_user,ir.model.fields,ir.fields,records_management.group_records_user,1,1,1,0
-access_ir_fields_manager,ir.model.fields,ir.fields,records_management.group_records_manager,1,1,1,1
 access_key_inventory_user,key.inventory,key.inventory,records_management.group_records_user,1,1,1,0
 access_key_inventory_manager,key.inventory,key.inventory,records_management.group_records_manager,1,1,1,1
 access_key_restriction_checker_user,key.restriction.checker,key.restriction.checker,records_management.group_records_user,1,1,1,0
 access_key_restriction_checker_manager,key.restriction.checker,key.restriction.checker,records_management.group_records_manager,1,1,1,1
+access_load_user,load,load,records_management.group_records_user,1,1,1,0
+access_load_manager,load,load,records_management.group_records_manager,1,1,1,1
 access_location_group_user,location.group,location.group,records_management.group_records_user,1,1,1,0
 access_location_group_manager,location.group,location.group,records_management.group_records_manager,1,1,1,1
 access_location_report_wizard_user,location.report.wizard,location.report.wizard,records_management.group_records_user,1,1,1,0
 access_location_report_wizard_manager,location.report.wizard,location.report.wizard,records_management.group_records_manager,1,1,1,1
-access_maintenance_equipment_user,maintenance.equipment,maintenance.equipment,records_management.group_records_user,1,1,1,0
-access_maintenance_equipment_manager,maintenance.equipment,maintenance.equipment,records_management.group_records_manager,1,1,1,1
-access_maintenance_team_user,maintenance.team,maintenance.team,records_management.group_records_user,1,1,1,0
-access_maintenance_team_manager,maintenance.team,maintenance.team,records_management.group_records_manager,1,1,1,1
 access_media_type_user,media.type,media.type,records_management.group_records_user,1,1,1,0
 access_media_type_manager,media.type,media.type,records_management.group_records_manager,1,1,1,1
 access_mobile_bin_key_wizard_user,mobile.bin.key.wizard,mobile.bin.key.wizard,records_management.group_records_user,1,1,1,0
@@ -169,6 +163,12 @@ access_naid_audit_log_user,naid.audit.log,naid.audit.log,records_management.grou
 access_naid_audit_log_manager,naid.audit.log,naid.audit.log,records_management.group_records_manager,1,1,1,1
 access_naid_audit_requirement_user,naid.audit.requirement,naid.audit.requirement,records_management.group_records_user,1,1,1,0
 access_naid_audit_requirement_manager,naid.audit.requirement,naid.audit.requirement,records_management.group_records_manager,1,1,1,1
+access_naid_certificate_user,naid.certificate,naid.certificate,records_management.group_records_user,1,1,1,0
+access_naid_certificate_manager,naid.certificate,naid.certificate,records_management.group_records_manager,1,1,1,1
+access_naid_certificate_item_user,naid.certificate.item,naid.certificate.item,records_management.group_records_user,1,1,1,0
+access_naid_certificate_item_manager,naid.certificate.item,naid.certificate.item,records_management.group_records_manager,1,1,1,1
+access_naid_certification_level_user,naid.certification.level,naid.certification.level,records_management.group_records_user,1,1,1,0
+access_naid_certification_level_manager,naid.certification.level,naid.certification.level,records_management.group_records_manager,1,1,1,1
 access_naid_compliance_action_plan_user,naid.compliance.action.plan,naid.compliance.action.plan,records_management.group_records_user,1,1,1,0
 access_naid_compliance_action_plan_manager,naid.compliance.action.plan,naid.compliance.action.plan,records_management.group_records_manager,1,1,1,1
 access_naid_compliance_alert_user,naid.compliance.alert,naid.compliance.alert,records_management.group_records_user,1,1,1,0
@@ -187,6 +187,8 @@ access_naid_destruction_record_user,naid.destruction.record,naid.destruction.rec
 access_naid_destruction_record_manager,naid.destruction.record,naid.destruction.record,records_management.group_records_manager,1,1,1,1
 access_naid_equipment_standard_user,naid.equipment.standard,naid.equipment.standard,records_management.group_records_user,1,1,1,0
 access_naid_equipment_standard_manager,naid.equipment.standard,naid.equipment.standard,records_management.group_records_manager,1,1,1,1
+access_naid_operator_certification_user,naid.operator.certification,naid.operator.certification,records_management.group_records_user,1,1,1,0
+access_naid_operator_certification_manager,naid.operator.certification,naid.operator.certification,records_management.group_records_manager,1,1,1,1
 access_naid_performance_history_user,naid.performance.history,naid.performance.history,records_management.group_records_user,1,1,1,0
 access_naid_performance_history_manager,naid.performance.history,naid.performance.history,records_management.group_records_manager,1,1,1,1
 access_naid_risk_assessment_user,naid.risk.assessment,naid.risk.assessment,records_management.group_records_user,1,1,1,0
@@ -207,12 +209,16 @@ access_paper_bale_recycling_user,paper.bale.recycling,paper.bale.recycling,recor
 access_paper_bale_recycling_manager,paper.bale.recycling,paper.bale.recycling,records_management.group_records_manager,1,1,1,1
 access_paper_load_shipment_user,paper.load.shipment,paper.load.shipment,records_management.group_records_user,1,1,1,0
 access_paper_load_shipment_manager,paper.load.shipment,paper.load.shipment,records_management.group_records_manager,1,1,1,1
+access_paper_model_bale_user,paper.model_bale,paper.model_bale,records_management.group_records_user,1,1,1,0
+access_paper_model_bale_manager,paper.model_bale,paper.model_bale,records_management.group_records_manager,1,1,1,1
 access_partner_bin_key_user,partner.bin.key,partner.bin.key,records_management.group_records_user,1,1,1,0
 access_partner_bin_key_manager,partner.bin.key,partner.bin.key,records_management.group_records_manager,1,1,1,1
 access_payment_split_user,payment.split,payment.split,records_management.group_records_user,1,1,1,0
 access_payment_split_manager,payment.split,payment.split,records_management.group_records_manager,1,1,1,1
 access_payment_split_line_user,payment.split.line,payment.split.line,records_management.group_records_user,1,1,1,0
 access_payment_split_line_manager,payment.split.line,payment.split.line,records_management.group_records_manager,1,1,1,1
+access_photo_user,photo,photo,records_management.group_records_user,1,1,1,0
+access_photo_manager,photo,photo,records_management.group_records_manager,1,1,1,1
 access_pickup_location_user,pickup.location,pickup.location,records_management.group_records_user,1,1,1,0
 access_pickup_location_manager,pickup.location,pickup.location,records_management.group_records_manager,1,1,1,1
 access_pickup_request_user,pickup.request,pickup.request,records_management.group_records_user,1,1,1,0
@@ -249,12 +255,6 @@ access_processing_log_resolution_wizard_user,processing.log.resolution.wizard,pr
 access_processing_log_resolution_wizard_manager,processing.log.resolution.wizard,processing.log.resolution.wizard,records_management.group_records_manager,1,1,1,1
 access_product_container_type_user,product.container.type,product.container.type,records_management.group_records_user,1,1,1,0
 access_product_container_type_manager,product.container.type,product.container.type,records_management.group_records_manager,1,1,1,1
-access_product_product_user,product.product,product.product,records_management.group_records_user,1,1,1,0
-access_product_product_manager,product.product,product.product,records_management.group_records_manager,1,1,1,1
-access_project_project_user,project.project,project.project,records_management.group_records_user,1,1,1,0
-access_project_project_manager,project.project,project.project,records_management.group_records_manager,1,1,1,1
-access_project_task_user,project.task,project.task,records_management.group_records_user,1,1,1,0
-access_project_task_manager,project.task,project.task,records_management.group_records_manager,1,1,1,1
 access_records_access_log_user,records.access.log,records.access.log,records_management.group_records_user,1,1,1,0
 access_records_access_log_manager,records.access.log,records.access.log,records_management.group_records_manager,1,1,1,1
 access_records_approval_step_user,records.approval.step,records.approval.step,records_management.group_records_user,1,1,1,0
@@ -373,30 +373,16 @@ access_records_tag_category_user,records.tag.category,records.tag.category,recor
 access_records_tag_category_manager,records.tag.category,records.tag.category,records_management.group_records_manager,1,1,1,1
 access_records_usage_tracking_user,records.usage.tracking,records.usage.tracking,records_management.group_records_user,1,1,1,0
 access_records_usage_tracking_manager,records.usage.tracking,records.usage.tracking,records_management.group_records_manager,1,1,1,1
-access_report_records_management_report_customer_inventory_user,report.records_management.report_customer_inventory,report.records.management.report.customer.inventory,records_management.group_records_user,1,1,1,0
-access_report_records_management_report_customer_inventory_manager,report.records_management.report_customer_inventory,report.records.management.report.customer.inventory,records_management.group_records_manager,1,1,1,1
-access_report_records_management_report_location_utilization_user,report.records_management.report_location_utilization,report.records.management.report.location.utilization,records_management.group_records_user,1,1,1,0
-access_report_records_management_report_location_utilization_manager,report.records_management.report_location_utilization,report.records.management.report.location.utilization,records_management.group_records_manager,1,1,1,1
-access_report_records_management_revenue_forecasting_report_user,report.records_management.revenue_forecasting_report,report.records.management.revenue.forecasting.report,records_management.group_records_user,1,1,1,0
-access_report_records_management_revenue_forecasting_report_manager,report.records_management.revenue_forecasting_report,report.records.management.revenue.forecasting.report,records_management.group_records_manager,1,1,1,1
+access_report_records_management_report_customer_inventory_user,report.records_management.report_customer_inventory,report.records_management.report_customer_inventory,records_management.group_records_user,1,1,1,0
+access_report_records_management_report_customer_inventory_manager,report.records_management.report_customer_inventory,report.records_management.report_customer_inventory,records_management.group_records_manager,1,1,1,1
+access_report_records_management_report_location_utilization_user,report.records_management.report_location_utilization,report.records_management.report_location_utilization,records_management.group_records_user,1,1,1,0
+access_report_records_management_report_location_utilization_manager,report.records_management.report_location_utilization,report.records_management.report_location_utilization,records_management.group_records_manager,1,1,1,1
+access_report_records_management_revenue_forecasting_report_user,report.records_management.revenue_forecasting_report,report.records_management.revenue_forecasting_report,records_management.group_records_user,1,1,1,0
+access_report_records_management_revenue_forecasting_report_manager,report.records_management.revenue_forecasting_report,report.records_management.revenue_forecasting_report,records_management.group_records_manager,1,1,1,1
 access_required_document_user,required.document,required.document,records_management.group_records_user,1,1,1,0
 access_required_document_manager,required.document,required.document,records_management.group_records_manager,1,1,1,1
-access_res_company_user,res.company,res.company,records_management.group_records_user,1,1,1,0
-access_res_company_manager,res.company,res.company,records_management.group_records_manager,1,1,1,1
-access_res_country_user,res.country,res.country,records_management.group_records_user,1,1,1,0
-access_res_country_manager,res.country,res.country,records_management.group_records_manager,1,1,1,1
-access_res_country_state_user,res.country.state,res.country.state,records_management.group_records_user,1,1,1,0
-access_res_country_state_manager,res.country.state,res.country.state,records_management.group_records_manager,1,1,1,1
-access_res_currency_user,res.currency,res.currency,records_management.group_records_user,1,1,1,0
-access_res_currency_manager,res.currency,res.currency,records_management.group_records_manager,1,1,1,1
-access_res_groups_user,res.groups,res.groups,records_management.group_records_user,1,1,1,0
-access_res_groups_manager,res.groups,res.groups,records_management.group_records_manager,1,1,1,1
-access_res_partner_user,res.partner,res.partner,records_management.group_records_user,1,1,1,0
-access_res_partner_manager,res.partner,res.partner,records_management.group_records_manager,1,1,1,1
 access_res_partner_key_restriction_user,res.partner.key.restriction,res.partner.key.restriction,records_management.group_records_user,1,1,1,0
 access_res_partner_key_restriction_manager,res.partner.key.restriction,res.partner.key.restriction,records_management.group_records_manager,1,1,1,1
-access_res_users_user,res.users,res.users,records_management.group_records_user,1,1,1,0
-access_res_users_manager,res.users,res.users,records_management.group_records_manager,1,1,1,1
 access_retrieval_item_base_user,retrieval.item.base,retrieval.item.base,records_management.group_records_user,1,1,1,0
 access_retrieval_item_base_manager,retrieval.item.base,retrieval.item.base,records_management.group_records_manager,1,1,1,1
 access_retrieval_metric_user,retrieval.metric,retrieval.metric,records_management.group_records_user,1,1,1,0
@@ -423,8 +409,10 @@ access_service_item_user,service.item,service.item,records_management.group_reco
 access_service_item_manager,service.item,service.item,records_management.group_records_manager,1,1,1,1
 access_shred_bin_user,shred.bin,shred.bin,records_management.group_records_user,1,1,1,0
 access_shred_bin_manager,shred.bin,shred.bin,records_management.group_records_manager,1,1,1,1
-access_shredding_certificate_user,shredding_certificate.user,shredding.certificate,records_management.group_records_user,1,1,1,0
-access_shredding_certificate_manager,shredding_certificate.manager,shredding.certificate,records_management.group_records_manager,1,1,1,1
+access_shred_model_bin_user,shred.model_bin,shred.model_bin,records_management.group_records_user,1,1,1,0
+access_shred_model_bin_manager,shred.model_bin,shred.model_bin,records_management.group_records_manager,1,1,1,1
+access_shredding_certificate_user,shredding.certificate,shredding.certificate,records_management.group_records_user,1,1,1,0
+access_shredding_certificate_manager,shredding.certificate,shredding.certificate,records_management.group_records_manager,1,1,1,1
 access_shredding_hard_drive_user,shredding.hard_drive,shredding.hard_drive,records_management.group_records_user,1,1,1,0
 access_shredding_hard_drive_manager,shredding.hard_drive,shredding.hard_drive,records_management.group_records_manager,1,1,1,1
 access_shredding_inventory_batch_user,shredding.inventory.batch,shredding.inventory.batch,records_management.group_records_user,1,1,1,0
@@ -449,22 +437,14 @@ access_signed_document_user,signed.document,signed.document,records_management.g
 access_signed_document_manager,signed.document,signed.document,records_management.group_records_manager,1,1,1,1
 access_signed_document_audit_user,signed.document.audit,signed.document.audit,records_management.group_records_user,1,1,1,0
 access_signed_document_audit_manager,signed.document.audit,signed.document.audit,records_management.group_records_manager,1,1,1,1
-access_stock_location_user,stock.location,stock.location,records_management.group_records_user,1,1,1,0
-access_stock_location_manager,stock.location,stock.location,records_management.group_records_manager,1,1,1,1
-access_stock_lot_user,stock.lot,stock.lot,records_management.group_records_user,1,1,1,0
-access_stock_lot_manager,stock.lot,stock.lot,records_management.group_records_manager,1,1,1,1
 access_stock_lot_attribute_user,stock.lot.attribute,stock.lot.attribute,records_management.group_records_user,1,1,1,0
 access_stock_lot_attribute_manager,stock.lot.attribute,stock.lot.attribute,records_management.group_records_manager,1,1,1,1
 access_stock_lot_attribute_option_user,stock.lot.attribute.option,stock.lot.attribute.option,records_management.group_records_user,1,1,1,0
 access_stock_lot_attribute_option_manager,stock.lot.attribute.option,stock.lot.attribute.option,records_management.group_records_manager,1,1,1,1
 access_stock_lot_attribute_value_user,stock.lot.attribute.value,stock.lot.attribute.value,records_management.group_records_user,1,1,1,0
 access_stock_lot_attribute_value_manager,stock.lot.attribute.value,stock.lot.attribute.value,records_management.group_records_manager,1,1,1,1
-access_stock_move_user,stock.move,stock.move,records_management.group_records_user,1,1,1,0
-access_stock_move_manager,stock.move,stock.move,records_management.group_records_manager,1,1,1,1
 access_stock_move_sms_validation_user,stock.move.sms.validation,stock.move.sms.validation,records_management.group_records_user,1,1,1,0
 access_stock_move_sms_validation_manager,stock.move.sms.validation,stock.move.sms.validation,records_management.group_records_manager,1,1,1,1
-access_stock_picking_user,stock.picking,stock.picking,records_management.group_records_user,1,1,1,0
-access_stock_picking_manager,stock.picking,stock.picking,records_management.group_records_manager,1,1,1,1
 access_survey_feedback_theme_user,survey.feedback.theme,survey.feedback.theme,records_management.group_records_user,1,1,1,0
 access_survey_feedback_theme_manager,survey.feedback.theme,survey.feedback.theme,records_management.group_records_manager,1,1,1,1
 access_survey_improvement_action_user,survey.improvement.action,survey.improvement.action,records_management.group_records_user,1,1,1,0
@@ -489,6 +469,8 @@ access_unlock_service_history_user,unlock.service.history,unlock.service.history
 access_unlock_service_history_manager,unlock.service.history,unlock.service.history,records_management.group_records_manager,1,1,1,1
 access_unlock_service_part_user,unlock.service.part,unlock.service.part,records_management.group_records_user,1,1,1,0
 access_unlock_service_part_manager,unlock.service.part,unlock.service.part,records_management.group_records_manager,1,1,1,1
+access_visitor_user,visitor,visitor,records_management.group_records_user,1,1,1,0
+access_visitor_manager,visitor,visitor,records_management.group_records_manager,1,1,1,1
 access_work_order_coordinator_user,work.order.coordinator,work.order.coordinator,records_management.group_records_user,1,1,1,0
 access_work_order_coordinator_manager,work.order.coordinator,work.order.coordinator,records_management.group_records_manager,1,1,1,1
 access_work_order_retrieval_user,work.order.retrieval,work.order.retrieval,records_management.group_records_user,1,1,1,0
@@ -497,85 +479,3 @@ access_work_order_shredding_user,work.order.shredding,work.order.shredding,recor
 access_work_order_shredding_manager,work.order.shredding,work.order.shredding,records_management.group_records_manager,1,1,1,1
 access_workflow_visualization_manager_user,workflow.visualization.manager,workflow.visualization.manager,records_management.group_records_user,1,1,1,0
 access_workflow_visualization_manager_manager,workflow.visualization.manager,workflow.visualization.manager,records_management.group_records_manager,1,1,1,1
-access_certificate_template_data_user,certificate_template_data.user,certificate.template.data,records_management.group_records_user,1,1,1,0
-access_certificate_template_data_manager,certificate_template_data.manager,certificate.template.data,records_management.group_records_manager,1,1,1,1
-access_customer_inventory_report_user,customer_inventory_report_model.user,customer.inventory.report.model,records_management.group_records_user,1,1,1,0
-access_customer_inventory_report_manager,customer_inventory_report_model.manager,customer.inventory.report.model,records_management.group_records_manager,1,1,1,1
-access_destruction_certificate_user,destruction_certificate.user,destruction.certificate,records_management.group_records_user,1,1,1,0
-access_destruction_certificate_manager,destruction_certificate.manager,destruction.certificate,records_management.group_records_manager,1,1,1,1
-access_display_name_user,display_name.user,display_name,records_management.group_records_user,1,1,1,0
-access_display_name_manager,display_name.manager,display_name,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_equipment_user,document_retrieval_equipment.user,document.retrieval.equipment,records_management.group_records_user,1,1,1,0
-access_document_retrieval_equipment_manager,document_retrieval_equipment.manager,document.retrieval.equipment,records_management.group_records_manager,1,1,1,1
-access_document_retrieval_team_user,document_retrieval_team.user,document.retrieval.team,records_management.group_records_user,1,1,1,0
-access_document_retrieval_team_manager,document_retrieval_team.manager,document.retrieval.team,records_management.group_records_manager,1,1,1,1
-access_hr_employee_user,hr_employee.user,hr.employee,records_management.group_records_user,1,1,1,0
-access_hr_employee_manager,hr_employee.manager,hr.employee,records_management.group_records_manager,1,1,1,1
-access_maintenance_request_user,maintenance_request.user,maintenance.request,records_management.group_records_user,1,1,1,0
-access_maintenance_request_manager,maintenance_request.manager,maintenance.request,records_management.group_records_manager,1,1,1,1
-access_naid_certificate_user,naid_certificate.user,naid.certificate,records_management.group_records_user,1,1,1,0
-access_naid_certificate_manager,naid_certificate.manager,naid.certificate,records_management.group_records_manager,1,1,1,1
-access_naid_certificate_item_user,naid_certificate_item.user,naid.certificate.item,records_management.group_records_user,1,1,1,0
-access_naid_certificate_item_manager,naid_certificate_item.manager,naid.certificate.item,records_management.group_records_manager,1,1,1,1
-access_naid_certification_level_user,naid_certification_level.user,naid.certification.level,records_management.group_records_user,1,1,1,0
-access_naid_certification_level_manager,naid_certification_level.manager,naid.certification.level,records_management.group_records_manager,1,1,1,1
-access_naid_operator_certification_user,naid_operator_certification.user,naid.operator.certification,records_management.group_records_user,1,1,1,0
-access_naid_operator_certification_manager,naid_operator_certification.manager,naid.operator.certification,records_management.group_records_manager,1,1,1,1
-access_naidaudit_log_user,naidaudit_log.user,naidaudit.log,records_management.group_records_user,1,1,1,0
-access_naidaudit_log_manager,naidaudit_log.manager,naidaudit.log,records_management.group_records_manager,1,1,1,1
-access_naidcustody_event_user,naidcustody_event.user,naidcustody.event,records_management.group_records_user,1,1,1,0
-access_naidcustody_event_manager,naidcustody_event.manager,naidcustody.event,records_management.group_records_manager,1,1,1,1
-access_paper_bale_load_user,paper_bale_load.user,paper.bale.load,records_management.group_records_user,1,1,1,0
-access_paper_bale_load_manager,paper_bale_load.manager,paper.bale.load,records_management.group_records_manager,1,1,1,1
-access_photo_user,photo.user,photo,records_management.group_records_user,1,1,1,0
-access_photo_manager,photo.manager,photo,records_management.group_records_manager,1,1,1,1
-access_pos_config_user,pos_config.user,pos.config,records_management.group_records_user,1,1,1,0
-access_pos_config_manager,pos_config.manager,pos.config,records_management.group_records_manager,1,1,1,1
-access_product_template_user,product_template.user,product.template,records_management.group_records_user,1,1,1,0
-access_product_template_manager,product_template.manager,product.template,records_management.group_records_manager,1,1,1,1
-access_records_config_settings_user,records_config_settings.user,records.config.settings,records_management.group_records_user,1,1,1,0
-access_records_config_settings_manager,records_config_settings.manager,records.config.settings,records_management.group_records_manager,1,1,1,1
-access_records_vehicle_user,records_vehicle.user,records.vehicle,records_management.group_records_user,1,1,1,0
-access_records_vehicle_manager,records_vehicle.manager,records.vehicle,records_management.group_records_manager,1,1,1,1
-access_res_config_settings_user,res_config_settings.user,res.config.settings,records_management.group_records_user,1,1,1,0
-access_res_config_settings_manager,res_config_settings.manager,res.config.settings,records_management.group_records_manager,1,1,1,1
-access_revenue_forecasting_reports_user,revenue_forecasting_reports.user,revenue.forecasting.reports,records_management.group_records_user,1,1,1,0
-access_revenue_forecasting_reports_manager,revenue_forecasting_reports.manager,revenue.forecasting.reports,records_management.group_records_manager,1,1,1,1
-access_scan_retrieval_item_work_order_coordinator_user,scan_retrieval_item_work_order_coordinator.user,scan.retrieval.item.work.order.coordinator,records_management.group_records_user,1,1,1,0
-access_scan_retrieval_item_work_order_coordinator_manager,scan_retrieval_item_work_order_coordinator.manager,scan.retrieval.item.work.order.coordinator,records_management.group_records_manager,1,1,1,1
-access_stock_move_smsvalidation_user,stock_move_smsvalidation.user,stock.move.smsvalidation,records_management.group_records_user,1,1,1,0
-access_stock_move_smsvalidation_manager,stock_move_smsvalidation.manager,stock.move.smsvalidation,records_management.group_records_manager,1,1,1,1
-access_visitor_user,visitor.user,visitor,records_management.group_records_user,1,1,1,0
-access_visitor_manager,visitor.manager,visitor,records_management.group_records_manager,1,1,1,1
-access_load_user,load.user,load,records_management.group_records_user,1,1,1,0
-access_load_manager,load.manager,load,records_management.group_records_manager,1,1,1,1
-access_shred_model_bin_user,Shred Model_Bin User Access,shred.model_bin,records_management.group_records_user,1,1,1,0
-access_shred_model_bin_manager,Shred Model_Bin Manager Access,shred.model_bin,records_management.group_records_manager,1,1,1,1
-access_report_records_management_report_customer_inventory_user,Report Records_Management Report_Customer_Inventory User Access,report.records_management.report_customer_inventory,records_management.group_records_user,1,1,1,0
-access_report_records_management_report_customer_inventory_manager,Report Records_Management Report_Customer_Inventory Manager Access,report.records_management.report_customer_inventory,records_management.group_records_manager,1,1,1,1
-access_report_records_management_report_location_utilization_user,Report Records_Management Report_Location_Utilization User Access,report.records_management.report_location_utilization,records_management.group_records_user,1,1,1,0
-access_report_records_management_report_location_utilization_manager,Report Records_Management Report_Location_Utilization Manager Access,report.records_management.report_location_utilization,records_management.group_records_manager,1,1,1,1
-access_report_records_management_revenue_forecasting_report_user,Report Records_Management Revenue_Forecasting_Report User Access,report.records_management.revenue_forecasting_report,records_management.group_records_user,1,1,1,0
-access_report_records_management_revenue_forecasting_report_manager,Report Records_Management Revenue_Forecasting_Report Manager Access,report.records_management.revenue_forecasting_report,records_management.group_records_manager,1,1,1,1
-access_paper_model_bale_user,Paper Model_Bale User Access,paper.model_bale,records_management.group_records_user,1,1,1,0
-access_paper_model_bale_manager,Paper Model_Bale Manager Access,paper.model_bale,records_management.group_records_manager,1,1,1,1
-access_shredding_certificate_user,shredding.certificate,shredding.certificate,records_management.group_records_user,1,1,1,0
-access_shredding_certificate_manager,shredding.certificate,shredding.certificate,records_management.group_records_manager,1,1,1,1
-access_customer_inventory_line_user,Customer Inventory Line,customer.inventory.line,records_management.group_records_user,1,1,1,0
-access_customer_inventory_line_manager,Customer Inventory Line,customer.inventory.line,records_management.group_records_manager,1,1,1,1
-access_records_department_user,Records Department,records.department,records_management.group_records_user,1,1,1,0
-access_records_department_manager,Records Department,records.department,records_management.group_records_manager,1,1,1,1
-access_records_document_user,Records Document,records.document,records_management.group_records_user,1,1,1,0
-access_records_document_manager,Records Document,records.document,records_management.group_records_manager,1,1,1,1
-access_portal_request_user,Portal Request,portal.request,records_management.group_records_user,1,1,1,0
-access_portal_request_manager,Portal Request,portal.request,records_management.group_records_manager,1,1,1,1
-access_shred_model_bin_user,Shred Model_Bin User Access,shred.model_bin,records_management.group_records_user,1,1,1,0
-access_shred_model_bin_manager,Shred Model_Bin Manager Access,shred.model_bin,records_management.group_records_manager,1,1,1,1
-access_report_records_management_report_location_utilization_user,Report Records_Management Report_Location_Utilization User Access,report.records_management.report_location_utilization,records_management.group_records_user,1,1,1,0
-access_report_records_management_report_location_utilization_manager,Report Records_Management Report_Location_Utilization Manager Access,report.records_management.report_location_utilization,records_management.group_records_manager,1,1,1,1
-access_report_records_management_revenue_forecasting_report_user,Report Records_Management Revenue_Forecasting_Report User Access,report.records_management.revenue_forecasting_report,records_management.group_records_user,1,1,1,0
-access_report_records_management_revenue_forecasting_report_manager,Report Records_Management Revenue_Forecasting_Report Manager Access,report.records_management.revenue_forecasting_report,records_management.group_records_manager,1,1,1,1
-access_paper_model_bale_user,Paper Model_Bale User Access,paper.model_bale,records_management.group_records_user,1,1,1,0
-access_paper_model_bale_manager,Paper Model_Bale Manager Access,paper.model_bale,records_management.group_records_manager,1,1,1,1
-access_report_records_management_report_customer_inventory_user,Report Records_Management Report_Customer_Inventory User Access,report.records_management.report_customer_inventory,records_management.group_records_user,1,1,1,0
-access_report_records_management_report_customer_inventory_manager,Report Records_Management Report_Customer_Inventory Manager Access,report.records_management.report_customer_inventory,records_management.group_records_manager,1,1,1,1

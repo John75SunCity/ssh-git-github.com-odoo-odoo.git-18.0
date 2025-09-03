@@ -1,24 +1,6 @@
 <?xml version="1.0"?>
 <odoo noupdate="1">
-    <data>
-        <record id="access_account_move_line_user" model="ir.model.access">
-            <field name="name">account.move.line</field>
-            <field name="model_id:id">account.move.line</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_account_move_line_manager" model="ir.model.access">
-            <field name="name">account.move.line</field>
-            <field name="model_id:id">account.move.line</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+<data>
         <record id="access_advanced_billing_contact_user" model="ir.model.access">
             <field name="name">advanced.billing.contact</field>
             <field name="model_id:id">advanced.billing.contact</field>
@@ -343,6 +325,24 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
+<record id="access_certificate_template_data_user" model="ir.model.access">
+    <field name="name">certificate.template.data</field>
+    <field name="model_id:id">certificate.template.data</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_certificate_template_data_manager" model="ir.model.access">
+    <field name="name">certificate.template.data</field>
+    <field name="model_id:id">certificate.template.data</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
         <record id="access_chain_of_custody_user" model="ir.model.access">
             <field name="name">chain.of.custody</field>
             <field name="model_id:id">chain.of.custody</field>
@@ -811,6 +811,24 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
+<record id="access_destruction_certificate_user" model="ir.model.access">
+    <field name="name">destruction.certificate</field>
+    <field name="model_id:id">destruction.certificate</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_destruction_certificate_manager" model="ir.model.access">
+    <field name="name">destruction.certificate</field>
+    <field name="model_id:id">destruction.certificate</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
         <record id="access_destruction_item_user" model="ir.model.access">
             <field name="name">destruction.item</field>
             <field name="model_id:id">destruction.item</field>
@@ -847,6 +865,24 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
+<record id="access_display_name_user" model="ir.model.access">
+    <field name="name">display_name</field>
+    <field name="model_id:id">display_name</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_display_name_manager" model="ir.model.access">
+    <field name="name">display_name</field>
+    <field name="model_id:id">display_name</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
         <record id="access_document_retrieval_item_user" model="ir.model.access">
             <field name="name">document.retrieval.item</field>
             <field name="model_id:id">document.retrieval.item</field>
@@ -990,25 +1026,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_fleet_vehicle_user" model="ir.model.access">
-            <field name="name">fleet.vehicle</field>
-            <field name="model_id:id">fleet.vehicle</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_fleet_vehicle_manager" model="ir.model.access">
-            <field name="name">fleet.vehicle</field>
-            <field name="model_id:id">fleet.vehicle</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_full_customization_name_user" model="ir.model.access">
             <field name="name">full.customization.name</field>
             <field name="model_id:id">full.customization.name</field>
@@ -1243,90 +1261,54 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
-        <record id="access_ir_attachment_user" model="ir.model.access">
-            <field name="name">ir.attachment</field>
-            <field name="model_id:id">ir.attachment</field>
+<record id="access_key_inventory_user" model="ir.model.access">
+    <field name="name">key.inventory</field>
+    <field name="model_id:id">key.inventory</field>
             <field name="group_id:id">records_management.group_records_user</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">0</field>
         </record>
-        <record id="access_ir_attachment_manager" model="ir.model.access">
-            <field name="name">ir.attachment</field>
-            <field name="model_id:id">ir.attachment</field>
+<record id="access_key_inventory_manager" model="ir.model.access">
+    <field name="name">key.inventory</field>
+    <field name="model_id:id">key.inventory</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
-        <record id="access_ir_user" model="ir.model.access">
-            <field name="name">ir.model</field>
-            <field name="model_id:id">ir.model</field>
+<record id="access_key_restriction_checker_user" model="ir.model.access">
+    <field name="name">key.restriction.checker</field>
+    <field name="model_id:id">key.restriction.checker</field>
             <field name="group_id:id">records_management.group_records_user</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">0</field>
         </record>
-        <record id="access_ir_manager" model="ir.model.access">
-            <field name="name">ir.model</field>
-            <field name="model_id:id">ir.model</field>
+<record id="access_key_restriction_checker_manager" model="ir.model.access">
+    <field name="name">key.restriction.checker</field>
+    <field name="model_id:id">key.restriction.checker</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
-        <record id="access_ir_fields_user" model="ir.model.access">
-            <field name="name">ir.model.fields</field>
-            <field name="model_id:id">ir.fields</field>
+<record id="access_load_user" model="ir.model.access">
+    <field name="name">load</field>
+    <field name="model_id:id">load</field>
             <field name="group_id:id">records_management.group_records_user</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">0</field>
         </record>
-        <record id="access_ir_fields_manager" model="ir.model.access">
-            <field name="name">ir.model.fields</field>
-            <field name="model_id:id">ir.fields</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_key_inventory_user" model="ir.model.access">
-            <field name="name">key.inventory</field>
-            <field name="model_id:id">key.inventory</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_key_inventory_manager" model="ir.model.access">
-            <field name="name">key.inventory</field>
-            <field name="model_id:id">key.inventory</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_key_restriction_checker_user" model="ir.model.access">
-            <field name="name">key.restriction.checker</field>
-            <field name="model_id:id">key.restriction.checker</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_key_restriction_checker_manager" model="ir.model.access">
-            <field name="name">key.restriction.checker</field>
-            <field name="model_id:id">key.restriction.checker</field>
+<record id="access_load_manager" model="ir.model.access">
+    <field name="name">load</field>
+    <field name="model_id:id">load</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -1368,43 +1350,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_maintenance_equipment_user" model="ir.model.access">
-            <field name="name">maintenance.equipment</field>
-            <field name="model_id:id">maintenance.equipment</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_maintenance_equipment_manager" model="ir.model.access">
-            <field name="name">maintenance.equipment</field>
-            <field name="model_id:id">maintenance.equipment</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_maintenance_team_user" model="ir.model.access">
-            <field name="name">maintenance.team</field>
-            <field name="model_id:id">maintenance.team</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_maintenance_team_manager" model="ir.model.access">
-            <field name="name">maintenance.team</field>
-            <field name="model_id:id">maintenance.team</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_media_type_user" model="ir.model.access">
             <field name="name">media.type</field>
             <field name="model_id:id">media.type</field>
@@ -1531,6 +1477,60 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
+<record id="access_naid_certificate_user" model="ir.model.access">
+    <field name="name">naid.certificate</field>
+    <field name="model_id:id">naid.certificate</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_naid_certificate_manager" model="ir.model.access">
+    <field name="name">naid.certificate</field>
+    <field name="model_id:id">naid.certificate</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
+<record id="access_naid_certificate_item_user" model="ir.model.access">
+    <field name="name">naid.certificate.item</field>
+    <field name="model_id:id">naid.certificate.item</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_naid_certificate_item_manager" model="ir.model.access">
+    <field name="name">naid.certificate.item</field>
+    <field name="model_id:id">naid.certificate.item</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
+<record id="access_naid_certification_level_user" model="ir.model.access">
+    <field name="name">naid.certification.level</field>
+    <field name="model_id:id">naid.certification.level</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_naid_certification_level_manager" model="ir.model.access">
+    <field name="name">naid.certification.level</field>
+    <field name="model_id:id">naid.certification.level</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
         <record id="access_naid_compliance_action_plan_user" model="ir.model.access">
             <field name="name">naid.compliance.action.plan</field>
             <field name="model_id:id">naid.compliance.action.plan</field>
@@ -1693,6 +1693,24 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
+<record id="access_naid_operator_certification_user" model="ir.model.access">
+    <field name="name">naid.operator.certification</field>
+    <field name="model_id:id">naid.operator.certification</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_naid_operator_certification_manager" model="ir.model.access">
+    <field name="name">naid.operator.certification</field>
+    <field name="model_id:id">naid.operator.certification</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
         <record id="access_naid_performance_history_user" model="ir.model.access">
             <field name="name">naid.performance.history</field>
             <field name="model_id:id">naid.performance.history</field>
@@ -1873,6 +1891,24 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
+<record id="access_paper_model_bale_user" model="ir.model.access">
+    <field name="name">paper.model_bale</field>
+    <field name="model_id:id">paper.model_bale</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_paper_model_bale_manager" model="ir.model.access">
+    <field name="name">paper.model_bale</field>
+    <field name="model_id:id">paper.model_bale</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
         <record id="access_partner_bin_key_user" model="ir.model.access">
             <field name="name">partner.bin.key</field>
             <field name="model_id:id">partner.bin.key</field>
@@ -1927,6 +1963,24 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
+<record id="access_photo_user" model="ir.model.access">
+    <field name="name">photo</field>
+    <field name="model_id:id">photo</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_photo_manager" model="ir.model.access">
+    <field name="name">photo</field>
+    <field name="model_id:id">photo</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
         <record id="access_pickup_location_user" model="ir.model.access">
             <field name="name">pickup.location</field>
             <field name="model_id:id">pickup.location</field>
@@ -2250,61 +2304,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_product_product_user" model="ir.model.access">
-            <field name="name">product.product</field>
-            <field name="model_id:id">product.product</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_product_product_manager" model="ir.model.access">
-            <field name="name">product.product</field>
-            <field name="model_id:id">product.product</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_project_project_user" model="ir.model.access">
-            <field name="name">project.project</field>
-            <field name="model_id:id">project.project</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_project_project_manager" model="ir.model.access">
-            <field name="name">project.project</field>
-            <field name="model_id:id">project.project</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_project_task_user" model="ir.model.access">
-            <field name="name">project.task</field>
-            <field name="model_id:id">project.task</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_project_task_manager" model="ir.model.access">
-            <field name="name">project.task</field>
-            <field name="model_id:id">project.task</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_records_access_log_user" model="ir.model.access">
             <field name="name">records.access.log</field>
             <field name="model_id:id">records.access.log</field>
@@ -3369,7 +3369,7 @@
         </record>
         <record id="access_report_records_management_report_customer_inventory_user" model="ir.model.access">
             <field name="name">report.records_management.report_customer_inventory</field>
-            <field name="model_id:id">report.records.management.report.customer.inventory</field>
+<field name="model_id:id">report.records_management.report_customer_inventory</field>
             <field name="group_id:id">records_management.group_records_user</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -3378,7 +3378,7 @@
         </record>
         <record id="access_report_records_management_report_customer_inventory_manager" model="ir.model.access">
             <field name="name">report.records_management.report_customer_inventory</field>
-            <field name="model_id:id">report.records.management.report.customer.inventory</field>
+<field name="model_id:id">report.records_management.report_customer_inventory</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -3387,7 +3387,7 @@
         </record>
         <record id="access_report_records_management_report_location_utilization_user" model="ir.model.access">
             <field name="name">report.records_management.report_location_utilization</field>
-            <field name="model_id:id">report.records.management.report.location.utilization</field>
+<field name="model_id:id">report.records_management.report_location_utilization</field>
             <field name="group_id:id">records_management.group_records_user</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -3396,7 +3396,7 @@
         </record>
         <record id="access_report_records_management_report_location_utilization_manager" model="ir.model.access">
             <field name="name">report.records_management.report_location_utilization</field>
-            <field name="model_id:id">report.records.management.report.location.utilization</field>
+<field name="model_id:id">report.records_management.report_location_utilization</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -3405,7 +3405,7 @@
         </record>
         <record id="access_report_records_management_revenue_forecasting_report_user" model="ir.model.access">
             <field name="name">report.records_management.revenue_forecasting_report</field>
-            <field name="model_id:id">report.records.management.revenue.forecasting.report</field>
+<field name="model_id:id">report.records_management.revenue_forecasting_report</field>
             <field name="group_id:id">records_management.group_records_user</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -3414,7 +3414,7 @@
         </record>
         <record id="access_report_records_management_revenue_forecasting_report_manager" model="ir.model.access">
             <field name="name">report.records_management.revenue_forecasting_report</field>
-            <field name="model_id:id">report.records.management.revenue.forecasting.report</field>
+<field name="model_id:id">report.records_management.revenue_forecasting_report</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -3438,115 +3438,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_res_company_user" model="ir.model.access">
-            <field name="name">res.company</field>
-            <field name="model_id:id">res.company</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_res_company_manager" model="ir.model.access">
-            <field name="name">res.company</field>
-            <field name="model_id:id">res.company</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_res_country_user" model="ir.model.access">
-            <field name="name">res.country</field>
-            <field name="model_id:id">res.country</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_res_country_manager" model="ir.model.access">
-            <field name="name">res.country</field>
-            <field name="model_id:id">res.country</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_res_country_state_user" model="ir.model.access">
-            <field name="name">res.country.state</field>
-            <field name="model_id:id">res.country.state</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_res_country_state_manager" model="ir.model.access">
-            <field name="name">res.country.state</field>
-            <field name="model_id:id">res.country.state</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_res_currency_user" model="ir.model.access">
-            <field name="name">res.currency</field>
-            <field name="model_id:id">res.currency</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_res_currency_manager" model="ir.model.access">
-            <field name="name">res.currency</field>
-            <field name="model_id:id">res.currency</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_res_groups_user" model="ir.model.access">
-            <field name="name">res.groups</field>
-            <field name="model_id:id">res.groups</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_res_groups_manager" model="ir.model.access">
-            <field name="name">res.groups</field>
-            <field name="model_id:id">res.groups</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_res_partner_user" model="ir.model.access">
-            <field name="name">res.partner</field>
-            <field name="model_id:id">res.partner</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_res_partner_manager" model="ir.model.access">
-            <field name="name">res.partner</field>
-            <field name="model_id:id">res.partner</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_res_partner_key_restriction_user" model="ir.model.access">
             <field name="name">res.partner.key.restriction</field>
             <field name="model_id:id">res.partner.key.restriction</field>
@@ -3564,25 +3456,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_res_users_user" model="ir.model.access">
-            <field name="name">res.users</field>
-            <field name="model_id:id">res.users</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_res_users_manager" model="ir.model.access">
-            <field name="name">res.users</field>
-            <field name="model_id:id">res.users</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_retrieval_item_base_user" model="ir.model.access">
             <field name="name">retrieval.item.base</field>
             <field name="model_id:id">retrieval.item.base</field>
@@ -3817,8 +3691,26 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
+<record id="access_shred_model_bin_user" model="ir.model.access">
+    <field name="name">shred.model_bin</field>
+    <field name="model_id:id">shred.model_bin</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_shred_model_bin_manager" model="ir.model.access">
+    <field name="name">shred.model_bin</field>
+    <field name="model_id:id">shred.model_bin</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
         <record id="access_shredding_certificate_user" model="ir.model.access">
-            <field name="name">shredding_certificate.user</field>
+<field name="name">shredding.certificate</field>
             <field name="model_id:id">shredding.certificate</field>
             <field name="group_id:id">records_management.group_records_user</field>
             <field name="perm_read">1</field>
@@ -3827,7 +3719,7 @@
             <field name="perm_unlink">0</field>
         </record>
         <record id="access_shredding_certificate_manager" model="ir.model.access">
-            <field name="name">shredding_certificate.manager</field>
+<field name="name">shredding.certificate</field>
             <field name="model_id:id">shredding.certificate</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
@@ -4050,43 +3942,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_stock_location_user" model="ir.model.access">
-            <field name="name">stock.location</field>
-            <field name="model_id:id">stock.location</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_stock_location_manager" model="ir.model.access">
-            <field name="name">stock.location</field>
-            <field name="model_id:id">stock.location</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_stock_lot_user" model="ir.model.access">
-            <field name="name">stock.lot</field>
-            <field name="model_id:id">stock.lot</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_stock_lot_manager" model="ir.model.access">
-            <field name="name">stock.lot</field>
-            <field name="model_id:id">stock.lot</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_stock_lot_attribute_user" model="ir.model.access">
             <field name="name">stock.lot.attribute</field>
             <field name="model_id:id">stock.lot.attribute</field>
@@ -4140,25 +3996,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_stock_move_user" model="ir.model.access">
-            <field name="name">stock.move</field>
-            <field name="model_id:id">stock.move</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_stock_move_manager" model="ir.model.access">
-            <field name="name">stock.move</field>
-            <field name="model_id:id">stock.move</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_stock_move_sms_validation_user" model="ir.model.access">
             <field name="name">stock.move.sms.validation</field>
             <field name="model_id:id">stock.move.sms.validation</field>
@@ -4176,25 +4014,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_stock_picking_user" model="ir.model.access">
-            <field name="name">stock.picking</field>
-            <field name="model_id:id">stock.picking</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_stock_picking_manager" model="ir.model.access">
-            <field name="name">stock.picking</field>
-            <field name="model_id:id">stock.picking</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_survey_feedback_theme_user" model="ir.model.access">
             <field name="name">survey.feedback.theme</field>
             <field name="model_id:id">survey.feedback.theme</field>
@@ -4411,6 +4231,24 @@
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
         </record>
+<record id="access_visitor_user" model="ir.model.access">
+    <field name="name">visitor</field>
+    <field name="model_id:id">visitor</field>
+    <field name="group_id:id">records_management.group_records_user</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">0</field>
+</record>
+<record id="access_visitor_manager" model="ir.model.access">
+    <field name="name">visitor</field>
+    <field name="model_id:id">visitor</field>
+    <field name="group_id:id">records_management.group_records_manager</field>
+    <field name="perm_read">1</field>
+    <field name="perm_write">1</field>
+    <field name="perm_create">1</field>
+    <field name="perm_unlink">1</field>
+</record>
         <record id="access_work_order_coordinator_user" model="ir.model.access">
             <field name="name">work.order.coordinator</field>
             <field name="model_id:id">work.order.coordinator</field>
@@ -4482,744 +4320,6 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_certificate_template_data_user" model="ir.model.access">
-            <field name="name">certificate_template_data.user</field>
-            <field name="model_id:id">certificate.template.data</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_certificate_template_data_manager" model="ir.model.access">
-            <field name="name">certificate_template_data.manager</field>
-            <field name="model_id:id">certificate.template.data</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_customer_inventory_report_user" model="ir.model.access">
-            <field name="name">customer_inventory_report_model.user</field>
-            <field name="model_id:id">customer.inventory.report.model</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_customer_inventory_report_manager" model="ir.model.access">
-            <field name="name">customer_inventory_report_model.manager</field>
-            <field name="model_id:id">customer.inventory.report.model</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_destruction_certificate_user" model="ir.model.access">
-            <field name="name">destruction_certificate.user</field>
-            <field name="model_id:id">destruction.certificate</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_destruction_certificate_manager" model="ir.model.access">
-            <field name="name">destruction_certificate.manager</field>
-            <field name="model_id:id">destruction.certificate</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_display_name_user" model="ir.model.access">
-            <field name="name">display_name.user</field>
-<field name="model_id:id">display_name</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_display_name_manager" model="ir.model.access">
-            <field name="name">display_name.manager</field>
-<field name="model_id:id">display_name</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_document_retrieval_equipment_user" model="ir.model.access">
-            <field name="name">document_retrieval_equipment.user</field>
-            <field name="model_id:id">document.retrieval.equipment</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_document_retrieval_equipment_manager" model="ir.model.access">
-            <field name="name">document_retrieval_equipment.manager</field>
-            <field name="model_id:id">document.retrieval.equipment</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_document_retrieval_team_user" model="ir.model.access">
-            <field name="name">document_retrieval_team.user</field>
-            <field name="model_id:id">document.retrieval.team</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_document_retrieval_team_manager" model="ir.model.access">
-            <field name="name">document_retrieval_team.manager</field>
-            <field name="model_id:id">document.retrieval.team</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_hr_employee_user" model="ir.model.access">
-            <field name="name">hr_employee.user</field>
-            <field name="model_id:id">hr.employee</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_hr_employee_manager" model="ir.model.access">
-            <field name="name">hr_employee.manager</field>
-            <field name="model_id:id">hr.employee</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_maintenance_request_user" model="ir.model.access">
-            <field name="name">maintenance_request.user</field>
-            <field name="model_id:id">maintenance.request</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_maintenance_request_manager" model="ir.model.access">
-            <field name="name">maintenance_request.manager</field>
-            <field name="model_id:id">maintenance.request</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_naid_certificate_user" model="ir.model.access">
-            <field name="name">naid_certificate.user</field>
-            <field name="model_id:id">naid.certificate</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_naid_certificate_manager" model="ir.model.access">
-            <field name="name">naid_certificate.manager</field>
-            <field name="model_id:id">naid.certificate</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_naid_certificate_item_user" model="ir.model.access">
-            <field name="name">naid_certificate_item.user</field>
-            <field name="model_id:id">naid.certificate.item</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_naid_certificate_item_manager" model="ir.model.access">
-            <field name="name">naid_certificate_item.manager</field>
-            <field name="model_id:id">naid.certificate.item</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_naid_certification_level_user" model="ir.model.access">
-            <field name="name">naid_certification_level.user</field>
-            <field name="model_id:id">naid.certification.level</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_naid_certification_level_manager" model="ir.model.access">
-            <field name="name">naid_certification_level.manager</field>
-            <field name="model_id:id">naid.certification.level</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_naid_operator_certification_user" model="ir.model.access">
-            <field name="name">naid_operator_certification.user</field>
-            <field name="model_id:id">naid.operator.certification</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_naid_operator_certification_manager" model="ir.model.access">
-            <field name="name">naid_operator_certification.manager</field>
-            <field name="model_id:id">naid.operator.certification</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_naidaudit_log_user" model="ir.model.access">
-            <field name="name">naidaudit_log.user</field>
-            <field name="model_id:id">naidaudit.log</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_naidaudit_log_manager" model="ir.model.access">
-            <field name="name">naidaudit_log.manager</field>
-            <field name="model_id:id">naidaudit.log</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_naidcustody_event_user" model="ir.model.access">
-            <field name="name">naidcustody_event.user</field>
-            <field name="model_id:id">naidcustody.event</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_naidcustody_event_manager" model="ir.model.access">
-            <field name="name">naidcustody_event.manager</field>
-            <field name="model_id:id">naidcustody.event</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_paper_bale_load_user" model="ir.model.access">
-            <field name="name">paper_bale_load.user</field>
-            <field name="model_id:id">paper.bale.load</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_paper_bale_load_manager" model="ir.model.access">
-            <field name="name">paper_bale_load.manager</field>
-            <field name="model_id:id">paper.bale.load</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_photo_user" model="ir.model.access">
-            <field name="name">photo.user</field>
-            <field name="model_id:id">photo</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_photo_manager" model="ir.model.access">
-            <field name="name">photo.manager</field>
-            <field name="model_id:id">photo</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_pos_config_user" model="ir.model.access">
-            <field name="name">pos_config.user</field>
-            <field name="model_id:id">pos.config</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_pos_config_manager" model="ir.model.access">
-            <field name="name">pos_config.manager</field>
-            <field name="model_id:id">pos.config</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_product_template_user" model="ir.model.access">
-            <field name="name">product_template.user</field>
-            <field name="model_id:id">product.template</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_product_template_manager" model="ir.model.access">
-            <field name="name">product_template.manager</field>
-            <field name="model_id:id">product.template</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_records_config_settings_user" model="ir.model.access">
-            <field name="name">records_config_settings.user</field>
-            <field name="model_id:id">records.config.settings</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_records_config_settings_manager" model="ir.model.access">
-            <field name="name">records_config_settings.manager</field>
-            <field name="model_id:id">records.config.settings</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_records_vehicle_user" model="ir.model.access">
-            <field name="name">records_vehicle.user</field>
-            <field name="model_id:id">records.vehicle</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_records_vehicle_manager" model="ir.model.access">
-            <field name="name">records_vehicle.manager</field>
-            <field name="model_id:id">records.vehicle</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_res_config_settings_user" model="ir.model.access">
-            <field name="name">res_config_settings.user</field>
-            <field name="model_id:id">res.config.settings</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_res_config_settings_manager" model="ir.model.access">
-            <field name="name">res_config_settings.manager</field>
-            <field name="model_id:id">res.config.settings</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_revenue_forecasting_reports_user" model="ir.model.access">
-            <field name="name">revenue_forecasting_reports.user</field>
-            <field name="model_id:id">revenue.forecasting.reports</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_revenue_forecasting_reports_manager" model="ir.model.access">
-            <field name="name">revenue_forecasting_reports.manager</field>
-            <field name="model_id:id">revenue.forecasting.reports</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_scan_retrieval_item_work_order_coordinator_user" model="ir.model.access">
-            <field name="name">scan_retrieval_item_work_order_coordinator.user</field>
-            <field name="model_id:id">scan.retrieval.item.work.order.coordinator</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_scan_retrieval_item_work_order_coordinator_manager" model="ir.model.access">
-            <field name="name">scan_retrieval_item_work_order_coordinator.manager</field>
-            <field name="model_id:id">scan.retrieval.item.work.order.coordinator</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_stock_move_smsvalidation_user" model="ir.model.access">
-            <field name="name">stock_move_smsvalidation.user</field>
-            <field name="model_id:id">stock.move.smsvalidation</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_stock_move_smsvalidation_manager" model="ir.model.access">
-            <field name="name">stock_move_smsvalidation.manager</field>
-            <field name="model_id:id">stock.move.smsvalidation</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_visitor_user" model="ir.model.access">
-            <field name="name">visitor.user</field>
-            <field name="model_id:id">visitor</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_visitor_manager" model="ir.model.access">
-            <field name="name">visitor.manager</field>
-            <field name="model_id:id">visitor</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_load_user" model="ir.model.access">
-            <field name="name">load.user</field>
-            <field name="model_id:id">load</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_load_manager" model="ir.model.access">
-            <field name="name">load.manager</field>
-            <field name="model_id:id">load</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_shred_model_bin_user" model="ir.model.access">
-            <field name="name">Shred Model_Bin User Access</field>
-            <field name="model_id:id">shred.model_bin</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_shred_model_bin_manager" model="ir.model.access">
-            <field name="name">Shred Model_Bin Manager Access</field>
-            <field name="model_id:id">shred.model_bin</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_report_records_management_report_customer_inventory_user" model="ir.model.access">
-            <field name="name">Report Records_Management Report_Customer_Inventory User Access</field>
-            <field name="model_id:id">report.records_management.report_customer_inventory</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_report_records_management_report_customer_inventory_manager" model="ir.model.access">
-            <field name="name">Report Records_Management Report_Customer_Inventory Manager Access</field>
-            <field name="model_id:id">report.records_management.report_customer_inventory</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_report_records_management_report_location_utilization_user" model="ir.model.access">
-            <field name="name">Report Records_Management Report_Location_Utilization User Access</field>
-            <field name="model_id:id">report.records_management.report_location_utilization</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_report_records_management_report_location_utilization_manager" model="ir.model.access">
-            <field name="name">Report Records_Management Report_Location_Utilization Manager Access</field>
-            <field name="model_id:id">report.records_management.report_location_utilization</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_report_records_management_revenue_forecasting_report_user" model="ir.model.access">
-            <field name="name">Report Records_Management Revenue_Forecasting_Report User Access</field>
-            <field name="model_id:id">report.records_management.revenue_forecasting_report</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_report_records_management_revenue_forecasting_report_manager" model="ir.model.access">
-            <field name="name">Report Records_Management Revenue_Forecasting_Report Manager Access</field>
-            <field name="model_id:id">report.records_management.revenue_forecasting_report</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_paper_model_bale_user" model="ir.model.access">
-            <field name="name">Paper Model_Bale User Access</field>
-            <field name="model_id:id">paper.model_bale</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_paper_model_bale_manager" model="ir.model.access">
-            <field name="name">Paper Model_Bale Manager Access</field>
-            <field name="model_id:id">paper.model_bale</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_shredding_certificate_user" model="ir.model.access">
-            <field name="name">shredding.certificate</field>
-            <field name="model_id:id">shredding.certificate</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_shredding_certificate_manager" model="ir.model.access">
-            <field name="name">shredding.certificate</field>
-            <field name="model_id:id">shredding.certificate</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_customer_inventory_line_user" model="ir.model.access">
-            <field name="name">Customer Inventory Line</field>
-            <field name="model_id:id">customer.inventory.line</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_customer_inventory_line_manager" model="ir.model.access">
-            <field name="name">Customer Inventory Line</field>
-            <field name="model_id:id">customer.inventory.line</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_records_department_user" model="ir.model.access">
-            <field name="name">Records Department</field>
-            <field name="model_id:id">records.department</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_records_department_manager" model="ir.model.access">
-            <field name="name">Records Department</field>
-            <field name="model_id:id">records.department</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_records_document_user" model="ir.model.access">
-            <field name="name">Records Document</field>
-            <field name="model_id:id">records.document</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_records_document_manager" model="ir.model.access">
-            <field name="name">Records Document</field>
-            <field name="model_id:id">records.document</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_portal_request_user" model="ir.model.access">
-            <field name="name">Portal Request</field>
-            <field name="model_id:id">portal.request</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_portal_request_manager" model="ir.model.access">
-            <field name="name">Portal Request</field>
-            <field name="model_id:id">portal.request</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_shred_model_bin_user" model="ir.model.access">
-            <field name="name">Shred Model_Bin User Access</field>
-            <field name="model_id:id">shred.model_bin</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_shred_model_bin_manager" model="ir.model.access">
-            <field name="name">Shred Model_Bin Manager Access</field>
-            <field name="model_id:id">shred.model_bin</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_report_records_management_report_location_utilization_user" model="ir.model.access">
-            <field name="name">Report Records_Management Report_Location_Utilization User Access</field>
-            <field name="model_id:id">report.records_management.report_location_utilization</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_report_records_management_report_location_utilization_manager" model="ir.model.access">
-            <field name="name">Report Records_Management Report_Location_Utilization Manager Access</field>
-            <field name="model_id:id">report.records_management.report_location_utilization</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_report_records_management_revenue_forecasting_report_user" model="ir.model.access">
-            <field name="name">Report Records_Management Revenue_Forecasting_Report User Access</field>
-            <field name="model_id:id">report.records_management.revenue_forecasting_report</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_report_records_management_revenue_forecasting_report_manager" model="ir.model.access">
-            <field name="name">Report Records_Management Revenue_Forecasting_Report Manager Access</field>
-            <field name="model_id:id">report.records_management.revenue_forecasting_report</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_paper_model_bale_user" model="ir.model.access">
-            <field name="name">Paper Model_Bale User Access</field>
-            <field name="model_id:id">paper.model_bale</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_paper_model_bale_manager" model="ir.model.access">
-            <field name="name">Paper Model_Bale Manager Access</field>
-            <field name="model_id:id">paper.model_bale</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_report_records_management_report_customer_inventory_user" model="ir.model.access">
-            <field name="name">Report Records_Management Report_Customer_Inventory User Access</field>
-            <field name="model_id:id">report.records_management.report_customer_inventory</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_report_records_management_report_customer_inventory_manager" model="ir.model.access">
-            <field name="name">Report Records_Management Report_Customer_Inventory Manager Access</field>
-            <field name="model_id:id">report.records_management.report_customer_inventory</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
     </data>
 </odoo>
