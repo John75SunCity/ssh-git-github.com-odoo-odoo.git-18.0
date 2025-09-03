@@ -3837,7 +3837,7 @@
         </record>
         <record id="access_shredding_hard_drive_user" model="ir.model.access">
             <field name="name">shredding.hard_drive</field>
-            <field name="model_id:id">shredding.hard.drive</field>
+<field name="model_id:id">shredding.hard_drive</field>
             <field name="group_id:id">records_management.group_records_user</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -3846,7 +3846,7 @@
         </record>
         <record id="access_shredding_hard_drive_manager" model="ir.model.access">
             <field name="name">shredding.hard_drive</field>
-            <field name="model_id:id">shredding.hard.drive</field>
+<field name="model_id:id">shredding.hard_drive</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -4539,7 +4539,7 @@
         </record>
         <record id="access_display_name_user" model="ir.model.access">
             <field name="name">display_name.user</field>
-            <field name="model_id:id">display.name</field>
+<field name="model_id:id">display_name</field>
             <field name="group_id:id">records_management.group_records_user</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -4548,7 +4548,7 @@
         </record>
         <record id="access_display_name_manager" model="ir.model.access">
             <field name="name">display_name.manager</field>
-            <field name="model_id:id">display.name</field>
+<field name="model_id:id">display_name</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
