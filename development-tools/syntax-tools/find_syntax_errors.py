@@ -5,7 +5,49 @@ Comprehensive Odoo Module Validation - Catches Real Issues
 This script performs comprehensive validation of Odoo modules including:
 - Python syntax errors
 - XML syntax and structure validation
-- View definition issues
+-                    #                    # Find model names - more specific pattern to avoid false matches
+                    import re
+
+                    name_pattern = r'^\s*_name\s*=\s*["\']([^"\']+)["\']'
+                    matches = re.findall(name_pattern, content, re.MULTILINE)
+
+                    # Filter out false positives like _rec_name, _inherit, etc.
+                    valid_models = []
+                    for match in matches:
+                        # Check if this is actually a _name assignment, not _rec_name or other similar patterns
+                        # Look for the context around this match
+                        lines = content.split('\n')
+                        for i, line in enumerate(lines):
+                            if f'_name = "{match}"' in line or f"_name = '{match}'" in line:
+                                # Check the previous lines to make sure this is a class definition
+                                for j in range(max(0, i-5), i):
+                                    if 'class ' in lines[j] and 'models.Model' in lines[j]:
+                                        valid_models.append(match)
+                                        break
+                                break
+
+                    for model_name in valid_models:odel names - more specific pattern to avoid false matches
+                    import re
+
+                    name_pattern = r'^\s*_name\s*=\s*["\']([^"\']+)["\']'
+                    matches = re.findall(name_pattern, content, re.MULTILINE)
+
+                    # Filter out false positives like _rec_name, _inherit, etc.
+                    valid_models = []
+                    for match in matches:
+                        # Check if this is actually a _name assignment, not _rec_name or other similar patterns
+                        # Look for the context around this match
+                        lines = content.split('\n')
+                        for i, line in enumerate(lines):
+                            if f'_name = "{match}"' in line or f"_name = '{match}'" in line:
+                                # Check the previous lines to make sure this is a class definition
+                                for j in range(max(0, i-5), i):
+                                    if 'class ' in lines[j] and 'models.Model' in lines[j]:
+                                        valid_models.append(match)
+                                        break
+                                break
+
+                    for model_name in valid_models:efinition issues
 - Security rule validation
 - Model/field reference validation
 - Import order validation
@@ -192,19 +234,24 @@ class OdooValidator:
         if access_file.exists():
             try:
                 with open(access_file, "r", encoding="utf-8") as f:
-                    lines = f.readlines()
+                    # Use proper CSV parsing instead of simple split
+                    import csv
+
+                    reader = csv.reader(f)
+                    data_lines = list(reader)
 
                 # Skip header
-                data_lines = [line.strip() for line in lines[1:] if line.strip()]
+                if data_lines and data_lines[0][0] == "id":
+                    data_lines = data_lines[1:]
 
                 # Collect model names from access rules
                 access_models = set()
-                for line in data_lines:
-                    parts = line.split(",")
-                    if parts and len(parts) >= 3:  # Need at least id, name, model_id:id
-                        model_ref = parts[2].strip()  # model_id:id column
+                for row in data_lines:
+                    if row and len(row) >= 3:  # Need at least id, name, model_id:id
+                        model_ref = row[2].strip()  # model_id:id column
                         if model_ref.startswith("model_"):
                             model_name = model_ref[6:]  # Remove 'model_' prefix
+                            # Keep underscores as-is for model name matching
                             access_models.add(model_name)
 
                 # Check for missing access rules
