@@ -18,8 +18,6 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
-
-
 class RecordsContainerTypeConverterWizard(models.TransientModel):
     _name = "records.container.type.converter.wizard"
     _description = "Records Container Type Converter Wizard"
@@ -265,16 +263,17 @@ class RecordsContainerTypeConverterWizard(models.TransientModel):
         self.ensure_one()
 
         log_vals = {
-            'name': _("Container Type Conversion: %s", self.name,)
-            'event_type': 'container_conversion',
-            'event_date': fields.Datetime.now(),
-            'user_id': self.env.user.id,
-            'description': _("Converted %d containers from %s to %s") % (
-                           len(containers),
-                           self.source_container_type,
-                           self.target_container_type),
-            'reason': self.reason,
-            'affected_containers': [(6, 0, containers.ids)]
+            "name": _(
+                "Container Type Conversion: %s",
+                self.name,
+            ),
+            "event_type": "container_conversion",
+            "event_date": fields.Datetime.now(),
+            "user_id": self.env.user.id,
+            "description": _("Converted %d containers from %s to %s")
+            % (len(containers), self.source_container_type, self.target_container_type),
+            "reason": self.reason,
+            "affected_containers": [(6, 0, containers.ids)],
         }
 
         return self.env['naid.audit.log'].create(log_vals)

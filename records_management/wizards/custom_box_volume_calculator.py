@@ -475,20 +475,28 @@ class CustomBoxVolumeCalculator(models.TransientModel):
         self.ensure_one()
 
         # Create audit log entry
-        self.env['naid.audit.log'].create({
-            'name': _('Volume Calculation: %s', self.name,)
-            'event_type': 'volume_calculation',
-            'description': _('Custom box volume calculation performed by %s', self.user_id.name,)
-            'user_id': self.user_id.id,
-            'company_id': self.company_id.id,
-            'details': {
-                'dimensions': f"{self.length_inches or self.length_cm}x{self.width_inches or self.width_cm}x{self.height_inches or self.height_cm}",
-                'volume_cf': self.custom_volume_cf,
-                'recommended_type': self.recommended_container_type,
-                'equivalent_boxes': self.equivalent_standard_boxes,
-                'calculated_price': self.standard_box_price,
+        self.env["naid.audit.log"].create(
+            {
+                "name": _(
+                    "Volume Calculation: %s",
+                    self.name,
+                ),
+                "event_type": "volume_calculation",
+                "description": _(
+                    "Custom box volume calculation performed by %s",
+                    self.user_id.name,
+                ),
+                "user_id": self.user_id.id,
+                "company_id": self.company_id.id,
+                "details": {
+                    "dimensions": f"{self.length_inches or self.length_cm}x{self.width_inches or self.width_cm}x{self.height_inches or self.height_cm}",
+                    "volume_cf": self.custom_volume_cf,
+                    "recommended_type": self.recommended_container_type,
+                    "equivalent_boxes": self.equivalent_standard_boxes,
+                    "calculated_price": self.standard_box_price,
+                },
             }
-        })
+        )
 
         return {
             'type': 'ir.actions.client',

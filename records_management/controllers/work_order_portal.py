@@ -375,12 +375,15 @@ class WorkOrderPortal(CustomerPortal):
             return False
 
         values = {
-            'activity_type_id': activity_type_id.id,
-            'res_id': work_order.id,
-            'res_model_id': request.env['ir.model']._get(work_order._name).id,
-            'user_id': work_order.user_id.id or request.env.user.id,
-            'summary': _("Follow up on work order: %s", work_order.name,)
-            'note': _('Customer portal activity for work order follow-up'),
+            "activity_type_id": activity_type_id.id,
+            "res_id": work_order.id,
+            "res_model_id": request.env["ir.model"]._get(work_order._name).id,
+            "user_id": work_order.user_id.id or request.env.user.id,
+            "summary": _(
+                "Follow up on work order: %s",
+                work_order.name,
+            ),
+            "note": _("Customer portal activity for work order follow-up"),
         }
 
         return request.env['mail.activity'].create(values)
