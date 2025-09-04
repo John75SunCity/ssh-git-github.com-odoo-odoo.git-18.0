@@ -2,12 +2,13 @@
 <odoo>
     <record id="report_records_container_type_converter_wizard" model="ir.actions.report">
         <field name="name">Records Container Type Converter Wizard</field>
-        <field name="model">records.container.type.converter.wizard</field>
+<field name="model">records.container.type.converter</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_records_container_type_converter_wizard_view</field>
         <field name="report_file">records_management.report_records_container_type_converter_wizard</field>
         <field name="print_report_name">"(Records Container Type Converter Wizard Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="records_management.model_records_container_type_converter_wizard"/>
+<field name="binding_model_id" ref="records_management.model_records_container_type_converter"/>
+
         <field name="binding_type">report</field>
     </record>
 

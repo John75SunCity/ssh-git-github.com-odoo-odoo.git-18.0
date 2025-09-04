@@ -2,12 +2,13 @@
 <odoo>
     <record id="report_bin_key_management" model="ir.actions.report">
         <field name="name">Bin Key Management</field>
-        <field name="model">bin.key.management</field>
+<field name="model">bin.key</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_bin_key_management_view</field>
         <field name="report_file">records_management.report_bin_key_management</field>
         <field name="print_report_name">"(Bin Key Management Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="records_management.model_bin_key_management"/>
+<field name="binding_model_id" ref="records_management.model_bin_key"/>
+
         <field name="binding_type">report</field>
     </record>
 

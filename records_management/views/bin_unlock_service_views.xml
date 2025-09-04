@@ -65,7 +65,7 @@
 <!-- Tree view for Bin Key Management -->
     <record id="bin_key_management_view_tree" model="ir.ui.view">
         <field name="name">bin.key.management.view.tree</field>
-        <field name="model">bin.key.management</field>
+<field name="model">bin.key</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
 <list string="Bin Key Management" decoration-success="status == 'issued'" decoration-warning="status == 'lost'" decoration-danger="status == 'replaced'" decoration-info="status == 'returned'">
@@ -91,7 +91,7 @@
 <!-- Search view for Bin Key Management -->
 <record id="bin_key_management_view_search" model="ir.ui.view">
     <field name="name">bin.key.management.view.search</field>
-    <field name="model">bin.key.management</field>
+<field name="model">bin.key</field>
     <field name="type">list</field>
         <field name="arch" type="xml">
         <search string="Search Bin Key Management">
@@ -132,7 +132,7 @@
 <!-- Form view for Bin Key Management -->
     <record id="bin_key_management_view_form" model="ir.ui.view">
         <field name="name">bin.key.management.view.form</field>
-        <field name="model">bin.key.management</field>
+        <field name="model">bin.key</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="Bin Key Management">
@@ -232,7 +232,7 @@
 <!-- Kanban view for Bin Key Management -->
     <record id="bin_key_management_view_kanban" model="ir.ui.view">
         <field name="name">bin.key.management.view.kanban</field>
-        <field name="model">bin.key.management</field>
+        <field name="model">bin.key</field>
         <field name="type">list</field>
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column">
@@ -441,7 +441,7 @@
 <!-- Actions -->
     <record id="action_bin_key_management" model="ir.actions.act_window">
         <field name="name">Bin Key Management</field>
-        <field name="res_model">bin.key.management</field>
+        <field name="res_model">bin.key</field>
         <field name="view_mode">kanban,list,form</field>
 <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
@@ -595,7 +595,7 @@ Perfect for managing emergency access and generating additional revenue.
 <!-- Key Restriction Management Wizard Form View -->
 <record id="key_restriction_management_wizard_view_form" model="ir.ui.view">
     <field name="name">key.restriction.management.wizard.view.form</field>
-    <field name="model">key.restriction.management.wizard</field>
+    <field name="model">key.restriction.checker</field>
         <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Key Restriction Management">
