@@ -3,7 +3,7 @@
     <data>
 <record id="access_advanced_billing_contact_user" model="ir.model.access">
     <field name="name">advanced.billing.contact</field>
-<field name="model_id">advanced.billing.contact</field>
+    <field name="model_id">advanced.billing.contact</field>
     <field name="group_id:id">records_management.group_records_user</field>
     <field name="perm_read">1</field>
     <field name="perm_write">1</field>
@@ -12,7 +12,7 @@
 </record>
 <record id="access_advanced_billing_contact_manager" model="ir.model.access">
     <field name="name">advanced.billing.contact</field>
-<field name="model_id">advanced.billing.contact</field>
+    <field name="model_id">advanced.billing.contact</field>
     <field name="group_id:id">records_management.group_records_manager</field>
     <field name="perm_read">1</field>
     <field name="perm_write">1</field>
