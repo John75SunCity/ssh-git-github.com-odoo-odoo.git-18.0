@@ -301,8 +301,8 @@ class WorkOrderPortal(CustomerPortal):
     # ============================================================================
     # PORTAL INTEGRATION METHODS
     # ============================================================================
-    def _get_work_order_searchbar_inputs(self):
-        """Get search inputs for work orders"""
+    def _prepare_work_order_searchbar_inputs(self):
+        """Prepare search inputs for work orders in the portal"""
         return {
             'all': {'input': 'all', 'label': _('Search in All')},
             'name': {'input': 'name', 'label': _('Search in Reference')},
