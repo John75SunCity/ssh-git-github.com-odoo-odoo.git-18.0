@@ -76,7 +76,7 @@ class RecordsManagementController(http.Controller):
             return request.redirect('/web/login?redirect=/records/dashboard')
         except Exception as e:
             return request.render(
-                "records_management.dashboard_error", {"error_message": _("Dashboard loading failed: %s") % str(e)}
+                "records_management.dashboard_error", {"error_message": _("Dashboard loading failed: %s", str(e))}
             )
 
     @http.route(['/records/api/dashboard_data'], type='json', auth='user')

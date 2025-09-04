@@ -173,10 +173,7 @@ class NaidCertificate(models.Model):
                     ]
                 )
                 if existing:
-                    raise ValidationError(
-                        _("Certificate number %s already exists")
-                        % record.certificate_number
-                    )
+                    raise ValidationError(_("Certificate number %s already exists", record.certificate_number))
 
     @api.constrains("state", "destruction_item_ids", "container_ids", "box_ids")
     def _check_issued_certificate_has_items(self):
@@ -243,7 +240,7 @@ class NaidCertificate(models.Model):
             _logger.error(
                 "Failed to issue certificate %s: %s", self.certificate_number, str(e)
             )
-            raise UserError(_("Failed to generate certificate PDF: %s") % str(e))
+            raise UserError(_("Failed to generate certificate PDF: %s", str(e)))
 
     def action_send_by_email(self):
         """Send certificate by email with improved error handling"""
@@ -273,7 +270,7 @@ class NaidCertificate(models.Model):
             _logger.error(
                 "Failed to send certificate %s: %s", self.certificate_number, str(e)
             )
-            raise UserError(_("Failed to send certificate email: %s") % str(e))
+            raise UserError(_("Failed to send certificate email: %s", str(e)))
 
     def action_cancel(self):
         """Cancel certificate with state validation"""
@@ -363,8 +360,9 @@ class NaidCertificate(models.Model):
         # Log certificate creation for audit purposes
         for record in records:
             record.message_post(
-                body=_("NAID Certificate created: %s for customer %s")
-                % (record.certificate_number, record.partner_id.name)
+                body=_(
+                    "NAID Certificate created: %s for customer %s", record.certificate_number, record.partner_id.name
+                )
             )
 
         return records
@@ -375,10 +373,7 @@ class NaidCertificate(models.Model):
         if "state" in vals:
             for record in self:
                 if record.state != vals["state"]:
-                    record.message_post(
-                        body=_("Certificate state changed from %s to %s")
-                        % (record.state, vals["state"])
-                    )
+                    record.message_post(body=_("Certificate state changed from %s to %s", record.state, vals["state"]))
 
         return super(NaidCertificate, self).write(vals)
 

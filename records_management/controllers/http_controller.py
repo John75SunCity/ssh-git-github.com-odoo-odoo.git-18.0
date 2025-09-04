@@ -139,7 +139,7 @@ class RecordsManagementController(http.Controller):
         """
         try:
             audit_vals = {
-                "name": _("Customer Portal Action: %s") % action_type,
+                "name": _("Customer Portal Action: %s", action_type),
                 "action_type": action_type,
                 "partner_id": partner_id,
                 "user_id": request.env.user.id,
@@ -199,7 +199,7 @@ class RecordsManagementController(http.Controller):
 
             # Create pickup request
             pickup_vals = {
-                "name": _("Portal Pickup Request - %s") % partner.name,
+                "name": _("Portal Pickup Request - %s", partner.name),
                 "partner_id": partner.id,
                 "request_type": "pickup",
                 "priority": "normal",
@@ -226,12 +226,12 @@ class RecordsManagementController(http.Controller):
                 "pickup_request_submitted",
                 partner.id,
                 item_ids,
-                _("Portal pickup request created: %s") % pickup_request.name,
+                _("Portal pickup request created: %s", pickup_request.name),
             )
 
             # Send notification to operations team
             pickup_request.message_post(
-                body=_("New pickup request submitted via customer portal by %s") % current_user.name,
+                body=_("New pickup request submitted via customer portal by %s", current_user.name),
                 message_type="notification",
             )
 
@@ -516,7 +516,7 @@ class RecordsManagementController(http.Controller):
 
             # Create audit log
             self._create_naid_audit_log(
-                "request_cancelled", partner.id, notes=_("Request cancelled by customer: %s") % customer_request.name
+                "request_cancelled", partner.id, notes=_("Request cancelled by customer: %s", customer_request.name)
             )
 
             return request.redirect('/my/requests?success=request_cancelled')

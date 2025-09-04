@@ -299,9 +299,9 @@ class FileRetrievalWorkOrderItem(models.Model):
         # Validate current status
         if self.status not in ['assigned', 'pending']:
             return {
-                'success': False,
-                'message': _('Item status is %s - cannot retrieve') % self.status,
-                'item_name': self.file_name
+                "success": False,
+                "message": _("Item status is %s - cannot retrieve", self.status),
+                "item_name": self.file_name,
             }
 
         try:
@@ -332,10 +332,10 @@ class FileRetrievalWorkOrderItem(models.Model):
             self._check_work_order_completion()
 
             return {
-                'success': True,
-                'message': _('File "%s" retrieved successfully') % self.file_name,
-                'item_name': self.file_name,
-                'status': self.status
+                "success": True,
+                "message": _('File "%s" retrieved successfully', self.file_name),
+                "item_name": self.file_name,
+                "status": self.status,
             }
 
         except Exception as e:
@@ -384,9 +384,9 @@ class FileRetrievalWorkOrderItem(models.Model):
                 self._send_delivery_notification()
 
             return {
-                'success': True,
-                'message': _('File "%s" delivered successfully') % self.file_name,
-                'item_name': self.file_name
+                "success": True,
+                "message": _('File "%s" delivered successfully', self.file_name),
+                "item_name": self.file_name,
             }
 
         except Exception as e:
@@ -424,8 +424,8 @@ class FileRetrievalWorkOrderItem(models.Model):
 
         # Notify work order coordinator
         self.message_post(
-            body=_("File '%s' not found during retrieval. Reason: %s") % (self.file_name, reason or 'Unknown'),
-            message_type="notification"
+            body=_("File '%s' not found during retrieval. Reason: %s", self.file_name, reason or "Unknown"),
+            message_type="notification",
         )
 
     # ============================================================================
@@ -468,8 +468,10 @@ class FileRetrievalWorkOrderItem(models.Model):
 
         # SMS notification if enabled
         if self.notification_method in ['sms', 'both'] and self.partner_id.mobile:
-            message = _("File '%s' has been retrieved and is ready for processing. Work Order: %s") % (
-                self.file_name, self.work_order_id.name
+            message = _(
+                "File '%s' has been retrieved and is ready for processing. Work Order: %s",
+                self.file_name,
+                self.work_order_id.name,
             )
             self._send_sms_notification(message)
 
@@ -484,9 +486,7 @@ class FileRetrievalWorkOrderItem(models.Model):
 
         # SMS notification if enabled
         if self.notification_method in ['sms', 'both'] and self.partner_id.mobile:
-            message = _("File '%s' has been delivered. Work Order: %s") % (
-                self.file_name, self.work_order_id.name
-            )
+            message = _("File '%s' has been delivered. Work Order: %s", self.file_name, self.work_order_id.name)
             if self.tracking_number:
                 message += _(" Tracking: %s", self.tracking_number)
             self._send_sms_notification(message)
@@ -577,7 +577,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         """Validate that dates are logical based on status"""
         for record in self:
             if record.status in ['retrieved', 'delivered'] and not record.date_retrieved:
-                raise ValidationError(_("Retrieved date is required when status is '%s'") % record.status)
+                raise ValidationError(_("Retrieved date is required when status is '%s'", record.status))
 
             if record.status == 'delivered' and not record.date_delivered:
                 raise ValidationError(_("Delivered date is required when status is 'delivered'"))
@@ -600,4 +600,4 @@ class FileRetrievalWorkOrderItem(models.Model):
                     ('id', '!=', record.id)
                 ])
                 if duplicate:
-                    raise ValidationError(_("File '%s' already exists in this work order") % record.file_name)
+                    raise ValidationError(_("File '%s' already exists in this work order", record.file_name))

@@ -79,7 +79,7 @@ class ShreddingBinSequenceResetWizard(models.TransientModel):
 
         if not sequence:
             raise UserError(
-                _("Sequence not found for bin size %s") % dict(self._fields["bin_size"].selection)[self.bin_size]
+                _("Sequence not found for bin size %s", dict(self._fields["bin_size"].selection)[self.bin_size])
             )
 
         # Store old value for audit
@@ -91,28 +91,32 @@ class ShreddingBinSequenceResetWizard(models.TransientModel):
         })
 
         # Create audit log
-        self.env['naid.audit.log'].create({
-            'action': 'sequence_reset',
-            'description': _("Bin sequence reset for %s from %s to %s. Reason: %s") % (
-                dict(self._fields['bin_size'].selection)[self.bin_size],
-                old_number,
-                self.new_sequence_number,
-                self.reset_reason
-            ),
-            'user_id': self.env.user.id,
-            'date': fields.Datetime.now(),
-        })
+        self.env["naid.audit.log"].create(
+            {
+                "action": "sequence_reset",
+                "description": _(
+                    "Bin sequence reset for %s from %s to %s. Reason: %s",
+                    dict(self._fields["bin_size"].selection)[self.bin_size],
+                    old_number,
+                    self.new_sequence_number,
+                    self.reset_reason,
+                ),
+                "user_id": self.env.user.id,
+                "date": fields.Datetime.now(),
+            }
+        )
 
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _("Sequence Reset Complete"),
-                'message': _("Bin sequence for %s has been reset to %s") % (
-                    dict(self._fields['bin_size'].selection)[self.bin_size],
-                    self.new_sequence_number
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Sequence Reset Complete"),
+                "message": _(
+                    "Bin sequence for %s has been reset to %s",
+                    dict(self._fields["bin_size"].selection)[self.bin_size],
+                    self.new_sequence_number,
                 ),
-                'type': 'success',
-                'sticky': False,
-            }
+                "type": "success",
+                "sticky": False,
+            },
         }

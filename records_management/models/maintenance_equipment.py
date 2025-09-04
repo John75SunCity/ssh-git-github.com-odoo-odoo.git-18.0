@@ -100,18 +100,18 @@ class MaintenanceEquipment(models.Model):
             ('calibration_required', '=', True),
             ('next_calibration_date', '<=', today)
         ])
-        _logger.info(_("Found %s equipment items requiring calibration") % len(overdue_equipment))
+        _logger.info(_("Found %s equipment items requiring calibration", len(overdue_equipment)))
 
         for equipment in overdue_equipment:
             maintenance_request = self.env["maintenance.request"].create(
                 {
-                    "name": _("Calibration Required: %s") % equipment.name,
+                    "name": _("Calibration Required: %s", equipment.name),
                     "equipment_id": equipment.id,
                     "request_date": fields.Date.today(),
                     "maintenance_type": "preventive",
                     "priority": "1",
-                    "description": _("Equipment %s requires calibration. Last calibration: %s")
-                    % (
+                    "description": _(
+                        "Equipment %s requires calibration. Last calibration: %s",
                         equipment.name,
                         equipment.last_calibration_date or _("Never"),
                     ),
@@ -124,7 +124,7 @@ class MaintenanceEquipment(models.Model):
                     {
                         "res_model": "maintenance.request",
                         "res_id": maintenance_request.id,
-                        "note": _("Equipment %s calibration is overdue. Please schedule calibration.") % equipment.name,
+                        "note": _("Equipment %s calibration is overdue. Please schedule calibration.", equipment.name),
                         "summary": _("Equipment Calibration Overdue"),
                         "user_id": (
                             equipment.technician_user_id.id if equipment.technician_user_id else self.env.user.id
@@ -135,13 +135,16 @@ class MaintenanceEquipment(models.Model):
 
             if equipment.maintenance_team_id.partner_id.email:
                 equipment.message_post(
-                    body=_("Equipment %s requires immediate calibration. Maintenance request created.")
-                    % equipment.name,
-                    subject=_("Calibration Overdue: %s") % equipment.name,
+                    body=_("Equipment %s requires immediate calibration. Maintenance request created.", equipment.name),
+                    subject=_("Calibration Overdue: %s", equipment.name),
                     message_type="email",
                 )
 
             _logger.info(
-                _("Created maintenance request ID %s (%s) for overdue equipment %s")
-                % (maintenance_request.id, maintenance_request.name, equipment.name)
+                _(
+                    "Created maintenance request ID %s (%s) for overdue equipment %s",
+                    maintenance_request.id,
+                    maintenance_request.name,
+                    equipment.name,
+                )
             )
