@@ -3,11 +3,12 @@
     <data>
         <record id="action_report_container_content" model="ir.actions.report">
             <field name="name">Container Contents</field>
-            <field name="model">records.container.content</field>
+<field name="model">container.content</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">records_management.report_container_content_template</field>
             <field name="report_file">records_management.report_container_content_template</field>
-            <field name="binding_model_id" ref="records_management.model_records_container_content"/>
+<field name="binding_model_id" ref="records_management.model_container_content"/>
+
             <field name="binding_type">report</field>
         </record>
 

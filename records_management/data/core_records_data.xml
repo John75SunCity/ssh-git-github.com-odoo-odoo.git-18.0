@@ -34,5 +34,12 @@
             <field name="info">Field Label Customization Management</field>
         </record>
 
+<!-- Container Content Models -->
+<record id="model_container_content" model="ir.model">
+    <field name="model">container.content</field>
+    <field name="name">Container Content</field>
+    <field name="info">Container Content Management</field>
+</record>
+
     </data>
 </odoo>

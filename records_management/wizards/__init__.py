@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from . import custom_box_volume_calculator
 from . import field_label_helper_wizard
 from . import fsm_reschedule_wizard
 from . import hard_drive_scan_wizard
