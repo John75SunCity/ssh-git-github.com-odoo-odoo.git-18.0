@@ -64,8 +64,8 @@
     ],
     "data": [
         # 1. Security files FIRST (critical for access rules and dependencies)
-        "security/ir.model.access.csv",  # ACLs - must be first
-        "security/records_management_security.xml",
+        "security/records_management_security.xml",  # Groups must load BEFORE CSV references them
+        "security/ir.model.access.csv",  # ACLs - must be after groups are defined
         "security/additional_models_security.xml",
         "security/intelligent_search_security.xml",
         "security/naid_security.xml",
