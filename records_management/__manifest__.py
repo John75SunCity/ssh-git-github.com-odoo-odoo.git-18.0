@@ -63,8 +63,17 @@
         "quality",
     ],
     "data": [
-        "data/container_types_base_rates.xml",
+        # 1. Security files FIRST (critical for access rules and dependencies)
+        "security/ir.model.access.csv",  # ACLs - must be first
+        "security/records_management_security.xml",
+        "security/additional_models_security.xml",
+        "security/intelligent_search_security.xml",
+        "security/naid_security.xml",
+        "security/portal_request_security.xml",
+        # 2. Data files (sequences and base data next)
+        "data/sequence_data.xml",  # Sequences often needed early
         "data/core_records_data.xml",
+        "data/container_types_base_rates.xml",
         "data/document_retrieval_rates_data.xml",
         "data/feedback_survey_data.xml",
         "data/fsm_mail_templates_data.xml",
@@ -76,16 +85,10 @@
         "data/paper_shred_configurator_data.xml",
         "data/products_data.xml",
         "data/scheduled_actions_data.xml",
-        "data/sequence_data.xml",
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
         "data/temp_inventory_configurator_data.xml",
-        "security/records_management_security.xml",
-        "security/additional_models_security.xml",
-        "security/intelligent_search_security.xml",
-        "security/ir.model.access.csv",
-        "security/naid_security.xml",
-        "security/portal_request_security.xml",
+        # 3. Views (after security and data)
         "views/records_management_menus.xml",
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_profile_views.xml",
@@ -205,6 +208,7 @@
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_coordinator_views.xml",
         "views/workflow_visualization_manager_views.xml",
+        # 4. Reports
         "reports/description_report.xml",
         "reports/document_search_attempt_report.xml",
         "reports/report_records_management_report_customer_inventory_report.xml",
@@ -213,6 +217,7 @@
         "report/naid_audit_log_reports.xml",
         "report/naid_certificate_reports.xml",
         "report/naid_compliance_action_plan_reports.xml",
+        # 5. Templates (last)
         "templates/portal_inventory_template.xml",
         "templates/portal_mobile_export.xml",
         "templates/portal_mobile_inventory_template.xml",
