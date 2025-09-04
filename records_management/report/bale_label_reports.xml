@@ -2,8 +2,10 @@
 <odoo>
     <data>
         <!-- Bale label report with technician signatures and dates -->
-<report id="bale_label_report"
-model="paper.bale" string="Bale Label" report_type="qweb-pdf"
+        <report id="bale_label_report"
+                model="records_management.bale"
+                string="Bale Label"
+                report_type="qweb-pdf"
                 name="records_management.bale_label_template"
                 file="records_management.bale_label"
                 print_report_name="'Bale_Label_%s' % (object.name)"/>
@@ -11,12 +13,11 @@ model="paper.bale" string="Bale Label" report_type="qweb-pdf"
         <!-- Print action for easy access -->
         <record id="action_print_bale_label" model="ir.actions.report">
             <field name="name">Print Bale Label</field>
-<field name="model">paper.bale</field>
+            <field name="model">records_management.bale</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">records_management.bale_label_template</field>
             <field name="report_file">records_management.bale_label</field>
-<field name="binding_model_id" ref="records_management.model_paper_bale"/>
-
+            <field name="binding_model_id" ref="records_management.model_records_management_bale"/>
             <field name="binding_type">report</field>
         </record>
 
@@ -68,8 +69,7 @@ model="paper.bale" string="Bale Label" report_type="qweb-pdf"
 
                         <div class="footer" style="border-top: 1px solid #ccc; padding-top: 10px; text-align: center; font-size: 10px; color: #666;">
                             <t t-if="doc.load_id">
-Load:<span t-field="doc.load_id.name"/>
- |
+                                Load: <span t-field="doc.load_id.name"/> |
                             </t>
                             Generated: <span t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M')"/>
                         </div>

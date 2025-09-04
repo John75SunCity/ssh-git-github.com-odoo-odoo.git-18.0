@@ -2,13 +2,12 @@
 <odoo>
     <record id="report_records_management_bale" model="ir.actions.report">
         <field name="name">Records Management Bale</field>
-<field name="model">paper.bale</field>
+        <field name="model">records.management.bale</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_records_management_bale_view</field>
         <field name="report_file">records_management.report_records_management_bale</field>
         <field name="print_report_name">"(Records Management Bale Report) %s" % (object.name or 'N/A')</field>
-<field name="binding_model_id" ref="records_management.model_paper_bale"/>
-
+        <field name="binding_model_id" ref="records_management.model_records_management_bale"/>
         <field name="binding_type">report</field>
     </record>
 

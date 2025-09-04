@@ -27,24 +27,22 @@
     </template>
     <record id="action_report_work_order_bin_assignment" model="ir.actions.report">
         <field name="name">Work Order Bin Assignment</field>
-<field name="model">work.order.shredding</field>
+        <field name="model">work.order.bin.assignment</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">records_management.report_work_order_bin_assignment</field>
-<field name="binding_model_id" ref="records_management.model_work_order_shredding"/>
-
+        <field name="binding_model_id" ref="records_management.model_work_order_bin_assignment"/>
         <field name="binding_type">report</field>
     </record>
 
     <!-- Wizard report -->
     <record id="report_work_order_bin_assignment_wizard" model="ir.actions.report">
         <field name="name">Work Order Bin Assignment Wizard</field>
-<field name="model">work.order.shredding</field>
+        <field name="model">work.order.bin.assignment.wizard</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_work_order_bin_assignment_wizard_view</field>
         <field name="report_file">records_management.report_work_order_bin_assignment_wizard</field>
         <field name="print_report_name">"(Work Order Bin Assignment Wizard Report) %s" % (object.name or 'N/A')</field>
-<field name="binding_model_id" ref="records_management.model_work_order_shredding"/>
-
+        <field name="binding_model_id" ref="records_management.model_work_order_bin_assignment_wizard"/>
         <field name="binding_type">report</field>
     </record>
 
