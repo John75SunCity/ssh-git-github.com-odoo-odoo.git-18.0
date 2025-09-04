@@ -2,6 +2,38 @@
 <odoo>
     <data>
 <!-- ========================================== -->
+<!-- ACTION DEFINITIONS (Must come first) -->
+<!-- ========================================== -->
+
+<!-- Records Container Action Definition -->
+<record id="action_records_container" model="ir.actions.act_window">
+    <field name="name">Storage Containers</field>
+    <field name="res_model">records.container</field>
+    <field name="view_mode">tree,kanban,form,calendar,graph</field>
+    <field name="context">{
+                'search_default_stored': 1,
+                'search_default_active': 1
+            }</field>
+    <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+                    Create your first storage container!
+        </p>
+        <p>
+            <b>Enterprise Container Management:</b>
+            <br/>
+                    • Visual kanban boards for container tracking<br/>
+                    • Automated barcode generation and printing<br/>
+                    • QR code generation for mobile scanning<br/>
+                    • Real-time location tracking with movement history<br/>
+                    • Document association and content management<br/>
+                    • Service request integration and workflows<br/>
+                    • Advanced analytics and reporting<br/>
+                    • Mobile-optimized for warehouse operations
+</p>
+</field>
+</record>
+
+<!-- ========================================== -->
 <!-- ROOT MENU STRUCTURE -->
 <!-- ========================================== -->
 
@@ -184,33 +216,6 @@
 <menuitem id="menu_mobile_fsm_integration" name="Mobile FSM Integration" parent="menu_system_config" action="action_mobile_fsm_integration" sequence="50" groups="records_management.group_records_manager"/>
 
 
-    </data>
-<!-- Records Container Action Definition (moved here for proper loading order) -->
-<record id="action_records_container" model="ir.actions.act_window">
-    <field name="name">Storage Containers</field>
-    <field name="res_model">records.container</field>
-    <field name="view_mode">tree,kanban,form,calendar,graph</field>
-    <field name="context">{
-                'search_default_stored': 1,
-                'search_default_active': 1
-            }</field>
-    <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-                    Create your first storage container!
-        </p>
-        <p>
-            <b>Enterprise Container Management:</b>
-            <br/>
-                    • Visual kanban boards for container tracking<br/>
-                    • Automated barcode generation and printing<br/>
-                    • QR code generation for mobile scanning<br/>
-                    • Real-time location tracking with movement history<br/>
-                    • Document association and content management<br/>
-                    • Service request integration and workflows<br/>
-                    • Advanced analytics and reporting<br/>
-                    • Mobile-optimized for warehouse operations
-</p>
-</field>
-</record>
+</data>
 
 </odoo>
