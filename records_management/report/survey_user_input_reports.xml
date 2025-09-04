@@ -2,12 +2,13 @@
 <odoo>
     <record id="report_survey_user_input" model="ir.actions.report">
         <field name="name">Survey User Input</field>
-        <field name="model">survey.user.input</field>
+<field name="model">records.survey.user.input</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_survey_user_input_view</field>
         <field name="report_file">records_management.report_survey_user_input</field>
         <field name="print_report_name">"(Survey User Input Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="records_management.model_survey_user_input"/>
+<field name="binding_model_id" ref="records_management.model_records_survey_user_input"/>
+
         <field name="binding_type">report</field>
     </record>
 

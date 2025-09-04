@@ -2,12 +2,13 @@
 <odoo>
     <record id="report_records_config_setting" model="ir.actions.report">
         <field name="name">Records Config Setting</field>
-        <field name="model">records.config.setting</field>
+<field name="model">rm.module.configurator</field>
         <field name="report_type">qweb-html</field>
         <field name="report_name">records_management.report_records_config_setting_view</field>
         <field name="report_file">records_management.report_records_config_setting</field>
         <field name="print_report_name">"(Records Config Setting Report) %s" % (object.name or 'N/A')</field>
-        <field name="binding_model_id" ref="records_management.model_records_config_setting"/>
+<field name="binding_model_id" ref="records_management.model_rm_module_configurator"/>
+
         <field name="binding_type">report</field>
     </record>
 
