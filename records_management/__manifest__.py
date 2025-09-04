@@ -164,7 +164,6 @@
         "views/records_location_report_wizard_views.xml",
         "views/records_location_views.xml",
         "views/records_management_bale_views.xml",
-        "views/records_management_base_menus.xml",
         "views/records_permanent_flag_wizard_views.xml",
         "views/records_policy_version_views.xml",
         "views/records_promotional_discount_views.xml",

@@ -51,7 +51,10 @@
 
 <menuitem id="menu_customer_feedback" name="Customer Feedback" parent="menu_records_portal" action="action_customer_feedback" sequence="20" groups="records_management.group_records_user"/>
 
-<menuitem id="menu_portal_feedback" name="Portal Feedback Analytics" parent="menu_records_portal" action="action_portal_feedback" sequence="30" groups="records_management.group_records_manager"/>
+<menuitem id="menu_portal_feedback" name="Portal Feedback" parent="menu_records_portal" action="action_feedback_responses" sequence="30" groups="records_management.group_records_manager"/>
+
+<menuitem id="menu_feedback_analytics" name="Feedback Analytics" parent="menu_portal_feedback" action="action_feedback_analytics" sequence="10" groups="records_management.group_records_manager"/>
+
 
 <!-- ========================================== -->
 <!-- INVENTORY MENU (Level 1) -->
@@ -108,6 +111,15 @@
 
 <menuitem id="menu_revenue_forecaster" name="Revenue Forecasting" parent="menu_records_reporting" action="action_revenue_forecaster" sequence="40" groups="records_management.group_records_manager"/>
 
+<!-- Mobile & Analytics Features -->
+<menuitem id="menu_mobile_dashboard" name="Mobile Dashboard" parent="menu_records_reporting" action="action_mobile_dashboard" sequence="50" groups="records_management.group_records_user,records_management.group_records_manager"/>
+
+<menuitem id="menu_mobile_analytics" name="Mobile Analytics" parent="menu_records_reporting" action="action_mobile_analytics" sequence="60" groups="records_management.group_records_manager"/>
+
+<menuitem id="menu_workflow_analytics" name="Workflow Analytics" parent="menu_records_reporting" action="action_workflow_analytics" sequence="70" groups="records_management.group_records_manager"/>
+
+<menuitem id="menu_fsm_analytics" name="FSM Analytics" parent="menu_records_reporting" action="action_fsm_analytics" sequence="80" groups="records_management.group_records_manager"/>
+
 <!-- ========================================== -->
 <!-- CONFIGURATION MENU (Level 1) -->
 <!-- ========================================== -->
@@ -118,18 +130,59 @@
         <menuitem id="menu_records_document_type" name="Document Types" parent="menu_records_master_data" action="action_records_document_type" sequence="20" groups="records_management.group_records_manager"/>
         <menuitem id="menu_records_tags" name="Classification Tags" parent="menu_records_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager"/>
         <menuitem id="menu_records_departments" name="Records Departments" parent="menu_records_master_data" action="action_records_department" sequence="40" groups="records_management.group_records_manager"/>
-        <!-- Products Sub-Menu -->
+<!-- Products &amp; Services Sub-Menu -->
         <menuitem id="menu_records_products" name="Products &amp; Services" parent="menu_records_configuration" sequence="20" groups="records_management.group_records_manager"/>
         <menuitem id="menu_records_products_list" name="Service Products" parent="menu_records_products" action="product.product_template_action" sequence="10" groups="records_management.group_records_manager"/>
         <menuitem id="menu_records_product_variants" name="Product Variants" parent="menu_records_products" action="product.product_normal_action" sequence="20" groups="records_management.group_records_manager"/>
+<!-- Department Billing Contacts -->
+<menuitem id="menu_department_billing_contacts" name="Department Billing Contacts" parent="menu_records_configuration" action="action_department_billing_contacts" sequence="25" groups="records_management.group_records_manager"/>
+
         <!-- Security &amp; Access Sub-Menu -->
         <menuitem id="menu_records_security" name="Security &amp; Access" parent="menu_records_configuration" sequence="30" groups="records_management.group_records_manager"/>
         <menuitem id="menu_bin_key_management" name="Bin Key Management" parent="menu_records_security" action="action_bin_key_management" sequence="10" groups="records_management.group_records_manager"/>
         <menuitem id="menu_bin_keys" name="Physical Bin Keys" parent="menu_records_security" action="action_bin_key" sequence="20" groups="records_management.group_records_manager"/>
+<!-- Service Items Sub-Menu -->
+<menuitem id="menu_service_item_main" name="Service Items" parent="menu_records_configuration" sequence="35" groups="records_management.group_records_manager"/>
+<!-- Service Items Dashboard -->
+<menuitem id="menu_service_item_dashboard" name="Dashboard" parent="menu_service_item_main" action="records_management.action_service_item_dashboard" sequence="1" groups="records_management.group_records_manager"/>
+<!-- Service Items Management -->
+<menuitem id="menu_service_item_list" name="All Service Items" parent="menu_service_item_main" action="records_management.action_service_item" sequence="10" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_active" name="Active Service Items" parent="menu_service_item_main" action="records_management.action_service_item_active" sequence="15" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_categories" name="Categories" parent="menu_service_item_main" action="records_management.action_service_item_category" sequence="20" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_templates" name="Templates" parent="menu_service_item_main" action="records_management.action_service_item_template" sequence="25" groups="records_management.group_records_manager"/>
+<!-- Service Operations -->
+<menuitem id="menu_service_item_operations" name="Operations" parent="menu_service_item_main" sequence="30" groups="records_management.group_records_user"/>
+<menuitem id="menu_service_item_requests" name="Service Requests" parent="menu_service_item_operations" action="records_management.action_service_item_request" sequence="10" groups="records_management.group_records_user"/>
+<menuitem id="menu_service_item_scheduling" name="Scheduling" parent="menu_service_item_operations" action="records_management.action_service_item_schedule" sequence="15" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_billing" name="Billing" parent="menu_service_item_operations" action="records_management.action_service_item_billing" sequence="20" groups="records_management.group_records_manager"/>
+<!-- Service Reports -->
+<menuitem id="menu_service_item_reports" name="Reports &amp; Analytics" parent="menu_service_item_main" sequence="40" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_performance_report" name="Performance Report" parent="menu_service_item_reports" action="records_management.action_service_item_performance_report" sequence="10" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_analytics" name="Usage Analytics" parent="menu_service_item_reports" action="records_management.action_service_item_analytics" sequence="15" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_revenue_report" name="Revenue Report" parent="menu_service_item_reports" action="records_management.action_service_item_revenue_report" sequence="20" groups="records_management.group_records_manager"/>
+<!-- Service Settings -->
+<menuitem id="menu_service_item_settings" name="Settings" parent="menu_service_item_main" sequence="50" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_configuration" name="Configuration" parent="menu_service_item_settings" action="records_management.action_rm_module_configurator_service_items" sequence="10" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_pricing" name="Pricing Rules" parent="menu_service_item_settings" action="records_management.action_service_item_pricing_rules" sequence="15" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_quality" name="Quality Controls" parent="menu_service_item_settings" action="records_management.action_service_item_quality_control" sequence="20" groups="records_management.group_records_manager"/>
+<!-- Mobile &amp; FSM Integration -->
+<menuitem id="menu_service_item_mobile" name="Mobile &amp; FSM" parent="menu_service_item_main" sequence="60" groups="records_management.group_records_technician"/>
+<menuitem id="menu_service_item_mobile_tasks" name="Mobile Tasks" parent="menu_service_item_mobile" action="records_management.action_service_item_mobile_tasks" sequence="10" groups="records_management.group_records_technician"/>
+<menuitem id="menu_service_item_fsm" name="FSM Integration" parent="menu_service_item_mobile" action="records_management.action_service_item_fsm_integration" sequence="15" groups="records_management.group_records_technician"/>
+<!-- Portal Integration -->
+<menuitem id="menu_service_item_portal" name="Portal Integration" parent="menu_service_item_main" sequence="70" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_portal_requests" name="Portal Requests" parent="menu_service_item_portal" action="records_management.action_portal_service_requests" sequence="10" groups="records_management.group_records_manager"/>
+<menuitem id="menu_service_item_self_service" name="Self-Service Setup" parent="menu_service_item_portal" action="records_management.action_service_item_self_service" sequence="15" groups="records_management.group_records_manager"/>
+
         <!-- System Configuration Sub-Menu -->
         <menuitem id="menu_system_config" name="System Configuration" parent="menu_records_configuration" sequence="40" groups="records_management.group_records_manager"/>
         <menuitem id="menu_rm_module_configurator" name="RM Module Configurator" parent="menu_system_config" action="action_rm_module_configurator" sequence="10" groups="records_management.group_records_manager"/>
         <menuitem id="menu_field_label_customization" name="Field Label Customization" parent="menu_system_config" action="action_field_label_customization" sequence="20" groups="records_management.group_records_manager"/>
+<!-- Mobile & FSM Settings -->
+<menuitem id="menu_mobile_settings" name="Mobile Settings" parent="menu_system_config" action="action_mobile_settings" sequence="30" groups="records_management.group_records_manager"/>
+<menuitem id="menu_enhanced_fsm_integration" name="Enhanced FSM Integration" parent="menu_system_config" action="action_enhanced_fsm_integration" sequence="40" groups="records_management.group_records_manager"/>
+<menuitem id="menu_mobile_fsm_integration" name="Mobile FSM Integration" parent="menu_system_config" action="action_mobile_fsm_integration" sequence="50" groups="records_management.group_records_manager"/>
+
 
     </data>
 <!-- Records Container Action Definition (moved here for proper loading order) -->
