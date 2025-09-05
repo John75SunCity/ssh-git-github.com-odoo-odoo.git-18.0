@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 class PickupRequestItem(models.Model):
     _name = 'pickup.request.item'
     _description = 'Pickup Request Item'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
     # ============================================================================
@@ -23,6 +24,8 @@ class PickupRequestItem(models.Model):
 
     quantity = fields.Integer(string='Quantity', default=1, required=True)
     estimated_weight = fields.Float(string='Estimated Weight (lbs)')
+    weight = fields.Float(string='Actual Weight (lbs)', default=0.0)  # Added for constraints
+    unit_cost = fields.Float(string='Unit Cost', default=0.0)  # Added for constraints
     notes = fields.Text(string='Notes')
 
     # For document boxes
@@ -34,6 +37,13 @@ class PickupRequestItem(models.Model):
     ], string='Box Size')
 
     # Status tracking
+    state = fields.Selection([  # Added for workflow management
+        ('draft', 'Draft'),
+        ('collected', 'Collected'),
+        ('delivered', 'Delivered'),
+        ('exception', 'Exception'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', readonly=True)
     collected = fields.Boolean(string='Collected', default=False)
     collected_date = fields.Datetime(string='Collection Date', readonly=True)
 
@@ -54,6 +64,20 @@ class PickupRequestItem(models.Model):
             if item.estimated_weight and item.estimated_weight < 0:
                 raise ValidationError(_("Estimated weight must be positive."))
 
+    @api.constrains('weight')
+    def _check_weights(self):
+        """Validate weights are positive"""
+        for item in self:
+            if item.weight < 0:
+                raise ValidationError(_("Weight cannot be negative."))
+
+    @api.constrains('unit_cost')
+    def _check_unit_cost(self):
+        """Validate unit cost is not negative"""
+        for item in self:
+            if item.unit_cost < 0:
+                raise ValidationError(_("Unit cost cannot be negative."))
+
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
@@ -62,37 +86,38 @@ class PickupRequestItem(models.Model):
         self.ensure_one()
         self.write({
             'collected': True,
-            'collected_date': fields.Datetime.now()
+            'collected_date': fields.Datetime.now(),
+            'state': 'collected'  # Updated to use state field
         })
-        self.request_id.message_post(body=_("Item '%s' marked as collected.") % self.name)
+        self.request_id.message_post(body=_("Item '%s' marked as collected.", self.name))
 
     def action_unmark_collected(self):
         """Unmark item as collected"""
         self.ensure_one()
         self.write({
             'collected': False,
-            'collected_date': False
+            'collected_date': False,
+            'state': 'delivered'  # Updated to use state field
         })
-        self.request_id.message_post(body=_("Item '%s' unmarked as collected.") % self.name)
-        self.write({'state': 'delivered'})
+        self.request_id.message_post(body=_("Item '%s' unmarked as collected.", self.name))
         self.create_naid_audit_log('delivery', f'Item {self.name} delivered')
 
     def action_mark_exception(self):
         """Mark item as having an exception"""
         self.ensure_one()
-        self.write({'state': 'exception'})
+        self.write({'state': 'exception'})  # Now uses state field
         self.create_naid_audit_log('exception', f'Exception recorded for item {self.name}')
 
     def action_cancel(self):
         """Cancel the pickup item"""
         self.ensure_one()
-        self.write({'state': 'cancelled'})
+        self.write({'state': 'cancelled'})  # Now uses state field
         self.create_naid_audit_log('cancellation', f'Item {self.name} cancelled')
 
     def action_reset_to_draft(self):
         """Reset item to draft state"""
         self.ensure_one()
-        self.write({'state': 'draft'})
+        self.write({'state': 'draft'})  # Now uses state field
         self.create_naid_audit_log('reset', f'Item {self.name} reset to draft')
 
     # ============================================================================
@@ -111,35 +136,11 @@ class PickupRequestItem(models.Model):
             })
 
     # ============================================================================
-    # VALIDATION METHODS
-    # ============================================================================
-    @api.constrains('weight')
-    def _check_weights(self):
-        """Validate weights are positive"""
-        for item in self:
-            if item.weight < 0:
-                raise ValidationError(_("Weight cannot be negative."))
-
-    @api.constrains('unit_cost')
-    def _check_unit_cost(self):
-        """Validate unit cost is not negative"""
-        for item in self:
-            if item.unit_cost < 0:
-                raise ValidationError(_("Unit cost cannot be negative."))
-
-    @api.constrains('quantity')
-    def _check_quantity(self):
-        """Validate quantity is positive"""
-        for item in self:
-            if item.quantity <= 0:
-                raise ValidationError(_("Quantity must be greater than zero."))
-
-    # ============================================================================
     # UTILITY METHODS
     # ============================================================================
     def get_items_by_status(self, status_list=None):
         """Get items filtered by status"""
         domain = []
         if status_list:
-            domain.append(('state', 'in', status_list))
+            domain.append(('state', 'in', status_list))  # Updated to use state field
         return self.search(domain)

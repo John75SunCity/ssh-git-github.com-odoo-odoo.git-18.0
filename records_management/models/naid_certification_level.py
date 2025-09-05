@@ -6,6 +6,7 @@ from odoo import api, fields, models
 class NAIDCertificationLevel(models.Model):
     _name = 'naid.certification.level'
     _description = 'NAID Certification Level'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'level_code'
     _rec_name = 'name'
 

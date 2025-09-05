@@ -4,8 +4,8 @@ from odoo import models, fields
 
 class RecordsDepartmentBillingApproval(models.Model):
     _name = 'records.department.billing.approval'
-    department_id = fields.Many2one("records.department", string="Department")
     _description = 'Department Billing Approval'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'approval_date desc'
 
     billing_contact_id = fields.Many2one(

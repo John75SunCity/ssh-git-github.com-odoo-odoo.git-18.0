@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError
 class RecordsApprovalWorkflowLine(models.Model):
     _name = 'records.approval.workflow.line'
     _description = 'Records Approval Workflow Line'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
     # ============================================================================

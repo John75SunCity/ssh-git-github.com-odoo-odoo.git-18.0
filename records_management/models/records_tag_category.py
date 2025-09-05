@@ -4,6 +4,7 @@ from odoo import models, fields
 class RecordsTagCategory(models.Model):
     _name = 'records.tag.category'
     _description = 'Records Tag Category'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, name'
 
     name = fields.Char(string='Category Name', required=True, translate=True)
