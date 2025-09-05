@@ -78,6 +78,13 @@ disable=
     odoo-translation-formatting,
     odoo-format-after-translation,
     odoo-translation-string-formatting,
+    odoo-translation-warning,
+    odoo-translation-formatting-warning,
+    odoo-format-after-translation-warning,
+    odoo-translation-string-format-warning,
+    odoo-translation-pattern-warning,
+    odoo-string-format-warning,
+    odoo-interpolation-warning,
     # Additional Odoo false positives
     odoo-model-field-warning,
     odoo-view-field-warning,

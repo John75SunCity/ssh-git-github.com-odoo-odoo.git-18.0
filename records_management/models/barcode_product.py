@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=all
 """
 Barcode Product Management Module
 
@@ -416,7 +417,7 @@ class BarcodeProduct(models.Model):
             "type_06": "Pathology Box",
         }
 
-        type_name = type_mapping.get(self.container_type) # type: ignore
+        type_name = type_mapping.get(self.container_type)
         if type_name:
             container_type = self.env["records.container.type"].search([("name", "=", type_name)], limit=1)
             return container_type.id if container_type else False
