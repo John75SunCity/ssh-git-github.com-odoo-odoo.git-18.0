@@ -231,7 +231,7 @@ class BaseRate(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_activate_rates(self):
+    def action_activate(self):
         """Activate these rates and deactivate others for the same company."""
         self.ensure_one()
         other_rates = self.search([
@@ -251,8 +251,94 @@ class BaseRate(models.Model):
             }
         }
 
+    def action_expire(self):
+        """Expire these rates."""
+        self.ensure_one()
+        self.write({"expiration_date": fields.Date.today(), "active": False, "state": "archived"})
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {"title": _("Success"), "message": _("Base rates expired successfully."), "type": "success"},
+        }
+
+    def action_run_forecast(self):
+        """Open revenue forecaster with these rates."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Revenue Forecast - %s") % self.name,
+            "res_model": "revenue.forecaster",
+            "view_mode": "form",
+            "target": "new",
+            "context": {
+                "default_base_rate_id": self.id,
+                "default_forecast_period": "12_months",
+            },
+        }
+
+    def action_approve_changes(self):
+        """Approve rate changes (manager action)."""
+        self.ensure_one()
+        self.write({"state": "active"})
+        self.message_post(body=_("Rate changes approved by %s") % self.env.user.name)
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {"title": _("Approved"), "message": _("Rate changes have been approved."), "type": "success"},
+        }
+
+    def action_view_customers_using_rate(self):
+        """View customers using this base rate."""
+        self.ensure_one()
+
+        # Find customers without negotiated rates
+        negotiated_partners = (
+            self.env["customer.negotiated.rate"]
+            .search([("state", "=", "active"), ("company_id", "=", self.company_id.id)])
+            .mapped("partner_id")
+        )
+
+        base_rate_customers = self.env["res.partner"].search(
+            [
+                ("is_company", "=", True),
+                ("company_id", "=", self.company_id.id),
+                ("id", "not in", negotiated_partners.ids),
+            ]
+        )
+
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Customers Using Base Rates"),
+            "res_model": "res.partner",
+            "view_mode": "tree,form",
+            "domain": [("id", "in", base_rate_customers.ids)],
+            "context": {
+                "search_default_is_company": 1,
+            },
+        }
+
+    def action_view_negotiated_rates(self):
+        """View negotiated rates for customers."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Customer Negotiated Rates"),
+            "res_model": "customer.negotiated.rate",
+            "view_mode": "tree,form",
+            "domain": [("company_id", "=", self.company_id.id)],
+            "context": {
+                "search_default_active": 1,
+            },
+        }
+
+    def action_activate_rates(self):
+        """Legacy method - redirect to action_activate."""
+        self.ensure_one()
+        return self.action_activate()
+
     def action_archive_rates(self):
         """Archive these rates."""
+        self.ensure_one()
         self.write({'active': False, 'state': 'archived'})
         return True
 
@@ -269,5 +355,5 @@ class BaseRate(models.Model):
                     company = self.env['res.company'].browse(vals.get('company_id'))
                     company_name = company.name if company else None
                 company_name = company_name or (self.env.company.name if self.env.company else '')
-                vals['name'] = _('Base Rates for %s', company_name)
+                vals["name"] = _("Base Rates for %s") % company_name
         return super().create(vals_list)

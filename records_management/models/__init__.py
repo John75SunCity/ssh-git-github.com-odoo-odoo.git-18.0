@@ -125,6 +125,7 @@ from . import (
     pickup_request_line,
     pickup_route,
     pickup_route_stop,
+    rate_change_confirmation_wizard,
     pickup_schedule_wizard,
     portal_feedback,
     portal_feedback_action,
@@ -250,4 +251,5 @@ from . import (
     work_order_retrieval,
     work_order_shredding,
     records_retrieval_work_order,
+    revenue_forecaster,
 )

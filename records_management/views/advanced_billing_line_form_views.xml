@@ -48,7 +48,7 @@
         </record>
 
         <!-- Form view for advanced.billing.line (detailed version) -->
-        <record id="advanced_billing_line_view_form" model="ir.ui.view">
+<record id="advanced_billing_line_view_form_detailed" model="ir.ui.view">
             <field name="name">advanced.billing.line.view.form.detailed</field>
             <field name="priority">20</field>
             <field name="model">advanced.billing.line</field>

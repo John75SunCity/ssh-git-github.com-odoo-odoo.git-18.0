@@ -450,3 +450,57 @@ class BarcodeProduct(models.Model):
                     raise ValidationError(
                         _("Barcode length %s suggests category '%s', but category '%s' is selected. Please correct the category or barcode.") % (length, expected_category, record.product_category)
                     )
+
+    # ============================================================================
+    # MISSING ACTION METHODS FOR VIEW COMPATIBILITY
+    # ============================================================================
+    def action_deactivate(self):
+        """Deactivate the barcode product."""
+        self.ensure_one()
+        self.write({"active": False})
+        self.message_post(body=_("Barcode product deactivated."))
+
+    def action_update_pricing(self):
+        """Update pricing for the barcode product."""
+        self.ensure_one()
+        # Placeholder for pricing update logic
+        self.message_post(body=_("Pricing update initiated."))
+
+    def action_generate_barcodes(self):
+        """Generate barcodes for the product."""
+        self.ensure_one()
+        # Placeholder for barcode generation logic
+        self.message_post(body=_("Barcode generation initiated."))
+
+    def action_view_storage_boxes(self):
+        """View related storage boxes."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Storage Boxes",
+            "res_model": "records.storage.box",
+            "view_mode": "tree,form",
+            "domain": [("product_id", "=", self.id)],
+        }
+
+    def action_view_shred_bins(self):
+        """View related shred bins."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Shred Bins",
+            "res_model": "shredding.bin",
+            "view_mode": "tree,form",
+            "domain": [("product_id", "=", self.id)],
+        }
+
+    def action_view_revenue(self):
+        """View revenue analytics."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Revenue Analytics",
+            "res_model": "barcode.product",
+            "view_mode": "graph,pivot",
+            "res_id": self.id,
+        }

@@ -110,3 +110,8 @@ class AdvancedBillingProfile(models.Model):
         self.ensure_one()
         self.state = 'archived'
         self.active = False
+
+    def action_close(self):
+        """Close the billing profile by archiving it."""
+        self.ensure_one()
+        return self.action_archive()

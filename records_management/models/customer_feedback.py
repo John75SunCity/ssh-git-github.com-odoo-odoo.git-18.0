@@ -197,6 +197,21 @@ class CustomerFeedback(models.Model):
         self.write({"state": "closed"})
         self.message_post(body=_("Feedback closed."))
 
+    def action_escalate(self):
+        """Escalate feedback to higher priority."""
+        self.ensure_one()
+        if self.state in ["resolved", "closed"]:
+            raise UserError(_("Cannot escalate resolved or closed feedback."))
+
+        # Increase priority
+        if self.priority == "0":
+            self.priority = "1"
+        elif self.priority == "1":
+            self.priority = "2"
+
+        self.message_post(body=_("Feedback escalated by %s" % self.env.user.name))
+        return True
+
     def action_reopen(self):
         self.ensure_one()
         if self.state != "closed":
@@ -213,4 +228,3 @@ class CustomerFeedback(models.Model):
             if vals.get("name", _("New")) == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("customer.feedback") or _("New")
         return super().create(vals_list)
-
