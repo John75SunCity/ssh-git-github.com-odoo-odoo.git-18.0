@@ -99,6 +99,7 @@ class RevenueForecast(models.Model):
         self.message_post(body=_("Forecast closed."))
 
     def action_cancel(self):
+        self.ensure_one()
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Forecast cancelled."))
 
