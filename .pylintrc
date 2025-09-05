@@ -75,6 +75,9 @@ disable=
     odoo-translation-pattern,
     odoo-format-string-translation,
     odoo-translation-string-format,
+    odoo-translation-formatting,
+    odoo-format-after-translation,
+    odoo-translation-string-formatting,
     # Additional Odoo false positives
     odoo-model-field-warning,
     odoo-view-field-warning,
