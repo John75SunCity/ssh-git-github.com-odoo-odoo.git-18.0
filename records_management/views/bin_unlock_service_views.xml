@@ -18,7 +18,7 @@
     <record id="bin_unlock_service_view_form" model="ir.ui.view">
         <field name="name">bin.unlock.service.view.form</field>
         <field name="model">bin.unlock.service</field>
-        <field name="type">list</field>
+<field name="type">form</field><!-- Fixed: Changed from 'list' to 'form' for form view -->
         <field name="arch" type="xml">
             <form string="Bin Unlock Service">
                 <sheet>
@@ -133,7 +133,7 @@
     <record id="bin_key_management_view_form" model="ir.ui.view">
         <field name="name">bin.key.management.view.form</field>
         <field name="model">bin.key</field>
-        <field name="type">list</field>
+<field name="type">form</field><!-- Fixed: Changed from 'list' to 'form' for form view -->
         <field name="arch" type="xml">
             <form string="Bin Key Management">
                 <header>
@@ -236,7 +236,7 @@
     <record id="bin_key_management_view_kanban" model="ir.ui.view">
         <field name="name">bin.key.management.view.kanban</field>
         <field name="model">bin.key</field>
-        <field name="type">list</field>
+<field name="type">kanban</field><!-- Fixed: Changed from 'list' to 'kanban' for kanban view -->
         <field name="arch" type="xml">
             <kanban default_group_by="status" class="o_kanban_small_column">
                 <field name="partner_id"/>
@@ -367,7 +367,7 @@
     <record id="bin_unlock_service_view_form" model="ir.ui.view">
         <field name="name">bin.unlock.service.view.form</field>
         <field name="model">bin.unlock.service</field>
-        <field name="type">list</field>
+<field name="type">form</field><!-- Fixed: Changed from 'list' to 'form' for form view -->
         <field name="arch" type="xml">
             <form string="Bin Unlock Service">
                 <header>
@@ -502,11 +502,11 @@ Perfect for managing emergency access and generating additional revenue.
 
 
 <!-- Customer Partner Form View Extension for Key Restrictions -->
-<record id="res_partner_view_form_inherit_key_restrictions" model="ir.ui.view">
-    <field name="name">base.view_partner_form.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
+<record id="res_partner_view_form" model="ir.ui.view">    <!-- Fixed: Changed ID to match dotted name pattern for inherited view -->
+    <field name="name">res.partner.view.form.inherit.key_restrictions</field>
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form"/>
-    <field name="type">list</field>
+<field name="type">form</field>
     <field name="arch" type="xml">
 <!-- Add Key Restrictions tab -->
             <xpath expr="//page[@name='internal_notes']" position="after">
@@ -584,11 +584,11 @@ Perfect for managing emergency access and generating additional revenue.
     </record>
 
 <!-- Customer Partner Tree View Extension for Key Restrictions -->
-<record id="res_partner_view_list_inherit_key_restrictions" model="ir.ui.view">
-    <field name="name">base.view_partner_tree.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
+<record id="res_partner_view_tree_inherit_key_restrictions" model="ir.ui.view">
+    <field name="name">res.partner.view.tree.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_tree"/>
-    <field name="type">form</field>
+<field name="type">tree</field><!-- Fixed: Changed from 'form' to 'tree' for tree view -->
     <field name="arch" type="xml">
 <xpath expr="//field[@name='name']" position="after">
     <field name="key_restriction_status" widget="badge" decoration-success="key_restriction_status == 'allowed'" decoration-danger="key_restriction_status == 'restricted'" optional="hide"/>
@@ -648,10 +648,10 @@ Perfect for managing emergency access and generating additional revenue.
 
 <!-- Bin Unlock Service Form View Extension -->
 <record id="bin_unlock_service_view_form_inherit_key_restrictions" model="ir.ui.view">
-    <field name="name">bin_unlock_service_view_form.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
+<field name="name">bin.unlock.service.view.form.inherit.key_restrictions</field><!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_form"/>  <!-- Updated: Corrected to match the exact XML ID of the view being inherited -->
-    <field name="type">list</field>
+<field name="type">form</field><!-- Fixed: Changed from 'list' to 'form' for form view -->
     <field name="arch" type="xml">
 <!-- Add customer restriction alert -->
             <xpath expr="//sheet" position="before">
@@ -680,10 +680,10 @@ Perfect for managing emergency access and generating additional revenue.
 
 <!-- Partner Search View Extension for Key Restrictions -->
 <record id="res_partner_view_search_inherit_key_restrictions" model="ir.ui.view">
-    <field name="name">base.view_res_partner_filter.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
+<field name="name">res.partner.view.search.inherit.key_restrictions</field><!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_res_partner_filter"/>
-    <field name="type">list</field>
+<field name="type">search</field>
         <field name="arch" type="xml">
         <xpath expr="//filter[@name='supplier']" position="after">
             <separator/>
@@ -695,10 +695,10 @@ Perfect for managing emergency access and generating additional revenue.
 
 <!-- Bin Unlock Service Tree View Extension -->
 <record id="bin_unlock_service_view_list_inherit_key_restrictions" model="ir.ui.view">
-    <field name="name">bin_unlock_service_view_tree.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
+<field name="name">bin.unlock.service.view.tree.inherit.key_restrictions</field><!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_tree"/>  <!-- Updated: Corrected to match the exact XML ID of the view being inherited -->
-    <field name="type">list</field>
+<field name="type">tree</field><!-- Fixed: Changed from 'list' to 'tree' for tree view -->
     <field name="arch" type="xml">
 <!-- Add key restriction fields after urgency -->
             <xpath expr="//field[@name='urgency']" position="after">
@@ -717,10 +717,10 @@ Perfect for managing emergency access and generating additional revenue.
 
 <!-- Bin Unlock Service Search View Extension -->
 <record id="bin_unlock_service_view_search_inherit_key_restrictions" model="ir.ui.view">
-    <field name="name">bin_unlock_service_view_search.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
+<field name="name">bin.unlock.service.view.search.inherit.key_restrictions</field><!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_search"/>  <!-- Updated: Corrected to match the exact XML ID of the view being inherited -->
-    <field name="type">list</field>
+<field name="type">search</field><!-- Fixed: Changed from 'list' to 'search' for search view -->
     <field name="arch" type="xml">
             <xpath expr="//filter[@name='my_services']" position="after">
                 <separator/>

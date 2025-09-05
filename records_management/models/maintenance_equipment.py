@@ -1,7 +1,7 @@
 import logging
 
+from dateutil.relativedelta import relativedelta  # type: ignore
 
-from dateutil.relativedelta import relativedelta
 from odoo import _, api, fields, models
 
 # Removed deprecated import of dp; use digits='Product Price' directly in fields
@@ -100,7 +100,7 @@ class MaintenanceEquipment(models.Model):
             ('calibration_required', '=', True),
             ('next_calibration_date', '<=', today)
         ])
-        _logger.info(_("Found %s equipment items requiring calibration", len(overdue_equipment)))
+        _logger.info(_('Found %s equipment items requiring calibration') % len(overdue_equipment))
 
         for equipment in overdue_equipment:
             maintenance_request = self.env["maintenance.request"].create(

@@ -1,13 +1,16 @@
 # ============================================================================
 # IMPORTS & DEPENDENCIES
 # ============================================================================
-from dateutil.relativedelta import relativedelta
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-from datetime import datetime, date, timedelta
+# Fixed: Reordered imports per Odoo standards (stdlib → third-party → Odoo core → Odoo addons)
 import io
 import base64
 import logging
+from datetime import datetime, date, timedelta
+
+from dateutil.relativedelta import relativedelta  # type: ignore
+
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -93,7 +96,7 @@ class RecordsDocument(models.Model):
         comodel_name="records.retention.policy", string="Retention Policy", tracking=True
     )
     retention_rule_id = fields.Many2one(comodel_name="records.retention.rule", string="Retention Rule", tracking=True)
-    series_id = fields.Many2one(comodel_name="records.series", string="Series", tracking=True)
+    series_id = fields.Many2one(comodel_name="records.series", string="Serie", tracking=True)  # Fixed: Changed "Series" to "Serie" for singular form consistency
     storage_box_id = fields.Many2one(comodel_name="records.storage.box", string="Storage Box", tracking=True)
     request_id = fields.Many2one(comodel_name="records.request", string="Request", tracking=True)
 
@@ -158,7 +161,7 @@ class RecordsDocument(models.Model):
     destruction_certificate_id = fields.Many2one(comodel_name="naid.certificate", string="Destruction Certificate")
     naid_destruction_verified = fields.Boolean("NAID Destruction Verified")
     destruction_authorized_by_id = fields.Many2one(comodel_name="res.users", string="Destruction Authorized By")
-    destruction_witness_id = fields.Many2one(comodel_name="res.partner", string="Destruction Witness")
+    destruction_witness_id = fields.Many2one(comodel_name="res.partner", string="Destruction Witness")  # Already singular, no change needed
     destruction_facility = fields.Char("Destruction Facility")
     destruction_notes = fields.Text("Destruction Notes")
 

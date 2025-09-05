@@ -4,7 +4,7 @@
 
         <!-- Base Rates Form View -->
         <record id="base_rates_view_form" model="ir.ui.view">
-            <field name="name">base.rates.form</field>
+<field name="name">base.rates.view.form</field>
             <field name="model">base.rates</field>
             <field name="type">form</field>
         <field name="arch" type="xml">
@@ -48,9 +48,9 @@
 
         <!-- Base Rates Tree View -->
         <record id="base_rates_view_tree" model="ir.ui.view">
-            <field name="name">base.rates.tree</field>
+<field name="name">base.rates.view.tree</field>
             <field name="model">base.rates</field>
-            <field name="type">tree</field>
+<field name="type">list</field>
         <field name="arch" type="xml">
                 <list string="Base Rates">
                     <field name="name"/>
@@ -67,7 +67,7 @@
 
         <!-- Base Rates Search View -->
         <record id="base_rates_view_search" model="ir.ui.view">
-            <field name="name">base.rates.search</field>
+<field name="name">base.rates.view.search</field>
             <field name="model">base.rates</field>
             <field name="type">search</field>
         <field name="arch" type="xml">
