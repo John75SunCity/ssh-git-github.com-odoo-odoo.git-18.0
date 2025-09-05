@@ -890,6 +890,27 @@ class RmModuleConfigurator(models.Model):
         string="Portal Photo Access", default=False, help="Allow customers to view linked photos"
     )
 
+    checklist_equipment_integration = fields.Boolean(
+        string='Enable Equipment Integration in Checklists',
+        default=False,
+        help='Allow linking checklist items to maintenance equipment'
+    )
+    checklist_fsm_integration = fields.Boolean(
+        string='Enable FSM Integration in Checklists',
+        default=False,
+        help='Allow linking checklist items to FSM tasks'
+    )
+    checklist_visitor_integration = fields.Boolean(
+        string='Enable Visitor Integration in Checklists',
+        default=False,
+        help='Allow linking checklist items to visitor records'
+    )
+    checklist_location_integration = fields.Boolean(
+        string='Enable Location Integration in Checklists',
+        default=False,
+        help='Allow linking checklist items to stock locations'
+    )
+
     @api.model
     def set_config_parameter(self, config_key, value, config_type="parameter", name=None, category=None):
         """

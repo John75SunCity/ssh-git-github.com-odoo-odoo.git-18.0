@@ -16,11 +16,10 @@
 
     <!-- Form view for naid.compliance.checklist.item -->
     <record id="naid_compliance_checklist_item_view_form" model="ir.ui.view">
-        <field name="name">naid.compliance.checklist.item.view.form</field>
-        <field name="model">naid.compliance.checklist.item</field>
-        <field name="type">form</field>
+<field name="name">naid.compliance.checklist.item.form</field>
+<field name="model">naid.compliance.checklist.item</field>
         <field name="arch" type="xml">
-            <form string="Naid.Compliance.Checklist.Item">
+<form>
                 <sheet>
                     <div class="oe_title">
                         <label for="name"/>
@@ -28,6 +27,12 @@
                             <field name="name" placeholder="Name..."/>
                         </h1>
                     </div>
+<group>
+    <field name="equipment_id" attrs="{'invisible': [('configurator_toggle', '=', False)]}" />
+    <field name="task_id" attrs="{'invisible': [('configurator_toggle', '=', False)]}" />
+    <field name="visitor_id" attrs="{'invisible': [('configurator_toggle', '=', False)]}" />
+    <field name="location_id" attrs="{'invisible': [('configurator_toggle', '=', False)]}" />
+</group>
                 </sheet>
             </form>
         </field>

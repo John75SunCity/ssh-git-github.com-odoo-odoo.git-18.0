@@ -6,7 +6,7 @@ from odoo import api, fields, models
 class NAIDEquipmentStandard(models.Model):
     _name = 'naid.equipment.standard'
     _description = 'NAID Equipment Standard'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'maintenance.equipment']
     _order = 'equipment_type, name'
     _rec_name = 'name'
 
@@ -47,6 +47,13 @@ class NAIDEquipmentStandard(models.Model):
 
     # Active status
     active = fields.Boolean(string='Active', default=True)
+
+    # Add relation to equipment if needed
+    equipment_id = fields.Many2one(
+        comodel_name='maintenance.equipment',
+        string='Related Equipment',
+        help='Link to the specific equipment this standard applies to'
+    )
 
     @api.depends('name', 'equipment_type')
     def _compute_display_name(self):

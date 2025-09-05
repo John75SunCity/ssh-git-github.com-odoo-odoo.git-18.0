@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from odoo import models, fields
 
 
@@ -16,6 +17,28 @@ class NAIDComplianceChecklistItem(models.Model):
     is_checked = fields.Boolean(string='Checked')
     notes = fields.Text(string='Notes')
     is_required = fields.Boolean(string='Is Required', default=False)
+
+    # New integration fields for core app leverage
+    equipment_id = fields.Many2one(
+        comodel_name='maintenance.equipment',
+        string='Related Equipment',
+        help='Link to maintenance equipment for equipment checks or vehicle inspections'
+    )
+    task_id = fields.Many2one(
+        comodel_name='project.task',
+        string='Related FSM Task',
+        help='Link to FSM task for field service or inspection workflows'
+    )
+    visitor_id = fields.Many2one(
+        comodel_name='container.access.visitor',
+        string='Related Visitor',
+        help='Link to visitor record for access logs and security checks'
+    )
+    location_id = fields.Many2one(
+        comodel_name='stock.location',
+        string='Related Location',
+        help='Link to stock location for warehouse security and inventory checks'
+    )
 
     # ============================================================================
     # METHODS
