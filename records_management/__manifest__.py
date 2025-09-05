@@ -229,6 +229,9 @@
         "views/rm_module_configurator_views.xml",
         "views/portal_request_views.xml",
         "views/revenue_forecaster_views.xml",
+        "views/revenue_forecast_views.xml",
+        "views/revenue_forecast_line_views.xml",
+        "views/revenue_analytic_views.xml",
         "views/pickup_request_views.xml",
     ],
     "demo": [
