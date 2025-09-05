@@ -29,15 +29,16 @@ class DestructionEvent(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
 
-    @api.model
-    def create(self, vals):
-        # Auto-create audit log entry for compliance
-        record = super().create(vals)
-        self.env['naid.audit.log'].create({
-            'event_id': record.id,
-            'operation': 'destruction',
-            'user_id': record.technician_id.id,
-            'description': f'Destruction event: {record.shredded_items} - {record.quantity} {record.unit_of_measure}',
-            'date': record.date,
-        })
-        return record
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Auto-create audit log entries for compliance
+        records = super().create(vals_list)
+        for record in records:
+            self.env['naid.audit.log'].create({
+                'event_id': record.id,
+                'operation': 'destruction',
+                'user_id': record.technician_id.id,
+                'description': f'Destruction event: {record.shredded_items} - {record.quantity} {record.unit_of_measure}',
+                'date': record.date,
+            })
+        return records
