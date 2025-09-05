@@ -21,7 +21,11 @@ from typing import List, Tuple, Dict
 
 
 class OdooValidator:
-    """Comprehensive Odoo module validator"""
+    """
+    Comprehensive Odoo module validator.
+
+    This class accumulates errors and warnings in lists for later reporting.
+    """
 
     def __init__(self, module_path: Path):
         self.module_path = module_path
@@ -89,8 +93,11 @@ class OdooValidator:
                 with open(manifest_file, "r", encoding="utf-8") as f:
                     content = f.read()
 
-                # Try to evaluate the manifest
-                manifest_dict = eval(content)
+                # Try to safely evaluate the manifest
+                # SECURITY WARNING: Using eval() to parse manifest files is dangerous and can execute arbitrary code.
+                # Always use ast.literal_eval() for safe parsing of Python literals in manifest files.
+                import ast
+                manifest_dict = ast.literal_eval(content)
 
                 # Check required fields
                 required_fields = ["name", "version", "depends"]
@@ -217,7 +224,7 @@ class OdooValidator:
 
                 # Check for missing access rules
                 python_files = list(self.module_path.glob("models/*.py"))
-                model_locations = {}  # Track where each model is defined
+                model_locations: dict[str, str] = {}  # Track where each model is defined
 
                 for py_file in python_files:
                     try:
@@ -452,11 +459,17 @@ class OdooValidator:
         print("🔍 Checking menu and action references...")
 
         xml_files = list(self.module_path.glob("**/*.xml"))
+        # Cache all XML file contents once
+        xml_contents = {}
         for xml_file in xml_files:
             try:
                 with open(xml_file, "r", encoding="utf-8") as f:
-                    content = f.read()
+                    xml_contents[xml_file] = f.read()
+            except Exception as e:
+                self.warnings.append(f"⚠️ MENU ACTION CHECK: Could not read {xml_file.name}: {str(e)}")
 
+        for xml_file, content in xml_contents.items():
+            try:
                 # Check for action references in menus
                 import re
 
@@ -468,9 +481,8 @@ class OdooValidator:
                 for action_ref in action_refs:
                     if not any(
                         action_ref in other_content
-                        for other_file in xml_files
+                        for other_file, other_content in xml_contents.items()
                         if other_file != xml_file
-                        for other_content in [open(other_file, "r", encoding="utf-8").read()]
                     ):
                         self.warnings.append(
                             f"⚠️ MENU ACTION: {xml_file.name}: Referenced action '{action_ref}' may not exist"
@@ -513,10 +525,10 @@ class OdooValidator:
 
                         # Handle string literals
                         if not in_string and char in ['"', "'"]:
-                            in_string = True
-                            string_char = char
-                        elif in_string and char == string_char:
-                            # Check for escaped quotes
+                            check_pos = end_pos - 1
+                            while check_pos >= 0 and content[check_pos] == "\\":
+                                escape_count += 1
+                                check_pos -= 1
                             escape_count = 0
                             check_pos = end_pos - 1
                             while check_pos >= 0 and content[check_pos] == "":
@@ -803,7 +815,7 @@ def main():
     validator.print_results()
 
     # Return exit code based on errors
-    return 1 if errors else 0
+    return 1 if len(errors) > 0 else 0
 
 
 if __name__ == "__main__":

@@ -30,15 +30,10 @@ from . import container_access_work_order
 from . import container_content
 from . import container_destruction_work_order
 from . import container_retrieval
-from . import cross_department_sharing
-from . import cross_department_sharing_rule
-from . import photo
-from . import records_description
-from . import retrieval_item_base  # BASE CLASS - must be before container_retrieval_item, file_retrieval_item, scan_retrieval_item
-from . import work_order_coordinator  # COORDINATOR - must be before work orders that reference it
 from . import container_retrieval_item
 from . import container_retrieval_work_order
-from . import custody_transfer_event
+from . import cross_department_sharing
+from . import cross_department_sharing_rule
 from . import customer_billing_profile
 from . import customer_category
 from . import customer_feedback
@@ -94,9 +89,9 @@ from . import naid_certificate_item
 from . import naid_certification_level
 from . import naid_compliance_action_plan
 from . import naid_compliance_alert
-from . import naid_compliance_policy
 from . import naid_compliance_checklist
 from . import naid_compliance_checklist_item
+from . import naid_compliance_policy
 from . import naid_custody
 from . import naid_destruction_record
 from . import naid_equipment_standard
@@ -114,18 +109,17 @@ from . import paper_bale_load
 from . import paper_bale_movement
 from . import paper_bale_recycling
 from . import paper_load_shipment
+from . import paper_model_bale
 from . import partner_bin_key
 from . import payment_split
 from . import payment_split_line
-from . import paper_model_bale
+from . import photo
 from . import pickup_location
 from . import pickup_request
 from . import pickup_request_item
 from . import pickup_request_line
 from . import pickup_route
 from . import pickup_route_stop
-from . import rate_change_confirmation_wizard
-from . import pickup_schedule_wizard
 from . import portal_feedback
 from . import portal_feedback_action
 from . import portal_feedback_analytic
@@ -136,10 +130,14 @@ from . import portal_request
 from . import portal_request_line
 from . import pos_config
 from . import processing_log
+from . import prod_ext
+from . import prod_ext_field
 from . import product_container_type
 from . import product_product
 from . import product_template
+from . import proj_task_ext
 from . import project_task
+from . import rate_change_confirmation_wizard
 from . import records_access_log
 from . import records_approval_step
 from . import records_approval_workflow
@@ -167,6 +165,7 @@ from . import records_department
 from . import records_department_billing_approval
 from . import records_department_billing_contact
 from . import records_department_sharing
+from . import records_description
 from . import records_destruction
 from . import records_destruction_job
 from . import records_digital_scan
@@ -200,10 +199,12 @@ from . import required_document
 from . import res_config_settings
 from . import res_partner
 from . import res_partner_key_restriction
+from . import retrieval_item_base
 from . import retrieval_metric
 from . import revenue_analytic
-from . import revenue_forecast_line
 from . import revenue_forecast
+from . import revenue_forecast_line
+from . import revenue_forecaster
 from . import revenue_forecasting_reports
 from . import rm_module_configurator
 from . import route_optimizer
@@ -213,6 +214,7 @@ from . import scan_retrieval_item
 from . import scan_retrieval_work_order
 from . import service_item
 from . import shred_bin
+from . import shred_model_bin
 from . import shredding_certificate
 from . import shredding_hard_drive
 from . import shredding_inventory_batch
@@ -223,7 +225,6 @@ from . import shredding_service_bin
 from . import shredding_service_event
 from . import shredding_service_log
 from . import shredding_service_photo
-from . import shred_model_bin
 from . import shredding_team
 from . import signed_document
 from . import signed_document_audit
@@ -246,8 +247,7 @@ from . import transitory_item
 from . import unlock_service_history
 from . import unlock_service_part
 from . import visitor
-from . import workflow_visualization_manager
+from . import work_order_coordinator
 from . import work_order_retrieval
 from . import work_order_shredding
-from . import records_retrieval_work_order
-from . import revenue_forecaster
+from . import workflow_visualization_manager

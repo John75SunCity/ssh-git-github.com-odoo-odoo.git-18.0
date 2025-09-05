@@ -1,6 +1,11 @@
+# ============================================================================
+# IMPORTS & DEPENDENCIES
+# ============================================================================
+# Fixed: Reordered imports per Odoo standards (stdlib → third-party → Odoo core → addons)
+from dateutil.relativedelta import relativedelta
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
-from dateutil.relativedelta import relativedelta
 
 
 class RevenueForecast(models.Model):
@@ -148,7 +153,8 @@ class RevenueForecast(models.Model):
 
                 lines_to_create.append(
                     {
-                        "name": _("Forecast for Q%s %s") % (quarter, year),
+                        # Fixed: Include formatting inside _() call per Odoo guidelines
+                        "name": _("Forecast for Q%s %s", quarter, year),
                         "date_start": period_start,
                         "date_end": period_end,
                         "forecast_id": self.id,
