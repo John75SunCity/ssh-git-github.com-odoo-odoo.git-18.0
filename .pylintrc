@@ -83,7 +83,14 @@ disable=
     odoo-method-warning,
     odoo-naming-convention-warning,
     odoo-model-name-warning,
-    odoo-underscore-prefix-warning
+    odoo-underscore-prefix-warning,
+    # Import and translation specific warnings
+    import-outside-toplevel,
+    wrong-import-position,
+    wrong-import-order,
+    ungrouped-imports,
+    consider-using-f-string,
+    logging-format-interpolation
 
 # Specific modules to ignore for unused-import warnings (not fields!)
 ignored-modules=odoo.http.request,json,time,datetime.timedelta
