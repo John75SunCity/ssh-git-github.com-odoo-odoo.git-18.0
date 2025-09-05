@@ -26,7 +26,7 @@
     <record id="document_retrieval_team_view_form" model="ir.ui.view">
         <field name="name">document.retrieval.team.view.form</field>
         <field name="model">document.retrieval.team</field>
-        <field name="type">tree</field>
+<field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Document Retrieval Team">
                 <header>
@@ -39,13 +39,16 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_work_orders" icon="fa-tasks">
-                            <field string="Work Orders" name="active_workorders" widget="statbutton"/>
+<field name="active_workorders" string="Work Orders" widget="statbutton"/>
+
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_team_members" icon="fa-users">
-                            <field string="Team Members" name="member_count" widget="statbutton"/>
+<field name="member_count" string="Team Members" widget="statbutton"/>
+
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_performance_metrics" icon="fa-bar-chart" groups="records_management.group_records_manager">
-                            <field string="Completed Orders" name="completed_orders_count" widget="statbutton"/>
+<field name="completed_orders_count" string="Completed Orders" widget="statbutton"/>
+
                         </button>
                     </div>
 
@@ -175,7 +178,7 @@
     <record id="document_retrieval_team_view_kanban" model="ir.ui.view">
         <field name="name">document.retrieval.team.view.kanban</field>
         <field name="model">document.retrieval.team</field>
-        <field name="type">search</field>
+<field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_small_column">
                 <field name="id"/>
@@ -208,12 +211,12 @@
                                     <div class="text-muted">
                                         <i class="fa fa-users"/>
                                         <field name="member_count"/>
- members
+members
                                     </div>
                                     <div class="text-muted">
                                         <i class="fa fa-tasks"/>
                                         <field name="active_workorders"/>
- active orders
+active orders
                                     </div>
                                     <div class="text-muted">
                                         <i class="fa fa-wrench"/>
@@ -247,16 +250,19 @@
                 <field name="specialization" string="Specialization"/>
                 <field name="current_location_id" string="Current Location"/>
                 <separator/>
-                <filter string="Active Teams" name="active" domain="[('active', '=', True)]"/>
-                <filter string="Inactive Teams" name="inactive" domain="[('active', '=', False)]"/>
+<filter name="active" string="Active Teams" domain="[('active', '=', True)]"/>
+<filter name="inactive" string="Inactive Teams" domain="[('active', '=', False)]"/>
+
                 <separator/>
-                <filter string="Available" name="available" domain="[('state', '=', 'available')]"/>
-                <filter string="Busy" name="busy" domain="[('state', '=', 'busy')]"/>
-                <filter string="Unavailable" name="unavailable" domain="[('state', '=', 'unavailable')]"/>
+<filter name="available" string="Available" domain="[('state', '=', 'available')]"/>
+<filter name="busy" string="Busy" domain="[('state', '=', 'busy')]"/>
+<filter name="unavailable" string="Unavailable" domain="[('state', '=', 'unavailable')]"/>
+
                 <separator/>
-                <filter string="Emergency Teams" name="emergency_teams" domain="[('is_emergency_team', '=', True)]"/>
-                <filter string="Weekend Available" name="weekend_available" domain="[('can_work_weekends', '=', True)]"/>
-                <filter string="After Hours Available" name="after_hours_available" domain="[('can_work_after_hours', '=', True)]"/>
+<filter name="emergency_teams" string="Emergency Teams" domain="[('is_emergency_team', '=', True)]"/>
+<filter name="weekend_available" string="Weekend Available" domain="[('can_work_weekends', '=', True)]"/>
+<filter name="after_hours_available" string="After Hours Available" domain="[('can_work_after_hours', '=', True)]"/>
+
             </search>
         </field>
     </record>

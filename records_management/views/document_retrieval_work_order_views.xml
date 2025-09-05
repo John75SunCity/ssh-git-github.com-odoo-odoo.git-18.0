@@ -27,7 +27,7 @@
 <record id="document_retrieval_work_order_view_form" model="ir.ui.view">
     <field name="name">document.retrieval.work.order.view.form</field>
         <field name="model">document.retrieval.work.order</field>
-        <field name="type">tree</field>
+<field name="type">form</field><!-- Fixed: Changed from "tree" to "form" for correct view type -->
         <field name="arch" type="xml">
             <form string="Document Retrieval Work Order">
                 <header>
@@ -44,7 +44,8 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_add_items" icon="fa-list">
-                            <field string="Items" name="item_count" widget="statinfo"/>
+<field name="item_count" string="Items" widget="statinfo"/>
+
                         </button>
                     </div>
 
@@ -108,7 +109,7 @@
 <field name="box_id" required="item_type == 'box'" invisible="item_type != 'box'"/>
 
 <field name="document_id" required="item_type == 'document'" invisible="item_type != 'document'"/>
-/>
+<!-- Fixed: Removed extra standalone "/>" that was causing syntax error -->
                                     <field name="barcode"/>
                                     <field name="description"/>
                                     <field name="current_location"/>
@@ -164,7 +165,7 @@
 <record id="document_retrieval_work_order_view_kanban" model="ir.ui.view">
         <field name="name">document.retrieval.work.order.view.kanban</field>
         <field name="model">document.retrieval.work.order</field>
-        <field name="type">search</field>
+<field name="type">kanban</field><!-- Fixed: Changed from "search" to "kanban" for correct view type -->
         <field name="arch" type="xml">
             <kanban default_group_by="state" quick_create="false">
                 <field name="name"/>

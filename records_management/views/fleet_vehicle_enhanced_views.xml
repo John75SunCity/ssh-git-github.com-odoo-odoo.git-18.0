@@ -3,11 +3,11 @@
 
     <data>
 <!-- Enhanced Fleet Vehicle Form View with Records Management Integration -->
-    <record id="fleet_vehicle_view_form_records" model="ir.ui.view">
-        <field name="name">fleet.vehicle.view.form.records</field>
+<record id="fleet_vehicle_view_form" model="ir.ui.view">
+    <field name="name">fleet.vehicle.view.form.inherit.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
-        <field name="type">list</field>
+<field name="type">form</field>
         <field name="arch" type="xml">
 
             <!-- Add Records Management stat buttons -->
@@ -76,11 +76,11 @@ invisible="records_operational_status != 'out_of_service'">
     </record>
 
     <!-- Enhanced Fleet Vehicle Tree View with Records Information -->
-    <record id="fleet_vehicle_view_list_records" model="ir.ui.view">
-        <field name="name">fleet.vehicle.view.tree.records</field>
+<record id="fleet_vehicle_view_tree" model="ir.ui.view">
+    <field name="name">fleet.vehicle.view.tree.inherit.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
-        <field name="type">list</field>
+<field name="type">tree</field>
         <field name="arch" type="xml">
 
             <!-- Add records-specific columns -->
@@ -95,11 +95,11 @@ invisible="records_operational_status != 'out_of_service'">
     </record>
 
     <!-- Enhanced Fleet Vehicle Kanban View with Records Information -->
-    <record id="fleet_vehicle_view_kanban_records" model="ir.ui.view">
-        <field name="name">fleet.vehicle.view.kanban.records</field>
+<record id="fleet_vehicle_view_kanban" model="ir.ui.view">
+    <field name="name">fleet.vehicle.view.kanban.inherit.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban"/>
-        <field name="type">list</field>
+<field name="type">kanban</field>
         <field name="arch" type="xml">
 
             <!-- Add records information to kanban cards -->
@@ -128,11 +128,11 @@ invisible="records_operational_status != 'out_of_service'">
     </record>
 
     <!-- Enhanced Fleet Vehicle Search View with Records Filters -->
-    <record id="fleet_vehicle_view_search_records" model="ir.ui.view">
-        <field name="name">fleet.vehicle.view.search.records</field>
+<record id="fleet_vehicle_view_search" model="ir.ui.view">
+    <field name="name">fleet.vehicle.view.search.inherit.records</field>
         <field name="model">fleet.vehicle</field>
         <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
-        <field name="type">list</field>
+<field name="type">search</field>
         <field name="arch" type="xml">
 
             <!-- Add search fields for records -->

@@ -4,13 +4,7 @@
 
 <!-- ============================================================================ -->
 <!-- SYSTEM FLOWCHART WIZARD - WELCOME STEP VIEW -->
-<!-- =============                <field name="target_user_id" invisible="search_scenario != 'user_access'" required="search_scenario == 'user_access'" domain="[('active', '=', True)]"/>
-            <field name="target_company_id" invisible="search_scenario != 'company_structure'" required="search_scenario == 'company_structure'"/>
-            <field name="target_model_id" invisible="search_scenario != 'model_relationships'" domain="[('model', 'like', 'records.%')]"/>       <field name="target_user_id" invisible="search_scenario != 'user_access'" required="search_scenario == 'user_access'" domain="[('active', '=', True)]"/>
-            <field name="target_company_id" invisible="search_scenario != 'company_structure'" required="search_scenario == 'company_structure'"/>
-            <field name="target_model_id" invisible="search_scenario != 'model_relationships'" domain="[('model', 'like', 'records.%')]"/>       <field name="target_user_id" invisible="search_scenario != 'user_access'" required="search_scenario == 'user_access'" domain="[('active', '=', True)]"/>
-            <field name="target_company_id" invisible="search_scenario != 'company_structure'" required="search_scenario == 'company_structure'"/>
-            <field name="target_model_id" invisible="search_scenario != 'model_relationships'" domain="[('model', 'like', 'records.%')]"/>============================================================ -->
+<!-- ============================================================================ -->
 <record id="system_flowchart_wizard_view_form_welcome" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.form.welcome</field>
     <field name="model">system.flowchart.wizard</field>
@@ -366,7 +360,7 @@ System Overview</h6>
 <!-- SYSTEM FLOWCHART WIZARD - PREVIEW STEP VIEW -->
 <!-- ============================================================================ -->
 <record id="system_flowchart_wizard_view_form_preview" model="ir.ui.view">
-    <field name="name">system.flowchart.wizard.view.form.preview</field>
+<field name="name">system.flowchart.wizard.view.form.preview</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="type">form</field>
     <field name="arch" type="xml">
@@ -570,7 +564,7 @@ Quick Actions</h6>
 <!-- SYSTEM FLOWCHART WIZARD - COMPLETE STEP VIEW -->
 <!-- ============================================================================ -->
 <record id="system_flowchart_wizard_view_form_complete" model="ir.ui.view">
-    <field name="name">system.flowchart.wizard.view.form.complete</field>
+<field name="name">system.flowchart.wizard.view.form.complete</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="type">form</field>
     <field name="arch" type="xml">
@@ -740,8 +734,8 @@ Interactive Tutorial Enabled</h6>
 <!-- ============================================================================ -->
 <!-- MAIN WIZARD FORM VIEW (DYNAMIC STEP SWITCHING) -->
 <!-- ============================================================================ -->
-<record id="system_flowchart_wizard_view_form" model="ir.ui.view">
-    <field name="name">system.flowchart.wizard.view.form</field>
+<record id="system_flowchart_wizard_view_form_main" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.form.main</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="type">form</field>
     <field name="arch" type="xml">
@@ -812,7 +806,8 @@ Ready to Launch!</h3>
     <field name="res_model">system.flowchart.wizard</field>
     <field name="view_mode">form</field>
     <field name="target">new</field>
-    <field name="view_id" ref="system_flowchart_wizard_view_form"/>
+<field name="view_id" ref="system_flowchart_wizard_view_form_main"/>
+
     <field name="context">{
                 'default_step': 'welcome',
                 'default_search_scenario': 'system_overview',
@@ -828,7 +823,8 @@ Ready to Launch!</h3>
     <field name="res_model">system.flowchart.wizard</field>
     <field name="view_mode">form</field>
     <field name="target">new</field>
-    <field name="view_id" ref="system_flowchart_wizard_view_form_configure"/>
+<field name="view_id" ref="system_flowchart_wizard_view_form_main"/>
+
     <field name="context">{
                 'default_step': 'configure',
                 'default_search_scenario': 'custom',

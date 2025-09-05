@@ -136,7 +136,7 @@ action = {
 
 <!-- Tree view for Enhanced -->
     <record id="res_partner_view_tree" model="ir.ui.view">
-        <field name="name">res.partner.view.tree</field>
+<field name="name">res.partner.view.tree.inherit.records</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="type">list</field>
@@ -150,7 +150,7 @@ action = {
 
     <!-- Form view for Enhanced -->
     <record id="res_partner_view_form" model="ir.ui.view">
-        <field name="name">res.partner.view.form</field>
+<field name="name">res.partner.view.form.inherit.records</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="type">form</field>
@@ -263,7 +263,7 @@ action = {
 
     <!-- Kanban view for Enhanced -->
     <record id="res_partner_view_kanban" model="ir.ui.view">
-        <field name="name">res.partner.view.kanban</field>
+<field name="name">res.partner.view.kanban.inherit.records</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.res_partner_kanban_view"/>
         <field name="type">kanban</field>
@@ -309,7 +309,7 @@ action = {
 
     <!-- Search view for Partner -->
     <record id="res_partner_view_search" model="ir.ui.view">
-        <field name="name">res.partner.view.search</field>
+<field name="name">res.partner.view.search.inherit.records</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_res_partner_filter"/>
         <field name="type">search</field>
