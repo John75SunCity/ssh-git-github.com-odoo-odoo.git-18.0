@@ -1,6 +1,6 @@
 id,name,model_id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_advanced_billing_contact_user,advanced_billing_contact,advanced.billing.contact,records_management.group_records_user,1,1,1,0
-access_advanced_billing_contact_manager,advanced_billing_contact,advanced.billing.contact,records_management.group_records_manager,1,1,1,1
+access_naid_audit_requirement_user,naid_audit_requirement,naid.audit.requirement,records_management.group_records_user,1,1,1,0
+access_naid_audit_requirement_manager,naid_audit_requirement,naid.audit.requirement,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_line_user,advanced_billing_line,advanced.billing.line,records_management.group_records_user,1,1,1,0
 access_advanced_billing_line_manager,advanced_billing_line,advanced.billing.line,records_management.group_records_manager,1,1,1,1
 access_advanced_billing_profile_user,advanced_billing_profile,advanced.billing.profile,records_management.group_records_user,1,1,1,0
@@ -493,3 +493,7 @@ access_slide_channel_user,slide_channel,slide.channel,records_management.group_r
 access_slide_channel_manager,slide_channel,slide.channel,records_management.group_records_manager,1,1,1,1
 access_rate_change_confirmation_wizard_user,rate_change_confirmation_wizard,rate.change.confirmation.wizard,records_management.group_records_user,1,1,1,0
 access_rate_change_confirmation_wizard_manager,rate_change_confirmation_wizard,rate.change.confirmation.wizard,records_management.group_records_manager,1,1,1,1
+access_naid_audit_verification_wizard_user,naid.audit.verification.wizard,naid.audit.verification.wizard,records_management.group_records_user,1,1,1,0
+access_naid_audit_verification_wizard_manager,naid.audit.verification.wizard,naid.audit.verification.wizard,records_management.group_records_manager,1,1,1,1
+access_advanced_billing_contact_user,advanced_billing_contact,advanced.billing.contact,records_management.group_records_user,1,1,1,0
+access_advanced_billing_contact_manager,advanced_billing_contact,advanced.billing.contact,records_management.group_records_manager,1,1,1,1

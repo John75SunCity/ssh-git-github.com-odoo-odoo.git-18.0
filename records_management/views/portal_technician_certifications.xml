@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Portal templates for NAID certification display -->
-    <template id="portal_my_certifications" name="My Certifications">
+<!-- Portal templates for customers to view NAID technician certifications and training status -->
+<template id="portal_my_certifications" name="Technician Certifications">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
             <t t-call="portal.portal_searchbar">
-                <t t-set="title">My Certifications</t>
+<t t-set="title">Technician Certifications</t>
             </t>
             <t t-if="certifications">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">NAID Certified Technicians</h4>
+<h4 class="card-title">NAID Certified Technicians &amp; Training Status</h4>
+<p class="card-subtitle text-muted">View certification status and training progress of technicians assigned to your account</p>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -59,7 +60,8 @@
             </t>
             <t t-else="">
                 <div class="alert alert-info">
-                    <p>No certified technicians found for your account.</p>
+<p>No certified technicians are currently assigned to your account.</p>
+<p class="mb-0">Contact us if you need to schedule service with NAID certified personnel.</p>
                 </div>
             </t>
         </t>
@@ -67,7 +69,7 @@
 
     <!-- Portal menu item -->
     <record id="portal_my_certifications_menu" model="website.menu">
-        <field name="name">My Certifications</field>
+<field name="name">Technician Certifications</field>
         <field name="url">/my/certifications</field>
         <field name="parent_id" ref="portal.portal_my_home"/>
         <field name="sequence">20</field>

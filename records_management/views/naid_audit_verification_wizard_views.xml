@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="naid_audit_verification_wizard_view_form" model="ir.ui.view">
+        <field name="name">naid.audit.verification.wizard.view.form</field>
+        <field name="model">naid.audit.verification.wizard</field>
+        <field name="arch" type="xml">
+            <form string="NAID Audit Verification">
+                <group>
+                    <field name="requirement_id"/>
+                    <field name="checklist_category"/>
+                    <field name="verification_notes"/>
+                    <field name="verification_result"/>
+                    <field name="corrective_actions" attrs="{'invisible': [('verification_result', 'not in', ['fail', 'conditional'])]}"/>
+                    <field name="follow_up_date" attrs="{'invisible': [('verification_result', 'not in', ['fail', 'conditional'])]}"/>
+                    <field name="digital_signature"/>
+                    <field name="signature_name"/>
+                </group>
+                <footer>
+                    <button string="Verify" type="object" name="action_verify" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

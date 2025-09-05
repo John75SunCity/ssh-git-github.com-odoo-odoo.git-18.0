@@ -119,7 +119,7 @@ class NAIDOperatorCertification(models.Model):
             self.last_refresher_date = fields.Date.context_today(self)
             self.message_post(body=f"Refresher training scheduled for operator {self.name}.")
 
-    def action_check_expiry(self):
+    def _check_expiry(self):
         """Check and update certification expiry status"""
         today = fields.Date.context_today(self)
         expired_records = self.search([

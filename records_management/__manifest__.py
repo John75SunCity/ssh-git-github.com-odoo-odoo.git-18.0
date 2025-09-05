@@ -57,6 +57,7 @@
         "helpdesk",
         "mass_mailing",
         "website_slides",  # Required for training functionality in NAID certifications
+        "quality",  # Required for quality control checklists in audits
     ],
     "data": [
         # 1. Security files FIRST (critical for access rules and dependencies)

@@ -84,6 +84,7 @@ from . import mobile_dashboard_widget
 from . import mobile_dashboard_widget_category
 from . import mobile_photo
 from . import naid_audit_requirement
+from . import naid_audit_verification_wizard
 from . import naid_certificate
 from . import naid_certificate_item
 from . import naid_certification_level

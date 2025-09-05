@@ -133,6 +133,9 @@
 
 <menuitem id="menu_records_compliance" name="NAID Compliance" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user"/>
 
+<!-- NAID Audit Requirements -->
+<menuitem id="menu_naid_audit_requirements" name="Audit Requirements" parent="menu_records_compliance" action="action_naid_audit_requirement" sequence="10" groups="records_management.group_records_user"/>
+
 <!-- Temporarily commented out menuitems with missing actions -->
 <!-- <menuitem id="menu_naid_compliance" name="Compliance Records" parent="menu_records_compliance" action="action_naid_compliance" sequence="10" groups="records_management.group_records_user"/> -->
 
