@@ -4,6 +4,7 @@ from odoo import fields, models
 class RecordsRequestLine(models.Model):
     _name = 'records.request.line'
     _description = 'Records Request Line'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     active = fields.Boolean(default=True)
     request_id = fields.Many2one('records.request', string='Request', required=True, ondelete='cascade')

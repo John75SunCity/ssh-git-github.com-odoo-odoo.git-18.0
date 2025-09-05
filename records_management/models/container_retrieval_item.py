@@ -3,7 +3,7 @@ from odoo import models, fields, api, _
 class ContainerRetrievalItem(models.Model):
     _name = 'container.retrieval.item'
     _description = 'Container Retrieval Item'
-    _inherit = 'retrieval.item.base'
+    _inherit = ['retrieval.item.base', 'mail.thread', 'mail.activity.mixin']
     _rec_name = 'display_name'
 
     display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)

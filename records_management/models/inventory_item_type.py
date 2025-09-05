@@ -19,6 +19,7 @@ class InventoryItemType(models.Model):
 
     _name = 'inventory.item.type'
     _description = 'Inventory Item Type'
+    _inherit = ['mail.thread']
     _order = 'name'
 
     name = fields.Char(string='Type Name', required=True)

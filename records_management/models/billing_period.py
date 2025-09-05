@@ -4,6 +4,7 @@ from odoo import models, fields
 class BillingPeriod(models.Model):
     _name = "billing.period"
     _description = "Billing Period"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
     name = fields.Char(required=True)
     start_date = fields.Date(required=True)

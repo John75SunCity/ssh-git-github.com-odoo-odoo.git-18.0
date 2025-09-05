@@ -10,6 +10,7 @@ class NaidCustody(models.Model):
     """
     _name = 'naid.custody'
     _description = 'NAID Chain of Custody Log'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'event_date desc, id desc'
     _rec_name = 'description'
 

@@ -4,6 +4,7 @@ from odoo import api, fields, models
 class RecordsCategory(models.Model):
     _name = 'records.category'
     _description = 'Records Category'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _parent_name = "parent_id"
     _parent_store = True
     _rec_name = 'complete_name'

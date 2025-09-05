@@ -19,6 +19,7 @@ class Description(models.Model):
 
     _name = "records.description"
     _description = "Description"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "name"
 
     name = fields.Char(string="Title", required=True)

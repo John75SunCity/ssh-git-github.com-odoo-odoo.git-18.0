@@ -3,6 +3,7 @@ from odoo import models, fields
 class LocationGroup(models.Model):
     _name = 'location.group'
     _description = 'Location Group'
+    _inherit = ['mail.thread']
     _order = 'name'
 
     name = fields.Char(string='Group Name', required=True)

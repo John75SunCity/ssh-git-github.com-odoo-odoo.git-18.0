@@ -1,11 +1,13 @@
 from odoo import models, fields, api, _
 
 class RecordsAuditLog(models.Model):
-    document_type_id = fields.Many2one('records.document.type', string="Document Type", help="Related document type for this audit log entry.")
     _name = 'records.audit.log'
     _description = 'Records Audit Log'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc, id desc'
     _rec_name = 'description'
+
+    document_type_id = fields.Many2one('records.document.type', string="Document Type", help="Related document type for this audit log entry.")
 
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS

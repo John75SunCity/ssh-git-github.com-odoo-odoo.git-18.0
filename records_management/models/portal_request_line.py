@@ -19,6 +19,9 @@ class PortalRequestLine(models.Model):
         company_id (Many2one): Company context for multi-company support.
         active (Boolean): Active flag for archiving/deactivation.
     """
+    _name = 'portal.request.line'
+    _description = 'Portal Request Line'
+    _inherit = ['portal.mixin']
 
     _name = 'portal.request.line'
     _description = 'Portal Request Line'

@@ -30,7 +30,6 @@ from . import container_access_work_order
 from . import container_content
 from . import container_destruction_work_order
 from . import container_retrieval
-from . import container_retrieval_item
 from . import container_retrieval_work_order
 from . import cross_department_sharing
 from . import cross_department_sharing_rule
@@ -200,6 +199,7 @@ from . import res_config_settings
 from . import res_partner
 from . import res_partner_key_restriction
 from . import retrieval_item_base
+from . import container_retrieval_item
 from . import retrieval_metric
 from . import revenue_analytic
 from . import revenue_forecast
