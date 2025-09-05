@@ -114,7 +114,7 @@ class EnhancedFsmIntegration(models.Model):
                 'name': 'FSM Task Creation Error',
                 'type': 'server',
                 'level': 'ERROR',
-                'message': _('Error creating FSM task for pickup: %s') % str(e),
+                'message': _('Error creating FSM task for pickup: %s', str(e)),
                 'path': 'enhanced.fsm.integration',
                 'func': 'create_fsm_task_for_pickup',
             })
@@ -143,8 +143,8 @@ class EnhancedFsmIntegration(models.Model):
     def _create_industry_fsm_task(self, pickup_request):
         """Create task using industry_fsm module"""
         task_data = {
-            'name': _('Pickup Request: %s') % pickup_request.name,
-            'description': _('Pickup request for customer: %s') % pickup_request.partner_id.name,
+            'name': _('Pickup Request: %s', pickup_request.name),
+            'description': _('Pickup request for customer: %s', pickup_request.partner_id.name),
             'partner_id': pickup_request.partner_id.id,
             'scheduled_date_start': pickup_request.requested_date,
             'priority': self.task_priority,
@@ -158,7 +158,7 @@ class EnhancedFsmIntegration(models.Model):
             'name': 'FSM Task Created',
             'type': 'server',
             'level': 'INFO',
-            'message': _('Created FSM task %s for pickup request %s') % (task.name, pickup_request.name),
+            'message': _('Created FSM task %s for pickup request %s', task.name, pickup_request.name),
             'path': 'enhanced.fsm.integration',
             'func': '_create_industry_fsm_task',
         })
@@ -169,8 +169,8 @@ class EnhancedFsmIntegration(models.Model):
         """Create alternative task implementation"""
         # Create a work order coordinator entry instead
         work_order_data = {
-            'name': _('Pickup Task: %s') % pickup_request.name,
-            'description': _('Pickup request for customer: %s') % pickup_request.partner_id.name,
+            'name': _('Pickup Task: %s', pickup_request.name),
+            'description': _('Pickup request for customer: %s', pickup_request.partner_id.name),
             'partner_id': pickup_request.partner_id.id,
             'scheduled_date': pickup_request.requested_date,
             'priority': self.task_priority,
@@ -185,7 +185,7 @@ class EnhancedFsmIntegration(models.Model):
             'name': 'Alternative FSM Task Created',
             'type': 'server',
             'level': 'INFO',
-            'message': _('Created alternative work order %s for pickup request %s') % (work_order.name, pickup_request.name),
+            'message': _('Created alternative work order %s for pickup request %s', work_order.name, pickup_request.name),
             'path': 'enhanced.fsm.integration',
             'func': '_create_alternative_fsm_task',
         })

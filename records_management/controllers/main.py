@@ -114,7 +114,7 @@ class RecordsManagementController(http.Controller):
             return data
 
         except Exception as e:
-            return {"error": _("Failed to load dashboard data: %s") % str(e)}
+            return {"error": _("Failed to load dashboard data: %s", str(e))}
 
     @http.route(['/records/container/<int:container_id>'], type='http', auth='user', website=True)
     def container_detail(self, container_id, **kw):

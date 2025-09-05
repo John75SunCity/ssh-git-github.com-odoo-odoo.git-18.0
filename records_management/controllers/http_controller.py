@@ -535,7 +535,7 @@ class RecordsManagementController(http.Controller):
         if request.httprequest.method == 'POST':
             try:
                 feedback_vals = {
-                    "name": post.get("subject", _("Feedback from %s") % partner.name),
+                    "name": post.get("subject", _("Feedback from %s", partner.name)),
                     "partner_id": partner.id,
                     "rating": post.get("rating"),
                     "comments": post.get("comments", ""),
@@ -547,7 +547,7 @@ class RecordsManagementController(http.Controller):
 
                 # Create audit log
                 self._create_naid_audit_log(
-                    "feedback_submitted", partner.id, notes=_("Customer feedback submitted: %s") % feedback.name
+                    "feedback_submitted", partner.id, notes=_("Customer feedback submitted: %s", feedback.name)
                 )
 
                 return request.redirect('/my/feedback?success=feedback_submitted')

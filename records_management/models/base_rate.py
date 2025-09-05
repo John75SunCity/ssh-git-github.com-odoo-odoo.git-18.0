@@ -266,7 +266,7 @@ class BaseRate(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Revenue Forecast - %s") % self.name,
+            "name": _("Revenue Forecast - %s", self.name),
             "res_model": "revenue.forecaster",
             "view_mode": "form",
             "target": "new",
@@ -280,7 +280,7 @@ class BaseRate(models.Model):
         """Approve rate changes (manager action)."""
         self.ensure_one()
         self.write({"state": "active"})
-        self.message_post(body=_("Rate changes approved by %s") % self.env.user.name)
+        self.message_post(body=_("Rate changes approved by %s", self.env.user.name))
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
@@ -355,5 +355,5 @@ class BaseRate(models.Model):
                     company = self.env['res.company'].browse(vals.get('company_id'))
                     company_name = company.name if company else None
                 company_name = company_name or (self.env.company.name if self.env.company else '')
-                vals["name"] = _("Base Rates for %s") % company_name
+                vals["name"] = _("Base Rates for %s", company_name)
         return super().create(vals_list)

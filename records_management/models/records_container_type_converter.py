@@ -80,7 +80,7 @@ class RecordsContainerTypeConverter(models.TransientModel):
             'tag': 'display_notification',
             'params': {
                 'title': _("Conversion Successful"),
-                'message': _('%d containers have been successfully converted to type "%s".') % (self.container_count, self.target_container_type_id.name),
+                'message': _('%d containers have been successfully converted to type "%s".', self.container_count, self.target_container_type_id.name),
                 'type': 'success',
                 'sticky': False,
             }

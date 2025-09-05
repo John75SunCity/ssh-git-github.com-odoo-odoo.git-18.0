@@ -336,7 +336,7 @@ class RouteOptimizer(models.Model):
 
         for route_data in results.get('routes', []):
             try:
-                route_name = _('Optimized Route %s - %s') % (
+                route_name = _('Optimized Route %s - %s',
                     route_data['route_number'],
                     self.optimization_date.strftime('%Y-%m-%d')
                 )
@@ -363,7 +363,7 @@ class RouteOptimizer(models.Model):
                 # Clean up any routes created so far
                 for created_route in created_routes:
                     created_route.unlink()
-                raise UserError(_('Failed to create route %s: %s') % (
+                raise UserError(_('Failed to create route %s: %s',
                     route_data.get('route_number', 'Unknown'), str(exc)
                 )) from exc
 

@@ -43,7 +43,7 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
                 ])
 
                 if same_day_tasks:
-                    impact_notes.append(_("Found %d other tasks on the same day") % len(same_day_tasks))
+                    impact_notes.append(_("Found %d other tasks on the same day", len(same_day_tasks)))
 
                 # Check for route optimization impact
                 if record.task_id.partner_id:
@@ -88,7 +88,7 @@ class FsmRescheduleWizardPlaceholder(models.TransientModel):
         # Add custom field if it exists
         if hasattr(self.task_id, 'reschedule_reason'):
             reason_label = dict(self._fields['reason'].selection)[self.reason]
-            task_updates["reschedule_reason"] = (_("%s: %s") % (reason_label, self.reason_details))
+            task_updates["reschedule_reason"] = (_("%s: %s", reason_label, self.reason_details))
 
         self.task_id.write(task_updates)
 

@@ -152,13 +152,13 @@ Records Management Team""")
     def _log_implementation(self):
         """Log the rate change implementation."""
         message = _('Rate change implementation completed:\n')
-        message += _('- Revenue Impact: %s %s\n') % (self.revenue_impact, self.currency_id.symbol)
-        message += _('- Customers Affected: %s\n') % self.customer_count
-        message += _('- Effective Date: %s\n') % self.effective_date
-        message += _('- Implementation Method: %s\n') % dict(self._fields['implementation_method'].selection).get(self.implementation_method)
+        message += _('- Revenue Impact: %s %s\n', self.revenue_impact, self.currency_id.symbol)
+        message += _('- Customers Affected: %s\n', self.customer_count)
+        message += _('- Effective Date: %s\n', self.effective_date)
+        message += _('- Implementation Method: %s\n', dict(self._fields['implementation_method'].selection).get(self.implementation_method))
 
         if self.approved_by:
-            message += _('- Approved by: %s on %s\n') % (self.approved_by.name, self.approval_date)
+            message += _('- Approved by: %s on %s\n', self.approved_by.name, self.approval_date)
 
         # Create audit log entry
         self.env['naid.audit.log'].create({

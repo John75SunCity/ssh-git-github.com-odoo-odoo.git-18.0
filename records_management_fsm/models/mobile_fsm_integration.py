@@ -178,7 +178,7 @@ class MobileFsmIntegration(models.Model):
                 'name': 'Mobile Sync Error',
                 'type': 'server',
                 'level': 'ERROR',
-                'message': _('Error syncing mobile data: %s') % str(e),
+                'message': _('Error syncing mobile data: %s', str(e)),
                 'path': 'mobile.fsm.integration',
                 'func': 'sync_mobile_data',
             })
@@ -213,7 +213,7 @@ class MobileFsmIntegration(models.Model):
             'name': 'Mobile Data Sync',
             'type': 'server',
             'level': 'INFO',
-            'message': _('Mobile data sync completed for user %s, device %s: %s records processed') % (
+            'message': _('Mobile data sync completed for user %s, device %s: %s records processed',
                 user_id, device_id, sync_results['processed_records']),
             'path': 'mobile.fsm.integration',
             'func': '_process_mobile_sync',
@@ -273,7 +273,7 @@ class MobileFsmIntegration(models.Model):
                     'name': 'Photo Sync Error',
                     'type': 'server',
                     'level': 'ERROR',
-                    'message': _('Error syncing photo: %s') % str(e),
+                    'message': _('Error syncing photo: %s', str(e)),
                     'path': 'mobile.fsm.integration',
                     'func': '_sync_photos',
                 })
@@ -291,7 +291,7 @@ class MobileFsmIntegration(models.Model):
                     'name': 'Mobile Location Update',
                     'type': 'server',
                     'level': 'INFO',
-                    'message': _('Location update from user %s: %s, %s') % (
+                    'message': _('Location update from user %s: %s, %s',
                         user_id, location_data.get('latitude'), location_data.get('longitude')),
                     'path': 'mobile.fsm.integration',
                     'func': '_sync_locations',
@@ -303,7 +303,7 @@ class MobileFsmIntegration(models.Model):
                     'name': 'Location Sync Error',
                     'type': 'server',
                     'level': 'ERROR',
-                    'message': _('Error syncing location: %s') % str(e),
+                    'message': _('Error syncing location: %s', str(e)),
                     'path': 'mobile.fsm.integration',
                     'func': '_sync_locations',
                 })
@@ -365,7 +365,7 @@ class MobileFsmIntegration(models.Model):
             'name': 'Mobile Config Created',
             'type': 'server',
             'level': 'INFO',
-            'message': _('Default mobile configuration created: %s') % config.name,
+            'message': _('Default mobile configuration created: %s', config.name),
             'path': 'mobile.fsm.integration',
             'func': 'create_default_mobile_config',
         })

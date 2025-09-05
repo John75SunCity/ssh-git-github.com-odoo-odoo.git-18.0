@@ -205,7 +205,7 @@ class WorkflowVisualizationManager(models.Model):
                     'name': 'Default Visualization Creation Error',
                     'type': 'server',
                     'level': 'ERROR',
-                    'message': _('Error creating default visualization %s: %s') % (viz_data['name'], str(e)),
+                    'message': _('Error creating default visualization %s: %s', viz_data['name'], str(e)),
                     'path': 'workflow.visualization.manager',
                     'func': 'create_default_visualizations',
                 })
