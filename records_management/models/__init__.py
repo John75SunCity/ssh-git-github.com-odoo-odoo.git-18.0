@@ -1,255 +1,253 @@
 # -*- coding: utf-8 -*-
 # Import addon models (sorted alphabetically by filename)
-from . import (
-    account_move_line,
-    advanced_billing_contact,
-    advanced_billing_line,
-    advanced_billing_profile,
-    approval_history,
-    barcode_generation_history,
-    barcode_models_enhanced,
-    barcode_pricing_tier,
-    barcode_product,
-    barcode_storage_box,
-    base_rate,
-    base_rates,
-    billing_period,
-    bin_barcode_inventory,
-    bin_issue_record,
-    bin_key,
-    bin_key_history,
-    bin_key_unlock_service,
-    bin_unlock_service,
-    certificate_template_data,
-    chain_of_custody,
-    container_access_activity,
-    container_access_document,
-    container_access_photo,
-    container_access_report,
-    container_access_visitor,
-    container_access_work_order,
-    container_content,
-    container_destruction_work_order,
-    container_retrieval,
-    cross_department_sharing,
-    cross_department_sharing_rule,
-    photo,
-    records_description,
-    retrieval_item_base,  # BASE CLASS - must be before container_retrieval_item, file_retrieval_item, scan_retrieval_item
-    work_order_coordinator,  # COORDINATOR - must be before work orders that reference it
-    container_retrieval_item,
-    container_retrieval_work_order,
-    custody_transfer_event,
-    customer_billing_profile,
-    customer_category,
-    customer_feedback,
-    customer_inventory,
-    customer_inventory_report,
-    customer_inventory_report_line,
-    customer_inventory_report_model,
-    customer_negotiated_rate,
-    customer_negotiated_rates,
-    customer_portal_diagram,
-    destruction_certificate,
-    destruction_item,
-    discount_rule,
-    display_name,
-    document_retrieval_equipment,
-    document_retrieval_item,
-    document_retrieval_team,
-    document_search_attempt,
-    feedback_improvement_area,
-    field_label_customization,
-    file_retrieval,
-    file_retrieval_item,
-    file_retrieval_work_order,
-    file_retrieval_work_order_item,
-    full_customization_name,
-    hard_drive_scan_wizard,
-    hr_employee,
-    inventory_adjustment_reason,
-    inventory_item,
-    inventory_item_destruction,
-    inventory_item_destruction_line,
-    inventory_item_location_transfer,
-    inventory_item_profile,
-    inventory_item_retrieval,
-    inventory_item_retrieval_line,
-    inventory_item_type,
-    invoice_generation_log,
-    key_inventory,
-    key_restriction_checker,
-    location_group,
-    location_report_wizard,
-    maintenance_equipment,
-    maintenance_request,
-    maintenance_team,
-    media_type,
-    mobile_bin_key_wizard,
-    mobile_dashboard_widget,
-    mobile_dashboard_widget_category,
-    mobile_photo,
-    naid_audit_requirement,
-    naid_certificate,
-    naid_certificate_item,
-    naid_certification_level,
-    naid_compliance_action_plan,
-    naid_compliance_alert,
-    naid_compliance_policy,
-    naid_compliance_checklist,
-    naid_compliance_checklist_item,
-    naid_custody,
-    naid_destruction_record,
-    naid_equipment_standard,
-    naid_operator_certification,
-    naid_performance_history,
-    naid_risk_assessment,
-    naid_training_requirement,
-    naidaudit_log,
-    naidcustody_event,
-    paper_bale,
-    paper_bale_inspection,
-    paper_bale_inspection_wizard,
-    paper_bale_line,
-    paper_bale_load,
-    paper_bale_movement,
-    paper_bale_recycling,
-    paper_load_shipment,
-    partner_bin_key,
-    payment_split,
-    payment_split_line,
-    paper_model_bale,
-    pickup_location,
-    pickup_request,
-    pickup_request_item,
-    pickup_request_line,
-    pickup_route,
-    pickup_route_stop,
-    rate_change_confirmation_wizard,
-    pickup_schedule_wizard,
-    portal_feedback,
-    portal_feedback_action,
-    portal_feedback_analytic,
-    portal_feedback_communication,
-    portal_feedback_escalation,
-    portal_feedback_resolution,
-    portal_request,
-    portal_request_line,
-    pos_config,
-    processing_log,
-    product_container_type,
-    product_product,
-    product_template,
-    project_task,
-    records_access_log,
-    records_approval_step,
-    records_approval_workflow,
-    records_approval_workflow_line,
-    records_audit_log,
-    records_billing,
-    records_billing_config,
-    records_billing_rate,
-    records_bulk_user_import,
-    records_category,
-    records_center_location,
-    records_chain_of_custody,
-    records_config_settings,
-    records_container,
-    records_container_content_line,
-    records_container_line,
-    records_container_log,
-    records_container_movement,
-    records_container_transfer,
-    records_container_transfer_line,
-    records_container_type,
-    records_container_type_converter,
-    records_deletion_request,
-    records_department,
-    records_department_billing_approval,
-    records_department_billing_contact,
-    records_department_sharing,
-    records_destruction,
-    records_destruction_job,
-    records_digital_scan,
-    records_document,
-    records_document_type,
-    records_installer,
-    records_inventory_dashboard,
-    records_location,
-    records_location_inspection,
-    records_location_report_wizard,
-    records_policy_version,
-    records_promotional_discount,
-    records_request,
-    records_request_line,
-    records_request_type,
-    records_retention_policy,
-    records_retention_policy_version,
-    records_retention_rule,
-    records_retrieval_work_order,
-    records_security_audit,
-    records_series,
-    records_service_type,
-    records_storage_box,
-    records_storage_department_user,
-    records_survey_user_input,
-    records_tag,
-    records_tag_category,
-    records_usage_tracking,
-    records_vehicle,
-    required_document,
-    res_config_settings,
-    res_partner,
-    res_partner_key_restriction,
-    retrieval_metric,
-    revenue_analytic,
-    revenue_forecast_line,
-    revenue_forecast,
-    revenue_forecasting_reports,
-    rm_module_configurator,
-    route_optimizer,
-    scan_digital_asset,
-    scan_retrieval,
-    scan_retrieval_item,
-    scan_retrieval_work_order,
-    service_item,
-    shred_bin,
-    shredding_certificate,
-    shredding_hard_drive,
-    shredding_inventory_batch,
-    shredding_picklist_item,
-    shredding_rate,
-    shredding_service,
-    shredding_service_bin,
-    shredding_service_event,
-    shredding_service_log,
-    shredding_service_photo,
-    shred_model_bin,
-    shredding_team,
-    signed_document,
-    signed_document_audit,
-    stock_lot,
-    stock_lot_attribute,
-    stock_lot_attribute_option,
-    stock_lot_attribute_value,
-    stock_move_smsvalidation,
-    stock_picking,
-    survey_feedback_theme,
-    survey_improvement_action,
-    system_diagram_data,
-    system_flowchart_wizard,
-    temp_inventory,
-    temp_inventory_audit,
-    temp_inventory_movement,
-    temp_inventory_reject_wizard,
-    transitory_field_config,
-    transitory_item,
-    unlock_service_history,
-    unlock_service_part,
-    visitor,
-    workflow_visualization_manager,
-    work_order_retrieval,
-    work_order_shredding,
-    records_retrieval_work_order,
-    revenue_forecaster,
-)
+from . import account_move_line
+from . import advanced_billing_contact
+from . import advanced_billing_line
+from . import advanced_billing_profile
+from . import approval_history
+from . import barcode_generation_history
+from . import barcode_models_enhanced
+from . import barcode_pricing_tier
+from . import barcode_product
+from . import barcode_storage_box
+from . import base_rate
+from . import base_rates
+from . import billing_period
+from . import bin_barcode_inventory
+from . import bin_issue_record
+from . import bin_key
+from . import bin_key_history
+from . import bin_key_unlock_service
+from . import bin_unlock_service
+from . import certificate_template_data
+from . import chain_of_custody
+from . import container_access_activity
+from . import container_access_document
+from . import container_access_photo
+from . import container_access_report
+from . import container_access_visitor
+from . import container_access_work_order
+from . import container_content
+from . import container_destruction_work_order
+from . import container_retrieval
+from . import cross_department_sharing
+from . import cross_department_sharing_rule
+from . import photo
+from . import records_description
+from . import retrieval_item_base  # BASE CLASS - must be before container_retrieval_item, file_retrieval_item, scan_retrieval_item
+from . import work_order_coordinator  # COORDINATOR - must be before work orders that reference it
+from . import container_retrieval_item
+from . import container_retrieval_work_order
+from . import custody_transfer_event
+from . import customer_billing_profile
+from . import customer_category
+from . import customer_feedback
+from . import customer_inventory
+from . import customer_inventory_report
+from . import customer_inventory_report_line
+from . import customer_inventory_report_model
+from . import customer_negotiated_rate
+from . import customer_negotiated_rates
+from . import customer_portal_diagram
+from . import destruction_certificate
+from . import destruction_item
+from . import discount_rule
+from . import display_name
+from . import document_retrieval_equipment
+from . import document_retrieval_item
+from . import document_retrieval_team
+from . import document_search_attempt
+from . import feedback_improvement_area
+from . import field_label_customization
+from . import file_retrieval
+from . import file_retrieval_item
+from . import file_retrieval_work_order
+from . import file_retrieval_work_order_item
+from . import full_customization_name
+from . import hard_drive_scan_wizard
+from . import hr_employee
+from . import inventory_adjustment_reason
+from . import inventory_item
+from . import inventory_item_destruction
+from . import inventory_item_destruction_line
+from . import inventory_item_location_transfer
+from . import inventory_item_profile
+from . import inventory_item_retrieval
+from . import inventory_item_retrieval_line
+from . import inventory_item_type
+from . import invoice_generation_log
+from . import key_inventory
+from . import key_restriction_checker
+from . import location_group
+from . import location_report_wizard
+from . import maintenance_equipment
+from . import maintenance_request
+from . import maintenance_team
+from . import media_type
+from . import mobile_bin_key_wizard
+from . import mobile_dashboard_widget
+from . import mobile_dashboard_widget_category
+from . import mobile_photo
+from . import naid_audit_requirement
+from . import naid_certificate
+from . import naid_certificate_item
+from . import naid_certification_level
+from . import naid_compliance_action_plan
+from . import naid_compliance_alert
+from . import naid_compliance_policy
+from . import naid_compliance_checklist
+from . import naid_compliance_checklist_item
+from . import naid_custody
+from . import naid_destruction_record
+from . import naid_equipment_standard
+from . import naid_operator_certification
+from . import naid_performance_history
+from . import naid_risk_assessment
+from . import naid_training_requirement
+from . import naidaudit_log
+from . import naidcustody_event
+from . import paper_bale
+from . import paper_bale_inspection
+from . import paper_bale_inspection_wizard
+from . import paper_bale_line
+from . import paper_bale_load
+from . import paper_bale_movement
+from . import paper_bale_recycling
+from . import paper_load_shipment
+from . import partner_bin_key
+from . import payment_split
+from . import payment_split_line
+from . import paper_model_bale
+from . import pickup_location
+from . import pickup_request
+from . import pickup_request_item
+from . import pickup_request_line
+from . import pickup_route
+from . import pickup_route_stop
+from . import rate_change_confirmation_wizard
+from . import pickup_schedule_wizard
+from . import portal_feedback
+from . import portal_feedback_action
+from . import portal_feedback_analytic
+from . import portal_feedback_communication
+from . import portal_feedback_escalation
+from . import portal_feedback_resolution
+from . import portal_request
+from . import portal_request_line
+from . import pos_config
+from . import processing_log
+from . import product_container_type
+from . import product_product
+from . import product_template
+from . import project_task
+from . import records_access_log
+from . import records_approval_step
+from . import records_approval_workflow
+from . import records_approval_workflow_line
+from . import records_audit_log
+from . import records_billing
+from . import records_billing_config
+from . import records_billing_rate
+from . import records_bulk_user_import
+from . import records_category
+from . import records_center_location
+from . import records_chain_of_custody
+from . import records_config_settings
+from . import records_container
+from . import records_container_content_line
+from . import records_container_line
+from . import records_container_log
+from . import records_container_movement
+from . import records_container_transfer
+from . import records_container_transfer_line
+from . import records_container_type
+from . import records_container_type_converter
+from . import records_deletion_request
+from . import records_department
+from . import records_department_billing_approval
+from . import records_department_billing_contact
+from . import records_department_sharing
+from . import records_destruction
+from . import records_destruction_job
+from . import records_digital_scan
+from . import records_document
+from . import records_document_type
+from . import records_installer
+from . import records_inventory_dashboard
+from . import records_location
+from . import records_location_inspection
+from . import records_location_report_wizard
+from . import records_policy_version
+from . import records_promotional_discount
+from . import records_request
+from . import records_request_line
+from . import records_request_type
+from . import records_retention_policy
+from . import records_retention_policy_version
+from . import records_retention_rule
+from . import records_retrieval_work_order
+from . import records_security_audit
+from . import records_series
+from . import records_service_type
+from . import records_storage_box
+from . import records_storage_department_user
+from . import records_survey_user_input
+from . import records_tag
+from . import records_tag_category
+from . import records_usage_tracking
+from . import records_vehicle
+from . import required_document
+from . import res_config_settings
+from . import res_partner
+from . import res_partner_key_restriction
+from . import retrieval_metric
+from . import revenue_analytic
+from . import revenue_forecast_line
+from . import revenue_forecast
+from . import revenue_forecasting_reports
+from . import rm_module_configurator
+from . import route_optimizer
+from . import scan_digital_asset
+from . import scan_retrieval
+from . import scan_retrieval_item
+from . import scan_retrieval_work_order
+from . import service_item
+from . import shred_bin
+from . import shredding_certificate
+from . import shredding_hard_drive
+from . import shredding_inventory_batch
+from . import shredding_picklist_item
+from . import shredding_rate
+from . import shredding_service
+from . import shredding_service_bin
+from . import shredding_service_event
+from . import shredding_service_log
+from . import shredding_service_photo
+from . import shred_model_bin
+from . import shredding_team
+from . import signed_document
+from . import signed_document_audit
+from . import stock_lot
+from . import stock_lot_attribute
+from . import stock_lot_attribute_option
+from . import stock_lot_attribute_value
+from . import stock_move_smsvalidation
+from . import stock_picking
+from . import survey_feedback_theme
+from . import survey_improvement_action
+from . import system_diagram_data
+from . import system_flowchart_wizard
+from . import temp_inventory
+from . import temp_inventory_audit
+from . import temp_inventory_movement
+from . import temp_inventory_reject_wizard
+from . import transitory_field_config
+from . import transitory_item
+from . import unlock_service_history
+from . import unlock_service_part
+from . import visitor
+from . import workflow_visualization_manager
+from . import work_order_retrieval
+from . import work_order_shredding
+from . import records_retrieval_work_order
+from . import revenue_forecaster
