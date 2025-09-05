@@ -55,6 +55,7 @@ from . import document_search_attempt
 from . import feedback_improvement_area
 from . import field_label_customization
 from . import file_retrieval
+from . import retrieval_item_base
 from . import file_retrieval_item
 from . import file_retrieval_work_order
 from . import file_retrieval_work_order_item
@@ -201,7 +202,6 @@ from . import required_document
 from . import res_config_settings
 from . import res_partner
 from . import res_partner_key_restriction
-from . import retrieval_item_base
 from . import container_retrieval_item
 from . import retrieval_metric
 from . import revenue_analytic
