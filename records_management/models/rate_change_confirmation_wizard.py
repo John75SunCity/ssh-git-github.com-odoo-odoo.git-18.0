@@ -51,7 +51,7 @@ class RateChangeConfirmationWizard(models.TransientModel):
     # APPROVAL WORKFLOW
     # ============================================================================
     requires_approval = fields.Boolean(string='Requires Management Approval', default=True)
-    approved_by = fields.Many2one('res.users', string='Approved By', readonly=True)
+    approved_by_id = fields.Many2one('res.users', string='Approved By', readonly=True)
     approval_date = fields.Datetime(string='Approval Date', readonly=True)
     approval_notes = fields.Text(string='Approval Notes')
 
@@ -98,7 +98,7 @@ Records Management Team""")
             raise UserError(_('Only managers can approve rate changes.'))
 
         self.write({
-            'approved_by': self.env.user.id,
+            'approved_by_id': self.env.user.id,
             'approval_date': fields.Datetime.now(),
             'requires_approval': False,
         })
@@ -157,8 +157,8 @@ Records Management Team""")
         message += _('- Effective Date: %s\n', self.effective_date)
         message += _('- Implementation Method: %s\n', dict(self._fields['implementation_method'].selection).get(self.implementation_method))
 
-        if self.approved_by:
-            message += _('- Approved by: %s on %s\n', self.approved_by.name, self.approval_date)
+        if self.approved_by_id:
+            message += _('- Approved by: %s on %s\n', self.approved_by_id.name, self.approval_date)
 
         # Create audit log entry
         self.env['naid.audit.log'].create({
