@@ -234,7 +234,8 @@
 <!-- <menuitem id="menu_service_item_pricing" name="Pricing Rules" parent="menu_service_item_settings" action="records_management.action_service_item_pricing_rules" sequence="15" groups="records_management.group_records_manager"/> -->
 <!-- <menuitem id="menu_service_item_quality" name="Quality Controls" parent="menu_service_item_settings" action="records_management.action_service_item_quality_control" sequence="20" groups="records_management.group_records_manager"/> -->
 <!-- Mobile &amp; FSM Integration -->
-<menuitem id="menu_service_item_mobile" name="Mobile &amp; FSM" parent="menu_service_item_main" sequence="60" groups="records_management.group_records_technician"/>
+<menuitem id="menu_service_item_mobile" name="Mobile &amp; FSM" parent="menu_service_item_main" sequence="60" groups="records_management.group_records_user,records_management.group_records_technician"/>
+
 <!-- Temporarily commented out menuitems with missing actions -->
 <!-- <menuitem id="menu_service_item_mobile_tasks" name="Mobile Tasks" parent="menu_service_item_mobile" action="records_management.action_service_item_mobile_tasks" sequence="10" groups="records_management.group_records_technician"/> -->
 <!-- <menuitem id="menu_service_item_fsm" name="FSM Integration" parent="menu_service_item_mobile" action="records_management.action_service_item_fsm_integration" sequence="15" groups="records_management.group_records_technician"/> -->

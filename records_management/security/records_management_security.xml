@@ -25,6 +25,11 @@ Updated file: Fixed invalid domain in ir.rule for granular inventory access (cha
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
+<record id="group_records_technician" model="res.groups">
+    <field name="name">Records Technician</field>
+    <field name="implied_ids" eval="[(4, ref('records_management.group_records_user'))]"/>
+</record>
+
     <record id="group_naid_compliance_officer" model="res.groups">
         <field name="name">NAID Compliance Officer</field>
         <field name="users" eval="[(4, ref('base.user_admin'))]"/>
