@@ -187,12 +187,6 @@ def main():
                             print(f"   ❌ {dep} - Base field '{base_field}' not found")
                         else:
                             print(f"   ✅ {dep}")
-                                'dependency': dep,
-                                'issue': f"Base field '{base_field}' not found in model '{model_name}'"
-                            })
-                            print(f"   ❌ {dep} - Base field '{base_field}' not found")
-                        else:
-                            print(f"   ✅ {dep}")
 
     # Report issues
     print(f"\n=== Summary ===")
