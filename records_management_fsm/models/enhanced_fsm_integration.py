@@ -6,8 +6,8 @@ This model provides enhanced field service management integration for the Record
 It works with or without the industry_fsm module and provides comprehensive FSM functionality.
 """
 
-from odoo import api, fields, models, _
 from datetime import datetime
+from odoo import api, fields, models, _
 
 
 class EnhancedFsmIntegration(models.Model):
@@ -252,7 +252,7 @@ class EnhancedFsmIntegration(models.Model):
             'name': 'GPS Location Update',
             'type': 'server',
             'level': 'INFO',
-            'message': _('GPS location updated for task %s: %s, %s') % (task_id, latitude, longitude),
+            'message': _('GPS location updated for task %s: %s, %s', task_id, latitude, longitude),
             'path': 'enhanced.fsm.integration',
             'func': 'update_task_location',
         })
@@ -260,7 +260,7 @@ class EnhancedFsmIntegration(models.Model):
         return {'status': 'success', 'message': 'Location updated successfully'}
 
     @api.model
-    def create_default_integrations(self):
+    def _create_default_integrations(self):
         """
         Create default FSM integrations for common workflows.
         """
@@ -296,9 +296,9 @@ class EnhancedFsmIntegration(models.Model):
                     'name': 'Default Integration Creation Error',
                     'type': 'server',
                     'level': 'ERROR',
-                    'message': _('Error creating default integration %s: %s') % (integration_data['name'], str(e)),
+                    'message': _('Error creating default integration %s: %s', integration_data['name'], str(e)),
                     'path': 'enhanced.fsm.integration',
-                    'func': 'create_default_integrations',
+                    'func': '_create_default_integrations',
                 })
 
         return created_integrations
