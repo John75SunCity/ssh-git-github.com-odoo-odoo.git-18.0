@@ -497,8 +497,8 @@ Perfect for managing emergency access and generating additional revenue.
 
 
 <!-- Customer Partner Form View Extension for Key Restrictions -->
-<record id="res_partner_view_form_key_restrictions" model="ir.ui.view">
-    <field name="name">base.view_partner_form.inherit.key.restrictions</field>  <!-- Updated: Prefixed with original view name for proper inheritance -->
+<record id="res_partner_view_form_inherit_key_restrictions" model="ir.ui.view">
+    <field name="name">base.view_partner_form.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form"/>
     <field name="type">list</field>
@@ -578,8 +578,8 @@ Perfect for managing emergency access and generating additional revenue.
     </record>
 
 <!-- Customer Partner Tree View Extension for Key Restrictions -->
-<record id="res_partner_view_list_key_restrictions" model="ir.ui.view">
-    <field name="name">base.view_partner_tree.inherit.key.restrictions</field>  <!-- Updated: Prefixed with original view name for proper inheritance -->
+<record id="res_partner_view_list_inherit_key_restrictions" model="ir.ui.view">
+    <field name="name">base.view_partner_tree.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_tree"/>
     <field name="type">form</field>
@@ -641,8 +641,8 @@ Perfect for managing emergency access and generating additional revenue.
     </record>
 
 <!-- Bin Unlock Service Form View Extension -->
-<record id="bin_unlock_service_view_form_key_restrictions" model="ir.ui.view">
-    <field name="name">bin_unlock_service_view_form.inherit.key.restrictions</field>  <!-- Updated: Prefixed with original view name for proper inheritance -->
+<record id="bin_unlock_service_view_form_inherit_key_restrictions" model="ir.ui.view">
+    <field name="name">bin_unlock_service_view_form.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_form"/>  <!-- Updated: Corrected to match the exact XML ID of the view being inherited -->
     <field name="type">list</field>
@@ -672,8 +672,8 @@ Perfect for managing emergency access and generating additional revenue.
     </record>
 
 <!-- Partner Search View Extension for Key Restrictions -->
-<record id="res_partner_view_search_key_restrictions" model="ir.ui.view">
-    <field name="name">base.view_res_partner_filter.inherit.key.restrictions</field>  <!-- Updated: Prefixed with original view name for proper inheritance -->
+<record id="res_partner_view_search_inherit_key_restrictions" model="ir.ui.view">
+    <field name="name">base.view_res_partner_filter.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_res_partner_filter"/>
     <field name="type">list</field>
@@ -687,8 +687,8 @@ Perfect for managing emergency access and generating additional revenue.
 </record>
 
 <!-- Bin Unlock Service Tree View Extension -->
-<record id="bin_unlock_service_view_list_key_restrictions" model="ir.ui.view">
-    <field name="name">bin_unlock_service_view_tree.inherit.key.restrictions</field>  <!-- Updated: Prefixed with original view name for proper inheritance -->
+<record id="bin_unlock_service_view_list_inherit_key_restrictions" model="ir.ui.view">
+    <field name="name">bin_unlock_service_view_tree.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_tree"/>  <!-- Updated: Corrected to match the exact XML ID of the view being inherited -->
     <field name="type">list</field>
@@ -709,8 +709,8 @@ Perfect for managing emergency access and generating additional revenue.
     </record>
 
 <!-- Bin Unlock Service Search View Extension -->
-<record id="bin_unlock_service_view_search_key_restrictions" model="ir.ui.view">
-    <field name="name">bin_unlock_service_view_search.inherit.key.restrictions</field>  <!-- Updated: Prefixed with original view name for proper inheritance -->
+<record id="bin_unlock_service_view_search_inherit_key_restrictions" model="ir.ui.view">
+    <field name="name">bin_unlock_service_view_search.inherit.key_restrictions</field>    <!-- Updated: Prefixed with original view name for proper inheritance -->
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_search"/>  <!-- Updated: Corrected to match the exact XML ID of the view being inherited -->
     <field name="type">list</field>
