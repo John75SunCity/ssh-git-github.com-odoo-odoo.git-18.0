@@ -217,6 +217,8 @@ class OdooValidator:
 
                 # Check for missing access rules
                 python_files = list(self.module_path.glob("models/*.py"))
+                model_locations = {}  # Track where each model is defined
+
                 for py_file in python_files:
                     try:
                         with open(py_file, "r", encoding="utf-8") as f:
@@ -229,6 +231,16 @@ class OdooValidator:
                         matches = re.findall(name_pattern, content, re.MULTILINE)
 
                         for model_name in matches:
+                            # Check for duplicate model names across files
+                            if model_name in model_locations:
+                                existing_file = model_locations[model_name]
+                                self.errors.append(
+                                    f"❌ DUPLICATE MODEL: Model '{model_name}' defined in both {existing_file} and {py_file.name} - this will cause module loading failure"
+                                )
+                            else:
+                                model_locations[model_name] = py_file.name
+
+                            # Check for missing access rules
                             if model_name not in access_models:
                                 self.errors.append(
                                     f"❌ SECURITY: Missing access rules for model '{model_name}' in {py_file.name}"

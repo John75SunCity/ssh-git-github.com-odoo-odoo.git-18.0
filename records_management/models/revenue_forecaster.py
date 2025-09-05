@@ -110,11 +110,7 @@ class RevenueForecaster(models.TransientModel):
     # ============================================================================
     # FORECAST LINES
     # ============================================================================
-    forecast_line_ids = fields.One2many(
-        'revenue.forecast.line',
-        'forecaster_id',
-        string='Forecast Lines'
-    )
+    forecast_line_ids = fields.One2many("revenue.forecaster.line", "forecaster_id", string="Forecast Lines")
 
     # ============================================================================
     # COMPUTED METHODS
@@ -191,7 +187,7 @@ class RevenueForecaster(models.TransientModel):
             })
 
         # Create forecast lines
-        self.env['revenue.forecast.line'].create(forecast_lines)
+        self.env["revenue.forecaster.line"].create(forecast_lines)
 
         # Update results
         self.write({
@@ -344,13 +340,13 @@ class RevenueForecaster(models.TransientModel):
             return 'very_high'
 
 
-class RevenueForecastLine(models.TransientModel):
+class RevenueForecasterLine(models.TransientModel):
     """
     Individual customer forecast line for detailed analysis.
     """
 
-    _name = 'revenue.forecast.line'
-    _description = 'Revenue Forecast Line'
+    _name = "revenue.forecaster.line"
+    _description = "Revenue Forecaster Line"
 
     forecaster_id = fields.Many2one('revenue.forecaster', string='Forecaster', ondelete='cascade')
 

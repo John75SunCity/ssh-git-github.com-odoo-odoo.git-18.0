@@ -393,6 +393,8 @@ access_revenue_forecast_user,revenue.forecast.user,revenue.forecast,records_mana
 access_revenue_forecast_manager,revenue.forecast.manager,revenue.forecast,records_management.group_records_manager,1,1,1,1
 access_revenue_forecast_line_user,revenue.forecast.line.user,revenue.forecast.line,records_management.group_records_user,1,1,1,0
 access_revenue_forecast_line_manager,revenue.forecast.line.manager,revenue.forecast.line,records_management.group_records_manager,1,1,1,1
+access_revenue_forecaster_line_user,revenue.forecaster.line.user,revenue.forecaster.line,records_management.group_records_user,1,1,1,0
+access_revenue_forecaster_line_manager,revenue.forecaster.line.manager,revenue.forecaster.line,records_management.group_records_manager,1,1,1,1
 access_rm_module_configurator_user,rm_module_configurator,rm.module.configurator,records_management.group_records_user,1,1,1,0
 access_rm_module_configurator_manager,rm_module_configurator,rm.module.configurator,records_management.group_records_manager,1,1,1,1
 access_route_optimizer_user,route_optimizer,route.optimizer,records_management.group_records_user,1,1,1,0
