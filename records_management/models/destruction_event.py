@@ -36,9 +36,8 @@ class DestructionEvent(models.Model):
         for record in records:
             self.env['naid.audit.log'].create({
                 'event_id': record.id,
-                'operation': 'destruction',
                 'user_id': record.technician_id.id,
+                'action_type': 'destruction',
                 'description': f'Destruction event: {record.shredded_items} - {record.quantity} {record.unit_of_measure}',
-                'date': record.date,
             })
         return records

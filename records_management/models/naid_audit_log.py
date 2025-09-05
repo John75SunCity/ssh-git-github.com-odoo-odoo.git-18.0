@@ -40,8 +40,8 @@ class NAIDAuditLog(models.Model):
     ip_address = fields.Char(string='IP Address', readonly=True)
     naid_compliant = fields.Boolean(string='NAID Compliant Action', default=True, readonly=True)
 
-    # Inverse field for the One2many in project.task
-    task_id = fields.Many2one('project.task', string='Related Task', ondelete='cascade', index=True)
+    # Inverse field for the One2many in destruction.event
+    event_id = fields.Many2one('destruction.event', string='Destruction Event', ondelete='cascade', index=True)
     document_id = fields.Many2one('records.document', string="Document")
     custody_id = fields.Many2one(
         comodel_name='chain.of.custody',
