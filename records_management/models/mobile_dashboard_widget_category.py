@@ -18,6 +18,7 @@ class MobileDashboardWidgetCategory(models.Model):
 
     _name = "mobile.dashboard.widget.category"
     _description = "Mobile Dashboard Widget Category"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(
         string="Category Name", required=True, help="Name of the widget category"

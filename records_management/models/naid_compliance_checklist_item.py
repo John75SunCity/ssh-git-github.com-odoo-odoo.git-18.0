@@ -4,6 +4,7 @@ from odoo import models, fields
 class NAIDComplianceChecklistItem(models.Model):
     _name = 'naid.compliance.checklist.item'
     _description = 'NAID Compliance Checklist Item'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
     # ============================================================================
@@ -21,6 +22,7 @@ class NAIDComplianceChecklistItem(models.Model):
     # ============================================================================
     def action_mark_non_compliant(self):
         """Mark item as non-compliant"""
+        self.ensure_one()
         pass
 
     def _check_deadline(self):

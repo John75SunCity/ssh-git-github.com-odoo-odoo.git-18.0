@@ -70,5 +70,40 @@ except Exception as e:
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=30)).strftime('%Y-%m-%d 09:00:00')"/>
         </record>
+<!-- NAID Training Reminder Action -->
+<record id="ir_cron_naid_training_reminders" model="ir.cron">
+    <field name="name">NAID Training Reminders</field>
+    <field name="model_id" ref="records_management.model_naid_training_schedule"/>
+    <field name="state">code</field>
+    <field name="code"><![CDATA[
+# Send training reminders for upcoming sessions
+try:
+    env['naid.training.schedule']._send_training_reminders()
+except Exception as e:
+    log(_('Error sending NAID training reminders: %s') % str(e))
+]]>    </field>
+    <field name="active" eval="True"/>
+    <field name="interval_number" eval="1"/>
+    <field name="interval_type">days</field>
+    <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 09:00:00')"/>
+</record>
+
+<!-- NAID Certification Expiry Check -->
+<record id="ir_cron_naid_certification_expiry_check" model="ir.cron">
+    <field name="name">NAID Certification Expiry Check</field>
+    <field name="model_id" ref="records_management.model_naid_operator_certification"/>
+    <field name="state">code</field>
+    <field name="code"><![CDATA[
+# Check and update expired certifications
+try:
+    env['naid.operator.certification'].action_check_expiry()
+except Exception as e:
+    log(_('Error checking NAID certification expiry: %s') % str(e))
+]]>    </field>
+    <field name="active" eval="True"/>
+    <field name="interval_number" eval="1"/>
+    <field name="interval_type">days</field>
+    <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 09:00:00')"/>
+</record>
     </data>
 </odoo>

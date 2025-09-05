@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError, UserError
 class ShreddingPicklistItem(models.Model):
     _name = 'shredding.picklist.item'
     _description = 'Shredding Picklist Item'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
     # ============================================================================
@@ -100,4 +101,3 @@ class ShreddingPicklistItem(models.Model):
             'verified_date': False,
         })
         self.batch_id.message_post(body=_('Item %s reset to pending', self.display_name))
-

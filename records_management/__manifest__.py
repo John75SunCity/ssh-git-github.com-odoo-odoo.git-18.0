@@ -56,11 +56,7 @@
         "documents",
         "helpdesk",
         "mass_mailing",
-        "website_sale",
-        "sale_management",
-        "account_payment",
-        "delivery",
-        "quality",
+        "website_slides",  # Required for training functionality in NAID certifications
     ],
     "data": [
         # 1. Security files FIRST (critical for access rules and dependencies)
@@ -224,6 +220,7 @@
         "templates/portal_mobile_settings.xml",
         "templates/portal_mobile_template.xml",
         "templates/portal_work_order_templates.xml",
+        "templates/portal_certifications.xml",
         "views/records_container_views.xml",
         "views/records_billing_config_views.xml",
         "views/rm_module_configurator_views.xml",

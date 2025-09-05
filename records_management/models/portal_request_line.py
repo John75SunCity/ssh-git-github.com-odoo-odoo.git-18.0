@@ -22,9 +22,6 @@ class PortalRequestLine(models.Model):
     _name = 'portal.request.line'
     _description = 'Portal Request Line'
     _inherit = ['portal.mixin']
-
-    _name = 'portal.request.line'
-    _description = 'Portal Request Line'
     _order = 'sequence, id'
 
     request_id = fields.Many2one('portal.request', string='Portal Request', required=True)

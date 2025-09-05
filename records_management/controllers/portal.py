@@ -751,3 +751,49 @@ class RecordsManagementController(http.Controller):  # type: ignore
         """Check for compliance-related warnings."""
         # Implementation would check for compliance violations
         return []  # Placeholder
+
+    # ============================================================================
+    # NAID CERTIFICATION ROUTES
+    # ============================================================================
+
+    @http.route("/my/certifications", type="http", auth="user", website=True)
+    def portal_certifications(self):
+        """
+        Portal page for customers to view technician certifications.
+        Shows NAID operator certifications with training status.
+        """
+        # Get all active NAID operator certifications
+        certifications = request.env['naid.operator.certification'].search([
+            ('active', '=', True)
+        ], order='certification_date desc')
+
+        # Get training courses for reference
+        training_courses = request.env['slide.channel'].search([
+            ('is_published', '=', True)
+        ])
+
+        context = {
+            'certifications': certifications,
+            'training_courses': training_courses,
+            'page_name': 'certifications',
+        }
+
+        return request.render('records_management.portal_certifications', context)
+
+    @http.route("/my/certifications/<int:certification_id>", type="http", auth="user", website=True)
+    def portal_certification_detail(self, certification_id):
+        """
+        Detailed view of a specific certification.
+        """
+        certification = request.env['naid.operator.certification'].browse(certification_id)
+
+        # Check if certification exists and user has access
+        if not certification.exists():
+            return request.redirect('/my/certifications')
+
+        context = {
+            'certification': certification,
+            'page_name': 'certification_detail',
+        }
+
+        return request.render('records_management.portal_certification_detail', context)

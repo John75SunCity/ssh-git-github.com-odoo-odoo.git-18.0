@@ -9,6 +9,7 @@ from odoo.exceptions import ValidationError, UserError
 class SignedDocumentAudit(models.Model):
     _name = 'signed.document.audit'
     _description = 'Signed Document Audit Trail'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'timestamp desc, id desc'
     _rec_name = 'display_name'
 
@@ -133,11 +134,11 @@ class SignedDocumentAudit(models.Model):
             action_display = dict(record._fields['action'].selection).get(record.action, record.action)
             user_name = record.performing_user_id.name or _("System")
 
-            action_description = _("%s by %s") % (action_display, user_name)
+            action_description = _("%s by %s", action_display, user_name)
             record.action_description = action_description
 
             if record.document_id.name:
-                record.display_name = _("%s on %s") % (action_description, record.document_id.name)
+                record.display_name = _("%s on %s", action_description, record.document_id.name)
             else:
                 record.display_name = action_description
 
@@ -202,8 +203,9 @@ class SignedDocumentAudit(models.Model):
         return self.verification_hash == expected_hash
 
     @api.model
-    def log_action(self, document_id, action, details=None, before_state=None, after_state=None):
+    def action_log_action(self, document_id, action, details=None, before_state=None, after_state=None):
         """Helper method to create audit log entries."""
+        self.ensure_one()
         vals = {
             'document_id': document_id,
             'action': action,
@@ -240,6 +242,7 @@ class SignedDocumentAudit(models.Model):
 
     def action_verify_integrity(self):
         """Action to verify the integrity of audit entries."""
+        self.ensure_one()
         failed_verifications = []
 
         for record in self:

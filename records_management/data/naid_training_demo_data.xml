@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+        <!-- NAID Training Courses Demo Data -->
+        <record id="naid_training_course_basic" model="slide.channel">
+            <field name="name">NAID AAA Basic Certification Training</field>
+            <field name="description">Fundamental training for NAID AAA certification covering basic records management principles, security protocols, and compliance requirements.</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+        </record>
+
+        <record id="naid_training_course_advanced" model="slide.channel">
+            <field name="name">NAID AAA Advanced Operations Training</field>
+            <field name="description">Advanced training covering complex destruction operations, equipment maintenance, compliance auditing, and emergency procedures.</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+        </record>
+
+        <record id="naid_training_course_security" model="slide.channel">
+            <field name="name">NAID AAA Security &amp; Compliance Training</field>
+            <field name="description">Comprehensive security training covering data protection, chain of custody, audit procedures, and regulatory compliance requirements.</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+        </record>
+
+        <record id="naid_training_course_equipment" model="slide.channel">
+            <field name="name">NAID AAA Equipment Operation Training</field>
+            <field name="description">Hands-on training for operating destruction equipment, maintenance procedures, safety protocols, and equipment certification requirements.</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+        </record>
+
+        <record id="naid_training_course_refresher" model="slide.channel">
+            <field name="name">NAID AAA Annual Refresher Training</field>
+            <field name="description">Annual refresher training to maintain NAID AAA certification, covering updates to procedures, new regulations, and best practices.</field>
+            <field name="channel_type">training</field>
+            <field name="enroll">public</field>
+            <field name="visibility">public</field>
+            <field name="is_published">true</field>
+        </record>
+
+        <!-- NAID Training Requirements -->
+        <record id="naid_basic_certification" model="naid.operator.certification">
+            <field name="name">NAID AAA Basic Certification</field>
+            <field name="certification_number">NAID-BASIC-001</field>
+            <field name="status">certified</field>
+            <field name="refresher_training_required">true</field>
+            <field name="refresher_interval_months">12</field>
+            <field name="portal_visible">true</field>
+            <field name="required_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_security'))]"/>
+            <field name="completed_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_security'))]"/>
+        </record>
+
+        <record id="naid_advanced_certification" model="naid.operator.certification">
+            <field name="name">NAID AAA Advanced Certification</field>
+            <field name="certification_number">NAID-ADV-001</field>
+            <field name="status">certified</field>
+            <field name="refresher_training_required">true</field>
+            <field name="refresher_interval_months">12</field>
+            <field name="portal_visible">true</field>
+            <field name="required_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_advanced')), (4, ref('naid_training_course_security')), (4, ref('naid_training_course_equipment'))]"/>
+            <field name="completed_trainings_ids" eval="[(4, ref('naid_training_course_basic')), (4, ref('naid_training_course_advanced')), (4, ref('naid_training_course_security')), (4, ref('naid_training_course_equipment'))]"/>
+        </record>
+    </data>
+</odoo>

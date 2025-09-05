@@ -22,6 +22,7 @@ class PickupRequestLine(models.Model):
 
     _name = 'pickup.request.line'
     _description = 'Pickup Request Line'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
     request_id = fields.Many2one('pickup.request', string='Pickup Request', required=True)

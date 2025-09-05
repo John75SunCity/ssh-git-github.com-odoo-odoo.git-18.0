@@ -44,6 +44,7 @@ from . import customer_negotiated_rate
 from . import customer_negotiated_rates
 from . import customer_portal_diagram
 from . import destruction_certificate
+from . import destruction_event
 from . import destruction_item
 from . import discount_rule
 from . import display_name
@@ -94,10 +95,11 @@ from . import naid_compliance_policy
 from . import naid_custody
 from . import naid_destruction_record
 from . import naid_equipment_standard
-from . import naid_operator_certification
+from . import naidoperator_certification
 from . import naid_performance_history
 from . import naid_risk_assessment
 from . import naid_training_requirement
+from . import naidtraining_schedule
 from . import naidaudit_log
 from . import naidcustody_event
 from . import paper_bale

@@ -23,6 +23,7 @@ class CrossDepartmentSharingRule(models.Model):
 
     _name = "cross.department.sharing.rule"
     _description = "Cross-Department Sharing Access Rules"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _table = "cross_department_sharing_rule"
 
     sharing_id = fields.Many2one("cross.department.sharing", string="Sharing Record", required=True, ondelete="cascade")

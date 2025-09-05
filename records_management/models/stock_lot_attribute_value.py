@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 class StockLotAttributeValue(models.Model):
     _name = 'stock.lot.attribute.value'
     _description = 'Stock Lot Attribute Value'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = 'display_name'
     _sql_constraints = [
         ('unique_lot_attribute', 'unique(lot_id, attribute_id)', 'Each attribute must be unique per stock lot.')
@@ -109,4 +110,3 @@ class StockLotAttributeValue(models.Model):
                           expected_type=attr_type,
                           actual_type=field_type)
                     )
-

@@ -6,6 +6,7 @@ from odoo import api, fields, models
 class NAIDEquipmentStandard(models.Model):
     _name = 'naid.equipment.standard'
     _description = 'NAID Equipment Standard'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'equipment_type, name'
     _rec_name = 'name'
 

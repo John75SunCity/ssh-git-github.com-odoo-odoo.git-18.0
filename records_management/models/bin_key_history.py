@@ -18,6 +18,7 @@ class BinKeyHistory(models.Model):
     """
     _name = 'bin.key.history'
     _description = 'Bin Key Assignment History'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'event_date desc'
     _rec_name = 'name'
 
@@ -87,4 +88,3 @@ class BinKeyHistory(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('bin.key.history') or _('New')
         return super().create(vals_list)
-

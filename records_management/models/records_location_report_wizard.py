@@ -2,9 +2,10 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
 
-class RecordsLocationReportWizard(models.Model):
+class RecordsLocationReportWizard(models.TransientModel):
     _name = 'records.location.report.wizard'
-    _description = 'Records Location Report Wizard'
+    _description = 'Location Report Wizard'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ============================================================================
     # FIELDS
@@ -374,4 +375,3 @@ class RecordsLocationReportWizard(models.Model):
                 attachment_ids=attachment_ids
             ).send_mail(self.id, force_send=True)
         return True
-

@@ -4,6 +4,7 @@ from odoo import api, models, fields
 class AdvancedBillingLine(models.Model):
     _name = "advanced.billing.line"
     _description = "Advanced Billing Line"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = "sequence, id"
 
     name = fields.Char(string="Description", required=True, help="Description of the billing line item")

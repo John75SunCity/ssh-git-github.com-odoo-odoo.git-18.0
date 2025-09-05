@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal templates for NAID certification display -->
+    <template id="portal_my_certifications" name="My Certifications">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">My Certifications</t>
+            </t>
+            <t t-if="certifications">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">NAID Certified Technicians</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Certification Number</th>
+                                                <th>Technician</th>
+                                                <th>Status</th>
+                                                <th>Certification Date</th>
+                                                <th>Expiry Date</th>
+                                                <th>Training Progress</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="certifications" t-as="cert">
+                                                <tr>
+                                                    <td><t t-esc="cert.certification_number"/></td>
+                                                    <td><t t-esc="cert.name"/></td>
+                                                    <td>
+                                                        <span t-attf-class="badge badge-{{ 'success' if cert.status == 'certified' else 'warning' if cert.status == 'in_progress' else 'danger' }}">
+                                                            <t t-esc="cert.status"/>
+                                                        </span>
+                                                    </td>
+                                                    <td><t t-esc="cert.certification_date"/></td>
+                                                    <td><t t-esc="cert.expiry_date"/></td>
+                                                    <td>
+                                                        <div class="progress" style="width: 100px;">
+                                                            <div t-attf-class="progress-bar bg-{{ 'success' if cert.training_progress >= 100 else 'warning' }}"
+                                                                 t-attf-style="width: {{ cert.training_progress }}%">
+                                                                <t t-esc="cert.training_progress"/>%
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="alert alert-info">
+                    <p>No certified technicians found for your account.</p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Portal menu item -->
+    <record id="portal_my_certifications_menu" model="website.menu">
+        <field name="name">My Certifications</field>
+        <field name="url">/my/certifications</field>
+        <field name="parent_id" ref="portal.portal_my_home"/>
+        <field name="sequence">20</field>
+    </record>
+</odoo>

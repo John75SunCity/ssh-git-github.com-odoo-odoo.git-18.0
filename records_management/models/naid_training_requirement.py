@@ -6,6 +6,7 @@ from odoo import api, fields, models
 class NAIDTrainingRequirement(models.Model):
     _name = 'naid.training.requirement'
     _description = 'NAID Training Requirement'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'training_type, duration_hours'
     _rec_name = 'name'
 
