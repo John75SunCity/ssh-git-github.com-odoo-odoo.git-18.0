@@ -46,7 +46,6 @@ class RevenueForecast(models.Model):
         comodel_name="revenue.forecast.line",
         inverse_name="forecast_id",
         string="Forecast Lines",
-        depends=["revenue.forecast.line.forecast_id"],
     )
 
     # ============================================================================
@@ -150,12 +149,14 @@ class RevenueForecast(models.Model):
                 if period_end > end_date:
                     period_end = end_date
 
-                lines_to_create.append({
-                    'name': _("Forecast for Q%s %s") % (quarter, year),
-                    'date_start': period_start,
-                    'date_end': period_end,
-                    'forecast_id': self.id,
-                })
+                lines_to_create.append(
+                    {
+                        "name": _("Forecast for Q%s %s") % (quarter, year),
+                        "date_start": period_start,
+                        "date_end": period_end,
+                        "forecast_id": self.id,
+                    }
+                )
                 current_date += relativedelta(months=3)
                 quarter = (current_date.month - 1) // 3 + 1
                 year = current_date.year
