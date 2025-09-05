@@ -7,10 +7,7 @@ class RevenueForecast(models.Model):
     _name = 'revenue.forecast'
     _description = 'Revenue Forecast'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'date_start desc, id desc'
-    _depends = {
-        "revenue.forecast.line": ["forecast_id"],
-    }
+    _order = "date_start desc, id desc"
 
     # ============================================================================
     # CORE & IDENTIFICATION FIELDS
