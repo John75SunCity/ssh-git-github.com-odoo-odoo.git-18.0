@@ -43,7 +43,10 @@ class RevenueForecast(models.Model):
     # RELATIONSHIPS
     # ============================================================================
     forecast_line_ids = fields.One2many(
-        comodel_name="revenue.forecast.line", inverse_name="forecast_id", string="Forecast Lines"
+        comodel_name="revenue.forecast.line",
+        inverse_name="forecast_id",
+        string="Forecast Lines",
+        depends=["revenue.forecast.line.forecast_id"],
     )
 
     # ============================================================================
