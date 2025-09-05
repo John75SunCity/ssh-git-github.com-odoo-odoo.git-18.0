@@ -424,7 +424,7 @@ class AccountMoveLine(models.Model):
             "action_type": "invoice_line_created",
             "user_id": self.env.user.id,
             "timestamp": fields.Datetime.now(),
-            "description": _("Invoice line created for %s", service_type_desc),
+            "description": _("Invoice line created for %s") % service_type_desc,
             "invoice_line_id": self.id,
             "amount": self.price_total,
             "naid_compliant": self.naid_compliant,

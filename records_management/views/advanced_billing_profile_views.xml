@@ -34,7 +34,8 @@
                             <group>
                                 <field name="name"/>
                                 <field name="partner_id"/>
-                                <field name="department_id"/>
+<field name="primary_contact_id"/>
+
                             </group>
                             <group>
                                 <field name="active"/>
@@ -45,14 +46,17 @@
                             <page string="Billing Configuration">
                                 <group>
                                     <field name="billing_frequency"/>
-                                    <field name="billing_cycle_day"/>
-                                    <field name="payment_term_id"/>
+<field name="billing_cycle_day"/>
+
+
                                     <field name="auto_billing"/>
-                                    <field name="consolidate_invoices"/>
+<field name="discount_percentage"/>
+<field name="total_monthly_amount"/>
+
                                 </group>
                             </page>
                             <page string="Contacts">
-                                <field name="billing_contact_ids">
+<field name="contact_ids">
                                     <list>
                                         <field name="name"/>
                                         <field name="email"/>
@@ -60,13 +64,15 @@
                                     </list>
                                 </field>
                             </page>
-                            <page string="Services &amp; Pricing">
-                                <group>
-                                    <field name="billing_service_ids" widget="many2many_tags"/>
-                                    <field name="require_purchase_orders"/>
-                                    <field name="discount_percentage"/>
-                                    <field name="minimum_monthly_charge"/>
-                                </group>
+<page string="Services">
+    <field name="billing_line_ids">
+        <list>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="amount"/>
+            <field name="quantity"/>
+        </list>
+    </field>
                             </page>
                         </notebook>
                     </sheet>
