@@ -20,6 +20,7 @@ class InventoryItemProfile(models.Model):
 
     _name = 'inventory.item.profile'
     _description = 'Inventory Item Profile'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
     name = fields.Char(string='Profile Name', required=True)

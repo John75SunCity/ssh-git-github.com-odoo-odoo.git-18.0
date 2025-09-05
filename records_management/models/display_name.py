@@ -19,6 +19,7 @@ class DisplayName(models.Model):
 
     _name = 'display_name'
     _description = 'Display Name Configuration'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'name'
 
     name = fields.Char(string='Template Name', required=True)

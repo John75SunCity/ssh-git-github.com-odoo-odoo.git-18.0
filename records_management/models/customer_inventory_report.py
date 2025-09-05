@@ -41,6 +41,7 @@ class CustomerInventoryReport(models.AbstractModel):
 class CustomerInventoryReportWizard(models.TransientModel):
     _name = 'customer.inventory.report.wizard'
     _description = 'Customer Inventory Report Wizard'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ============================================================================
     # WIZARD FIELDS

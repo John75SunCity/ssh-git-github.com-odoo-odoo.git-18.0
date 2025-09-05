@@ -3,6 +3,7 @@ from odoo import models, fields
 class RecordsContainerTransferLine(models.Model):
     _name = 'records.container.transfer.line'
     _description = 'Records Container Transfer Line'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     transfer_id = fields.Many2one('records.container.transfer', string="Transfer", required=True, ondelete='cascade')
     container_id = fields.Many2one('records.container', string="Container", required=True)

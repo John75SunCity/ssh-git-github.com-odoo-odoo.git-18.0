@@ -3,6 +3,7 @@ from odoo import models, fields
 class InventoryItemRetrievalLine(models.Model):
     _name = 'inventory.item.retrieval.line'
     _description = 'Inventory Item Retrieval Line'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     retrieval_id = fields.Many2one('inventory.item.retrieval', string='Retrieval', required=True, ondelete='cascade')
     item_id = fields.Many2one('inventory.item', string='Inventory Item', required=True)

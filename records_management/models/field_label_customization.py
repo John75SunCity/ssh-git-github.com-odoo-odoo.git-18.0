@@ -3,6 +3,7 @@ from odoo import models, fields, api
 class FieldLabelCustomization(models.Model):
     _name = 'field.label.customization'
     _description = 'Field Label Customization'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'priority desc, name'
 
     name = fields.Char('Configuration Name', required=True)

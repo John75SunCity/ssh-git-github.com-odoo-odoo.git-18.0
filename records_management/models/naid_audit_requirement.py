@@ -6,6 +6,7 @@ from odoo import api, fields, models
 class NAIDAuditRequirement(models.Model):
     _name = 'naid.audit.requirement'
     _description = 'NAID Audit Requirement'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'frequency_months, audit_type'
     _rec_name = 'name'
 

@@ -3,6 +3,7 @@ from odoo import models, fields
 class InventoryItemDestructionLine(models.Model):
     _name = 'inventory.item.destruction.line'
     _description = 'Inventory Item Destruction Line'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     destruction_id = fields.Many2one('inventory.item.destruction', string='Destruction', required=True, ondelete='cascade')
     item_id = fields.Many2one('inventory.item', string='Inventory Item', required=True)

@@ -3,6 +3,7 @@ from odoo import models, fields
 class RecordsContainerLine(models.Model):
     _name = 'records.container.line'
     _description = 'Records Container Line'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
     container_id = fields.Many2one('records.container', string='Container', required=True, ondelete='cascade')

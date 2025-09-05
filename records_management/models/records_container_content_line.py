@@ -21,6 +21,7 @@ class RecordsContainerContentLine(models.Model):
 
     _name = 'records.container.content.line'
     _description = 'Records Container Content Line'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, id'
 
     content_id = fields.Many2one('container.content', string='Container Content', required=True)

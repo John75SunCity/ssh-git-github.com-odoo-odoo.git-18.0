@@ -4,6 +4,7 @@ from odoo import fields, models
 class NaidCertificateItem(models.Model):
     _name = "naid.certificate.item"
     _description = "NAID Certificate Destroyed Item"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     certificate_id = fields.Many2one(
         "naid.certificate", string="Certificate", required=True, ondelete="cascade"
