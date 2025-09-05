@@ -150,9 +150,12 @@ class OdooValidator:
     def _check_odoo_imports(self, file_path: Path, content: str) -> None:
         """Check for Odoo-specific import issues"""
         if "from odoo import" in content:
-            # Check for common import patterns
-            if "models" not in content and "fields" not in content:
-                self.warnings.append(f"⚠️ IMPORTS: {file_path.name}: Missing models/fields imports")
+            # Check for common import patterns, but be more specific
+            # Only check for models/fields in model files, not controllers
+            if str(file_path).endswith('models/') or 'models' in str(file_path):
+                if "models" not in content and "fields" not in content:
+                    self.warnings.append(f"⚠️ IMPORTS: {file_path.name}: Missing models/fields imports")
+            # For controller files, models/fields imports are optional
 
     def _check_model_definitions(self, file_path: Path, content: str) -> None:
         """Check model definitions for common issues"""
@@ -360,7 +363,7 @@ class OdooValidator:
                             f"⚠️ MODEL STRUCTURE: {py_file.name}: Multiple unrelated model classes: {', '.join(model_classes)} (consider separating)"
                         )
 
-                # Check for models without _name
+                # Check for models without _name (but allow inheritance models)
                 for class_name in model_classes:
                     class_content = content[
                         content.find(f"class {class_name}") : (
@@ -369,9 +372,18 @@ class OdooValidator:
                             else len(content)
                         )
                     ]
-                    if "_name =" not in class_content:
+                    has_name = "_name =" in class_content
+                    has_inherit = "_inherit =" in class_content
+
+                    # Only flag as missing _name if it doesn't have _inherit either
+                    if not has_name and not has_inherit:
                         self.warnings.append(
-                            f"⚠️ MODEL STRUCTURE: {py_file.name}: Model class '{class_name}' missing _name attribute"
+                            f"⚠️ MODEL STRUCTURE: {py_file.name}: Model class '{class_name}' missing _name or _inherit attribute"
+                        )
+                    # Flag models that have both _name and _inherit (unusual pattern)
+                    elif has_name and has_inherit:
+                        self.warnings.append(
+                            f"⚠️ MODEL STRUCTURE: {py_file.name}: Model class '{class_name}' has both _name and _inherit (unusual pattern)"
                         )
 
             except Exception as e:
@@ -479,10 +491,13 @@ class OdooValidator:
                 # Check if referenced actions/menus exist
                 # This is a basic check - could be enhanced with cross-file validation
                 for action_ref in action_refs:
+                    # Skip URL routes that start with / (these are controller routes, not XML actions)
+                    if action_ref.startswith('/'):
+                        continue
+
                     if not any(
                         action_ref in other_content
                         for other_file, other_content in xml_contents.items()
-                        if other_file != xml_file
                     ):
                         self.warnings.append(
                             f"⚠️ MENU ACTION: {xml_file.name}: Referenced action '{action_ref}' may not exist"

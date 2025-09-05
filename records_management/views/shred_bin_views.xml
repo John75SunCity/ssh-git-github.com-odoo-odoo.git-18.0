@@ -247,13 +247,8 @@
     <record id="action_shred_bin" model="ir.actions.act_window">
         <field name="name">Customer Shred Bins</field>
         <field name="res_model">shred.bin</field>
-        <field name="view_mode">kanban,list,form,map</field>
-        <field name="context">{'search_default_in_service': 1}</field>
-        <field name="view_ids" eval="[(5, 0, 0),
-                                      (0, 0, {'view_mode': 'kanban', 'view_id': ref('shred_bin_view_kanban')}),
-                                      (0, 0, {'view_mode': 'tree', 'view_id': ref('shred_bin_view_tree')}),
-                                      (0, 0, {'view_mode': 'form', 'view_id': ref('shred_bin_view_form')}),
-                                      (0, 0, {'view_mode': 'map', 'view_id': ref('shred_bin_view_map')})]"/>
+<field name="view_mode">kanban,list,form</field>
+<field name="context">{'search_default_in_service': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first shred bin!
@@ -289,11 +284,7 @@
         <field name="res_model">shred.bin</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">['&amp;', ('partner_id', '=', user.partner_id.commercial_partner_id.id), '|', ('department_id', '=', False), ('department_id.user_ids', 'in', [user.id])]</field>
-        <field name="context">{'create': False, 'delete': False, 'edit': False}</field>
-        <field name="view_ids" eval="[(5, 0, 0),
-                                      (0, 0, {'view_mode': 'kanban', 'view_id': ref('shred_bin_view_kanban_portal')}),
-                                      (0, 0, {'view_mode': 'tree', 'view_id': ref('shred_bin_view_list_portal')}),
-                                      (0, 0, {'view_mode': 'form', 'view_id': ref('shred_bin_view_form_portal')})]"/>
+<field name="context">{'create': False, 'delete': False, 'edit': False}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 No shred bins found at your location.

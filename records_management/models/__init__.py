@@ -30,9 +30,11 @@ from . import container_access_work_order
 from . import container_content
 from . import container_destruction_work_order
 from . import container_retrieval
+from . import container_retrieval_item
 from . import container_retrieval_work_order
 from . import cross_department_sharing
 from . import cross_department_sharing_rule
+from . import custody_transfer_event
 from . import customer_billing_profile
 from . import customer_category
 from . import customer_feedback
@@ -55,7 +57,6 @@ from . import document_search_attempt
 from . import feedback_improvement_area
 from . import field_label_customization
 from . import file_retrieval
-from . import retrieval_item_base
 from . import file_retrieval_item
 from . import file_retrieval_work_order
 from . import file_retrieval_work_order_item
@@ -84,7 +85,6 @@ from . import mobile_bin_key_wizard
 from . import mobile_dashboard_widget
 from . import mobile_dashboard_widget_category
 from . import mobile_photo
-from . import naid_audit_requirement
 from . import naid_audit_verification_wizard
 from . import naid_certificate
 from . import naid_certificate_item
@@ -103,6 +103,7 @@ from . import naid_risk_assessment
 from . import naid_training_requirement
 from . import naidtraining_schedule
 from . import naidaudit_log
+from . import naidaudit_requirement
 from . import naidcustody_event
 from . import paper_bale
 from . import paper_bale_inspection
@@ -123,6 +124,7 @@ from . import pickup_request_item
 from . import pickup_request_line
 from . import pickup_route
 from . import pickup_route_stop
+from . import pickup_schedule_wizard
 from . import portal_feedback
 from . import portal_feedback_action
 from . import portal_feedback_analytic
@@ -202,7 +204,7 @@ from . import required_document
 from . import res_config_settings
 from . import res_partner
 from . import res_partner_key_restriction
-from . import container_retrieval_item
+from . import retrieval_item_base
 from . import retrieval_metric
 from . import revenue_analytic
 from . import revenue_forecast

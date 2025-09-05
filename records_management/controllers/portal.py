@@ -798,3 +798,52 @@ class RecordsManagementController(http.Controller):
         }
 
         return request.render('records_management.portal_certification_detail', context)
+
+    # ============================================================================
+    # FEEDBACK ROUTES
+    # ============================================================================
+
+    @http.route("/my/feedback/quick", type="http", auth="user", methods=["POST"], website=True)
+    def submit_quick_feedback(self, **post):
+        """
+        Handle quick feedback form submission from portal.
+        Creates a portal feedback record with proper validation.
+        """
+        try:
+            # Validate required fields
+            feedback_type = post.get('feedback_type')
+            feedback_content = post.get('feedback_content')
+            priority = post.get('priority', 'medium')
+
+            if not feedback_type or not feedback_content:
+                return request.redirect('/my?error=missing_fields')
+
+            # Create feedback record
+            feedback_vals = {
+                'partner_id': request.env.user.partner_id.id,
+                'feedback_type': feedback_type,
+                'description': feedback_content,
+                'priority': priority,
+                'state': 'new',
+                'active': True,
+                'company_id': request.env.company.id,
+            }
+
+            # Add contact preference if provided
+            if post.get('contact_back'):
+                feedback_vals['contact_back'] = True
+
+            feedback = request.env['portal.feedback'].create(feedback_vals)
+
+            # Create audit log for NAID compliance
+            self._create_audit_log(
+                "portal_feedback_submitted",
+                f"Quick feedback submitted by {request.env.user.partner_id.name}"
+            )
+
+            # Send success message
+            return request.redirect('/my?success=feedback_submitted')
+
+        except Exception as e:
+            _logger.error("Quick feedback submission error: %s", e)
+            return request.redirect('/my?error=feedback_failed')

@@ -273,6 +273,7 @@
               sequence="10"/>
 
     <!-- Manager-Only Approval Dashboard -->
+<!--
     <record id="action_records_billing_config_audit_pending" model="ir.actions.act_window">
         <field name="name">Pending Approvals</field>
         <field name="res_model">records.billing.config.audit</field>
@@ -288,15 +289,19 @@
             </p>
         </field>
     </record>
+-->
 
+<!--
     <menuitem id="menu_records_billing_config_audit_pending"
               name="Pending Approvals"
               parent="menu_records_billing_config_audit_root"
               action="action_records_billing_config_audit_pending"
               groups="records_management.group_records_manager"
               sequence="20"/>
+-->
 
     <!-- High Impact Changes Dashboard -->
+<!--
     <record id="action_records_billing_config_audit_high_impact" model="ir.actions.act_window">
         <field name="name">High Impact Changes</field>
         <field name="res_model">records.billing.config.audit</field>
@@ -312,13 +317,16 @@
             </p>
         </field>
     </record>
+-->
 
+<!--
     <menuitem id="menu_records_billing_config_audit_high_impact"
               name="High Impact Changes"
               parent="menu_records_billing_config_audit_root"
               action="action_records_billing_config_audit_high_impact"
               groups="records_management.group_records_manager"
               sequence="30"/>
+-->
 
     <!-- Server Actions for Bulk Operations -->
     <record id="server_action_approve_multiple_audits" model="ir.actions.server">
