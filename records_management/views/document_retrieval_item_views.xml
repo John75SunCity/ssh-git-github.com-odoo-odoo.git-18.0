@@ -31,12 +31,12 @@
                 <header>
                     <field name="priority" widget="priority" class="oe_read_only"/>
                     <field name="status" widget="statusbar" statusbar_visible="pending,searching,located,retrieved,packaged,delivered"/>
-                    <button name="action_locate_item" string="Locate Item" type="object" class="btn-primary" 
-                            attrs="{'invisible': [('status', '!=', 'pending')]}"/>
+<button name="action_locate_item" string="Locate Item" type="object" class="btn-primary"
+invisible="status != 'pending'"/>
                     <button name="action_retrieve_item" string="Retrieve Item" type="object" class="btn-primary"
-                            attrs="{'invisible': [('status', '!=', 'located')]}"/>
+invisible="status != 'located'"/>
                     <button name="action_package_item" string="Package Item" type="object" class="btn-primary"
-                            attrs="{'invisible': [('status', '!=', 'retrieved')]}"/>
+invisible="status != 'retrieved'"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -84,13 +84,13 @@
                 <field name="status"/>
                 <field name="priority"/>
                 <separator/>
-                <filter name="high_priority" string="High Priority" 
+<filter name="high_priority" string="High Priority"
                         domain="[('priority', 'in', ['2', '3'])]"/>
-                <filter name="very_high_priority" string="Very High Priority" 
+<filter name="very_high_priority" string="Very High Priority"
                         domain="[('priority', '=', '3')]"/>
-                <filter name="pending_items" string="Pending" 
+<filter name="pending_items" string="Pending"
                         domain="[('status', '=', 'pending')]"/>
-                <filter name="active_items" string="Active Items" 
+<filter name="active_items" string="Active Items"
                         domain="[('status', 'in', ['pending', 'searching', 'located', 'retrieved'])]"/>
                 <separator/>
                 <group expand="0" string="Group By">

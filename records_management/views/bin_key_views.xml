@@ -32,11 +32,16 @@
         <field name="arch" type="xml">
             <form string="Bin Key">
 <header>
-    <button name="action_assign_key" string="🔑 Assign Key" type="object" class="btn-primary" attrs="{'invisible': [('status', '!=', 'available')]}"/>
-    <button name="action_return_key" string="🔄 Return Key" type="object" class="btn-warning" attrs="{'invisible': [('status', '!=', 'assigned')]}"/>
-    <button name="action_mark_lost" string="⚠️ Mark Lost" type="object" class="btn-danger" attrs="{'invisible': [('status', '!=', 'assigned')]}"/>
-    <button name="action_retire_key" string="🚫 Retire Key" type="object" class="btn-secondary" attrs="{'invisible': [('status', '=', 'retired')]}"/>
-    <button name="action_reactivate_key" string="♻️ Reactivate" type="object" class="btn-success" attrs="{'invisible': [('status', '!=', 'retired')]}"/>
+<button name="action_assign_key" string="🔑 Assign Key" type="object" class="btn-primary" invisible="status != 'available'"/>
+
+<button name="action_return_key" string="🔄 Return Key" type="object" class="btn-warning" invisible="status != 'assigned'"/>
+
+<button name="action_mark_lost" string="⚠️ Mark Lost" type="object" class="btn-danger" invisible="status != 'assigned'"/>
+
+<button name="action_retire_key" string="🚫 Retire Key" type="object" class="btn-secondary" invisible="status == 'retired'"/>
+
+<button name="action_reactivate_key" string="♻️ Reactivate" type="object" class="btn-success" invisible="status != 'retired'"/>
+
     <field name="status" widget="statusbar" statusbar_visible="available,assigned,returned,lost,retired"/>
 </header>
 
@@ -50,8 +55,10 @@
     </button>
 </div>
 
-<widget name="web_ribbon" title="Lost" bg_color="bg-danger" attrs="{'invisible': [('status', '!=', 'lost')]}"/>
-<widget name="web_ribbon" title="Retired" bg_color="bg-secondary" attrs="{'invisible': [('status', '!=', 'retired')]}"/>
+<widget name="web_ribbon" title="Lost" bg_color="bg-danger" invisible="status != 'lost'"/>
+
+<widget name="web_ribbon" title="Retired" bg_color="bg-secondary" invisible="status != 'retired'"/>
+
 
                     <div class="oe_title">
 <label for="name" class="oe_edit_only"/>
@@ -84,7 +91,8 @@
     <group string="Security &amp; Access">
         <field name="access_level"/>
         <field name="security_deposit_required"/>
-        <field name="security_deposit_amount" attrs="{'invisible': [('security_deposit_required', '=', False)]}"/>
+<field name="security_deposit_amount" invisible="security_deposit_required == False"/>
+
         <field name="emergency_access"/>
     </group>
     <group string="Maintenance">
@@ -106,7 +114,7 @@
             </list>
         </field>
     </page>
-    <page string="Management Records" attrs="{'invisible': [('management_record_count', '=', 0)]}">
+<page string="Management Records" invisible="management_record_count == 0">
         <field name="management_record_ids" readonly="1">
             <list>
                 <field name="key_number"/>
@@ -117,7 +125,7 @@
             </list>
         </field>
     </page>
-    <page string="Unlock Services" attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
+<page string="Unlock Services" invisible="unlock_service_count == 0">
         <field name="unlock_service_ids" readonly="1">
             <list>
                 <field name="service_date"/>
@@ -228,7 +236,7 @@
     <separator/>
 
     <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
-                
+
                 <group expand="1" string="Group By">
 <filter string="Status" name="group_status" domain="[]" context="{'group_by': 'status'}"/>
 <filter string="Key Type" name="group_type" domain="[]" context="{'group_by': 'key_type'}"/>

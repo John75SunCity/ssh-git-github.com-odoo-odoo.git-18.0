@@ -50,7 +50,8 @@
                                 <field name="estimated_duration"/> hrs
                                 <br/>
                                 <strong>🎯 FSM Status:</strong>
-                                <field name="fsm_state" attrs="{'invisible': [('fsm_state', '=', False)]}"/>
+<field name="fsm_state" invisible="fsm_state == False"/>
+
                             </div>
                             <div t-if="record.priority.raw_value == 'urgent'">
                                 <span class="badge badge-danger">🚨 Urgent Route</span>
@@ -104,11 +105,16 @@
         <field name="arch" type="xml">
             <form string="Pickup Route">
 <header>
-    <button name="action_plan_route" type="object" string="Plan Route" class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-    <button name="action_start_route" type="object" string="Start Route" class="btn-primary" attrs="{'invisible': [('state', '!=', 'planned')]}"/>
-    <button name="action_complete_route" type="object" string="Complete Route" class="btn-success" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
-    <button name="action_cancel_route" type="object" string="Cancel Route" class="btn-secondary" attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])]}"/>
-    <button name="action_optimize_route" type="object" string="Optimize Route" class="btn-warning" attrs="{'invisible': [('state', 'not in', ['draft', 'planned'])]}"/>
+<button name="action_plan_route" type="object" string="Plan Route" class="btn-primary" invisible="state != 'draft'"/>
+
+<button name="action_start_route" type="object" string="Start Route" class="btn-primary" invisible="state != 'planned'"/>
+
+<button name="action_complete_route" type="object" string="Complete Route" class="btn-success" invisible="state != 'in_progress'"/>
+
+<button name="action_cancel_route" type="object" string="Cancel Route" class="btn-secondary" invisible="state in ['completed', 'cancelled']"/>
+
+<button name="action_optimize_route" type="object" string="Optimize Route" class="btn-warning" invisible="state not in ['draft', 'planned']"/>
+
     <field name="state" widget="statusbar" statusbar_visible="draft,planned,in_progress,completed"/>
 </header>
                 <sheet>
@@ -116,7 +122,7 @@
     <button name="action_view_pickup_requests" type="object" class="oe_stat_button" icon="fa-truck">
         <field name="request_count" widget="statbutton" string="Requests"/>
     </button>
-    <button name="action_view_fsm_task" type="object" class="oe_stat_button" icon="fa-tasks" attrs="{'invisible': [('fsm_task_id', '=', False)]}">
+<button name="action_view_fsm_task" type="object" class="oe_stat_button" icon="fa-tasks" invisible="fsm_task_id == False">
         <div class="o_field_widget o_stat_info">
             <span class="o_stat_value"><field name="fsm_state"/></span>
             <span class="o_stat_text">FSM Task</span>
@@ -129,7 +135,8 @@
         <field name="completion_percentage" widget="statbutton" string="Complete"/>
     </button>
 </div>
-<widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+<widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
+
 
                     <div class="oe_title">
                         <label for="name"/>
@@ -138,8 +145,10 @@
                         </h1>
 <div class="o_row">
     <field name="priority" widget="priority"/>
-    <label for="fsm_task_id" string="FSM Task:" attrs="{'invisible': [('fsm_task_id', '=', False)]}"/>
-    <field name="fsm_task_id" attrs="{'invisible': [('fsm_task_id', '=', False)]}" readonly="1"/>
+<label for="fsm_task_id" string="FSM Task:" invisible="fsm_task_id == False"/>
+
+<field name="fsm_task_id" invisible="fsm_task_id == False" readonly="1"/>
+
 </div>
 </div>
 <group>
@@ -152,8 +161,10 @@
     <field name="planned_end_time"/>
 </group>
 <group string="FSM Integration &amp; Timing">
-    <field name="fsm_project_id" readonly="1" attrs="{'invisible': [('fsm_project_id', '=', False)]}"/>
-    <field name="fsm_state" readonly="1" attrs="{'invisible': [('fsm_task_id', '=', False)]}"/>
+<field name="fsm_project_id" readonly="1" invisible="fsm_project_id == False"/>
+
+<field name="fsm_state" readonly="1" invisible="fsm_task_id == False"/>
+
     <field name="actual_start_time" readonly="1"/>
     <field name="actual_end_time" readonly="1"/>
     <field name="estimated_duration" widget="float_time"/>
@@ -207,7 +218,7 @@
     <separator string="Special Instructions"/>
     <field name="special_instructions" nolabel="1" placeholder="Add special handling instructions, customer requirements, etc..."/>
 </page>
-<page string="FSM Integration" name="fsm_integration" attrs="{'invisible': [('fsm_task_id', '=', False)]}">
+<page string="FSM Integration" name="fsm_integration" invisible="fsm_task_id == False">
     <group>
         <group string="FSM Task Details">
             <field name="fsm_task_id" readonly="1"/>

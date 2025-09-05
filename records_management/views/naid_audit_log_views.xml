@@ -36,8 +36,8 @@
                             <field name="name" readonly="1"/>
                         </h1>
                         <div class="oe_title">
-                            <span class="badge badge-success" attrs="{'invisible': [('naid_compliant', '=', False)]}">NAID AAA Compliant</span>
-                            <span class="badge badge-danger" attrs="{'invisible': [('naid_compliant', '=', True)]}">Non-Compliant</span>
+<span class="badge badge-success" invisible="naid_compliant == False">NAID AAA Compliant</span>
+<span class="badge badge-danger" invisible="naid_compliant == True">Non-Compliant</span>
                         </div>
                     </div>
 
@@ -123,10 +123,10 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="text-center">
-                                            <span class="badge badge-success" attrs="{'invisible': [('naid_compliant', '=', False)]}">
+<span class="badge badge-success" invisible="naid_compliant == False">
                                                 Compliant
                                             </span>
-                                            <span class="badge badge-danger" attrs="{'invisible': [('naid_compliant', '=', True)]}">
+<span class="badge badge-danger" invisible="naid_compliant == True">
                                                 Non-Compliant
                                             </span>
                                         </div>

@@ -35,11 +35,16 @@
         <field name="arch" type="xml">
             <form string="Bin Key Unlock Service">
                 <header>
-                    <button name="action_confirm" type="object" string="Confirm Service" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button name="action_start_service" type="object" string="Start Service" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'confirmed')]}"/>
-                    <button name="action_complete_service" type="object" string="Complete Service" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
-                    <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': [('state', 'in', ['completed', 'cancelled'])]}"/>
-                    <button name="action_reset_to_draft" type="object" string="Reset to Draft" attrs="{'invisible': [('state', '!=', 'cancelled')]}"/>
+<button name="action_confirm" type="object" string="Confirm Service" class="oe_highlight" invisible="state != 'draft'"/>
+
+<button name="action_start_service" type="object" string="Start Service" class="oe_highlight" invisible="state != 'confirmed'"/>
+
+<button name="action_complete_service" type="object" string="Complete Service" class="oe_highlight" invisible="state != 'in_progress'"/>
+
+<button name="action_cancel" type="object" string="Cancel" invisible="state in ['completed', 'cancelled']"/>
+
+<button name="action_reset_to_draft" type="object" string="Reset to Draft" invisible="state != 'cancelled'"/>
+
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
                 </header>
                 <sheet>
@@ -83,7 +88,8 @@
                                     <field name="unlock_reason"/>
                                     <field name="access_level_required"/>
                                     <field name="emergency_access" widget="boolean_toggle"/>
-                                    <field name="authorized_by" attrs="{'required': [('emergency_access', '=', True)]}"/>
+<field name="authorized_by" required="emergency_access == True"/>
+
                                     <field name="authorization_reference"/>
                                 </group>
                                 <group name="verification" string="Verification">
@@ -91,7 +97,8 @@
                                     <field name="verification_method"/>
                                     <field name="verification_reference"/>
                                     <field name="witness_required" widget="boolean_toggle"/>
-                                    <field name="witness_id" attrs="{'required': [('witness_required', '=', True)]}"/>
+<field name="witness_id" required="witness_required == True"/>
+
                                 </group>
                             </group>
                             <separator string="Service Notes"/>
@@ -102,7 +109,8 @@
                                 <group name="security_info" string="Security Information">
                                     <field name="security_level"/>
                                     <field name="access_code_changed" widget="boolean_toggle"/>
-                                    <field name="new_access_code" password="True" attrs="{'invisible': [('access_code_changed', '=', False)]}"/>
+<field name="new_access_code" password="True" invisible="access_code_changed == False"/>
+
                                     <field name="biometric_update" widget="boolean_toggle"/>
                                     <field name="audit_trail_generated" widget="boolean_toggle" readonly="1"/>
                                 </group>
@@ -118,7 +126,8 @@
                             <group>
                                 <group name="pricing" string="Service Pricing">
                                     <field name="service_rate"/>
-                                    <field name="emergency_surcharge" attrs="{'invisible': [('emergency_access', '=', False)]}"/>
+<field name="emergency_surcharge" invisible="emergency_access == False"/>
+
                                     <field name="travel_cost"/>
                                     <field name="additional_fees"/>
                                     <field name="total_cost" readonly="1"/>

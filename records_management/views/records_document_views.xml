@@ -139,7 +139,8 @@
             <form>
                 <header>
                     <button name="action_view_chain_of_custody" type="object" string="View Chain of Custody" class="btn-primary"/>
-                    <button name="action_scan_document" type="object" string="Scan/Image Document" class="btn-secondary" attrs="{'invisible': [('digital_scanning_enabled', '=', False)]}"/>
+<button name="action_scan_document" type="object" string="Scan/Image Document" class="btn-secondary" invisible="digital_scanning_enabled == False"/>
+
                     <button name="action_generate_document_barcode" type="object" string="Generate Barcode" class="btn-info"/>
                     <button name="action_generate_document_qr" type="object" string="Generate QR Code" class="btn-success"/>
                     <button name="action_mark_permanent" type="object" string="Mark as Permanent" class="btn-success" invisible="is_permanent" groups="records_management.group_records_user"/>
@@ -199,7 +200,8 @@
                                     <field name="original_format"/>
                                     <field name="digitized"/>
                                     <field name="scan_count" readonly="1"/>
-                                    <field name="total_scan_size_kb" readonly="1" widget="integer" attrs="{'invisible': ['|', ('scan_count', '=', 0), ('total_scan_size_visible', '=', False)]}"/>
+<field name="total_scan_size_kb" readonly="1" widget="integer" invisible="(scan_count == 0) or (total_scan_size_visible == False)"/>
+
                                 </group>
                             </group>
                             <field name="description" placeholder="Document description, contents, and special handling notes..."/>
@@ -243,7 +245,7 @@
                             </group>
                             <field name="destruction_notes" placeholder="Destruction process notes and compliance verification..."/>
                         </page>
-                        <page string="Digital Scans" name="digital" attrs="{'invisible': [('digital_scanning_enabled', '=', False)]}">
+<page string="Digital Scans" name="digital" invisible="digital_scanning_enabled == False">
                             <field name="digital_scan_ids" mode="list">
                                 <list>
                                     <field name="scan_date"/>

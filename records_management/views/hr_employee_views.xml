@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
 <data>
 <!-- HR Employee Form View Extension for Records Management -->
     <record id="hr_employee_view_form" model="ir.ui.view">
@@ -16,7 +16,8 @@
 <field name="records_access_level" string="Records Access Level"/>
 <field name="naid_certified" string="NAID Certified"/>
 
-<field name="key_management_level" string="Key Management Level" attrs="{'invisible': [('records_access_level', '=', 'none')]}"/>
+<field name="key_management_level" string="Key Management Level" invisible="records_access_level == 'none'"/>
+
 </group>
             </xpath>
         </field>
@@ -60,9 +61,9 @@
 
 <!-- Add groupby options -->
             <xpath expr="//group[@name='group_by']" position="inside">
-                <filter name="group_by_records_department" string="Records Department" 
+<filter name="group_by_records_department" string="Records Department"
                         context="{'group_by': 'records_department_id'}"/>
-                <filter name="group_by_access_level" string="Records Access Level" 
+<filter name="group_by_access_level" string="Records Access Level"
                         context="{'group_by': 'records_access_level'}"/>
             </xpath>
         </field>

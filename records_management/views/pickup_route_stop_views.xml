@@ -137,15 +137,19 @@
         <field name="arch" type="xml">
             <form string="Pickup Route Stop">
 <header>
-    <button name="action_start_stop" type="object" string="Start Stop" class="btn-primary" attrs="{'invisible': [('state', '!=', 'pending')]}"/>
-    <button name="action_complete_stop" type="object" string="Complete Stop" class="btn-success" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
-    <button name="action_skip_stop" type="object" string="Skip Stop" class="btn-secondary" attrs="{'invisible': [('state', 'in', ['completed', 'skipped'])]}"/>
-    <button name="action_reset_to_pending" type="object" string="Reset to Pending" class="btn-secondary" attrs="{'invisible': [('state', '==', 'pending')]}"/>
+<button name="action_start_stop" type="object" string="Start Stop" class="btn-primary" invisible="state != 'pending'"/>
+
+<button name="action_complete_stop" type="object" string="Complete Stop" class="btn-success" invisible="state != 'in_progress'"/>
+
+<button name="action_skip_stop" type="object" string="Skip Stop" class="btn-secondary" invisible="state in ['completed', 'skipped']"/>
+
+<button name="action_reset_to_pending" type="object" string="Reset to Pending" class="btn-secondary" invisible="state == 'pending'"/>
+
     <field name="state" widget="statusbar" statusbar_visible="pending,in_progress,completed"/>
 </header>
                 <sheet>
 <div class="oe_button_box" name="button_box">
-    <button name="action_view_pickup_request" type="object" class="oe_stat_button" icon="fa-file-text-o" attrs="{'invisible': [('pickup_request_id', '=', False)]}">
+<button name="action_view_pickup_request" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="pickup_request_id == False">
         <div class="o_field_widget o_stat_info">
             <span class="o_stat_text">View</span>
             <span class="o_stat_text">Request</span>
@@ -218,7 +222,7 @@
             <field name="actual_weight" readonly="1"/>
         </group>
     </page>
-    <page string="Completion Details" name="completion" attrs="{'invisible': [('state', 'in', ['pending', 'in_progress'])]}">
+<page string="Completion Details" name="completion" invisible="state in ['pending', 'in_progress']">
         <group>
             <group name="completion_info" string="Completion Information">
                 <field name="completion_notes"/>

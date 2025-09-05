@@ -4,7 +4,13 @@
 
 <!-- ============================================================================ -->
 <!-- SYSTEM FLOWCHART WIZARD - WELCOME STEP VIEW -->
-<!-- ============================================================================ -->
+<!-- =============                <field name="target_user_id" invisible="search_scenario != 'user_access'" required="search_scenario == 'user_access'" domain="[('active', '=', True)]"/>
+            <field name="target_company_id" invisible="search_scenario != 'company_structure'" required="search_scenario == 'company_structure'"/>
+            <field name="target_model_id" invisible="search_scenario != 'model_relationships'" domain="[('model', 'like', 'records.%')]"/>       <field name="target_user_id" invisible="search_scenario != 'user_access'" required="search_scenario == 'user_access'" domain="[('active', '=', True)]"/>
+            <field name="target_company_id" invisible="search_scenario != 'company_structure'" required="search_scenario == 'company_structure'"/>
+            <field name="target_model_id" invisible="search_scenario != 'model_relationships'" domain="[('model', 'like', 'records.%')]"/>       <field name="target_user_id" invisible="search_scenario != 'user_access'" required="search_scenario == 'user_access'" domain="[('active', '=', True)]"/>
+            <field name="target_company_id" invisible="search_scenario != 'company_structure'" required="search_scenario == 'company_structure'"/>
+            <field name="target_model_id" invisible="search_scenario != 'model_relationships'" domain="[('model', 'like', 'records.%')]"/>============================================================ -->
 <record id="system_flowchart_wizard_view_form_welcome" model="ir.ui.view">
     <field name="name">system.flowchart.wizard.view.form.welcome</field>
     <field name="model">system.flowchart.wizard</field>
@@ -209,23 +215,28 @@ System Overview</h6>
 
 </group>
 <group string="Focus Targets">
-    <field name="target_user_id" attrs="{'invisible': [('search_scenario', '!=', 'user_access')], 'required': [('search_scenario', '=', 'user_access')]}" domain="[('active', '=', True)]"/>
-    <field name="target_company_id" attrs="{'invisible': [('search_scenario', '!=', 'company_structure')], 'required': [('search_scenario', '=', 'company_structure')]}"/>
-    <field name="target_model_id" attrs="{'invisible': [('search_scenario', '!=', 'model_relationships')]}" domain="[('model', 'like', 'records.%')]"/>
+<field name="target_user_id" invisible="search_scenario != 'user_access'" required="search_scenario == 'user_access'" domain="[('active', '=', True)]"/>
+
+<field name="target_company_id" invisible="search_scenario != 'company_structure'" required="search_scenario == 'company_structure'"/>
+
+<field name="target_model_id" invisible="search_scenario != 'model_relationships'" domain="[('model', 'like', 'records.%')]"/>
+
 </group>
 </div>
 <div class="col-lg-6">
 <group string="Export Settings">
     <field name="export_format"/>
 
-<field name="export_quality" attrs="{'invisible': [('export_format', 'in', ['html', 'json'])]}"/>
+<field name="export_quality" invisible="export_format in ('html', 'json')"/>
+
 <field name="include_metadata"/>
 <field name="export_timestamp"/>
 
 </group>
 <group string="Advanced Options">
     <field name="performance_mode"/>
-    <field name="max_nodes" attrs="{'invisible': [('performance_mode', '=', False)]}"/>
+<field name="max_nodes" invisible="performance_mode == False"/>
+
     <field name="cache_results"/>
 
 </group>
@@ -265,7 +276,8 @@ System Overview</h6>
 <group>
     <group string="Tutorial Configuration">
         <field name="show_tutorial"/>
-        <field name="tutorial_step" attrs="{'invisible': [('show_tutorial', '=', False)]}"/>
+<field name="tutorial_step" invisible="show_tutorial == False"/>
+
 
 <field name="tutorial_auto_advance"/>
 <field name="tutorial_highlights"/>
@@ -404,29 +416,34 @@ Configuration Summary</h5>
 <dt class="col-sm-5">Performance:</dt>
 <dd class="col-sm-7">
     <field name="performance_mode" readonly="1" widget="boolean"/>
-    <span attrs="{'invisible': [('performance_mode', '=', False)]}" class="ms-2">
+<span invisible="performance_mode == False" class="ms-2">
                                                     (Max <field name="max_nodes" readonly="1"/>
  nodes)
     </span>
 </dd>
 </dl>
 
-    <div class="mt-3" attrs="{'invisible': [('target_user_id', '=', False), ('target_company_id', '=', False), ('target_model_id', '=', False)]}">
+<div class="mt-3" invisible="target_user_id == False and target_company_id == False and target_model_id == False">
         <h6>Focus Targets:</h6>
-        <field name="target_user_id" readonly="1" attrs="{'invisible': [('target_user_id', '=', False)]}"/>
-        <field name="target_company_id" readonly="1" attrs="{'invisible': [('target_company_id', '=', False)]}"/>
+<field name="target_user_id" readonly="1" invisible="target_user_id == False"/>
 
-<field name="target_model_id" readonly="1" attrs="{'invisible': [('target_model_id', '=', False)]}"/>
+
+<field name="target_company_id" readonly="1" invisible="target_company_id == False"/>
+
+
+<field name="target_model_id" readonly="1" invisible="target_model_id == False"/>
+
+
     </div><!-- Configuration Validation -->
 <div class="mt-3">
 <h6>Validation Status:</h6>
 <div class="d-flex align-items-center">
     <field name="config_valid" readonly="1" widget="boolean"/>
-    <span class="ms-2" attrs="{'invisible': [('config_valid', '=', False)]}">
+<span class="ms-2" invisible="config_valid == False">
         <i class="fa fa-check-circle text-success"/>
  Configuration Valid
     </span>
-    <span class="ms-2 text-danger" attrs="{'invisible': [('config_valid', '=', True)]}">
+<span class="ms-2 text-danger" invisible="config_valid == True">
         <i class="fa fa-exclamation-triangle"/>
  Please review configuration
     </span>
@@ -504,7 +521,7 @@ s</span>
 </div>
 
 <!-- Advanced Configuration Display -->
-<div class="row mt-3" attrs="{'invisible': [('generated_config', '=', False)]}">
+<div class="row mt-3" invisible="generated_config == False">
 <div class="col-12">
 <div class="card">
 <div class="card-header d-flex justify-content-between align-items-center">
@@ -685,7 +702,7 @@ Session Information</h6>
 </div>
 
 <!-- Tutorial Notice -->
-<div class="row" attrs="{'invisible': [('show_tutorial', '=', False)]}">
+<div class="row" invisible="show_tutorial == False">
     <div class="col-12">
         <div class="alert alert-info">
 <h6>
@@ -730,15 +747,19 @@ Interactive Tutorial Enabled</h6>
     <field name="arch" type="xml">
 <form string="System Architecture Flowchart Configuration">
     <header>
-<button name="action_previous_step" string="← Back" type="object" attrs="{'invisible': [('step', '=', 'welcome')]}" class="btn btn-secondary"/>
-<button name="action_next_step" string="Next →" type="object" attrs="{'invisible': [('step', 'in', ['complete', 'preview'])]}" class="btn btn-primary"/>
-<button name="action_open_flowchart" string="🚀 Generate Flowchart" type="object" attrs="{'invisible': [('step', '!=', 'preview')]}" class="btn btn-success btn-lg"/>
-<button name="action_open_flowchart" string="📊 Open Flowchart" type="object" attrs="{'invisible': [('step', '!=', 'complete')]}" class="btn btn-primary btn-lg"/>
+<button name="action_previous_step" string="← Back" type="object" invisible="step == 'welcome'" class="btn btn-secondary"/>
+
+<button name="action_next_step" string="Next →" type="object" invisible="step in ('complete', 'preview')" class="btn btn-primary"/>
+
+<button name="action_open_flowchart" string="🚀 Generate Flowchart" type="object" invisible="step != 'preview'" class="btn btn-success btn-lg"/>
+
+<button name="action_open_flowchart" string="📊 Open Flowchart" type="object" invisible="step != 'complete'" class="btn btn-primary btn-lg"/>
+
 <field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete" statusbar_colors='{"welcome":"blue","configure":"orange","preview":"yellow","complete":"green"}'/>
 </header>
 <sheet>
 <!-- Dynamic Content Based on Step -->
-<div attrs="{'invisible': [('step', '!=', 'welcome')]}">
+<div invisible="step != 'welcome'">
 <div class="text-center mb-3">
     <h1>
         <i class="fa fa-sitemap text-primary me-2"/>
@@ -747,7 +768,7 @@ System Architecture Flowchart</h1>
 </div>
 </div>
 
-<div attrs="{'invisible': [('step', '!=', 'configure')]}">
+<div invisible="step != 'configure'">
 <div class="mb-3">
     <h2>Configuration Options</h2>
     <p class="text-muted">Customize your flowchart visualization</p>
@@ -759,7 +780,7 @@ System Architecture Flowchart</h1>
 </group>
 </div>
 
-<div attrs="{'invisible': [('step', '!=', 'preview')]}">
+<div invisible="step != 'preview'">
 <div class="mb-3">
     <h2>Configuration Preview</h2>
     <p class="text-muted">Review your settings before generating the flowchart</p>
@@ -770,7 +791,7 @@ System Architecture Flowchart</h1>
 </group>
 </div>
 
-<div attrs="{'invisible': [('step', '!=', 'complete')]}">
+<div invisible="step != 'complete'">
 <div class="alert alert-success text-center">
     <h3>
         <i class="fa fa-check-circle me-2"/>

@@ -2,7 +2,7 @@
 <odoo>
     <data>
 <!-- Records Billing Config Audit Views -->
-    
+
     <!-- Tree View -->
     <record id="records_billing_config_audit_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.audit.view.tree</field>
@@ -29,9 +29,12 @@
         <field name="arch" type="xml">
             <form string="Billing Config Audit">
                 <header>
-                    <button name="action_submit_for_approval" string="Submit for Approval" type="object" class="btn-primary" attrs="{'invisible': [('approval_status', '!=', 'draft')]}"/>
-                    <button name="action_approve" string="Approve" type="object" class="btn-success" groups="records_management.group_records_manager" attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
-                    <button name="action_reject" string="Reject" type="object" class="btn-danger" groups="records_management.group_records_manager" attrs="{'invisible': [('approval_status', '!=', 'pending')]}"/>
+<button name="action_submit_for_approval" string="Submit for Approval" type="object" class="btn-primary" invisible="approval_status != 'draft'"/>
+
+<button name="action_approve" string="Approve" type="object" class="btn-success" groups="records_management.group_records_manager" invisible="approval_status != 'pending'"/>
+
+<button name="action_reject" string="Reject" type="object" class="btn-danger" groups="records_management.group_records_manager" invisible="approval_status != 'pending'"/>
+
                     <field name="approval_status" widget="statusbar" statusbar_visible="draft,pending,approved"/>
                 </header>
                 <sheet>
@@ -194,7 +197,7 @@
                                         <strong>Date:</strong> <field name="audit_date"/>
                                     </div>
                                     <div t-if="record.financial_impact.raw_value">
-                                        <strong>Impact:</strong> 
+<strong>Impact:</strong>
                                         <field name="financial_impact" widget="monetary"/>
                                     </div>
                                 </div>
@@ -219,8 +222,7 @@
         <field name="model">records.billing.config.audit</field>
         <field name="type">calendar</field>
         <field name="arch" type="xml">
-            <calendar string="Billing Config Audit Calendar" 
-                     date_start="audit_date" 
+<calendar string="Billing Config Audit Calendar" date_start="audit_date"
                      color="approval_status"
                      mode="month">
                 <field name="name"/>
@@ -333,7 +335,7 @@ if records:
         if record.approval_status == 'pending':
             record.action_approve()
             approved_count += 1
-    
+
     if approved_count > 0:
         env.user.notify_info(message=f'Successfully approved {approved_count} audit record(s)')
     else:
@@ -355,7 +357,7 @@ if records:
         if record.approval_status == 'pending':
             record.action_reject()
             rejected_count += 1
-    
+
     if rejected_count > 0:
         env.user.notify_info(message=f'Successfully rejected {rejected_count} audit record(s)')
     else:

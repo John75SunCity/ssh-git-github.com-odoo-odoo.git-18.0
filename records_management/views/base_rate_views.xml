@@ -254,19 +254,22 @@
             <field name="arch" type="xml">
                 <form string="Revenue Forecaster">
                     <header>
-                        <button name="action_run_forecast" string="🚀 Run Forecast Analysis" type="object" class="oe_highlight" attrs="{'invisible': [('analysis_complete', '=', True)]}"/>
-                        <button name="action_export_forecast" string="📊 Export to Excel" type="object" attrs="{'invisible': [('analysis_complete', '=', False)]}"/>
-                        <button name="action_apply_scenario" string="✅ Apply Rate Changes" type="object" class="oe_highlight" attrs="{'invisible': [('analysis_complete', '=', False)]}" confirm="This will implement the forecasted rate changes. Are you sure?"/>
+<button name="action_run_forecast" string="🚀 Run Forecast Analysis" type="object" class="oe_highlight" invisible="analysis_complete == True"/>
+
+<button name="action_export_forecast" string="📊 Export to Excel" type="object" invisible="analysis_complete == False"/>
+
+<button name="action_apply_scenario" string="✅ Apply Rate Changes" type="object" class="oe_highlight" invisible="analysis_complete == False" confirm="This will implement the forecasted rate changes. Are you sure?"/>
+
                     </header>
                     <sheet>
-                        <div class="alert alert-info" role="alert" attrs="{'invisible': [('analysis_complete', '=', True)]}">
+<div class="alert alert-info" role="alert" invisible="analysis_complete == True">
                             <strong>Revenue Forecasting Tool</strong>
                             <br/>
                             Configure your scenario parameters below and click "Run Forecast Analysis" to see the potential revenue impact.
                         </div>
 
                         <!-- Tree view for Results -->
-                        <div class="o_form_sheet_bg" attrs="{'invisible': [('analysis_complete', '=', False)]}">
+<div class="o_form_sheet_bg" invisible="analysis_complete == False">
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="card text-center">
@@ -322,18 +325,25 @@
                                 <field name="customer_segment"/>
                             </group>
                             <group>
-                                <field name="custom_start_date" attrs="{'invisible': [('forecast_period', '!=', 'custom')], 'required': [('forecast_period', '=', 'custom')]}"/>
-                                <field name="custom_end_date" attrs="{'invisible': [('forecast_period', '!=', 'custom')], 'required': [('forecast_period', '=', 'custom')]}"/>
-                                <field name="specific_customer_ids" widget="many2many_tags" attrs="{'invisible': [('customer_segment', '!=', 'specific_customers')]}"/>
+<field name="custom_start_date" invisible="forecast_period != 'custom'" required="forecast_period == 'custom'"/>
+
+<field name="custom_end_date" invisible="forecast_period != 'custom'" required="forecast_period == 'custom'"/>
+
+<field name="specific_customer_ids" widget="many2many_tags" invisible="customer_segment != 'specific_customers'"/>
+
                             </group>
                         </group>
 
-                        <group string="Rate Adjustment Parameters" attrs="{'invisible': [('scenario_type', 'not in', ['global_increase', 'global_decrease', 'category_specific'])]}">
+<group string="Rate Adjustment Parameters" invisible="scenario_type not in ('global_increase', 'global_decrease', 'category_specific')">
                             <group>
-                                <field name="global_adjustment_type" attrs="{'invisible': [('scenario_type', 'not in', ['global_increase', 'global_decrease'])]}"/>
-                                <field name="global_adjustment_value" attrs="{'invisible': [('scenario_type', 'not in', ['global_increase', 'global_decrease'])]}"/>
-                                <field name="service_category" attrs="{'invisible': [('scenario_type', '!=', 'category_specific')], 'required': [('scenario_type', '=', 'category_specific')]}"/>
-                                <field name="category_adjustment_value" attrs="{'invisible': [('scenario_type', '!=', 'category_specific')]}"/>
+<field name="global_adjustment_type" invisible="scenario_type not in ('global_increase', 'global_decrease')"/>
+
+<field name="global_adjustment_value" invisible="scenario_type not in ('global_increase', 'global_decrease')"/>
+
+<field name="service_category" invisible="scenario_type != 'category_specific'" required="scenario_type == 'category_specific'"/>
+
+<field name="category_adjustment_value" invisible="scenario_type != 'category_specific'"/>
+
                             </group>
                         </group>
 
@@ -349,7 +359,7 @@
                         </group>
 
                         <!-- Tree view for Detailed -->
-                        <notebook attrs="{'invisible': [('analysis_complete', '=', False)]}">
+<notebook invisible="analysis_complete == False">
                             <page string="Customer Impact Analysis">
                                 <field name="forecast_line_ids" readonly="1">
                                     <list decoration-success="revenue_change &amp;lt; 0" decoration-danger="revenue_change &amp;gt; 0">
@@ -378,8 +388,10 @@
             <field name="arch" type="xml">
                 <form string="Rate Change Implementation">
                     <header>
-                        <button name="action_approve_changes" string="✅ Approve Changes" type="object" class="oe_highlight" attrs="{'invisible': [('approved_by', '!=', False)]}" groups="records_management.group_records_manager"/>
-                        <button name="action_implement_changes" string="🚀 Implement Changes" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('approved_by', '=', False), ('requires_approval', '=', True)]}" confirm="This will implement the rate changes. This action cannot be undone. Are you sure?"/>
+<button name="action_approve_changes" string="✅ Approve Changes" type="object" class="oe_highlight" invisible="approved_by != False" groups="records_management.group_records_manager"/>
+
+<button name="action_implement_changes" string="🚀 Implement Changes" type="object" class="oe_highlight" invisible="(approved_by == False) or (requires_approval == True)" confirm="This will implement the rate changes. This action cannot be undone. Are you sure?"/>
+
                         <button name="action_cancel_implementation" string="Cancel" type="object" class="btn-secondary"/>
                     </header>
                     <sheet>
@@ -403,14 +415,16 @@
                         <group string="Customer Communication">
                             <group>
                                 <field name="notification_required"/>
-                                <field name="advance_notice_days" attrs="{'invisible': [('notification_required', '=', False)]}"/>
+<field name="advance_notice_days" invisible="notification_required == False"/>
+
                             </group>
                             <group>
-                                <field name="phase_duration_months" attrs="{'invisible': [('implementation_method', '!=', 'phased')]}"/>
+<field name="phase_duration_months" invisible="implementation_method != 'phased'"/>
+
                             </group>
                         </group>
 
-                        <group string="Approval" attrs="{'invisible': [('requires_approval', '=', False)]}">
+<group string="Approval" invisible="requires_approval == False">
                             <group>
                                 <field name="requires_approval"/>
                                 <field name="approved_by" readonly="1"/>
@@ -419,7 +433,7 @@
                         </group>
 
                         <notebook>
-                            <page string="Communication Template" attrs="{'invisible': [('notification_required', '=', False)]}">
+<page string="Communication Template" invisible="notification_required == False">
                                 <field name="communication_template" placeholder="Customize the customer communication template..."/>
                             </page>
                             <page string="Risk Management">
@@ -428,7 +442,7 @@
                                     <field name="rollback_plan" placeholder="Describe the rollback plan if issues arise..."/>
                                 </group>
                             </page>
-                            <page string="Approval Notes" attrs="{'invisible': [('approved_by', '=', False)]}">
+<page string="Approval Notes" invisible="approved_by == False">
                                 <field name="approval_notes" placeholder="Management approval notes and conditions..."/>
                             </page>
                         </notebook>

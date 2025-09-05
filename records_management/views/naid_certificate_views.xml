@@ -29,15 +29,19 @@
         <field name="arch" type="xml">
 <form string="NAID Certificate of Destruction">
     <header>
-        <button name="action_issue_certificate" string="Issue Certificate" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-        <button name="action_send_by_email" string="Send by Email" type="object" class="btn-secondary" attrs="{'invisible': [('state', '!=', 'issued')]}"/>
-        <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': [('state', 'not in', ['draft', 'issued'])]}" data-hotkey="z"/>
-        <button name="action_reset_to_draft" string="Reset to Draft" type="object" attrs="{'invisible': [('state', '!=', 'cancelled')]}" data-hotkey="d"/>
+<button name="action_issue_certificate" string="Issue Certificate" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+
+<button name="action_send_by_email" string="Send by Email" type="object" class="btn-secondary" invisible="state != 'issued'"/>
+
+<button name="action_cancel" string="Cancel" type="object" invisible="state not in ('draft', 'issued')" data-hotkey="z"/>
+
+<button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'" data-hotkey="d"/>
+
         <field name="state" widget="statusbar" statusbar_visible="draft,issued,sent,cancelled"/>
     </header>
                 <sheet>
 <div class="oe_button_box" name="button_box">
-    <button name="%(records_management.action_view_fsm_task)d" type="action" class="oe_stat_button" icon="fa-cogs" attrs="{'invisible': [('fsm_task_id', '=', False)]}">
+<button name="%(records_management.action_view_fsm_task)d" type="action" class="oe_stat_button" icon="fa-cogs" invisible="fsm_task_id == False">
         <div class="o_field_widget o_stat_info">
             <span class="o_stat_text">FSM Task</span>
         </div>
@@ -52,12 +56,14 @@
                 <group>
                     <group>
                         <field name="partner_id" required="1" options="{'no_create': True}" readonly="1" force_save="1"/>
-                        <field name="fsm_task_id" options="{'no_create': True}" domain="[('partner_id', '=', partner_id)]" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+<field name="fsm_task_id" options="{'no_create': True}" domain="[('partner_id', '=', partner_id)]" readonly="state != 'draft'"/>
+
                         <field name="technician_user_id" readonly="1" force_save="1"/>
                     </group>
     <group>
         <field name="issue_date" readonly="1"/>
-        <field name="destruction_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+<field name="destruction_date" readonly="state != 'draft'"/>
+
         <field name="company_id" groups="base.group_multi_company"/>
     </group>
 </group>

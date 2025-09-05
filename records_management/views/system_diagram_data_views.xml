@@ -491,26 +491,28 @@
 
 <sheet>
 <div class="oe_button_box" name="button_box">
-    <button name="action_view_related_users" type="object" class="oe_stat_button" icon="fa-users" attrs="{'invisible': [('search_type', '!=', 'user')]}">
+<button name="action_view_related_users" type="object" class="oe_stat_button" icon="fa-users" invisible="search_type != 'user'">>
         <div class="o_field_widget o_stat_info">
             <span class="o_stat_text">Related Users</span>
         </div>
     </button>
 
-    <button name="action_view_related_models" type="object" class="oe_stat_button" icon="fa-database" attrs="{'invisible': [('search_type', '!=', 'model')]}">
+<button name="action_view_related_models" type="object" class="oe_stat_button" icon="fa-database" invisible="search_type != 'model'">>
         <div class="o_field_widget o_stat_info">
             <span class="o_stat_text">Related Models</span>
         </div>
     </button>
 </div>
 
-<widget name="web_ribbon" title="Configuration Valid" bg_color="bg-success" attrs="{'invisible': [('nodes_data', '=', False)]}"/>
+<widget name="web_ribbon" title="Configuration Valid" bg_color="bg-success" invisible="nodes_data == False"/>
+
 
 <group>
 <group string="Basic Configuration">
     <field name="name" placeholder="e.g., User Access Analysis - John Doe"/>
     <field name="search_type" widget="radio" options="{'horizontal': true}"/>
-    <field name="search_query" placeholder="Enter user name, model name, or company" attrs="{'required': [('search_type', 'in', ['user', 'model', 'company'])]}"/>
+<field name="search_query" placeholder="Enter user name, model name, or company" required="search_type in ['user', 'model', 'company']"/>
+
 </group>
 <group string="Display Options">
     <field name="show_access_only" widget="boolean_toggle"/>
@@ -520,13 +522,13 @@
 
 <notebook>
 <page string="📊 Diagram Visualization" name="diagram_viz">
-    <div class="alert alert-info" role="alert" attrs="{'invisible': [('nodes_data', '!=', False), ('edges_data', '!=', False)]}">
+<div class="alert alert-info" role="alert" invisible="nodes_data != False or edges_data != False">
         <i class="fa fa-info-circle"/>
 
                             Click <strong>"Generate Interactive Flowchart"</strong> to create the diagram visualization.
     </div>
 
-    <group attrs="{'invisible': [('nodes_data', '=', False), ('edges_data', '=', False)]}">
+<group invisible="nodes_data == False or edges_data == False">
         <div class="text-center mb16">
             <button name="action_generate_diagram" string="🚀 Launch Interactive Flowchart" type="object" class="btn-primary btn-lg"/>
         </div>

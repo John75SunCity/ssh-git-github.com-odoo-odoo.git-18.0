@@ -31,9 +31,12 @@
         <field name="arch" type="xml">
             <form string="Service Line">
                 <header>
-                    <button name="action_start_service" string="Start Service" type="object" class="btn-primary" attrs="{'invisible': [('status', '!=', 'planned')]}"/>
-                    <button name="action_complete_service" string="Complete" type="object" class="btn-success" attrs="{'invisible': [('status', '!=', 'in_progress')]}"/>
-                    <button name="action_verify_service" string="Verify" type="object" class="btn-info" attrs="{'invisible': [('status', '!=', 'completed')]}"/>
+<button name="action_start_service" string="Start Service" type="object" class="btn-primary" invisible="status != 'planned'"/>
+
+<button name="action_complete_service" string="Complete" type="object" class="btn-success" invisible="status != 'in_progress'"/>
+
+<button name="action_verify_service" string="Verify" type="object" class="btn-info" invisible="status != 'completed'"/>
+
                     <field name="status" widget="statusbar" statusbar_visible="planned,in_progress,completed,verified"/>
                 </header>
                 <sheet>

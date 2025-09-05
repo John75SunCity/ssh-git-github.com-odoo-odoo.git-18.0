@@ -32,11 +32,11 @@
             <form string="Document Type Configuration">
                 <header>
                     <button name="action_activate" string="Activate" type="object" class="btn-success"
-                            attrs="{'invisible': [('state', '!=', 'draft')]}" groups="records_management.group_records_user"/>
+invisible="state != 'draft'" groups="records_management.group_records_user"/>
                     <button name="action_deprecate" string="Deprecate" type="object" class="btn-warning"
-                            attrs="{'invisible': [('state', '!=', 'active')]}" groups="records_management.group_records_manager"/>
+invisible="state != 'active'" groups="records_management.group_records_manager"/>
                     <button name="action_archive" string="Archive" type="object" class="btn-secondary"
-                            attrs="{'invisible': [('state', 'in', ['draft', 'deprecated'])]}" groups="records_management.group_records_manager"/>
+invisible="state in ('draft', 'deprecated')" groups="records_management.group_records_manager"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,deprecated,archived"/>
                 </header>
                 <sheet>
@@ -252,10 +252,10 @@
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Type</a>
                                 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">📄 View Documents</a>
-                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" attrs="{'invisible': [('state', '!=', 'draft')]}">✅ Activate</a>
-                                <a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" attrs="{'invisible': [('state', '!=', 'active')]}">⚠️ Deprecate</a>
+<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">✅ Activate</a>
+<a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'">⚠️ Deprecate</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" attrs="{'invisible': [('state', 'in', ['draft', 'deprecated'])]}">📁 Archive</a>
+<a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')">📁 Archive</a>
                             </div>
                         </div>
                     </t>

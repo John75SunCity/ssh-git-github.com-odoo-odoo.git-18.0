@@ -38,8 +38,10 @@
     </button>
 </div>
 
-<widget name="web_ribbon" title="Emergency Override" bg_color="bg-danger" attrs="{'invisible': [('action_type', '!=', 'emergency_override')]}"/>
-<widget name="web_ribbon" title="Lost Key" bg_color="bg-warning" attrs="{'invisible': [('action_type', '!=', 'lost')]}"/>
+<widget name="web_ribbon" title="Emergency Override" bg_color="bg-danger" invisible="action_type != 'emergency_override'"/>
+
+<widget name="web_ribbon" title="Lost Key" bg_color="bg-warning" invisible="action_type != 'lost'"/>
+
 
                     <div class="oe_title">
 <label for="name" class="oe_edit_only"/>
@@ -206,8 +208,8 @@
 No key history records found.
 </p>
 <p>
-                Key history records are automatically created when keys are assigned, 
-                returned, or when other actions are performed. This provides a complete 
+Key history records are automatically created when keys are assigned,
+                returned, or when other actions are performed. This provides a complete
                 audit trail for compliance and security monitoring.
 </p>
 <p>

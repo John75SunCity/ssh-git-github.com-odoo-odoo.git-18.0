@@ -31,7 +31,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button type="object" name="action_renew_certification" string="Renew"
-                                    attrs="{'invisible': [('status', 'not in', ['expired', 'active'])]}"
+invisible="status not in ('expired', 'active')"
                                     class="oe_stat_button" icon="fa-refresh"/>
                         </div>
                         <div class="oe_title">

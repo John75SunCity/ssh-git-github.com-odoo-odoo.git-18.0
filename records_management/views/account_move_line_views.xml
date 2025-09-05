@@ -26,17 +26,17 @@
             <!-- Add Records Management integration fields -->
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="records_service_type"
-                       attrs="{'invisible': [('records_related', '=', False)]}"/>
+invisible="records_related == False"/>
                 <field name="container_count" string="Containers"
-                       attrs="{'invisible': [('records_service_type', '=', False)]}"/>
+invisible="records_service_type == False"/>
                 <field name="shredding_weight_lbs" string="Weight (lbs)"
-                       attrs="{'invisible': [('records_service_type', '!=', 'shredding')]}"/>
+invisible="records_service_type != 'shredding'"/>
             </xpath>
 
             <!-- Add Records Management section -->
             <xpath expr="//group[last()]" position="after">
                 <group string="Records Management" col="2"
-                       attrs="{'invisible': [('records_related', '=', False)]}">
+invisible="records_related == False">
                     <!-- Field kept for technical reasons (e.g., domain, context, or automation); already hidden by group invisibility -->
                     <field name="records_related" invisible="1"/>
                     <field name="pickup_request_id"/>
@@ -59,7 +59,7 @@
             <xpath expr="//field[@name='account_id']" position="after">
                 <field name="records_service_type" optional="hide"/>
                 <field name="container_count" optional="hide"
-                       attrs="{'invisible': [('records_service_type', '=', False)]}"/>
+invisible="records_service_type == False"/>
                 <field name="pickup_request_id" optional="hide"/>
                 <field name="naid_audit_required" widget="boolean_toggle" optional="hide"/>
             </xpath>

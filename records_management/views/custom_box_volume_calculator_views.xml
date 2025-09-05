@@ -33,13 +33,13 @@
                             <field name="measurement_unit" widget="radio"/>
                         </group>
 
-                        <group name="dimensions_inches" string="Dimensions (Inches)" attrs="{'invisible': [('measurement_unit', '!=', 'inches')]}">
+<group name="dimensions_inches" string="Dimensions (Inches)" invisible="measurement_unit != 'inches'">
                             <field name="length_inches" required="1"/>
                             <field name="width_inches" required="1"/>
                             <field name="height_inches" required="1"/>
                         </group>
 
-                        <group name="dimensions_cm" string="Dimensions (Centimeters)" attrs="{'invisible': [('measurement_unit', '!=', 'centimeters')]}">
+<group name="dimensions_cm" string="Dimensions (Centimeters)" invisible="measurement_unit != 'centimeters'">
                             <field name="length_cm" required="1"/>
                             <field name="width_cm" required="1"/>
                             <field name="height_cm" required="1"/>
@@ -79,12 +79,12 @@
                         </group>
 
                         <group name="pricing_notes" string="Pricing Notes">
-                            <div class="alert alert-warning" role="alert" attrs="{'invisible': [('price_difference', '&lt;=', 0)]}">
+<div class="alert alert-warning" role="alert" invisible="price_difference &lt;= 0">
                                 <strong>Cost Savings:</strong> Using a custom box saves you
                                 <field name="price_difference" widget="monetary" readonly="1" force_save="1"/>
                                         compared to standard boxes.
                             </div>
-                            <div class="alert alert-info" role="alert" attrs="{'invisible': [('price_difference', '&gt;', 0)]}">
+<div class="alert alert-info" role="alert" invisible="price_difference &gt; 0">
                                 <strong>Note:</strong> Standard boxes may be more cost-effective for this volume.
                             </div>
                         </group>
@@ -98,7 +98,8 @@
                         </group>
 
                         <group name="actions" string="Actions">
-                            <button name="action_apply_to_fsm_task" string="Apply to FSM Task" type="object" class="btn-primary" attrs="{'invisible': [('fsm_task_id', '=', False)]}"/>
+<button name="action_apply_to_fsm_task" string="Apply to FSM Task" type="object" class="btn-primary" invisible="fsm_task_id == False"/>
+
                             <button name="action_create_quote_line" string="Create Quote Line" type="object" class="btn-secondary"/>
                             <button name="action_save_calculation" string="Save Calculation" type="object" class="btn-success"/>
                         </group>

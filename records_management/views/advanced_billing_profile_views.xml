@@ -24,9 +24,10 @@
             <field name="arch" type="xml">
                 <form string="Billing Profile">
                     <header>
-                        <button name="action_activate" type="object" string="Activate" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                        <button name="action_suspend" type="object" string="Suspend" attrs="{'invisible': [('state', '!=', 'active')]}"/>
-                        <button name="action_close" type="object" string="Close" attrs="{'invisible': [('state', 'not in', ['active', 'suspended'])]}"/>
+<button name="action_activate" type="object" string="Activate" class="oe_highlight" invisible="state != 'draft'"/>
+<button name="action_suspend" type="object" string="Suspend" invisible="state != 'active'"/>
+<button name="action_close" type="object" string="Close" invisible="state not in ['active', 'suspended']"/>
+
                         <field name="state" widget="statusbar" statusbar_visible="draft,active,closed"/>
                     </header>
                     <sheet>

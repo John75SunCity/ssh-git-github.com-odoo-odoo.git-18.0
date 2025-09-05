@@ -81,7 +81,8 @@
                             <page string="Issues" name="issues">
                                 <group>
                                     <field name="issues_found"/>
-                                    <field name="issue_description" attrs="{'invisible': [('issues_found', '=', False)]}"/>
+<field name="issue_description" invisible="issues_found == False"/>
+
                                 </group>
                             </page>
                         </notebook>

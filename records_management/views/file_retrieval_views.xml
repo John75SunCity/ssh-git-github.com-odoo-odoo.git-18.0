@@ -31,7 +31,7 @@
                     <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button type="action" name="action_start_search" string="Start Search"
-                                    attrs="{'invisible': [('status', '!=', 'pending')]}"
+invisible="status != 'pending'"
                                     class="oe_stat_button" icon="fa-play"/>
                         </div>
                         <div class="oe_title">
@@ -61,8 +61,10 @@
                                 <group>
                                     <group name="discovery">
                                         <field name="file_discovered"/>
-                                        <field name="discovery_date" attrs="{'invisible': [('file_discovered', '=', False)]}"/>
-                                        <field name="discovery_container_id" attrs="{'invisible': [('file_discovered', '=', False)]}"/>
+<field name="discovery_date" invisible="file_discovered == False"/>
+
+<field name="discovery_container_id" invisible="file_discovered == False"/>
+
                                     </group>
                                     <group name="condition">
                                         <field name="condition_before"/>
@@ -75,7 +77,7 @@
                             <page string="Search Attempts" name="attempts">
                                 <field name="search_attempt_ids" nolabel="1"/>
                             </page>
-                            <page string="Not Found" name="not_found" attrs="{'invisible': [('status', '!=', 'not_found')]}">
+<page string="Not Found" name="not_found" invisible="status != 'not_found'">
                                 <group>
                                     <field name="not_found_reason"/>
                                     <field name="not_found_notes"/>

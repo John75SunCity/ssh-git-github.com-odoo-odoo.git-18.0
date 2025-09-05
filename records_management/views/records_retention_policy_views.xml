@@ -33,11 +33,11 @@
             <form string="Retention Policy Configuration">
                 <header>
                     <button name="action_activate" string="Activate" type="object" class="btn-success"
-                            attrs="{'invisible': [('state', '!=', 'draft')]}" groups="records_management.group_records_user"/>
+invisible="state != 'draft'" groups="records_management.group_records_user"/>
                     <button name="action_archive" string="Archive" type="object" class="btn-secondary"
-                            attrs="{'invisible': [('state', 'in', ['draft', 'active'])]}" groups="records_management.group_records_manager"/>
+invisible="state not in ('draft', 'active')" groups="records_management.group_records_manager"/>
                     <button name="action_set_to_draft" string="Set to Draft" type="object" class="btn-warning"
-                            attrs="{'invisible': [('state', '!=', 'archived')]}" groups="records_management.group_records_manager"/>
+invisible="state != 'archived'" groups="records_management.group_records_manager"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
                 </header>
                 <sheet>
@@ -324,14 +324,14 @@
                                         </small>
                                     </div>
                                 </div>
-                                <div class="row mt-1" attrs="{'invisible': [('is_legal_hold', '=', False)]}">
+<div class="row mt-1" invisible="is_legal_hold == False">
                                     <div class="col-12">
                                         <span class="badge badge-danger">
                                             <i class="fa fa-gavel"/> Legal Hold
                                         </span>
                                     </div>
                                 </div>
-                                <div class="row mt-1" attrs="{'invisible': [('is_expired', '=', False)]}">
+<div class="row mt-1" invisible="is_expired == False">
                                     <div class="col-12">
                                         <span class="badge badge-warning">
                                             <i class="fa fa-exclamation-triangle"/> Expired
@@ -342,8 +342,8 @@
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Policy</a>
                                 <a role="menuitem" type="object" name="action_view_rules" class="dropdown-item">📋 View Rules</a>
-                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" attrs="{'invisible': [('state', '!=', 'draft')]}">✅ Activate</a>
-                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" attrs="{'invisible': [('state', 'in', ['draft', 'active'])]}">📁 Archive</a>
+<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">✅ Activate</a>
+<a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state not in ('draft', 'active')">📁 Archive</a>
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="object" name="action_create_new_version" class="dropdown-item">📝 New Version</a>
                             </div>

@@ -137,9 +137,12 @@
         <field name="arch" type="xml">
             <form string="Bin Key Management">
                 <header>
-                    <button name="action_return_key" string="🔄 Return Key" type="object" class="btn-warning" attrs="{'invisible': [('status', '!=', 'issued')]}"/>
-                    <button name="action_mark_lost" string="⚠️ Mark Lost" type="object" class="btn-danger" attrs="{'invisible': [('status', '!=', 'issued')]}"/>
-                    <button name="action_replace_key" string="🔄 Replace Key" type="object" class="btn-info" attrs="{'invisible': [('status', '!=', 'lost')]}"/>
+<button name="action_return_key" string="🔄 Return Key" type="object" class="btn-warning" invisible="status != 'issued'"/>
+
+<button name="action_mark_lost" string="⚠️ Mark Lost" type="object" class="btn-danger" invisible="status != 'issued'"/>
+
+<button name="action_replace_key" string="🔄 Replace Key" type="object" class="btn-info" invisible="status != 'lost'"/>
+
                     <field name="status" widget="statusbar" statusbar_visible="issued,returned,lost,replaced"/>
                 </header>
 
@@ -178,7 +181,7 @@
                         </group>
                     </group>
 
-                    <group string="Replacement Chain" attrs="{'invisible': [('replacement_of_id', '=', False), ('replaced_by_id', '=', False)]}">
+<group string="Replacement Chain" invisible="replacement_of_id == False and replaced_by_id == False">
                         <field name="replacement_of_id" readonly="1"/>
                         <field name="replaced_by_id" readonly="1"/>
                     </group>
@@ -189,7 +192,7 @@
         <field name="notes" widget="text" placeholder="Additional notes about this key assignment..."/>
     </group>
                         </page>
-                        <page string="Unlock Services" attrs="{'invisible': [('unlock_service_count', '=', 0)]}">
+<page string="Unlock Services" invisible="unlock_service_count == 0">
                             <field name="unlock_service_ids" readonly="1">
                                 <list>
                                     <field name="service_number"/>
@@ -368,8 +371,10 @@
         <field name="arch" type="xml">
             <form string="Bin Unlock Service">
                 <header>
-                    <button name="action_create_invoice" string="💰 Create Invoice" type="object" class="btn-primary" attrs="{'invisible': ['|', ('billable', '=', False), ('invoice_created', '=', True)]}"/>
-                    <button name="action_mark_completed" string="✅ Mark Completed" type="object" class="btn-success" attrs="{'invisible': [('completed', '=', True)]}"/>
+<button name="action_create_invoice" string="💰 Create Invoice" type="object" class="btn-primary" invisible="billable == False or invoice_created == True"/>
+
+<button name="action_mark_completed" string="✅ Mark Completed" type="object" class="btn-success" invisible="completed == True"/>
+
                 </header>
 
                 <sheet>
@@ -512,18 +517,19 @@ Perfect for managing emergency access and generating additional revenue.
 
                             <field name="key_issuance_allowed"/>
                         </group>
-<group name="key_restriction_details" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}">
-    <field name="key_restriction_reason" attrs="{'required': [('key_issuance_allowed', '=', False)]}"/>
+<group name="key_restriction_details" invisible="key_issuance_allowed == True">
+    <field name="key_restriction_reason" required="key_issuance_allowed == False"/>
+    <field name="key_restriction_date"/>
 
-                            <field name="key_restriction_date"/>
+
                             <field name="key_restriction_approved_by"/>
                             <field name="restricted_unlock_count"/>
                         </group>
                     </group>
-<group name="key_restriction_notes" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}">
+<group name="key_restriction_notes" invisible="key_issuance_allowed == True">
                         <field name="key_restriction_notes" nolabel="1" placeholder="Additional notes about key restrictions..."/>
                     </group>
-<group name="key_restriction_buttons" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}">
+<group name="key_restriction_buttons" invisible="key_issuance_allowed == True">
     <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt"/>
 </group>
 <div class="oe_button_box" name="key_restriction_buttons">
@@ -533,7 +539,7 @@ Perfect for managing emergency access and generating additional revenue.
                     </div>
 <field name="key_restriction_date"/>
 <!-- Key Restriction History -->
-<group string="Restriction History" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}">
+<group string="Restriction History" invisible="key_issuance_allowed == True">
     <field name="key_restriction_history_ids" nolabel="1" mode="tree">
         <list>
             <field name="action"/>
@@ -547,7 +553,7 @@ Perfect for managing emergency access and generating additional revenue.
 
 <!-- Add warning alert at top of form -->
             <xpath expr="//sheet" position="before">
-<div class="alert alert-warning" role="alert" attrs="{'invisible': ['|', ('key_issuance_allowed', '=', True), ('id', '=', False)]}">
+<div class="alert alert-warning" role="alert" invisible="key_issuance_allowed == True or id == False">
     <strong>🚨 Key Restriction Warning:</strong>
                     This customer is restricted from receiving bin keys.
                     Use bin unlock service instead.
@@ -558,16 +564,16 @@ Perfect for managing emergency access and generating additional revenue.
             </xpath>
 
             <xpath expr="//div[@name='button_box']" position="inside">
-<button name="action_restrict_key_issuance" type="object" class="oe_stat_button" icon="fa-ban" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}" groups="records_management.group_records_manager">
+<button name="action_restrict_key_issuance" type="object" class="oe_stat_button" icon="fa-ban" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Restrict</span>
                         <span class="o_stat_text">Keys</span>
                     </div>
                 </button>
-<button name="action_view_key_history" type="object" class="oe_stat_button" icon="fa-history" attrs="{'invisible': [('key_restriction_history_count', '=', 0)]}">
+<button name="action_view_key_history" type="object" class="oe_stat_button" icon="fa-history" invisible="key_restriction_history_count == 0">
     <field name="key_restriction_history_count" widget="statinfo" string="Key History"/>
 </button>
-<button name="action_allow_key_issuance" type="object" class="oe_stat_button" icon="fa-key" attrs="{'invisible': [('key_issuance_allowed', '=', True)]}" groups="records_management.group_records_manager">
+<button name="action_allow_key_issuance" type="object" class="oe_stat_button" icon="fa-key" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Allow</span>
                         <span class="o_stat_text">Keys</span>
@@ -603,12 +609,12 @@ Perfect for managing emergency access and generating additional revenue.
                     <group>
                         <field name="partner_id"/>
                         <field name="action"/>
-<field name="current_status" readonly="1" attrs="{'invisible': [('partner_id', '=', False)]}"/>
-
-                    </group>
-<group name="restriction_details" attrs="{'invisible': [('action', '!=', 'restrict')]}">
+<field name="current_status" readonly="1" invisible="partner_id == False"/>
+</group>
+<group name="restriction_details" invisible="action != 'restrict'">
                         <group>
-<field name="restriction_reason" attrs="{'required': [('action', '=', 'restrict')]}"/>
+<field name="restriction_reason" required="action == 'restrict'"/>
+
 
                             <field name="effective_date"/>
                         </group>
@@ -620,11 +626,11 @@ Perfect for managing emergency access and generating additional revenue.
 
 </group>
                     </group>
-<group name="allow_details" attrs="{'invisible': [('action', '!=', 'allow')]}">
+<group name="allow_details" invisible="action != 'allow'">
     <field name="allow_reason" nolabel="1" placeholder="Enter reason for removing key restriction..."/>
     <field name="notify_customer" string="Notify Customer of Change"/>
 </group>
-<group name="impact_analysis" attrs="{'invisible': [('partner_id', '=', False)]}">
+<group name="impact_analysis" invisible="partner_id == False">
     <group string="Impact Analysis">
         <field name="active_keys_count" readonly="1"/>
         <field name="pending_requests_count" readonly="1"/>
@@ -649,7 +655,7 @@ Perfect for managing emergency access and generating additional revenue.
     <field name="arch" type="xml">
 <!-- Add customer restriction alert -->
             <xpath expr="//sheet" position="before">
-<div class="alert alert-info" role="alert" attrs="{'invisible': [('customer_key_restricted', '=', False)]}">
+<div class="alert alert-info" role="alert" invisible="customer_key_restricted == False">
     <strong>🔑 Key Restricted Customer:</strong>
                     This customer is not allowed to receive bin keys.
                     <br/>
@@ -665,7 +671,8 @@ Perfect for managing emergency access and generating additional revenue.
                 <field name="unlock_reason_code"/>
                 <field name="customer_key_restricted" invisible="1"/>
                 <field name="key_restriction_reason" invisible="1"/>
-<field name="auto_created_for_restriction" attrs="{'invisible': [('auto_created_for_restriction', '=', False)]}"/>
+<field name="auto_created_for_restriction" invisible="auto_created_for_restriction == False"/>
+
 
             </xpath>
         </field>

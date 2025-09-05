@@ -14,12 +14,12 @@
             <div name="button_box" position="inside">
                 <button name="action_view_pickup_routes" type="object"
                         class="oe_stat_button" icon="fa-route"
-                        attrs="{'invisible': [('pickup_route_ids', '=', [])]}">
+invisible="pickup_route_ids == []">
                     <field name="pickup_route_ids" widget="statbutton" string="Routes"/>
                 </button>
                 <button name="action_set_records_available" type="object"
                         class="oe_stat_button" icon="fa-check-circle"
-                        attrs="{'invisible': [('records_operational_status', '!=', 'out_of_service')]}">
+invisible="records_operational_status != 'out_of_service'">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_value">Available</span>
                         <span class="o_stat_text">Set Available</span>
@@ -62,10 +62,10 @@
                     </div>
 
                     <group string="Capacity &amp; Compliance">
-                        <div class="alert alert-warning" attrs="{'invisible': [('records_vehicle_type', '!=', 'secure_transport'), ('naid_compliant', '=', True)]}">
+<div class="alert alert-warning" invisible="(records_vehicle_type != 'secure_transport') or (naid_compliant == True)">
                             <strong>⚠️ NAID Compliance Required:</strong> Secure transport vehicles must be NAID compliant.
                         </div>
-                        <div class="alert alert-success" attrs="{'invisible': [('naid_compliant', '=', False)]}">
+<div class="alert alert-success" invisible="naid_compliant == False">
                             <strong>✅ NAID Compliant:</strong> This vehicle meets security standards for document transport.
                         </div>
                     </group>

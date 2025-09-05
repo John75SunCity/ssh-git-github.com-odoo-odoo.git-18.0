@@ -251,7 +251,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 col-lg-6 o_setting_box" attrs="{'invisible': [('security_failed_access_lockout_enabled', '=', False)]}">
+<div class="col-12 col-lg-6 o_setting_box" invisible="security_failed_access_lockout_enabled == False">
                                 <div class="o_setting_left_pane">
                                     <label for="security_failed_access_attempt_limit" class="o_form_label">Failed Access Limit</label>
                                 </div>
@@ -455,7 +455,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 col-lg-6 o_setting_box" attrs="{'invisible': [('portal_feedback_collection_enabled', '=', False)]}">
+<div class="col-12 col-lg-6 o_setting_box" invisible="portal_feedback_collection_enabled == False">
                                 <div class="o_setting_left_pane">
                                     <field name="portal_ai_sentiment_analysis"/>
                                 </div>

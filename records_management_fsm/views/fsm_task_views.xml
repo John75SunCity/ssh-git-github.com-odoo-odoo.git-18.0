@@ -95,10 +95,14 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-<button name="action_start_task" type="object" string="Start Task" attrs="{'invisible': [('task_status', '!=', 'scheduled')]}" class="btn-primary"/>
-<button name="action_complete_task" type="object" string="Complete" attrs="{'invisible': [('task_status', '!=', 'in_progress')]}" class="btn-success"/>
-<button name="action_reschedule" type="object" string="Reschedule" attrs="{'invisible': [('task_status', 'not in', ['scheduled', 'in_progress'])]}" class="btn-warning"/>
-<button name="action_create_naid_audit" type="object" string="Create NAID Audit" attrs="{'invisible': [('naid_compliant', '=', False)]}" class="btn-info"/>
+<button name="action_start_task" type="object" string="Start Task" invisible="task_status != 'scheduled'" class="btn-primary"/>
+
+<button name="action_complete_task" type="object" string="Complete" invisible="task_status != 'in_progress'" class="btn-success"/>
+
+<button name="action_reschedule" type="object" string="Reschedule" invisible="task_status not in ['scheduled', 'in_progress']" class="btn-warning"/>
+
+<button name="action_create_naid_audit" type="object" string="Create NAID Audit" invisible="naid_compliant == False" class="btn-info"/>
+
 
                     <field name="task_status" widget="statusbar" statusbar_visible="scheduled,in_progress,completed"/>
                 </header>
@@ -111,7 +115,7 @@
                                 <span class="o_stat_text">Work Orders</span>
                             </div>
                         </button>
-<button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-archive" attrs="{'invisible': [('container_count', '=', 0)]}">
+<button class="oe_stat_button" type="object" name="action_view_containers" icon="fa-archive" invisible="container_count == 0">
     <div class="o_stat_info">
         <field name="container_count" string="Containers"/>
         <span class="o_stat_text">Containers</span>
@@ -138,8 +142,10 @@
 <group string="Scheduling">
                             <field name="scheduled_date"/>
 <field name="estimated_duration" widget="float_time"/>
-<field name="actual_start_time" attrs="{'readonly': [('task_status', 'in', ['draft', 'scheduled'])]}"/>
-<field name="actual_end_time" attrs="{'readonly': [('task_status', '!=', 'completed')]}"/>
+<field name="actual_start_time" readonly="task_status in ['draft', 'scheduled']"/>
+
+<field name="actual_end_time" readonly="task_status != 'completed'"/>
+
 
                         </group>
                     </group>
@@ -152,7 +158,7 @@
 </group>
 
 <!-- Records Management Integration -->
-<group string="Records Management" attrs="{'invisible': [('container_count', '=', 0)]}">
+<group string="Records Management" invisible="container_count == 0">
 <group>
     <field name="container_count" readonly="1"/>
     <field name="total_cubic_feet" readonly="1"/>
@@ -160,8 +166,10 @@
 </group>
 <group>
     <field name="naid_compliant"/>
-    <field name="chain_of_custody_required" attrs="{'invisible': [('naid_compliant', '=', False)]}"/>
-    <field name="destruction_certificate_required" attrs="{'invisible': [('naid_compliant', '=', False)]}"/>
+<field name="chain_of_custody_required" invisible="naid_compliant == False"/>
+
+<field name="destruction_certificate_required" invisible="naid_compliant == False"/>
+
 </group>
                     </group>
 
@@ -189,7 +197,7 @@
                                 </tree>
                             </field>
                         </page>
-<page string="Containers" attrs="{'invisible': [('container_count', '=', 0)]}">
+<page string="Containers" invisible="container_count == 0">
     <field name="container_ids" mode="tree" readonly="1">
         <list>
             <field name="name"/>
@@ -216,7 +224,7 @@
                                 <field name="photos" widget="many2many_binary"/>
                             </group>
                         </page>
-<page string="NAID Compliance" attrs="{'invisible': [('naid_compliant', '=', False)]}">
+<page string="NAID Compliance" invisible="naid_compliant == False">
     <group>
         <field name="naid_audit_log_ids" mode="tree" readonly="1">
             <list>

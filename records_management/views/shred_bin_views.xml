@@ -36,15 +36,20 @@
         <field name="arch" type="xml">
             <form string="My Shred Bin" create="false" edit="false" delete="false">
                 <header>
-                    <button name="action_customer_mark_full" string="Request Collection" type="object" class="btn-danger" attrs="{'invisible': ['|', ('state', '!=', 'in_service'), ('needs_collection', '=', True)]}" confirm="Are you sure this bin is ready for collection? This will create a pickup request for our team."/>
-                    <button name="action_request_upsize" string="Request Larger Bin" type="object" class="btn-info" attrs="{'invisible': [('can_upsize', '=', False)]}" confirm="Request a larger bin size? This will create a service request for our team to upgrade your bin."/>
-                    <button name="action_request_downsize" string="Request Smaller Bin" type="object" class="btn-secondary" attrs="{'invisible': [('can_downsize', '=', False)]}" confirm="Request a smaller bin size? This will create a service request for our team to downgrade your bin."/>
-                    <button name="action_request_additional_bins" string="Request Additional Bins" type="object" class="btn-success" attrs="{'invisible': [('bin_size', '!=', '96')]}" confirm="Request additional bins for your location? Our sales team will contact you to discuss options."/>
+<button name="action_customer_mark_full" type="object" string="Mark Full" class="btn-primary" invisible="state != 'in_service'"/>
+
+<button name="action_request_upsize" type="object" string="Request Upsize" class="btn-warning" invisible="state != 'in_service'"/>
+
+<button name="action_request_downsize" string="Request Smaller Bin" type="object" class="btn-secondary" invisible="can_downsize == False" confirm="Request a smaller bin size? This will create a service request for our team to downgrade your bin."/>
+
+<button name="action_request_additional_bins" string="Request Additional Bins" type="object" class="btn-success" invisible="bin_size != '96'" confirm="Request additional bins for your location? Our sales team will contact you to discuss options."/>
+
                     <field name="state" widget="statusbar" statusbar_visible="in_service,full,collecting" statusbar_colors='{"full":"red","collecting":"orange","in_service":"green"}'/>
                 </header>
 
                 <sheet>
-                    <widget name="web_ribbon" title="Collection Requested" bg_color="bg-danger" attrs="{'invisible': [('needs_collection', '=', False)]}"/>
+<widget name="web_ribbon" title="Collection Requested" bg_color="bg-danger" invisible="needs_collection == False"/>
+
 
                     <div class="oe_title">
                         <h1>
@@ -66,24 +71,26 @@
                             <field name="last_service_date" readonly="1"/>
                         </group>
 
-                        <group string="Sizing Options" attrs="{'invisible': ['&amp;amp;', ('can_upsize', '=', False), ('can_downsize', '=', False), ('bin_size', '!=', '96')]}">
+<group string="Sizing Options" invisible="(can_upsize == False) and (can_downsize == False) and (bin_size != '96')">
                             <field name="can_upsize" readonly="1"/>
-                            <field name="next_size_up" readonly="1" attrs="{'invisible': [('can_upsize', '=', False)]}"/>
+<field name="next_size_up" readonly="1" invisible="can_upsize == False"/>
+
                             <field name="can_downsize" readonly="1"/>
-                            <field name="next_size_down" readonly="1" attrs="{'invisible': [('can_downsize', '=', False)]}"/>
+<field name="next_size_down" readonly="1" invisible="can_downsize == False"/>
+
                         </group>
                     </group>
 
-                    <div class="alert alert-info" role="alert" attrs="{'invisible': [('current_fill_level', '&amp;lt;', 75)]}">
+<div class="alert alert-info" role="alert" invisible="current_fill_level &lt; 75">
                         <strong>Collection Notice:</strong> Your bin is getting full. Consider requesting collection when ready.
                     </div>
 
-                    <div class="alert alert-success" role="alert" attrs="{'invisible': [('needs_collection', '=', True)]}">
+<div class="alert alert-success" role="alert" invisible="needs_collection == True">
                         <strong>Service Status:</strong> Your bin is in good service. We'll collect it when you request or when it's full.
                     </div>
 
                     <notebook>
-                        <page string="Service History" attrs="{'invisible': [('current_billing_period_services', '=', 0)]}">
+<page string="Service History" invisible="current_billing_period_services == 0">
                             <field name="shredding_service_ids" readonly="1">
                                 <list>
                                     <field name="name"/>

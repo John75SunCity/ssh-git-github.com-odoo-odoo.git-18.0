@@ -39,7 +39,8 @@
                             <page name="details" string="📋 Details">
                                 <group>
                                     <group name="dates" string="📅 Scheduling">
-                                        <field name="completion_date" attrs="{'readonly': [('state', '!=', 'in_progress')]}"/>
+<field name="completion_date" readonly="state != 'in_progress'"/>
+
                                     </group>
                                     <group name="financials" string="💰 Financial Information">
                                         <field name="currency_id" invisible="1"/>

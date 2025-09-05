@@ -32,8 +32,10 @@
         <field name="arch" type="xml">
 <form string="⚙️ RM Module Configurator">
     <header>
-        <button name="action_activate_config" string="✅ Activate" type="object" class="btn-primary" attrs="{'invisible': [('active', '=', True)]}"/>
-        <button name="action_deactivate_config" string="⏸️ Deactivate" type="object" class="btn-secondary" attrs="{'invisible': [('active', '=', False)]}"/>
+<button name="action_activate_config" string="✅ Activate" type="object" class="btn-primary" invisible="active == True"/>
+
+<button name="action_deactivate_config" string="⏸️ Deactivate" type="object" class="btn-secondary" invisible="active == False"/>
+
         <button name="action_reset_to_default" string="🔄 Reset Default" type="object" class="btn-warning" confirm="Reset this configuration to default values?"/>
         <field name="active" widget="boolean_button" options="{'terminology': {'string_true': 'Active', 'string_false': 'Inactive'}}"/>
     </header>
@@ -74,20 +76,20 @@
 <notebook>
     <page string="💼 Configuration Values" name="values">
         <group>
-            <group string="Boolean Configuration" attrs="{'invisible': [('config_type', '!=', 'feature_toggle')]}">
+<group string="Boolean Configuration" invisible="config_type != 'feature_toggle'">
                 <field name="value_boolean" widget="boolean_toggle" string="Enable Feature"/>
             </group>
-            <group string="Text Configuration" attrs="{'invisible': [('config_type', '!=', 'parameter')]}">
+<group string="Text Configuration" invisible="config_type != 'parameter'">
                 <field name="value_text" string="Configuration Value"/>
             </group>
         </group>
 
-        <group string="Numeric Configuration" attrs="{'invisible': [('config_type', '!=', 'parameter')]}">
+<group string="Numeric Configuration" invisible="config_type != 'parameter'">
             <field name="value_number" string="Numeric Value"/>
         </group>
     </page>
 
-    <page string="Selection Options" name="selection" attrs="{'invisible': [('config_type', '!=', 'parameter')]}">
+<page string="Selection Options" name="selection" invisible="config_type != 'parameter'">
         <field name="value_selection" string="Selected Value"/>
     </page>
 

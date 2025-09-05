@@ -36,16 +36,16 @@
                 <header>
                     <button name="action_confirm_forecast" type="object"
                             string="Confirm" class="oe_highlight"
-                            attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+invisible="status != 'draft'"/>
                     <button name="action_start_tracking" type="object"
                             string="Start Tracking"
-                            attrs="{'invisible': [('status', '!=', 'confirmed')]}"/>
+invisible="status != 'confirmed'"/>
                     <button name="action_mark_achieved" type="object"
                             string="Mark Achieved" class="oe_highlight"
-                            attrs="{'invisible': [('status', '!=', 'in_progress')]}"/>
+invisible="status != 'in_progress'"/>
                     <button name="action_mark_missed" type="object"
                             string="Mark Missed"
-                            attrs="{'invisible': [('status', '!=', 'in_progress')]}"/>
+invisible="status != 'in_progress'"/>
                     <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,achieved"/>
                 </header>
                 <sheet>

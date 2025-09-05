@@ -92,8 +92,10 @@
         <field name="arch" type="xml">
             <form string="Service Item">
                 <header>
-                    <button name="action_activate" string="Activate" type="object" class="btn-success" attrs="{'invisible': [('active', '=', True)]}"/>
-                    <button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" attrs="{'invisible': [('active', '=', False)]}"/>
+<button name="action_activate" string="Activate" type="object" class="btn-success" invisible="active == True"/>
+
+<button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" invisible="active == False"/>
+
                     <button name="action_duplicate_service" string="Duplicate" type="object" class="btn-secondary"/>
                 </header>
                 <sheet>
@@ -108,7 +110,8 @@
                             </div>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Inactive" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+<widget name="web_ribbon" title="Inactive" bg_color="bg-danger" invisible="active == True"/>
+
                     <div class="oe_title">
                         <label for="name" class="oe_edit_only"/>
                         <h1>
@@ -137,7 +140,8 @@
                     <group>
                         <group name="operational_settings" string="Operational Settings">
                             <field name="requires_approval"/>
-                            <field name="approval_level" attrs="{'invisible': [('requires_approval', '=', False)]}"/>
+<field name="approval_level" invisible="requires_approval == False"/>
+
                             <field name="estimated_duration" widget="float_time" placeholder="Hours"/>
                             <field name="requires_witness"/>
                             <field name="requires_equipment"/>
@@ -161,7 +165,8 @@
                         <page string="Equipment &amp; Resources" name="resources">
                             <group>
                                 <group string="Required Equipment">
-                                    <field name="equipment_ids" widget="many2many_tags" attrs="{'invisible': [('requires_equipment', '=', False)]}"/>
+<field name="equipment_ids" widget="many2many_tags" invisible="requires_equipment == False"/>
+
                                     <field name="vehicle_type_required"/>
                                     <field name="special_tools_required"/>
                                 </group>
@@ -190,9 +195,12 @@
                             <group>
                                 <group string="Portal Visibility">
                                     <field name="portal_visible"/>
-                                    <field name="portal_category" attrs="{'invisible': [('portal_visible', '=', False)]}"/>
-                                    <field name="portal_description" attrs="{'invisible': [('portal_visible', '=', False)]}"/>
-                                    <field name="customer_can_request" attrs="{'invisible': [('portal_visible', '=', False)]}"/>
+<field name="portal_category" invisible="portal_visible == False"/>
+
+<field name="portal_description" invisible="portal_visible == False"/>
+
+<field name="customer_can_request" invisible="portal_visible == False"/>
+
                                 </group>
                                 <group string="Request Settings">
                                     <field name="require_customer_approval"/>

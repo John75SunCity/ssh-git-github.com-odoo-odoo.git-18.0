@@ -34,9 +34,12 @@
         <field name="arch" type="xml">
             <form string="Work Order Coordinator">
 <header>
-    <button name="action_set_available" string="Set Available" type="object" class="oe_highlight" attrs="{'invisible': [('state', '=', 'available')]}"/>
-    <button name="action_set_busy" string="Set Busy" type="object" attrs="{'invisible': [('state', '=', 'busy')]}"/>
-    <button name="action_set_unavailable" string="Set Unavailable" type="object" attrs="{'invisible': [('state', '=', 'unavailable')]}"/>
+<button name="action_set_available" string="Set Available" type="object" class="oe_highlight" invisible="state == 'available'"/>
+
+<button name="action_set_busy" string="Set Busy" type="object" invisible="state == 'busy'"/>
+
+<button name="action_set_unavailable" string="Set Unavailable" type="object" invisible="state == 'unavailable'"/>
+
     <field name="state" widget="statusbar" statusbar_visible="available,busy,unavailable"/>
 </header>
 
@@ -53,7 +56,8 @@
     </button>
 </div>
 
-<widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+<widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
+
 
                     <div class="oe_title">
 <label for="name" class="oe_edit_only"/>

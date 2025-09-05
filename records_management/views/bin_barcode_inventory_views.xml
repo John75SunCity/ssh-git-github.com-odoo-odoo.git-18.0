@@ -12,13 +12,13 @@
                     <header>
                         <button name="action_set_available" type="object" string="Set Available"
                                 class="oe_highlight"
-                                attrs="{'invisible': [('state', '=', 'available')]}"/>
+invisible="state == 'available'"/>/>
                         <button name="action_set_full" type="object" string="Mark Full"
                                 class="btn-warning"
-                                attrs="{'invisible': [('state', 'in', ['full', 'retired'])]}"/>
+invisible="state in ['full', 'retired']"/>/>
                         <button name="action_service_complete" type="object" string="Service Complete"
                                 class="btn-success"
-                                attrs="{'invisible': [('state', '!=', 'full')]}"/>
+invisible="state != 'full'"/>/>
                         <button name="action_print_barcode_label" type="object" string="Print Label"
                                 class="btn-secondary"/>
                         <field name="state" widget="statusbar" statusbar_visible="available,in_use,full,maintenance"/>

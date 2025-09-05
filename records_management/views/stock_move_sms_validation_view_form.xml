@@ -10,7 +10,7 @@
             <form string="SMS Validation">
                 <header>
                     <button name="action_send_sms" type="object" string="Send SMS" class="btn-primary"
-                            attrs="{'invisible': [('is_validated', '=', True)]}"/>
+invisible="is_validated == True"/>
                     <field name="is_validated" widget="boolean_toggle"/>
                 </header>
                 <sheet>

@@ -30,10 +30,11 @@
         <field name="arch" type="xml">
                 <form string="Customer Negotiated Rates">
                     <header>
-                        <button name="action_submit_for_negotiation" string="Submit for Negotiation" type="object" class="oe_highlight" states="draft"/>
-                        <button name="action_approve_rates" string="Approve Rates" type="object" class="oe_highlight" states="negotiating" groups="records_management.group_records_manager"/>
-                        <button name="action_activate_rates" string="Activate Rates" type="object" class="oe_highlight" states="approved"/>
-                        <button name="action_expire_rates" string="Expire Rates" type="object" states="active" confirm="Are you sure you want to expire these rates?"/>
+<button name="action_submit_for_negotiation" string="Submit for Negotiation" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+<button name="action_approve_rates" string="Approve Rates" type="object" class="oe_highlight" invisible="state != 'negotiating'" groups="records_management.group_records_manager"/>
+<button name="action_activate_rates" string="Activate Rates" type="object" class="oe_highlight" invisible="state != 'approved'"/>
+<button name="action_expire_rates" string="Expire Rates" type="object" invisible="state != 'active'" confirm="Are you sure you want to expire these rates?"/>
+
                         <button name="action_duplicate_rates" string="Duplicate" type="object" class="btn-secondary"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,negotiating,approved,active,expired"/>
                     </header>
@@ -81,25 +82,29 @@
                                 <group>
                                     <group string="External Shredding Services">
                                         <field name="override_external_rates" widget="boolean_toggle"/>
-                                        <field name="external_per_bin_rate" widget="monetary" attrs="{'readonly': [('override_external_rates', '=', False)]}"/>
-                                        <field name="external_service_call_rate" widget="monetary" attrs="{'readonly': [('override_external_rates', '=', False)]}"/>
+<field name="external_per_bin_rate" widget="monetary" readonly="override_external_rates == False"/>
+<field name="external_service_call_rate" widget="monetary" readonly="override_external_rates == False"/>
+
                                     </group>
                                     <group string="Managed Document Services">
                                         <field name="override_managed_rates" widget="boolean_toggle"/>
-                                        <field name="managed_permanent_removal_rate" widget="monetary" attrs="{'readonly': [('override_managed_rates', '=', False)]}"/>
-                                        <field name="managed_retrieval_rate" widget="monetary" attrs="{'readonly': [('override_managed_rates', '=', False)]}"/>
-                                        <field name="managed_service_call_rate" widget="monetary" attrs="{'readonly': [('override_managed_rates', '=', False)]}"/>
-                                        <field name="managed_shredding_rate" widget="monetary" attrs="{'readonly': [('override_managed_rates', '=', False)]}"/>
+<field name="managed_permanent_removal_rate" widget="monetary" readonly="override_managed_rates == False"/>
+<field name="managed_retrieval_rate" widget="monetary" readonly="override_managed_rates == False"/>
+<field name="managed_service_call_rate" widget="monetary" readonly="override_managed_rates == False"/>
+<field name="managed_shredding_rate" widget="monetary" readonly="override_managed_rates == False"/>
+
                                     </group>
                                 </group>
                                 <group>
                                     <group string="Pickup Services">
                                         <field name="override_pickup_rates" widget="boolean_toggle"/>
-                                        <field name="pickup_rate" widget="monetary" attrs="{'readonly': [('override_pickup_rates', '=', False)]}"/>
+<field name="pickup_rate" widget="monetary" readonly="override_pickup_rates == False"/>
+
                                     </group>
                                     <group string="Storage Services">
                                         <field name="override_storage_rates" widget="boolean_toggle"/>
-                                        <field name="storage_rate_monthly" widget="monetary" attrs="{'readonly': [('override_storage_rates', '=', False)]}"/>
+<field name="storage_rate_monthly" widget="monetary" readonly="override_storage_rates == False"/>
+
                                     </group>
                                 </group>
                             </page>

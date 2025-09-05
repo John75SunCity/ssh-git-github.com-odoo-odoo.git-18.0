@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
+
 <data>
 <!-- Maintenance Equipment Form View Extension -->
 <record id="maintenance_equipment_view_form" model="ir.ui.view">
@@ -28,7 +28,7 @@
             </xpath>
 <!-- Add NAID compliance section -->
 <xpath expr="//sheet//group[last()]" position="after">
-        <group string="NAID Compliance" col="2" attrs="{'invisible': [('naid_compliant', '=', False)]}">
+<group string="NAID Compliance" col="2" invisible="naid_compliant == False">
                 <field name="naid_certification_date"/>
                 <field name="naid_certification_expiry"/>
                 <field name="next_naid_audit_date"/>
@@ -39,7 +39,7 @@
 <!-- Add maintenance history integration -->
 <xpath expr="//sheet" position="inside">
         <notebook>
-                <page string="Destruction History" attrs="{'invisible': [('equipment_category', '!=', 'shredding')]}">
+<page string="Destruction History" invisible="equipment_category != 'shredding'">
                         <field name="destruction_service_ids" mode="tree">
                                 <list>
                                         <field name="service_date"/>
@@ -89,7 +89,7 @@
         <field name="records_department_id"/>
         <field name="equipment_certification_number"/>
 </xpath>
-            
+
 <!-- Add Records Management search filters -->
 <xpath expr="//filter[@name='inactive']" position="after">
         <separator/>

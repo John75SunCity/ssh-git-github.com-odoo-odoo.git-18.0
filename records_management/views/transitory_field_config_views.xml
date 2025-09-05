@@ -333,7 +333,7 @@
         <field name="type">form</field>
         <field name="arch" type="xml">
             <notebook position="inside">
-                <page string="Records Field Configuration" name="field_config" attrs="{'invisible': [('is_company', '=', False)]}">
+<page string="Records Field Configuration" name="field_config" invisible="is_company == False">
                     <group>
                         <group string="Field Configuration">
                             <field name="transitory_field_config_id"/>

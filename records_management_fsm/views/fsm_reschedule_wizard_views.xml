@@ -23,7 +23,7 @@
                         <group>
                             <field name="notify_customer"/>
                             <field name="customer_notification_message"
-                                   attrs="{'invisible': [('notify_customer', '=', False)]}"
+invisible="notify_customer == False"
                                    placeholder="Custom message to send to customer..."/>
                         </group>
                         <group>

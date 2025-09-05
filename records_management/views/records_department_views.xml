@@ -31,9 +31,9 @@
             <form string="Customer Department">
                 <header>
                     <button name="action_activate" string="Activate" type="object" class="btn-success"
-                            attrs="{'invisible': [('state', '!=', 'draft')]}" groups="records_management.group_records_user"/>
+invisible="state != 'draft'" groups="records_management.group_records_user"/>
                     <button name="action_archive" string="Archive" type="object" class="btn-warning"
-                            attrs="{'invisible': [('state', '!=', 'active')]}" groups="records_management.group_records_manager"/>
+invisible="state != 'active'" groups="records_management.group_records_manager"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
                 </header>
                 <sheet>
@@ -219,8 +219,8 @@
                                 <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">📦 View Containers</a>
                                 <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">📄 View Documents</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" attrs="{'invisible': [('state', '!=', 'draft')]}">✅ Activate</a>
-                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" attrs="{'invisible': [('state', '!=', 'active')]}">📁 Archive</a>
+<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">✅ Activate</a>
+<a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state != 'active'">📁 Archive</a>
                             </div>
                         </div>
                     </t>
