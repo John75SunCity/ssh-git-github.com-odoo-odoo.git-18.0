@@ -21,8 +21,8 @@ class RevenueForecastLine(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    forecast_id = fields.Many2one('revenue.forecast', string="Forecast", required=True, ondelete='cascade')
-    customer_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
+    forecast_id = fields.Many2one(comodel_name="revenue.forecast", string="Forecast", required=True, ondelete="cascade")
+    customer_id = fields.Many2one(comodel_name="res.partner", string="Customer", required=True, tracking=True)
 
     # ============================================================================
     # FORECAST DETAILS

@@ -39,7 +39,9 @@ class RevenueForecast(models.Model):
     # ============================================================================
     # RELATIONSHIPS
     # ============================================================================
-    forecast_line_ids = fields.One2many('revenue.forecast.line', 'forecast_id', string="Forecast Lines")
+    forecast_line_ids = fields.One2many(
+        comodel_name="revenue.forecast.line", inverse_name="forecast_id", string="Forecast Lines"
+    )
 
     # ============================================================================
     # AGGREGATED FINANCIAL METRICS (COMPUTED)
