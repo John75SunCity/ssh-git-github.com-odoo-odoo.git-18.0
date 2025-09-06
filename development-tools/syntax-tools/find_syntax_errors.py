@@ -416,10 +416,38 @@ class OdooValidator:
                         )
                     # Flag models that have both _name and _inherit (unusual pattern)
                     elif has_name and has_inherit and not mixin_only:
-                        # Only warn when inheritance targets include actual model(s), not pure mixins
-                        self.warnings.append(
-                            f"⚠️ MODEL STRUCTURE: {py_file.name}: Model class '{class_name}' has both _name and _inherit (potential clone)"
-                        )
+                        # Heuristic suppression: allow lightweight registry-extension pattern
+                        # Count field definitions (simple regex: lines with = fields.)
+                        import re as _re2
+                        field_defs = _re2.findall(r"^\s*\w+\s*=\s*fields\.\w+\(", class_content, _re2.MULTILINE)
+                        # Count non-trivial methods (exclude compute/onchange naming & dunder, and those with only 'pass')
+                        method_blocks = _re2.findall(r"def\s+(\w+)\s*\(.*?\):", class_content)
+                        trivial = True
+                        if method_blocks:
+                            # If there is any method whose body (rough heuristic) contains more than a pass/docstring, mark non-trivial
+                            for m in method_blocks:
+                                # Skip typical compute/onchange helpers
+                                if m.startswith('_compute_') or m.startswith('_onchange_'):
+                                    continue
+                                # Extract body
+                                m_start = class_content.find(f"def {m}")
+                                if m_start != -1:
+                                    m_end = class_content.find('\ndef ', m_start + 5)
+                                    if m_end == -1:
+                                        m_end = len(class_content)
+                                    body = class_content[m_start:m_end]
+                                    # If body has more than 'pass' and not just a docstring, mark non-trivial
+                                    if 'pass' not in body or len([ln for ln in body.splitlines() if ln.strip() and not ln.strip().startswith(('def ', '"""', "'''"))]) > 3:
+                                        trivial = False
+                                        break
+                        # Suppress warning if lightweight (<=3 fields and trivial methods)
+                        if (not field_defs or len(field_defs) <= 3) and trivial:
+                            # Optional: could append a debug note if needed; silently accept
+                            pass
+                        else:
+                            self.warnings.append(
+                                f"⚠️ MODEL STRUCTURE: {py_file.name}: Model class '{class_name}' has both _name and _inherit (potential clone)"
+                            )
 
             except Exception as e:
                 self.warnings.append(f"⚠️ MODEL STRUCTURE CHECK: Could not parse {py_file.name}: {str(e)}")

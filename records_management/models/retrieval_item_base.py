@@ -1,5 +1,9 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
+import logging
+
+
+_logger = logging.getLogger(__name__)
 
 
 class RetrievalItemBase(models.AbstractModel):
@@ -208,8 +212,8 @@ class RetrievalItemBase(models.AbstractModel):
 
         return True
 
-    def action_start_search(self):
-        """Start the search process"""
+    def action_start_retrieval(self):
+        """Start the retrieval search process (preferred method name)"""
         self.ensure_one()
         if self.status != 'pending':
             raise UserError(_("Only pending items can start the search process."))
@@ -219,6 +223,12 @@ class RetrievalItemBase(models.AbstractModel):
             _("Search process started"),
             {'user_id': self.env.user.id}
         )
+
+    def action_start_search(self):
+        """DEPRECATED: kept for backward compatibility. Use action_start_retrieval."""
+        self.ensure_one()  # Ensure single record per Odoo action method guideline
+        _logger.warning("action_start_search is deprecated; use action_start_retrieval instead.")
+        return self.action_start_retrieval()
 
     def action_mark_located(self):
         """Mark item as located"""
