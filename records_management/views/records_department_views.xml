@@ -6,7 +6,6 @@
     <record id="records_department_view_tree" model="ir.ui.view">
         <field name="name">records.department.view.tree</field>
         <field name="model">records.department</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
                 <field name="display_name" string="🏢 Department"/>
@@ -26,7 +25,6 @@
     <record id="records_department_view_form" model="ir.ui.view">
         <field name="name">records.department.view.form</field>
         <field name="model">records.department</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Customer Department">
                 <header>
@@ -126,7 +124,6 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
     <record id="records_department_view_search" model="ir.ui.view">
         <field name="name">records.department.view.search</field>
         <field name="model">records.department</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Departments">
                 <field name="name" string="Department" filter_domain="['|', ('name', 'ilike', self), ('display_name', 'ilike', self)]"/>
@@ -158,7 +155,6 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
     <record id="records_department_view_kanban" model="ir.ui.view">
         <field name="name">records.department.view.kanban</field>
         <field name="model">records.department</field>
-        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_department_dashboard">
                 <field name="name"/>
@@ -232,7 +228,6 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
     <!-- Action for records.department -->
     <record id="action_records_department" model="ir.actions.act_window">
         <field name="name">🏢 Customer Departments</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.department</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="records_department_view_search"/>

@@ -5,7 +5,6 @@
     <record id="key_restriction_checker_view_form" model="ir.ui.view">
         <field name="name">key.restriction.checker.view.form</field>
         <field name="model">key.restriction.checker</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Key Restriction Checker">
                 <sheet>
@@ -74,7 +73,6 @@
     <!-- Tree view for Action -->
     <record id="action_key_restriction_checker" model="ir.actions.act_window">
         <field name="name">Key Restriction Checker</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">key.restriction.checker</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>

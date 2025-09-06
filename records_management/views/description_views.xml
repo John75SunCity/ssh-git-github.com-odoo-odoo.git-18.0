@@ -5,7 +5,6 @@
         <record id="description_view_tree" model="ir.ui.view">
             <field name="name">description.view.tree</field>
             <field name="model">description</field>
-            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <list string="Description">
                     <field name="name"/>
@@ -20,7 +19,6 @@
         <record id="description_view_form" model="ir.ui.view">
             <field name="name">description.view.form</field>
             <field name="model">description</field>
-            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Description">
                     <sheet>

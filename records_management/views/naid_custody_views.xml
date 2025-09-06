@@ -6,7 +6,6 @@
     <record id="naid_custody_view_tree" model="ir.ui.view">
         <field name="name">naid.custody.view.tree</field>
         <field name="model">naid.custody</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list decoration-success="event_type == 'creation'" decoration-info="event_type == 'pickup'" decoration-warning="event_type == 'transfer'" decoration-danger="event_type == 'destruction'">
                 <field name="event_date" string="Event Date" widget="datetime"/>
@@ -24,7 +23,6 @@
     <record id="naid_custody_view_form" model="ir.ui.view">
         <field name="name">naid.custody.view.form</field>
         <field name="model">naid.custody</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="NAID Chain of Custody Event">
                 <sheet>
@@ -67,7 +65,6 @@
     <record id="naid_custody_view_kanban" model="ir.ui.view">
         <field name="name">naid.custody.view.kanban</field>
         <field name="model">naid.custody</field>
-        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="event_type" class="o_kanban_custody">
                 <field name="event_date"/>
@@ -112,7 +109,6 @@
     <record id="naid_custody_view_search" model="ir.ui.view">
         <field name="name">naid.custody.view.search</field>
         <field name="model">naid.custody</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Chain of Custody Events">
                 <field name="description" string="Event Description"/>
@@ -154,7 +150,6 @@
 <!-- Action for naid.custody -->
     <record id="action_naid_custody" model="ir.actions.act_window">
         <field name="name">NAID Chain of Custody</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">naid.custody</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="naid_custody_view_search"/>

@@ -4,7 +4,6 @@
     <record id="transitory_field_config_view_tree" model="ir.ui.view">
         <field name="name">transitory.field.config.view.tree</field>
         <field name="model">transitory.field.config</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -16,7 +15,6 @@
     <record id="transitory_field_config_view_form" model="ir.ui.view">
         <field name="name">transitory.field.config.view.form</field>
         <field name="model">transitory.field.config</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Transitory Field Config">
                 <sheet>
@@ -35,7 +33,6 @@
     <record id="transitory_field_config_view_search" model="ir.ui.view">
         <field name="name">transitory.field.config.view.search</field>
         <field name="model">transitory.field.config</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -48,7 +45,6 @@
     <!-- Action for transitory.field.config -->
     <record id="action_transitory_field_config" model="ir.actions.act_window">
         <field name="name">Transitory Field Config</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">transitory.field.config</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
@@ -64,7 +60,6 @@
     <record id="field_label_customization_view_form" model="ir.ui.view">
         <field name="name">field.label.customization.view.form</field>
         <field name="model">field.label.customization</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Field Label Customization">
                 <header>
@@ -170,7 +165,6 @@
     <record id="field_label_customization_view_tree" model="ir.ui.view">
         <field name="name">field.label.customization.view.tree</field>
         <field name="model">field.label.customization</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Field Label Customizations">
                 <field name="name"/>
@@ -188,7 +182,6 @@
     <record id="field_label_customization_view_search" model="ir.ui.view">
         <field name="name">field.label.customization.view.search</field>
         <field name="model">field.label.customization</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Field Label Customizations">
                 <field name="name"/>
@@ -235,7 +228,6 @@
     <record id="transitory_field_config_view_form" model="ir.ui.view">
         <field name="name">transitory.field.config.view.form</field>
         <field name="model">transitory.field.config</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Transitory Field Configuration">
                 <header>
@@ -330,7 +322,6 @@
         <field name="name">base.view_partner_form.inherit.records_management</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <notebook position="inside">
 <page string="Records Field Configuration" name="field_config" invisible="is_company == False">

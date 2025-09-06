@@ -7,7 +7,6 @@
     <record id="records_digital_scan_view_tree" model="ir.ui.view">
         <field name="name">records.digital.scan.view.tree</field>
         <field name="model">records.digital.scan</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list string="Digital Scans">
                 <field name="name"/>
@@ -26,7 +25,6 @@
     <record id="records_digital_scan_view_form" model="ir.ui.view">
         <field name="name">records.digital.scan.view.form</field>
         <field name="model">records.digital.scan</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Digital Scan">
                 <header>
@@ -77,7 +75,6 @@
     <record id="records_digital_scan_view_search" model="ir.ui.view">
         <field name="name">records.digital.scan.view.search</field>
         <field name="model">records.digital.scan</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Digital Scans">
                 <field name="name"/>

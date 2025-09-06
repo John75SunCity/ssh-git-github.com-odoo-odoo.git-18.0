@@ -8,7 +8,6 @@
     <record id="service_item_view_kanban" model="ir.ui.view">
         <field name="name">service.item.view.kanban</field>
         <field name="model">service.item</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="service_category" class="o_kanban_service_items">
                 <field name="name"/>
@@ -63,7 +62,6 @@
     <record id="service_item_view_tree" model="ir.ui.view">
         <field name="name">service.item.view.tree</field>
         <field name="model">service.item</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list string="Service Items" decoration-muted="not active">
                 <field name="sequence" widget="handle"/>
@@ -88,7 +86,6 @@
     <record id="service_item_view_form" model="ir.ui.view">
         <field name="name">service.item.view.form</field>
         <field name="model">service.item</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Service Item">
                 <header>
@@ -243,7 +240,6 @@
     <record id="service_item_view_search" model="ir.ui.view">
         <field name="name">service.item.view.search</field>
         <field name="model">service.item</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Service Items">
                 <field name="name" string="Service Name" filter_domain="['|', ('name', 'ilike', self), ('service_code', 'ilike', self)]"/>
@@ -286,7 +282,6 @@
     <!-- Main Action -->
     <record id="action_service_item" model="ir.actions.act_window">
         <field name="name">Service Items</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">service.item</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -309,7 +304,6 @@
     <!-- Active Services Action -->
     <record id="action_service_item_active" model="ir.actions.act_window">
         <field name="name">Active Services</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">service.item</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[('active', '=', True)]</field>
@@ -322,7 +316,6 @@
     <!-- NAID Compliant Services Action -->
     <record id="action_service_item_naid" model="ir.actions.act_window">
         <field name="name">NAID Compliant Services</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">service.item</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('naid_compliant', '=', True), ('active', '=', True)]</field>
@@ -334,7 +327,6 @@
     <!-- Portal Services Action -->
     <record id="action_service_item_portal" model="ir.actions.act_window">
         <field name="name">Portal Services</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">service.item</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[('portal_visible', '=', True), ('active', '=', True)]</field>

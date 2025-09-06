@@ -6,7 +6,6 @@
     <record id="rate_change_confirmation_wizard_view_tree" model="ir.ui.view">
         <field name="name">rate.change.confirmation.wizard.view.tree</field>
         <field name="model">rate.change.confirmation.wizard</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -18,7 +17,6 @@
     <record id="rate_change_confirmation_wizard_view_form" model="ir.ui.view">
         <field name="name">rate.change.confirmation.wizard.view.form</field>
         <field name="model">rate.change.confirmation.wizard</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Rate Change Confirmation Wizard">
                 <sheet>
@@ -37,7 +35,6 @@
     <record id="rate_change_confirmation_wizard_view_search" model="ir.ui.view">
         <field name="name">rate.change.confirmation.wizard.view.search</field>
         <field name="model">rate.change.confirmation.wizard</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -50,7 +47,6 @@
     <!-- Tree view for Action -->
     <record id="action_rate_change_confirmation_wizard" model="ir.actions.act_window">
         <field name="name">Rate Change Confirmation Wizard</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">rate.change.confirmation.wizard</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>

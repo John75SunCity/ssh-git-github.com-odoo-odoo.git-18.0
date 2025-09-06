@@ -5,7 +5,6 @@
         <record id="records_billing_rate_view_tree" model="ir.ui.view">
             <field name="name">records.billing.rate.view.tree</field>
             <field name="model">records.billing.rate</field>
-            <field name="type">list</field>
             <field name="arch" type="xml">
                 <list string="Billing Rates" editable="bottom">
                     <field name="service_type"/>
@@ -23,7 +22,6 @@
         <record id="records_billing_rate_view_form" model="ir.ui.view">
             <field name="name">records.billing.rate.view.form</field>
             <field name="model">records.billing.rate</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Billing Rate">
                     <sheet>
@@ -55,7 +53,6 @@
         <record id="records_billing_rate_view_search" model="ir.ui.view">
             <field name="name">records.billing.rate.view.search</field>
             <field name="model">records.billing.rate</field>
-            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Search Billing Rates">
                     <field name="service_type"/>

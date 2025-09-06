@@ -6,7 +6,6 @@
 <record id="bin_barcode_inventory_view_form" model="ir.ui.view">
     <field name="name">bin.barcode.inventory.view.form</field>
             <field name="model">bin.barcode.inventory</field>
-<field name="type">form</field>
 <field name="arch" type="xml">
                 <form string="Bin Barcode Inventory">
                     <header>
@@ -303,7 +302,6 @@ invisible="state != 'full'"/>
 <record id="shredding_bin_sequence_reset_wizard_view_form" model="ir.ui.view">
     <field name="name">shredding.bin.sequence.reset.wizard.view.form</field>
             <field name="model">shredding.bin.sequence.reset.wizard</field>
-            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Reset Bin Sequence">
                     <div class="alert alert-warning" role="alert">

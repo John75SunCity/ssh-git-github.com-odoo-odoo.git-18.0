@@ -7,7 +7,6 @@
     <record id="naid_compliance_view_kanban" model="ir.ui.view">
         <field name="name">naid.compliance.view.kanban</field>
         <field name="model">naid.compliance</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <kanban default_group_by="compliance_status" class="o_kanban_naid_dashboard">
                 <field name="name"/>
@@ -81,7 +80,6 @@
     <record id="naid_compliance_view_tree" model="ir.ui.view">
         <field name="name">naid.compliance.view.tree</field>
         <field name="model">naid.compliance</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list decoration-success="compliance_status == 'certified' and certificate_valid == True"
                   decoration-warning="compliance_status == 'pending_audit'"
@@ -107,7 +105,6 @@
     <record id="naid_compliance_view_form" model="ir.ui.view">
         <field name="name">naid.compliance.view.form</field>
         <field name="model">naid.compliance</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -309,7 +306,6 @@ invisible="naid_level != 'AAA'">
     <record id="naid_compliance_view_calendar" model="ir.ui.view">
         <field name="name">naid.compliance.view.calendar</field>
         <field name="model">naid.compliance</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <calendar string="📅 NAID Audit Schedule"
                       date_start="next_audit_date"
@@ -328,7 +324,6 @@ invisible="naid_level != 'AAA'">
     <record id="naid_compliance_view_search" model="ir.ui.view">
         <field name="name">naid.compliance.view.search</field>
         <field name="model">naid.compliance</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Compliance Record"/>

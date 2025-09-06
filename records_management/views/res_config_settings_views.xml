@@ -7,7 +7,6 @@
         <field name="name">res.config.settings.view.form</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -20,7 +19,6 @@
         <field name="name">res.config.settings.view.tree</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -33,7 +31,6 @@
         <field name="name">res.config.settings.view.search</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -46,7 +43,6 @@
         <field name="name">res.config.settings.view.kanban</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -59,7 +55,6 @@
         <field name="name">res.config.settings.view.graph</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -72,7 +67,6 @@
         <field name="name">res.config.settings.view.pivot</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -85,7 +79,6 @@
         <field name="name">res.config.settings.view.calendar</field>
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>

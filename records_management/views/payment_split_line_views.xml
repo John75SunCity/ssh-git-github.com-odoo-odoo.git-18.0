@@ -7,7 +7,6 @@
     <record id="payment_split_line_view_tree" model="ir.ui.view">
         <field name="name">payment.split.line.view.tree</field>
         <field name="model">payment.split.line</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list string="Payment Split Lines" default_order="split_id, sequence">
                 <field name="sequence" widget="handle"/>
@@ -26,7 +25,6 @@
     <record id="payment_split_line_view_form" model="ir.ui.view">
         <field name="name">payment.split.line.view.form</field>
         <field name="model">payment.split.line</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Payment Split Line">
                 <sheet>
@@ -66,7 +64,6 @@
     <record id="payment_split_line_view_search" model="ir.ui.view">
         <field name="name">payment.split.line.view.search</field>
         <field name="model">payment.split.line</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Payment Split Lines">
                 <field name="name"/>

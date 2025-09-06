@@ -21,7 +21,6 @@
         <field name="name">account.move.line.form.inherit.records</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref="account.view_move_line_form"/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <!-- Add Records Management integration fields -->
             <xpath expr="//field[@name='partner_id']" position="after">
@@ -53,7 +52,6 @@ invisible="records_related == False">
         <field name="name">account.move.line.tree.inherit.records</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref="account.view_move_line_tree"/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <!-- Add Records Management columns -->
             <xpath expr="//field[@name='account_id']" position="after">
@@ -71,7 +69,6 @@ invisible="records_service_type == False"/>
         <field name="name">account.move.line.search.inherit.records</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref="account.view_account_move_line_filter"/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <!-- Add Records Management search fields -->
             <xpath expr="//field[@name='partner_id']" position="after">
@@ -110,7 +107,6 @@ invisible="records_service_type == False"/>
         <field name="name">account.move.line.kanban.inherit.records</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref="account.view_move_line_kanban"/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <!-- Add Records Management indicators -->
             <xpath expr="//div[hasclass('oe_kanban_details')]" position="inside">
@@ -137,7 +133,6 @@ invisible="records_service_type == False"/>
         <field name="name">account.move.line.graph.inherit.records</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref="account.view_move_line_graph"/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <!-- Add Records Management dimensions -->
             <xpath expr="//graph" position="attributes">
@@ -154,7 +149,6 @@ invisible="records_service_type == False"/>
         <field name="name">account.move.line.pivot.inherit.records</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref="account.view_move_line_pivot"/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <!-- Add Records Management pivot dimensions -->
             <xpath expr="//pivot" position="attributes">
@@ -173,7 +167,6 @@ invisible="records_service_type == False"/>
         <field name="name">account.move.line.calendar.inherit.records</field>
         <field name="model">account.move.line</field>
         <field name="inherit_id" ref="account.view_move_line_calendar"/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <!-- Enhance calendar with Records Management information -->
             <xpath expr="//calendar" position="attributes">

@@ -7,7 +7,6 @@
         <field name="name">project.task.view.form</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -20,7 +19,6 @@
         <field name="name">project.task.view.tree</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -33,7 +31,6 @@
         <field name="name">project.task.view.search</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -46,7 +43,6 @@
         <field name="name">project.task.view.kanban</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -59,7 +55,6 @@
         <field name="name">project.task.view.graph</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -72,7 +67,6 @@
         <field name="name">project.task.view.pivot</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -85,7 +79,6 @@
         <field name="name">project.task.view.calendar</field>
         <field name="model">project.task</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>

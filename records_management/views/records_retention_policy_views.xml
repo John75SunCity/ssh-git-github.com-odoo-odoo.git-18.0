@@ -5,7 +5,6 @@
     <record id="records_retention_policy_view_tree" model="ir.ui.view">
         <field name="name">records.retention.policy.view.tree</field>
         <field name="model">records.retention.policy</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="is_expired == True" decoration-info="state == 'draft'">
                 <field name="sequence" widget="handle"/>
@@ -28,7 +27,6 @@
     <record id="records_retention_policy_view_form" model="ir.ui.view">
         <field name="name">records.retention.policy.view.form</field>
         <field name="model">records.retention.policy</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Retention Policy Configuration">
                 <header>
@@ -248,7 +246,6 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
     <record id="records_retention_policy_view_kanban" model="ir.ui.view">
         <field name="name">records.retention.policy.view.kanban</field>
         <field name="model">records.retention.policy</field>
-        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" class="o_kanban_retention_policy">
                 <field name="name"/>
@@ -358,7 +355,6 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
     <record id="records_retention_policy_view_search" model="ir.ui.view">
         <field name="name">records.retention.policy.view.search</field>
         <field name="model">records.retention.policy</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Retention Policies">
                 <field name="name" string="Policy Name" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
@@ -430,7 +426,6 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
     <!-- Action for records.retention.policy -->
     <record id="action_records_retention_policy" model="ir.actions.act_window">
         <field name="name">📋 Retention Policies</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.retention.policy</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="records_retention_policy_view_search"/>

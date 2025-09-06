@@ -17,7 +17,6 @@
     <!-- Records Retrieval Work Orders - Dashboard Action -->
     <record id="action_dashboard_records_retrieval" model="ir.actions.act_window">
         <field name="name">Records Retrieval</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.retrieval.work.order</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -27,7 +26,6 @@
     <!-- Container Access Work Orders - Dashboard Action -->
     <record id="action_dashboard_container_access" model="ir.actions.act_window">
         <field name="name">Container Access</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">container.access.work.order</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -37,7 +35,6 @@
     <!-- Container Retrieval Work Orders - Dashboard Action -->
     <record id="action_dashboard_container_retrieval" model="ir.actions.act_window">
         <field name="name">Container Retrieval</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">container.retrieval.work.order</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -47,7 +44,6 @@
     <!-- Scan Retrieval Work Orders - Dashboard Action -->
     <record id="action_dashboard_scan_retrieval" model="ir.actions.act_window">
         <field name="name">Scan Retrieval</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">scan.retrieval.work.order</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -57,7 +53,6 @@
     <!-- File Retrieval Work Orders - Dashboard Action -->
     <record id="action_dashboard_file_retrieval" model="ir.actions.act_window">
         <field name="name">File Retrieval</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">file.retrieval.work.order</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -67,7 +62,6 @@
     <!-- Container Destruction Work Orders - Dashboard Action -->
     <record id="action_dashboard_container_destruction" model="ir.actions.act_window">
         <field name="name">Container Destruction</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">container.destruction.work.order</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -77,7 +71,6 @@
     <!-- Shredding Work Orders - Dashboard Action -->
     <record id="action_dashboard_shredding" model="ir.actions.act_window">
         <field name="name">Shredding Services</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">work.order.shredding</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -92,7 +85,6 @@
     <record id="work_order_dashboard_view_tree" model="ir.ui.view">
         <field name="name">work.order.dashboard.view.tree</field>
         <field name="model">project.task</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list string="All Work Orders" create="false" edit="false" decoration-info="stage_id.name=='Draft'" decoration-warning="stage_id.name=='In Progress'" decoration-success="stage_id.name=='Completed'">
                 <field name="name" string="Work Order"/>
@@ -110,7 +102,6 @@
     <!-- All Work Orders Action -->
     <record id="action_all_work_orders_unified" model="ir.actions.act_window">
         <field name="name">All Work Orders</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">project.task</field>
         <field name="view_mode">list,kanban,form</field>
         <field name="view_id" ref="work_order_dashboard_view_tree"/>
@@ -134,7 +125,6 @@
     <!-- Quick Create Actions for Different Work Order Types -->
     <record id="action_quick_create_records_retrieval" model="ir.actions.act_window">
         <field name="name">New Records Retrieval</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.retrieval.work.order</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -143,7 +133,6 @@
 
     <record id="action_quick_create_container_access" model="ir.actions.act_window">
         <field name="name">New Container Access</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">container.access.work.order</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -152,7 +141,6 @@
 
     <record id="action_quick_create_scan_retrieval" model="ir.actions.act_window">
         <field name="name">New Scan Retrieval</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">scan.retrieval.work.order</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -161,7 +149,6 @@
 
     <record id="action_quick_create_container_destruction" model="ir.actions.act_window">
         <field name="name">New Container Destruction</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">container.destruction.work.order</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -175,7 +162,6 @@
     <!-- Work Order Performance Dashboard -->
     <record id="action_work_order_performance" model="ir.actions.act_window">
         <field name="name">Work Order Performance</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">work.order.coordinator</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
@@ -185,7 +171,6 @@
     <!-- Overdue Work Orders -->
     <record id="action_overdue_work_orders" model="ir.actions.act_window">
         <field name="name">Overdue Work Orders</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">project.task</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('date_deadline', '!=', False), ('stage_id.name', '!=', 'Completed')]</field>
@@ -195,7 +180,6 @@
     <!-- Today's Work Orders -->
     <record id="action_todays_work_orders" model="ir.actions.act_window">
         <field name="name">Today's Work Orders</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">project.task</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[('date_deadline', '!=', False)]</field>

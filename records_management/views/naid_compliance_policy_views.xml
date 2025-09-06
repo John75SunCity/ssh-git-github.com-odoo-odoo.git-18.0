@@ -6,7 +6,6 @@
     <record id="view_naid_compliance_policy_list" model="ir.ui.view">
         <field name="name">view.naid.compliance.policy.list</field>
         <field name="model">naid.compliance.policy</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -18,7 +17,6 @@
     <record id="view_naid_compliance_policy_form" model="ir.ui.view">
         <field name="name">view.naid.compliance.policy.form</field>
         <field name="model">naid.compliance.policy</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Naid Compliance Policy">
                 <sheet>
@@ -37,7 +35,6 @@
     <record id="view_naid_compliance_policy_search" model="ir.ui.view">
         <field name="name">view.naid.compliance.policy.search</field>
         <field name="model">naid.compliance.policy</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -50,7 +47,6 @@
     <!-- Action naid.compliance.policy -->
     <record id="action_naid_compliance_policy" model="ir.actions.act_window">
         <field name="name">Naid Compliance Policy</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">naid.compliance.policy</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>

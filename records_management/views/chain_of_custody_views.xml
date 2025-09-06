@@ -5,7 +5,6 @@
         <record id="chain_of_custody_view_tree" model="ir.ui.view">
             <field name="name">chain.of.custody.view.tree</field>
             <field name="model">chain.of.custody</field>
-            <field name="type">tree</field>
             <field name="arch" type="xml">
                 <list decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'rejected'" decoration-info="naid_compliant == True">
                     <field name="name" string="📋 Transfer Reference"/>
@@ -28,7 +27,6 @@
         <record id="chain_of_custody_view_form" model="ir.ui.view">
             <field name="name">chain.of.custody.view.form</field>
             <field name="model">chain.of.custody</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
@@ -216,7 +214,6 @@
         <record id="chain_of_custody_view_kanban" model="ir.ui.view">
             <field name="name">chain.of.custody.view.kanban</field>
             <field name="model">chain.of.custody</field>
-            <field name="type">kanban</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_custody_dashboard">
                     <field name="name"/>
@@ -318,7 +315,6 @@
         <record id="chain_of_custody_view_search" model="ir.ui.view">
             <field name="name">chain.of.custody.view.search</field>
             <field name="model">chain.of.custody</field>
-            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="name" string="Transfer Reference" filter_domain="[('name', 'ilike', self)]"/>

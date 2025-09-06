@@ -7,7 +7,6 @@
         <field name="name">maintenance.request.view.form.inherit.records_management</field>
         <field name="model">maintenance.request</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -20,7 +19,6 @@
         <field name="name">maintenance.request.view.list.inherit.records_management</field>
         <field name="model">maintenance.request</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -33,7 +31,6 @@
         <field name="name">maintenance.request.view.search.inherit.records_management</field>
         <field name="model">maintenance.request</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -46,7 +43,6 @@
         <field name="name">maintenance.request.view.kanban.inherit.records_management</field>
         <field name="model">maintenance.request</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -59,7 +55,6 @@
         <field name="name">maintenance.request.view.graph.inherit.records_management</field>
         <field name="model">maintenance.request</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">graph</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -72,7 +67,6 @@
         <field name="name">maintenance.request.view.pivot.inherit.records_management</field>
         <field name="model">maintenance.request</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">pivot</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>
@@ -85,7 +79,6 @@
         <field name="name">maintenance.request.view.calendar.inherit.records_management</field>
         <field name="model">maintenance.request</field>
         <field name="inherit_id" ref=""/>
-        <field name="type">calendar</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='']" position="after">
             </xpath>

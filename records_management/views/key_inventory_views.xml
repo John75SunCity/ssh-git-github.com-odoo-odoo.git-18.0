@@ -6,7 +6,6 @@
         <record id="key_inventory_view_tree" model="ir.ui.view">
             <field name="name">key.inventory.view.tree</field>
             <field name="model">key.inventory</field>
-            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <list string="Key Inventory">
                     <field name="name"/>
@@ -24,7 +23,6 @@
         <record id="key_inventory_view_form" model="ir.ui.view">
             <field name="name">key.inventory.view.form</field>
             <field name="model">key.inventory</field>
-            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Key Inventory">
                     <sheet>
@@ -47,7 +45,6 @@
         <record id="key_inventory_view_search" model="ir.ui.view">
             <field name="name">key.inventory.view.search</field>
             <field name="model">key.inventory</field>
-            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Search Key Inventory">
                     <field name="name"/>

@@ -6,7 +6,6 @@
     <record id="naid_certificate_item_view_tree" model="ir.ui.view">
         <field name="name">naid.certificate.item.view.tree</field>
         <field name="model">naid.certificate.item</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -18,7 +17,6 @@
     <record id="naid_certificate_item_view_form" model="ir.ui.view">
         <field name="name">naid.certificate.item.view.form</field>
         <field name="model">naid.certificate.item</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Naid.Certificate.Item">
                 <sheet>
@@ -37,7 +35,6 @@
     <record id="naid_certificate_item_view_search" model="ir.ui.view">
         <field name="name">naid.certificate.item.view.search</field>
         <field name="model">naid.certificate.item</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -50,7 +47,6 @@
     <!-- Action for naid.certificate.item -->
     <record id="action_naid_certificate_item" model="ir.actions.act_window">
         <field name="name">Naid.Certificate.Item</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">naid.certificate.item</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>

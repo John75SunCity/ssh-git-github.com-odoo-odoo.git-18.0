@@ -7,7 +7,6 @@
         <record id="workflow_visualization_manager_view_tree" model="ir.ui.view">
             <field name="name">workflow.visualization.manager.view.tree</field>
             <field name="model">workflow.visualization.manager</field>
-            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <list string="Workflow Visualizations">
                     <field name="name"/>
@@ -23,7 +22,6 @@
         <record id="workflow_visualization_manager_view_form" model="ir.ui.view">
             <field name="name">workflow.visualization.manager.view.form</field>
             <field name="model">workflow.visualization.manager</field>
-            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Workflow Visualization">
                     <header>
@@ -72,7 +70,6 @@
         <record id="workflow_visualization_manager_view_search" model="ir.ui.view">
             <field name="name">workflow.visualization.manager.view.search</field>
             <field name="model">workflow.visualization.manager</field>
-            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Workflow Visualizations">
                     <field name="name"/>
@@ -90,7 +87,6 @@
         <!-- Action -->
         <record id="action_workflow_visualization_manager" model="ir.actions.act_window">
             <field name="name">Workflow Visualizations</field>
-            <field name="type">ir.actions.act_window</field>
             <field name="res_model">workflow.visualization.manager</field>
             <field name="view_mode">list,form</field>
             <field name="view_id" ref="workflow_visualization_manager_view_tree"/>

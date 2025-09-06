@@ -7,7 +7,6 @@
     <record id="records_billing_config_audit_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.audit.view.tree</field>
         <field name="model">records.billing.config.audit</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list string="Billing Config Audit" default_order="audit_date desc">
                 <field name="name"/>
@@ -25,7 +24,6 @@
     <record id="records_billing_config_audit_view_form" model="ir.ui.view">
         <field name="name">records.billing.config.audit.view.form</field>
         <field name="model">records.billing.config.audit</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Billing Config Audit">
                 <header>
@@ -107,7 +105,6 @@
     <record id="records_billing_config_audit_view_search" model="ir.ui.view">
         <field name="name">records.billing.config.audit.view.search</field>
         <field name="model">records.billing.config.audit</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Billing Config Audit">
                 <field name="name"/>
@@ -154,7 +151,6 @@
     <record id="records_billing_config_audit_view_kanban" model="ir.ui.view">
         <field name="name">records.billing.config.audit.view.kanban</field>
         <field name="model">records.billing.config.audit</field>
-        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="approval_status">
                 <field name="name"/>
@@ -220,7 +216,6 @@
     <record id="records_billing_config_audit_view_calendar" model="ir.ui.view">
         <field name="name">records.billing.config.audit.view.calendar</field>
         <field name="model">records.billing.config.audit</field>
-        <field name="type">calendar</field>
         <field name="arch" type="xml">
 <calendar string="Billing Config Audit Calendar" date_start="audit_date"
                      color="approval_status"
@@ -237,7 +232,6 @@
     <record id="records_billing_config_audit_view_graph" model="ir.ui.view">
         <field name="name">records.billing.config.audit.view.graph</field>
         <field name="model">records.billing.config.audit</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <graph string="Audit Financial Impact Analysis" type="bar">
                 <field name="action_type" type="row"/>
@@ -250,7 +244,6 @@
     <record id="records_billing_config_audit_view_pivot" model="ir.ui.view">
         <field name="name">records.billing.config.audit.view.pivot</field>
         <field name="model">records.billing.config.audit</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <pivot string="Billing Config Audit Analysis" display_quantity="true">
                 <field name="action_type" type="row"/>

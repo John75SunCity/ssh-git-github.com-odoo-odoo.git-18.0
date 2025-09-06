@@ -153,7 +153,6 @@
 <!-- Action -->
 <record id="action_shred_model_bin" model="ir.actions.act_window">
     <field name="name">Shred Model Bins</field>
-    <field name="type">ir.actions.act_window</field>
     <field name="res_model">shred.model_bin</field>
     <field name="view_mode">list,kanban,form</field>
     <field name="view_id" ref="shred_model_bin_view_tree"/>

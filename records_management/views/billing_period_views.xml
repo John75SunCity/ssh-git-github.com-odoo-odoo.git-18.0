@@ -5,7 +5,6 @@
         <record id="billing_period_view_tree" model="ir.ui.view">
             <field name="name">billing.period.tree</field>
             <field name="model">billing.period</field>
-            <field name="type">list</field>
             <field name="arch" type="xml">
                 <list>
                     <field name="name"/>
@@ -21,7 +20,6 @@
         <record id="billing_period_view_form" model="ir.ui.view">
             <field name="name">billing.period.form</field>
             <field name="model">billing.period</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Billing Period">
                     <sheet>

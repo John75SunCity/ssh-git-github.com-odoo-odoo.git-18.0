@@ -5,7 +5,6 @@
         <record id="customer_feedback_view_tree" model="ir.ui.view">
             <field name="name">customer.feedback.view.tree</field>
             <field name="model">customer.feedback</field>
-            <field name="type">tree</field>
             <field name="arch" type="xml">
                 <list decoration-success="state == 'resolved'" decoration-warning="state == 'in_progress'" decoration-danger="escalation_level == 'critical'" decoration-info="sentiment_category == 'negative'">
                     <field name="name" string="📝 Feedback"/>
@@ -28,7 +27,6 @@
         <record id="customer_feedback_view_form" model="ir.ui.view">
             <field name="name">customer.feedback.view.form</field>
             <field name="model">customer.feedback</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
@@ -177,7 +175,6 @@
         <record id="customer_feedback_view_kanban" model="ir.ui.view">
             <field name="name">customer.feedback.view.kanban</field>
             <field name="model">customer.feedback</field>
-            <field name="type">kanban</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_feedback_dashboard">
                     <field name="name"/>
@@ -267,7 +264,6 @@
         <record id="customer_feedback_view_search" model="ir.ui.view">
             <field name="name">customer.feedback.view.search</field>
             <field name="model">customer.feedback</field>
-            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="name" string="Feedback" filter_domain="['|', ('name', 'ilike', self), ('comments', 'ilike', self)]"/>

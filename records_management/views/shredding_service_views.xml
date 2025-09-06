@@ -6,7 +6,6 @@
         <record id="shredding_service_view_search" model="ir.ui.view">
             <field name="name">shredding.service.view.search</field>
             <field name="model">shredding.service</field>
-            <field name="type">list</field>
         <field name="arch" type="xml">
                 <search string="Search Shredding Services">
                     <field name="name"/>
@@ -32,7 +31,6 @@
     <record id="shredding_service_view_kanban" model="ir.ui.view">
         <field name="name">shredding.service.view.kanban</field>
         <field name="model">shredding.service</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <kanban default_group_by="service_type" class="o_kanban_shredding_dashboard">
                 <field name="name"/>
@@ -76,7 +74,6 @@
     <record id="shredding_service_view_tree" model="ir.ui.view">
         <field name="name">shredding.service.view.tree</field>
         <field name="model">shredding.service</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -96,7 +93,6 @@
     <record id="shredding_service_view_form" model="ir.ui.view">
         <field name="name">shredding.service.view.form</field>
         <field name="model">shredding.service</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -198,7 +194,6 @@
     <record id="shredding_service_view_search" model="ir.ui.view">
         <field name="name">shredding.service.view.search</field>
         <field name="model">shredding.service</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>

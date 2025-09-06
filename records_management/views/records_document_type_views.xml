@@ -5,7 +5,6 @@
     <record id="records_document_type_view_tree" model="ir.ui.view">
         <field name="name">records.document.type.view.tree</field>
         <field name="model">records.document.type</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
                 <field name="sequence" widget="handle"/>
@@ -27,7 +26,6 @@
     <record id="records_document_type_view_form" model="ir.ui.view">
         <field name="name">records.document.type.view.form</field>
         <field name="model">records.document.type</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Document Type Configuration">
                 <header>
@@ -175,7 +173,6 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
     <record id="records_document_type_view_kanban" model="ir.ui.view">
         <field name="name">records.document.type.view.kanban</field>
         <field name="model">records.document.type</field>
-        <field name="type">kanban</field>
         <field name="arch" type="xml">
             <kanban default_group_by="category" class="o_kanban_document_type">
                 <field name="name"/>
@@ -268,7 +265,6 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
     <record id="records_document_type_view_search" model="ir.ui.view">
         <field name="name">records.document.type.view.search</field>
         <field name="model">records.document.type</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search Document Types">
                 <field name="name" string="Document Type" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
@@ -321,7 +317,6 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
     <!-- Action for records.document.type -->
     <record id="action_records_document_type" model="ir.actions.act_window">
         <field name="name">📄 Document Types</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.document.type</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="records_document_type_view_search"/>

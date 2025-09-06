@@ -6,7 +6,6 @@
     <record id="shredding_hard_drive_view_tree" model="ir.ui.view">
         <field name="name">shredding.hard_drive.view.tree</field>
         <field name="model">shredding.hard_drive</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -18,7 +17,6 @@
     <record id="shredding_hard_drive_view_form" model="ir.ui.view">
         <field name="name">shredding.hard_drive.view.form</field>
         <field name="model">shredding.hard_drive</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="Shredding Hard_drive">
                 <sheet>
@@ -37,7 +35,6 @@
     <record id="shredding_hard_drive_view_search" model="ir.ui.view">
         <field name="name">shredding.hard_drive.view.search</field>
         <field name="model">shredding.hard_drive</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -50,7 +47,6 @@
     <!-- Tree view for Action -->
     <record id="action_shredding_hard_drive" model="ir.actions.act_window">
         <field name="name">Shredding Hard_drive</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">shredding.hard_drive</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
@@ -66,7 +62,6 @@
     <record id="hard_drive_scan_wizard_view_form" model="ir.ui.view">
         <field name="name">hard_drive.scan.wizard.view.form</field>
         <field name="model">shredding.hard_drive</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <form string="Hard Drive Serial Number Scanner">
                 <header>
@@ -122,7 +117,6 @@
     <record id="shredding_hard_drive_view_tree" model="ir.ui.view">
         <field name="name">shredding.hard_drive.view.tree</field>
         <field name="model">shredding.hard_drive</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list string="Hard Drives for Shredding" decoration-success="destroyed" 
                   decoration-warning="verified_before_destruction and not destroyed"
@@ -146,7 +140,6 @@
     <record id="shredding_hard_drive_view_form" model="ir.ui.view">
         <field name="name">shredding.hard_drive.view.form</field>
         <field name="model">shredding.hard_drive</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Hard Drive Details">
                 <header>

@@ -6,7 +6,6 @@
         <record id="feedback_improvement_area_view_tree" model="ir.ui.view">
             <field name="name">feedback.improvement.area.view.tree</field>
             <field name="model">feedback.improvement.area</field>
-            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <list string="Feedback Improvement Area" decoration-info="state == 'under_review'" decoration-success="state == 'closed'">
                     <field name="name"/>
@@ -22,7 +21,6 @@
         <record id="feedback_improvement_area_view_form" model="ir.ui.view">
             <field name="name">feedback.improvement.area.view.form</field>
             <field name="model">feedback.improvement.area</field>
-            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form string="Feedback Improvement Area">
                     <sheet>
@@ -71,7 +69,6 @@
         <record id="feedback_improvement_area_view_search" model="ir.ui.view">
             <field name="name">feedback.improvement.area.view.search</field>
             <field name="model">feedback.improvement.area</field>
-            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search string="Search Feedback Improvement Area">
                     <!-- Add search fields here -->

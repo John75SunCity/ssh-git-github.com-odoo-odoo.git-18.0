@@ -6,7 +6,6 @@
     <record id="rm_module_configurator_view_tree" model="ir.ui.view">
         <field name="name">rm.module.configurator.view.tree</field>
         <field name="model">rm.module.configurator</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
 <list decoration-info="active == True" decoration-muted="active == False" decoration-success="value_boolean == True" decoration-warning="value_boolean == False">
                 <field name="name" string="🔧 Configuration Name"/>
@@ -28,7 +27,6 @@
     <record id="rm_module_configurator_view_form" model="ir.ui.view">
         <field name="name">rm.module.configurator.view.form</field>
         <field name="model">rm.module.configurator</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
 <form string="⚙️ RM Module Configurator">
     <header>
@@ -119,7 +117,6 @@
     <record id="rm_module_configurator_view_search" model="ir.ui.view">
         <field name="name">rm.module.configurator.view.search</field>
         <field name="model">rm.module.configurator</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
 <search string="🔍 Configuration Search">
     <field name="name" string="🔧 Name" filter_domain="[('name', 'ilike', self)]"/>
@@ -176,7 +173,6 @@
 <record id="rm_module_configurator_view_kanban" model="ir.ui.view">
     <field name="name">rm.module.configurator.view.kanban</field>
     <field name="model">rm.module.configurator</field>
-    <field name="type">kanban</field>
         <field name="arch" type="xml">
         <kanban default_group_by="category" class="o_kanban_dashboard">
             <field name="name"/>
@@ -252,7 +248,6 @@
 <!-- Enhanced Action Window -->
     <record id="action_rm_module_configurator" model="ir.actions.act_window">
 <field name="name">⚙️ Records Management Configurator</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">rm.module.configurator</field>
 <field name="view_mode">kanban,list,form</field>
 <field name="search_view_id" ref="rm_module_configurator_view_search"/>
@@ -287,7 +282,6 @@
 <!-- Dashboard Action -->
 <record id="action_rm_module_configurator_dashboard" model="ir.actions.act_window">
     <field name="name">📊 Configuration Dashboard</field>
-    <field name="type">ir.actions.act_window</field>
     <field name="res_model">rm.module.configurator</field>
     <field name="view_mode">kanban</field>
     <field name="view_id" ref="rm_module_configurator_view_kanban"/>

@@ -6,7 +6,6 @@
 <record id="pickup_route_view_kanban" model="ir.ui.view">
     <field name="name">pickup.route.view.kanban</field>
     <field name="model">pickup.route</field>
-    <field name="type">tree</field>
         <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_pickup_route">
             <field name="name"/>
@@ -77,7 +76,6 @@
     <record id="pickup_route_view_tree" model="ir.ui.view">
         <field name="name">pickup.route.view.tree</field>
         <field name="model">pickup.route</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list decoration-info="state == 'draft'" decoration-warning="state == 'planned'" decoration-success="state == 'completed'" decoration-danger="priority == 'urgent'">
                 <field name="name"/>
@@ -101,7 +99,6 @@
     <record id="pickup_route_view_form" model="ir.ui.view">
         <field name="name">pickup.route.view.form</field>
         <field name="model">pickup.route</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="Pickup Route">
 <header>
@@ -269,7 +266,6 @@
     <record id="pickup_route_view_search" model="ir.ui.view">
         <field name="name">pickup.route.view.search</field>
         <field name="model">pickup.route</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
 <field name="name"/>
@@ -319,7 +315,6 @@
 <!-- Enhanced Action for Pickup Routes -->
     <record id="action_pickup_route" model="ir.actions.act_window">
         <field name="name">Pickup Routes</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">pickup.route</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>

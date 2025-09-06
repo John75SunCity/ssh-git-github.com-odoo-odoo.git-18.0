@@ -6,7 +6,6 @@
     <record id="records_deletion_request_enhanced_view_tree" model="ir.ui.view">
         <field name="name">records.deletion.request.enhanced.view.tree</field>
         <field name="model">records.deletion.request.enhanced</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list>
                 <field name="name"/>
@@ -18,7 +17,6 @@
     <record id="records_deletion_request_enhanced_view_form" model="ir.ui.view">
         <field name="name">records.deletion.request.enhanced.view.form</field>
         <field name="model">records.deletion.request.enhanced</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Records Deletion Request Enhanced">
                 <sheet>
@@ -37,7 +35,6 @@
     <record id="records_deletion_request_enhanced_view_search" model="ir.ui.view">
         <field name="name">records.deletion.request.enhanced.view.search</field>
         <field name="model">records.deletion.request.enhanced</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -50,7 +47,6 @@
     <!-- Tree view for Action -->
     <record id="action_records_deletion_request_enhanced" model="ir.actions.act_window">
         <field name="name">Records Deletion Request Enhanced</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">records.deletion.request.enhanced</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>

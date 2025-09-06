@@ -5,7 +5,6 @@
         <record id="records_billing_view_tree" model="ir.ui.view">
             <field name="name">records.billing.view.tree</field>
             <field name="model">records.billing</field>
-            <field name="type">tree</field>
             <field name="arch" type="xml">
                 <list string="Billing Records" default_order="date desc">
                     <field name="name"/>
@@ -23,7 +22,6 @@
         <record id="records_billing_view_form" model="ir.ui.view">
             <field name="name">records.billing.view.form</field>
             <field name="model">records.billing</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Billing Record">
                     <header>
@@ -87,7 +85,6 @@ class="btn-danger" invisible="state in ['paid', 'cancelled']"/>
         <record id="records_billing_view_search" model="ir.ui.view">
             <field name="name">records.billing.view.search</field>
             <field name="model">records.billing</field>
-            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search string="Search Billing Records">
                     <field name="name"/>

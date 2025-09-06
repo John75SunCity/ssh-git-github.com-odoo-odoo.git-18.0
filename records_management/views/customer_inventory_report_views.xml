@@ -5,7 +5,6 @@
         <record id="customer_inventory_report_view_tree" model="ir.ui.view">
             <field name="name">customer.inventory.report.tree</field>
             <field name="model">customer.inventory.report</field>
-            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <list decoration-bf="active==True">
                     <field name="name"/>
@@ -25,7 +24,6 @@
         <record id="customer_inventory_report_view_form" model="ir.ui.view">
             <field name="name">customer.inventory.report.form</field>
             <field name="model">customer.inventory.report</field>
-            <field name="type">tree</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>
@@ -83,7 +81,6 @@
         <record id="customer_inventory_report_view_search" model="ir.ui.view">
             <field name="name">customer.inventory.report.search</field>
             <field name="model">customer.inventory.report</field>
-            <field name="type">search</field>
         <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
@@ -119,7 +116,6 @@
         <record id="customer_inventory_report_view_kanban" model="ir.ui.view">
             <field name="name">customer.inventory.report.kanban</field>
             <field name="model">customer.inventory.report</field>
-            <field name="type">kanban</field>
         <field name="arch" type="xml">
                 <kanban>
                     <field name="id"/>

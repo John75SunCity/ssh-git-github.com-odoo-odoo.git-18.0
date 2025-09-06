@@ -8,7 +8,6 @@
     <record id="work_order_shredding_view_tree" model="ir.ui.view">
         <field name="name">work.order.shredding.view.tree</field>
         <field name="model">work.order.shredding</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list string="Shredding Work Orders" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'" decoration-danger="priority=='urgent'">
                 <header>
@@ -36,7 +35,6 @@
     <record id="work_order_shredding_view_form" model="ir.ui.view">
         <field name="name">work.order.shredding.view.form</field>
         <field name="model">work.order.shredding</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
 <form string="Shredding Work Order">
     <header>
@@ -207,7 +205,6 @@
 <record id="work_order_shredding_view_kanban" model="ir.ui.view">
     <field name="name">work.order.shredding.view.kanban</field>
     <field name="model">work.order.shredding</field>
-    <field name="type">search</field>
         <field name="arch" type="xml">
         <kanban default_group_by="state" class="o_kanban_small_column">
             <field name="name"/>
@@ -288,7 +285,6 @@
     <record id="work_order_shredding_view_search" model="ir.ui.view">
         <field name="name">work.order.shredding.view.search</field>
         <field name="model">work.order.shredding</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
 <field name="name" string="Work Order" filter_domain="['|', '|', ('name', 'ilike', self), ('partner_id', 'ilike', self), ('coordinator_id', 'ilike', self)]"/>
@@ -332,7 +328,6 @@
 <!-- ============================================================================ -->
     <record id="action_work_order_shredding" model="ir.actions.act_window">
         <field name="name">Shredding Work Orders</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">work.order.shredding</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -352,7 +347,6 @@
 <!-- My Shredding Orders Action -->
 <record id="action_work_order_shredding_my" model="ir.actions.act_window">
     <field name="name">My Shredding Orders</field>
-    <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.shredding</field>
     <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('coordinator_id.user_id', '=', uid)]</field>
@@ -362,7 +356,6 @@
 <!-- Urgent Shredding Orders Action -->
 <record id="action_work_order_shredding_urgent" model="ir.actions.act_window">
     <field name="name">Urgent Shredding Orders</field>
-    <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.shredding</field>
     <field name="view_mode">list,form,kanban</field>
     <field name="domain">[('priority', '=', 'urgent'), ('state', 'not in', ['completed', 'cancelled'])]</field>
@@ -372,7 +365,6 @@
 <!-- NAID Compliance Dashboard Action -->
 <record id="action_work_order_shredding_naid" model="ir.actions.act_window">
     <field name="name">NAID Compliance Orders</field>
-    <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.shredding</field>
     <field name="view_mode">list,form</field>
     <field name="domain">[('naid_compliant', '=', True)]</field>
@@ -382,7 +374,6 @@
 <!-- Scheduled Orders Today Action -->
 <record id="action_work_order_shredding_today" model="ir.actions.act_window">
     <field name="name">Today's Shredding Orders</field>
-    <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.shredding</field>
     <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('scheduled_date', '&gt;=', datetime.datetime.combine(context_today, datetime.time(0,0,0))), ('scheduled_date', '&lt;=', datetime.datetime.combine(context_today, datetime.time(23,59,59)))]</field>

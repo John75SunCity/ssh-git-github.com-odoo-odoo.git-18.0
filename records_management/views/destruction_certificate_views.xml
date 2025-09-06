@@ -5,7 +5,6 @@
         <record id="destruction_certificate_view_tree" model="ir.ui.view">
             <field name="name">destruction.certificate.view.tree</field>
             <field name="model">destruction.certificate</field>
-            <field name="type">list</field>
             <field name="arch" type="xml">
                 <list string="Destruction Certificates" default_order="issue_date desc">
                     <field name="name"/>
@@ -22,7 +21,6 @@
         <record id="destruction_certificate_view_form" model="ir.ui.view">
             <field name="name">destruction.certificate.view.form</field>
             <field name="model">destruction.certificate</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
@@ -162,7 +160,6 @@
         <record id="destruction_certificate_view_kanban" model="ir.ui.view">
             <field name="name">destruction.certificate.view.kanban</field>
             <field name="model">destruction.certificate</field>
-            <field name="type">kanban</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_certificate_dashboard">
                     <field name="certificate_number"/>
@@ -247,7 +244,6 @@
         <record id="destruction_certificate_view_search" model="ir.ui.view">
             <field name="name">destruction.certificate.view.search</field>
             <field name="model">destruction.certificate</field>
-            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="certificate_number" string="Certificate #" filter_domain="[('certificate_number', 'ilike', self)]"/>
@@ -288,7 +284,6 @@
         <record id="destruction_certificate_view_calendar" model="ir.ui.view">
             <field name="name">destruction.certificate.view.calendar</field>
             <field name="model">destruction.certificate</field>
-            <field name="type">calendar</field>
             <field name="arch" type="xml">
                 <calendar string="📅 Destruction Certificate Schedule" date_start="destruction_date" color="state">
                     <field name="certificate_number"/>

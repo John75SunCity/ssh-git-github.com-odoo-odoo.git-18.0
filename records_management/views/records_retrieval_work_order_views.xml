@@ -174,7 +174,6 @@
         <!-- ============================================================================ -->
         <record id="action_records_retrieval_work_order" model="ir.actions.act_window">
             <field name="name">Records Retrieval Work Orders</field>
-            <field name="type">ir.actions.act_window</field>
             <field name="res_model">records.retrieval.work.order</field>
             <field name="view_mode">kanban,list,form</field>
             <field name="domain">[]</field>
@@ -194,7 +193,6 @@
         <!-- My Records Retrieval Orders Action -->
         <record id="action_my_records_retrieval_work_order" model="ir.actions.act_window">
             <field name="name">My Records Retrieval Orders</field>
-            <field name="type">ir.actions.act_window</field>
             <field name="res_model">records.retrieval.work.order</field>
             <field name="view_mode">kanban,list,form</field>
             <field name="domain">[('user_id', '=', uid)]</field>
@@ -204,7 +202,6 @@
         <!-- Unassigned Records Retrieval Orders Action -->
         <record id="action_unassigned_records_retrieval_work_order" model="ir.actions.act_window">
             <field name="name">Unassigned Retrieval Orders</field>
-            <field name="type">ir.actions.act_window</field>
             <field name="res_model">records.retrieval.work.order</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[('user_id', '=', False), ('state', 'in', ['draft', 'in_progress'])]</field>

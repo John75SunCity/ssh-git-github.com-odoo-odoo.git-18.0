@@ -6,7 +6,6 @@
 <record id="container_retrieval_work_order_view_tree" model="ir.ui.view">
     <field name="name">container.retrieval.work.order.view.tree</field>
         <field name="model">container.retrieval.work.order</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
 <list>
                 <field name="name"/>
@@ -18,7 +17,6 @@
 <record id="container_retrieval_work_order_view_form" model="ir.ui.view">
     <field name="name">container.retrieval.work.order.view.form</field>
         <field name="model">container.retrieval.work.order</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Container Retrieval Work Order">
                 <sheet>
@@ -37,7 +35,6 @@
 <record id="container_retrieval_work_order_view_search" model="ir.ui.view">
     <field name="name">container.retrieval.work.order.view.search</field>
         <field name="model">container.retrieval.work.order</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <group expand="1" string="Group By">
@@ -50,7 +47,6 @@
     <!-- Tree view for Action -->
     <record id="action_container_retrieval_work_order" model="ir.actions.act_window">
         <field name="name">Container Retrieval Work Order</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">container.retrieval.work.order</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>

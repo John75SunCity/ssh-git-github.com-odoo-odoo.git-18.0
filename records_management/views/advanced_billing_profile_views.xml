@@ -5,7 +5,6 @@
         <record id="advanced_billing_profile_view_tree" model="ir.ui.view">
             <field name="name">advanced.billing.profile.view.tree</field>
             <field name="model">advanced.billing.profile</field>
-            <field name="type">list</field>
             <field name="arch" type="xml">
                 <list string="Billing Profiles">
                     <field name="name"/>
@@ -20,7 +19,6 @@
         <record id="advanced_billing_profile_view_form" model="ir.ui.view">
             <field name="name">advanced.billing.profile.view.form</field>
             <field name="model">advanced.billing.profile</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Billing Profile">
                     <header>
@@ -85,7 +83,6 @@
         <record id="advanced_billing_profile_view_list" model="ir.ui.view">
             <field name="name">advanced.billing.profile.view.list</field>
             <field name="model">advanced.billing.profile</field>
-            <field name="type">list</field>
             <field name="arch" type="xml">
                 <list>
                     <field name="name"/>
@@ -98,7 +95,6 @@
         <record id="advanced_billing_profile_view_search" model="ir.ui.view">
             <field name="name">advanced.billing.profile.view.search</field>
             <field name="model">advanced.billing.profile</field>
-            <field name="type">search</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>

@@ -5,7 +5,6 @@
         <record id="customer_inventory_report_wizard_view_form" model="ir.ui.view">
             <field name="name">customer.inventory.report.wizard.view.form</field>
             <field name="model">customer.inventory.report.wizard</field>
-            <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Customer Inventory Report Wizard">
                     <sheet>

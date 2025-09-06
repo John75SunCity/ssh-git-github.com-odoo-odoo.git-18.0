@@ -8,7 +8,6 @@
     <record id="work_order_coordinator_view_tree" model="ir.ui.view">
         <field name="name">work.order.coordinator.view.tree</field>
         <field name="model">work.order.coordinator</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
                 <list string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
                     <field name="name"/>
@@ -30,7 +29,6 @@
     <record id="work_order_coordinator_view_form" model="ir.ui.view">
         <field name="name">work.order.coordinator.view.form</field>
         <field name="model">work.order.coordinator</field>
-        <field name="type">form</field>
         <field name="arch" type="xml">
             <form string="Work Order Coordinator">
 <header>
@@ -207,7 +205,6 @@
     <record id="work_order_coordinator_view_search" model="ir.ui.view">
         <field name="name">work.order.coordinator.view.search</field>
         <field name="model">work.order.coordinator</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
 <search string="Search Work Order Coordinators">
     <!-- Search Fields -->
@@ -252,7 +249,6 @@
 <record id="work_order_coordinator_view_kanban" model="ir.ui.view">
     <field name="name">work.order.coordinator.view.kanban</field>
     <field name="model">work.order.coordinator</field>
-    <field name="type">kanban</field>
         <field name="arch" type="xml">
         <kanban default_group_by="state">
             <field name="id"/>
@@ -310,7 +306,6 @@
 <!-- ============================================================================ -->
     <record id="action_work_order_coordinator" model="ir.actions.act_window">
 <field name="name">Work Order Coordinators</field>
-        <field name="type">ir.actions.act_window</field>
         <field name="res_model">work.order.coordinator</field>
 <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
@@ -330,7 +325,6 @@ Click to create a new Work Order Coordinator.
 <!-- Available Coordinators Action -->
 <record id="action_work_order_coordinator_available" model="ir.actions.act_window">
     <field name="name">Available Coordinators</field>
-    <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.coordinator</field>
     <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('state', '=', 'available')]</field>
@@ -340,7 +334,6 @@ Click to create a new Work Order Coordinator.
 <!-- Performance Dashboard Action -->
 <record id="action_work_order_coordinator_performance" model="ir.actions.act_window">
     <field name="name">Coordinator Performance</field>
-    <field name="type">ir.actions.act_window</field>
     <field name="res_model">work.order.coordinator</field>
     <field name="view_mode">list,form</field>
     <field name="domain">[]</field>

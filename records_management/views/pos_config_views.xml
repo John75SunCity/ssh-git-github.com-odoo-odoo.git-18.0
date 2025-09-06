@@ -7,7 +7,6 @@
     <record id="pos_config_view_kanban" model="ir.ui.view">
         <field name="name">pos.config.view.kanban</field>
         <field name="model">pos.config</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <kanban default_group_by="state" sample="1" quick_create="false" class="o_kanban_small_column">
                 <field name="name"/>
@@ -78,7 +77,6 @@
     <record id="pos_config_view_tree" model="ir.ui.view">
         <field name="name">pos.config.view.tree</field>
         <field name="model">pos.config</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <list string="POS Configuration Management" decoration-success="state=='active'" decoration-muted="state=='inactive'" decoration-danger="state=='deprecated'" multi_edit="1" sample="1">
                 <header>
@@ -104,7 +102,6 @@
     <record id="pos_config_view_form" model="ir.ui.view">
         <field name="name">pos.config.view.form</field>
         <field name="model">pos.config</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <form string="POS Configuration">
                 <header>
@@ -309,7 +306,6 @@
     <record id="pos_config_view_search" model="ir.ui.view">
         <field name="name">pos.config.view.search</field>
         <field name="model">pos.config</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search string="Search POS Configurations">
                 <field name="name" string="POS Name" filter_domain="[('name', 'ilike', self)]"/>
@@ -345,7 +341,6 @@
     <record id="pos_config_view_graph" model="ir.ui.view">
         <field name="name">pos.config.view.graph</field>
         <field name="model">pos.config</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <graph string="POS Performance" type="bar" sample="1">
                 <field name="name" type="row"/>
@@ -359,7 +354,6 @@
     <record id="pos_config_view_pivot" model="ir.ui.view">
         <field name="name">pos.config.view.pivot</field>
         <field name="model">pos.config</field>
-        <field name="type">tree</field>
         <field name="arch" type="xml">
             <pivot string="POS Analysis" sample="1">
                 <field name="company_id" type="row"/>

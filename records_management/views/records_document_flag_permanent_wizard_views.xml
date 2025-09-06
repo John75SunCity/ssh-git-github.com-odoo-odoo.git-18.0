@@ -5,7 +5,6 @@
         <record id="records_document_flag_permanent_wizard_view_form" model="ir.ui.view">
             <field name="name">records.document.flag.permanent.wizard.form</field>
             <field name="model">records.document.flag.permanent.wizard</field>
-            <field name="type">form</field>
         <field name="arch" type="xml">
                 <form string="Flag Document as Permanent">
                     <div class="alert alert-warning" role="alert">

@@ -7,7 +7,6 @@
     <record id="paper_bale_view_kanban" model="ir.ui.view">
         <field name="name">paper.bale.view.kanban</field>
         <field name="model">paper.bale</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <kanban default_group_by="bale_status" class="o_kanban_paper_bale_dashboard">
                 <field name="name"/>
@@ -81,7 +80,6 @@
     <record id="paper_bale_view_tree" model="ir.ui.view">
         <field name="name">paper.bale.view.tree</field>
         <field name="model">paper.bale</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <list decoration-success="bale_status == 'shipped' and loaded_on_trailer == True"
                   decoration-warning="bale_status == 'ready_for_loading'"
@@ -110,7 +108,6 @@
     <record id="paper_bale_view_form" model="ir.ui.view">
         <field name="name">paper.bale.view.form</field>
         <field name="model">paper.bale</field>
-        <field name="type">list</field>
         <field name="arch" type="xml">
             <form>
                 <header>
@@ -285,7 +282,6 @@
     <record id="paper_bale_view_search" model="ir.ui.view">
         <field name="name">paper.bale.view.search</field>
         <field name="model">paper.bale</field>
-        <field name="type">search</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name" string="Bale"/>
