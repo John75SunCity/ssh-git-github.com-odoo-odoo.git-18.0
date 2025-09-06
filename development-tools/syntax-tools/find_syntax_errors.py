@@ -446,7 +446,7 @@ class OdooValidator:
         # Suppressed per user request: noisy CONFIGURATOR warnings disabled.
         # Intentionally a no-op to eliminate excessive CONFIGURATOR warnings that
         # were not providing actionable value during current stabilization phase.
-        return
+    pass
     # --- ORIGINAL IMPLEMENTATION (commented out) ---
     # print("🔍 Checking RM Module Configurator integration...")
     # config_file = self.module_path / "models" / "rm_module_configurator.py"
