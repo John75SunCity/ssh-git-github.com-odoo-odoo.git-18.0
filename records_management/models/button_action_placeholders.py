@@ -171,11 +171,7 @@ class RecordsStorageDepartmentUser(models.Model):
         self.ensure_one()
         return False  # Future: open assignments
 
-class DocumentRetrievalTeam(models.Model):
-    _inherit = 'maintenance.team'
-    # Duplicate placeholder removed; real implementations now live in
-    # models/document_retrieval_team.py. This class intentionally left
-    # empty to avoid duplicate method definitions flagged by validators.
+## Removed empty DocumentRetrievalTeam placeholder class (logic consolidated in document_retrieval_team.py)
 
 class ShreddingServiceBin(models.Model):
     _inherit = 'shredding.service.bin'

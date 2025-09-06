@@ -1,117 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <data>
-<!-- Tree view for Document Retrieval Team -->
-    <record id="document_retrieval_team_view_tree" model="ir.ui.view">
-<field name="name">maintenance.team.view.tree.retrieval</field>
+<!-- Inherited Tree View: add retrieval-specific columns -->
+<record id="document_retrieval_team_view_tree" model="ir.ui.view">
+<field name="name">maintenance.team.view.tree.inherit.retrieval</field>
 <field name="model">maintenance.team</field>
-        <field name="arch" type="xml">
-            <list decoration-success="active==True" decoration-muted="active==False" decoration-info="state=='available'" decoration-warning="state=='busy'">
-                <field name="name"/>
-                <field name="team_leader_id"/>
-                <field name="member_count" string="Members"/>
-                <field name="active_workorders" string="Active Orders"/>
-                <field name="current_location_id" string="Current Location"/>
-                <field name="state" widget="badge" decoration-success="state=='available'" decoration-warning="state=='busy'" decoration-danger="state=='unavailable'"/>
-                <field name="specialization" string="Specialization"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-                <field name="active" invisible="1"/>
-            </list>
-        </field>
-    </record>
+<field name="inherit_id" ref="maintenance.maintenance_team_view_tree"/>
 
-    <!-- Form view for Document Retrieval Team -->
-    <record id="document_retrieval_team_view_form" model="ir.ui.view">
-<field name="name">maintenance.team.view.form.retrieval</field>
+<field name="arch" type="xml">
+<xpath expr="//tree" position="inside">
+    <field name="team_code"/>
+    <field name="member_count" optional="show"/>
+    <field name="active_workorders" string="Active Orders" optional="hide"/>
+    <field name="current_location_id" optional="hide"/>
+    <field name="specialization" optional="show"/>
+    <field name="state" widget="badge" optional="show"/>
+</xpath>
+</field>
+</record>
+
+<!-- Inherited Form View: add stat buttons, retrieval fields & notebook pages -->
+<record id="document_retrieval_team_view_form" model="ir.ui.view">
+<field name="name">maintenance.team.view.form.inherit.retrieval</field>
 <field name="model">maintenance.team</field>
-        <field name="arch" type="xml">
-            <form string="Document Retrieval Team">
-                <header>
-                    <button name="action_activate_team" type="object" string="Activate Team" class="oe_highlight" states="draft,inactive"/>
-                    <button name="action_mark_available" type="object" string="Mark Available" class="oe_highlight" states="busy,unavailable"/>
-                    <button name="action_mark_busy" type="object" string="Mark Busy" states="available"/>
-                    <button name="action_deactivate_team" type="object" string="Deactivate" states="available,busy" groups="records_management.group_records_manager"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,available,busy"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_work_orders" icon="fa-tasks">
-<field name="active_workorders" string="Work Orders" widget="statbutton"/>
+<field name="inherit_id" ref="maintenance.maintenance_team_view_form"/>
 
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_view_team_members" icon="fa-users">
+<field name="arch" type="xml">
+<!-- Button box KPIs -->
+<xpath expr="//sheet/div[@name='button_box']" position="inside">
+    <button class="oe_stat_button" type="object" name="action_view_work_orders" icon="fa-tasks">
+        <field name="active_workorders" string="Work Orders" widget="statbutton"/>
+
+
+</button>
+<button class="oe_stat_button" type="object" name="action_view_team_members" icon="fa-users">
 <field name="member_count" string="Team Members" widget="statbutton"/>
 
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_view_performance_metrics" icon="fa-bar-chart" groups="records_management.group_records_manager">
+</button>
+<button class="oe_stat_button" type="object" name="action_view_performance_metrics" icon="fa-bar-chart" groups="records_management.group_records_manager">
 <field name="completed_orders_count" string="Completed Orders" widget="statbutton"/>
 
-                        </button>
-                    </div>
-
-<widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
-
-
-                    <div class="oe_title">
-                        <label for="name" class="oe_edit_only"/>
-                        <h1>
-                            <field name="name" placeholder="Team Name (e.g., Alpha Retrieval Team)..."/>
-                        </h1>
-                    </div>
-
-                    <group>
-                        <group name="team_info" string="Team Information">
+</button>
+</xpath>
+<!-- Core retrieval fields grouped -->
+<xpath expr="//sheet" position="inside">
+<group string="Retrieval Team Configuration" name="retrieval_team_config">
+    <group>
                             <field name="team_code" required="1"/>
-                            <field name="team_leader_id" required="1"/>
-                            <field name="specialization" required="1"/>
+<field name="team_leader_id"/>
+<field name="specialization"/>
+
                             <field name="current_location_id"/>
-                            <field name="active"/>
+<field name="priority_level" widget="priority"/>
+
                         </group>
-                        <group name="capacity_info" string="Capacity &amp; Performance">
+<group>
                             <field name="max_concurrent_orders"/>
                             <field name="avg_retrieval_time_hours"/>
                             <field name="success_rate_percentage"/>
-                            <field name="priority_level" widget="priority"/>
+<field name="active"/>
+
                         </group>
                     </group>
-
-                    <notebook>
-                        <page string="Team Members" name="team_members">
+</xpath>
+<!-- Notebook additions -->
+<xpath expr="//sheet" position="inside">
+<notebook name="retrieval_team_notebook">
+    <page string="Team Members" name="team_members_extra">
                             <field name="member_ids" nolabel="1">
                                 <list editable="bottom">
                                     <field name="user_id" required="1"/>
-                                    <field name="role" required="1"/>
+<field name="role"/>
+
                                     <field name="date_joined"/>
                                     <field name="specialization"/>
                                     <field name="active"/>
                                 </list>
                             </field>
                         </page>
-
-                        <page string="Current Work Orders" name="current_orders">
+<page string="Current Work Orders" name="current_orders_extra">
                             <field name="current_workorder_ids" nolabel="1">
-                                <list decoration-info="state=='locating'" decoration-warning="state=='retrieving'" decoration-success="state=='completed'" create="false" edit="false">
+<list create="false" edit="false" decoration-info="state=='locating'" decoration-warning="state=='retrieving'" decoration-success="state=='completed'">
                                     <field name="name"/>
-                                    <field name="partner_id" string="Customer"/>
+<field name="partner_id"/>
+
                                     <field name="priority" widget="priority"/>
                                     <field name="scheduled_date"/>
-                                    <field name="item_count" string="Items"/>
+<field name="item_count"/>
+
                                     <field name="state" widget="badge"/>
-                                    <button name="action_view_work_order" type="object" string="View Details" icon="fa-external-link"/>
+<button name="action_view_work_order" type="object" string="Open" icon="fa-external-link"/>
+
                                 </list>
                             </field>
                         </page>
-
-                        <page string="Equipment &amp; Tools" name="equipment">
+<page string="Equipment &amp; Tools" name="equipment_extra">
                             <group>
-                                <group name="standard_equipment" string="Standard Equipment">
+<group string="Standard Equipment">
                                     <field name="has_mobile_scanner"/>
                                     <field name="has_tablet_device"/>
                                     <field name="has_safety_equipment"/>
-                                    <field name="vehicle_id" string="Assigned Vehicle"/>
+<field name="vehicle_id"/>
+
                                 </group>
-                                <group name="specialized_tools" string="Specialized Tools">
+<group string="Specialized Tools">
                                     <field name="can_access_offsite_locations"/>
                                     <field name="has_ladder_equipment"/>
                                     <field name="has_heavy_lifting_tools"/>
@@ -119,15 +111,14 @@
                                 </group>
                             </group>
                         </page>
-
-                        <page string="Schedule &amp; Availability" name="schedule">
+<page string="Schedule &amp; Availability" name="schedule_extra">
                             <group>
-                                <group name="working_hours" string="Working Hours">
+<group string="Working Hours">
                                     <field name="shift_start_time" widget="float_time"/>
                                     <field name="shift_end_time" widget="float_time"/>
                                     <field name="working_days" widget="many2many_checkboxes"/>
                                 </group>
-                                <group name="availability" string="Availability">
+<group string="Availability">
                                     <field name="is_emergency_team"/>
                                     <field name="can_work_weekends"/>
                                     <field name="can_work_after_hours"/>
@@ -135,16 +126,15 @@
                                 </group>
                             </group>
                         </page>
-
-                        <page string="Performance Metrics" name="performance" groups="records_management.group_records_manager">
+<page string="Performance Metrics" name="performance_extra" groups="records_management.group_records_manager">
                             <group>
-                                <group name="efficiency_metrics" string="Efficiency Metrics">
+<group string="Efficiency Metrics">
                                     <field name="completed_orders_count" readonly="1"/>
                                     <field name="avg_completion_time_days" readonly="1"/>
                                     <field name="success_rate_percentage" readonly="1"/>
                                     <field name="customer_satisfaction_score" readonly="1"/>
                                 </group>
-                                <group name="productivity_metrics" string="Productivity Metrics">
+<group string="Productivity Metrics">
                                     <field name="total_items_retrieved" readonly="1"/>
                                     <field name="avg_items_per_day" readonly="1"/>
                                     <field name="total_containers_accessed" readonly="1"/>
@@ -152,118 +142,67 @@
                                 </group>
                             </group>
                         </page>
-
-                        <page string="Notes &amp; Comments" name="notes">
+<page string="Notes &amp; Comments" name="notes_extra">
                             <group>
                                 <field name="description" nolabel="1" placeholder="Team description, special capabilities, and operational notes..."/>
                             </group>
-                            <group>
-                                <field name="internal_notes" nolabel="1" placeholder="Internal management notes and observations..." groups="records_management.group_records_manager"/>
+<group groups="records_management.group_records_manager">
+    <field name="internal_notes" nolabel="1" placeholder="Internal management notes and observations..."/>
+
                             </group>
                         </page>
                     </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
+</xpath>
+</field>
+</record>
 
-    <!-- Kanban view for Document Retrieval Team -->
-    <record id="document_retrieval_team_view_kanban" model="ir.ui.view">
-<field name="name">maintenance.team.view.kanban.retrieval</field>
+<!-- Inherited Kanban View: expose extra fields (light touch to avoid template conflicts) -->
+<record id="document_retrieval_team_view_kanban" model="ir.ui.view">
+<field name="name">maintenance.team.view.kanban.inherit.retrieval</field>
 <field name="model">maintenance.team</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_small_column">
-                <field name="id"/>
-                <field name="name"/>
-                <field name="team_leader_id"/>
-                <field name="state"/>
-                <field name="member_count"/>
-                <field name="active_workorders"/>
-                <field name="specialization"/>
-                <field name="current_location_id"/>
-                <templates>
-<t t-name="card">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="oe_kanban_content">
-                                <div class="o_kanban_record_top">
-                                    <div class="o_kanban_record_headings">
-                                        <strong class="o_kanban_record_title">
-                                            <field name="name"/>
-                                        </strong>
-                                    </div>
-                                    <div class="o_kanban_record_right">
-                                        <field name="state" widget="label_selection" options="{'classes': {'available': 'success', 'busy': 'warning', 'unavailable': 'danger'}}"/>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_record_body">
-                                    <div class="text-muted">
-                                        <i class="fa fa-user"/>
-                                        <field name="team_leader_id"/>
-                                    </div>
-                                    <div class="text-muted">
-                                        <i class="fa fa-users"/>
-                                        <field name="member_count"/>
-members
-                                    </div>
-                                    <div class="text-muted">
-                                        <i class="fa fa-tasks"/>
-                                        <field name="active_workorders"/>
-active orders
-                                    </div>
-                                    <div class="text-muted">
-                                        <i class="fa fa-wrench"/>
-                                        <field name="specialization"/>
-                                    </div>
-                                    <t t-if="record.current_location_id.raw_value">
-                                        <div class="text-muted">
-                                            <i class="fa fa-map-marker"/>
-                                            <field name="current_location_id"/>
-                                        </div>
-                                    </t>
-                                </div>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
+<field name="inherit_id" ref="maintenance.maintenance_team_view_kanban"/>
 
-    <!-- Search view for Document Retrieval Team -->
-    <record id="document_retrieval_team_view_search" model="ir.ui.view">
-<field name="name">maintenance.team.view.search.retrieval</field>
+<field name="arch" type="xml">
+<xpath expr="//kanban" position="inside">
+    <field name="member_count"/>
+
+<field name="active_workorders"/>
+
+<field name="specialization"/>
+
+<field name="current_location_id"/>
+
+</xpath>
+</field>
+</record>
+
+<!-- Inherited Search View: add retrieval filters & fields -->
+<record id="document_retrieval_team_view_search" model="ir.ui.view">
+<field name="name">maintenance.team.view.search.inherit.retrieval</field>
 <field name="model">maintenance.team</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name" string="Team Name" filter_domain="[('name', 'ilike', self)]"/>
-                <field name="team_code" string="Team Code"/>
-                <field name="team_leader_id" string="Team Leader"/>
-                <field name="specialization" string="Specialization"/>
-                <field name="current_location_id" string="Current Location"/>
-                <separator/>
-<filter name="active" string="Active Teams" domain="[('active', '=', True)]"/>
-<filter name="inactive" string="Inactive Teams" domain="[('active', '=', False)]"/>
+<field name="inherit_id" ref="maintenance.maintenance_team_view_search"/>
 
-                <separator/>
-<filter name="available" string="Available" domain="[('state', '=', 'available')]"/>
-<filter name="busy" string="Busy" domain="[('state', '=', 'busy')]"/>
-<filter name="unavailable" string="Unavailable" domain="[('state', '=', 'unavailable')]"/>
+<field name="arch" type="xml">
+<xpath expr="//search" position="inside">
+    <field name="team_code"/>
+    <field name="specialization"/>
+    <field name="current_location_id"/>
+    <separator/>
 
-                <separator/>
-<filter name="emergency_teams" string="Emergency Teams" domain="[('is_emergency_team', '=', True)]"/>
-<filter name="weekend_available" string="Weekend Available" domain="[('can_work_weekends', '=', True)]"/>
-<filter name="after_hours_available" string="After Hours Available" domain="[('can_work_after_hours', '=', True)]"/>
 
-            </search>
-        </field>
-    </record>
+<filter name="available" string="Available" domain="[('state','=','available')]"/>
+<filter name="busy" string="Busy" domain="[('state','=','busy')]"/>
+<filter name="unavailable" string="Unavailable" domain="[('state','=','unavailable')]"/>
 
-<!-- Deprecated dedicated action removed; maintenance.team existing actions cover navigation -->
+<separator/>
+
+
+<filter name="emergency_teams" string="Emergency Teams" domain="[('is_emergency_team','=',True)]"/>
+<filter name="weekend_available" string="Weekend Available" domain="[('can_work_weekends','=',True)]"/>
+<filter name="after_hours_available" string="After Hours Available" domain="[('can_work_after_hours','=',True)]"/>
+</xpath>
+</field>
+</record>
+<!-- Original standalone definitions replaced with inheritance patches -->
 </data>
-
 </odoo>
