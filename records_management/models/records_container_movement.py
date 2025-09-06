@@ -68,7 +68,8 @@ class RecordsContainerMovement(models.Model):
     verification_date = fields.Datetime(string="Verification Date", readonly=True)
     verified_by_id = fields.Many2one('res.users', string="Verified By", readonly=True)
     barcode_scanned = fields.Boolean(string="Barcode Scanned", help="Indicates if the container barcode was scanned during movement.")
-    notes = fields.Text(string="Movement Notes")
+    # Batch 3 label disambiguation
+    notes = fields.Text(string="Movement Notes")  # retained wording already specific, kept for consistency
     exception_notes = fields.Text(string="Exception Notes")
 
     # ============================================================================

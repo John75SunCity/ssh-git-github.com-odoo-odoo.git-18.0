@@ -84,7 +84,8 @@ class RecordsBilling(models.Model):
     invoice_id = fields.Many2one("account.move", string="Invoice", readonly=True)
 
     # Additional Information
-    notes = fields.Text(string="Notes")
+    # Batch 4 Relabel: Provide context-specific label
+    notes = fields.Text(string="Billing Notes")
 
     @api.model_create_multi
     def create(self, vals_list):

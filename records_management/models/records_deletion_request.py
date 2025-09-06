@@ -59,7 +59,8 @@ class RecordsDeletionRequest(models.Model):
     # ============================================================================
     # DETAILS & INSTRUCTIONS
     # ============================================================================
-    description = fields.Text(string="Description")
+    # Batch 4 Relabel: Clarify purpose of description
+    description = fields.Text(string="Deletion Summary")
     reason = fields.Text(string="Reason for Deletion", required=True)
     notes = fields.Text(string="Internal Notes")
     special_instructions = fields.Text(string="Special Instructions")
@@ -172,7 +173,9 @@ class RecordsDeletionRequest(models.Model):
         if not self.scheduled_deletion_date:
             raise UserError(_("Please set a scheduled deletion date."))
         self.write({'state': 'scheduled'})
-        self.message_post(body=_("Deletion scheduled for %s", self.scheduled_deletion_date))
+    # Keeping original translation pattern (defer global translation normalization)
+    # Revert to validation-preferred pattern (arguments inside _())
+    self.message_post(body=_("Deletion scheduled for %s", self.scheduled_deletion_date))
 
     def action_start_deletion(self):
         self.ensure_one()

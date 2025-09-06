@@ -70,7 +70,8 @@ class RecordsDocument(models.Model):
         store=False,
         help="Generated barcode image for this document",
     )
-    description = fields.Text(string="Description")
+    # Batch 4 Relabel: More explicit document description label
+    description = fields.Text(string="Document Description")
 
     # ============================================================================
     # RELATIONSHIPS
@@ -235,10 +236,12 @@ class RecordsDocument(models.Model):
         related="location_id", string="Group by Location", store=False, readonly=True, comodel_name="stock.location"
     )
     destroyed = fields.Boolean(string="Is Destroyed", compute='_compute_destroyed', store=True, help="True if the document's state is 'destroyed'.")
+    recently_accessed = fields.Boolean(string="Accessed Recently", compute="_compute_recent_access", search="_search_recent_access", help="True if accessed in last 30 days.")
 
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================
+    @api.model_create_multi
     def create(self, vals_list):
         """Override create to set sequence and log creation."""
         for vals in vals_list:
@@ -246,6 +249,7 @@ class RecordsDocument(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.document') or _('New')
         docs = super().create(vals_list)
         for doc in docs:
+            # Keep arguments inside _() per repository's existing translation pattern
             doc.message_post(body=_('Document "%s" created', doc.name))
         return docs
 
@@ -395,6 +399,17 @@ class RecordsDocument(models.Model):
                 record.has_attachments = bool(record.attachment_ids and len(record.attachment_ids) > 0)
             except Exception:
                 record.has_attachments = False
+
+    @api.depends('name', 'reference')
+    def _compute_display_name(self):
+        for record in self:
+            try:
+                if record.name and record.reference:
+                    record.display_name = f"{record.name} ({record.reference})"
+                else:
+                    record.display_name = record.name or record.reference or ''
+            except Exception:
+                record.display_name = record.name or ''
 
     def _compute_attachment_count(self):
         for record in self:
@@ -748,7 +763,7 @@ class RecordsDocument(models.Model):
             'user_id': self.env.user.id,
             'event_date': checkout_date,
         })
-
+        # Post message in chatter
         self.message_post(body=_('Document checked out by %s', self.env.user.name))
 
         return {
@@ -756,7 +771,7 @@ class RecordsDocument(models.Model):
             'tag': 'display_notification',
             'params': {
                 'title': _("Document Checked Out"),
-                'message': _("Document %s has been checked out successfully", self.display_name),
+                'message': _('Document %s has been checked out successfully', self.display_name),
                 'sticky': False,
             }
         }
@@ -783,7 +798,7 @@ class RecordsDocument(models.Model):
             'user_id': self.env.user.id,
             'event_date': return_date,
         })
-
+        # Post message in chatter
         self.message_post(body=_('Document returned by %s', self.env.user.name))
 
         return {
@@ -791,7 +806,7 @@ class RecordsDocument(models.Model):
             'tag': 'display_notification',
             'params': {
                 'title': _("Document Returned"),
-                'message': _("Document %s has been returned to storage", self.display_name),
+                'message': _('Document %s has been returned to storage', self.display_name),
                 'sticky': False,
             }
         }
@@ -819,7 +834,7 @@ class RecordsDocument(models.Model):
             )
 
             # Log audit event
-            self._create_audit_log("barcode_generated", _("Barcode generated for document %s", self.name))
+            self._create_audit_log('barcode_generated', _('Barcode generated for document %s', self.name))
 
             return {
                 "type": "ir.actions.act_window",
@@ -830,7 +845,7 @@ class RecordsDocument(models.Model):
             }
         except Exception as e:
             _logger.error("Failed to generate barcode for document %s: %s", self.name, str(e))
-            raise UserError(_("Failed to generate barcode: %s", str(e)))
+            raise UserError(_('Failed to generate barcode: %s', str(e)))
 
     def _generate_odoo_barcode(self, data):
         """Generate barcode using Odoo's native barcode functionality"""
@@ -889,7 +904,7 @@ class RecordsDocument(models.Model):
             )
 
             # Log audit event
-            self._create_audit_log("qr_generated", _("QR code generated for document %s", self.name))
+            self._create_audit_log('qr_generated', _('QR code generated for document %s', self.name))
 
             return {
                 "type": "ir.actions.act_window",
@@ -900,7 +915,7 @@ class RecordsDocument(models.Model):
             }
         except Exception as e:
             _logger.error("Failed to generate QR code for document %s: %s", self.name, str(e))
-            raise UserError(_("Failed to generate QR code: %s", str(e)))
+            raise UserError(_('Failed to generate QR code: %s', str(e)))
 
     def _generate_odoo_qr_code(self, data):
         """Generate QR code using Odoo's native functionality"""
@@ -969,8 +984,8 @@ class RecordsDocument(models.Model):
         """Initiate document scanning (placeholder for integration)"""
         self.ensure_one()
         # Placeholder: Integrate with scanning hardware/API
-        self.message_post(body=_("Document scanning initiated for %s", self.name))
-        self._create_audit_log("scan_initiated", _("Document scan initiated"))
+        self.message_post(body=_('Document scanning initiated for %s', self.name))
+        self._create_audit_log('scan_initiated', _('Document scan initiated'))
         return {"type": "ir.actions.act_window_close"}
 
     def action_mark_permanent(self):
@@ -1012,22 +1027,23 @@ class RecordsDocument(models.Model):
             raise ValueError(_("Destruction date must be set"))
         # Fix: Change 'pending_destruction' to 'awaiting_destruction' to match the state selection
         self.write({"state": "awaiting_destruction"})
-        action_type, description = self.schedule_destruction_message()
-        self._create_audit_log(action_type, description)
+        event_type, description = self.schedule_destruction_message()
+        self._create_audit_log(event_type, description)
         return {"type": "ir.actions.act_window_close"}
 
     def schedule_destruction_message(self):
-        return "destruction_scheduled", _("Destruction scheduled for %s", self.destruction_eligible_date)
+        """Return standardized destruction scheduling audit data"""
+        return 'destruction_scheduled', _('Destruction scheduled for %s', self.destruction_eligible_date)
 
-    def _create_audit_log(self, action_type, description):
-        """Helper to create audit log entries"""
+    def _create_audit_log(self, event_type, event_description):
+        """Helper to create audit log entries (standardized field names)."""
         self.env["naid.audit.log"].create(
             {
                 "document_id": self.id,
-                "action_type": action_type,
+                "event_type": event_type,
+                "event_description": event_description,
                 "user_id": self.env.user.id,
-                "description": description,
-                "event_date": datetime.now(),  # Fixed: Changed 'timestamp' to 'event_date' for consistency
+                "event_date": datetime.now(),
             }
         )
 

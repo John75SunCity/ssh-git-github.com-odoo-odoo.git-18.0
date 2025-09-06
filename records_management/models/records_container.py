@@ -63,8 +63,10 @@ class RecordsContainer(models.Model):
     # ============================================================================
     # PHYSICAL & CONTENT DETAILS
     # ============================================================================
-    description = fields.Text(string="Description")
-    content_description = fields.Text(string="Content Description")
+    # Contextual label disambiguation (Batch 2): Clarify generic 'Description'
+    description = fields.Text(string="Container Description")
+    # Batch 3 label disambiguation
+    content_description = fields.Text(string="Box Contents")
     dimensions = fields.Char(string="Dimensions", related="container_type_id.dimensions", readonly=True)
     weight = fields.Float(string="Weight (lbs)")
     cubic_feet = fields.Float(string="Cubic Feet", related="container_type_id.cubic_feet", readonly=True)

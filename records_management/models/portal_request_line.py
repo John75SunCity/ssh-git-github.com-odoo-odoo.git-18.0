@@ -32,7 +32,8 @@ class PortalRequestLine(models.Model):
         ('service', 'Service'),
         ('other', 'Other')
     ], string='Item Type', default='document', required=True)
-    description = fields.Char(string='Description', required=True)
+    # Batch 3 label disambiguation
+    description = fields.Char(string='Line Details', required=True)
     quantity = fields.Integer(string='Quantity', default=1)
     status = fields.Selection([
         ('pending', 'Pending'),

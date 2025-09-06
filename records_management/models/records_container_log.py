@@ -21,7 +21,8 @@ class RecordsContainerLog(models.Model):
     ], string='Event Type', required=True)
     date = fields.Datetime(string='Event Date', default=fields.Datetime.now, required=True)
     user_id = fields.Many2one('res.users', string='User', default=lambda self: self.env.user)
-    notes = fields.Text(string='Notes')
+    # Contextual label disambiguation (Batch 2)
+    notes = fields.Text(string='Event Notes')
 
     @api.depends('name', 'event_type')
     def _compute_display_name(self):

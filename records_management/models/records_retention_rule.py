@@ -13,6 +13,8 @@ class RecordsRetentionRule(models.Model):
     # CORE & IDENTIFICATION FIELDS
     # ============================================================================
     name = fields.Char(string="Rule Name", required=True, tracking=True, index=True)
+    # Batch 3 label disambiguation
+    description = fields.Text(string="Rule Description")
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
     sequence = fields.Integer(string="Sequence", default=10, help="Determines the order of execution for rules within a policy.")
     active = fields.Boolean(string='Active', default=True)

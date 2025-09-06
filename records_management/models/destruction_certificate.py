@@ -60,7 +60,8 @@ class DestructionCertificate(models.Model):
     # DOCUMENTATION
     # ============================================================================
     certificate_attachment_id = fields.Many2one("ir.attachment", string="Certificate Document", readonly=True)
-    notes = fields.Text(string="Notes")
+    # Batch 4 Relabel: Disambiguate generic 'Notes' label
+    notes = fields.Text(string="Certificate Notes")
 
     # ============================================================================
     # COMPLIANCE

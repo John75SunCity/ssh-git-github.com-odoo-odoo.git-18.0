@@ -24,11 +24,12 @@ class RecordsStorageDepartmentUser(models.Model):
     # ============================================================================
     # PERMISSIONS & LIFECYCLE
     # ============================================================================
+    # Contextual label disambiguation (Batch 2)
     role = fields.Selection([
         ('viewer', 'Viewer'),
         ('editor', 'Editor'),
         ('manager', 'Manager'),
-    ], string="Role", default='viewer', required=True, tracking=True, help="Defines the user's level of access within this department.")
+    ], string="Department Role", default='viewer', required=True, tracking=True, help="Defines the user's level of access within this department.")
 
     state = fields.Selection([
         ('active', 'Active'),

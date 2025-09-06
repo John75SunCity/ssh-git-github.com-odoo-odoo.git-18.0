@@ -16,7 +16,8 @@ class PortalRequest(models.Model):
     active = fields.Boolean(default=True)
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
     user_id = fields.Many2one('res.users', string='Assigned To', tracking=True)
-    description = fields.Html(string='Description', required=True)
+    # Contextual label disambiguation (Batch 2)
+    description = fields.Html(string='Request Details', required=True)
 
     state = fields.Selection([
         ('draft', 'Draft'),
