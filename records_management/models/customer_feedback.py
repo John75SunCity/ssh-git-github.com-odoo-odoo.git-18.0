@@ -104,6 +104,8 @@ class CustomerFeedback(models.Model):
         ('4', '4 - Satisfied'),
         ('5', '5 - Very Satisfied')
     ], string='Rating', tracking=True)
+    # Added to satisfy view reference and provide numeric value of rating
+    satisfaction_score = fields.Float(string='Satisfaction Score', compute='_compute_satisfaction_score', store=True, help='Numeric representation of rating (1-5), 0 when not set.', aggregator='avg')
     sentiment_category = fields.Selection([
         ('positive', 'Positive'),
         ('neutral', 'Neutral'),
@@ -124,6 +126,11 @@ class CustomerFeedback(models.Model):
     # ============================================================================
     # COMPUTE & CONSTRAINTS
     # ============================================================================
+    @api.depends('rating')
+    def _compute_satisfaction_score(self):
+        for record in self:
+            record.satisfaction_score = float(record.rating) if record.rating else 0.0
+
     @api.depends('description', 'rating', 'feedback_type')
     def _compute_sentiment_analysis(self):
         """AI-ready sentiment analysis with keyword matching and rating consideration."""

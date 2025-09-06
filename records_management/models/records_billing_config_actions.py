@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Action placeholder methods for records.billing.config (split from button_action_placeholders).
+"""Records Billing Config Action Placeholders
 
-These lightweight helpers keep navigation buttons working without implementing
-full business logic yet. Safe to extend or replace later.
+Focused file providing safe minimal navigation actions (act_window dicts)
+so XML buttons function pre-implementation. Extend with real logic later.
+Avoid renaming methods to maintain stable view references.
 """
 from odoo import models, _
 

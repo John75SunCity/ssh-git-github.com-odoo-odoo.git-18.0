@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Action placeholder methods for paper.bale."""
+"""Paper Bale Action Placeholders
+
+Provides safe stubs for UI buttons (weighting, loading, source docs, trailer
+info, history). Each returns False until real logic is implemented. Keep
+method names stable to avoid breaking existing XML button definitions.
+"""
 from odoo import models
 
 

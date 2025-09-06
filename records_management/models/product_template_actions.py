@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Action placeholder methods for product.template (split from button_action_placeholders)."""
+"""Product Template Action Placeholders
+
+Keeps stable XML button object targets while deferring heavy business logic.
+Safe to extend/override; prefer adding real implementations instead of
+renaming methods to avoid breaking existing views.
+"""
 from odoo import models, _
 
 

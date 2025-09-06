@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Action placeholder methods for stock.lot (split from button_action_placeholders)."""
+"""Stock Lot Action Placeholders
+
+Lightweight, safe navigation helpers for buttons in lot views.
+Each method may be extended with real business logic later without
+altering stable button object names in XML.
+"""
 from odoo import models, _
 
 
