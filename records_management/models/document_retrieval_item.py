@@ -19,7 +19,7 @@ class DocumentRetrievalItem(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Assigned User', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
-    work_order_id = fields.Many2one('records.retrieval.work.order', string='Work Order')
+    work_order_id = fields.Many2one('records.retrieval.order', string='Retrieval Order')
     sequence = fields.Integer(string='Sequence', default=10)
     priority = fields.Selection([
         ('0', 'Low'),

@@ -34,7 +34,7 @@ class DocumentSearchAttempt(models.Model):
 
     # Related workflow tracking
     work_order_id = fields.Many2one(
-        "records.retrieval.work.order", string="Work Order", help="Associated work order for this search"
+        "records.retrieval.order", string="Retrieval Order", help="Associated unified retrieval order for this search"
     )
 
     # Core Search Details
@@ -150,7 +150,7 @@ class DocumentSearchAttempt(models.Model):
         """Create a work order for this search if none exists"""
         self.ensure_one()
         if not self.work_order_id:
-            work_order = self.env["records.retrieval.work.order"].create(
+            work_order = self.env["records.retrieval.order"].create(
                 {
                     "partner_id": self.partner_id.id,
                     "location_id": self.location_id.id,
@@ -164,7 +164,7 @@ class DocumentSearchAttempt(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": _("Work Order"),
-            "res_model": "records.retrieval.work.order",
+            "res_model": "records.retrieval.order",
             "res_id": self.work_order_id.id,
             "view_mode": "form",
             "target": "current",

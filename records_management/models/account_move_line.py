@@ -31,7 +31,7 @@ class AccountMoveLine(models.Model):
     # ============================================================================
     work_order_id = fields.Reference(
         selection=[
-            ("records.retrieval.work.order", "Document Retrieval"),  # corrected model name
+            ("records.retrieval.order", "Records Retrieval"),  # unified model name
             ("shredding.service", "Shredding Service"),
             ("pickup.request", "Pickup Request"),
         ],

@@ -110,7 +110,7 @@ class RecordsUsageTracking(models.Model):
         """Provide a selection of models that can be sources of usage."""
         # This can be expanded as more source models are integrated
         return [
-            ('records.retrieval.work.order', 'Retrieval Work Order'),
+            ('records.retrieval.order', 'Records Retrieval Order'),
             ('records.destruction', 'Destruction Order'),
             ('records.container', 'Container'),
             ('portal.request', 'Portal Request'),

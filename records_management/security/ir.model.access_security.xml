@@ -540,25 +540,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_container_retrieval_work_order_user" model="ir.model.access">
-            <field name="name">container.retrieval.work.order</field>
-            <field name="model_id:id">container.retrieval.work.order</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_container_retrieval_work_order_manager" model="ir.model.access">
-            <field name="name">container.retrieval.work.order</field>
-            <field name="model_id:id">container.retrieval.work.order</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_cross_department_sharing_user" model="ir.model.access">
             <field name="name">cross.department.sharing</field>
             <field name="model_id:id">cross.department.sharing</field>
@@ -985,42 +967,6 @@
         <record id="access_file_retrieval_item_manager" model="ir.model.access">
             <field name="name">file.retrieval.item</field>
             <field name="model_id:id">file.retrieval.item</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_file_retrieval_work_order_user" model="ir.model.access">
-            <field name="name">file.retrieval.work.order</field>
-            <field name="model_id:id">file.retrieval.work.order</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_file_retrieval_work_order_manager" model="ir.model.access">
-            <field name="name">file.retrieval.work.order</field>
-            <field name="model_id:id">file.retrieval.work.order</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_file_retrieval_work_order_item_user" model="ir.model.access">
-            <field name="name">file.retrieval.work.order.item</field>
-            <field name="model_id:id">file.retrieval.work.order.item</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_file_retrieval_work_order_item_manager" model="ir.model.access">
-            <field name="name">file.retrieval.work.order.item</field>
-            <field name="model_id:id">file.retrieval.work.order.item</field>
             <field name="group_id:id">records_management.group_records_manager</field>
             <field name="perm_read">1</field>
             <field name="perm_write">1</field>
@@ -3186,25 +3132,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_records_retrieval_work_order_user" model="ir.model.access">
-            <field name="name">records.retrieval.work.order</field>
-            <field name="model_id:id">records.retrieval.work.order</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_records_retrieval_work_order_manager" model="ir.model.access">
-            <field name="name">records.retrieval.work.order</field>
-            <field name="model_id:id">records.retrieval.work.order</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_records_security_audit_user" model="ir.model.access">
             <field name="name">records.security.audit</field>
             <field name="model_id:id">records.security.audit</field>
@@ -3636,25 +3564,7 @@
             <field name="perm_write">1</field>
             <field name="perm_create">1</field>
             <field name="perm_unlink">1</field>
-        </record>
-        <record id="access_scan_retrieval_work_order_user" model="ir.model.access">
-            <field name="name">scan.retrieval.work.order</field>
-            <field name="model_id:id">scan.retrieval.work.order</field>
-            <field name="group_id:id">records_management.group_records_user</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
-        </record>
-        <record id="access_scan_retrieval_work_order_manager" model="ir.model.access">
-            <field name="name">scan.retrieval.work.order</field>
-            <field name="model_id:id">scan.retrieval.work.order</field>
-            <field name="group_id:id">records_management.group_records_manager</field>
-            <field name="perm_read">1</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">1</field>
-        </record>
+</record>
         <record id="access_service_item_user" model="ir.model.access">
             <field name="name">service.item</field>
             <field name="model_id:id">service.item</field>
