@@ -183,6 +183,17 @@ class WorkOrderCoordinator(models.Model):
             'target': 'current',
         }
 
+    # Placeholder migrated from aggregate file
+    def action_view_work_orders(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('All Work Orders'),
+            'res_model': 'mail.thread',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', [r.id for r in self._get_all_work_orders()])],
+        }
+
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================

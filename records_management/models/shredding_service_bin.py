@@ -694,6 +694,19 @@ class ShreddingServiceBin(models.Model):
         except Exception as e:
             _logger.warning("Failed to create audit log: %s", str(e))
 
+    # ------------------------------------------------------------------
+    # Placeholder action migrated from aggregate file
+    # ------------------------------------------------------------------
+    def action_view_work_orders(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Related Work Orders'),
+            'res_model': 'project.task',
+            'view_mode': 'tree,form,kanban',
+            'domain': [('id', '=', self.current_work_order_id.id)] if self.current_work_order_id else [('id', '=', 0)],
+        }
+
     # ============================================================================
     # CONSTRAINTS AND VALIDATION
     # ============================================================================

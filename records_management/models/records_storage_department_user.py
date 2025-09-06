@@ -69,3 +69,16 @@ class RecordsStorageDepartmentUser(models.Model):
         """Deactivates the user's assignment, effectively revoking access."""
         self.write({'state': 'inactive', 'active': False, 'end_date': fields.Date.context_today(self)})
         self.message_post(body=_("User assignment deactivated."))
+
+    def action_view_assignments(self):
+        """Placeholder navigation action (was in placeholder file)."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Department Assignments'),
+            'res_model': 'records.storage.department.user',
+            'view_mode': 'tree,form',
+            'domain': [('department_id', '=', self.department_id.id)],
+            'context': {'default_department_id': self.department_id.id},
+            'target': 'current',
+        }

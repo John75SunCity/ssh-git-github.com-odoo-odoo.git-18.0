@@ -223,17 +223,5 @@ class WorkOrderCoordinator(models.Model):
         self.ensure_one()
         return False
 
-class DocumentRetrievalWorkOrder(models.Model):
-    _inherit = 'document.retrieval.work.order'
-
-    def action_add_items(self):
-        self.ensure_one()
-        return False  # Future: open add items wizard
-
-class MissingModelPlaceholder(models.Model):
-    _name = 'rm.missing.model.placeholder'
-    _description = 'Temporary Missing Model Placeholder'
-
-    @api.model
-    def action_check_access(self):
-        return False  # Placeholder for legacy view reference
+# Removed deprecated placeholder models: DocumentRetrievalWorkOrder, rm.missing.model.placeholder
+# The actual retrieval work order model is 'records.retrieval.work.order'.

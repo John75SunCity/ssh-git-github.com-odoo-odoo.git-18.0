@@ -74,3 +74,22 @@ class DocumentRetrievalTeam(models.Model):
             'view_mode': 'tree,form,kanban',
             'domain': [('id', 'in', self.retrieval_work_order_ids.ids)],
         }
+
+    # Additional placeholders migrated from aggregate placeholder file
+    def action_view_team_members(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Team Members'),
+            'res_model': 'hr.employee',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', self.member_ids.ids)] if hasattr(self, 'member_ids') else [('id', '=', 0)],
+        }
+
+    def action_view_performance_metrics(self):
+        self.ensure_one()
+        return False  # Placeholder for future dashboard
+
+    def action_view_work_orders(self):
+        self.ensure_one()
+        return self.action_view_retrieval_work_orders()

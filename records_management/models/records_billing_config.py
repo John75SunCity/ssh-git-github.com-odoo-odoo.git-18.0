@@ -1,134 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-Records Billing Configuration Model
+"""Records Billing Configuration Model
 
-This model handles billing configuration and automation for the Records Manageme    # Invoice settings
-    invoice_template_id = fields.Many2one('ir.ui.view', string='I    # Basic additional fields
-    amount = fields.Float(string='Amount', digits=(10, 2))
-    auto_apply = fields.Boolean(string='Auto Apply', default=False)
-    cost_amount = fields.Float(string='Cost Amount', digits=(10, 2))
-    customer_count = fields.Integer(string='Customer Count', compute='_compute_customer_count')
-    effective_date = fields.Date(string='Effective Date')
-    minimum_threshold = fields.Float(string='Minimum Threshold', digits=(10, 2))
-    quantity = fields.Float(string='Quantity', digits=(10, 2))
-    rule_name = fields.Char(string='Rule Name')
-    service_type = fields.Selection([
-        ('storage', 'Storage'),
-        ('retrieval', 'Retrieval'),
-        ('destruction', 'Destruction'),
-        ('digital', 'Digital'),
-    ], string='Service Type')
-    status = fields.Selection([
-        ('draft', 'Draft'),
-        ('active', 'Active'),
-        ('inactive', 'Inactive'),
-    ], string='Status', default='draft')
-    unit_of_measure = fields.Char(string='Unit of Measure')
-    valid_from = fields.Date(string='Valid From')
-    valid_until = fields.Date(string='Valid Until')
-
-    # Additional missing fields for view compatibility
-    discount_type = fields.Selection([
-        ('percentage', 'Percentage'),
-        ('fixed', 'Fixed Amount'),
-        ('none', 'No Discount'),
-    ], string='Discount Type', default='none')
-    discount_value = fields.Float(string='Discount Value', digits=(10, 2))
-    last_invoice_date = fields.Date(string='Last Invoice Date', compute='_compute_last_invoice_date', store=True)
-    revenue_amount = fields.Monetary(string='Revenue Amount', currency_field='currency_id', compute='_compute_revenue_amount', store=True)
-    tracking_date = fields.Date(string='Tracking Date', default=fields.Date.context_today)
-
-    # Computed fields for analytics
-    @api.depends('invoice_generation_log_ids')
-    def _compute_invoice_count(self):
-        for record in self:
-            record.invoice_count = len(record.invoice_generation_log_ids)
-
-    @api.depends('usage_tracking_ids')
-    def _compute_billing_history_count(self):
-        for record in self:
-            record.billing_history_count = len(record.usage_tracking_ids)
-
-    @api.depends('usage_tracking_ids')
-    def _compute_total_revenue(self):
-        for record in self:
-            record.total_revenue = sum(record.usage_tracking_ids.mapped('total_cost'))
-
-    @api.depends('usage_tracking_ids')
-    def _compute_monthly_revenue(self):
-        for record in self:
-            # Calculate revenue for current month
-            current_month = fields.Date.today().replace(day=1)
-            next_month = current_month + relativedelta(months=1)
-            monthly_usage = record.usage_tracking_ids.filtered(
-                lambda u: current_month <= u.tracking_date < next_month
-            )
-            record.monthly_revenue = sum(monthly_usage.mapped('total_cost'))
-
-    @api.depends('usage_tracking_ids')
-    def _compute_quarterly_revenue(self):
-        for record in self:
-            # Calculate revenue for current quarter
-            today = fields.Date.today()
-            quarter_start = today.replace(month=((today.month - 1) // 3) * 3 + 1, day=1)
-            quarter_end = quarter_start + relativedelta(months=3)
-            quarterly_usage = record.usage_tracking_ids.filtered(
-                lambda u: quarter_start <= u.tracking_date < quarter_end
-            )
-            record.quarterly_revenue = sum(quarterly_usage.mapped('total_cost'))
-
-    @api.depends('usage_tracking_ids')
-    def _compute_annual_revenue(self):
-        for record in self:
-            # Calculate revenue for current year
-            current_year = fields.Date.today().year
-            annual_usage = record.usage_tracking_ids.filtered(
-                lambda u: u.tracking_date.year == current_year
-            )
-            record.annual_revenue = sum(annual_usage.mapped('total_cost'))
-
-    @api.depends('monthly_revenue')
-    def _compute_average_monthly_billing(self):
-        for record in self:
-            # This would need historical data to calculate properly
-            # For now, just return current month
-            record.average_monthly_billing = record.monthly_revenue
-
-    @api.depends('usage_tracking_ids')
-    def _compute_billing_accuracy_rate(self):
-        for record in self:
-            billable_count = len(record.usage_tracking_ids.filtered(lambda u: u.billable))
-            total_count = len(record.usage_tracking_ids)
-            record.billing_accuracy_rate = (billable_count / total_count * 100) if total_count > 0 else 0.0
-
-    @api.depends('usage_tracking_ids')
-    def _compute_collection_rate(self):
-        for record in self:
-            # This would need payment status data
-            # For now, return a placeholder
-            record.collection_rate = 95.0
-
-    @api.depends('usage_tracking_ids')
-    def _compute_payment_delay_average(self):
-        for record in self:
-            # This would need payment date data
-            # For now, return a placeholder
-            record.payment_delay_average = 2.5
-
-    @api.depends()
-    def _compute_customer_count(self):
-        for record in self:
-            # Count customers associated with this billing config
-            record.customer_count = 0  # Placeholder - would need actual logice Template')
-    consolidate_charges = fields.Boolean(string='Consolidate Charges', default=True)
-    prorate_monthly = fields.Boolean(string='Prorate Monthly', default=True)
-    include_usage_details = fields.Boolean(string='Include Usage Details', default=True)
-
-    # Email settings
-    send_invoice_email = fields.Boolean(string='Send Invoice Email', default=True)
-    invoice_email_template_id = fields.Many2one('mail.template', string='Invoice Email Template').
-It provides methods for scheduled actions like computing monthly storage fees and managing
-billing workflows.
+Cleaned version of the billing configuration model. Previous version of this
+file had a corrupted header with stray field definitions and partially written
+methods outside the model class causing syntax errors and preventing module
+loading. All valid field definitions and compute methods have been relocated
+inside the model class below. Duplicated / malformed lines were removed.
 """
 
 from datetime import timedelta
@@ -346,6 +223,118 @@ class RecordsBillingConfig(models.Model):
         default="exclusive",
     )
     multi_currency_support = fields.Boolean(string="Multi-Currency Support", default=False)
+
+    # ---------------------------------------------------------------------
+    # Additional basic billing rule fields (migrated from corrupted header)
+    # ---------------------------------------------------------------------
+    amount = fields.Float(string='Amount', digits=(10, 2))
+    auto_apply = fields.Boolean(string='Auto Apply', default=False)
+    cost_amount = fields.Float(string='Cost Amount', digits=(10, 2))
+    customer_count = fields.Integer(string='Customer Count', compute='_compute_customer_count')
+    effective_date = fields.Date(string='Effective Date')
+    minimum_threshold = fields.Float(string='Minimum Threshold', digits=(10, 2))
+    quantity = fields.Float(string='Quantity', digits=(10, 2))
+    rule_name = fields.Char(string='Rule Name')
+    service_type = fields.Selection([
+        ('storage', 'Storage'),
+        ('retrieval', 'Retrieval'),
+        ('destruction', 'Destruction'),
+        ('digital', 'Digital'),
+    ], string='Service Type')
+    status = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    ], string='Status', default='draft')
+    unit_of_measure = fields.Char(string='Unit of Measure')
+    valid_from = fields.Date(string='Valid From')
+    valid_until = fields.Date(string='Valid Until')
+    discount_type = fields.Selection([
+        ('percentage', 'Percentage'),
+        ('fixed', 'Fixed Amount'),
+        ('none', 'No Discount'),
+    ], string='Discount Type', default='none')
+    discount_value = fields.Float(string='Discount Value', digits=(10, 2))
+    tracking_date = fields.Date(string='Tracking Date', default=fields.Date.context_today)
+    revenue_amount = fields.Monetary(string='Revenue Amount', currency_field='currency_id', compute='_compute_revenue_amount', store=True)
+
+    # ---------------------------------------------------------------------
+    # COMPUTE METHODS (migrated from corrupted header)
+    # ---------------------------------------------------------------------
+    @api.depends('invoice_generation_log_ids')
+    def _compute_invoice_count(self):
+        for record in self:
+            record.invoice_count = len(record.invoice_generation_log_ids)
+
+    @api.depends('usage_tracking_ids')
+    def _compute_billing_history_count(self):
+        for record in self:
+            record.billing_history_count = len(record.usage_tracking_ids)
+
+    @api.depends('usage_tracking_ids')
+    def _compute_total_revenue(self):
+        for record in self:
+            record.total_revenue = sum(record.usage_tracking_ids.mapped('total_cost'))
+
+    @api.depends('usage_tracking_ids')
+    def _compute_monthly_revenue(self):
+        for record in self:
+            current_month = fields.Date.today().replace(day=1)
+            next_month = current_month + relativedelta(months=1)
+            monthly_usage = record.usage_tracking_ids.filtered(
+                lambda u: u.tracking_date and current_month <= u.tracking_date < next_month
+            )
+            record.monthly_revenue = sum(monthly_usage.mapped('total_cost'))
+
+    @api.depends('usage_tracking_ids')
+    def _compute_quarterly_revenue(self):
+        for record in self:
+            today = fields.Date.today()
+            quarter_start = today.replace(month=((today.month - 1) // 3) * 3 + 1, day=1)
+            quarter_end = quarter_start + relativedelta(months=3)
+            quarterly_usage = record.usage_tracking_ids.filtered(
+                lambda u: u.tracking_date and quarter_start <= u.tracking_date < quarter_end
+            )
+            record.quarterly_revenue = sum(quarterly_usage.mapped('total_cost'))
+
+    @api.depends('usage_tracking_ids')
+    def _compute_annual_revenue(self):
+        for record in self:
+            current_year = fields.Date.today().year
+            annual_usage = record.usage_tracking_ids.filtered(
+                lambda u: u.tracking_date and u.tracking_date.year == current_year
+            )
+            record.annual_revenue = sum(annual_usage.mapped('total_cost'))
+
+    @api.depends('monthly_revenue')
+    def _compute_average_monthly_billing(self):
+        for record in self:
+            record.average_monthly_billing = record.monthly_revenue
+
+    @api.depends('usage_tracking_ids')
+    def _compute_billing_accuracy_rate(self):
+        for record in self:
+            billable_count = len(record.usage_tracking_ids.filtered(lambda u: getattr(u, 'billable', False)))
+            total_count = len(record.usage_tracking_ids)
+            record.billing_accuracy_rate = (billable_count / total_count * 100) if total_count > 0 else 0.0
+
+    @api.depends('usage_tracking_ids')
+    def _compute_collection_rate(self):
+        for record in self:
+            # Placeholder until payment status integration is complete
+            record.collection_rate = 95.0
+
+    @api.depends('usage_tracking_ids')
+    def _compute_payment_delay_average(self):
+        for record in self:
+            # Placeholder until payment date tracking is integrated
+            record.payment_delay_average = 2.5
+
+    @api.depends()
+    def _compute_customer_count(self):
+        for record in self:
+            # Placeholder logic; would count distinct partners from usage logs
+            record.customer_count = 0
 
     # Security & compliance
     audit_trail_enabled = fields.Boolean(string="Audit Trail Enabled", default=True)

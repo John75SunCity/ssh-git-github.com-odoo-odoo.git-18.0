@@ -121,3 +121,26 @@ class PaperBale(models.Model):
         for bale in self:
             if bale.weight < 0:
                 raise ValidationError(_("Bale weight cannot be negative."))
+
+    # ------------------------------------------------------------------
+    # Placeholder button actions migrated from placeholder file
+    # ------------------------------------------------------------------
+    def action_weigh_bale(self):
+        self.ensure_one()
+        return False  # Future implementation: open weigh wizard
+
+    def action_load_trailer(self):
+        self.ensure_one()
+        return False  # Future implementation: assign to trailer
+
+    def action_view_source_documents(self):
+        self.ensure_one()
+        return False  # Future implementation
+
+    def action_view_trailer_info(self):
+        self.ensure_one()
+        return False  # Future: open trailer record
+
+    def action_view_weight_history(self):
+        self.ensure_one()
+        return False  # Future: open weight history lines
