@@ -50,6 +50,7 @@ class NAIDAuditLog(models.Model):
         index=True,
         help='Related chain of custody record for this audit entry.'
     )
+    task_id = fields.Many2one('project.task', string='Task', ondelete='cascade', index=True)
 
     # ============================================================================
     # COMPUTE METHODS
@@ -71,7 +72,7 @@ class NAIDAuditLog(models.Model):
     # BUSINESS LOGIC
     # ============================================================================
     @api.model
-    def _log_action(self, description, action_type, record=None, user_id=None):
+    def action_log(self, description, action_type, record=None, user_id=None):
         """
         Central method to create a new audit log entry.
         This should be called from other models whenever a significant action occurs.
