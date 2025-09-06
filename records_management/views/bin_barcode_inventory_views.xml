@@ -93,8 +93,7 @@ invisible="state != 'full'"/>
         <!-- Bin Barcode Inventory Tree View -->
 <record id="bin_barcode_inventory_view_tree" model="ir.ui.view">
     <field name="name">bin.barcode.inventory.view.tree</field>
-            <field name="model">bin.barcode.inventory</field>
-            <field name="type">tree</field>
+<field name="model">bin.barcode.inventory</field>
         <field name="arch" type="xml">
                 <list string="Bin Barcode Inventory"
                       decoration-success="state == 'available'"
@@ -131,8 +130,7 @@ invisible="state != 'full'"/>
         <!-- Bin Barcode Inventory Kanban View -->
 <record id="bin_barcode_inventory_view_kanban" model="ir.ui.view">
     <field name="name">bin.barcode.inventory.view.kanban</field>
-            <field name="model">bin.barcode.inventory</field>
-            <field name="type">form</field>
+<field name="model">bin.barcode.inventory</field>
         <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_small_column">
                     <field name="id"/>
@@ -199,8 +197,7 @@ invisible="state != 'full'"/>
         <!-- Bin Barcode Inventory Search View -->
 <record id="bin_barcode_inventory_view_search" model="ir.ui.view">
     <field name="name">bin.barcode.inventory.view.search</field>
-            <field name="model">bin.barcode.inventory</field>
-            <field name="type">form</field>
+<field name="model">bin.barcode.inventory</field>
         <field name="arch" type="xml">
                 <search string="Bin Barcode Inventory">
                     <field name="barcode" string="Barcode"/>

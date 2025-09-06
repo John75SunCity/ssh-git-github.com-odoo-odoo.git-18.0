@@ -39,9 +39,9 @@ class NaidOperatorCertification(models.Model):
     # inherited simultaneously here caused the runtime warning about
     # duplicate labels. We override their string labels to make them
     # semantically distinct while preserving underlying behavior.
-    # Use lazy translation to avoid 'no translation language detected' warnings at import time
-    employee_token = fields.Char(string=_('Employee Security Token'))  # override label only
-    access_token = fields.Char(string=_('Portal Access Token'))  # override label only
+    # Use plain strings (no _()) to avoid import-time translation context warnings; field labels still extractable via pot init
+    employee_token = fields.Char(string='Employee Security Token')  # override label only
+    access_token = fields.Char(string='Portal Access Token')  # override label only
 
     # Core certification fields
     certification_number = fields.Char(string='Certification Number', required=True, tracking=True, default=lambda self: self._generate_certification_number())

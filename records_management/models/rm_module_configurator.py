@@ -381,7 +381,11 @@ class RmModuleConfigurator(models.Model):
                 return default
 
             # Return the appropriate value based on type
-            if config.value_boolean is not False:  # Explicit check for False
+            # Boolean handling: must distinguish between unset (None) and explicit False.
+            # The previous implementation treated False as absence and returned the default,
+            # causing feature toggles set to False to "fail-open". We now explicitly check
+            # for boolean type so stored False is honored.
+            if isinstance(config.value_boolean, bool):
                 return config.value_boolean
             if config.value_number != 0.0:  # Check if not default 0.0
                 return config.value_number
