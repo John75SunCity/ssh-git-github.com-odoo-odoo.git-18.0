@@ -199,6 +199,10 @@ access_naid_risk_assessment_manager,naid_risk_assessment,naid.risk.assessment,re
 access_naid_risk_assessment_user,naid_risk_assessment,naid.risk.assessment,records_management.group_records_user,1,1,1,0
 access_naid_training_requirement_manager,naid_training_requirement,naid.training.requirement,records_management.group_records_manager,1,1,1,1
 access_naid_training_requirement_user,naid_training_requirement,naid.training.requirement,records_management.group_records_user,1,1,1,0
+access_chain_of_custody_event_manager,chain_of_custody_event,chain.of.custody.event,records_management.group_records_manager,1,1,1,1
+access_chain_of_custody_event_user,chain_of_custody_event,chain.of.custody.event,records_management.group_records_user,1,1,1,0
+access_chain_of_custody_item_manager,chain_of_custody_item,chain.of.custody.item,records_management.group_records_manager,1,1,1,1
+access_chain_of_custody_item_user,chain_of_custody_item,chain.of.custody.item,records_management.group_records_user,1,1,1,0
 access_naid_training_schedule_manager,naid_training_schedule,naid.training.schedule,records_management.group_records_manager,1,1,1,1
 access_naid_training_schedule_user,naid_training_schedule,naid.training.schedule,records_management.group_records_user,1,1,1,0
 access_paper_bale_inspection_manager,paper_bale_inspection,paper.bale.inspection,records_management.group_records_manager,1,1,1,1
