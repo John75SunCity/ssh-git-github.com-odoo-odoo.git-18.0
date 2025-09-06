@@ -38,7 +38,7 @@ class NAIDOperatorCertification(models.Model):
     training_progress = fields.Float(string='Training Progress (%)', compute='_compute_training_progress', store=True)
 
     # Relationships to other modules
-    destruction_certificate_ids = fields.One2many('naid.destruction.certificate', 'operator_certification_id', string='Destruction Certificates')
+    destruction_certificate_ids = fields.One2many('destruction.certificate', 'operator_certification_id', string='Destruction Certificates')
     fsm_order_ids = fields.One2many('project.task', 'operator_certification_id', string='FSM Tasks', domain=[('is_fsm', '=', True)])
     service_request_ids = fields.One2many('portal.request', 'assigned_operator_id', string='Service Requests')
 

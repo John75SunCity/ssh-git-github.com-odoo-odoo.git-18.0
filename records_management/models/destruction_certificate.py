@@ -68,6 +68,7 @@ class DestructionCertificate(models.Model):
     naid_certificate_id = fields.Many2one("naid.certificate", string="NAID Certificate")
     compliance_officer_id = fields.Many2one("res.users", string="Compliance Officer")
     witness_id = fields.Many2one("res.partner", string="Witness")
+    operator_certification_id = fields.Many2one("naid.operator.certification", string="Operator Certification")
 
     # ============================================================================
     # STATE MANAGEMENT

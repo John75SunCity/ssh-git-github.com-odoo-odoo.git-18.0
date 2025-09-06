@@ -87,6 +87,11 @@ class PortalRequest(models.Model):
         string='Shredding Service',
         help='Selected shredding service for this request'
     )
+    assigned_operator_id = fields.Many2one(
+        'naid.operator.certification',
+        string='Assigned Operator',
+        help='NAID certified operator assigned to this service request'
+    )
 
     # ============================================================================
     # CONSTRAINTS
