@@ -8,7 +8,7 @@ class NAIDAuditVerificationWizard(models.TransientModel):
     _name = 'naid.audit.verification.wizard'
     _description = 'NAID Audit Verification Wizard'
 
-    requirement_id = fields.Many2one(
+    audit_requirement_id = fields.Many2one(
         comodel_name='naid.audit.requirement',
         string='Audit Requirement',
         required=True,
@@ -16,7 +16,7 @@ class NAIDAuditVerificationWizard(models.TransientModel):
     )
 
     checklist_category = fields.Selection(
-        related='requirement_id.checklist_category',
+        related='audit_requirement_id.checklist_category',
         string='Category',
         readonly=True
     )
@@ -65,12 +65,11 @@ class NAIDAuditVerificationWizard(models.TransientModel):
     def action_verify(self):
         """Complete the verification process"""
         self.ensure_one()
-
         if not self.verification_notes:
             raise ValidationError(_("Verification notes are required."))
 
         # Update the requirement
-        self.requirement_id.write({
+        self.audit_requirement_id.write({
             'last_verified_by_id': self.env.user.id,
             'last_verified_date': fields.Datetime.now(),
             'last_audit_date': fields.Date.today(),
@@ -78,26 +77,22 @@ class NAIDAuditVerificationWizard(models.TransientModel):
             'status': 'completed' if self.verification_result == 'pass' else 'pending'
         })
 
-        # Create audit log entry
+        # Prepare audit log entry
         audit_log_vals = {
-            'requirement_id': self.requirement_id.id,
+            'requirement_id': self.audit_requirement_id.id,
             'audit_date': fields.Date.today(),
             'auditor_id': self.env.user.id,
             'result': self.verification_result,
             'notes': self.verification_notes,
             'checklist_category': self.checklist_category,
         }
-
         if self.corrective_actions:
             audit_log_vals['corrective_actions'] = self.corrective_actions
-
         if self.follow_up_date:
             audit_log_vals['follow_up_date'] = self.follow_up_date
-
         if self.digital_signature:
             audit_log_vals['digital_signature'] = self.digital_signature
             audit_log_vals['signature_name'] = self.signature_name
 
         self.env['naid.audit.log'].create(audit_log_vals)
-
         return {'type': 'ir.actions.act_window_close'}

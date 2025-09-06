@@ -206,7 +206,7 @@ class NAIDAuditRequirement(models.Model):
     # Related Records
     related_audit_ids = fields.One2many(
         'naid.audit.log',
-        'requirement_id',
+        'audit_requirement_id',
         string='Audit History'
     )
 
@@ -424,7 +424,7 @@ class NAIDAuditRequirement(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_requirement_id': self.id,
+                'default_audit_requirement_id': self.id,
                 'default_checklist_category': self.checklist_category,
             }
         }
@@ -437,8 +437,8 @@ class NAIDAuditRequirement(models.Model):
             'type': 'ir.actions.act_window',
             'res_model': 'naid.audit.log',
             'view_mode': 'tree,form,pivot,graph',
-            'domain': [('requirement_id', '=', self.id)],
-            'context': {'default_requirement_id': self.id},
+            'domain': [('audit_requirement_id', '=', self.id)],
+            'context': {'default_audit_requirement_id': self.id},
         }
 
     def _setup_default_checklist_items(self):
@@ -640,7 +640,7 @@ class NAIDAuditRequirement(models.Model):
 
         # Create audit log entry
         self.env['naid.audit.log'].create({
-            'requirement_id': self.id,
+            'audit_requirement_id': self.id,
             'audit_date': fields.Date.today(),
             'auditor_id': self.env.user.id,
             'result': 'pass',

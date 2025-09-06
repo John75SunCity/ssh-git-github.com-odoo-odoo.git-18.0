@@ -51,6 +51,13 @@ class NAIDAuditLog(models.Model):
         help='Related chain of custody record for this audit entry.'
     )
     task_id = fields.Many2one('project.task', string='Task', ondelete='cascade', index=True)
+    audit_requirement_id = fields.Many2one(
+        'naid.audit.requirement',
+        string='Audit Requirement',
+        ondelete='set null',
+        index=True,
+        help='Related NAID audit requirement for this audit log entry.'
+    )
 
     # ============================================================================
     # COMPUTE METHODS
