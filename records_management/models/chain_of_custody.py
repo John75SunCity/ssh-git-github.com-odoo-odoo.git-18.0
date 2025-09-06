@@ -301,6 +301,155 @@ class ChainOfCustody(models.Model):
     )
 
     # Computed Fields
+    # Note: 'transfer_duration' is referenced in views for statistics, but was missing.
+    # We add it as a computed Float summarizing hours between transfer_date and now or completion.
+    transfer_duration = fields.Float(
+        string="Transfer Duration (Hrs)",
+        compute="_compute_transfer_duration",
+        store=False,
+        help="Elapsed hours since transfer date or until completion (if available).",
+    )
+
+    # Additional view-referenced analytical / planning fields (placeholders to prevent ParseErrors).
+    expected_completion_date = fields.Datetime(
+        string="Expected Completion Date",
+        help="Planned date/time this custody transfer should be completed.",
+        tracking=True,
+    )
+    actual_completion_date = fields.Datetime(
+        string="Actual Completion Date",
+        help="When this custody transfer actually completed.",
+        readonly=True,
+        tracking=True,
+    )
+    signature_required = fields.Boolean(
+        string="Signature Required",
+        help="Indicates whether signature capture is required for this transfer.",
+        default=False,
+    )
+    compliance_officer_id = fields.Many2one(
+        comodel_name="res.users",
+        string="Compliance Officer",
+        help="Officer responsible for compliance verification.",
+    )
+    transfer_distance = fields.Float(
+        string="Transfer Distance (km)",
+        help="Approximate distance covered during this transfer.",
+    )
+    transport_method = fields.Selection(
+        [
+            ("ground", "Ground"),
+            ("air", "Air"),
+            ("marine", "Marine"),
+            ("internal", "Internal Move"),
+        ],
+        string="Transport Method",
+        help="Primary transport method used for this transfer.",
+    )
+    carrier_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Carrier",
+        help="External carrier or logistics provider.",
+    )
+    item_count = fields.Integer(
+        string="Item Count",
+        help="Number of discrete items involved in this transfer (informational).",
+    )
+    total_weight = fields.Float(
+        string="Total Weight (kg)",
+        help="Estimated total weight of items transferred.",
+    )
+    special_handling_required = fields.Boolean(
+        string="Special Handling Required",
+        help="Indicates special handling or environmental controls are required.",
+        default=False,
+    )
+    transfer_status = fields.Selection(
+        [
+            ("on_time", "On Time"),
+            ("delayed", "Delayed"),
+            ("early", "Early"),
+        ],
+        string="Transfer Status",
+        help="Performance status relative to schedule.",
+    )
+    tracking_number = fields.Char(
+        string="Tracking Number",
+        help="External tracking / reference number if shipped with a carrier.",
+    )
+    currency_id = fields.Many2one(
+        comodel_name="res.currency",
+        string="Currency",
+        default=lambda self: self.env.company.currency_id.id,
+        help="Currency for monetary fields in this record.",
+    )
+    insurance_value = fields.Monetary(
+        string="Insurance Value",
+        currency_field="currency_id",
+        help="Declared insurance value for items in transfer.",
+    )
+    transfer_purpose = fields.Text(
+        string="Transfer Purpose",
+        help="Purpose and justification for this transfer.",
+    )
+    special_instructions = fields.Text(
+        string="Special Instructions",
+        help="Special handling instructions or security requirements.",
+    )
+    compliance_notes = fields.Text(
+        string="Compliance Notes",
+        help="Compliance verification details and notes.",
+    )
+    delay_reason = fields.Text(
+        string="Delay Reason",
+        help="Explanation for any delays encountered.",
+    )
+    estimated_duration = fields.Float(
+        string="Estimated Duration (Hrs)",
+        help="Planned estimated duration for this transfer.",
+    )
+    actual_duration = fields.Float(
+        string="Actual Duration (Hrs)",
+        help="Actual duration realized (computed or manually entered).",
+    )
+    transfer_efficiency = fields.Float(
+        string="Transfer Efficiency (%)",
+        help="Efficiency metric (higher is better).",
+    )
+    compliance_score = fields.Float(
+        string="Compliance Score",
+        help="Scored evaluation of compliance processes for this transfer.",
+    )
+    risk_level = fields.Selection(
+        [("low", "Low"), ("medium", "Medium"), ("high", "High")],
+        string="Risk Level",
+        help="Assessed risk classification for this transfer.",
+    )
+    # Relationship placeholders for view list displays (One2many) - minimal definitions
+    custody_event_ids = fields.One2many(
+        comodel_name="chain.of.custody.event",
+        inverse_name="custody_id",
+        string="Custody Events",
+        help="Related custody events (environmental readings, signatures, etc.)",
+    )
+    transfer_item_ids = fields.One2many(
+        comodel_name="chain.of.custody.item",
+        inverse_name="custody_id",
+        string="Transfer Items",
+        help="Items included in this custody transfer.",
+    )
+
+    @api.depends("transfer_date", "actual_completion_date", "state")
+    def _compute_transfer_duration(self):
+        for record in self:
+            if not record.transfer_date:
+                record.transfer_duration = 0.0
+                continue
+            end_time = record.actual_completion_date or fields.Datetime.now()
+            if record.state in ["completed", "verified"] and record.actual_completion_date:
+                end_time = record.actual_completion_date
+            delta = end_time - record.transfer_date
+            record.transfer_duration = max(0.0, delta.total_seconds() / 3600.0)
     duration_hours = fields.Float(
         string="Duration (Hours)",
         compute="_compute_duration",
