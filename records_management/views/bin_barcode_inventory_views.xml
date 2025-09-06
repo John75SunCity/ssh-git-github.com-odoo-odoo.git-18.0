@@ -126,7 +126,7 @@ invisible="state != 'full'"/>
             </field>
         </record>
 
-        <!-- Bin Barcode Inventory Kanban View -->
+<!-- Bin Barcode Inventory Kanban View -->
 <record id="bin_barcode_inventory_view_kanban" model="ir.ui.view">
     <field name="name">bin.barcode.inventory.view.kanban</field>
 <field name="model">bin.barcode.inventory</field>
@@ -145,45 +145,44 @@ invisible="state != 'full'"/>
 <field name="fill_level"/>
 
                     <templates>
-                        <t t-name="kanban-box">
-                            <div class="oe_kanban_card oe_kanban_global_click">
-                                <div class="o_kanban_card_header">
-                                    <div class="o_kanban_card_header_title">
-                                        <div class="o_primary">
-                                            <strong><field name="barcode"/></strong>
+<!-- Modernized card template replacing deprecated kanban-box -->
+<t t-name="card">
+    <div class="o_kanban_record o_kanban_global_click o_rm_bin_card">
+        <div class="o_kanban_primary_bottom">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+                <div>
+                    <strong class="o_rm_bin_barcode">
+                        <field name="barcode"/>
+                    </strong>
+                    <span class="text-muted small ms-2">
+                        <field name="bin_size"/>
+                    </span>
                                         </div>
-                                        <div class="o_secondary">
-                                            <field name="bin_size"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_card_content">
-                                    <div class="o_kanban_card_manage_pane">
-                                        <div t-if="record.customer_id.raw_value">
-                                            <i class="fa fa-user"/> <field name="customer_id"/>
-                                        </div>
-                                        <div t-if="record.location.raw_value">
-                                            <i class="fa fa-map-marker"/> <field name="location"/>
-                                        </div>
-                                        <div class="mt-2">
-                                            <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar" role="progressbar"
-                                                     t-attf-style="width: #{record.fill_percentage.raw_value}%"
-                                                     t-attf-class="progress-bar #{record.fill_percentage.raw_value > 80 and 'bg-danger' or record.fill_percentage.raw_value > 60 and 'bg-warning' or 'bg-success'}">
-                                                </div>
-                                            </div>
-                                            <small class="text-muted">
-                                                <field name="current_weight"/> / <field name="capacity_pounds"/> lbs
-                                            </small>
+<div class="text-end">
+    <span t-if="record.is_imported.raw_value" class="badge bg-info me-1">Imported</span>
+    <span t-if="record.is_generated.raw_value" class="badge bg-success">Generated</span>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="o_kanban_card_footer">
-                                    <div class="o_kanban_record_bottom">
-                                        <div class="oe_kanban_bottom_left">
-                                            <span t-if="record.is_imported.raw_value" class="badge badge-info">Imported</span>
-                                            <span t-if="record.is_generated.raw_value" class="badge badge-success">Generated</span>
-                                        </div>
+<div class="o_rm_bin_meta small mb-2">
+    <span t-if="record.customer_id.raw_value" class="me-3">
+        <i class="fa fa-user" title="Customer" aria-label="Customer"/>
+        <field name="customer_id"/>
+    </span>
+    <span t-if="record.location.raw_value">
+        <i class="fa fa-map-marker" title="Location" aria-label="Location"/>
+        <field name="location"/>
+    </span>
+</div>
+<div class="o_rm_bin_progress">
+    <div class="progress" style="height:6px;">
+        <div class="progress-bar" role="progressbar" t-attf-style="width: #{record.fill_percentage.raw_value}%" t-attf-class="progress-bar #{record.fill_percentage.raw_value > 80 and 'bg-danger' or record.fill_percentage.raw_value > 60 and 'bg-warning' or 'bg-success'}">
+        </div>
+    </div>
+    <small class="text-muted">
+        <field name="current_weight"/>
+ /        <field name="capacity_pounds"/>
+ lbs
+    </small>
                                     </div>
                                 </div>
                             </div>
@@ -295,8 +294,7 @@ invisible="state != 'full'"/>
             }</field>
 </record>
 
-<!-- Menu for Dashboard -->
-<menuitem id="menu_bin_route_dashboard" name="Route Dashboard" parent="menu_bin_barcode_inventory_root" action="action_bin_route_dashboard" sequence="40"/>
+<!-- Menu for Dashboard (moved below after root menu definition for safer load order) -->
 
         <!-- Sequence Reset Wizard View -->
 <record id="shredding_bin_sequence_reset_wizard_view_form" model="ir.ui.view">
@@ -340,14 +338,14 @@ invisible="state != 'full'"/>
             <field name="groups_id" eval="[(4, ref('records_management.group_records_manager'))]"/>
         </record>
 
-        <!-- Menu Items -->
+<!-- Menu Items -->
 <menuitem id="menu_bin_barcode_inventory_root" name="Bin Inventory" parent="records_management.menu_records_operations" sequence="30" groups="records_management.group_records_user"/>
-
 
 <menuitem id="menu_bin_barcode_inventory" name="Bin Barcode Inventory" parent="menu_bin_barcode_inventory_root" action="action_bin_barcode_inventory" sequence="10"/>
 
-
 <menuitem id="menu_bin_sequence_reset" name="Reset Bin Sequences" parent="menu_bin_barcode_inventory_root" action="action_shredding_bin_sequence_reset_wizard" groups="records_management.group_records_manager" sequence="20"/>
+<menuitem id="menu_bin_route_dashboard" name="Route Dashboard" parent="menu_bin_barcode_inventory_root" action="action_bin_route_dashboard" sequence="40"/>
+
 
 
     </data>
