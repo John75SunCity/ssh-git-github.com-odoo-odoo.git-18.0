@@ -67,6 +67,7 @@
         "security/intelligent_search_security.xml",
         "security/naid_security.xml",
         "security/portal_request_security.xml",
+    "security/destruction_certificate_security.xml",
         # 2. Data files (sequences and base data next)
         "data/sequence_data.xml",  # Sequences often needed early
         "data/core_records_data.xml",
@@ -85,6 +86,7 @@
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
         "data/temp_inventory_configurator_data.xml",
+    "data/field_label_customization_batch4.xml",
         # 3. Views (after security and data)
         "views/records_management_menus.xml",
         "views/advanced_billing_contact_views.xml",

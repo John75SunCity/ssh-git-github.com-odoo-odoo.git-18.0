@@ -2,13 +2,15 @@
 <odoo>
     <data>
         <record id="action_report_destruction_certificate" model="ir.actions.report">
-            <field name="name">Certificate of Destruction</field>
-            <field name="model">records.destruction.certificate</field>
+<field name="name">Destruction Certificate</field>
+<field name="model">destruction.certificate</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">records_management.report_destruction_certificate_template</field>
             <field name="report_file">records_management.report_destruction_certificate_template</field>
-            <field name="binding_model_id" ref="records_management.model_records_destruction_certificate"/>
+<field name="binding_model_id" ref="records_management.model_destruction_certificate"/>
+
             <field name="binding_type">report</field>
+<field name="print_report_name">'DestructionCertificate-' + (object.name or '')</field>
         </record>
 
         <template id="report_destruction_certificate_template">
@@ -17,12 +19,39 @@
                     <t t-call="web.external_layout">
                         <div class="page">
                             <div class="text-center">
-                                <h2>Certificate of Destruction</h2>
-                            </div>
-                            <p>This is to certify that the materials listed below were destroyed in accordance with NAID standards.</p>
-                            <p><strong>Customer:</strong> <span t-field="doc.partner_id.name"/></p>
-                            <p><strong>Date of Destruction:</strong> <span t-field="doc.destruction_date"/></p>
+<h2>Destruction Certificate</h2>
+</div>
                             <p><strong>Certificate Number:</strong> <span t-field="doc.name"/></p>
+<p>
+    <strong>Certificate Date:</strong>
+    <span t-field="doc.certificate_date"/>
+</p>
+<p>
+    <strong>Customer:</strong>
+    <span t-field="doc.partner_id.display_name"/>
+</p>
+<p>
+    <strong>Destruction Type:</strong>
+    <span t-field="doc.destruction_type"/>
+</p>
+<p>
+    <strong>Weight Processed (kg):</strong>
+    <span t-field="doc.weight_processed"/>
+</p>
+<p>
+    <strong>Containers Processed:</strong>
+    <span t-field="doc.containers_processed"/>
+</p>
+<p>
+    <strong>Status:</strong>
+    <span t-field="doc.state"/>
+</p>
+<div t-if="doc.notes">
+    <p>
+        <strong>Notes:</strong>
+    </p>
+    <p t-field="doc.notes"/>
+</div>
                         </div>
                     </t>
                 </t>

@@ -26,6 +26,8 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
+<button name="action_confirm_destruction" type="object" string="✅ Confirm Destruction" class="btn-primary" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('destruction_confirmed', '=', True)]}"/>
+
                         <button name="action_issue_certificate" type="object" string="📋 Issue Certificate" class="btn-primary" invisible="state != 'draft'"/>
                         <button name="action_revoke_certificate" type="object" string="🚫 Revoke Certificate" class="btn-danger" invisible="state not in ['issued', 'active']"/>
                         <button name="action_print_certificate" type="object" string="🖨️ Print Certificate" class="btn-secondary"/>

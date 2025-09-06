@@ -1,0 +1,93 @@
+<odoo>
+    <!-- Batch 4: Domain-specific label enhancements -->
+    <record id="field_label_customization_retention_policy_status" model="field.label.customization">
+        <field name="name">Retention Policy Status Label</field>
+        <field name="model_name">records.retention.policy</field>
+        <field name="field_name">state</field>
+        <field name="original_label">Status</field>
+        <field name="custom_label">Retention Status</field>
+        <field name="priority">10</field>
+        <field name="description">Clarify status meaning for retention policy lifecycle</field>
+    </record>
+    <record id="field_label_customization_retention_policy_name" model="field.label.customization">
+        <field name="name">Retention Policy Name Label</field>
+        <field name="model_name">records.retention.policy</field>
+        <field name="field_name">name</field>
+        <field name="original_label">Name</field>
+        <field name="custom_label">Policy Name</field>
+        <field name="priority">10</field>
+        <field name="description">Specify that this is the policy's title</field>
+    </record>
+    <record id="field_label_customization_document_type_code" model="field.label.customization">
+        <field name="name">Document Type Code Label</field>
+        <field name="model_name">records.document.type</field>
+        <field name="field_name">code</field>
+        <field name="original_label">Code</field>
+        <field name="custom_label">Type Code</field>
+        <field name="priority">10</field>
+        <field name="description">Clarify code belongs to the document type</field>
+    </record>
+    <record id="field_label_customization_document_type_description" model="field.label.customization">
+        <field name="name">Document Type Description Label</field>
+        <field name="model_name">records.document.type</field>
+        <field name="field_name">description</field>
+        <field name="original_label">Description</field>
+        <field name="custom_label">Type Description</field>
+        <field name="priority">10</field>
+        <field name="description">Clarify description pertains to document type</field>
+    </record>
+    <record id="field_label_customization_category_code" model="field.label.customization">
+        <field name="name">Category Code Label</field>
+        <field name="model_name">records.category</field>
+        <field name="field_name">code</field>
+        <field name="original_label">Code</field>
+        <field name="custom_label">Category Code</field>
+        <field name="priority">10</field>
+        <field name="description">Differentiate from other codes (document, type)</field>
+    </record>
+    <record id="field_label_customization_shredding_certificate_status" model="field.label.customization">
+        <field name="name">Shredding Certificate Status Label</field>
+        <field name="model_name">shredding.certificate</field>
+        <field name="field_name">state</field>
+        <field name="original_label">Status</field>
+        <field name="custom_label">Certificate Status</field>
+        <field name="priority">10</field>
+        <field name="description">Clarify status in shredding certificate lifecycle</field>
+    </record>
+    <record id="field_label_customization_destruction_certificate_status" model="field.label.customization">
+        <field name="name">Destruction Certificate Status Label</field>
+        <field name="model_name">destruction.certificate</field>
+        <field name="field_name">state</field>
+        <field name="original_label">Status</field>
+        <field name="custom_label">Destruction Status</field>
+        <field name="priority">10</field>
+        <field name="description">Clarify meaning of status for destruction certificate</field>
+    </record>
+    <record id="field_label_customization_location_inspection_status" model="field.label.customization">
+        <field name="name">Location Inspection Status Label</field>
+        <field name="model_name">records.location.inspection</field>
+        <field name="field_name">state</field>
+        <field name="original_label">Status</field>
+        <field name="custom_label">Inspection Status</field>
+        <field name="priority">10</field>
+        <field name="description">Clarify status context of location inspection workflow</field>
+    </record>
+    <record id="field_label_customization_scan_digital_asset_status" model="field.label.customization">
+        <field name="name">Scan Digital Asset Status Label</field>
+        <field name="model_name">scan.digital.asset</field>
+        <field name="field_name">state</field>
+        <field name="original_label">Status</field>
+        <field name="custom_label">Scan Status</field>
+        <field name="priority">10</field>
+        <field name="description">Clarify status relates to digital scanning lifecycle</field>
+    </record>
+    <record id="field_label_customization_promotional_discount_status" model="field.label.customization">
+        <field name="name">Promotional Discount Status Label</field>
+        <field name="model_name">records.promotional.discount</field>
+        <field name="field_name">state</field>
+        <field name="original_label">Status</field>
+        <field name="custom_label">Discount Status</field>
+        <field name="priority">10</field>
+        <field name="description">Clarify status for promotional discount lifecycle</field>
+    </record>
+</odoo>

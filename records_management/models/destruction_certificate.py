@@ -10,6 +10,7 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+import base64
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -55,11 +56,29 @@ class DestructionCertificate(models.Model):
     fsm_task_id = fields.Many2one(comodel_name="project.task", string="FSM Task", readonly=True)
     shredding_team_id = fields.Many2one(comodel_name="shredding.team", string="Shredding Team")
     work_order_id = fields.Many2one(comodel_name="work.order.shredding", string="Work Order")
+    invoice_id = fields.Many2one(
+        comodel_name="account.move",
+        string="Customer Invoice",
+        help="Invoice generated for this destruction service (must be in Posted + Paid state for portal visibility)",
+        tracking=True,
+    )
+
+    portal_visible = fields.Boolean(
+        string="Portal Visible",
+        compute="_compute_portal_visible",
+        store=False,
+        help="Derived flag: certificate only visible to portal user once invoice is paid (if an invoice exists).",
+    )
 
     # ============================================================================
     # DOCUMENTATION
     # ============================================================================
-    certificate_attachment_id = fields.Many2one("ir.attachment", string="Certificate Document", readonly=True)
+    certificate_attachment_id = fields.Many2one(
+        comodel_name="ir.attachment",
+        string="Certificate Document",
+        readonly=True,
+        help="Generated PDF certificate attached upon confirmation when the feature toggle is enabled.",
+    )
     # Batch 4 Relabel: Disambiguate generic 'Notes' label
     notes = fields.Text(string="Certificate Notes")
 
@@ -80,6 +99,12 @@ class DestructionCertificate(models.Model):
         default="draft",
         required=True,
         tracking=True,
+    )
+    destruction_confirmed = fields.Boolean(
+        string="Destruction Confirmed",
+        help="Internal flag set when destruction outcome has been validated (triggers issuance).",
+        tracking=True,
+        default=False,
     )
 
     # ============================================================================
@@ -130,9 +155,78 @@ class DestructionCertificate(models.Model):
         self.ensure_one()
         self.write({"state": "archived"})
 
+    def _is_certificate_feature_enabled(self):
+        """Check configurator toggle for destruction certificate generation.
+
+        Falls back to True if configurator not found to avoid blocking core workflow.
+        """
+        return bool(
+            self.env["rm.module.configurator"].sudo().get_config_parameter(
+                "destruction_certificate_enabled", True
+            )
+        )
+
     def generate_certificate_document(self):
-        """Generate PDF certificate document"""
+        """Generate and attach PDF certificate (placeholder implementation).
+
+        Actual PDF QWeb report will be implemented separately. For now, create
+        a lightweight text attachment to validate workflow and attachment linkage.
+        Skips generation if feature toggle disabled or already attached.
+        """
         self.ensure_one()
-        # Implementation for PDF generation would go here
-        # This is a placeholder for the actual implementation
-        pass
+        if not self._is_certificate_feature_enabled():
+            return False
+        if self.certificate_attachment_id:
+            return self.certificate_attachment_id
+        content = (
+            "Destruction Certificate\n"
+            f"Number: {self.name}\n"
+            f"Date: {self.certificate_date}\n"
+            f"Customer: {self.partner_id.display_name}\n"
+            f"State: {self.state}\n"
+        )
+        attachment = self.env["ir.attachment"].create(
+            {
+                "name": f"DestructionCertificate-{self.name}.txt",
+                "datas": base64.b64encode(content.encode("utf-8")),
+                "res_model": self._name,
+                "res_id": self.id,
+                "mimetype": "text/plain",
+            }
+        )
+        self.certificate_attachment_id = attachment.id
+        return attachment
+
+    # -------------------------------------------------------------------------
+    # Enhanced issuance workflow
+    # -------------------------------------------------------------------------
+    def action_confirm_destruction(self):
+        """Confirm destruction results, auto-issue certificate, generate document, and link invoice if available.
+
+        Flow:
+          1. Mark destruction_confirmed
+          2. Transition state -> issued (if still draft)
+          3. Generate certificate document (placeholder)
+          4. (Optional future) Auto-create invoice if not provided
+        """
+        self.ensure_one()
+        updates = {}
+        if not self.destruction_confirmed:
+            updates["destruction_confirmed"] = True
+        if self.state == "draft":
+            updates["state"] = "issued"
+        if updates:
+            self.write(updates)
+        # Generate document (placeholder) if feature enabled
+        self.generate_certificate_document()
+        return True
+
+    # -------------------------------------------------------------------------
+    # COMPUTE METHODS
+    # -------------------------------------------------------------------------
+    @api.depends("invoice_id.payment_state")
+    def _compute_portal_visible(self):
+        for rec in self:
+            # If there's an invoice: require it to be posted & paid; else hide until an invoice is linked
+            inv = rec.invoice_id
+            rec.portal_visible = bool(inv and inv.payment_state in ("paid", "in_payment"))
