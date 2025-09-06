@@ -14,10 +14,10 @@
         <field name="params" eval="{}"/>
     </record>
 
-    <!-- Records Retrieval Work Orders - Dashboard Action -->
+<!-- Records Retrieval Orders - Unified Dashboard Action -->
     <record id="action_dashboard_records_retrieval" model="ir.actions.act_window">
         <field name="name">Records Retrieval</field>
-        <field name="res_model">records.retrieval.work.order</field>
+<field name="res_model">records.retrieval.order</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
         <field name="context">{'search_default_in_progress': 1}</field>
@@ -32,32 +32,7 @@
         <field name="context">{'search_default_in_progress': 1}</field>
     </record>
 
-    <!-- Container Retrieval Work Orders - Dashboard Action -->
-    <record id="action_dashboard_container_retrieval" model="ir.actions.act_window">
-        <field name="name">Container Retrieval</field>
-        <field name="res_model">container.retrieval.work.order</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{'search_default_in_progress': 1}</field>
-    </record>
-
-    <!-- Scan Retrieval Work Orders - Dashboard Action -->
-    <record id="action_dashboard_scan_retrieval" model="ir.actions.act_window">
-        <field name="name">Scan Retrieval</field>
-        <field name="res_model">scan.retrieval.work.order</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{'search_default_in_progress': 1}</field>
-    </record>
-
-    <!-- File Retrieval Work Orders - Dashboard Action -->
-    <record id="action_dashboard_file_retrieval" model="ir.actions.act_window">
-        <field name="name">File Retrieval</field>
-        <field name="res_model">file.retrieval.work.order</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{'search_default_in_progress': 1}</field>
-    </record>
+<!-- Legacy specific retrieval dashboard actions removed (container/file/scan) now unified under records.retrieval.order -->
 
     <!-- Container Destruction Work Orders - Dashboard Action -->
     <record id="action_dashboard_container_destruction" model="ir.actions.act_window">
@@ -125,7 +100,7 @@
     <!-- Quick Create Actions for Different Work Order Types -->
     <record id="action_quick_create_records_retrieval" model="ir.actions.act_window">
         <field name="name">New Records Retrieval</field>
-        <field name="res_model">records.retrieval.work.order</field>
+<field name="res_model">records.retrieval.order</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="context">{'default_state': 'draft'}</field>
@@ -139,13 +114,7 @@
         <field name="context">{'default_state': 'draft'}</field>
     </record>
 
-    <record id="action_quick_create_scan_retrieval" model="ir.actions.act_window">
-        <field name="name">New Scan Retrieval</field>
-        <field name="res_model">scan.retrieval.work.order</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="context">{'default_state': 'draft'}</field>
-    </record>
+<!-- Removed quick create for legacy scan/file/container retrieval types (now unified) -->
 
     <record id="action_quick_create_container_destruction" model="ir.actions.act_window">
         <field name="name">New Container Destruction</field>

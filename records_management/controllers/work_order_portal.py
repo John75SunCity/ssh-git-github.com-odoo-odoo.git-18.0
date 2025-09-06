@@ -48,9 +48,12 @@ class WorkOrderPortal(CustomerPortal):
 
             work_order_count = 0
             # Count each work order type
-            for model in ['container.retrieval.work.order', 'file.retrieval.work.order',
-                         'scan.retrieval.work.order', 'container.destruction.work.order',
-                         'container.access.work.order']:
+            # Only include currently supported unified or active work order models
+            for model in [
+                'records.retrieval.order',  # unified retrieval order model
+                'container.destruction.work.order',
+                'container.access.work.order'
+            ]:
                 try:
                     work_order_count += request.env[model].search_count(domain)
                 except AccessError:
@@ -108,9 +111,7 @@ class WorkOrderPortal(CustomerPortal):
         all_work_orders = []
 
         work_order_models = {
-            'container.retrieval.work.order': _('Container Retrieval'),
-            'file.retrieval.work.order': _('File Retrieval'),
-            'scan.retrieval.work.order': _('Scan Retrieval'),
+            'records.retrieval.order': _('Records Retrieval'),
             'container.destruction.work.order': _('Container Destruction'),
             'container.access.work.order': _('Container Access'),
         }
@@ -206,9 +207,7 @@ class WorkOrderPortal(CustomerPortal):
 
         # Get work order type label
         type_labels = {
-            'container.retrieval.work.order': _('Container Retrieval'),
-            'file.retrieval.work.order': _('File Retrieval'),
-            'scan.retrieval.work.order': _('Scan Retrieval'),
+            'records.retrieval.order': _('Records Retrieval'),
             'container.destruction.work.order': _('Container Destruction'),
             'container.access.work.order': _('Container Access'),
         }
@@ -220,20 +219,10 @@ class WorkOrderPortal(CustomerPortal):
         }
 
         # Add model-specific information
-        if model == 'container.retrieval.work.order':
+        if model == 'records.retrieval.order':
             values.update({
-                'show_containers': True,
+                'show_retrieval_lines': True,
                 'show_delivery_info': True,
-            })
-        elif model == 'file.retrieval.work.order':
-            values.update({
-                'show_files': True,
-                'show_pickup_info': True,
-            })
-        elif model == 'scan.retrieval.work.order':
-            values.update({
-                'show_scan_specs': True,
-                'show_digital_delivery': True,
             })
 
         return request.render("records_management.portal_work_order_detail", values)
