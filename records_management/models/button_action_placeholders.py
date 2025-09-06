@@ -172,19 +172,10 @@ class RecordsStorageDepartmentUser(models.Model):
         return False  # Future: open assignments
 
 class DocumentRetrievalTeam(models.Model):
-    _inherit = 'document.retrieval.team'
-
-    def action_view_team_members(self):
-        self.ensure_one()
-        return False
-
-    def action_view_performance_metrics(self):
-        self.ensure_one()
-        return False
-
-    def action_view_work_orders(self):
-        self.ensure_one()
-        return False
+    _inherit = 'maintenance.team'
+    # Duplicate placeholder removed; real implementations now live in
+    # models/document_retrieval_team.py. This class intentionally left
+    # empty to avoid duplicate method definitions flagged by validators.
 
 class ShreddingServiceBin(models.Model):
     _inherit = 'shredding.service.bin'

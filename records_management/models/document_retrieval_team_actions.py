@@ -4,7 +4,7 @@ from odoo import models
 
 
 class DocumentRetrievalTeam(models.Model):
-    _inherit = 'document.retrieval.team'
+    _inherit = 'maintenance.team'
 
     def action_view_team_members(self):
         self.ensure_one()

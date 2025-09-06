@@ -2,6 +2,7 @@ from odoo import models, fields, api, _
 
 
 class DocumentRetrievalTeam(models.Model):
+    # Removed dedicated _name; we only extend maintenance.team directly.
     _inherit = 'maintenance.team'
     _description = 'Document Retrieval Team'
 
