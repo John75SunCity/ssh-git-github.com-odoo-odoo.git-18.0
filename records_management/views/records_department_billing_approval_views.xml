@@ -3,7 +3,7 @@
     <data>
         <!--                    <filter name="low_value" string="Low Value (&lt;$100)" domain="[('charge_amount','&lt;',100)]"/> Tree View -->
         <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
-            <field name="name">records.department.billing.approval.tree</field>
+<field name="name">records.department.billing.approval.view.tree</field>
             <field name="model">records.department.billing.approval</field>
         <field name="arch" type="xml">
                 <list>
@@ -20,7 +20,7 @@
 
         <!-- Form View -->
         <record id="records_department_billing_approval_view_form" model="ir.ui.view">
-            <field name="name">records.department.billing.approval.form</field>
+<field name="name">records.department.billing.approval.view.form</field>
             <field name="model">records.department.billing.approval</field>
         <field name="arch" type="xml">
                 <form>
@@ -47,7 +47,7 @@
 
         <!-- Search View -->
         <record id="records_department_billing_approval_view_search" model="ir.ui.view">
-            <field name="name">records.department.billing.approval.search</field>
+<field name="name">records.department.billing.approval.view.search</field>
             <field name="model">records.department.billing.approval</field>
         <field name="arch" type="xml">
                 <search>
@@ -80,7 +80,7 @@
 
         <!-- Kanban View -->
         <record id="records_department_billing_approval_view_kanban" model="ir.ui.view">
-            <field name="name">records.department.billing.approval.kanban</field>
+<field name="name">records.department.billing.approval.view.kanban</field>
             <field name="model">records.department.billing.approval</field>
         <field name="arch" type="xml">
                 <kanban>
