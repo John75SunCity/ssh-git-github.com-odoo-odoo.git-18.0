@@ -56,8 +56,6 @@ from . import discount_rule
 from . import display_name
 from . import document_retrieval_equipment
 from . import document_retrieval_item
-from . import document_retrieval_team
-from . import document_retrieval_team_actions
 from . import document_search_attempt
 from . import feedback_improvement_area
 from . import field_label_customization
@@ -269,7 +267,6 @@ from . import unlock_service_history
 from . import unlock_service_part
 from . import visitor
 from . import work_order_coordinator
-from . import work_order_coordinator_actions
 from . import work_order_retrieval
 from . import work_order_shredding
 from . import workflow_visualization_manager

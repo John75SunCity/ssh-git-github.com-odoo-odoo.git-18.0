@@ -203,12 +203,6 @@ class PaperBale(models.Model):
         self.ensure_one()
         return False  # Future: open weight history lines
 
-class WorkOrderCoordinator(models.Model):
-    _inherit = 'work.order.coordinator'
-
-    def action_view_work_orders(self):
-        self.ensure_one()
-        return False
-
+# Removed deprecated placeholder WorkOrderCoordinator (real implementation in work_order_coordinator.py)
 # Removed deprecated placeholder models: DocumentRetrievalWorkOrder, rm.missing.model.placeholder
 # The actual retrieval work order model is 'records.retrieval.work.order'.
