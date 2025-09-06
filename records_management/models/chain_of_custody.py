@@ -591,6 +591,28 @@ class ChainOfCustody(models.Model):
 
         self.write({"state": "cancelled"})
 
+    def action_reject_transfer(self):
+        """Reject the custody transfer (alias of cancel but preserves semantic intent).
+
+        View button calls this; implement lightweight wrapper so ParseError is resolved.
+        Creates an audit log entry distinct from generic cancellation for traceability.
+        """
+        self.ensure_one()
+        # Reuse cancel logic constraints
+        if self.state in ["verified", "cancelled"]:
+            raise UserError(_("Verified or cancelled transfers cannot be rejected."))
+        self.write({"state": "cancelled"})
+        self.env["naid.audit.log"].create(
+            {
+                "event_type": "custody_rejected",
+                "description": f"Custody transfer rejected: {self.display_name}",
+                "user_id": self.env.user.id,
+                "custody_id": self.id,
+                "container_id": self.container_id.id if self.container_id else False,
+                "document_id": self.document_id.id if self.document_id else False,
+            }
+        )
+
     # Reporting Methods
     def generate_custody_report(self):
         """Generate comprehensive custody report."""
