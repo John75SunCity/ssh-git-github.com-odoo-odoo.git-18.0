@@ -32,12 +32,21 @@
                                     <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_content">
+<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-balance-scale"/> Weight: <field name="weight"/> lbs</div>
-                                        <div><i class="fa fa-calendar"/> Created: <field name="creation_date"/></div>
-                                        <div><i class="fa fa-star"/> Grade: <field name="quality_grade"/></div>
+<div>
+    <i class="fa fa-balance-scale" title="Weight" aria-label="Weight" role="img"/>
+ Weight: <field name="weight"/>
+ lbs</div>
+<div>
+    <i class="fa fa-calendar" title="Creation Date" aria-label="Creation Date" role="img"/>
+ Created: <field name="creation_date"/>
+</div>
+<div>
+    <i class="fa fa-star" title="Quality Grade" aria-label="Quality Grade" role="img"/>
+ Grade: <field name="quality_grade"/>
+</div>
                                     </div>
                                     <div class="col-4">
                                         <span class="badge badge-success" t-if="record.loaded_on_trailer.raw_value">

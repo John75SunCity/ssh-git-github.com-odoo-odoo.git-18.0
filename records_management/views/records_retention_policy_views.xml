@@ -288,7 +288,7 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
                                     </a>
                                 </div>
                             </div>
-                            <div class="oe_kanban_card_content">
+<div class="oe_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="text-center">

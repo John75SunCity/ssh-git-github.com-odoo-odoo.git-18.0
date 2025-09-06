@@ -217,19 +217,22 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="o_kanban_card_content">
+<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                     <div class="row">
                                         <div class="col-8">
                                             <div>
-                                                <i class="fa fa-calendar"/>
+<i class="fa fa-calendar" title="Destruction Date" aria-label="Destruction Date" role="img"/>
+
                                                 <field name="destruction_date"/>
                                             </div>
                                             <div>
-                                                <i class="fa fa-money"/>
+<i class="fa fa-money" title="Total Revenue" aria-label="Total Revenue" role="img"/>
+
                                                 <field name="total_revenue" widget="monetary"/>
                                             </div>
                                             <div t-if="record.expiry_date.raw_value">
-                                                <i class="fa fa-clock-o"/>
+<i class="fa fa-clock-o" title="Expiry Date" aria-label="Expiry Date" role="img"/>
+
                                                 <field name="expiry_date"/>
                                             </div>
                                         </div>
@@ -237,7 +240,8 @@
                                             <div class="text-center">
                                                 <field name="naid_verified" widget="boolean"/>
                                                 <div t-if="record.naid_verified.raw_value" class="text-success">
-                                                    <i class="fa fa-shield"/> NAID
+<i class="fa fa-shield" title="NAID Verified" aria-label="NAID Verified" role="img"/>
+ NAID
                                                 </div>
                                             </div>
                                         </div>

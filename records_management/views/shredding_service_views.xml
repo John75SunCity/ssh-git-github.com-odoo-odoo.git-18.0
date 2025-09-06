@@ -46,7 +46,7 @@
                                 <strong>💥 <field name="name"/></strong>
                                 <div class="text-muted">🏢 <field name="provider_id"/></div>
                             </div>
-                            <div class="o_kanban_card_content">
+<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div class="mb-2">
                                     <strong>Type:</strong> <field name="service_type"/><br/>
                                     <strong>Lead Time:</strong> <field name="lead_time_days"/> days

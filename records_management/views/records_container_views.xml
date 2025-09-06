@@ -24,7 +24,8 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <i class="fa fa-cube" title="Container"/>
+<i class="fa fa-cube" title="Container" aria-label="Container" role="img"/>
+
                                         <field name="name"/>
                                     </div>
                                     <div class="o_secondary">
@@ -38,24 +39,28 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_content">
+<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div class="row">
                                     <div class="col-8">
                                         <div>
-                                            <i class="fa fa-cube" title="Container Type"/>
+<i class="fa fa-cube" title="Container Type" aria-label="Container Type" role="img"/>
+
                                             <field name="container_type_id"/>
                                         </div>
                                         <div>
-                                            <i class="fa fa-weight" title="Weight"/>
+<i class="fa fa-weight" title="Weight" aria-label="Weight" role="img"/>
+
                                             <field name="weight"/>
  lbs
                                         </div>
                                         <div>
-                                            <i class="fa fa-map-marker" title="Storage Location"/>
+<i class="fa fa-map-marker" title="Storage Location" aria-label="Storage Location" role="img"/>
+
                                             <field name="location_id"/>
                                         </div>
                                         <div>
-                                            <i class="fa fa-calendar" title="Creation Date"/>
+<i class="fa fa-calendar" title="Creation Date" aria-label="Creation Date" role="img"/>
+
                                             <field name="create_date"/>
                                         </div>
                                     </div>

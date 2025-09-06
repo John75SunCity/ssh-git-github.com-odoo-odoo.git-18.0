@@ -253,7 +253,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="o_kanban_card_content">
+<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                     <div class="row">
                                         <div class="col-6">
                                             <div>
@@ -263,7 +263,8 @@
 
                                             </div>
                                             <div>
-                                                <i class="fa fa-calendar"/>
+<i class="fa fa-calendar" title="Transfer Date" aria-label="Transfer Date" role="img"/>
+
                                                 <field name="transfer_date"/>
                                             </div>
                                         </div>
@@ -271,7 +272,8 @@
                                             <div class="text-center">
                                                 <field name="naid_compliant" widget="boolean"/>
                                                 <div t-if="record.naid_compliant.raw_value" class="text-success">
-                                                    <i class="fa fa-shield"/> NAID
+<i class="fa fa-shield" title="NAID Compliant" aria-label="NAID Compliant" role="img"/>
+ NAID
                                                 </div>
                                             </div>
                                             <div class="text-center mt-1">
@@ -284,7 +286,8 @@
                                     <div class="row mt-2">
                                         <div class="col-12">
                                             <div t-if="record.document_id.raw_value or record.container_id.raw_value">
-<i class="fa fa-file" title="Related Items"/>
+<i class="fa fa-file" title="Related Items" aria-label="Related Items" role="img"/>
+
 
                                                 <field name="document_id"/>
                                                 <field name="container_id"/>

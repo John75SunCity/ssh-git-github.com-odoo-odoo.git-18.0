@@ -374,6 +374,20 @@ class OdooValidator:
                     ]
                     has_name = "_name =" in class_content
                     has_inherit = "_inherit =" in class_content
+                    # Extract inherit targets (very lightweight parse)
+                    inherit_targets = []
+                    if has_inherit:
+                        import re as _re
+                        inh_match = _re.search(r"_inherit\s*=\s*(.+)", class_content)
+                        if inh_match:
+                            raw = inh_match.group(1).split('\n')[0]
+                            # Normalize quotes, remove brackets
+                            cleaned = raw.replace('[', '').replace(']', '').replace('(', '').replace(')', '')
+                            for seg in cleaned.split(','):
+                                seg = seg.strip().strip('"\'')
+                                if seg:
+                                    inherit_targets.append(seg)
+                    mixin_only = bool(inherit_targets) and all(t in {"mail.thread", "mail.activity.mixin"} for t in inherit_targets)
 
                     # Only flag as missing _name if it doesn't have _inherit either
                     if not has_name and not has_inherit:
@@ -381,9 +395,10 @@ class OdooValidator:
                             f"⚠️ MODEL STRUCTURE: {py_file.name}: Model class '{class_name}' missing _name or _inherit attribute"
                         )
                     # Flag models that have both _name and _inherit (unusual pattern)
-                    elif has_name and has_inherit:
+                    elif has_name and has_inherit and not mixin_only:
+                        # Only warn when inheritance targets include actual model(s), not pure mixins
                         self.warnings.append(
-                            f"⚠️ MODEL STRUCTURE: {py_file.name}: Model class '{class_name}' has both _name and _inherit (unusual pattern)"
+                            f"⚠️ MODEL STRUCTURE: {py_file.name}: Model class '{class_name}' has both _name and _inherit (potential clone)"
                         )
 
             except Exception as e:
