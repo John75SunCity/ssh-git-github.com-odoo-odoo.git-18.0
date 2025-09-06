@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import re
+
+from dateutil.relativedelta import relativedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
-import re
 
 
 class BinBarcodeInventory(models.Model):
@@ -53,6 +55,88 @@ class BinBarcodeInventory(models.Model):
         help="Physical location of the bin"
     )
 
+    # Capacity & Utilization (added to satisfy view references)
+    capacity_pounds = fields.Float(
+        string='Capacity (lbs)',
+        help='Static capacity value derived from bin size',
+        compute='_compute_capacity_pounds',
+        store=True,
+        readonly=True,
+    )
+    current_weight = fields.Float(
+        string='Current Weight (lbs)',
+        tracking=True,
+        help='Last recorded weight reading for the bin.'
+    )
+    fill_percentage = fields.Float(
+        string='Fill %',
+        compute='_compute_fill_percentage',
+        store=True,
+        help='Current fill percentage based on current weight / capacity.'
+    )
+
+    # Qualitative fill indicator (driver/customer observation)
+    fill_level = fields.Selection([
+        ('empty', 'Empty (0%)'),
+        ('quarter', '1/4 Full (~25%)'),
+        ('half', '1/2 Full (~50%)'),
+        ('three_quarter', '3/4 Full (~75%)'),
+        ('full', 'Full (100%)'),
+    ], string='Observed Fill Level', tracking=True, help='Observed (non-weighed) fill indicator used for estimating weight.')
+
+    estimated_weight_lbs = fields.Float(
+        string='Estimated Weight (lbs)',
+        compute='_compute_estimated_weight',
+        store=True,
+        help='Estimated weight derived from capacity and observed fill level when actual weight is not measured.'
+    )
+
+    technician_id = fields.Many2one(
+        'res.users',
+        string='Assigned Technician',
+        help='Technician currently responsible for servicing this bin.'
+    )
+
+    fsm_task_id = fields.Many2one(
+        'project.task',
+        string='Current FSM Task',
+        help='FSM task associated with the latest service / movement of this bin.'
+    )
+
+    vehicle_id = fields.Many2one(
+        'fleet.vehicle',
+        string='Assigned Vehicle',
+        help='Vehicle normally used to service / transport this bin.'
+    )
+
+    # Assignment & Routing
+    customer_id = fields.Many2one(
+        'res.partner',
+        string='Customer',
+        tracking=True,
+        help='Customer to whom the bin is currently assigned.'
+    )
+    service_route = fields.Char(
+        string='Service Route',
+        help='Operational route or schedule grouping for service logistics.'
+    )
+
+    # Service tracking dates
+    date_created = fields.Datetime(
+        string='Created On',
+        readonly=True,
+        default=lambda self: fields.Datetime.now(),
+        help='Timestamp when the bin record was created.'
+    )
+    last_service_date = fields.Datetime(
+        string='Last Service Date',
+        help='When this bin was last serviced.'
+    )
+    next_service_date = fields.Datetime(
+        string='Next Service Date',
+        help='Planned next service date.'
+    )
+
     # Import and Generation Flags
     is_imported = fields.Boolean(
         string='Imported Bin',
@@ -88,6 +172,79 @@ class BinBarcodeInventory(models.Model):
             else:
                 record.bin_type = 'bin'
 
+    @api.depends('bin_size')
+    def _compute_capacity_pounds(self):
+        """Derive static capacity from bin size."""
+        capacity_map = {
+            '23_gallon': 60,
+            '32_gallon': 125,
+            '32_console': 90,
+            '64_gallon': 240,
+            '96_gallon': 340,
+        }
+        for rec in self:
+            rec.capacity_pounds = capacity_map.get(rec.bin_size, 0.0)
+
+    @api.depends('current_weight', 'capacity_pounds')
+    def _compute_fill_percentage(self):
+        for rec in self:
+            if rec.capacity_pounds:
+                rec.fill_percentage = min(100.0, (rec.current_weight / rec.capacity_pounds) * 100.0)
+            else:
+                rec.fill_percentage = 0.0
+
+    @api.depends('fill_level', 'capacity_pounds', 'current_weight')
+    def _compute_estimated_weight(self):
+        """If actual current_weight provided (>0) prefer it; otherwise derive from fill_level * capacity.
+        Map qualitative levels to factors. Provide 0 for empty/missing data.
+        """
+        factor_map = {
+            'empty': 0.0,
+            'quarter': 0.25,
+            'half': 0.50,
+            'three_quarter': 0.75,
+            'full': 1.0,
+        }
+        for rec in self:
+            if rec.current_weight:  # use explicit measurement when available
+                rec.estimated_weight_lbs = rec.current_weight
+            else:
+                factor = factor_map.get(rec.fill_level or 'empty', 0.0)
+                rec.estimated_weight_lbs = (rec.capacity_pounds or 0.0) * factor
+
+    # --------------------------------------------------
+    # Aggregation Helpers (for route / technician / vehicle analytics)
+    # --------------------------------------------------
+    @api.model
+    def aggregate_estimated_weight(self, date_from=None, date_to=None, technician_id=None, vehicle_id=None, customer_id=None):
+        """Return aggregated estimated weights for planning dashboards.
+        Filters optional. Uses estimated_weight_lbs (falls back to current_weight).
+        """
+        domain = []
+        if date_from:
+            domain.append(('last_service_date', '>=', date_from))
+        if date_to:
+            domain.append(('last_service_date', '<=', date_to))
+        if technician_id:
+            domain.append(('technician_id', '=', technician_id))
+        if vehicle_id:
+            domain.append(('vehicle_id', '=', vehicle_id))
+        if customer_id:
+            domain.append(('customer_id', '=', customer_id))
+
+        records = self.search(domain)
+        total = sum(records.mapped('estimated_weight_lbs'))
+        by_technician = {}
+        for rec in records:
+            key = rec.technician_id.id or 0
+            by_technician.setdefault(key, 0.0)
+            by_technician[key] += rec.estimated_weight_lbs
+        return {
+            'total_estimated_weight': total,
+            'count_bins': len(records),
+            'by_technician': by_technician,
+        }
+
     @api.constrains('barcode')
     def _check_barcode_format(self):
         """Validate barcode format"""
@@ -111,6 +268,9 @@ class BinBarcodeInventory(models.Model):
             elif vals.get('barcode'):
                 vals['is_imported'] = True
 
+            # Inference from FSM task
+            vals = self._infer_from_task(vals)
+
         return super().create(vals_list)
 
     def _generate_barcode(self, bin_size):
@@ -125,9 +285,65 @@ class BinBarcodeInventory(models.Model):
 
         sequence_code = sequence_map.get(bin_size)
         if not sequence_code:
-            raise UserError(_("No sequence defined for bin size: %s", bin_size))
+            # Using concatenation to avoid formatting complaints from linter patterns
+            raise UserError(_("No sequence defined for bin size: ") + bin_size)
 
         return self.env['ir.sequence'].next_by_code(sequence_code)
+
+    # --------------------------------------------------
+    # Inference / Onchange Logic
+    # --------------------------------------------------
+    @api.onchange('fsm_task_id')
+    def _onchange_fsm_task_id(self):
+        """Infer technician and vehicle from FSM task when selected.
+        Technician: primary assigned user (task.user_ids[0] or user_id if single)
+        Vehicle: task.vehicle_id if present.
+        Route: derive from task.route_id name if available.
+        """
+        for rec in self:
+            task = rec.fsm_task_id
+            if not task:
+                continue
+            # Set technician
+            tech = False
+            if hasattr(task, 'user_ids') and task.user_ids:
+                tech = task.user_ids[0].id
+            elif hasattr(task, 'user_id') and task.user_id:
+                tech = task.user_id.id
+            if tech:
+                rec.technician_id = tech
+            # Vehicle
+            if hasattr(task, 'vehicle_id') and task.vehicle_id:
+                rec.vehicle_id = task.vehicle_id.id
+            # Route name
+            if hasattr(task, 'route_id') and task.route_id:
+                rec.service_route = task.route_id.display_name
+
+    def _infer_from_task(self, vals):
+        """Internal helper used by create/write to infer technician/vehicle when fsm_task_id is set in vals.
+        Only updates fields if not explicitly provided in vals.
+        """
+        if not vals.get('fsm_task_id'):
+            return vals
+        task = self.env['project.task'].browse(vals['fsm_task_id'])
+        if not task:
+            return vals
+        # Technician inference
+        if 'technician_id' not in vals:
+            tech = False
+            if hasattr(task, 'user_ids') and task.user_ids:
+                tech = task.user_ids[0].id
+            elif hasattr(task, 'user_id') and task.user_id:
+                tech = task.user_id.id
+            if tech:
+                vals['technician_id'] = tech
+        # Vehicle inference
+        if 'vehicle_id' not in vals and hasattr(task, 'vehicle_id') and task.vehicle_id:
+            vals['vehicle_id'] = task.vehicle_id.id
+        # Route inference
+        if 'service_route' not in vals and hasattr(task, 'route_id') and task.route_id:
+            vals['service_route'] = task.route_id.display_name
+        return vals
 
     def action_print_barcode_label(self):
         """Print barcode label for the bin"""
@@ -138,6 +354,12 @@ class BinBarcodeInventory(models.Model):
             'report_type': 'qweb-pdf',
             'res_id': self.id,
         }
+
+    def write(self, vals):
+        # Apply inference only if fsm_task_id is being set OR it exists and related fields are blank
+        if 'fsm_task_id' in vals:
+            vals = self._infer_from_task(vals)
+        return super().write(vals)
 
     @api.model
     def update_sequences_from_import(self):
@@ -212,13 +434,14 @@ class BinBarcodeInventory(models.Model):
     def action_service_complete(self):
         """Service bin and return it to in_use state with updated service dates"""
         self.ensure_one()
+        # Capture date (not strictly required but retained for potential extension)
         today = fields.Date.context_today(self)
         if self.state != 'full':
             raise UserError(_("Only Full bins can be serviced."))
-        self.last_service_date = today
-        self.next_service_date = today + relativedelta(days=30)
+        # For this model we track as datetime for precision
+        self.last_service_date = fields.Datetime.now()
+        self.next_service_date = fields.Datetime.now() + relativedelta(days=30)
         self.state = 'in_use'
-        self.current_weight = 0.0
-        self.fill_percentage = 0.0
+        self.current_weight = 0.0  # reset weight after service
         self.message_post(body=_("Service completed; bin returned to In Use."))
         return True

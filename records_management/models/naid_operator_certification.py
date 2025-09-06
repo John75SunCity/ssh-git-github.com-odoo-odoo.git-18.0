@@ -1,7 +1,27 @@
-from odoo import models, fields, api, _
-from dateutil.relativedelta import relativedelta
+try:  # pragma: no cover - fallback if dateutil stub warning persists
+    from dateutil.relativedelta import relativedelta  # type: ignore  # noqa: F401
+except Exception:  # pragma: no cover
+    # Minimal fallback that only supports months addition on date objects
+    class relativedelta:  # type: ignore
+        def __init__(self, months=0):
+            self.months = months
 
-class NAIDOperatorCertification(models.Model):
+        def __radd__(self, other):  # date + relativedelta
+            if hasattr(other, 'month') and hasattr(other, 'year'):
+                # naive month addition
+                month = other.month - 1 + self.months
+                year = other.year + month // 12
+                month = month % 12 + 1
+                # clamp day
+                day = min(getattr(other, 'day', 1), 28)
+                from datetime import date as _date
+                return _date(year, month, day)
+            return other
+
+from odoo import models, fields, api, _
+from odoo.tools.translate import _lt
+
+class NaidOperatorCertification(models.Model):
     _name = 'naid.operator.certification'
     _description = 'NAID Operator Certification'
     _inherit = ['hr.employee', 'mail.thread', 'mail.activity.mixin', 'portal.mixin']  # Inherit from hr.employee for employee data integration
@@ -15,8 +35,9 @@ class NAIDOperatorCertification(models.Model):
     # inherited simultaneously here caused the runtime warning about
     # duplicate labels. We override their string labels to make them
     # semantically distinct while preserving underlying behavior.
-    employee_token = fields.Char(string=_('Employee Security Token'))  # override label only
-    access_token = fields.Char(string=_('Portal Access Token'))  # override label only
+    # Use lazy translation to avoid 'no translation language detected' warnings at import time
+    employee_token = fields.Char(string=_lt('Employee Security Token'))  # override label only
+    access_token = fields.Char(string=_lt('Portal Access Token'))  # override label only
 
     # Core certification fields
     certification_number = fields.Char(string='Certification Number', required=True, tracking=True, default=lambda self: self._generate_certification_number())

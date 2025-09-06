@@ -354,8 +354,13 @@ class NaidCertificate(models.Model):
 
         # Log certificate creation for audit purposes
         for record in records:
+            # Using translation with inline interpolation arguments per linter requirement
             record.message_post(
-                body=_("NAID Certificate created: %s for customer %s") % (record.certificate_number, record.partner_id.name)me)
+                body=_(
+                    "NAID Certificate created: %s for customer %s",
+                    record.certificate_number,
+                    record.partner_id.name,
+                )
             )
 
         return records
@@ -366,7 +371,13 @@ class NaidCertificate(models.Model):
         if "state" in vals:
             for record in self:
                 if record.state != vals["state"]:
-                    record.message_post(body=_("Certificate state changed from %s to %s") % (record.state, vals["state"]))]))
+                    record.message_post(
+                        body=_(
+                            "Certificate state changed from %s to %s",
+                            record.state,
+                            vals["state"],
+                        )
+                    )
 
         return super(NaidCertificate, self).write(vals)
 

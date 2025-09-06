@@ -49,6 +49,9 @@ invisible="state != 'full'"/>
                                 <field name="capacity_pounds" readonly="1"/>
                                 <field name="current_weight"/>
                                 <field name="fill_percentage" readonly="1" widget="percentage"/>
+<field name="fill_level"/>
+<field name="estimated_weight_lbs" readonly="1"/>
+
                                 <field name="location"/>
                             </group>
                         </group>
@@ -106,10 +109,18 @@ invisible="state != 'full'"/>
                            decoration-warning="state == 'in_use'"
                            decoration-danger="state == 'full'"/>
                     <field name="customer_id"/>
+<field name="technician_id"/>
+<field name="vehicle_id"/>
+<field name="fsm_task_id"/>
+
                     <field name="location"/>
                     <field name="capacity_pounds"/>
                     <field name="current_weight"/>
+<field name="fill_level"/>
+
                     <field name="fill_percentage" widget="percentage"/>
+<field name="estimated_weight_lbs"/>
+
                     <field name="last_service_date"/>
                     <field name="is_imported" widget="boolean_toggle"/>
                     <field name="is_generated" widget="boolean_toggle"/>
@@ -133,6 +144,9 @@ invisible="state != 'full'"/>
                     <field name="fill_percentage"/>
                     <field name="capacity_pounds"/>
                     <field name="current_weight"/>
+<field name="estimated_weight_lbs"/>
+<field name="fill_level"/>
+
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_card oe_kanban_global_click">
@@ -193,6 +207,10 @@ invisible="state != 'full'"/>
                     <field name="customer_id" string="Customer"/>
                     <field name="location" string="Location"/>
                     <field name="bin_size" string="Bin Size"/>
+<field name="technician_id" string="Technician"/>
+<field name="vehicle_id" string="Vehicle"/>
+<field name="fill_level" string="Fill Level"/>
+
 
                     <filter string="Available" name="available" domain="[('state', '=', 'available')]"/>
                     <filter string="In Use" name="in_use" domain="[('state', '=', 'in_use')]"/>
@@ -230,7 +248,7 @@ invisible="state != 'full'"/>
         <record id="action_bin_barcode_inventory" model="ir.actions.act_window">
             <field name="name">Bin Barcode Inventory</field>
             <field name="res_model">bin.barcode.inventory</field>
-            <field name="view_mode">kanban,list,form</field>
+<field name="view_mode">kanban,list,form,graph,pivot</field>
             <field name="context">{
                 'search_default_available': 1,
             }</field>
@@ -244,6 +262,45 @@ invisible="state != 'full'"/>
                 </p>
             </field>
         </record>
+
+<!-- Pivot View -->
+<record id="bin_barcode_inventory_view_pivot" model="ir.ui.view">
+    <field name="name">bin.barcode.inventory.view.pivot</field>
+    <field name="model">bin.barcode.inventory</field>
+    <field name="arch" type="xml">
+        <pivot string="Bin Weights (Estimated)" disable_linking="True">
+            <field name="service_route" type="row"/>
+            <field name="technician_id" type="col"/>
+            <field name="estimated_weight_lbs" type="measure" sum="True"/>
+            <field name="fill_percentage" type="measure" avg="True"/>
+        </pivot>
+    </field>
+</record>
+
+<!-- Graph View -->
+<record id="bin_barcode_inventory_view_graph" model="ir.ui.view">
+    <field name="name">bin.barcode.inventory.view.graph</field>
+    <field name="model">bin.barcode.inventory</field>
+    <field name="arch" type="xml">
+        <graph string="Route Load" type="bar">
+            <field name="service_route" type="row"/>
+            <field name="estimated_weight_lbs" type="measure"/>
+        </graph>
+    </field>
+</record>
+
+<!-- Dashboard Action (Route Focus) -->
+<record id="action_bin_route_dashboard" model="ir.actions.act_window">
+    <field name="name">Route Load Dashboard</field>
+    <field name="res_model">bin.barcode.inventory</field>
+    <field name="view_mode">pivot,graph</field>
+    <field name="context">{
+                'search_default_group_route': 1,
+            }</field>
+</record>
+
+<!-- Menu for Dashboard -->
+<menuitem id="menu_bin_route_dashboard" name="Route Dashboard" parent="menu_bin_barcode_inventory_root" action="action_bin_route_dashboard" sequence="40"/>
 
         <!-- Sequence Reset Wizard View -->
 <record id="shredding_bin_sequence_reset_wizard_view_form" model="ir.ui.view">
