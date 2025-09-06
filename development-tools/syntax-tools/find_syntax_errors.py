@@ -427,44 +427,39 @@ class OdooValidator:
         return False  # No relationships found
 
     def validate_configurator_integration(self) -> None:
-        """Check RM Module Configurator integration"""
-        print("🔍 Checking RM Module Configurator integration...")
-
-        config_file = self.module_path / "models" / "rm_module_configurator.py"
-        if config_file.exists():
-            try:
-                with open(config_file, "r", encoding="utf-8") as f:
-                    config_content = f.read()
-
-                # Check for new models that might need configurator integration
-                python_files = list(self.module_path.glob("models/*.py"))
-                for py_file in python_files:
-                    if py_file.name != "rm_module_configurator.py":
-                        try:
-                            with open(py_file, "r", encoding="utf-8") as f:
-                                content = f.read()
-
-                            # Find model names
-                            import re
-
-                            name_pattern = r'_name\s*=\s*["\']([^"\']+)["\']'
-                            matches = re.findall(name_pattern, content)
-
-                            for model_name in matches:
-                                # Check if this model has configurator integration
-                                config_pattern = re.escape(model_name.replace(".", "_"))
-                                if config_pattern not in config_content:
-                                    self.warnings.append(
-                                        f"⚠️ CONFIGURATOR: Model '{model_name}' may need configurator integration"
-                                    )
-
-                        except Exception as e:
-                            continue
-
-            except Exception as e:
-                self.warnings.append(f"⚠️ CONFIGURATOR CHECK: Could not parse configurator file: {str(e)}")
-        else:
-            self.warnings.append("⚠️ CONFIGURATOR: rm_module_configurator.py not found")
+        """Check RM Module Configurator integration (suppressed)."""
+        # Suppressed per user request: noisy CONFIGURATOR warnings disabled.
+        # Intentionally a no-op to eliminate excessive CONFIGURATOR warnings that
+        # were not providing actionable value during current stabilization phase.
+        return
+    # --- ORIGINAL IMPLEMENTATION (commented out) ---
+    # print("🔍 Checking RM Module Configurator integration...")
+    # config_file = self.module_path / "models" / "rm_module_configurator.py"
+    # if config_file.exists():
+    #     try:
+    #         with open(config_file, "r", encoding="utf-8") as f:
+    #             config_content = f.read()
+    #         python_files = list(self.module_path.glob("models/*.py"))
+    #         for py_file in python_files:
+    #             if py_file.name != "rm_module_configurator.py":
+    #                 try:
+    #                     with open(py_file, "r", encoding="utf-8") as f:
+    #                         content = f.read()
+    #                     import re
+    #                     name_pattern = r'_name\s*=\s*["\']([^"\']+)["\']'
+    #                     matches = re.findall(name_pattern, content)
+    #                     for model_name in matches:
+    #                         config_pattern = re.escape(model_name.replace(".", "_"))
+    #                         if config_pattern not in config_content:
+    #                             self.warnings.append(
+    #                                 f"⚠️ CONFIGURATOR: Model '{model_name}' may need configurator integration"
+    #                             )
+    #                 except Exception:
+    #                     continue
+    #     except Exception as e:
+    #         self.warnings.append(f"⚠️ CONFIGURATOR CHECK: Could not parse configurator file: {str(e)}")
+    # else:
+    #     self.warnings.append("⚠️ CONFIGURATOR: rm_module_configurator.py not found")
 
     def validate_menu_actions(self) -> None:
         """Check menu and action references"""
@@ -538,18 +533,19 @@ class OdooValidator:
                     while end_pos < len(content):
                         char = content[end_pos]
 
-                        # Handle string literals
+                        # Minimal string handling: skip over quoted literals to avoid
+                        # counting brackets inside strings.
                         if not in_string and char in ['"', "'"]:
-                            check_pos = end_pos - 1
-                            while check_pos >= 0 and content[check_pos] == "\\":
-                                escape_count += 1
-                                check_pos -= 1
-                            escape_count = 0
-                            check_pos = end_pos - 1
-                            while check_pos >= 0 and content[check_pos] == "":
-                                escape_count += 1
-                                check_pos -= 1
-                            if escape_count % 2 == 0:  # Not escaped
+                            in_string = True
+                            string_char = char
+                        elif in_string and char == string_char:
+                            # Check if escaped
+                            backslashes = 0
+                            i = end_pos - 1
+                            while i >= 0 and content[i] == "\\":
+                                backslashes += 1
+                                i -= 1
+                            if backslashes % 2 == 0:
                                 in_string = False
                                 string_char = None
                         elif not in_string:
@@ -558,23 +554,17 @@ class OdooValidator:
                             elif char == "]":
                                 bracket_count -= 1
                                 if bracket_count == 0:
-                                    # Found the matching closing bracket
                                     domain_expr = content[start_pos : end_pos + 1]
-
-                                    # Count brackets in the domain expression
                                     open_brackets = domain_expr.count("[")
                                     close_brackets = domain_expr.count("]")
                                     if open_brackets != close_brackets:
                                         self.errors.append(
                                             f"❌ DOMAIN: {file_path.name}: Unbalanced brackets in domain expression"
                                         )
-
-                                    # Check for common syntax errors
                                     if domain_expr.strip().endswith(","):
                                         self.warnings.append(
                                             f"⚠️ DOMAIN: {file_path.name}: Domain expression ends with comma"
                                         )
-
                                     break
 
                         end_pos += 1
@@ -830,7 +820,7 @@ def main():
     validator.print_results()
 
     # Return exit code based on errors
-    return 1 if len(errors) > 0 else 0
+    return 1 if errors else 0
 
 
 if __name__ == "__main__":

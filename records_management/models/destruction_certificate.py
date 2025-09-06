@@ -107,6 +107,16 @@ class DestructionCertificate(models.Model):
         default=False,
     )
 
+    # -------------------------------------------------------------------------
+    # PORTAL VISIBILITY (referenced by security/destruction_certificate_security.xml)
+    # -------------------------------------------------------------------------
+    portal_visible = fields.Boolean(
+        string="Portal Visible",
+        default=True,
+        help="Controls whether this certificate is visible to portal users related to the customer.\n"
+             "Security rule destruction_certificate_rule_portal_paid filters on this flag."
+    )
+
     # ============================================================================
     # COMPUTED FIELDS
     # ============================================================================

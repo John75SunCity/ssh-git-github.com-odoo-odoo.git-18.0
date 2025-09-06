@@ -218,6 +218,7 @@
         "report/naid_audit_log_reports.xml",
         "report/naid_certificate_reports.xml",
         "report/naid_compliance_action_plan_reports.xml",
+    "report/destruction_certificate_report.xml",
         # 5. Templates (last)
         "templates/portal_inventory_template.xml",
         "templates/portal_mobile_export.xml",
