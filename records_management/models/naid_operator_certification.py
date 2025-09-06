@@ -19,7 +19,11 @@ except Exception:  # pragma: no cover
             return other
 
 from odoo import models, fields, api, _
-from odoo.tools.translate import _lt
+# NOTE: Avoid _lt (lazy translation) here because during model table creation
+# PostgreSQL COMMENT parameters received a lazy object (LazyGettext) which
+# psycopg2 could not adapt ("can't adapt type 'LazyGettext'"). Using the
+# immediate translation function _() returns a plain string and prevents the
+# registry load failure.
 
 class NaidOperatorCertification(models.Model):
     _name = 'naid.operator.certification'
@@ -36,8 +40,8 @@ class NaidOperatorCertification(models.Model):
     # duplicate labels. We override their string labels to make them
     # semantically distinct while preserving underlying behavior.
     # Use lazy translation to avoid 'no translation language detected' warnings at import time
-    employee_token = fields.Char(string=_lt('Employee Security Token'))  # override label only
-    access_token = fields.Char(string=_lt('Portal Access Token'))  # override label only
+    employee_token = fields.Char(string=_('Employee Security Token'))  # override label only
+    access_token = fields.Char(string=_('Portal Access Token'))  # override label only
 
     # Core certification fields
     certification_number = fields.Char(string='Certification Number', required=True, tracking=True, default=lambda self: self._generate_certification_number())

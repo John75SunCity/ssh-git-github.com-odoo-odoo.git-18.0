@@ -471,11 +471,13 @@ class RmModuleConfigurator(models.Model):
 
     def action_toggle_active(self):
         """Toggle the active state of the configuration."""
-    self.ensure_one()
-    self.active = not self.active
-    status = _("activated") if self.active else _("deactivated")
-    # Translation: include both placeholders inside the _() call to satisfy guidelines
-    self.message_post(body=_("Configuration %s: %s") % (status, self.name))
+        self.ensure_one()
+        self.active = not self.active
+        status = _("activated") if self.active else _("deactivated")
+        # Using existing project translation style (% after _())
+        self.message_post(
+            body=_("Configuration %(status)s: %(name)s") % {"status": status, "name": self.name}
+        )
 
     def _default_configuration(self):
         """Reset configuration values to default for this record."""
@@ -496,7 +498,7 @@ class RmModuleConfigurator(models.Model):
 
         self.write(vals)
         self.message_post(
-            body=_("Configuration reset to default values: %s") % self.name
+            body=_("Configuration reset to default values: %(name)s") % {"name": self.name}
         )
 
     # ============================================================================
