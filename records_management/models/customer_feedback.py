@@ -68,6 +68,12 @@ class CustomerFeedback(models.Model):
     team_id = fields.Many2one('crm.team', string='Sales Team', tracking=True)
     shredding_team_id = fields.Many2one('shredding.team', string="Shredding Team")
     theme_id = fields.Many2one('survey.feedback.theme', string="Feedback Theme")
+    contact_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Contact',
+        domain="[('parent_id', '=', partner_id)]",
+        help="Specific contact person (child of the Customer) related to this feedback."
+    )
 
     # ============================================================================
     # FEEDBACK DETAILS
@@ -122,6 +128,24 @@ class CustomerFeedback(models.Model):
     resolution_notes = fields.Text(string='Resolution Notes')
     follow_up_required = fields.Boolean(string='Follow-up Required')
     follow_up_date = fields.Date(string='Follow-up Date')
+
+    # --- Survey Integration (optional linkage, not structural inheritance) ---
+    survey_id = fields.Many2one(
+        comodel_name='survey.survey',
+        string='Survey Template',
+        help='Optional survey used to collect this feedback.'
+    )
+    survey_user_input_id = fields.Many2one(
+        comodel_name='survey.user_input',
+        string='Survey Response',
+        domain="[('survey_id', '=', survey_id)]",
+        help='Specific submitted survey response linked to this feedback.'
+    )
+    survey_answer_count = fields.Integer(
+        string='Answers',
+        compute='_compute_survey_answer_count',
+        help='Number of answer lines in the linked survey response.'
+    )
 
     # ============================================================================
     # COMPUTE & CONSTRAINTS
@@ -191,6 +215,11 @@ class CustomerFeedback(models.Model):
             if record.follow_up_date and record.feedback_date and record.follow_up_date < record.feedback_date:
                 raise ValidationError(_("Follow-up date cannot be before the feedback date."))
 
+    @api.depends('survey_user_input_id')
+    def _compute_survey_answer_count(self):
+        for rec in self:
+            rec.survey_answer_count = len(rec.survey_user_input_id.user_input_line_ids) if rec.survey_user_input_id else 0
+
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
@@ -248,6 +277,29 @@ class CustomerFeedback(models.Model):
         self.message_post(body=_("Feedback escalated by %s") % self.env.user.name)
         return True
 
+    def action_link_latest_survey_response(self):
+        """Convenience: link the most recent completed survey.user_input for the same partner & survey."""
+        self.ensure_one()
+        if not self.partner_id or not self.survey_id:
+            raise UserError(_("Partner and Survey must be set before linking a survey response."))
+        latest = self.env['survey.user_input'].search([
+            ('partner_id', '=', self.partner_id.id),
+            ('survey_id', '=', self.survey_id.id),
+            ('state', '=', 'done'),
+        ], order='create_date desc', limit=1)
+        if not latest:
+            raise UserError(_("No completed survey response found for this customer and survey."))
+        self.survey_user_input_id = latest
+        # Optional: derive rating from a question tagged 'rating'
+        rating_line = latest.user_input_line_ids.filtered(lambda l: l.question_id.question_type in ('simple_choice', 'matrix') and 'rating' in (l.question_id.tags or '').lower())[:1]
+        if rating_line and not self.rating:
+            # Assuming answer scoring 1..5 stored in numerical_value / value_suggested
+            score = getattr(rating_line, 'numerical_value', False) or getattr(rating_line, 'value_suggested', False)
+            if score and str(int(score)) in {'1', '2', '3', '4', '5'}:
+                self.rating = str(int(score))
+        self.message_post(body=_("Linked survey response %s") % latest.display_name)
+        return True
+
     # ==========================================================================
     # COMPUTE METHODS (Metrics)
     # ==========================================================================
@@ -286,3 +338,10 @@ class CustomerFeedback(models.Model):
         for record in self:
             # Exclude internal notifications if needed: record.message_ids.filtered(lambda m: m.message_type != 'notification')
             record.communication_count = len(record.message_ids)
+
+    @api.onchange('contact_id')
+    def _onchange_contact_id(self):
+        """If a contact with a parent is selected and no customer set yet, set partner_id."""
+        for rec in self:
+            if rec.contact_id and rec.contact_id.parent_id and not rec.partner_id:
+                rec.partner_id = rec.contact_id.parent_id

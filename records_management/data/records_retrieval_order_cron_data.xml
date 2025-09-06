@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <data>
+        <!-- Scheduled action to auto-escalate breached retrieval orders -->
+        <record id="ir_cron_records_retrieval_order_sla_escalation" model="ir.cron">
+            <field name="name">Retrieval Orders SLA Escalation</field>
+            <field name="model_id" ref="model_records_retrieval_order"/>
+            <field name="state">code</field>
+            <field name="code">model._check_cron_sla_escalation()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="active">True</field>
+            <field name="doall">False</field>
+            <field name="user_id" ref="base.user_root"/>
+        </record>
+    </data>
+</odoo>

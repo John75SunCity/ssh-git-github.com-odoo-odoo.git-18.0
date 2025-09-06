@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Unified Records Retrieval Order Views -->
+
+        <!-- Tree (List) View -->
+        <record id="records_retrieval_order_view_tree" model="ir.ui.view">
+            <field name="name">records.retrieval.order.view.tree</field>
+            <field name="model">records.retrieval.order</field>
+            <field name="arch" type="xml">
+                <list string="Retrieval Orders" decoration-warning="sla_elapsed_pct &gt;= 80 and state not in ['completed','cancelled']" decoration-danger="sla_breached and state not in ['completed','cancelled']" decoration-success="state == 'completed'">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="priority" widget="badge"/>
+                    <field name="state" widget="badge"/>
+                    <field name="item_count"/>
+                    <field name="files_retrieved_count"/>
+                    <field name="progress_percentage" widget="progressbar" optional="show"/>
+                    <field name="sla_policy" optional="show"/>
+                    <field name="sla_deadline" optional="show"/>
+                    <field name="sla_breached" widget="boolean_toggle" optional="show"/>
+                    <field name="scheduled_date" optional="show"/>
+                    <field name="estimated_completion_date" optional="show"/>
+                    <field name="user_id" optional="show"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="records_retrieval_order_view_form" model="ir.ui.view">
+            <field name="name">records.retrieval.order.view.form</field>
+            <field name="model">records.retrieval.order</field>
+            <field name="arch" type="xml">
+                <form string="Retrieval Order">
+                    <header>
+                        <button name="action_confirm" type="object" string="Confirm" states="draft" class="btn-primary"/>
+                        <button name="action_start_locating" type="object" string="Start Locating" states="confirmed" class="btn-primary"/>
+                        <button name="action_start_retrieving" type="object" string="Start Retrieving" states="locating" class="btn-primary"/>
+                        <button name="action_quality_check" type="object" string="Quality Check" states="retrieving" class="btn-secondary"/>
+                        <button name="action_start_packaging" type="object" string="Start Packaging" states="quality" class="btn-secondary"/>
+                        <button name="action_start_delivery" type="object" string="Start Delivery" states="packaging" class="btn-secondary"/>
+                        <button name="action_mark_delivered" type="object" string="Mark Delivered" states="delivering" class="btn-secondary"/>
+                        <button name="action_complete" type="object" string="Complete" states="delivered" class="btn-success"/>
+                        <button name="action_cancel" type="object" string="Cancel" states="draft,confirmed,locating,retrieving,quality,packaging,delivering" class="btn-secondary"/>
+                        <button name="action_prepare_invoice" type="object" string="Prepare Invoice" states="completed" class="btn-secondary" groups="records_management.group_records_manager"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,locating,retrieving,quality,packaging,delivering,delivered,completed,cancelled"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button type="object" name="action_prepare_invoice" class="oe_stat_button" icon="fa-file-invoice" attrs="{'invisible': [('billing_status','in',['not_billable'])]}">
+                                <field name="billing_status" widget="badge" string="Billing"/>
+                            </button>
+                            <button type="object" name="_check_cron_sla_escalation" class="oe_stat_button" icon="fa-exclamation-triangle" attrs="{'invisible': ['|', ('sla_breached','=',False), ('state','in',['completed','cancelled'])]}">
+                                <field name="sla_breached" widget="boolean_toggle" string="SLA Breached"/>
+                            </button>
+                        </div>
+                        <h1>
+                            <field name="name" readonly="1" class="oe_inline"/>
+                            <label for="partner_id" class="oe_edit_only"/>
+                        </h1>
+                        <group>
+                            <group string="Customer">
+                                <field name="partner_id" options="{'no_create': True}"/>
+                                <field name="portal_request_id" optional="show"/>
+                                <field name="security_level"/>
+                            </group>
+                            <group string="Assignment">
+                                <field name="user_id"/>
+                                <field name="coordinator_id" optional="show"/>
+                                <field name="retrieval_team_ids" widget="many2many_tags" optional="show"/>
+                                <field name="quality_inspector_id" optional="show"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Scheduling">
+                                <field name="request_date"/>
+                                <field name="scheduled_date"/>
+                                <field name="deadline_date" optional="show"/>
+                                <field name="estimated_completion_date" optional="show"/>
+                                <field name="actual_start_date" optional="show"/>
+                                <field name="actual_completion_date" optional="show"/>
+                                <field name="days_until_scheduled" readonly="1" optional="show"/>
+                            </group>
+                            <group string="SLA">
+                                <field name="sla_policy"/>
+                                <field name="sla_deadline"/>
+                                <field name="sla_elapsed_pct" widget="progressbar" optional="show"/>
+                                <field name="sla_breached" widget="boolean_toggle" optional="show"/>
+                                <field name="auto_escalated" optional="show"/>
+                                <field name="escalation_reason" optional="show"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Lines" name="lines">
+                                <field name="line_ids" context="{'default_order_id': active_id}" mode="tree,form" colspan="4">
+                                    <tree editable="bottom" decoration-success="status in ['delivered','completed']" decoration-danger="status == 'not_found'" decoration-warning="status == 'pending'">
+                                        <field name="name"/>
+                                        <field name="item_type"/>
+                                        <field name="file_name"/>
+                                        <field name="container_id" optional="show"/>
+                                        <field name="location_id" optional="show"/>
+                                        <field name="status" widget="badge"/>
+                                        <field name="priority" widget="badge" optional="show"/>
+                                        <field name="estimated_pages" optional="show"/>
+                                        <field name="assigned_user_id" optional="show"/>
+                                        <field name="retrieved_by_id" optional="show"/>
+                                        <field name="date_retrieved" optional="show"/>
+                                        <field name="date_delivered" optional="show"/>
+                                    </tree>
+                                    <form string="Retrieval Line">
+                                        <group>
+                                            <field name="name"/>
+                                            <field name="item_type"/>
+                                            <field name="file_name"/>
+                                            <field name="file_description" optional="show"/>
+                                            <field name="container_id" optional="show"/>
+                                            <field name="location_id" readonly="1" optional="show"/>
+                                            <field name="barcode" optional="show"/>
+                                            <field name="estimated_pages" optional="show"/>
+                                            <field name="priority" optional="show"/>
+                                            <field name="assigned_user_id" optional="show"/>
+                                            <field name="status" widget="statusbar" statusbar_visible="pending,located,retrieved,delivered,completed,not_found,cancelled"/>
+                                            <field name="retrieved_by_id" optional="show"/>
+                                            <field name="date_retrieved" optional="show"/>
+                                            <field name="date_delivered" optional="show"/>
+                                            <field name="notes" colspan="4" nolabel="1" placeholder="Internal notes..."/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page string="Delivery" name="delivery">
+                                <group>
+                                    <group string="Method">
+                                        <field name="delivery_method"/>
+                                        <field name="delivery_address_id"/>
+                                    </group>
+                                    <group string="Instructions">
+                                        <field name="delivery_instructions" placeholder="Add any delivery instructions..."/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Billing" name="billing">
+                                <group>
+                                    <group string="Billing Details">
+                                        <field name="rate_id"/>
+                                        <field name="currency_id"/>
+                                        <field name="estimated_cost" readonly="1"/>
+                                        <field name="actual_cost" optional="show"/>
+                                        <field name="billing_status" widget="badge"/>
+                                    </group>
+                                    <group string="Invoicing">
+                                        <field name="invoice_id" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Scheduling Notes" name="sched_notes">
+                                <field name="scheduling_notes" nolabel="1" placeholder="Internal scheduling notes..."/>
+                            </page>
+                            <page string="Internal Notes" name="notes">
+                                <field name="notes" nolabel="1" placeholder="Internal notes (security/access, coordination, etc.)"/>
+                            </page>
+                        </notebook>
+                        <chatter/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="records_retrieval_order_view_search" model="ir.ui.view">
+            <field name="name">records.retrieval.order.view.search</field>
+            <field name="model">records.retrieval.order</field>
+            <field name="arch" type="xml">
+                <search string="Search Retrieval Orders">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="priority"/>
+                    <field name="state"/>
+                    <filter name="filter_sla_breached" string="SLA Breached" domain="[('sla_breached','=',True)]"/>
+                    <filter name="filter_my_orders" string="My Orders" domain="[('user_id','=',uid)]"/>
+                    <filter name="filter_active" string="Active" domain="[('state','not in',['completed','cancelled'])]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_partner" string="Customer" context="{'group_by':'partner_id'}"/>
+                        <filter name="group_priority" string="Priority" context="{'group_by':'priority'}"/>
+                        <filter name="group_owner" string="Owner" context="{'group_by':'user_id'}"/>
+                        <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Window Action -->
+        <record id="action_records_retrieval_order" model="ir.actions.act_window">
+            <field name="name">Retrieval Orders</field>
+            <field name="res_model">records.retrieval.order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="records_retrieval_order_view_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">Create your first Retrieval Order</p>
+                <p>Unified retrieval for files, containers, scans, and more with SLA tracking.</p>
+            </field>
+        </record>
+
+        <!-- Menu Item (under Operations) -->
+        <menuitem id="menu_records_retrieval_orders" name="Retrieval Orders" parent="menu_records_operations" action="action_records_retrieval_order" sequence="25" groups="records_management.group_records_user"/>
+    </data>
+</odoo>

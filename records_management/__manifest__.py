@@ -72,6 +72,7 @@
         # 2. Data files (sequences and base data next)
         "data/sequence_data.xml",  # Sequences often needed early
     "data/records_retrieval_order_sequences_data.xml",  # Unified retrieval order sequences
+    "data/records_retrieval_order_cron_data.xml",  # SLA escalation scheduled action
         "data/core_records_data.xml",
         "data/container_types_base_rates.xml",
         "data/document_retrieval_rates_data.xml",
@@ -105,7 +106,6 @@
         "views/customer_inventory_report_views.xml",
         "views/customer_negotiated_rate_views.xml",
         "views/customer_negotiated_rates_views.xml",
-        "views/document_retrieval_work_order_views.xml",
         "views/field_label_helper_wizard_views.xml",
         "views/fleet_vehicle_enhanced_views.xml",
         "views/inventory_adjustment_reason_views.xml",
@@ -177,7 +177,8 @@
         "views/records_request_views.xml",
         "views/records_retention_policy_views.xml",
         "views/records_retention_rule_views.xml",
-        "views/records_retrieval_work_order_views.xml",
+    # LEGACY RETRIEVAL WORK ORDER VIEWS REMOVED (replaced by unified records_retrieval_order_views.xml)
+    "views/records_retrieval_order_views.xml",
         "views/records_security_audit_views.xml",
         "views/records_series_views.xml",
         "views/records_service_type_views.xml",
@@ -208,8 +209,8 @@
         "views/system_flowchart_wizard_views.xml",
         "views/temp_inventory_views.xml",
         "views/visitor_pos_wizard_views.xml",
-        "views/work_order_coordinator_views.xml",
-        "views/workflow_visualization_manager_views.xml",
+    "views/work_order_coordinator_views.xml",
+    "views/workflow_visualization_manager_views.xml",
         # 4. Reports
         "reports/description_report.xml",
         "reports/document_search_attempt_report.xml",
