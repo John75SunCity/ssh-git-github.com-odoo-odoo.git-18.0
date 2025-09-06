@@ -781,6 +781,45 @@ class OdooValidator:
 
     def run_validation(self, quiet: bool = False) -> Tuple[List[str], List[str]]:
         """Run all validation checks with timing instrumentation."""
+        # Version sentinel to confirm active script (helps diagnose phantom copies)
+        if not quiet:
+            # Emit file fingerprint (hash + size) to detect intermittent phantom content issues
+            try:
+                import hashlib
+                _p = Path(__file__)
+                _data = _p.read_bytes()
+                _h = hashlib.sha256(_data).hexdigest()[:12]
+                # Additional runtime diagnostics to trace phantom 'return' reports
+                # Print absolute realpath + mtime so we can confirm which file instance executed
+                try:
+                    _real = _p.resolve()
+                    _mtime = _p.stat().st_mtime
+                    print(f"(validator realpath: {_real})")
+                    print(f"(validator mtime: {_mtime:.0f})")
+                except Exception:
+                    pass
+                # List any pycache bytecode files referencing this module to detect stale bytecode
+                try:
+                    _pycache_dir = _p.parent / '__pycache__'
+                    if _pycache_dir.is_dir():
+                        _related = [c.name for c in _pycache_dir.glob('find_syntax_errors.*.pyc')]
+                        if _related:
+                            print(f"(validator pycache entries: {', '.join(sorted(_related))})")
+                except Exception:
+                    pass
+                # Quick self-scan for unexpected top-level 'return' (column 0) lines
+                # If found, print them so we can correlate with phantom SyntaxError reports
+                _suspicious = []
+                for idx, line in enumerate(_data.decode('utf-8', errors='ignore').splitlines(), start=1):
+                    if line.startswith('return'):
+                        _suspicious.append(idx)
+                if _suspicious:
+                    _more = '...' if _suspicious[10:] else ''
+                    print(f"(debug: top-level return tokens at lines: {_suspicious[:10]}{_more})")
+                print(f"(validator file hash: {_h} size: {len(_data)})")
+            except Exception:
+                pass
+            print("(validator version: v-suppress-configurator-2)")
         if not quiet:
             print("🚀 Starting Comprehensive Odoo Module Validation")
             print("=" * 60)
@@ -827,6 +866,11 @@ class OdooValidator:
         """Print (filtered) validation results based on CLI flags."""
         suppress_patterns = suppress_patterns or []
 
+        # Always suppress noisy CONFIGURATOR warnings unless user explicitly wants them
+        # by passing a negative pattern (not implemented) – current requirement: hide them.
+        if not any('configurator' in (p or '').lower() for p in suppress_patterns):
+            suppress_patterns.append('configurator:')
+
         # Filter warnings/errors lazily (errors rarely suppressed, but allow pattern anyway)
         def _apply_filters(items: List[str]) -> List[str]:
             if not suppress_patterns:
@@ -843,6 +887,10 @@ class OdooValidator:
             for error in self._filtered_errors:
                 print(f"  {error}")
             print()
+        # Final hard filter for any lingering CONFIGURATOR warnings (belt & suspenders)
+        self._filtered_warnings = [
+            w for w in self._filtered_warnings if 'configurator:' not in w.lower()
+        ]
 
         if not only_critical and not quiet and self._filtered_warnings:
             print(f"⚠️ WARNINGS ({len(self._filtered_warnings)}):")

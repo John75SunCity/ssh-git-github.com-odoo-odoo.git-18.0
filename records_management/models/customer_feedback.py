@@ -57,6 +57,7 @@ class CustomerFeedback(models.Model):
     # Computed metrics referenced by analytics pages (placeholders if not already implemented elsewhere)
     response_time = fields.Float(string='Response Time (hrs)', readonly=True, help='Time in hours from creation until first response.')
     resolution_time = fields.Float(string='Resolution Time (hrs)', readonly=True, help='Time in hours from creation until resolution.')
+    communication_count = fields.Integer(string='Communications', compute='_compute_communication_count', store=False, help='Number of chatter messages linked to this feedback.')
 
 
     # ============================================================================
@@ -268,3 +269,13 @@ class CustomerFeedback(models.Model):
             if vals.get("name", _("New")) == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("customer.feedback") or _("New")
         return super().create(vals_list)
+
+    # ============================================================================
+    # COMPUTE HELPERS
+    # ============================================================================
+    @api.depends('message_ids')
+    def _compute_communication_count(self):
+        # Use sudo=False context to respect access rules; count messages excluding system notifications if desired
+        for record in self:
+            # Exclude internal notifications if needed: record.message_ids.filtered(lambda m: m.message_type != 'notification')
+            record.communication_count = len(record.message_ids)
