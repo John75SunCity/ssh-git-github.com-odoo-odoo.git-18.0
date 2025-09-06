@@ -71,6 +71,7 @@
     # (Previously removed portal visibility restriction rule now standardized & restored)
         # 2. Data files (sequences and base data next)
         "data/sequence_data.xml",  # Sequences often needed early
+    "data/records_retrieval_order_sequences_data.xml",  # Unified retrieval order sequences
         "data/core_records_data.xml",
         "data/container_types_base_rates.xml",
         "data/document_retrieval_rates_data.xml",

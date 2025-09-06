@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Sequence for Records Retrieval Order -->
+    <record id="seq_records_retrieval_order" model="ir.sequence">
+        <field name="name">Records Retrieval Order</field>
+        <field name="code">records.retrieval.order</field>
+        <field name="prefix">RRO%(y)s</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Sequence for Records Retrieval Order Line -->
+    <record id="seq_records_retrieval_order_line" model="ir.sequence">
+        <field name="name">Records Retrieval Order Line</field>
+        <field name="code">records.retrieval.order.line</field>
+        <field name="prefix">RRl%(y)s</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

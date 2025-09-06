@@ -198,6 +198,8 @@ from . import records_retention_policy
 from . import records_retention_policy_version
 from . import records_retention_policy_version_actions
 from . import records_retention_rule
+from . import records_retrieval_order
+from . import records_retrieval_order_line
 from . import records_retrieval_work_order
 from . import records_security_audit
 from . import records_series
