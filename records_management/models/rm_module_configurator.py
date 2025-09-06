@@ -227,7 +227,8 @@ class RmModuleConfigurator(models.Model):
 
         # Log creation in chatter
         for record in records:
-            record.message_post(body=_("Configuration created: %s", record.name))
+            # Project policy: interpolate after translation
+            record.message_post(body=_("Configuration created: %s") % record.name)
 
         return records
 
@@ -254,8 +255,7 @@ class RmModuleConfigurator(models.Model):
         if any(key.startswith("value_") for key in vals):
             for record in self:
                 record.message_post(
-                    body=_("Configuration updated: %s = %s")
-                    % (record.config_key, record.current_value)
+                    body=_("Configuration updated: %s = %s") % (record.config_key, record.current_value)
                 )
 
         return res

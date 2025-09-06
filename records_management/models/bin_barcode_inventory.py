@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-
-from dateutil.relativedelta import relativedelta
+from datetime import timedelta
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -432,16 +431,23 @@ class BinBarcodeInventory(models.Model):
         return True
 
     def action_service_complete(self):
-        """Service bin and return it to in_use state with updated service dates"""
+        """Service a Full bin and return it to in_use state with updated service dates.
+
+        Sets last_service_date to now, schedules next_service_date 30 days out,
+        resets current_weight, updates state, and posts a chatter message.
+        """
         self.ensure_one()
-        # Capture date (not strictly required but retained for potential extension)
-        today = fields.Date.context_today(self)
         if self.state != 'full':
             raise UserError(_("Only Full bins can be serviced."))
-        # For this model we track as datetime for precision
+
+        # Record service timestamp (use Datetime for precision) and schedule next service
         self.last_service_date = fields.Datetime.now()
-        self.next_service_date = fields.Datetime.now() + relativedelta(days=30)
+        self.next_service_date = fields.Datetime.now() + timedelta(days=30)
+
+        # Transition state & reset weight
         self.state = 'in_use'
-        self.current_weight = 0.0  # reset weight after service
+        self.current_weight = 0.0
+
+        # Log completion
         self.message_post(body=_("Service completed; bin returned to In Use."))
         return True
