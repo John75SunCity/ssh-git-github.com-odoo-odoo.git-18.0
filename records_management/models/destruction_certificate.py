@@ -11,6 +11,7 @@ License: LGPL-3
 """
 
 import base64
+import logging
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -159,32 +160,73 @@ class DestructionCertificate(models.Model):
             )
         )
 
-    def generate_certificate_document(self):
-        """Generate and attach PDF certificate (placeholder implementation).
+    def generate_certificate_document(self, force=False):
+        """Generate and attach the PDF certificate via QWeb report.
 
-        Actual PDF QWeb report will be implemented separately. For now, create
-        a lightweight text attachment to validate workflow and attachment linkage.
-        Skips generation if feature toggle disabled or already attached.
+        Behavior:
+          - Skips if feature disabled.
+          - Skips if existing attachment is already a PDF (unless force=True).
+          - Uses action_report_destruction_certificate to render.
+          - Stores as ir.attachment and links certificate_attachment_id.
+          - Provides graceful fallback with a text placeholder if report missing or fails.
         """
         self.ensure_one()
         if not self._is_certificate_feature_enabled():
             return False
-        if self.certificate_attachment_id:
+        # Skip regeneration if we already have a PDF unless forced
+        if (
+            self.certificate_attachment_id
+            and self.certificate_attachment_id.mimetype == "application/pdf"
+            and not force
+        ):
             return self.certificate_attachment_id
-        content = (
-            "Destruction Certificate\n"
-            f"Number: {self.name}\n"
-            f"Date: {self.certificate_date}\n"
-            f"Customer: {self.partner_id.display_name}\n"
-            f"State: {self.state}\n"
+
+        logger = logging.getLogger(__name__)
+        pdf_bytes = False
+        report = self.env.ref(
+            "records_management.action_report_destruction_certificate", raise_if_not_found=False
         )
+        if report:
+            try:
+                result = report._render_qweb_pdf(self.ids)
+                if isinstance(result, tuple):
+                    pdf_bytes = result[0]
+                else:
+                    pdf_bytes = result
+            except Exception as exc:  # noqa: BLE001 broad but logged
+                logger.error("Failed rendering destruction certificate PDF %s: %s", self.name, exc)
+        else:
+            logger.warning("Destruction certificate report action not found for %s", self.name)
+
+        if pdf_bytes:
+            datas = base64.b64encode(pdf_bytes)
+            mimetype = "application/pdf"
+            filename = f"DestructionCertificate-{self.name}.pdf"
+        else:
+            # Fallback placeholder text when PDF generation not available
+            content = (
+                "Destruction Certificate\n"
+                f"Number: {self.name}\n"
+                f"Date: {self.certificate_date}\n"
+                f"Customer: {self.partner_id.display_name}\n"
+                f"State: {self.state}\n"
+                "(PDF generation unavailable)\n"
+            )
+            datas = base64.b64encode(content.encode("utf-8"))
+            mimetype = "text/plain"
+            filename = f"DestructionCertificate-{self.name}.txt"
+
+        # If existing attachment mismatched (e.g., old text) replace it
+        if self.certificate_attachment_id and (force or self.certificate_attachment_id.mimetype != mimetype):
+            self.certificate_attachment_id.unlink()
+
         attachment = self.env["ir.attachment"].create(
             {
-                "name": f"DestructionCertificate-{self.name}.txt",
-                "datas": base64.b64encode(content.encode("utf-8")),
+                "name": filename,
+                "datas": datas,
                 "res_model": self._name,
                 "res_id": self.id,
-                "mimetype": "text/plain",
+                "mimetype": mimetype,
             }
         )
         self.certificate_attachment_id = attachment.id
@@ -212,6 +254,18 @@ class DestructionCertificate(models.Model):
             self.write(updates)
         # Generate document (placeholder) if feature enabled
         self.generate_certificate_document()
+        return True
+
+    def action_force_regenerate_certificate(self):
+        """Force re-generation of the certificate document.
+
+        Always regenerates (even if PDF already exists) provided the feature toggle is enabled.
+        Posts a chatter message with the outcome.
+        """
+        self.ensure_one()
+        attachment = self.generate_certificate_document(force=True)
+        if attachment:
+            self.message_post(body=_("Destruction certificate document regenerated."), attachment_ids=[attachment.id])
         return True
 
     # -------------------------------------------------------------------------

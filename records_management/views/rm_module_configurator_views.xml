@@ -99,6 +99,11 @@
             <field name="notes" widget="text" string="Internal Notes"/>
         </group>
     </page>
+<page string="Destruction Certificates" name="destruction_certificates">
+    <group string="Feature Toggle">
+        <field name="destruction_certificate_enabled"/>
+    </group>
+</page>
 </notebook>
                 </sheet>
 <div class="oe_chatter">

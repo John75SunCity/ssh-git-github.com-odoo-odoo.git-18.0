@@ -117,6 +117,7 @@
         "views/maintenance_request_views.xml",
         "views/naid_audit_log_views.xml",
         "views/naid_certificate_views.xml",
+    "views/destruction_certificate_views.xml",
         "views/naid_compliance_checklist_item_views.xml",
         "views/naid_compliance_checklist_views.xml",
         "views/naid_compliance_policy_views.xml",
