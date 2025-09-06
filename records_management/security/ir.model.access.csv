@@ -163,8 +163,6 @@ access_mobile_photo_user,mobile_photo,mobile.photo,records_management.group_reco
 access_mobile_photo_manager,mobile_photo,mobile.photo,records_management.group_records_manager,1,1,1,1
 access_naid_audit_log_user,naid_audit_log,naid.audit.log,records_management.group_records_user,1,1,1,0
 access_naid_audit_log_manager,naid_audit_log,naid.audit.log,records_management.group_records_manager,1,1,1,1
-access_naid_audit_requirement_user,naid_audit_requirement,naid.audit.requirement,records_management.group_records_user,1,1,1,0
-access_naid_audit_requirement_manager,naid_audit_requirement,naid.audit.requirement,records_management.group_records_manager,1,1,1,1
 access_naid_certificate_user,naid_certificate,naid.certificate,records_management.group_records_user,1,1,1,0
 access_naid_certificate_manager,naid_certificate,naid.certificate,records_management.group_records_manager,1,1,1,1
 access_naid_certificate_item_user,naid_certificate_item,naid.certificate.item,records_management.group_records_user,1,1,1,0
@@ -398,7 +396,6 @@ access_revenue_analytic_manager,revenue_analytic,revenue.analytic,records_manage
 access_revenue_forecast_user,revenue.forecast.user,revenue.forecast,records_management.group_records_user,1,1,1,0
 access_revenue_forecast_manager,revenue.forecast.manager,revenue.forecast,records_management.group_records_manager,1,1,1,1
 access_revenue_forecast_line_user,revenue.forecast.line.user,revenue.forecast.line,records_management.group_records_user,1,1,1,0
-access_revenue_forecast_line_manager,revenue.forecast.line.manager,revenue.forecast.line,records_management.group_records_manager,1,1,1,1
 access_revenue_forecaster_user,revenue.forecaster.user,revenue.forecaster,records_management.group_records_user,1,1,1,0
 access_revenue_forecaster_manager,revenue.forecaster.manager,revenue.forecaster,records_management.group_records_manager,1,1,1,1
 access_revenue_forecaster_line_user,revenue.forecaster.line.user,revenue.forecaster.line,records_management.group_records_user,1,1,1,0
