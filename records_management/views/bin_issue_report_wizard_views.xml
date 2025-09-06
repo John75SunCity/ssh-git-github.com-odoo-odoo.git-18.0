@@ -121,12 +121,12 @@
                                     <field name="create_date"/>
                                     <field name="compliance_notes"/>
                                     <templates>
-                                        <t t-name="kanban-box">
-                                            <div class="oe_kanban_global_click">
+<t t-name="card">
+    <div class="oe_kanban_global_click" role="article" aria-label="Photo Card">
                                                 <div class="oe_kanban_card">
                                                     <div class="oe_kanban_image">
-                                                        <img t-att-src="kanban_image('mobile.photo', 'photo_data', record.id.raw_value)"
-                                                             class="oe_kanban_avatar"/>
+<img t-att-src="kanban_image('mobile.photo', 'photo_data', record.id.raw_value)" class="oe_kanban_avatar" alt="Issue Photo"/>
+
                                                     </div>
                                                     <div class="oe_kanban_details">
                                                         <strong><field name="name"/></strong>
@@ -257,12 +257,12 @@
                                     <field name="create_date"/>
                                     <field name="compliance_notes"/>
                                     <templates>
-                                        <t t-name="kanban-box">
-                                            <div class="oe_kanban_global_click">
+<t t-name="card">
+    <div class="oe_kanban_global_click" role="article" aria-label="Photo Card">
                                                 <div class="oe_kanban_card">
                                                     <div class="oe_kanban_image">
-                                                        <img t-att-src="kanban_image('mobile.photo', 'photo_data', record.id.raw_value)"
-                                                             class="oe_kanban_avatar"/>
+<img t-att-src="kanban_image('mobile.photo', 'photo_data', record.id.raw_value)" class="oe_kanban_avatar" alt="Issue Photo"/>
+
                                                     </div>
                                                     <div class="oe_kanban_details">
                                                         <strong><field name="name"/></strong>
@@ -346,7 +346,7 @@
                 <field name="report_date"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+<t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <div class="oe_kanban_header">
@@ -368,11 +368,14 @@
                                     </div>
 
                                     <div class="oe_kanban_row" t-if="record.customer_id.raw_value">
-                                        <i class="fa fa-user"/> <field name="customer_id"/>
+<i class="fa fa-user" title="Customer" aria-label="Customer"/>
+<field name="customer_id"/>
+
                                     </div>
 
                                     <div class="oe_kanban_row" t-if="record.customer_fault.raw_value and record.billing_amount.raw_value > 0">
-                                        <i class="fa fa-dollar"/>
+<i class="fa fa-dollar" title="Billing Amount" aria-label="Billing Amount"/>
+
                                         <field name="billing_amount" widget="monetary"/>
                                         <span t-if="record.billed.raw_value" class="badge badge-success">Billed</span>
                                         <span t-else="" class="badge badge-warning">Unbilled</span>

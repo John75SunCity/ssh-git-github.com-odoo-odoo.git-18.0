@@ -92,7 +92,7 @@
                     <field name="charge_amount"/>
                     <field name="currency_id"/>
                     <templates>
-                        <t t-name="kanban-box">
+<t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_record_top mb16">
                                     <div class="o_kanban_record_headings">

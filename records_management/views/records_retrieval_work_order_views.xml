@@ -86,7 +86,7 @@
                     <field name="delivery_method"/>
                     <field name="completion_date"/>
                     <templates>
-                        <t t-name="kanban-box">
+<t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="oe_kanban_content">
                                     <div class="o_kanban_record_top">

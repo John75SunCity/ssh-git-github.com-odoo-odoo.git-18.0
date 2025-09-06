@@ -262,7 +262,7 @@
             <field name="success_rate"/>
 
             <templates>
-                <t t-name="kanban-box">
+<t t-name="card">
                     <div class="oe_kanban_card oe_kanban_global_click">
                         <div class="o_kanban_image">
                             <img t-att-src="kanban_image('work.order.coordinator', 'image_128', record.id.raw_value)" alt="Coordinator"/>

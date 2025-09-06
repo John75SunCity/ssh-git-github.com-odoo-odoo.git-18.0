@@ -187,7 +187,7 @@
                 <field name="specialization"/>
                 <field name="current_location_id"/>
                 <templates>
-                    <t t-name="kanban-box">
+<t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <div class="o_kanban_record_top">

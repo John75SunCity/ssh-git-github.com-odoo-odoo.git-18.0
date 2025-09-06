@@ -233,7 +233,7 @@
                 <field name="last_service_date"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+<t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="oe_kanban_content">
                                 <div class="oe_kanban_header">

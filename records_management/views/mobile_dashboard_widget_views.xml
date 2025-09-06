@@ -51,7 +51,7 @@
                 <field name="widget_type"/>
                 <field name="is_active"/>
                 <templates>
-                    <t t-name="kanban-box">
+<t t-name="card">
                         <div class="oe_kanban_card">
                             <div class="oe_kanban_content">
                                 <h4><field name="name"/></h4>

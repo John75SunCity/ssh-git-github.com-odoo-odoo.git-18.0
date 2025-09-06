@@ -164,7 +164,7 @@
                 <field name="customer_location"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+<t t-name="card">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.state.raw_value=='full' ? 'border-danger' : record.current_fill_level.raw_value >= 75 ? 'border-warning' : record.state.raw_value=='in_service' ? 'border-success' : record.state.raw_value=='deployed' ? 'border-info' : record.state.raw_value=='maintenance' ? 'border-dark' : 'border-secondary'}">
                             <div class="o_kanban_image">
                                 <i t-attf-class="fa fa-trash fa-2x" t-attf-style="color: #{record.state.raw_value=='full' ? '#dc3545' : record.current_fill_level.raw_value >= 75 ? '#ffc107' : record.state.raw_value=='in_service' ? '#28a745' : record.state.raw_value=='deployed' ? '#007bff' : record.state.raw_value=='maintenance' ? '#6f42c1' : record.state.raw_value=='collecting' ? '#fd7e14' : '#6c757d'};"/>

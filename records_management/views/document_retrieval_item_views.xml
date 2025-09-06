@@ -112,7 +112,7 @@ invisible="status != 'retrieved'"/>
                 <field name="status"/>
                 <field name="effective_priority"/>
                 <templates>
-                    <t t-name="kanban-box">
+<t t-name="card">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.priority.raw_value == '3' ? 'oe_kanban_card_danger' : record.priority.raw_value == '2' ? 'oe_kanban_card_warning' : ''}">
                             <div class="o_kanban_content">
                                 <div class="o_kanban_record_top">

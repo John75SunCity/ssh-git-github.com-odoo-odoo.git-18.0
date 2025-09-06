@@ -113,10 +113,10 @@
                 <field name="photo_data"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+<t t-name="card">
                         <div class="oe_kanban_global_click">
                             <div class="oe_kanban_image">
-                                <img t-att-src="kanban_image('container.access.photo', 'photo_data', record.id.raw_value)"
+<img t-att-src="kanban_image('container.access.photo', 'photo_data', record.id.raw_value)" alt="Access Photo"
                                      alt="Photo" class="o_image_64_cover"/>
                             </div>
 

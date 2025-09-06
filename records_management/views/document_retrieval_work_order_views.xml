@@ -175,7 +175,7 @@
                 <field name="color"/>
 
                 <templates>
-                    <t t-name="kanban-box">
+<t t-name="card">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.has_custom_rates.raw_value ? 'oe_kanban_color_' + (record.color.raw_value || 0) : ''}">
                             <div class="oe_kanban_content">
                                 <div class="o_kanban_record_top">

@@ -165,7 +165,7 @@
             <field name="current_holder"/>
             <field name="assigned_date"/>
             <templates>
-                <t t-name="kanban-box">
+<t t-name="card">
                     <div class="oe_kanban_card oe_kanban_global_click">
                         <div class="o_kanban_image">
                             <i class="fa fa-key fa-2x" t-att-style="record.status.raw_value == 'available' and 'color: #28a745;' or record.status.raw_value == 'assigned' and 'color: #ffc107;' or record.status.raw_value == 'lost' and 'color: #dc3545;' or 'color: #6c757d;'"/>

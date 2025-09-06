@@ -188,7 +188,7 @@
                 <field name="compliance_score"/>
                 <field name="critical_item"/>
                 <templates>
-                    <t t-name="kanban-box">
+<t t-name="card">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click {{ record.critical_item.raw_value and 'oe_kanban_card_danger' or '' }}">
                             <div class="o_kanban_record_top">
                                 <div class="o_kanban_record_headings">

@@ -50,6 +50,12 @@ class DestructionCertificate(models.Model):
 
     weight_processed = fields.Float(string="Weight Processed (kg)", tracking=True)
     containers_processed = fields.Integer(string="Containers Processed", tracking=True)
+    event_ids = fields.One2many(
+        comodel_name="destruction.event",
+        inverse_name="certificate_id",
+        string="Destruction Events",
+        help="Individual destruction events that roll up into this certificate",
+    )
 
     # ============================================================================
     # SERVICE TRACKING
@@ -233,6 +239,46 @@ class DestructionCertificate(models.Model):
         return attachment
 
     # -------------------------------------------------------------------------
+    # REPORT SUPPORT HELPERS (aggregation for QWeb template)
+    # -------------------------------------------------------------------------
+    def _get_aggregated_events(self):
+        """Return simplified dict list of linked events for easier QWeb iteration.
+
+        Avoids heavy recordset logic in template and provides consistent ordering.
+        """
+        self.ensure_one()
+        events = self.event_ids.sorted(lambda e: (e.date or '', e.name or ''))
+        data = []
+        for ev in events:
+            data.append(
+                {
+                    "name": ev.name,
+                    "date": ev.date,
+                    "technician": ev.technician_id.display_name,
+                    "location_type": ev.location_type,
+                    "items": ev.shredded_items,
+                    "quantity": ev.quantity,
+                    "uom": ev.unit_of_measure,
+                }
+            )
+        return data
+
+    def _signature_block_context(self):
+        """Return context dict for signature placeholders in report.
+
+        Provides names only (no binary sign images yet). Future enhancement could
+        embed sign.request integration or attachment lookups.
+        """
+        self.ensure_one()
+        return {
+            "compliance_officer": self.compliance_officer_id and self.compliance_officer_id.display_name or "",
+            "witness": self.witness_id and self.witness_id.display_name or "",
+            "operator": self.operator_certification_id
+            and self.operator_certification_id.operator_id.display_name
+            or "",
+        }
+
+    # -------------------------------------------------------------------------
     # Enhanced issuance workflow
     # -------------------------------------------------------------------------
     def action_confirm_destruction(self):
@@ -267,6 +313,30 @@ class DestructionCertificate(models.Model):
         if attachment:
             self.message_post(body=_("Destruction certificate document regenerated."), attachment_ids=[attachment.id])
         return True
+
+    def action_print_certificate(self):  # UI button helper
+        """Return the QWeb report action for this destruction certificate.
+
+        Ensures the document exists (generating if feature enabled and missing)
+        then returns the standard report action so the user can download/print.
+        Fallback: if report action missing, regenerate placeholder attachment
+        and open it in attachment preview.
+        """
+        self.ensure_one()
+        # Ensure we have (at least) a generated document if feature enabled
+        if not self.certificate_attachment_id and self._is_certificate_feature_enabled():
+            self.generate_certificate_document()
+        report = self.env.ref("records_management.action_report_destruction_certificate", raise_if_not_found=False)
+        if report:
+            return report.report_action(self)
+        # Fallback: open the attachment (may be placeholder) if exists
+        if self.certificate_attachment_id:
+            return {
+                "type": "ir.actions.act_url",
+                "url": f"/web/content/{self.certificate_attachment_id.id}?download=true",
+                "target": "self",
+            }
+        return False
 
     # -------------------------------------------------------------------------
     # COMPUTE METHODS

@@ -217,7 +217,7 @@
             <field name="container_count"/>
             <field name="total_weight"/>
             <templates>
-                <t t-name="kanban-box">
+<t t-name="card">
                     <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                         <div class="o_kanban_image">
                             <i class="fa fa-scissors fa-2x text-primary"/>

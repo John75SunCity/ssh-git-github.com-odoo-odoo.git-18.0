@@ -21,7 +21,7 @@
             <field name="pickup_request_id"/>
             <field name="completion_status"/>
             <templates>
-                <t t-name="kanban-box">
+<t t-name="card">
                     <div t-attf-class="oe_kanban_card oe_kanban_global_click oe_kanban_color_#{kanban_getcolor(record.color.raw_value)}">
                         <div class="o_kanban_card_header">
                             <div class="o_kanban_card_header_title">
