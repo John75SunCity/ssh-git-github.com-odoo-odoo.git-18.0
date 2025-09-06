@@ -45,6 +45,10 @@ class NAIDOperatorCertification(models.Model):
     # Customer portal visibility
     portal_visible = fields.Boolean(string='Visible to Customers', default=True, help='Whether this certification info is visible to customers in portal')
 
+    category_ids = fields.Many2many(
+        'hr.employee.category', 'naid_cert_category_rel',
+        'cert_id', 'category_id', string='NAID Tags')
+
     # Additional details
     notes = fields.Text(string='Notes', help='Additional notes on certification or training')
     attachment_ids = fields.Many2many('ir.attachment', 'naid_operator_cert_attachment_rel', 'certification_id', 'attachment_id', string='Supporting Documents', help='Certificates, training records, etc.')
