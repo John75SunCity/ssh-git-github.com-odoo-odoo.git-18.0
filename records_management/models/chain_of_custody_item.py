@@ -34,7 +34,8 @@ class ChainOfCustodyItem(models.Model):
         ('opened', 'Opened'),
     ], string='Condition', default='good')
     serial_number = fields.Char(string='Serial Number')
-    value = fields.Monetary(string='Value')
+    # Monetary requires explicit currency_field reference for proper formatting & aggregation
+    value = fields.Monetary(string='Value', currency_field='currency_id')
     currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id.id)
     notes = fields.Text(string='Notes')
 
