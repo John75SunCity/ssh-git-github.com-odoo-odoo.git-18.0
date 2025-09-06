@@ -346,23 +346,14 @@ invisible="state != 'full'"/>
         </record>
 
         <!-- Menu Items -->
-        <menuitem id="menu_bin_barcode_inventory_root"
-                  name="Bin Inventory"
-                  parent="records_management.menu_records_operations"
-                  sequence="30"/>
+<menuitem id="menu_bin_barcode_inventory_root" name="Bin Inventory" parent="records_management.menu_records_operations" sequence="30" groups="records_management.group_records_user"/>
 
-        <menuitem id="menu_bin_barcode_inventory"
-                  name="Bin Barcode Inventory"
-                  parent="menu_bin_barcode_inventory_root"
-                  action="action_bin_barcode_inventory"
-                  sequence="10"/>
 
-        <menuitem id="menu_bin_sequence_reset"
-                  name="Reset Bin Sequences"
-                  parent="menu_bin_barcode_inventory_root"
-                  action="action_shredding_bin_sequence_reset_wizard"
-                  groups="records_management.group_records_manager"
-                  sequence="20"/>
+<menuitem id="menu_bin_barcode_inventory" name="Bin Barcode Inventory" parent="menu_bin_barcode_inventory_root" action="action_bin_barcode_inventory" sequence="10"/>
+
+
+<menuitem id="menu_bin_sequence_reset" name="Reset Bin Sequences" parent="menu_bin_barcode_inventory_root" action="action_shredding_bin_sequence_reset_wizard" groups="records_management.group_records_manager" sequence="20"/>
+
 
     </data>
 </odoo>

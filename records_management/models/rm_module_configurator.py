@@ -1,3 +1,4 @@
+import re
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
@@ -230,6 +231,11 @@ class RmModuleConfigurator(models.Model):
             # Project policy: interpolate after translation
             record.message_post(body=_("Configuration created: %s") % record.name)
 
+        # Feature gating: apply after creation if relevant
+        updated_keys = records._collect_updated_feature_keys(vals_list)
+        if updated_keys:
+            records._post_write_feature_gating(updated_keys)
+
         return records
 
     def write(self, vals):
@@ -257,6 +263,11 @@ class RmModuleConfigurator(models.Model):
                 record.message_post(
                     body=_("Configuration updated: %s = %s") % (record.config_key, record.current_value)
                 )
+
+        # Feature gating: detect updated feature toggles and apply
+        updated_keys = self._collect_updated_feature_keys(vals)
+        if updated_keys:
+            self._post_write_feature_gating(updated_keys)
 
         return res
 
@@ -312,8 +323,7 @@ class RmModuleConfigurator(models.Model):
 
                 if value_count == 0:
                     raise ValidationError(
-                        _("Configuration '%s' must have at least one value set.")
-                        % record.name
+                        _("Configuration '%s' must have at least one value set.") % record.name
                     )
 
     @api.constrains("config_type", "target_model_id", "target_field_id")
@@ -340,7 +350,7 @@ class RmModuleConfigurator(models.Model):
     @api.constrains("config_key")
     def _check_config_key_format(self):
         """Validate that config_key follows proper naming convention."""
-        import re
+    # regex compiled at module import (see top)
 
         for record in self:
             if not re.match(r"^[a-z][a-z0-9_]*[a-z0-9]$", record.config_key):
@@ -439,7 +449,7 @@ class RmModuleConfigurator(models.Model):
 
             # Log the application
             self.message_post(
-                body=_("Configuration applied successfully: %s", self.name)
+                body=_("Configuration applied successfully: %s") % self.name
             )
 
             return {
@@ -455,19 +465,17 @@ class RmModuleConfigurator(models.Model):
             }
 
         except Exception as exc:
-            error_msg = _("Failed to apply configuration '%s': %s") % (
-                self.name,
-                str(exc),
-            )
+            error_msg = _("Failed to apply configuration '%s': %s") % (self.name, str(exc))
             self.message_post(body=error_msg)
             raise UserError(error_msg) from exc
 
     def action_toggle_active(self):
         """Toggle the active state of the configuration."""
-        for record in self:
-            record.active = not record.active
-            status = _("activated") if record.active else _("deactivated")
-            record.message_post(body=_("Configuration %s: %s") % (status, record.name))
+    self.ensure_one()
+    self.active = not self.active
+    status = _("activated") if self.active else _("deactivated")
+    # Translation: include both placeholders inside the _() call to satisfy guidelines
+    self.message_post(body=_("Configuration %s: %s") % (status, self.name))
 
     def _default_configuration(self):
         """Reset configuration values to default for this record."""
@@ -488,7 +496,7 @@ class RmModuleConfigurator(models.Model):
 
         self.write(vals)
         self.message_post(
-            body=_("Configuration reset to default values: %s", self.name)
+            body=_("Configuration reset to default values: %s") % self.name
         )
 
     # ============================================================================
@@ -638,6 +646,14 @@ class RmModuleConfigurator(models.Model):
                 "config_type": "feature_toggle",
                 "value_boolean": True,
                 "description": "Enable pickup route optimization and management.",
+            },
+            {
+                "name": "Enable Bin Inventory",
+                "config_key": "bin_inventory_enabled",
+                "category": "fsm",
+                "config_type": "feature_toggle",
+                "value_boolean": True,
+                "description": "Enable shredding bin inventory management (barcode sequencing, fill tracking, route analytics).",
             },
             # ============================================================================
             # BILLING CONFIGURATIONS
@@ -919,6 +935,91 @@ class RmModuleConfigurator(models.Model):
         default=True,
         help='Controls automatic generation of destruction certificate documents upon confirmation.'
     )
+
+    # Bin Inventory Feature Toggle
+    bin_inventory_enabled = fields.Boolean(
+        string='Enable Bin Inventory',
+        default=True,
+        help='Enable management of shredding bins (barcode, weight estimation, routes).'
+    )
+
+    # ---------------------------------------------------------------------
+    # Feature Gating Helpers
+    # ---------------------------------------------------------------------
+    def _apply_bin_inventory_toggle(self):
+        """Activate or deactivate bin inventory related menus/actions based on feature toggle.
+
+        This uses the dynamic configuration record (config_key = 'bin_inventory_enabled').
+        If the configuration record is missing, it assumes enabled (fail-open) to avoid
+        accidentally hiding functionality on upgraded databases.
+        """
+        self.env.cr.execute("SELECT 1")  # no-op to ensure env usable (defensive)
+        # Fail-open (enabled) only if configuration record is missing; otherwise honor stored value
+        enabled = self.get_config_parameter('bin_inventory_enabled', default=True)
+
+        menu_xml_ids = [
+            'records_management.menu_bin_barcode_inventory_root',
+            'records_management.menu_bin_barcode_inventory',
+            'records_management.menu_bin_sequence_reset',
+            'records_management.menu_bin_route_dashboard',
+        ]
+        action_xml_ids = [
+            'records_management.action_bin_barcode_inventory',
+            'records_management.action_shredding_bin_sequence_reset_wizard',
+            'records_management.action_bin_route_dashboard',
+        ]
+
+        # Toggle menus
+        for xml_id in menu_xml_ids:
+            try:
+                menu = self.env.ref(xml_id, raise_if_not_found=False)
+                if menu and getattr(menu, 'active', True) != enabled:
+                    menu.active = enabled
+            except Exception:
+                continue
+
+        # Toggle actions
+        for xml_id in action_xml_ids:
+            try:
+                action = self.env.ref(xml_id, raise_if_not_found=False)
+                if action and getattr(action, 'active', True) != enabled:
+                    action.active = enabled
+            except Exception:
+                continue
+
+        # Clear caches so menu/action visibility updates immediately
+        try:
+            self.env['ir.ui.menu'].clear_caches()
+        except Exception:
+            pass
+
+    def _post_write_feature_gating(self, updated_keys=None):
+        """Central hook to apply gating after write/create.
+
+        :param updated_keys: optional iterable of config_keys updated (feature_toggle records)
+        """
+        if not updated_keys:
+            return
+        if 'bin_inventory_enabled' in updated_keys:
+            self._apply_bin_inventory_toggle()
+
+    def _collect_updated_feature_keys(self, vals_list_or_dict):
+        """Utility to collect feature toggle keys impacted by incoming vals.
+
+        Supports both create (list[dict]) and write (dict) signatures.
+        """
+        keys = set()
+        # When operating on configurator *records* representing feature toggles
+        # we look at self (records) to capture their config_key when value fields change.
+        if isinstance(vals_list_or_dict, dict):  # write path
+            if any(k.startswith('value_') for k in vals_list_or_dict):
+                for rec in self.filtered(lambda r: r.config_type == 'feature_toggle'):
+                    keys.add(rec.config_key)
+        else:  # create path (list)
+            for vals in vals_list_or_dict:
+                if vals.get('config_type') == 'feature_toggle' and 'config_key' in vals:
+                    keys.add(vals['config_key'])
+        return keys
 
     @api.model
     def set_config_parameter(self, config_key, value, config_type="parameter", name=None, category=None):
