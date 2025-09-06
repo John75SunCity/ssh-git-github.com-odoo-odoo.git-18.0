@@ -2,8 +2,9 @@
     <!-- Record rule: destruction certificates only visible on portal when invoice paid -->
     <record id="destruction_certificate_rule_portal_paid" model="ir.rule">
         <field name="name">Destruction Certificates: Portal Paid Visibility</field>
-        <field name="model_id" ref="model_destruction_certificate"/>
-        <field name="groups" eval="[(4, ref('portal.group_portal'))]"/>
+<field name="model_id" ref="model_destruction_certificate"/>
+<field name="groups" eval="[(4, ref('portal.group_portal'))]"/>
+
         <field name="domain_force">['&amp;', ('portal_visible', '=', True), ('partner_id', 'child_of', [user.partner_id.id])]</field>
     </record>
 </odoo>

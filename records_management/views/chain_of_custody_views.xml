@@ -152,12 +152,14 @@
                             <page string="📋 Audit Trail" name="audit">
                                 <field name="audit_log_ids">
                                     <list>
-<!-- Adjusted to match actual naid.audit.log model fields -->
-<field name="create_date" string="Timestamp"/>
+<field name="event_date"/>
 <field name="action_type"/>
 
                                         <field name="user_id"/>
                                         <field name="description"/>
+<field name="old_value"/>
+<field name="new_value"/>
+
 <field name="ip_address"/>
 
                                     </list>
