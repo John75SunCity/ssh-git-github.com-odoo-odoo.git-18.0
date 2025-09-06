@@ -208,7 +208,8 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-                                        <i class="fa fa-ellipsis-v"/>
+<i class="fa fa-ellipsis-v" role="img" aria-label="More options"/>
+
                                     </a>
                                 </div>
                             </div>
@@ -232,7 +233,8 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 <div class="row mt-2">
                                     <div class="col-12">
                                         <small class="text-muted">
-                                            <i class="fa fa-shield"/>
+<i class="fa fa-shield" aria-hidden="true"/>
+
                                             <field name="confidentiality_level"/>
                                         </small>
                                     </div>
@@ -240,7 +242,8 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 <div class="row mt-1">
                                     <div class="col-12">
                                         <small class="text-muted">
-                                            <i class="fa fa-clock"/>
+<i class="fa fa-clock" aria-hidden="true"/>
+
                                             <field name="effective_retention_years"/> years
                                         </small>
                                     </div>

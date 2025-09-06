@@ -17,7 +17,8 @@
 <sheet>
 <div class="oe_title">
     <h1>
-<i class="fa fa-sitemap text-primary me-2"/>
+<i class="fa fa-sitemap text-primary me-2" aria-hidden="true"/>
+
                                 Welcome to System Architecture Flowchart
 </h1>
 <h2 class="text-muted">Interactive Records Management System Visualization</h2>
@@ -27,7 +28,8 @@
     <div class="col-lg-8">
         <div class="alert alert-info">
 <h4>
-    <i class="fa fa-info-circle me-2"/>
+<i class="fa fa-info-circle me-2" aria-hidden="true"/>
+
 Interactive System Visualization</h4>
 <p class="mb-3">
                                         This advanced tool provides a comprehensive, interactive visual representation of your complete
@@ -53,7 +55,8 @@ Interactive System Visualization</h4>
 <div class="card h-100">
     <div class="card-body">
         <h5 class="card-title">
-            <i class="fa fa-search text-info me-2"/>
+<i class="fa fa-search text-info me-2" aria-hidden="true"/>
+
                                                     Interactive Search
         </h5>
         <p class="card-text">Advanced search with real-time filtering, regex support, and intelligent suggestions for users, companies, models, and relationships.</p>
@@ -64,7 +67,8 @@ Interactive System Visualization</h4>
 <div class="card h-100">
     <div class="card-body">
         <h5 class="card-title">
-            <i class="fa fa-eye text-success me-2"/>
+<i class="fa fa-eye text-success me-2" aria-hidden="true"/>
+
                                                     Access Visualization
         </h5>
         <p class="card-text">Comprehensive security audit with green/red indicators, permission matrices, and department-level access control visualization.</p>
@@ -75,7 +79,8 @@ Interactive System Visualization</h4>
     <div class="card h-100">
         <div class="card-body">
             <h5 class="card-title">
-                <i class="fa fa-download text-warning me-2"/>
+<i class="fa fa-download text-warning me-2" aria-hidden="true"/>
+
                                                     Export Options
             </h5>
             <p class="card-text">Professional documentation exports in PNG, PDF, SVG, and interactive HTML formats with customizable layouts and branding.</p>
@@ -86,7 +91,8 @@ Interactive System Visualization</h4>
 <div class="card h-100">
     <div class="card-body">
         <h5 class="card-title">
-            <i class="fa fa-graduation-cap text-primary me-2"/>
+<i class="fa fa-graduation-cap text-primary me-2" aria-hidden="true"/>
+
                                                     Guided Tutorial
         </h5>
         <p class="card-text">Interactive step-by-step tutorial with contextual help, feature highlights, and best practice recommendations.</p>
@@ -108,7 +114,8 @@ Interactive System Visualization</h4>
 <div class="card mt-3">
 <div class="card-header">
 <h6>
-    <i class="fa fa-cogs me-2"/>
+<i class="fa fa-cogs me-2" aria-hidden="true"/>
+
 Configuration Status</h6>
 </div>
 <div class="card-body">
@@ -130,7 +137,8 @@ Configuration Status</h6>
 <div class="card">
 <div class="card-header">
 <h6>
-    <i class="fa fa-chart-bar me-2"/>
+<i class="fa fa-chart-bar me-2" aria-hidden="true"/>
+
 System Overview</h6>
 </div>
 <div class="card-body">
@@ -380,7 +388,8 @@ System Overview</h6>
     <div class="card">
         <div class="card-header">
 <h5>
-    <i class="fa fa-cog me-2"/>
+<i class="fa fa-cog me-2" aria-hidden="true"/>
+
 Configuration Summary</h5>
 </div>
 <div class="card-body">
@@ -446,7 +455,8 @@ Configuration Summary</h5>
 <div class="card">
     <div class="card-header">
 <h5>
-    <i class="fa fa-eye me-2"/>
+<i class="fa fa-eye me-2" aria-hidden="true"/>
+
 Expected Output</h5>
 </div>
 <div class="card-body">
@@ -517,7 +527,8 @@ s</span>
 <div class="card">
 <div class="card-header d-flex justify-content-between align-items-center">
 <h6>
-    <i class="fa fa-code me-2"/>
+<i class="fa fa-code me-2" aria-hidden="true"/>
+
 Generated Configuration (Advanced)</h6>
 <button type="button" class="btn btn-sm btn-outline-secondary" onclick="navigator.clipboard.writeText(document.getElementById('generated_config').value)">
     <i class="fa fa-copy"/>
@@ -537,7 +548,8 @@ Generated Configuration (Advanced)</h6>
 <div class="card">
 <div class="card-header">
 <h6>
-    <i class="fa fa-bolt me-2"/>
+<i class="fa fa-bolt me-2" aria-hidden="true"/>
+
 Quick Actions</h6>
 </div>
 <div class="card-body">
@@ -575,7 +587,8 @@ Quick Actions</h6>
 <div class="text-center mb-4">
     <div class="oe_title">
         <h1>
-<i class="fa fa-check-circle text-success me-3"/>
+<i class="fa fa-check-circle text-success me-3" aria-hidden="true"/>
+
                                     Flowchart Ready!
 </h1>
 <h2 class="text-muted">Your interactive system visualization is configured and ready to launch</h2>
@@ -584,7 +597,8 @@ Quick Actions</h6>
 
 <div class="alert alert-success text-center mb-4">
     <h4>
-        <i class="fa fa-rocket me-2"/>
+<i class="fa fa-rocket me-2" aria-hidden="true"/>
+
 Configuration Complete</h4>
     <p class="mb-0">
                                 Your interactive system flowchart has been successfully configured with your selected options.
@@ -597,7 +611,8 @@ Configuration Complete</h4>
     <div class="col-lg-4 text-center">
         <div class="card h-100">
             <div class="card-body">
-                <i class="fa fa-mouse-pointer fa-4x text-primary mb-3"/>
+<i class="fa fa-mouse-pointer fa-4x text-primary mb-3" aria-hidden="true"/>
+
                 <h5>Navigate &amp; Interact</h5>
                 <p class="card-text">Click and drag to pan around the diagram. Use mouse wheel or touchpad to zoom in and out. Click on nodes for detailed information.</p>
             </div>
@@ -606,7 +621,8 @@ Configuration Complete</h4>
     <div class="col-lg-4 text-center">
         <div class="card h-100">
             <div class="card-body">
-                <i class="fa fa-search fa-4x text-info mb-3"/>
+<i class="fa fa-search fa-4x text-info mb-3" aria-hidden="true"/>
+
                 <h5>Search &amp; Filter</h5>
                 <p class="card-text">Use the powerful search bar to find specific components. Apply filters to focus on particular aspects of your system architecture.</p>
             </div>
@@ -615,7 +631,8 @@ Configuration Complete</h4>
     <div class="col-lg-4 text-center">
         <div class="card h-100">
             <div class="card-body">
-                <i class="fa fa-download fa-4x text-success mb-3"/>
+<i class="fa fa-download fa-4x text-success mb-3" aria-hidden="true"/>
+
                 <h5>Export &amp; Share</h5>
                 <p class="card-text">Export your diagrams in multiple formats for documentation, presentations, or sharing with stakeholders.</p>
             </div>
@@ -629,7 +646,8 @@ Configuration Complete</h4>
         <div class="card">
             <div class="card-header">
                 <h6>
-                    <i class="fa fa-info-circle me-2"/>
+<i class="fa fa-info-circle me-2" aria-hidden="true"/>
+
 Final Configuration</h6>
             </div>
 <div class="card-body">
@@ -661,7 +679,8 @@ Final Configuration</h6>
 <div class="card">
     <div class="card-header">
         <h6>
-            <i class="fa fa-clock me-2"/>
+<i class="fa fa-clock me-2" aria-hidden="true"/>
+
 Session Information</h6>
     </div>
 <div class="card-body">
@@ -696,7 +715,8 @@ Session Information</h6>
     <div class="col-12">
         <div class="alert alert-info">
 <h6>
-    <i class="fa fa-graduation-cap me-2"/>
+<i class="fa fa-graduation-cap me-2" aria-hidden="true"/>
+
 Interactive Tutorial Enabled</h6>
 <p class="mb-2">
                                         The guided tutorial will automatically start when you open the flowchart. It will walk you through
@@ -783,7 +803,8 @@ System Architecture Flowchart</h1>
 <div invisible="step != 'complete'">
 <div class="alert alert-success text-center">
     <h3>
-        <i class="fa fa-check-circle me-2"/>
+<i class="fa fa-check-circle me-2" aria-hidden="true"/>
+
 Ready to Launch!</h3>
     <p class="mb-0">Your interactive flowchart configuration is complete and ready to use.</p>
 </div>

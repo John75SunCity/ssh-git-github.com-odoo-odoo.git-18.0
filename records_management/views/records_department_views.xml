@@ -180,7 +180,8 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-                                        <i class="fa fa-ellipsis-v"/>
+<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+
                                     </a>
                                 </div>
                             </div>
@@ -204,7 +205,8 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                 <div class="row mt-2">
                                     <div class="col-12">
                                         <small class="text-muted">
-                                            <i class="fa fa-user"/>
+<i class="fa fa-user" aria-hidden="true"/>
+
                                             <field name="user_id"/>
                                         </small>
                                     </div>

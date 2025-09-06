@@ -24,18 +24,21 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-<i class="fa fa-cube" title="Container" aria-label="Container" role="img"/>
+<i class="fa fa-cube" title="Container" aria-hidden="true"/>
+
 
                                         <field name="name"/>
                                     </div>
                                     <div class="o_secondary">
-                                        <i class="fa fa-user" title="Customer"/>
+<i class="fa fa-user" title="Customer" aria-hidden="true"/>
+
                                         <field name="partner_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#">
-                                        <i class="fa fa-ellipsis-v" title="More options"/>
+<i class="fa fa-ellipsis-v" title="More options" role="img" aria-label="More options"/>
+
                                     </a>
                                 </div>
                             </div>
@@ -73,29 +76,42 @@
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <button class="btn btn-primary btn-sm" type="object" name="action_view_documents">
-                                            <i class="fas fa-file-text-o" title="View Documents"/> Documents
+<i class="fas fa-file-text-o" title="View Documents" aria-hidden="true"/>
+ Documents
                                         </button>
                                     </div>
                                     <div class="col-6">
                                         <button class="btn btn-info btn-sm" type="object" name="action_generate_barcode">
-                                            <i class="fas fa-barcode" title="Generate Barcode"/> Barcode
+<i class="fas fa-barcode" title="Generate Barcode" aria-hidden="true"/>
+ Barcode
                                         </button>
                                     </div>
                                 </div>
                                 <div class="row mt-1">
                                     <div class="col-12">
                                         <button class="btn btn-success btn-sm" type="object" name="action_generate_qr_code">
-                                            <i class="fas fa-qrcode" title="Generate QR Code"/> QR Code
+<i class="fas fa-qrcode" title="Generate QR Code" aria-hidden="true"/>
+ QR Code
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class="fas fa-edit" title="Edit Container"/> Edit Container</a>
-                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item"><i class="fas fa-file-text-o" title="View Documents"/> View Documents</a>
-                                <a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item"><i class="fas fa-map-marker" title="Retrieve Container"/> Retrieve Container</a>
-                                <a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item"><i class="fas fa-barcode" title="Print Barcode"/> Print Barcode</a>
-                                <a role="menuitem" type="object" name="action_generate_qr_code" class="dropdown-item"><i class="fas fa-qrcode" title="Generate QR Code"/> Generate QR Code</a>
+<a role="menuitem" type="edit" class="dropdown-item">
+    <i class="fas fa-edit" title="Edit Container" aria-hidden="true"/>
+ Edit Container</a>
+<a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
+    <i class="fas fa-file-text-o" title="View Documents" aria-hidden="true"/>
+ View Documents</a>
+<a role="menuitem" type="object" name="action_retrieve_container" class="dropdown-item">
+    <i class="fas fa-map-marker" title="Retrieve Container" aria-hidden="true"/>
+ Retrieve Container</a>
+<a role="menuitem" type="object" name="action_generate_barcode" class="dropdown-item">
+    <i class="fas fa-barcode" title="Print Barcode" aria-hidden="true"/>
+ Print Barcode</a>
+<a role="menuitem" type="object" name="action_generate_qr_code" class="dropdown-item">
+    <i class="fas fa-qrcode" title="Generate QR Code" aria-hidden="true"/>
+ Generate QR Code</a>
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="object" name="action_destroy_container" class="dropdown-item"><i class="fas fa-trash" title="Destroy Container"/> Destroy Container</a>
                             </div>

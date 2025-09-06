@@ -249,7 +249,8 @@
                                     </div>
                                     <div class="o_kanban_manage_button_section">
                                         <a class="o_kanban_manage_toggle_button" href="#">
-                                            <i class="fa fa-ellipsis-v" title="More options"/>
+<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+
                                         </a>
                                     </div>
                                 </div>

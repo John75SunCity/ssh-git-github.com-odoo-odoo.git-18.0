@@ -100,7 +100,8 @@
                                         </div>
                                         <div class="o_kanban_manage_button_section">
                                             <a class="o_kanban_manage_toggle_button" href="#">
-                                                <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
+<i class="fa fa-ellipsis-v" role="img" aria-label="Manage options" title="Manage options"/>
+
                                             </a>
                                         </div>
                                     </div>
@@ -108,10 +109,14 @@
                                         <div class="o_kanban_record_bottom">
                                             <div class="oe_kanban_bottom_left">
                                                 <div>
-                                                    <i class="fa fa-user"/> <field name="user_id"/>
+<i class="fa fa-user" aria-hidden="true"/>
+<field name="user_id"/>
+
                                                 </div>
                                                 <div>
-                                                    <i class="fa fa-truck"/> <field name="delivery_method"/>
+<i class="fa fa-truck" aria-hidden="true"/>
+<field name="delivery_method"/>
+
                                                 </div>
                                             </div>
                                             <div class="oe_kanban_bottom_right">

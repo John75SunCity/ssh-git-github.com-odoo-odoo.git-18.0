@@ -31,7 +31,8 @@
                                     </div>
                                     <div class="o_kanban_manage_button_section">
                                         <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-                                            <i class="fa fa-ellipsis-v" title="More options"/>
+<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+
                                         </a>
                                     </div>
                                 </div>
@@ -40,7 +41,8 @@
                                         <div class="row">
                                             <div class="col-6">
                                                 <button name="action_view_containers" type="object" class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-cube"/>
+<i class="fa fa-cube" aria-hidden="true"/>
+
                                                     View Containers
                                                 </button>
                                             </div>

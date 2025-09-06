@@ -32,7 +32,8 @@
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#">
-                                        <i class="fa fa-ellipsis-v" title="More options"/>
+<i class="fa fa-ellipsis-v" title="More options" role="img" aria-label="More options"/>
+
                                     </a>
                                 </div>
                             </div>
@@ -40,19 +41,23 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div>
-                                            <i class="fa fa-folder" title="Document Type"/>
+<i class="fa fa-folder" aria-hidden="true"/>
+
                                             <field name="document_type_id"/>
                                         </div>
                                         <div>
-                                            <i class="fa fa-cube" title="Container"/>
+<i class="fa fa-cube" aria-hidden="true"/>
+
                                             <field name="container_id"/>
                                         </div>
                                         <div t-if="record.destruction_eligible_date.raw_value">
-                                            <i class="fa fa-calendar-times" title="Destruction Date"/>
+<i class="fa fa-calendar-times" aria-hidden="true"/>
+
                                             <field name="destruction_eligible_date"/>
                                         </div>
                                         <div t-if="record.total_scan_size_kb.raw_value and record.total_scan_size_visible.raw_value">
-                                            <i class="fa fa-file" title="File Size"/>
+<i class="fa fa-file" aria-hidden="true"/>
+
                                             <field name="total_scan_size_kb"/> KB
                                         </div>
                                     </div>

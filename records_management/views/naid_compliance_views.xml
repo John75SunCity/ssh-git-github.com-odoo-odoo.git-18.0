@@ -29,14 +29,22 @@
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" title="More options"/></a>
+<a class="o_kanban_manage_toggle_button" href="#">
+    <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+</a>
                                 </div>
                             </div>
 <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div class="row">
                                     <div class="col-8">
-                                        <div><i class="fa fa-calendar"/> Certified: <field name="certification_date"/></div>
-                                        <div><i class="fa fa-clock-o"/> Expires: <field name="expiry_date"/></div>
+<div>
+    <i class="fa fa-calendar" aria-hidden="true"/>
+ Certified: <field name="certification_date"/>
+</div>
+<div>
+    <i class="fa fa-clock-o" aria-hidden="true"/>
+ Expires: <field name="expiry_date"/>
+</div>
                                     </div>
                                     <div class="col-4">
                                         <span class="badge" t-att-class="record.certificate_valid.raw_value ? 'badge-success' : 'badge-danger'">
