@@ -289,6 +289,13 @@ class ChainOfCustody(models.Model):
         help="Related audit log entries",
     )
 
+    audit_log_count = fields.Integer(
+        string="Audit Logs Count",
+        compute="_compute_audit_log_count",
+        store=False,
+        help="Number of related audit log entries for quick stat button display",
+    )
+
     audit_notes = fields.Text(
         string="Audit Notes", help="Special audit notes or observations"
     )
@@ -331,6 +338,10 @@ class ChainOfCustody(models.Model):
     )
 
     # Computed Methods
+    @api.depends("audit_log_ids")
+    def _compute_audit_log_count(self):
+        for record in self:
+            record.audit_log_count = len(record.audit_log_ids)
     @api.depends("name", "transfer_type", "to_custodian_id")
     def _compute_display_name(self):
         """Compute display name for the custody record."""
