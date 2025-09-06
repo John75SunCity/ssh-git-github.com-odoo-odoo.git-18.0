@@ -19,6 +19,7 @@ from . import bin_key
 from . import bin_key_history
 from . import bin_key_unlock_service
 from . import bin_unlock_service
+from . import calendar_event
 from . import certificate_template_data
 from . import chain_of_custody
 from . import container_access_activity
@@ -233,6 +234,7 @@ from . import shredding_service_photo
 from . import shredding_team
 from . import signed_document
 from . import signed_document_audit
+from . import sign_request
 from . import stock_lot
 from . import stock_lot_attribute
 from . import stock_lot_attribute_option

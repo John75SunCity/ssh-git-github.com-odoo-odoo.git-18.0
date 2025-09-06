@@ -87,6 +87,16 @@ class ProjectTask(models.Model):
     naid_compliant = fields.Boolean(string="NAID Compliant", default=False, help="Enable NAID AAA compliance tracking for this task")
     certificate_required = fields.Boolean(string="Certificate Required", compute='_compute_certificate_required', store=True)
     certificate_of_destruction_id = fields.Many2one(comodel_name='ir.attachment', string="Certificate of Destruction", readonly=True)
+    operator_certification_id = fields.Many2one(
+        comodel_name='naid.operator.certification',
+        string='NAID Operator',
+        help="NAID certified operator assigned to this FSM task"
+    )
+    audit_requirement_id = fields.Many2one(
+        comodel_name='naid.audit.requirement',
+        string='NAID Audit Requirement',
+        help="Related NAID audit requirement for this task"
+    )
 
     # Optimized computed fields
     total_weight = fields.Float(string='Total Weight', compute='_compute_total_weight', store=True)
@@ -322,5 +332,3 @@ class ProjectTask(models.Model):
             if task.naid_audit_log_ids:
                 raise UserError(_("Cannot delete a task with NAID audit trail entries. Please archive it instead."))
         return super().unlink()
-
-
