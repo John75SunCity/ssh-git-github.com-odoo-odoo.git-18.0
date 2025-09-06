@@ -243,6 +243,7 @@ from . import stock_move_smsvalidation
 from . import stock_picking
 from . import survey_feedback_theme
 from . import survey_improvement_action
+from . import survey_user_input
 from . import system_diagram_data
 from . import system_flowchart_wizard
 from . import temp_inventory
