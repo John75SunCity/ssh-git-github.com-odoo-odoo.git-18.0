@@ -56,7 +56,15 @@ class NaidOperatorCertification(models.Model):
     ], string='Record Status', default='pending', tracking=True)  # Disambiguated from any other certification status fields
 
     # Training and verification fields (requires website_slides module)
-    required_trainings_ids = fields.Many2many('slide.channel', string='Required Trainings', help='Trainings the operator must complete (from learning module if installed)')
+    # Explicit relation table + columns for validator compliance (auto naming avoided intentionally)
+    required_trainings_ids = fields.Many2many(
+        'slide.channel',
+        'naid_cert_required_training_rel',  # relation table
+        'certification_id',  # current model FK
+        'training_id',  # slide.channel FK
+        string='Required Trainings',
+        help='Trainings the operator must complete (from learning module if installed)'
+    )
     completed_trainings_ids = fields.Many2many('slide.channel', 'naid_cert_training_rel', 'certification_id', 'training_id', string='Completed Trainings', help='Trainings successfully completed')
     training_verified = fields.Boolean(string='Training Verified', default=False, tracking=True, help='Indicates if all required trainings are completed and verified')
     verified_by_id = fields.Many2one('res.users', string='Verified By', tracking=True, help='User who verified the training completion')
