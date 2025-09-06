@@ -28,7 +28,7 @@ class RevenueForecast(models.Model):
         ('in_progress', 'In Progress'),
         ('closed', 'Closed'),
         ('cancelled', 'Cancelled'),
-    ], string="Status", default='draft', required=True, tracking=True)
+    ], string="Forecast Status", default='draft', required=True, tracking=True)
 
     # ============================================================================
     # PERIOD & TYPE

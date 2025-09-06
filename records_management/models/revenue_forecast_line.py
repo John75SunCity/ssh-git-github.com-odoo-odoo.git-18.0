@@ -41,7 +41,7 @@ class RevenueForecastLine(models.Model):
         ('in_progress', 'In Progress'),
         ('achieved', 'Achieved'),
         ('missed', 'Missed'),
-    ], string="Status", default='draft', required=True, tracking=True)
+    ], string="Line Status", default='draft', required=True, tracking=True)
     confidence_level = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),

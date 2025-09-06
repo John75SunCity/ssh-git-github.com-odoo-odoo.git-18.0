@@ -36,7 +36,7 @@ class RecordsContainerMovement(models.Model):
         ('verified', 'Verified'),
         ('exception', 'Exception'),
         ('cancelled', 'Cancelled'),
-    ], string="Status", default='draft', required=True, tracking=True)
+    ], string="Movement Status", default='draft', required=True, tracking=True)
 
     # ============================================================================
     # MOVEMENT DETAILS

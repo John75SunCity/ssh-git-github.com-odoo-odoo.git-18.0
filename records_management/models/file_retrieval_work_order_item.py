@@ -140,7 +140,7 @@ class FileRetrievalWorkOrderItem(models.Model):
         ('delivered', 'Delivered'),      # File delivered to customer
         ('not_found', 'Not Found'),      # File not found in expected location
         ('cancelled', 'Cancelled')       # Request cancelled
-    ], string="Status", default='pending', required=True, tracking=True,
+    ], string="Item Status", default='pending', required=True, tracking=True,
        help="Current status in streamlined 6-step workflow")
 
     priority = fields.Selection([

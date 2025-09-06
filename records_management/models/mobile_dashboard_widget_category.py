@@ -32,7 +32,7 @@ class MobileDashboardWidgetCategory(models.Model):
 
     description = fields.Text(string="Description", help="Description of this category")
 
-    icon = fields.Char(string="Icon", help="Icon for the category")
+    icon = fields.Char(string="Category Icon", help="Icon for the category (disambiguated from activity_exception_icon)")
 
     is_active = fields.Boolean(
         string="Active", default=True, help="Whether this category is active"

@@ -29,7 +29,7 @@ class NaidCustody(models.Model):
     )
     user_id = fields.Many2one(
         'res.users',
-        string="Responsible User",
+        string="Custody Owner",  # Disambiguated from activity_user_id label 'Responsible User'
         default=lambda self: self.env.user,
         required=True,
         help="The user responsible for this custody event."

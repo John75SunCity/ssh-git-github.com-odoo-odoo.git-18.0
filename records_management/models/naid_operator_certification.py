@@ -17,7 +17,7 @@ class NAIDOperatorCertification(models.Model):
         ('certified', 'Certified'),
         ('expired', 'Expired'),
         ('revoked', 'Revoked')
-    ], string='Certification Status', default='pending', tracking=True)
+    ], string='Record Status', default='pending', tracking=True)  # Disambiguated from any other certification status fields
 
     # Training and verification fields (requires website_slides module)
     required_trainings_ids = fields.Many2many('slide.channel', string='Required Trainings', help='Trainings the operator must complete (from learning module if installed)')

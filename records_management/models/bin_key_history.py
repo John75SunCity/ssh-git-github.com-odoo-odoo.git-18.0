@@ -47,7 +47,7 @@ class BinKeyHistory(models.Model):
     )
     user_id = fields.Many2one(
         'res.users',
-        string='Responsible User',
+        string='Assigned User',  # Disambiguated from mail.activity's activity_user_id "Responsible User"
         required=True,
         default=lambda self: self.env.user
     )
