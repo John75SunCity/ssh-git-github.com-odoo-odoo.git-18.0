@@ -85,6 +85,29 @@ class StockLot(models.Model):
             "context": {"default_lot_id": self.id},
         }
 
+    # Placeholder view buttons (XML object buttons)
+    def action_view_quants(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Quants'),
+            'res_model': 'stock.quant',
+            'view_mode': 'list,form',
+            'domain': [('lot_id', '=', self.id)],
+            'target': 'current',
+        }
+
+    def action_view_stock_moves(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Stock Moves'),
+            'res_model': 'stock.move.line',
+            'view_mode': 'list,form',
+            'domain': [('lot_id', '=', self.id)],
+            'target': 'current',
+        }
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================

@@ -332,6 +332,11 @@ class ShreddingService(models.Model):
         action['context'] = {'default_shredding_service_id': self.id}
         return action
 
+    # Placeholder button from XML (safe stub)
+    def action_view_destruction_items(self):
+        self.ensure_one()
+        return False
+
     # Override Methods
     @api.model_create_multi
     def create(self, vals_list):

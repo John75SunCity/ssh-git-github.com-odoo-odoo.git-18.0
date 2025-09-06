@@ -76,14 +76,14 @@ class ProductTemplate(models.Model):
                 ['product_id', 'rating'],
                 ['product_id']
             )
-            
+
             # Map results to template IDs
             feedback_map = {}
             for item in feedback_data:
                 product_tmpl_id = self.env['product.product'].browse(item['product_id'][0]).product_tmpl_id.id
                 if product_tmpl_id not in feedback_map:
                     feedback_map[product_tmpl_id] = []
-                
+
                 # Assuming rating is a selection of strings '1', '2', '3', '4', '5'
                 try:
                     feedback_map[product_tmpl_id].append(int(item['rating']))
@@ -151,3 +151,35 @@ class ProductTemplate(models.Model):
 
         return total_price
 
+    # -------------------------------------------------------------
+    # Placeholder button actions from XML (safe stubs)
+    # -------------------------------------------------------------
+    def action_configure_pricing(self):
+        self.ensure_one()
+        return False
+
+    def action_view_sales(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Sales Orders'),
+            'res_model': 'sale.order.line',
+            'view_mode': 'list,form',
+            'domain': [('product_id.product_tmpl_id', 'in', self.ids)],
+            'target': 'current',
+        }
+
+    def action_view_pricing_history(self):
+        self.ensure_one()
+        return False
+
+    def action_view_variants(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Variants'),
+            'res_model': 'product.product',
+            'view_mode': 'list,form',
+            'domain': [('product_tmpl_id', '=', self.id)],
+            'target': 'current',
+        }

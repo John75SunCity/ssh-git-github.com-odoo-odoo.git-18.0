@@ -22,9 +22,9 @@ class RecordsRetentionPolicyVersion(models.Model):
     # === CORE IDENTIFICATION ===
     name = fields.Char(string="Version Name", required=True, tracking=True)
     policy_id = fields.Many2one(
-        comodel_name='records.retention.policy', 
-        string="Policy", 
-        required=True, 
+        comodel_name='records.retention.policy',
+        string="Policy",
+        required=True,
         ondelete='cascade'
     )
     version = fields.Integer(string='Version Number', required=True, default=1)
@@ -39,8 +39,8 @@ class RecordsRetentionPolicyVersion(models.Model):
     description = fields.Text(string="Version Description")
     changes = fields.Text(string="Changes in this Version")
     created_by_id = fields.Many2one(
-        comodel_name='res.users', 
-        string="Created By", 
+        comodel_name='res.users',
+        string="Created By",
         default=lambda self: self.env.user
     )
     created_date = fields.Datetime(string="Created Date", default=fields.Datetime.now)
@@ -53,7 +53,7 @@ class RecordsRetentionPolicyVersion(models.Model):
         help="Date when this version becomes effective"
     )
     expiry_date = fields.Date(
-        string="Expiry Date", 
+        string="Expiry Date",
         help="Date when this version expires"
     )
     superseded_by_id = fields.Many2one(
@@ -61,13 +61,13 @@ class RecordsRetentionPolicyVersion(models.Model):
         string="Superseded By",
         help="Version that superseded this one"
     )
-    
+
     # === METADATA ===
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(
-        comodel_name='res.company', 
-        related='policy_id.company_id', 
-        store=True, 
+        comodel_name='res.company',
+        related='policy_id.company_id',
+        store=True,
         readonly=True
     )
 
@@ -77,7 +77,7 @@ class RecordsRetentionPolicyVersion(models.Model):
         compute='_compute_is_current',
         store=True
     )
-    
+
     @api.depends('policy_id', 'state', 'version')
     def _compute_is_current(self):
         """Determine if this is the current active version."""
@@ -130,13 +130,13 @@ class RecordsRetentionPolicyVersion(models.Model):
         self.ensure_one()
         if self.state != 'draft':
             raise ValidationError(_("Only draft versions can be activated."))
-        
+
         # Find current active version
         current_active = self.search([
             ('policy_id', '=', self.policy_id.id),
             ('state', '=', 'active')
         ])
-        
+
         # Supersede current active version
         if current_active:
             current_active.write({
@@ -144,7 +144,7 @@ class RecordsRetentionPolicyVersion(models.Model):
                 'superseded_by_id': self.id,
                 'expiry_date': fields.Date.today()
             })
-        
+
         # Activate this version
         self.write({
             'state': 'active',
@@ -152,7 +152,7 @@ class RecordsRetentionPolicyVersion(models.Model):
             'approved_date': fields.Datetime.now(),
             'effective_date': fields.Date.today()
         })
-        
+
         self.message_post(body=_("Version %s activated by %s") % (self.version, self.env.user.name))
 
     def action_archive(self):
@@ -160,19 +160,19 @@ class RecordsRetentionPolicyVersion(models.Model):
         self.ensure_one()
         if self.state == 'active':
             raise ValidationError(_("Cannot archive the active version. Please activate another version first."))
-        
+
         self.write({'state': 'archived'})
         self.message_post(body=_("Version %s archived by %s") % (self.version, self.env.user.name))
 
     def action_create_new_version(self):
         """Create a new version based on this one."""
         self.ensure_one()
-        
+
         # Get the next version number
         max_version = self.search([
             ('policy_id', '=', self.policy_id.id)
         ], order='version desc', limit=1).version
-        
+
         new_version = self.copy({
             'version': max_version + 1,
             'name': _("%s v%s") % (self.policy_id.name, max_version + 1),
@@ -185,7 +185,7 @@ class RecordsRetentionPolicyVersion(models.Model):
             'expiry_date': False,
             'superseded_by_id': False,
         })
-        
+
         return {
             'type': 'ir.actions.act_window',
             'name': _('New Policy Version'),
@@ -194,3 +194,14 @@ class RecordsRetentionPolicyVersion(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
+
+    # -------------------------------------------------------------
+    # Placeholder Buttons (XML references) - Safe Stubs
+    # -------------------------------------------------------------
+    def action_compare_versions(self):
+        self.ensure_one()
+        return False
+
+    def action_view_audit_trail(self):
+        self.ensure_one()
+        return False

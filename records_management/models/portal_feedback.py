@@ -20,7 +20,7 @@ class PortalFeedback(models.Model):
     assigned_to_id = fields.Many2one('res.users', string='Assigned To', tracking=True)
 
     description = fields.Html(string='Feedback Details', required=True)
-    
+
     state = fields.Selection([
         ('new', 'New'),
         ('in_progress', 'In Progress'),
@@ -93,7 +93,7 @@ class PortalFeedback(models.Model):
             # Basic rating-based score
             if record.rating:
                 score = (int(record.rating) - 3) / 2.0  # Scale 1-5 to -1 to 1
-            
+
             # Basic keyword analysis (can be expanded)
             if record.description:
                 lower_desc = record.description.lower()
@@ -149,3 +149,8 @@ class PortalFeedback(models.Model):
         self.ensure_one()
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Feedback has been cancelled."))
+
+    # Placeholder XML button
+    def action_view_related_records(self):
+        self.ensure_one()
+        return False

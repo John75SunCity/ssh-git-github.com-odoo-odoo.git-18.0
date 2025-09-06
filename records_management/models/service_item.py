@@ -230,11 +230,65 @@ class ServiceItem(models.Model):
             "context": {'default_service_item_id': self.id}
         }
 
+    # -------------------------------------------------------------------------
+    # PLACEHOLDER METHODS FOR VIEW BUTTONS (Activation / Duplication / Stats)
+    # -------------------------------------------------------------------------
+    def action_activate(self):
+        """Activate the service item (inverse of deactivate)."""
+        self.ensure_one()
+        if not self.active:
+            self.active = True
+            self.message_post(body=_("Service item activated."))
+        return True
+
+    def action_deactivate(self):
+        """Deactivate the service item (sets active to False)."""
+        self.ensure_one()
+        if self.active:
+            self.active = False
+            self.message_post(body=_("Service item deactivated."))
+        return True
+
+    def action_duplicate_service(self):
+        """Duplicate the service item. Lightweight helper stub.
+        Returns a window action opening the new copy for immediate editing."""
+        self.ensure_one()
+        copy_vals = {}
+        if self.service_code:
+            copy_vals['service_code'] = f"{self.service_code}-COPY"
+        duplicate = self.copy(copy_vals)
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Service Item Copy"),
+            "res_model": "service.item",
+            "view_mode": "form",
+            "res_id": duplicate.id,
+            "target": "current",
+            "context": {"default_name": _("Copy of %s", self.name)}
+        }
+
+    def action_view_related_requests(self):
+        """Placeholder: open related project tasks linked to this service item."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Related Requests"),
+            "res_model": "project.task",
+            "view_mode": "tree,form,kanban",
+            "domain": [("service_item_id", "=", self.id)],
+            "context": {"default_service_item_id": self.id}
+        }
+
+    def action_view_pricing_history(self):
+        """Placeholder for upcoming pricing history view. Returns False until implemented."""
+        self.ensure_one()
+        return False
+
     # ============================================================================
     # CRON JOB
     # ============================================================================
     @api.model
-    def _cron_check_maintenance_due(self):
+    def _cron_service_item_maintenance_due(self):
         """Cron job to create activities for items due for maintenance."""
         due_items = self.search([
             ('is_maintenance_due', '=', True),

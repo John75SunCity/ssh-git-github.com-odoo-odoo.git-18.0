@@ -190,3 +190,10 @@ class NaidOperatorCertification(models.Model):
         """Get portal URL for customer access"""
         self.ensure_one()
         return f"/my/certification/{self.id}"
+
+    # -------------------------------------------------------------
+    # Placeholder button (XML reference) - Safe Stub
+    # -------------------------------------------------------------
+    def action_renew_certification(self):
+        self.ensure_one()
+        return False

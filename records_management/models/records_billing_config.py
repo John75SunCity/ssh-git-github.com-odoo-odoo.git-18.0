@@ -622,3 +622,50 @@ class RecordsBillingConfig(models.Model):
                 'auto_compute_storage_fees': True,
             })
         return config
+
+    # =====================================================================
+    # PLACEHOLDER BUTTON ACTIONS (from XML views) - Safe Navigation Stubs
+    # =====================================================================
+    def action_generate_invoice(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Invoices'),
+            'res_model': 'account.move',
+            'view_mode': 'list,form',
+            'domain': [('id', '=', 0)],
+            'target': 'current',
+        }
+
+    def action_view_analytics(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Billing Analytics'),
+            'res_model': 'records.billing.rate',
+            'view_mode': 'list,form',
+            'domain': [('id', '=', 0)],
+            'target': 'current',
+        }
+
+    def action_view_billing_history(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Billing History'),
+            'res_model': 'invoice.generation.log',
+            'view_mode': 'list,form',
+            'domain': [('id', '=', 0)],
+            'target': 'current',
+        }
+
+    def action_view_invoices(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Invoices'),
+            'res_model': 'account.move',
+            'view_mode': 'list,form',
+            'domain': [('id', '=', 0)],
+            'target': 'current',
+        }
