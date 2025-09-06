@@ -448,8 +448,6 @@ access_signed_document_audit_manager,signed_document_audit,signed.document.audit
 access_signed_document_audit_user,signed_document_audit,signed.document.audit,records_management.group_records_user,1,1,1,0
 access_signed_document_manager,signed_document,signed.document,records_management.group_records_manager,1,1,1,1
 access_signed_document_user,signed_document,signed.document,records_management.group_records_user,1,1,1,0
-access_slide_channel_manager,slide_channel,slide.channel,records_management.group_records_manager,1,1,1,1
-access_slide_channel_user,slide_channel,slide.channel,records_management.group_records_user,1,1,1,0
 access_stock_lot_attribute_manager,stock_lot_attribute,stock.lot.attribute,records_management.group_records_manager,1,1,1,1
 access_stock_lot_attribute_option_manager,stock_lot_attribute_option,stock.lot.attribute.option,records_management.group_records_manager,1,1,1,1
 access_stock_lot_attribute_option_user,stock_lot_attribute_option,stock.lot.attribute.option,records_management.group_records_user,1,1,1,0

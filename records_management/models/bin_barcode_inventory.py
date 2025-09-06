@@ -186,3 +186,39 @@ class BinBarcodeInventory(models.Model):
 
                     except ValueError:
                         continue
+
+    # --------------------------------------------------
+    # State transition actions (used by form header buttons)
+    # --------------------------------------------------
+    def action_set_available(self):
+        """Mark bin as available (reset from other states)"""
+        self.ensure_one()
+        if self.state in ('full', 'maintenance', 'retired'):
+            if self.state == 'retired':
+                raise UserError(_("Cannot set a retired bin back to Available."))
+        self.state = 'available'
+        self.message_post(body=_("Bin set to Available"))
+        return True
+
+    def action_set_full(self):
+        """Mark bin as full"""
+        self.ensure_one()
+        if self.state not in ('in_use', 'available'):
+            raise UserError(_("Only bins that are Available or In Use can be marked Full."))
+        self.state = 'full'
+        self.message_post(body=_("Bin marked Full"))
+        return True
+
+    def action_service_complete(self):
+        """Service bin and return it to in_use state with updated service dates"""
+        self.ensure_one()
+        today = fields.Date.context_today(self)
+        if self.state != 'full':
+            raise UserError(_("Only Full bins can be serviced."))
+        self.last_service_date = today
+        self.next_service_date = today + relativedelta(days=30)
+        self.state = 'in_use'
+        self.current_weight = 0.0
+        self.fill_percentage = 0.0
+        self.message_post(body=_("Service completed; bin returned to In Use."))
+        return True

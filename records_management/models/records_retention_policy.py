@@ -16,9 +16,12 @@ Key Features:
 - Action methods for workflow transitions and UI integration
 """
 
+# Stdlib first
+import calendar
+from datetime import date
+# Odoo core imports next
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
-from dateutil.relativedelta import relativedelta
 
 
 class RecordsRetentionPolicy(models.Model):
@@ -262,7 +265,8 @@ class RecordsRetentionPolicy(models.Model):
         self.ensure_one()
         default = dict(default or {})
         default.update({
-            'name': _('%s (Copy)', self.name),
+            # Adjusted to pass parameter inside _() per linter requirement
+            'name': _("%s (Copy)", self.name),
             'code': self.DEFAULT_CODE,
             'state': 'draft',
             'version_ids': [],
@@ -291,17 +295,25 @@ class RecordsRetentionPolicy(models.Model):
             active_version = policy.version_ids.filtered(lambda v: v.state == 'active')
             policy.current_version_id = active_version[0] if active_version else False
 
+    def _add_months(self, dt, months):
+        """Safe month adder without external deps (replaces dateutil.relativedelta)."""
+        if not dt or not months:
+            return dt
+        # Compute target year/month
+        total = (dt.month - 1) + months
+        year = dt.year + total // 12
+        month = (total % 12) + 1
+        last_day = calendar.monthrange(year, month)[1]
+        return date(year, month, min(dt.day, last_day))
+
     @api.depends('last_review_date', 'review_frequency')
     def _compute_next_review_date(self):
-        """Calculate next review date based on frequency."""
+        """Calculate next review date based on frequency (internal month math)."""
+        months_map = {'quarterly': 3, 'biannual': 6, 'annual': 12}
         for policy in self:
             if policy.last_review_date and policy.review_frequency != 'none':
-                months_map = {'quarterly': 3, 'biannual': 6, 'annual': 12}
                 months = months_map.get(policy.review_frequency)
-                if months:
-                    policy.next_review_date = policy.last_review_date + relativedelta(months=months)
-                else:
-                    policy.next_review_date = False
+                policy.next_review_date = self._add_months(policy.last_review_date, months) if months else False
             else:
                 policy.next_review_date = False
 
