@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from dateutil.relativedelta import relativedelta
 
 class NAIDOperatorCertification(models.Model):
@@ -6,6 +6,17 @@ class NAIDOperatorCertification(models.Model):
     _description = 'NAID Operator Certification'
     _inherit = ['hr.employee', 'mail.thread', 'mail.activity.mixin', 'portal.mixin']  # Inherit from hr.employee for employee data integration
     _order = 'name'
+
+    # ------------------------------------------------------------------
+    # FIELD LABEL DISAMBIGUATION
+    # ------------------------------------------------------------------
+    # hr.employee provides employee_token (label "Security Token") and
+    # portal.mixin provides access_token (label "Security Token"). Both
+    # inherited simultaneously here caused the runtime warning about
+    # duplicate labels. We override their string labels to make them
+    # semantically distinct while preserving underlying behavior.
+    employee_token = fields.Char(string=_('Employee Security Token'))  # override label only
+    access_token = fields.Char(string=_('Portal Access Token'))  # override label only
 
     # Core certification fields
     certification_number = fields.Char(string='Certification Number', required=True, tracking=True, default=lambda self: self._generate_certification_number())

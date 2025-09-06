@@ -59,15 +59,8 @@ class DestructionCertificate(models.Model):
     invoice_id = fields.Many2one(
         comodel_name="account.move",
         string="Customer Invoice",
-        help="Invoice generated for this destruction service (must be in Posted + Paid state for portal visibility)",
+        help="Invoice linked to this destruction service. When it reaches Paid state the certificate document will be generated automatically (if not already).",
         tracking=True,
-    )
-
-    portal_visible = fields.Boolean(
-        string="Portal Visible",
-        compute="_compute_portal_visible",
-        store=False,
-        help="Derived flag: certificate only visible to portal user once invoice is paid (if an invoice exists).",
     )
 
     # ============================================================================
@@ -225,8 +218,19 @@ class DestructionCertificate(models.Model):
     # COMPUTE METHODS
     # -------------------------------------------------------------------------
     @api.depends("invoice_id.payment_state")
-    def _compute_portal_visible(self):
+    def _auto_generate_on_invoice_paid(self):
+        """When the linked invoice becomes paid, ensure certificate document exists.
+
+        This replaces prior portal visibility gating. Keeps portal access simple
+        and shifts gating to document existence timing.
+        """
         for rec in self:
-            # If there's an invoice: require it to be posted & paid; else hide until an invoice is linked
             inv = rec.invoice_id
-            rec.portal_visible = bool(inv and inv.payment_state in ("paid", "in_payment"))
+            if (
+                inv
+                and inv.payment_state == "paid"
+                and not rec.certificate_attachment_id
+                and rec._is_certificate_feature_enabled()
+            ):
+                # Generate the document (placeholder now; later real PDF)
+                rec.generate_certificate_document()

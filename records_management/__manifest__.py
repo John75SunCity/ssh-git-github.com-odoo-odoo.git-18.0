@@ -67,7 +67,7 @@
         "security/intelligent_search_security.xml",
         "security/naid_security.xml",
         "security/portal_request_security.xml",
-    "security/destruction_certificate_security.xml",
+    # Removed portal visibility restriction rule (replaced by auto-generation logic on paid invoice)
         # 2. Data files (sequences and base data next)
         "data/sequence_data.xml",  # Sequences often needed early
         "data/core_records_data.xml",

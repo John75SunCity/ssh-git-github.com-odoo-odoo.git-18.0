@@ -911,6 +911,15 @@ class RmModuleConfigurator(models.Model):
         help='Allow linking checklist items to stock locations'
     )
 
+    # ---------------------------------------------------------------------
+    # Destruction Certificate Feature Toggle
+    # ---------------------------------------------------------------------
+    destruction_certificate_enabled = fields.Boolean(
+        string='Enable Destruction Certificates',
+        default=True,
+        help='Controls automatic generation of destruction certificate documents upon confirmation.'
+    )
+
     @api.model
     def set_config_parameter(self, config_key, value, config_type="parameter", name=None, category=None):
         """
