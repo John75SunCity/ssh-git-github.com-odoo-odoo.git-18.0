@@ -42,6 +42,23 @@ class CustomerFeedback(models.Model):
         ('2', 'Urgent')
     ], string='Priority', compute='_compute_priority', store=True, default='0')
 
+    # Escalation & Ownership (added to match view usage)
+    escalation_level = fields.Selection([
+        ('low', 'Low'),
+        ('moderate', 'Moderate'),
+        ('high', 'High'),
+        ('critical', 'Critical'),
+    ], string='Escalation Level', tracking=True, index=True)
+    escalated_to_id = fields.Many2one('res.users', string='Escalated To', tracking=True)
+    escalated_by_id = fields.Many2one('res.users', string='Escalated By', tracking=True, default=lambda self: self.env.user, readonly=True)
+    escalation_time = fields.Float(string='Escalation Time (hrs)', help='Time in hours from creation until escalation.', compute='_compute_escalation_time', store=True)
+    escalation_date = fields.Datetime(string='Escalation Date', readonly=True)
+
+    # Computed metrics referenced by analytics pages (placeholders if not already implemented elsewhere)
+    response_time = fields.Float(string='Response Time (hrs)', readonly=True, help='Time in hours from creation until first response.')
+    resolution_time = fields.Float(string='Resolution Time (hrs)', readonly=True, help='Time in hours from creation until resolution.')
+
+
     # ============================================================================
     # RELATIONSHIPS & CONTEXT
     # ============================================================================
@@ -174,7 +191,8 @@ class CustomerFeedback(models.Model):
         if self.state != "new":
             raise UserError(_("Only new feedback can be acknowledged."))
         self.write({"state": "acknowledged"})
-        self.message_post(body=_("Feedback acknowledged by %s.", self.env.user.name))
+        # Log acknowledgement with actor name
+        self.message_post(body=_("Feedback acknowledged by %s") % self.env.user.name)
 
     def action_start_progress(self):
         self.ensure_one()
@@ -203,14 +221,36 @@ class CustomerFeedback(models.Model):
         if self.state in ["resolved", "closed"]:
             raise UserError(_("Cannot escalate resolved or closed feedback."))
 
-        # Increase priority
+        # Increase priority automatically when escalating
         if self.priority == "0":
             self.priority = "1"
         elif self.priority == "1":
             self.priority = "2"
 
-        self.message_post(body=_("Feedback escalated by %s" % self.env.user.name))
+        # Set escalation metadata
+        if not self.escalation_date:
+            self.escalation_date = fields.Datetime.now()
+        if not self.escalated_by_id:
+            self.escalated_by_id = self.env.user
+
+        # Auto-assign escalation level if none chosen
+        if not self.escalation_level:
+            self.escalation_level = 'moderate' if self.priority == '1' else 'high' if self.priority == '2' else 'low'
+        # Log escalation action (include user performing escalation)
+        self.message_post(body=_("Feedback escalated by %s") % self.env.user.name)
         return True
+
+    # ==========================================================================
+    # COMPUTE METHODS (Metrics)
+    # ==========================================================================
+    @api.depends('create_date', 'escalation_date')
+    def _compute_escalation_time(self):
+        for record in self:
+            if record.create_date and record.escalation_date:
+                delta = fields.Datetime.from_string(record.escalation_date) - fields.Datetime.from_string(record.create_date)
+                record.escalation_time = round(delta.total_seconds() / 3600.0, 2)
+            else:
+                record.escalation_time = 0.0
 
     def action_reopen(self):
         self.ensure_one()
