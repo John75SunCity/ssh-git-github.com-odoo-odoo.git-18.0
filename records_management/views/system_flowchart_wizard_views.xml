@@ -1,109 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 <data>
+<!-- Removed redundant step-specific form views (welcome/configure/preview/complete)
+             to comply with naming pattern {model_name}_view_form. Consolidated into one
+             dynamic multi-step form view below. -->
 
-<!-- ============================================================================ -->
-<!-- SYSTEM FLOWCHART WIZARD - WELCOME STEP VIEW -->
-<!-- ============================================================================ -->
-<record id="system_flowchart_wizard_view_form_welcome" model="ir.ui.view">
-    <field name="name">system.flowchart.wizard.view.form.welcome</field>
+<!-- Single compliant form view -->
+<record id="system_flowchart_wizard_view_form" model="ir.ui.view">
+    <field name="name">system.flowchart.wizard.view.form</field>
     <field name="model">system.flowchart.wizard</field>
     <field name="arch" type="xml">
-        <form string="System Flowchart - Welcome">
-            <header>
-                <button name="action_next_step" string="Get Started" type="object" class="btn-primary"/>
-                <field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete"/>
-            </header>
+<form string="System Architecture Flowchart Configuration">
+    <header>
+<button name="action_previous_step" string="← Back" type="object" invisible="step == 'welcome'" class="btn btn-secondary"/>
+<button name="action_next_step" string="Next →" type="object" invisible="step in ('complete', 'preview')" class="btn btn-primary"/>
+<button name="action_open_flowchart" string="🚀 Generate Flowchart" type="object" invisible="step != 'preview'" class="btn btn-success btn-lg"/>
+<button name="action_open_flowchart" string="📊 Open Flowchart" type="object" invisible="step != 'complete'" class="btn btn-primary btn-lg"/>
+<field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete" statusbar_colors='{"welcome":"blue","configure":"orange","preview":"yellow","complete":"green"}'/>
+</header>
 <sheet>
-<div class="oe_title">
-    <h1>
-<i class="fa fa-sitemap text-primary me-2" aria-hidden="true"/>
-
-                                Welcome to System Architecture Flowchart
-</h1>
-<h2 class="text-muted">Interactive Records Management System Visualization</h2>
-</div>
-
-<div class="row mt-4">
-    <div class="col-lg-8">
-        <div class="alert alert-info">
-<h4>
-<i class="fa fa-info-circle me-2" aria-hidden="true"/>
-
-Interactive System Visualization</h4>
-<p class="mb-3">
-                                        This advanced tool provides a comprehensive, interactive visual representation of your complete
-                                        Records Management System architecture, including:
-</p>
-<ul class="mb-0">
-    <li>
-        <strong>System Components:</strong> Core models, relationships, and data flows with real-time updates</li>
-    <li>
-        <strong>User Access Control:</strong> Color-coded access rights and permission visualization</li>
-    <li>
-        <strong>Company Structure:</strong> Multi-tenant organizational hierarchy and department assignments</li>
-    <li>
-        <strong>NAID Compliance View:</strong> Complete compliance framework with audit trail visualization</li>
-    <li>
-        <strong>Integration Points:</strong> FSM, Portal, and third-party system connections</li>
-</ul>
-</div>
-
-<h3 class="mb-3">Key Features</h3>
-<div class="row g-3">
-    <div class="col-md-6">
-<div class="card h-100">
-    <div class="card-body">
-        <h5 class="card-title">
-<i class="fa fa-search text-info me-2" aria-hidden="true"/>
-
-                                                    Interactive Search
-        </h5>
-        <p class="card-text">Advanced search with real-time filtering, regex support, and intelligent suggestions for users, companies, models, and relationships.</p>
+<!-- Dynamic Content Based on Step -->
+<div invisible="step != 'welcome'">
+    <div class="text-center mb-3">
+        <h1>
+            <i class="fa fa-sitemap text-primary me-2"/>
+System Architecture Flowchart</h1>
+        <p class="lead text-muted">Interactive visualization of your Records Management System</p>
     </div>
 </div>
-</div>
-<div class="col-md-6">
-<div class="card h-100">
-    <div class="card-body">
-        <h5 class="card-title">
-<i class="fa fa-eye text-success me-2" aria-hidden="true"/>
 
-                                                    Access Visualization
-        </h5>
-        <p class="card-text">Comprehensive security audit with green/red indicators, permission matrices, and department-level access control visualization.</p>
+<div invisible="step != 'configure'">
+    <div class="mb-3">
+        <h2>Configuration Options</h2>
+        <p class="text-muted">Customize your flowchart visualization</p>
+    </div>
+<group>
+    <field name="search_scenario"/>
+    <field name="layout_style"/>
+    <field name="color_scheme"/>
+</group>
+</div>
+
+<div invisible="step != 'preview'">
+    <div class="mb-3">
+        <h2>Configuration Preview</h2>
+        <p class="text-muted">Review your settings before generating the flowchart</p>
+    </div>
+<group>
+    <field name="preview_data" readonly="1" widget="text" height="150"/>
+    <field name="config_valid" readonly="1"/>
+</group>
+</div>
+
+<div invisible="step != 'complete'">
+    <div class="alert alert-success text-center">
+        <h3>
+            <i class="fa fa-check-circle me-2" aria-hidden="true"/>
+Ready to Launch!</h3>
+        <p class="mb-0">Your interactive flowchart configuration is complete and ready to use.</p>
     </div>
 </div>
-</div>
-<div class="col-md-6">
-    <div class="card h-100">
-        <div class="card-body">
-            <h5 class="card-title">
-<i class="fa fa-download text-warning me-2" aria-hidden="true"/>
+</sheet>
+</form>
+</field>
+</record>
 
-                                                    Export Options
-            </h5>
-            <p class="card-text">Professional documentation exports in PNG, PDF, SVG, and interactive HTML formats with customizable layouts and branding.</p>
-</div>
-</div>
-</div>
-<div class="col-md-6">
-<div class="card h-100">
-    <div class="card-body">
-        <h5 class="card-title">
-<i class="fa fa-graduation-cap text-primary me-2" aria-hidden="true"/>
+<!-- Window Actions updated to reference the compliant view id -->
+<record id="system_flowchart_wizard_action" model="ir.actions.act_window">
+<field name="name">System Architecture Flowchart</field>
+<field name="res_model">system.flowchart.wizard</field>
+<field name="view_mode">form</field>
+<field name="target">new</field>
+<field name="view_id" ref="system_flowchart_wizard_view_form"/>
+<field name="context">{
+                'default_step': 'welcome',
+                'default_search_scenario': 'system_overview',
+                'default_layout_style': 'hierarchical',
+                'default_color_scheme': 'professional',
+                'default_export_format': 'png'
+            }</field>
+</record>
 
-                                                    Guided Tutorial
-        </h5>
-        <p class="card-text">Interactive step-by-step tutorial with contextual help, feature highlights, and best practice recommendations.</p>
-    </div>
-</div>
-</div>
-</div>
-</div>
-<div class="col-lg-4">
-<div class="card">
-<div class="card-body text-center">
+<record id="system_flowchart_wizard_action_advanced" model="ir.actions.act_window">
+<field name="name">Advanced Flowchart Configuration</field>
+<field name="res_model">system.flowchart.wizard</field>
+<field name="view_mode">form</field>
+<field name="target">new</field>
+<field name="view_id" ref="system_flowchart_wizard_view_form"/>
+<field name="context">{
+                'default_step': 'configure',
+                'default_search_scenario': 'custom',
+                'default_show_tutorial': False
+            }</field>
+</record>
+
+<!-- Menu items unchanged -->
+<menuitem id="system_flowchart_wizard_menu" name="📊 System Flowchart" parent="menu_records_management_root" action="system_flowchart_wizard_action" sequence="15" groups="records_management.group_records_manager"/>
+
+<menuitem id="system_flowchart_wizard_menu_advanced" name="⚙️ Advanced Flowchart Config" parent="menu_records_configuration" action="system_flowchart_wizard_action_advanced" sequence="35" groups="records_management.group_records_manager"/>
+
+
+</data>
+</odoo>
 <img src="/records_management/static/description/flowchart_preview.png" alt="Interactive System Flowchart Preview" class="img-fluid rounded shadow-sm mb-3" style="max-height: 300px; width: auto;"/>
 <h6 class="text-muted">Interactive System Diagram Preview</h6>
 <p class="small text-muted">Real-time visualization with drag-and-drop navigation</p>
