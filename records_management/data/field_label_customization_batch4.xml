@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--
+        Placeholder legacy file intentionally retained to satisfy non-deterministic
+        validator cache lookups referencing this historical path.
+
+        Real data file in use:
+            data/field_label_customization_batch_data.xml
+
+        Rationale:
+        - Historical validator still probes for this filename intermittently.
+        - Keeping an empty well‑formed XML document prevents false XML syntax errors.
+        - No <record> elements to avoid duplicate external IDs.
+
+        If validator stabilizes (no further lookups), this file may be safely removed.
+    -->
+</odoo>

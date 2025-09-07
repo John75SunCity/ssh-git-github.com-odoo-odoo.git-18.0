@@ -1,6 +1,6 @@
-"""Deprecated stub: original container.retrieval.item model removed.
+"""Deprecated stub: legacy container retrieval item model removed.
 
-This file intentionally left without model definitions so the validator
-no longer detects a model requiring ACLs. Historical data should be
-migrated to unified retrieval line models (records.retrieval.order.line).
+Left intentionally empty (no model class) so validators/security checks
+do not expect ACL entries. Data is migrated to the unified
+`records.retrieval.order.line` model.
 """

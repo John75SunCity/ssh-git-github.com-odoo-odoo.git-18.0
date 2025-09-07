@@ -45,7 +45,7 @@ Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
         "data/temp_inventory_configurator_data.xml",
-        "data/field_label_customization_batch4.xml",
+        "data/field_label_customization_batch_data.xml",
         "views/records_management_menus.xml",
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_profile_views.xml",
@@ -245,3 +245,4 @@ Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance
     "sequence": 100,
     "images": ["static/description/icon.png"],
 }
+
