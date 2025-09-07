@@ -248,6 +248,8 @@
         "demo/naid_demo_certificates.xml",
         "demo/records_config_mail_templates_data.xml",
     ],
+        # Post-init hook: dynamically set cron fields (numbercall/doall vs max_calls/catchup)
+        "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [
             "records_management/static/src/scss/records_management.scss",

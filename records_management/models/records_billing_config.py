@@ -40,7 +40,7 @@ except Exception:  # pragma: no cover - fallback only if dependency missing
                     other = other + _td(days=self.days)
             return other
 
-    relativedelta = _RelativedeltaFallback  # type: ignore
+    relativedelta = _RelativedeltaFallback  # Fallback when python-dateutil is not installed
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError

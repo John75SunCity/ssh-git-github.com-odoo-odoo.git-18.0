@@ -1,8 +1,34 @@
 # ============================================================================
 # IMPORTS & DEPENDENCIES
 # ============================================================================
-# Fixed: Reordered imports per Odoo standards (stdlib → third-party → Odoo core → addons)
-from dateutil.relativedelta import relativedelta
+# Robust import: handle missing stubs / dependency (pyright warning) with fallback.
+try:
+    from dateutil.relativedelta import relativedelta  # type: ignore  # missing type stubs in some envs
+except Exception:  # pragma: no cover - optional dependency fallback
+    from datetime import date as _date
+    import calendar as _calendar
+
+    class _RelativedeltaFallback:
+        """Fallback supporting months + days needed for forecast line generation."""
+        def __init__(self, months=0, days=0):
+            self.months = months
+            self.days = days
+
+        def __radd__(self, other):
+            if isinstance(other, _date):
+                if self.months:
+                    total_months = other.year * 12 + (other.month - 1) + self.months
+                    year = total_months // 12
+                    month = total_months % 12 + 1
+                    last_day = _calendar.monthrange(year, month)[1]
+                    from datetime import date as _d
+                    other = _d(year, month, min(other.day, last_day))
+                if self.days:
+                    from datetime import timedelta as _td
+                    other = other + _td(days=self.days)
+            return other
+
+    relativedelta = _RelativedeltaFallback
 
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError

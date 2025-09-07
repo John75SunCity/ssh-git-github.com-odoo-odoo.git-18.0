@@ -120,9 +120,7 @@
             <field name="code">model.check_expiring_credentials()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="active">True</field>
-<field name="numbercall">-1</field>
-<field name="doall">False</field>
+<field name="active">True</field>
         </record>
 
         <record id="cron_cleanup_audit_logs" model="ir.cron">
@@ -132,9 +130,7 @@
             <field name="code">model.cleanup_old_logs()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">months</field>
-            <field name="active">True</field>
-<field name="numbercall">-1</field>
-<field name="doall">False</field>
+<field name="active">True</field>
         </record>
 
         <record id="cron_compliance_check" model="ir.cron">
@@ -144,9 +140,7 @@
             <field name="code">model.check_compliance()</field>
             <field name="interval_number">4</field>
             <field name="interval_type">hours</field>
-            <field name="active">False</field>
-<field name="numbercall">-1</field>
-<field name="doall">False</field>
+<field name="active">False</field>
         </record>
 
         <!-- Enhanced NAID Compliance Configurations -->
@@ -287,9 +281,7 @@
             <field name="code">model.check_calibration_due()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
-            <field name="active">True</field>
-<field name="numbercall">-1</field>
-<field name="doall">False</field>
+<field name="active">True</field>
         </record>
 
         <record id="cron_training_expiry_check" model="ir.cron">
@@ -299,9 +291,7 @@
             <field name="code">model.check_training_expiry()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
-            <field name="active">False</field>
-<field name="numbercall">-1</field>
-<field name="doall">False</field>
+<field name="active">False</field>
         </record>
 
         <record id="cron_certificate_generation" model="ir.cron">
@@ -311,9 +301,7 @@
             <field name="code">model.generate_pending_certificates()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">hours</field>
-            <field name="active">False</field>
-<field name="numbercall">-1</field>
-<field name="doall">False</field>
+<field name="active">False</field>
         </record>
 
         <!-- NAID Model XML ID definitions for security rules -->

@@ -1,10 +1,15 @@
-from dateutil.relativedelta import relativedelta # type: ignore
-import qrcode # type: ignore
+from dateutil.relativedelta import relativedelta  # type: ignore
 import base64
 from io import BytesIO
 
-from odoo import models, fields, api, _ # pyright: ignore[reportMissingModuleSource, reportAttributeAccessIssue]
+from odoo import models, fields, api, _  # pyright: ignore[reportMissingModuleSource, reportAttributeAccessIssue]
 from odoo.exceptions import ValidationError, UserError
+
+# Replace direct qrcode import with guarded import (removes unused type: ignore)
+try:
+    import qrcode  # noqa: F401
+except Exception:  # pragma: no cover - optional dependency fallback
+    qrcode = None
 
 
 class RecordsContainer(models.Model):
@@ -282,6 +287,8 @@ class RecordsContainer(models.Model):
     def action_generate_qr_code(self):
         """Generate QR code for the container and return download action."""
         self.ensure_one()
+        if qrcode is None:
+            raise UserError(_("QR code library not installed. Please install python package 'qrcode'."))
         # Generate QR code data (e.g., container ID or barcode)
         qr_data = f"Container ID: {self.id}\nBarcode: {self.barcode or 'N/A'}"
 
