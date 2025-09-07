@@ -133,6 +133,7 @@
 <p class="mt4">
     <span t-esc="sign_ctx['operator']"/>
 </p>
+</div>
 </div><!-- end signature row (.row) -->
 </div><!-- end page (.page) -->
 </t><!-- web.external_layout -->

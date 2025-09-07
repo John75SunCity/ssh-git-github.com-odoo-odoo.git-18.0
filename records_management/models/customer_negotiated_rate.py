@@ -346,6 +346,6 @@ class CustomerNegotiatedRate(models.Model):
                     comparison_data["savings_percentage"] = (
                         (base_value - self.monthly_rate) / base_value
                     ) * 100
-
+            return comparison_data
+        # Return default comparison when no base_rate_model could be resolved
         return comparison_data
-        return data
