@@ -22,7 +22,7 @@ class CustomerFeedback(models.Model):
     _order = 'create_date desc'
 
     # ============================================================================
-    # CORE & WORKFLOW
+    # CORE & WORKFLOW (added escalation_date + communication_count)
     # ============================================================================
     name = fields.Char(string='Subject', required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
@@ -59,6 +59,7 @@ class CustomerFeedback(models.Model):
     expected_resolution_date = fields.Date(string='Expected Resolution Date')
     follow_up_required = fields.Boolean(string='Follow-up Required')
     follow_up_date = fields.Date(string='Follow-up Date')
+    escalation_date = fields.Datetime(string='Escalated On', readonly=True)
 
     # Durations (hours) – simplistic compute placeholders
     response_time = fields.Float(string='First Response Time (h)', readonly=True, compute='_compute_times', store=False)
@@ -117,11 +118,6 @@ class CustomerFeedback(models.Model):
     # ============================================================================
     # COMPUTE & CONSTRAINTS
     # ============================================================================
-    @api.depends('communication_ids')
-    def _compute_communication_count(self):
-        for rec in self:
-            rec.communication_count = len(rec.communication_ids)
-
     @api.depends('acknowledged_date', 'create_date', 'resolution_date', 'escalated_by_id')
     def _compute_times(self):
         """Simple delta computations (in hours). TODO: refine with SLA logic."""
@@ -138,42 +134,47 @@ class CustomerFeedback(models.Model):
                 rec.escalation_time = (rec.acknowledged_date - rec.create_date).total_seconds() / 3600.0
 
     # ============================================================================
-    # ACTION METHODS
+    # ACTION METHODS (consolidated & cleaned - removed duplicate later block)
     # ============================================================================
     def action_acknowledge(self):
         self.ensure_one()
         if self.state != 'new':
-            return
+            raise UserError(_("Only new feedback can be acknowledged."))
         self.write({
             'state': 'acknowledged',
             'acknowledged_date': fields.Datetime.now(),
-            'assigned_to_id': self.assigned_to_id.id or self.env.user.id,
+            'user_id': self.user_id.id or self.env.user.id,  # use existing user_id field
         })
+        self.message_post(body=_("Feedback acknowledged by %s") % self.env.user.name)
 
     def action_start_progress(self):
         self.ensure_one()
         if self.state not in ('new', 'acknowledged'):
-            return
+            raise UserError(_("Only new or acknowledged feedback can be started."))
         self.write({'state': 'in_progress'})
+        self.message_post(body=_("Started working on feedback."))
 
     def action_resolve(self):
         self.ensure_one()
         if self.state not in ('acknowledged', 'in_progress'):
-            return
+            raise UserError(_("Only acknowledged or in-progress feedback can be resolved."))
         self.write({
             'state': 'resolved',
             'resolution_date': fields.Datetime.now(),
-            'resolved_by_id': self.env.user.id,
         })
+        self.message_post(body=_("Feedback resolved."))
 
     def action_close(self):
         self.ensure_one()
         if self.state != 'resolved':
-            return
+            raise UserError(_("Only resolved feedback can be closed."))
         self.write({'state': 'closed'})
+        self.message_post(body=_("Feedback closed."))
 
     def action_escalate(self):
         self.ensure_one()
+        if self.state in ('resolved', 'closed'):
+            raise UserError(_("Cannot escalate resolved or closed feedback."))
         level_order = ['low', 'medium', 'high', 'critical']
         current = self.escalation_level or 'low'
         if current == 'critical':
@@ -183,9 +184,11 @@ class CustomerFeedback(models.Model):
             'escalation_level': next_level,
             'escalated_by_id': self.env.user.id,
             'escalated_to_id': self.escalated_to_id.id or self.env.user.id,
+            'escalation_date': self.escalation_date or fields.Datetime.now(),
         })
         if self.state == 'new':
             self.action_acknowledge()
+        self.message_post(body=_("Feedback escalated by %s") % self.env.user.name)
 
     # --- Sentiment placeholder (extendable) ---
     @api.onchange('comments', 'rating')
@@ -217,38 +220,35 @@ class CustomerFeedback(models.Model):
             if vals.get("name", _("New")) == _("New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("customer.feedback") or _("New")
         return super().create(vals_list)
+
+    # ==========================================================================
+    # COMPUTE METHODS (Metrics)
+    # ==========================================================================
+    @api.depends('create_date', 'escalation_date')
+    def _compute_escalation_time(self):
+        for record in self:
+            if record.create_date and record.escalation_date:
+                delta = fields.Datetime.from_string(record.escalation_date) - fields.Datetime.from_string(record.create_date)
+                record.escalation_time = round(delta.total_seconds() / 3600.0, 2)
+            else:
+                record.escalation_time = 0.0
+
+    # Removed action_link_latest_survey_response (referenced undefined survey fields); re-add when fields exist.
+
+    # ============================================================================
+    # COMPUTE HELPERS (retain single valid implementation)
+    # ============================================================================
+    @api.depends('message_ids')
+    def _compute_communication_count(self):
+        for record in self:
+            record.communication_count = len(record.message_ids)
+
+    @api.onchange('contact_id')
+    def _onchange_contact_id(self):
+        """If a contact with a parent is selected and no customer set yet, set partner_id."""
         for rec in self:
-            rec.survey_answer_count = len(rec.survey_user_input_id.user_input_line_ids) if rec.survey_user_input_id else 0
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_acknowledge(self):
-        self.ensure_one()
-        if self.state != "new":
-            raise UserError(_("Only new feedback can be acknowledged."))
-        self.write({"state": "acknowledged"})
-        # Log acknowledgement with actor name
-        self.message_post(body=_("Feedback acknowledged by %s") % self.env.user.name)
-
-    def action_start_progress(self):
-        self.ensure_one()
-        if self.state not in ["new", "acknowledged"]:
-            raise UserError(_("Only new or acknowledged feedback can be started."))
-        self.write({"state": "in_progress"})
-        self.message_post(body=_("Started working on feedback."))
-
-    def action_resolve(self):
-        self.ensure_one()
-        if self.state != "in_progress":
-            raise UserError(_("Only in-progress feedback can be resolved."))
-        self.write({"state": "resolved", "response_date": fields.Date.today()})
-        self.message_post(body=_("Feedback resolved."))
-
-    def action_close(self):
-        self.ensure_one()
-        if self.state != "resolved":
-            raise UserError(_("Only resolved feedback can be closed."))
+            if rec.contact_id and rec.contact_id.parent_id and not rec.partner_id:
+                rec.partner_id = rec.contact_id.parent_id
         self.write({"state": "closed"})
         self.message_post(body=_("Feedback closed."))
 

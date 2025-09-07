@@ -214,7 +214,7 @@ class DocumentRetrievalItem(models.Model):
 
             access_rate = 0.0
             if item.partner_id:
-                negotiated_rate = self.env["customer.negotiated.rates"].search([
+                negotiated_rate = self.env["customer.negotiated.rate"].search([
                     ("partner_id", "=", item.partner_id.id),
                     ("rate_type", "=", "container_access"),
                     ("state", "=", "active"),
@@ -251,7 +251,7 @@ class DocumentRetrievalItem(models.Model):
 
             if item.work_order_id and item.work_order_id.delivery_method == 'physical' and partner:
                 delivery_fee = 0.0
-                negotiated_delivery = self.env["customer.negotiated.rates"].search([
+                negotiated_delivery = self.env["customer.negotiated.rate"].search([
                     ("partner_id", "=", partner.id),
                     ("rate_type", "=", "delivery"),
                     ("state", "=", "active"),
@@ -279,7 +279,7 @@ class DocumentRetrievalItem(models.Model):
 
             if item.status == "not_found" and partner:
                 not_found_fee = 0.0
-                negotiated_not_found = self.env["customer.negotiated.rates"].search([
+                negotiated_not_found = self.env["customer.negotiated.rate"].search([
                     ("partner_id", "=", partner.id),
                     ("rate_type", "=", "not_found_search"),
                     ("state", "=", "active"),

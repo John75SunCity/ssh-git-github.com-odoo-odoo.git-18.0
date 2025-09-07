@@ -44,8 +44,7 @@ from . import customer_inventory
 from . import customer_inventory_report
 from . import customer_inventory_report_line
 from . import customer_inventory_report_model
-from . import customer_negotiated_rate
-from . import customer_negotiated_rates  # register aggregated negotiated rates model (fix ACL resolution)
+from . import customer_negotiated_rate  # unified negotiated rate model (duplicate customer_negotiated_rates removed)
 from . import destruction_certificate
 from . import destruction_event
 from . import destruction_item

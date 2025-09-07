@@ -105,7 +105,6 @@
         "views/customer_feedback_views.xml",
         "views/customer_inventory_report_views.xml",
         "views/customer_negotiated_rate_views.xml",
-        "views/customer_negotiated_rates_views.xml",
         "views/field_label_helper_wizard_views.xml",
         "views/fleet_vehicle_enhanced_views.xml",
         "views/inventory_adjustment_reason_views.xml",
