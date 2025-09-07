@@ -14,6 +14,8 @@ env['records.billing.config'].compute_monthly_storage_fees()
             <field name="interval_number" eval="1"/>
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d 00:00:00')"/>
+<field name="numbercall">-1</field>
+<field name="doall">False</field>
         </record>
 
         <!-- Monthly Customer Inventory Reports -->
@@ -33,6 +35,8 @@ except Exception as e:
             <field name="interval_number" eval="1"/>
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=30)).strftime('%Y-%m-%d 09:00:00')"/>
+<field name="numbercall">-1</field>
+<field name="doall">False</field>
         </record>
 
         <!-- Monthly storage fee automation workflow -->
@@ -51,6 +55,8 @@ except Exception as e:
             <field name="interval_number" eval="1"/>
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d 00:00:00')"/>
+<field name="numbercall">-1</field>
+<field name="doall">False</field>
         </record>
 
         <!-- Monthly inventory report automation -->
@@ -69,6 +75,8 @@ except Exception as e:
             <field name="interval_number" eval="1"/>
             <field name="interval_type">months</field>
             <field name="nextcall" eval="(datetime.now().replace(day=1) + timedelta(days=30)).strftime('%Y-%m-%d 09:00:00')"/>
+<field name="numbercall">-1</field>
+<field name="doall">False</field>
         </record>
 <!-- NAID Training Reminder Action -->
 <record id="ir_cron_naid_training_reminders" model="ir.cron">
@@ -86,6 +94,8 @@ except Exception as e:
     <field name="interval_number" eval="1"/>
     <field name="interval_type">days</field>
     <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 09:00:00')"/>
+<field name="numbercall">-1</field>
+<field name="doall">False</field>
 </record>
 
 <!-- NAID Certification Expiry Check -->
@@ -104,6 +114,8 @@ except Exception as e:
     <field name="interval_number" eval="1"/>
     <field name="interval_type">days</field>
     <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 09:00:00')"/>
+<field name="numbercall">-1</field>
+<field name="doall">False</field>
 </record>
     </data>
 </odoo>
