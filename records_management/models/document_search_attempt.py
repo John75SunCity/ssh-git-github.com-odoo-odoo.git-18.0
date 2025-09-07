@@ -24,6 +24,17 @@ class DocumentSearchAttempt(models.Model):
         help='Unified retrieval order line replacing legacy file/item links'
     )
 
+    # DEPRECATED LEGACY LINK (required only so deprecated document.retrieval.item One2many inverse still resolves)
+    # This field was previously removed during legacy purge. It is reintroduced strictly to avoid
+    # registry KeyError on inverse_name 'retrieval_item_id' from the deprecated model's
+    # search_attempt_ids One2many. New logic MUST use retrieval_line_id instead.
+    retrieval_item_id = fields.Many2one(
+        'document.retrieval.item',
+        string='(Deprecated) Retrieval Item',
+        help='Legacy linkage kept only for backward compatibility. Use retrieval_line_id going forward.',
+        index=True
+    )
+
     # Specialized retrieval item links
     container_retrieval_id = fields.Many2one(
         "container.retrieval", string="Container Retrieval", help="Link to container retrieval request"

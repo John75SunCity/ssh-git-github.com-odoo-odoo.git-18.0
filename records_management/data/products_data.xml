@@ -137,7 +137,7 @@
             <field name="default_code">REC-RETRIEVAL</field>
             <field name="list_price">35.00</field>
             <field name="standard_price">22.00</field>
-            <field name="description">Individual document or file retrieval service (per request)</field>
+<field name="description">Individual document retrieval service (per request)</field>
         </record>
 
         <record id="product_scanning_service" model="product.product">
