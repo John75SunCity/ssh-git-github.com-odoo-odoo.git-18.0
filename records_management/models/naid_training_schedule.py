@@ -11,7 +11,7 @@ except Exception:  # pragma: no cover
                 return other + timedelta(days=self.days)
             return other
 
-    relativedelta = _RelativedeltaFallback  # type: ignore
+    relativedelta = _RelativedeltaFallback  # fallback: minimal days-only implementation when python-dateutil is unavailable
 
 import logging  # stdlib first
 from odoo import models, fields, api  # odoo imports

@@ -9,8 +9,39 @@ inside the model class below. Duplicated / malformed lines were removed.
 """
 
 from datetime import timedelta
+# Replace direct import with guarded import + fallback to avoid stub warning / runtime failure
+try:
+    from dateutil.relativedelta import relativedelta  # type: ignore
+except Exception:  # pragma: no cover - fallback only if dependency missing
+    from datetime import date as _date
+    import calendar as _calendar
 
-from dateutil.relativedelta import relativedelta
+    class _RelativedeltaFallback:
+        """Minimal fallback supporting months and days for billing calculations."""
+        def __init__(self, months=0, days=0):
+            self.months = months
+            self.days = days
+
+        def __radd__(self, other):
+            if isinstance(other, _date):
+                # Apply months
+                if self.months:
+                    total_months = (other.year * 12 + (other.month - 1)) + self.months
+                    year = total_months // 12
+                    month = total_months % 12 + 1
+                    # Clamp day to target month length
+                    last_day = _calendar.monthrange(year, month)[1]
+                    day = min(other.day, last_day)
+                    from datetime import date as _d
+                    other = _d(year, month, day)
+                # Apply days
+                if self.days:
+                    from datetime import timedelta as _td
+                    other = other + _td(days=self.days)
+            return other
+
+    relativedelta = _RelativedeltaFallback  # type: ignore
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 

@@ -158,7 +158,8 @@ class RecordsRetrievalOrder(models.Model):
         today = fields.Date.context_today(self)
         for rec in self:
             if rec.scheduled_date:
-                rec.days_until_scheduled = (rec.scheduled_date.date() - today).days
+                scheduled_dt = fields.Datetime.to_datetime(rec.scheduled_date)
+                rec.days_until_scheduled = (scheduled_dt.date() - today).days
             else:
                 rec.days_until_scheduled = 0
 
@@ -178,33 +179,43 @@ class RecordsRetrievalOrder(models.Model):
                 continue
             hours = {'standard': 24, 'priority': 8, 'express': 2}.get(rec.sla_policy, 24)
             rec.sla_deadline = rec.request_date + timedelta(hours=hours)
-
     @api.depends('sla_deadline', 'state')
     def _compute_sla_flags(self):
         now = fields.Datetime.now()
         for rec in self:
             if rec.sla_deadline:
-                total = (rec.sla_deadline - (rec.request_date or now)).total_seconds() or 1
+                total = (rec.sla_deadline - (rec.request_date or now)).total_seconds()
                 elapsed = (now - (rec.request_date or now)).total_seconds()
-                rec.sla_elapsed_pct = max(0.0, min(100.0, (elapsed / total) * 100.0))
+                if total == 0:
+                    rec.sla_elapsed_pct = 0.0
+                else:
+                    rec.sla_elapsed_pct = max(0.0, min(100.0, (elapsed / total) * 100.0))
                 rec.sla_breached = now > rec.sla_deadline and rec.state not in ['completed', 'cancelled']
             else:
                 rec.sla_elapsed_pct = 0.0
                 rec.sla_breached = False
+                rec.sla_breached = False
 
-    @api.depends('item_count', 'estimated_pages', 'rate_id.rate')
+    @api.depends('item_count', 'estimated_pages', 'rate_id.document_retrieval_rate', 'rate_id.scanning_rate')
     def _compute_billing_metrics(self):
+        """Compute estimated billing using configured base rates.
+
+        Assumptions (temporary until full billing engine integration):
+        - Use document_retrieval_rate * item_count as core component.
+        - Add scanning_rate * estimated_pages for page-related effort.
+        - Fallback to 0.0 when rates are missing.
+        """
         for rec in self:
             if rec.rate_id and rec.item_count:
-                base = rec.item_count * (rec.rate_id.rate or 0.0)
-                page_component = (rec.estimated_pages or 0) * 0.01
-                rec.estimated_cost = base + page_component
+                retrieval_component = rec.item_count * (rec.rate_id.document_retrieval_rate or 0.0)
+                scanning_component = (rec.estimated_pages or 0) * (rec.rate_id.scanning_rate or 0.0)
+                rec.estimated_cost = retrieval_component + scanning_component
             else:
                 rec.estimated_cost = 0.0
 
     # Helpers
-    def _ensure_state(self, allowed):
-        for rec in self:
+                # Use string formatting for proper translation handling
+                raise UserError(_("Action not allowed in current state %s") % rec.state)
             if rec.state not in allowed:
                 # Concatenate dynamic value to avoid formatter style conflicts in linter
                 raise UserError(_("Action not allowed in current state ") + rec.state)
@@ -289,5 +300,6 @@ class RecordsRetrievalOrder(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('records.retrieval.order') or _('New')
+                seq = self.env['ir.sequence'].next_by_code('records.retrieval.order')
+                vals['name'] = str(seq) if seq else str(_('New'))
         return super().create(vals_list)

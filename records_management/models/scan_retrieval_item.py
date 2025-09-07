@@ -26,8 +26,9 @@ except Exception:  # Allows offline import by validators without Odoo installed
     def _(s):
         return s
 
-    class UserError(Exception):
+    class _UserError(Exception):
         pass
+    UserError = _UserError  # alias; avoids redefining imported symbol in real Odoo env
 
     class models:  # type: ignore
         Model = _MockModel
