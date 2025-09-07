@@ -10,7 +10,8 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
+from datetime import datetime
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -18,13 +19,12 @@ class CustomerFeedback(models.Model):
     _name = 'customer.feedback'
     _description = 'Customer Feedback'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'priority desc, feedback_date desc, name'
-    _rec_name = 'name'
+    _order = 'create_date desc'
 
     # ============================================================================
     # CORE & WORKFLOW
     # ============================================================================
-    name = fields.Char(string='Feedback Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
+    name = fields.Char(string='Subject', required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     user_id = fields.Many2one('res.users', string='Assigned To', default=lambda self: self.env.user, tracking=True)
     active = fields.Boolean(string='Active', default=True)
@@ -34,189 +34,189 @@ class CustomerFeedback(models.Model):
         ('in_progress', 'In Progress'),
         ('resolved', 'Resolved'),
         ('closed', 'Closed'),
-        ('reopened', 'Reopened')
     ], string='Status', default='new', required=True, tracking=True)
     priority = fields.Selection([
-        ('0', 'Normal'),
-        ('1', 'High'),
-        ('2', 'Urgent')
-    ], string='Priority', compute='_compute_priority', store=True, default='0')
+        ('low', 'Low'),
+        ('normal', 'Normal'),
+        ('high', 'High'),
+        ('urgent', 'Urgent')
+    ], string='Priority', default='normal', tracking=True)
 
     # Escalation & Ownership (added to match view usage)
     escalation_level = fields.Selection([
         ('low', 'Low'),
-        ('moderate', 'Moderate'),
+        ('medium', 'Medium'),
         ('high', 'High'),
         ('critical', 'Critical'),
     ], string='Escalation Level', tracking=True, index=True)
     escalated_to_id = fields.Many2one('res.users', string='Escalated To', tracking=True)
     escalated_by_id = fields.Many2one('res.users', string='Escalated By', tracking=True, default=lambda self: self.env.user, readonly=True)
-    escalation_time = fields.Float(string='Escalation Time (hrs)', help='Time in hours from creation until escalation.', compute='_compute_escalation_time', store=True)
-    escalation_date = fields.Datetime(string='Escalation Date', readonly=True)
 
-    # Computed metrics referenced by analytics pages (placeholders if not already implemented elsewhere)
-    response_time = fields.Float(string='Response Time (hrs)', readonly=True, help='Time in hours from creation until first response.')
-    resolution_time = fields.Float(string='Resolution Time (hrs)', readonly=True, help='Time in hours from creation until resolution.')
-    communication_count = fields.Integer(string='Communications', compute='_compute_communication_count', store=False, help='Number of chatter messages linked to this feedback.')
+    # Timeline / dates
+    acknowledged_date = fields.Datetime(string='Acknowledged On', readonly=True)
+    resolution_date = fields.Datetime(string='Resolved On', readonly=True)
+    last_response_date = fields.Datetime(string='Last Response On')
+    expected_resolution_date = fields.Date(string='Expected Resolution Date')
+    follow_up_required = fields.Boolean(string='Follow-up Required')
+    follow_up_date = fields.Date(string='Follow-up Date')
 
+    # Durations (hours) – simplistic compute placeholders
+    response_time = fields.Float(string='First Response Time (h)', readonly=True, compute='_compute_times', store=False)
+    resolution_time = fields.Float(string='Resolution Time (h)', readonly=True, compute='_compute_times', store=False)
+    escalation_time = fields.Float(string='Escalation Time (h)', readonly=True, compute='_compute_times', store=False)
 
     # ============================================================================
     # RELATIONSHIPS & CONTEXT
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    contact_person_id = fields.Many2one('res.partner', string='Contact Person', domain="[('parent_id', '=', partner_id)]")
+    contact_id = fields.Many2one('res.partner', string='Contact')
     team_id = fields.Many2one('crm.team', string='Sales Team', tracking=True)
     shredding_team_id = fields.Many2one('shredding.team', string="Shredding Team")
-    theme_id = fields.Many2one('survey.feedback.theme', string="Feedback Theme")
-    contact_id = fields.Many2one(
-        comodel_name='res.partner',
-        string='Contact',
-        domain="[('parent_id', '=', partner_id)]",
-        help="Specific contact person (child of the Customer) related to this feedback."
+    theme_ids = fields.Many2many(
+        comodel_name='customer.feedback.theme',
+        relation='customer_feedback_theme_rel',
+        column1='feedback_id',
+        column2='theme_id',
+        string='Themes',
     )
+    tags = fields.Char(string='Tags')  # widget=char_tags
 
     # ============================================================================
     # FEEDBACK DETAILS
     # ============================================================================
-    description = fields.Text(string='Feedback Details', required=True)
-    feedback_date = fields.Date(string='Feedback Date', default=fields.Date.context_today, required=True)
-    feedback_type = fields.Selection([
-        ('complaint', 'Complaint'),
-        ('suggestion', 'Suggestion'),
-        ('compliment', 'Compliment'),
-        ('question', 'Question')
-    ], string='Feedback Type', default='complaint', required=True, tracking=True)
-    service_area = fields.Selection([
-        ('billing', 'Billing'),
-        ('customer_service', 'Customer Service'),
-        ('delivery', 'Delivery/Pickup'),
-        ('portal', 'Customer Portal'),
-        ('other', 'Other')
-    ], string='Service Area', tracking=True)
-    communication_method = fields.Selection([
-        ('email', 'Email'),
-        ('phone', 'Phone'),
-        ('portal', 'Portal'),
-        ('in_person', 'In Person')
-    ], string='Communication Method')
+    comments = fields.Text(string='Customer Comments')
+    internal_notes = fields.Text(string='Internal Notes')
+    resolution_type = fields.Selection(
+        selection=[
+            ('fixed', 'Fixed'),
+            ('workaround', 'Workaround'),
+            ('wont_fix', "Won't Fix"),
+            ('duplicate', 'Duplicate'),
+            ('invalid', 'Invalid'),
+            ('info_provided', 'Information Provided'),
+            ('other', 'Other'),
+        ],
+        string='Resolution Type',
+    )
+    resolution_notes = fields.Text(string='Resolution Notes')
+    customer_response = fields.Text(string='Customer Response')
 
     # ============================================================================
     # SENTIMENT & RATING
     # ============================================================================
-    rating = fields.Selection([
-        ('1', '1 - Very Dissatisfied'),
-        ('2', '2 - Dissatisfied'),
-        ('3', '3 - Neutral'),
-        ('4', '4 - Satisfied'),
-        ('5', '5 - Very Satisfied')
-    ], string='Rating', tracking=True)
-    # Added to satisfy view reference and provide numeric value of rating
-    satisfaction_score = fields.Float(string='Satisfaction Score', compute='_compute_satisfaction_score', store=True, help='Numeric representation of rating (1-5), 0 when not set.', aggregator='avg')
-    sentiment_category = fields.Selection([
-        ('positive', 'Positive'),
-        ('neutral', 'Neutral'),
-        ('negative', 'Negative')
-    ], string='Sentiment Category', compute='_compute_sentiment_analysis', store=True)
-    sentiment_score = fields.Float(string='Sentiment Score', compute='_compute_sentiment_analysis', store=True, aggregator='avg')
-
-    # ============================================================================
-    # RESOLUTION & FOLLOW-UP
-    # ============================================================================
-    response_required = fields.Boolean(string='Response Required', default=True)
-    response_date = fields.Date(string='Response Date', readonly=True)
-    response_notes = fields.Text(string='Internal Response Notes')
-    resolution_notes = fields.Text(string='Resolution Notes')
-    follow_up_required = fields.Boolean(string='Follow-up Required')
-    follow_up_date = fields.Date(string='Follow-up Date')
-
-    # --- Survey Integration (optional linkage, not structural inheritance) ---
-    survey_id = fields.Many2one(
-        comodel_name='survey.survey',
-        string='Survey Template',
-        help='Optional survey used to collect this feedback.'
-    )
-    survey_user_input_id = fields.Many2one(
-        comodel_name='survey.user_input',
-        string='Survey Response',
-        domain="[('survey_id', '=', survey_id)]",
-        help='Specific submitted survey response linked to this feedback.'
-    )
-    survey_answer_count = fields.Integer(
-        string='Answers',
-        compute='_compute_survey_answer_count',
-        help='Number of answer lines in the linked survey response.'
+    rating = fields.Integer(string='Rating')  # 1–5 star widget
+    satisfaction_score = fields.Integer(string='Satisfaction Score')
+    sentiment_score = fields.Float(string='Sentiment Score', digits=(6, 3))
+    sentiment_category = fields.Selection(
+        selection=[('positive', 'Positive'), ('neutral', 'Neutral'), ('negative', 'Negative')],
+        string='Sentiment',
+        default='neutral',
+        tracking=True,
     )
 
     # ============================================================================
     # COMPUTE & CONSTRAINTS
     # ============================================================================
-    @api.depends('rating')
-    def _compute_satisfaction_score(self):
-        for record in self:
-            record.satisfaction_score = float(record.rating) if record.rating else 0.0
+    @api.depends('communication_ids')
+    def _compute_communication_count(self):
+        for rec in self:
+            rec.communication_count = len(rec.communication_ids)
 
-    @api.depends('description', 'rating', 'feedback_type')
-    def _compute_sentiment_analysis(self):
-        """AI-ready sentiment analysis with keyword matching and rating consideration."""
-        positive_words = [
-            "excellent", "great", "amazing", "wonderful", "fantastic",
-            "satisfied", "happy", "pleased", "good", "awesome", "perfect", "love", "thank"
-        ]
-        negative_words = [
-            "terrible", "awful", "horrible", "bad", "poor", "disappointed",
-            "frustrated", "angry", "unsatisfied", "complaint", "problem", "issue", "wrong", "hate"
-        ]
-        for record in self:
-            if not record.description:
-                record.sentiment_category = "neutral"
-                record.sentiment_score = 0.0
-                continue
+    @api.depends('acknowledged_date', 'create_date', 'resolution_date', 'escalated_by_id')
+    def _compute_times(self):
+        """Simple delta computations (in hours). TODO: refine with SLA logic."""
+        for rec in self:
+            rec.response_time = 0.0
+            rec.resolution_time = 0.0
+            rec.escalation_time = 0.0
+            if rec.create_date and rec.acknowledged_date:
+                rec.response_time = (rec.acknowledged_date - rec.create_date).total_seconds() / 3600.0
+            if rec.create_date and rec.resolution_date:
+                rec.resolution_time = (rec.resolution_date - rec.create_date).total_seconds() / 3600.0
+            if rec.create_date and rec.escalated_by_id and rec.acknowledged_date:
+                # Placeholder; real logic would use escalation timestamp field if separate
+                rec.escalation_time = (rec.acknowledged_date - rec.create_date).total_seconds() / 3600.0
 
-            description_lower = record.description.lower()
-            positive_count = sum(1 for word in positive_words if word in description_lower)
-            negative_count = sum(1 for word in negative_words if word in description_lower)
+    # ============================================================================
+    # ACTION METHODS
+    # ============================================================================
+    def action_acknowledge(self):
+        self.ensure_one()
+        if self.state != 'new':
+            return
+        self.write({
+            'state': 'acknowledged',
+            'acknowledged_date': fields.Datetime.now(),
+            'assigned_to_id': self.assigned_to_id.id or self.env.user.id,
+        })
 
-            base_score = (positive_count - negative_count) / max(len(description_lower.split()), 1)
+    def action_start_progress(self):
+        self.ensure_one()
+        if self.state not in ('new', 'acknowledged'):
+            return
+        self.write({'state': 'in_progress'})
 
-            rating_adjustment = 0
-            if record.rating:
-                rating_adjustment = (int(record.rating) - 3) / 5.0
+    def action_resolve(self):
+        self.ensure_one()
+        if self.state not in ('acknowledged', 'in_progress'):
+            return
+        self.write({
+            'state': 'resolved',
+            'resolution_date': fields.Datetime.now(),
+            'resolved_by_id': self.env.user.id,
+        })
 
-            final_score = max(-1.0, min(1.0, base_score + rating_adjustment))
-            record.sentiment_score = final_score
+    def action_close(self):
+        self.ensure_one()
+        if self.state != 'resolved':
+            return
+        self.write({'state': 'closed'})
 
-            if final_score > 0.15:
-                record.sentiment_category = "positive"
-            elif final_score < -0.15:
-                record.sentiment_category = "negative"
+    def action_escalate(self):
+        self.ensure_one()
+        level_order = ['low', 'medium', 'high', 'critical']
+        current = self.escalation_level or 'low'
+        if current == 'critical':
+            return
+        next_level = level_order[level_order.index(current) + 1] if current in level_order else 'medium'
+        self.write({
+            'escalation_level': next_level,
+            'escalated_by_id': self.env.user.id,
+            'escalated_to_id': self.escalated_to_id.id or self.env.user.id,
+        })
+        if self.state == 'new':
+            self.action_acknowledge()
+
+    # --- Sentiment placeholder (extendable) ---
+    @api.onchange('comments', 'rating')
+    def _onchange_sentiment_stub(self):
+        """Light heuristic placeholder. TODO: replace with real analyzer."""
+        for rec in self:
+            txt = (rec.comments or '').lower()
+            score = 0
+            if any(k in txt for k in ['great', 'excellent', 'love', 'good']):
+                score += 0.5
+            if any(k in txt for k in ['bad', 'poor', 'angry', 'terrible']):
+                score -= 0.5
+            if rec.rating:
+                score += (rec.rating - 3) * 0.1
+            rec.sentiment_score = max(-1, min(1, score))
+            if rec.sentiment_score > 0.15:
+                rec.sentiment_category = 'positive'
+            elif rec.sentiment_score < -0.15:
+                rec.sentiment_category = 'negative'
             else:
-                record.sentiment_category = "neutral"
+                rec.sentiment_category = 'neutral'
 
-    @api.depends('sentiment_category', 'feedback_type', 'rating')
-    def _compute_priority(self):
-        """Compute priority based on sentiment analysis and feedback type."""
-        for record in self:
-            priority = '0'  # Normal
-            if record.sentiment_category == "negative" or record.feedback_type == "complaint":
-                priority = '1'  # High
-            if record.rating == '1':
-                priority = '2'  # Urgent
-            record.priority = priority
-
-    @api.constrains('sentiment_score')
-    def _check_sentiment_score(self):
-        for record in self:
-            if record.sentiment_score and not (-1.0 <= record.sentiment_score <= 1.0):
-                raise ValidationError(_("Sentiment score must be between -1 and 1."))
-
-    @api.constrains('follow_up_date', 'feedback_date')
-    def _check_follow_up_date(self):
-        for record in self:
-            if record.follow_up_date and record.feedback_date and record.follow_up_date < record.feedback_date:
-                raise ValidationError(_("Follow-up date cannot be before the feedback date."))
-
-    @api.depends('survey_user_input_id')
-    def _compute_survey_answer_count(self):
+    # ============================================================================
+    # ORM OVERRIDES
+    # ============================================================================
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get("name", _("New")) == _("New"):
+                vals["name"] = self.env["ir.sequence"].next_by_code("customer.feedback") or _("New")
+        return super().create(vals_list)
         for rec in self:
             rec.survey_answer_count = len(rec.survey_user_input_id.user_input_line_ids) if rec.survey_user_input_id else 0
 

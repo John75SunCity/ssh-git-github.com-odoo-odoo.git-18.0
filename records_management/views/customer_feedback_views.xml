@@ -71,8 +71,9 @@
                             </group>
                             <group string="🤖 AI Analysis">
                                 <field name="sentiment_score" widget="gauge"/>
-                                <field name="sentiment_category"/>
-                                <field name="auto_priority"/>
+<field name="sentiment_category"/>
+
+
                                 <field name="escalation_level"/>
                                 <field name="escalated_to_id"/>
                             </group>

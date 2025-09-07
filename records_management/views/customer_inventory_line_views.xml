@@ -7,17 +7,18 @@
             <field name="model">customer.inventory.line</field>
         <field name="arch" type="xml">
                 <list string="Customer Inventory Line">
-                    container_id
-                    location_id
-                    file_count
-                    expected_file_count
-                    previous_file_count
-                    verified
-                    verification_date
-                    verified_by_id
-                    has_variance
-                    variance_amount
-                    variance_percentage
+<field name="container_id"/>
+<field name="location_id"/>
+<field name="file_count"/>
+<field name="expected_file_count"/>
+<field name="previous_file_count"/>
+<field name="verified"/>
+<field name="verification_date"/>
+<field name="verified_by_id"/>
+<field name="has_variance"/>
+<field name="variance_amount"/>
+<field name="variance_percentage"/>
+
                 </list>
             </field>
         </record>
@@ -29,23 +30,24 @@
                 <form string="Customer Inventory Line">
                     <sheet>
                         <group>
-                            inventory_id
-                            container_id
-                            location_id
-                            file_count
-                            expected_file_count
-                            previous_file_count
-                            verified
-                            verification_date
-                            verified_by_id
-                            notes
-                            has_variance
-                            variance_amount
-                            variance_percentage
-                            variance_reason
-                            variance_notes
-                            container_type_id
-                            department_id
+<field name="inventory_id"/>
+<field name="container_id"/>
+<field name="location_id"/>
+<field name="file_count"/>
+<field name="expected_file_count"/>
+<field name="previous_file_count"/>
+<field name="verified"/>
+<field name="verification_date"/>
+<field name="verified_by_id"/>
+<field name="notes"/>
+<field name="has_variance"/>
+<field name="variance_amount"/>
+<field name="variance_percentage"/>
+<field name="variance_reason"/>
+<field name="variance_notes"/>
+<field name="container_type_id"/>
+<field name="department_id"/>
+
                         </group>
                     </sheet>
                 </form>
