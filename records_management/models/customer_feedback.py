@@ -65,6 +65,7 @@ class CustomerFeedback(models.Model):
     response_time = fields.Float(string='First Response Time (h)', readonly=True, compute='_compute_times', store=False)
     resolution_time = fields.Float(string='Resolution Time (h)', readonly=True, compute='_compute_times', store=False)
     escalation_time = fields.Float(string='Escalation Time (h)', readonly=True, compute='_compute_times', store=False)
+    communication_count = fields.Integer(string='Message Count', compute='_compute_communication_count')
 
     # ============================================================================
     # RELATIONSHIPS & CONTEXT
@@ -73,6 +74,12 @@ class CustomerFeedback(models.Model):
     contact_id = fields.Many2one('res.partner', string='Contact')
     team_id = fields.Many2one('crm.team', string='Sales Team', tracking=True)
     shredding_team_id = fields.Many2one('shredding.team', string="Shredding Team")
+    # Primary classification (single theme) to satisfy inverse used by survey.feedback.theme.feedback_ids
+    theme_id = fields.Many2one(
+        'survey.feedback.theme',
+        string='Primary Theme',
+        help='Main theme classification (used for reporting & survey theme linkage).'
+    )
     theme_ids = fields.Many2many(
         comodel_name='customer.feedback.theme',
         relation='customer_feedback_theme_rel',
@@ -134,7 +141,7 @@ class CustomerFeedback(models.Model):
                 rec.escalation_time = (rec.acknowledged_date - rec.create_date).total_seconds() / 3600.0
 
     # ============================================================================
-    # ACTION METHODS (consolidated & cleaned - removed duplicate later block)
+    # ACTION METHODS (clean, single implementations)
     # ============================================================================
     def action_acknowledge(self):
         self.ensure_one()
@@ -143,16 +150,16 @@ class CustomerFeedback(models.Model):
         self.write({
             'state': 'acknowledged',
             'acknowledged_date': fields.Datetime.now(),
-            'user_id': self.user_id.id or self.env.user.id,  # use existing user_id field
+            'user_id': self.user_id.id or self.env.user.id,
         })
-        self.message_post(body=_("Feedback acknowledged by %s") % self.env.user.name)
+        self.message_post(body=_('Feedback acknowledged'))
 
     def action_start_progress(self):
         self.ensure_one()
         if self.state not in ('new', 'acknowledged'):
             raise UserError(_("Only new or acknowledged feedback can be started."))
         self.write({'state': 'in_progress'})
-        self.message_post(body=_("Started working on feedback."))
+        self.message_post(body=_('Feedback in progress'))
 
     def action_resolve(self):
         self.ensure_one()
@@ -162,14 +169,14 @@ class CustomerFeedback(models.Model):
             'state': 'resolved',
             'resolution_date': fields.Datetime.now(),
         })
-        self.message_post(body=_("Feedback resolved."))
+        self.message_post(body=_('Feedback resolved'))
 
     def action_close(self):
         self.ensure_one()
         if self.state != 'resolved':
             raise UserError(_("Only resolved feedback can be closed."))
         self.write({'state': 'closed'})
-        self.message_post(body=_("Feedback closed."))
+        self.message_post(body=_('Feedback closed'))
 
     def action_escalate(self):
         self.ensure_one()
@@ -188,7 +195,7 @@ class CustomerFeedback(models.Model):
         })
         if self.state == 'new':
             self.action_acknowledge()
-        self.message_post(body=_("Feedback escalated by %s") % self.env.user.name)
+        self.message_post(body=_('Feedback escalated'))
 
     # --- Sentiment placeholder (extendable) ---
     @api.onchange('comments', 'rating')
@@ -241,102 +248,6 @@ class CustomerFeedback(models.Model):
     @api.depends('message_ids')
     def _compute_communication_count(self):
         for record in self:
-            record.communication_count = len(record.message_ids)
-
-    @api.onchange('contact_id')
-    def _onchange_contact_id(self):
-        """If a contact with a parent is selected and no customer set yet, set partner_id."""
-        for rec in self:
-            if rec.contact_id and rec.contact_id.parent_id and not rec.partner_id:
-                rec.partner_id = rec.contact_id.parent_id
-        self.write({"state": "closed"})
-        self.message_post(body=_("Feedback closed."))
-
-    def action_escalate(self):
-        """Escalate feedback to higher priority."""
-        self.ensure_one()
-        if self.state in ["resolved", "closed"]:
-            raise UserError(_("Cannot escalate resolved or closed feedback."))
-
-        # Increase priority automatically when escalating
-        if self.priority == "0":
-            self.priority = "1"
-        elif self.priority == "1":
-            self.priority = "2"
-
-        # Set escalation metadata
-        if not self.escalation_date:
-            self.escalation_date = fields.Datetime.now()
-        if not self.escalated_by_id:
-            self.escalated_by_id = self.env.user
-
-        # Auto-assign escalation level if none chosen
-        if not self.escalation_level:
-            self.escalation_level = 'moderate' if self.priority == '1' else 'high' if self.priority == '2' else 'low'
-        # Log escalation action (include user performing escalation)
-        self.message_post(body=_("Feedback escalated by %s") % self.env.user.name)
-        return True
-
-    def action_link_latest_survey_response(self):
-        """Convenience: link the most recent completed survey.user_input for the same partner & survey."""
-        self.ensure_one()
-        if not self.partner_id or not self.survey_id:
-            raise UserError(_("Partner and Survey must be set before linking a survey response."))
-        latest = self.env['survey.user_input'].search([
-            ('partner_id', '=', self.partner_id.id),
-            ('survey_id', '=', self.survey_id.id),
-            ('state', '=', 'done'),
-        ], order='create_date desc', limit=1)
-        if not latest:
-            raise UserError(_("No completed survey response found for this customer and survey."))
-        self.survey_user_input_id = latest
-        # Optional: derive rating from a question tagged 'rating'
-        rating_line = latest.user_input_line_ids.filtered(lambda l: l.question_id.question_type in ('simple_choice', 'matrix') and 'rating' in (l.question_id.tags or '').lower())[:1]
-        if rating_line and not self.rating:
-            # Assuming answer scoring 1..5 stored in numerical_value / value_suggested
-            score = getattr(rating_line, 'numerical_value', False) or getattr(rating_line, 'value_suggested', False)
-            if score and str(int(score)) in {'1', '2', '3', '4', '5'}:
-                self.rating = str(int(score))
-        self.message_post(body=_("Linked survey response %s") % latest.display_name)
-        return True
-
-    # ==========================================================================
-    # COMPUTE METHODS (Metrics)
-    # ==========================================================================
-    @api.depends('create_date', 'escalation_date')
-    def _compute_escalation_time(self):
-        for record in self:
-            if record.create_date and record.escalation_date:
-                delta = fields.Datetime.from_string(record.escalation_date) - fields.Datetime.from_string(record.create_date)
-                record.escalation_time = round(delta.total_seconds() / 3600.0, 2)
-            else:
-                record.escalation_time = 0.0
-
-    def action_reopen(self):
-        self.ensure_one()
-        if self.state != "closed":
-            raise UserError(_("Only closed feedback can be reopened."))
-        self.write({"state": "reopened"})
-        self.message_post(body=_("Feedback reopened."))
-
-    # ============================================================================
-    # ORM OVERRIDES
-    # ============================================================================
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get("name", _("New")) == _("New"):
-                vals["name"] = self.env["ir.sequence"].next_by_code("customer.feedback") or _("New")
-        return super().create(vals_list)
-
-    # ============================================================================
-    # COMPUTE HELPERS
-    # ============================================================================
-    @api.depends('message_ids')
-    def _compute_communication_count(self):
-        # Use sudo=False context to respect access rules; count messages excluding system notifications if desired
-        for record in self:
-            # Exclude internal notifications if needed: record.message_ids.filtered(lambda m: m.message_type != 'notification')
             record.communication_count = len(record.message_ids)
 
     @api.onchange('contact_id')
