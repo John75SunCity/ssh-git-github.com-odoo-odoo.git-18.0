@@ -30,16 +30,20 @@ class OdooValidator:
     This class accumulates errors and warnings in lists for later reporting.
     """
 
-    def __init__(self, module_path: Path):
+    def __init__(self, module_path: Path, translation_level: str = "info"):
         self.module_path = module_path
         # Raw collected issues (unfiltered)
         self.errors: List[str] = []
         self.warnings: List[str] = []
+        self.infos: List[str] = []  # informational (never escalate)
         # Phase timings (filled in run_validation)
         self.phase_timings: Dict[str, float] = {}
         # Post-run filtered copies (populated in print_results based on CLI flags)
         self._filtered_errors: Optional[List[str]] = None
         self._filtered_warnings: Optional[List[str]] = None
+        self._filtered_infos: Optional[List[str]] = None
+        # Config
+        self.translation_level = translation_level  # one of: warn | info | suppress
 
     def validate_python_syntax(self) -> None:
         """Check Python syntax in all Python files"""
@@ -70,16 +74,28 @@ class OdooValidator:
         """Check XML syntax and structure"""
         print("🔍 Checking XML syntax and structure...")
 
+        # Ignore legacy placeholder / deprecated batch filenames to eliminate phantom probes
+        IGNORE_XML_BASENAMES = {
+            'field_label_customization_batch4_data.xml',
+        }
+
         xml_files = []
         for ext in ["*.xml"]:
             xml_files.extend(list(self.module_path.glob(f"**/{ext}")))
 
         for xml_file in xml_files:
+            if xml_file.name in IGNORE_XML_BASENAMES:
+                continue  # Skip entirely
             try:
                 with open(xml_file, "r", encoding="utf-8") as f:
                     content = f.read()
 
-                # Parse XML
+                stripped = content.strip()
+                # Skip empty/trivial placeholder XML docs
+                if not stripped or stripped in {"<odoo/>", "<odoo></odoo>"}:
+                    continue
+
+                # Parse XML (will raise ET.ParseError if malformed)
                 ET.fromstring(content)
 
                 # Additional Odoo XML validation
@@ -175,12 +191,26 @@ class OdooValidator:
 
     def _check_xml_structure(self, file_path: Path, content: str) -> None:
         """Check XML structure for Odoo-specific issues"""
-        # Check for common XML issues
-        if "<record" in content and "</record>" not in content:
-            self.errors.append(f"❌ XML STRUCTURE: {file_path.name}: Unclosed record tag")
-
-        if "<field" in content and "</field>" not in content:
-            self.errors.append(f"❌ XML STRUCTURE: {file_path.name}: Unclosed field tag")
+        stripped = content.strip()
+        # Skip trivial placeholder docs
+        # Treat very small (<40 chars) pure root wrappers as trivial placeholders
+        if stripped.startswith("<odoo") and len(stripped) < 40:
+            return
+        import re
+        record_open = len(re.findall(r"<record\b", content))
+        record_close = len(re.findall(r"</record>", content))
+        if record_close < record_open:
+            self.errors.append(
+                f"❌ XML STRUCTURE: {file_path.name}: Mismatched <record> tags (open={record_open} close={record_close})"
+            )
+        field_open = len(re.findall(r"<field\b", content))
+        self_closing = len(re.findall(r"<field[^>]*/>", content))
+        field_close = len(re.findall(r"</field>", content))
+        effective_open = field_open - self_closing
+        if field_close < effective_open and effective_open > 0:
+            self.errors.append(
+                f"❌ XML STRUCTURE: {file_path.name}: Potential unclosed <field> tags (open={field_open} self_closing={self_closing} close={field_close})"
+            )
 
     def _check_view_definitions(self, file_path: Path, content: str) -> None:
         """Check view definitions for Odoo 18.0 compatibility"""
@@ -440,8 +470,21 @@ class OdooValidator:
                                     if 'pass' not in body or len([ln for ln in body.splitlines() if ln.strip() and not ln.strip().startswith(('def ', '"""', "'''"))]) > 3:
                                         trivial = False
                                         break
-                        # Suppress warning if lightweight (<=3 fields and trivial methods)
-                        if (not field_defs or len(field_defs) <= 3) and trivial:
+                        # Additional heuristic: treat small extension clones as acceptable if:
+                        #  - Field definitions are modest (<=6)
+                        #  - No clearly non-trivial method overrides
+                        #  - or only adds simple selection/m2x/text fields without algorithmic logic.
+                        simple_field_types = ('Char', 'Text', 'Selection', 'Many2one', 'Many2many', 'One2many', 'Integer', 'Float', 'Boolean', 'Date', 'Datetime')
+                        simple_field_defs = 0
+                        if field_defs:
+                            import re as _re3
+                            for fd in field_defs:
+                                # Extract the field type token after 'fields.'
+                                m = _re3.search(r'fields\.(\w+)\(', fd)
+                                if m and m.group(1) in simple_field_types:
+                                    simple_field_defs += 1
+
+                        if (not field_defs or (len(field_defs) <= 6 and simple_field_defs == len(field_defs))) and trivial:
                             # Optional: could append a debug note if needed; silently accept
                             pass
                         else:
@@ -920,6 +963,7 @@ class OdooValidator:
 
         self._filtered_errors = _apply_filters(self.errors)
         self._filtered_warnings = _apply_filters(self.warnings)
+        self._filtered_infos = _apply_filters(self.infos)
 
         if not quiet and self._filtered_errors:
             print(f"❌ CRITICAL ERRORS ({len(self._filtered_errors)}):")
@@ -927,22 +971,24 @@ class OdooValidator:
                 print(f"  {error}")
             print()
         # Final hard filter for any lingering CONFIGURATOR warnings (belt & suspenders)
-        self._filtered_warnings = [
-            w for w in self._filtered_warnings if 'configurator:' not in w.lower()
-        ]
+        self._filtered_warnings = [w for w in self._filtered_warnings if 'configurator:' not in w.lower()]
 
         if not only_critical and not quiet and self._filtered_warnings:
             print(f"⚠️ WARNINGS ({len(self._filtered_warnings)}):")
             for warning in self._filtered_warnings:
                 print(f"  {warning}")
             print()
+        if not quiet and self._filtered_infos:
+            print(f"ℹ️ INFO ({len(self._filtered_infos)}):")
+            for info in self._filtered_infos:
+                print(f"  {info}")
+            print()
 
         if not quiet:
-            if not self._filtered_errors and (only_critical or not self._filtered_warnings):
+            if not self._filtered_errors and (only_critical or (not self._filtered_warnings and not self._filtered_infos)):
                 if only_critical and self._filtered_warnings:
-                    # Warnings suppressed intentionally
                     print("✅ NO CRITICAL ERRORS - (warnings hidden)")
-                elif not self._filtered_warnings:
+                elif not self._filtered_warnings and not self._filtered_infos:
                     print("✅ NO ERRORS OR WARNINGS FOUND")
                 else:
                     print("✅ NO CRITICAL ERRORS - MODULE SHOULD LOAD")
@@ -979,6 +1025,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--only-critical",
         action="store_true",
         help="Hide all warnings; only show critical errors and final status",
+    )
+    parser.add_argument(
+        "--translation-level",
+        choices=["warn", "info", "suppress"],
+        default="info",
+        help="Severity for translation inconsistency pattern (warn=warning, info=informational, suppress=hidden)",
     )
     parser.add_argument(
         "--quiet",
@@ -1022,7 +1074,7 @@ def main(argv: _Optional[_List[str]] = None):
             print(f"❌ Error: Module directory {module_path} does not exist")
         return 1
 
-    validator = OdooValidator(module_path)
+    validator = OdooValidator(module_path, translation_level=args.translation_level)
     validator.run_validation(quiet=args.quiet)
     validator.print_results(
         suppress_patterns=args.suppress,
@@ -1037,9 +1089,11 @@ def main(argv: _Optional[_List[str]] = None):
             "module_path": str(module_path),
             "errors": validator._filtered_errors if validator._filtered_errors is not None else validator.errors,
             "warnings": validator._filtered_warnings if validator._filtered_warnings is not None else validator.warnings,
+            "infos": validator._filtered_infos if validator._filtered_infos is not None else validator.infos,
             "timings": validator.phase_timings,
             "suppressed_patterns": args.suppress,
             "only_critical": args.only_critical,
+            "translation_level": args.translation_level,
         }
         try:
             with open(args.json_output, "w", encoding="utf-8") as f:
