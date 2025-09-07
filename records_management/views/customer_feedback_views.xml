@@ -1,342 +1,106 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-        <!-- Enhanced Tree View for Customer Feedback -->
-        <record id="customer_feedback_view_tree" model="ir.ui.view">
-            <field name="name">customer.feedback.view.tree</field>
-            <field name="model">customer.feedback</field>
-            <field name="arch" type="xml">
-                <list decoration-success="state == 'resolved'" decoration-warning="state == 'in_progress'" decoration-danger="escalation_level == 'critical'" decoration-info="sentiment_category == 'negative'">
-                    <field name="name" string="📝 Feedback"/>
-                    <field name="partner_id" string="👤 Customer"/>
-                    <field name="rating" string="⭐ Rating" widget="star_rating"/>
-                    <field name="sentiment_category" string="😊 Sentiment"/>
-                    <field name="feedback_type" string="📂 Type"/>
-                    <field name="priority" string="🚨 Priority"/>
-                    <field name="state" string="🎯 Status" widget="badge"/>
-                    <field name="escalation_level" string="⚠️ Escalation"/>
-                    <field name="create_date" string="📅 Created"/>
-                    <field name="response_time" string="⏱️ Response Time"/>
-                    <button name="action_acknowledge" type="object" string="Ack" icon="fa-check" class="btn-link" invisible="state != 'new'"/>
-                    <button name="action_resolve" type="object" string="Resolve" icon="fa-check-circle" class="btn-link" invisible="state not in ['new', 'acknowledged', 'in_progress']"/>
-                </list>
-            </field>
-        </record>
+<!-- Added root menu (only create once; if already defined elsewhere, remove this line there) -->
+<menuitem id="records_management_menu_root" name="Records Management" sequence="10"/>
+<!-- List (Tree) View -->
+<record id="customer_feedback_view_tree" model="ir.ui.view">
+    <field name="name">customer.feedback.view.tree</field>
+    <field name="model">customer.feedback</field>
+    <field name="arch" type="xml">
+<tree string="Customer Feedback" default_order="create_date desc">
+    <field name="name"/>
+    <field name="state"/>
+    <field name="user_id"/>
+    <field name="company_id" optional="show"/>
+    <field name="write_date" widget="relative" optional="show"/>
+    <field name="active" invisible="1"/>
+</tree>
+</field>
+</record>
 
-        <!-- Enhanced Form View for Customer Feedback -->
-        <record id="customer_feedback_view_form" model="ir.ui.view">
-            <field name="name">customer.feedback.view.form</field>
-            <field name="model">customer.feedback</field>
-            <field name="arch" type="xml">
-                <form>
-                    <header>
-                        <button name="action_acknowledge" type="object" string="✅ Acknowledge" class="btn-primary" invisible="state != 'new'"/>
-                        <button name="action_start_progress" type="object" string="🚀 Start Progress" class="btn-info" invisible="state not in ['new', 'acknowledged']"/>
-                        <button name="action_resolve" type="object" string="✅ Resolve" class="btn-success" invisible="state not in ['acknowledged', 'in_progress']"/>
-                        <button name="action_escalate" type="object" string="⚠️ Escalate" class="btn-warning" invisible="state in ['resolved', 'closed']"/>
-                        <button name="action_close" type="object" string="🔒 Close" class="btn-secondary" invisible="state not in ['resolved']"/>
-                        <field name="state" widget="statusbar" statusbar_visible="new,acknowledged,in_progress,resolved,closed"/>
-                    </header>
-                    <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" icon="fa-comments">
-                                <field name="communication_count" widget="statinfo"/>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-clock-o" invisible="not response_time">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="response_time"/>
-                                    </span>
-                                    <span class="o_stat_text">Response Time</span>
-                                </div>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-star" invisible="not satisfaction_score">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="satisfaction_score"/>
-                                    </span>
-                                    <span class="o_stat_text">Satisfaction</span>
-                                </div>
-                            </button>
-                        </div>
+<!-- Search View -->
+<record id="customer_feedback_view_search" model="ir.ui.view">
+    <field name="name">customer.feedback.view.search</field>
+    <field name="model">customer.feedback</field>
+    <field name="arch" type="xml">
+        <search string="Search Feedback">
+            <field name="name"/>
+            <field name="state"/>
+            <field name="user_id"/>
+            <filter string="My Items" name="my_items" domain="[('user_id', '=', uid)]"/>
+            <filter string="New" name="state_new" domain="[('state', '=', 'new')]"/>
+            <filter string="In Progress" name="state_in_progress" domain="[('state', '=', 'in_progress')]"/>
+            <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+            <group expand="0" string="Group By">
+                <filter string="Assigned To" name="grp_user" context="{'group_by': 'user_id'}"/>
+                <filter string="Status" name="grp_state" context="{'group_by': 'state'}"/>
+                <filter string="Company" name="grp_company" context="{'group_by': 'company_id'}"/>
+            </group>
+        </search>
+    </field>
+</record>
 
-                        <group>
-                            <group string="📝 Feedback Details">
-                                <field name="name"/>
-                                <field name="partner_id"/>
-                                <field name="contact_id"/>
-                                <field name="feedback_type"/>
-                                <field name="rating" widget="star_rating"/>
-                                <field name="priority"/>
-                            </group>
-                            <group string="🤖 AI Analysis">
-                                <field name="sentiment_score" widget="gauge"/>
-<field name="sentiment_category"/>
+<!-- Form View -->
+<record id="customer_feedback_view_form" model="ir.ui.view">
+    <field name="name">customer.feedback.view.form</field>
+    <field name="model">customer.feedback</field>
+    <field name="arch" type="xml">
+<form string="Customer Feedback" create="1" edit="1">
+    <sheet>
+        <div class="oe_button_box" name="button_box">
+<!-- Add future stat buttons here (e.g., escalation_time, communication_count) when fields confirmed -->
+</div>
+<group>
+<group>
+    <field name="name"/>
 
 
-                                <field name="escalation_level"/>
-                                <field name="escalated_to_id"/>
-                            </group>
-                        </group>
 
-                        <group>
-                            <group string="📅 Timeline">
-                                <field name="create_date" readonly="1"/>
-                                <field name="acknowledged_date" readonly="1"/>
-                                <field name="resolution_date" readonly="1"/>
-                                <field name="last_response_date" readonly="1"/>
-                                <field name="expected_resolution_date"/>
-                            </group>
-                            <group string="👥 Assignment">
-                                <field name="assigned_to_id"/>
-                                <field name="resolved_by_id"/>
-                                <field name="escalated_by_id" readonly="1"/>
-                                <field name="company_id"/>
-                            </group>
-                        </group>
 
-                        <notebook>
-                            <page string="💬 Feedback Content" name="content">
-                                <group>
-                                    <field name="comments" placeholder="Customer feedback comments and details..."/>
-                                    <field name="internal_notes" placeholder="Internal notes and resolution planning..."/>
-                                </group>
-                            </page>
+<field name="state" widget="statusbar" statusbar_visible="new,acknowledged,in_progress,resolved,closed"/>
+<field name="user_id"/>
+</group>
+<group>
+<field name="company_id" groups="base.group_multi_company"/>
+<!-- Optional fields (uncomment only if confirmed in model):
+<field name="partner_id"/>
+<field name="contact_id"/>
 
-                            <page string="📂 Categorization" name="categories">
-                                <group>
-                                    <field name="theme_ids" widget="many2many_tags"/>
-                                    <field name="tags" widget="char_tags"/>
-                                    <field name="department_id"/>
-                                    <field name="service_type"/>
-                                </group>
-                            </page>
+<field name="escalation_date"/>
+<field name="escalation_time" readonly="1"/>
+                            -->
+<field name="active"/>
+</group>
+</group>
+<!-- Optional descriptive / body fields can be inserted below when defined in model:
+                    <group string="Details">
+                        <field name="description" widget="html"/>
+</group>
+-->
+</sheet>
+<div class="oe_chatter">
+<field name="message_follower_ids" widget="mail_followers"/>
+<field name="message_ids" widget="mail_thread"/>
+</div>
+</form>
+</field>
+</record>
 
-                            <page string="📧 Communications" name="communications">
-                                <field name="communication_ids">
-                                    <list>
-                                        <field name="communication_date"/>
-                                        <field name="communication_type"/>
-                                        <field name="subject"/>
-                                        <field name="sent_by_id"/>
-                                        <field name="recipient_ids"/>
-                                        <field name="is_response"/>
-                                    </list>
-                                    <form>
-                                        <group>
-                                            <field name="communication_date"/>
-                                            <field name="communication_type"/>
-                                            <field name="subject"/>
-                                            <field name="body"/>
-                                            <field name="sent_by_id"/>
-                                            <field name="recipient_ids"/>
-                                            <field name="is_response"/>
-                                        </group>
-                                    </form>
-                                </field>
-                            </page>
+<!-- Action -->
+<record id="customer_feedback_action" model="ir.actions.act_window">
+    <field name="name">Customer Feedback</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">customer.feedback</field>
+<field name="view_mode">tree,form</field>
+<field name="search_view_id" ref="customer_feedback_view_search"/>
 
-                            <page string="📋 Resolution" name="resolution">
-                                <group>
-                                    <field name="resolution_type"/>
-                                    <field name="resolution_notes" placeholder="Detailed resolution notes and actions taken..."/>
-                                    <field name="follow_up_required"/>
-                                    <field name="follow_up_date"/>
-                                    <field name="satisfaction_score"/>
-                                    <field name="customer_response"/>
-                                </group>
-                            </page>
+<field name="context">{}</field>
+<field name="help" type="html">
+<p>
+Manage customer feedback items. Use stages to track progress from New to Closed.
+</p>
+</field>
+</record>
+<!-- Child menu under the newly ensured root menu -->
+<menuitem id="customer_feedback_menu" name="Customer Feedback" parent="records_management_menu_root" action="customer_feedback_action" sequence="40"/>
 
-                            <page string="📊 Analytics" name="analytics">
-                                <group>
-                                    <group string="⏱️ Timing">
-                                        <field name="response_time"/>
-                                        <field name="resolution_time"/>
-                                        <field name="escalation_time"/>
-                                    </group>
-                                    <group string="📈 Metrics">
-                                        <field name="sentiment_score"/>
-                                        <field name="satisfaction_score"/>
-                                        <field name="feedback_quality_score"/>
-                                    </group>
-                                </group>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
-                </form>
-            </field>
-        </record>
-
-        <!-- Enhanced Kanban View for Customer Feedback -->
-        <record id="customer_feedback_view_kanban" model="ir.ui.view">
-            <field name="name">customer.feedback.view.kanban</field>
-            <field name="model">customer.feedback</field>
-            <field name="arch" type="xml">
-                <kanban default_group_by="state" class="o_kanban_feedback_dashboard">
-                    <field name="name"/>
-                    <field name="partner_id"/>
-                    <field name="rating"/>
-                    <field name="sentiment_category"/>
-                    <field name="priority"/>
-                    <field name="state"/>
-                    <field name="escalation_level"/>
-                    <field name="assigned_to_id"/>
-                    <field name="create_date"/>
-                    <templates>
-                        <t t-name="card">
-                            <div class="oe_kanban_card oe_kanban_global_click">
-                                <div class="o_kanban_card_header">
-                                    <div class="o_kanban_card_header_title">
-                                        <div class="o_primary">
-                                            <strong><field name="name"/></strong>
-                                        </div>
-                                        <div class="o_secondary">
-                                            👤 <field name="partner_id"/>
-                                        </div>
-                                    </div>
-                                    <div class="o_kanban_manage_button_section">
-                                        <a class="o_kanban_manage_toggle_button" href="#">
-<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
-
-                                        </a>
-                                    </div>
-                                </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div>
-<i class="fa fa-star" aria-hidden="true"/>
-
-                                                <field name="rating" widget="star_rating"/>
-                                            </div>
-                                            <div>
-<i class="fa fa-tag" aria-hidden="true"/>
-
-                                                <field name="feedback_type"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="text-center">
-                                                <span t-attf-class="badge badge-{{record.sentiment_category.raw_value == 'positive' and 'success' or record.sentiment_category.raw_value == 'negative' and 'danger' or 'info'}}">
-                                                    <field name="sentiment_category"/>
-                                                </span>
-                                            </div>
-                                            <div t-if="record.escalation_level.raw_value" class="text-center mt-1">
-                                                <span class="badge badge-warning">
-                                                    <field name="escalation_level"/>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-6">
-                                            <button class="btn btn-primary btn-sm" type="object" name="action_acknowledge" t-if="record.state.raw_value == 'new'">
-                                                ✅ Ack
-                                            </button>
-                                            <button class="btn btn-success btn-sm" type="object" name="action_resolve" t-if="record.state.raw_value in ['acknowledged', 'in_progress']">
-                                                ✅ Resolve
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button class="btn btn-warning btn-sm" type="object" name="action_escalate" t-if="record.escalation_level.raw_value != 'critical'">
-                                                ⚠️ Escalate
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                    <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Feedback</a>
-                                    <a role="menuitem" type="object" name="action_start_progress" class="dropdown-item">🚀 Start Progress</a>
-                                    <a role="menuitem" type="object" name="action_resolve" class="dropdown-item">✅ Resolve</a>
-                                    <a role="menuitem" type="object" name="action_escalate" class="dropdown-item">⚠️ Escalate</a>
-                                    <div class="dropdown-divider"/>
-                                    <a role="menuitem" type="object" name="action_close" class="dropdown-item">🔒 Close</a>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                </kanban>
-            </field>
-        </record>
-
-        <!-- Enhanced Search View for Customer Feedback -->
-        <record id="customer_feedback_view_search" model="ir.ui.view">
-            <field name="name">customer.feedback.view.search</field>
-            <field name="model">customer.feedback</field>
-            <field name="arch" type="xml">
-                <search>
-                    <field name="name" string="Feedback" filter_domain="['|', ('name', 'ilike', self), ('comments', 'ilike', self)]"/>
-                    <field name="partner_id"/>
-                    <field name="assigned_to_id"/>
-                    <field name="feedback_type"/>
-                    <field name="theme_ids"/>
-                    <field name="tags"/>
-
-                    <filter string="🆕 New" name="new" domain="[('state', '=', 'new')]"/>
-                    <filter string="✅ Acknowledged" name="acknowledged" domain="[('state', '=', 'acknowledged')]"/>
-                    <filter string="🚀 In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
-                    <filter string="✅ Resolved" name="resolved" domain="[('state', '=', 'resolved')]"/>
-                    <filter string="🔒 Closed" name="closed" domain="[('state', '=', 'closed')]"/>
-
-                    <separator/>
-                    <filter string="⭐ High Rating" name="high_rating" domain="[('rating', '>=', 4)]"/>
-                    <filter string="⭐ Low Rating" name="low_rating" domain="[('rating', '&lt;=', 2)]"/>
-                    <filter string="😊 Positive Sentiment" name="positive" domain="[('sentiment_category', '=', 'positive')]"/>
-                    <filter string="😞 Negative Sentiment" name="negative" domain="[('sentiment_category', '=', 'negative')]"/>
-
-                    <separator/>
-                    <filter string="🚨 High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-                    <filter string="⚠️ Escalated" name="escalated" domain="[('escalation_level', '!=', False)]"/>
-                    <filter string="⚠️ Critical" name="critical" domain="[('escalation_level', '=', 'critical')]"/>
-                    <filter string="⏰ Overdue" name="overdue" domain="[('expected_resolution_date', '&lt;', context_today)]"/>
-                    <filter string="📞 Needs Follow-up" name="needs_followup" domain="[('follow_up_required', '=', True)]"/>
-
-                    <group expand="0" string="📊 Group By">
-                        <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
-                        <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                        <filter string="Type" name="group_by_type" context="{'group_by': 'feedback_type'}"/>
-                        <filter string="Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
-                        <filter string="Assigned To" name="group_by_assigned" context="{'group_by': 'assigned_to_id'}"/>
-                        <filter string="Sentiment" name="group_by_sentiment" context="{'group_by': 'sentiment_category'}"/>
-                        <filter string="Created Month" name="group_by_month" context="{'group_by': 'create_date:month'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
-        <!-- Enhanced Action Window for Customer Feedback -->
-        <record id="action_customer_feedback" model="ir.actions.act_window">
-            <field name="name">💬 Customer Feedback</field>
-            <field name="res_model">customer.feedback</field>
-            <field name="view_mode">kanban,tree,form</field>
-            <field name="search_view_id" ref="customer_feedback_view_search"/>
-            <field name="context">{
-                'search_default_new': 1,
-                'search_default_negative': 1,
-                'search_default_high_priority': 1
-            }</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    💬 Start collecting customer feedback!
-                </p>
-                <p>
-                    <b>AI-Powered Customer Feedback Management:</b>
-                    <br/>
-                    • 🤖 Automated sentiment analysis and priority assignment<br/>
-                    • 📊 Real-time analytics and satisfaction tracking<br/>
-                    • 🚨 Smart escalation based on sentiment and priority<br/>
-                    • 📧 Integrated communication tracking<br/>
-                    • ⏱️ Response time monitoring and SLA compliance<br/>
-                    • 📈 Customer satisfaction scoring and trends<br/>
-                    • 🎯 Resolution workflow with follow-up management<br/>
-                    • 📱 Mobile-friendly feedback collection
-                </p>
-            </field>
-        </record>
-    </data>
 </odoo>
