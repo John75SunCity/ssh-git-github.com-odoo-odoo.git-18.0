@@ -31,10 +31,8 @@ class WorkOrderCoordinator(models.Model):
         ('2', 'Urgent')
     ], string="Priority", default='0')
 
-    # Linked Work Orders
-    container_retrieval_ids = fields.One2many('container.retrieval.work.order', 'coordinator_id', string="Container Retrievals")
-    file_retrieval_ids = fields.One2many('file.retrieval.work.order', 'coordinator_id', string="File Retrievals")
-    scan_retrieval_ids = fields.One2many('scan.retrieval.work.order', 'coordinator_id', string="Scan Retrievals")
+    # Linked Work Orders (unified retrieval + existing other types)
+    retrieval_order_ids = fields.One2many('records.retrieval.order', 'coordinator_id', string="Retrieval Orders")
     destruction_ids = fields.One2many('records.destruction', 'coordinator_id', string="Destruction Orders")
 
     # Coordination Metrics
@@ -79,7 +77,7 @@ class WorkOrderCoordinator(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('container_retrieval_ids.state', 'file_retrieval_ids.state', 'scan_retrieval_ids.state', 'destruction_ids.state')
+    @api.depends('retrieval_order_ids.state', 'destruction_ids.state')
     def _compute_coordination_metrics(self):
         for record in self:
             all_orders = record._get_all_work_orders()
@@ -125,14 +123,14 @@ class WorkOrderCoordinator(models.Model):
                 order.write(order_vals)
 
         self.write({'state': 'in_progress'})
-        self.message_post(body=_("Coordination started for %s work orders.", len(all_orders)))
+        self.message_post(body=_('Coordination started for work orders'))
 
     def action_create_fsm_tasks(self):
         """Creates FSM tasks for all linked work orders."""
         self.ensure_one()
         if not self.fsm_project_id:
             project_vals = {
-                "name": _("Records Management - %s", self.partner_id.name),
+                "name": _('Records Management Project'),
                 "is_fsm": True,
                 "partner_id": self.partner_id.id,
                 "allow_timesheets": True,
@@ -145,7 +143,7 @@ class WorkOrderCoordinator(models.Model):
                 order.create_fsm_task(self.fsm_project_id.id)
                 task_count += 1
 
-        self.message_post(body=_("Created %s FSM tasks for coordinated work orders.", task_count))
+        self.message_post(body=_('Created FSM tasks for coordinated work orders'))
 
     def action_consolidate_billing(self):
         """Creates a single consolidated invoice for all billable work orders."""
@@ -153,7 +151,7 @@ class WorkOrderCoordinator(models.Model):
         if not self.consolidated_billing:
             raise UserError(_("Consolidated billing is not enabled for this coordination."))
         if self.invoice_id:
-            raise UserError(_("A consolidated invoice already exists: %s", self.invoice_id.name))
+            raise UserError(_('A consolidated invoice already exists'))
 
         invoice_lines = []
         for order in self._get_all_work_orders():
@@ -172,7 +170,7 @@ class WorkOrderCoordinator(models.Model):
         }
         invoice = self.env['account.move'].create(invoice_vals)
         self.write({'invoice_id': invoice.id, 'state': 'billed'})
-        self.message_post(body=_("Consolidated invoice %s created with %s lines.") % (invoice.name, len(invoice_lines)))
+        self.message_post(body=_('Consolidated invoice created'))
 
         return {
             'type': 'ir.actions.act_window',
@@ -198,13 +196,17 @@ class WorkOrderCoordinator(models.Model):
     # BUSINESS METHODS
     # ============================================================================
     def _get_all_work_orders(self):
-        """Utility method to get a single recordset of all linked work orders."""
+        """Return a unified recordset (possibly heterogeneous) of all linked work orders.
+        Since Odoo recordsets are homogeneous per model, we build a union manually.
+        """
         self.ensure_one()
-        # This approach correctly combines different models into a list of records
-        # Note: The resulting list contains browse records of different models.
-        all_orders = []
-        all_orders.extend(self.container_retrieval_ids)
-        all_orders.extend(self.file_retrieval_ids)
-        all_orders.extend(self.scan_retrieval_ids)
-        all_orders.extend(self.destruction_ids)
-        return self.env[next(iter(all_orders), self.env['mail.thread'])].union(*all_orders) if all_orders else self.env['mail.thread']
+        all_lists = [self.retrieval_order_ids, self.destruction_ids]
+        # Filter out empty recordsets
+        non_empty = [rs for rs in all_lists if rs]
+        if not non_empty:
+            return self.env['mail.thread']  # empty generic recordset placeholder
+        # Start with first recordset then OR-combine
+        combined = non_empty[0]
+        for rs in non_empty[1:]:
+            combined |= rs
+        return combined
