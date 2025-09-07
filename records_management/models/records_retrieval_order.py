@@ -121,7 +121,8 @@ class RecordsRetrievalOrder(models.Model):
             else:
                 rec.display_name = partner
 
-    @api.depends('line_ids.estimated_pages', 'line_ids.id')
+    # Depend on line_ids (Odoo triggers on x2many commands) and estimated_pages for recalculation
+    @api.depends('line_ids', 'line_ids.estimated_pages')
     def _compute_item_metrics(self):
         for rec in self:
             rec.item_count = len(rec.line_ids)
