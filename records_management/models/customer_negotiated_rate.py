@@ -183,7 +183,7 @@ class CustomerNegotiatedRate(models.Model):
         """Update fields when customer changes."""
         if self.partner_id:
             if not self.name or self.name == _('New'):
-                # Using parameterized translation per project policy (param after _())
+                # Project policy: interpolate after translation
                 self.name = _('Rate for %s') % self.partner_id.name
 
             billing_profile = self.env['customer.billing.profile'].search([
@@ -249,15 +249,17 @@ class CustomerNegotiatedRate(models.Model):
         }
         self.write(vals)
         # Post single approval message
-        self.message_post(body=_('Rate approved by %s.') % self.env.user.name)
+        self.message_post(body=_('Rate approved by %s') % self.env.user.name)
         # Auto-activate if effective date reached
         if self.effective_date and self.effective_date <= fields.Date.today():
             self.action_activate()
 
     def action_reject(self):
         self.ensure_one()
-    self.write({'state': 'rejected'})
-    self.message_post(body=_('Rate rejected by %s.') % self.env.user.name)
+        if self.state not in ('submitted', 'approved'):
+            raise UserError(_('Only submitted or approved rates can be rejected.'))
+        self.write({'state': 'rejected'})
+        self.message_post(body=_('Rate rejected by %s') % self.env.user.name)
 
     def action_activate(self):
         self.ensure_one()
@@ -312,8 +314,12 @@ class CustomerNegotiatedRate(models.Model):
         return base_rate
 
     def get_rate_comparison(self, base_rate_model=None):
-        """Compare negotiated rate to base rate for analytics"""
+        """Compare negotiated rate to base rate for analytics."""
         self.ensure_one()
+
+        # Fallback: auto-resolve model if not provided
+        if not base_rate_model:
+            base_rate_model = self.env.get('base.rate')
 
         comparison_data = {
             "negotiated_rate": self.monthly_rate or 0.0,
@@ -323,15 +329,23 @@ class CustomerNegotiatedRate(models.Model):
         }
 
         if base_rate_model:
-            # Try to find matching base rate
-            base_rate = base_rate_model.search([("service_type", "=", self.rate_type), ("active", "=", True)], limit=1)
+            base_rate = base_rate_model.search([
+                ("service_type", "=", self.rate_type),
+                ("active", "=", True)
+            ], limit=1)
 
             if base_rate:
-                base_value = getattr(base_rate, "monthly_rate", 0.0) or getattr(base_rate, "standard_rate", 0.0) or 0.0
+                base_value = (
+                    getattr(base_rate, "monthly_rate", 0.0)
+                    or getattr(base_rate, "standard_rate", 0.0)
+                    or 0.0
+                )
                 comparison_data["base_rate"] = base_value
-
                 if base_value > 0 and self.monthly_rate:
-                    comparison_data["savings_amount"] = base_value - self.monthly_rate
-                    comparison_data["savings_percentage"] = ((base_value - self.monthly_rate) / base_value) * 100
+                    comparison_data["savings_amount"] = base_value - (self.monthly_rate or 0.0)
+                    comparison_data["savings_percentage"] = (
+                        (base_value - self.monthly_rate) / base_value
+                    ) * 100
 
         return comparison_data
+        return data

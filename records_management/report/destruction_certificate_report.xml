@@ -10,7 +10,7 @@
 <field name="binding_model_id" ref="records_management.model_destruction_certificate"/>
 
             <field name="binding_type">report</field>
-<field name="print_report_name">DestructionCertificate- + (object.name or '')</field>
+<field name="print_report_name">"DestructionCertificate-%s" % (object.name or '')</field>
         </record>
 
         <template id="report_destruction_certificate_template">
@@ -111,7 +111,7 @@
         <p class="mb4">
             <strong>Compliance Officer</strong>
         </p>
-<div class="o_signature_placeholder"/>
+<div class="o_signature_placeholder"></div>
 <p class="mt4">
     <span t-esc="sign_ctx['compliance_officer']"/>
 </p>
@@ -120,7 +120,7 @@
 <p class="mb4">
     <strong>Witness</strong>
 </p>
-<div class="o_signature_placeholder" style="height:60px;border-bottom:1px solid #000;"/>
+<div class="o_signature_placeholder" style="height:60px;border-bottom:1px solid #000;"></div>
 <p class="mt4">
     <span t-esc="sign_ctx['witness']"/>
 </p>
@@ -129,17 +129,15 @@
 <p class="mb4">
     <strong>Operator</strong>
 </p>
-<div class="o_signature_placeholder" style="height:60px;border-bottom:1px solid #000;"/>
+<div class="o_signature_placeholder" style="height:60px;border-bottom:1px solid #000;"></div>
 <p class="mt4">
     <span t-esc="sign_ctx['operator']"/>
 </p>
-</div>
-</div>
-                        </div>
-                    </t>
-                </t>
-            </t>
+</div><!-- end signature row (.row) -->
+</div><!-- end page (.page) -->
+</t><!-- web.external_layout -->
+</t><!-- foreach doc -->
+</t><!-- html_container -->
         </template>
     </data>
-</odoo>
 </odoo>

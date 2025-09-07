@@ -39,13 +39,13 @@ from . import custody_transfer_event
 from . import customer_billing_profile
 from . import customer_category
 from . import customer_feedback
-from . import customer_feedback_theme  # add theme tagging model for feedback
+from . import customer_feedback_theme
 from . import customer_inventory
 from . import customer_inventory_report
 from . import customer_inventory_report_line
 from . import customer_inventory_report_model
-from . import customer_negotiated_rate  # unified negotiated rate model (duplicate customer_negotiated_rates removed)
-from . import destruction_certificate  # ensure aggregation method is loaded
+from . import customer_negotiated_rate
+from . import destruction_certificate
 from . import destruction_event
 from . import destruction_item
 from . import discount_rule
@@ -95,7 +95,7 @@ from . import naid_custody
 from . import naid_custody_event
 from . import naid_destruction_record
 from . import naid_equipment_standard
-from . import naid_training_schedule  # Ensure training schedule model loads before certification (inverse field dependency)
+from . import naid_training_schedule
 from . import naid_operator_certification
 from . import naid_operator_certification_actions
 from . import naid_performance_history
@@ -127,7 +127,7 @@ from . import portal_feedback_action
 from . import portal_feedback_actions
 from . import portal_feedback_analytic
 from . import portal_feedback_escalation
-from . import portal_feedback_communication  # register communication model (fix unknown comodel warning)
+from . import portal_feedback_communication
 from . import portal_feedback_resolution
 from . import portal_request
 from . import portal_request_line
@@ -192,7 +192,7 @@ from . import records_retention_policy_version_actions
 from . import records_retention_rule
 from . import records_retrieval_order
 from . import records_retrieval_order_line
-from . import records_retrieval_work_order  # unified retrieval work order (legacy file_retrieval* removed)
+from . import records_retrieval_work_order
 from . import records_security_audit
 from . import records_series
 from . import records_service_type
@@ -250,7 +250,7 @@ from . import survey_improvement_action
 from . import survey_user_input
 from . import system_diagram_data
 from . import system_flowchart_wizard
-from . import customer_portal_diagram  # ensure portal diagram model is loaded (fix ACL resolution)
+from . import customer_portal_diagram
 from . import temp_inventory
 from . import temp_inventory_audit
 from . import temp_inventory_movement
