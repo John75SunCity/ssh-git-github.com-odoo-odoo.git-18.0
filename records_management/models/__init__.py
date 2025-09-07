@@ -97,6 +97,7 @@ from . import naid_custody
 from . import naid_custody_event
 from . import naid_destruction_record
 from . import naid_equipment_standard
+from . import naid_training_schedule  # Ensure training schedule model loads before certification (inverse field dependency)
 from . import naid_operator_certification
 from . import naid_operator_certification_actions
 from . import naid_performance_history

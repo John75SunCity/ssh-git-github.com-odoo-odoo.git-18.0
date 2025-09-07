@@ -1,10 +1,31 @@
-from odoo import models, fields, api
+try:  # pragma: no cover - consistency with certification model and safe fallback
+    from dateutil.relativedelta import relativedelta  # type: ignore  # noqa: F401
+except Exception:  # pragma: no cover
+    class _RelativedeltaFallback:  # minimal fallback supporting days addition only
+        def __init__(self, days=0):
+            self.days = days
 
-class NAIDTrainingSchedule(models.Model):
+        def __radd__(self, other):
+            if hasattr(other, '__class__') and hasattr(other, 'toordinal'):
+                from datetime import timedelta
+                return other + timedelta(days=self.days)
+            return other
+
+    relativedelta = _RelativedeltaFallback  # type: ignore
+
+import logging  # stdlib first
+from odoo import models, fields, api  # odoo imports
+
+_logger = logging.getLogger(__name__)
+
+class NAIDTrainingSchedule(models.Model):  # noqa: E305 (naming retained per existing codebase style)
     _name = 'naid.training.schedule'
     _description = 'NAID Training Schedule'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'scheduled_date'
+
+    # Debug helper to confirm early model registration order during load (safe no-op in production)
+    _logger.debug('Loading model naid.training.schedule (fields will be available for One2many inverse resolution)')
 
     certification_id = fields.Many2one('naid.operator.certification', string='Certification', required=True, ondelete='cascade')
     training_id = fields.Many2one('slide.channel', string='Training Course', required=True)
