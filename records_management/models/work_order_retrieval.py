@@ -57,11 +57,10 @@ class WorkOrderRetrieval(models.Model):
 
     # Work Order Details
     work_order_type = fields.Selection([
-        ('file_retrieval', 'File Retrieval'),
         ('document_retrieval', 'Document Retrieval'),
         ('box_retrieval', 'Box Retrieval'),
         ('bulk_retrieval', 'Bulk Retrieval')
-    ], string='Retrieval Type', default='file_retrieval')
+    ], string='Retrieval Type', default='document_retrieval')
 
     # Location and Access
     service_location_id = fields.Many2one('records.location', string='Service Location')
