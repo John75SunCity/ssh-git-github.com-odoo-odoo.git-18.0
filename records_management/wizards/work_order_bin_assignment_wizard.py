@@ -28,7 +28,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     name = fields.Char(
         string="Assignment Name",
         required=True,
-        default=lambda self: _("Bin Assignment - %s", fields.Date.today()),
+        default=lambda self: _("Bin Assignment"),
         tracking=True,
         help="Name for this bin assignment operation",
     )
@@ -183,9 +183,11 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         for wizard in self:
             if wizard.selected_bin_ids and wizard.work_order_ids:
                 if wizard.available_capacity < wizard.total_capacity_needed:
-                    raise UserError(_('Insufficient bin capacity. Available: %.2f CF, Needed: %.2f CF') % (
-                        wizard.available_capacity,
-                        wizard.total_capacity_needed
+                    raise UserError(_(
+                        "Insufficient bin capacity. Available: %.2f CF, Needed: %.2f CF" % (
+                            wizard.available_capacity,
+                            wizard.total_capacity_needed,
+                        )
                     ))
 
     def _validate_assignment_rules(self):
@@ -193,13 +195,12 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         self.ensure_one()
 
         if not self.work_order_ids:
-            raise UserError(_('Please select at least one work order'))
+            raise UserError(_("Please select at least one work order"))
 
         if not self.selected_bin_ids and self.assignment_type == 'manual':
-            raise UserError(_('Please select at least one bin for manual assignment'))
-
-    # Check for conflicting assignments
-    existing_assignments = self.env['records.retrieval.order'].search([
+            raise UserError(_("Please select at least one bin for manual assignment"))
+        # Check for conflicting assignments
+        existing_assignments = self.env['records.retrieval.order'].search([
             ('assigned_bin_ids', 'in', self.selected_bin_ids.ids),
             ('state', 'in', ['confirmed', 'in_progress']),
             ('id', 'not in', self.work_order_ids.ids)
@@ -208,8 +209,9 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         if existing_assignments:
             raise UserError(
                 _(
-                    "Some selected bins are already assigned to other active work orders: %s",
-                    ", ".join(existing_assignments.mapped("name")),
+                    "Some selected bins are already assigned to other active work orders: %s" % ", ".join(
+                        existing_assignments.mapped("name")
+                    )
                 )
             )
 
@@ -305,7 +307,7 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
 
             self.write({
                 'state': 'validated',
-                'validation_message': _('Assignment validated successfully. Ready to execute.')
+                'validation_message': _("Assignment validated successfully. Ready to execute.")
             })
 
         except UserError as e:
@@ -361,17 +363,16 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         """Create NAID compliance audit log for bin assignment"""
         self.env["naid.audit.log"].create(
             {
-                "name": _(
-                    "Bin Assignment: %s",
-                    work_order.name,
-                ),
+                "name": _("Bin Assignment: ") + work_order.name,
                 "activity_type": "bin_assignment",
                 "work_order_id": work_order.id,
                 "container_ids": [(6, 0, assigned_bins.ids)],
                 "performed_by": self.env.user.id,
                 "activity_date": fields.Datetime.now(),
-                "description": _("Assigned %d bins to work order %s via wizard")
-                % (len(assigned_bins), work_order.name),
+                "description": _(
+                    "Assigned %d bins to work order %s via wizard"
+                    % (len(assigned_bins), work_order.name)
+                ),
                 "compliance_level": "standard",
             }
         )
@@ -389,14 +390,16 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
 
     def _show_success_message(self, assignment_count):
         """Show success message after assignment"""
-        message = _('Successfully assigned %d bins to %d work orders') % (
-            assignment_count, len(self.work_order_ids))
+        message = _(
+            "Successfully assigned %d bins to %d work orders"
+            % (assignment_count, len(self.work_order_ids))
+        )
 
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': _('Assignment Complete'),
+                'title': _("Assignment Complete"),
                 'message': message,
                 'type': 'success',
                 'sticky': False,

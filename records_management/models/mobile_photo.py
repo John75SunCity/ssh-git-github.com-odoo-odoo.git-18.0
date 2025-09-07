@@ -24,10 +24,12 @@ class MobilePhoto(models.Model):
                                   help="Related Field Service Management task")
     work_order_reference = fields.Reference([
         ('container.destruction.work.order', 'Container Destruction Work Order'),
-        ('container.retrieval.work.order', 'Container Retrieval Work Order'),
+        # Legacy retrieval models removed: container.retrieval.work.order consolidated into records.retrieval.order
         ('container.access.work.order', 'Container Access Work Order'),
         ('work.order.shredding', 'Shredding Work Order'),
-        ('project.task', 'Project Task/FSM Task')
+        ('project.task', 'Project Task/FSM Task'),
+        # Unified retrieval order model
+        ('records.retrieval.order', 'Retrieval Order')
     ], string="Work Order", help="Related work order for this photo")
 
     # Business Entity Relationships
@@ -142,7 +144,7 @@ class MobilePhoto(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Photo: %s", self.name),
+            "name": self.name,
             "res_model": "mobile.photo",
             "res_id": self.id,
             "view_mode": "form",
@@ -157,7 +159,7 @@ class MobilePhoto(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("FSM Task: %s", self.fsm_task_id.name),
+            "name": self.fsm_task_id.display_name,
             "res_model": "project.task",
             "res_id": self.fsm_task_id.id,
             "view_mode": "form",
@@ -172,7 +174,7 @@ class MobilePhoto(models.Model):
 
         return {
             "type": "ir.actions.act_window",
-            "name": _("Work Order: %s", self.work_order_reference.name),
+            "name": self.work_order_reference.display_name,
             "res_model": self.work_order_reference._name,
             "res_id": self.work_order_reference.id,
             "view_mode": "form",
