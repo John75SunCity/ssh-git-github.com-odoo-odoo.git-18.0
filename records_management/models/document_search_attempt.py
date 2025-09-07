@@ -17,9 +17,7 @@ class DocumentSearchAttempt(models.Model):
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
 
-    # Link to retrieval items
-    retrieval_item_id = fields.Many2one('document.retrieval.item', string='Retrieval Item (DEPRECATED)')
-    # New unified linkage (supersedes file_retrieval_id/retrieval_item variants)
+    # Unified linkage (supersedes all legacy file_retrieval/retrieval_item variants)
     retrieval_line_id = fields.Many2one(
         'records.retrieval.order.line',
         string='Retrieval Line',

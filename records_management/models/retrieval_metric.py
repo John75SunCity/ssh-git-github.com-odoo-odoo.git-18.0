@@ -19,16 +19,12 @@ class RetrievalMetric(models.Model):
     user_id = fields.Many2one('res.users', string='Metric Recorder', default=lambda self: self.env.user)
     active = fields.Boolean(string='Active', default=True)
 
-    # Polymorphic relation to link to any type of retrieval item
-    retrieval_item_id = fields.Reference(
-        selection=[
-            ('records.retrieval.order.line', 'Retrieval Line'),
-            ('container.retrieval.item', 'Container Retrieval'),
-            ('scan.retrieval.item', 'Scan Retrieval')
-        ],
-        string="Retrieval Item",
+    # Unified retrieval linkage (legacy polymorphic Reference fully removed)
+    retrieval_line_id = fields.Many2one(
+        comodel_name='records.retrieval.order.line',
+        string='Retrieval Line',
         required=True,
-        help="Primary link now favors unified retrieval line; legacy file.retrieval.item kept temporarily for migration."
+    help='Unified retrieval order line linkage.'
     )
 
     team_id = fields.Many2one('maintenance.team', string='Team')

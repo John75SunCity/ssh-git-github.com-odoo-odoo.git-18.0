@@ -62,7 +62,7 @@ class RecordsRetrievalOrderLine(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer', tracking=True)
 
     # ------------------------------------------------------------------
-    # Fields ported from legacy file.retrieval.item for unification
+    # Unified retrieval line fields
     # ------------------------------------------------------------------
     discovery_container_id = fields.Many2one('records.container', string='Discovery Container')
     searched_container_ids = fields.Many2many(
