@@ -55,12 +55,13 @@ class ScanRetrievalItem(models.Model):
         comodel_name='records.document',
         string='Document to Scan',
     )
-    # Link back to the work order (inverse for scan.retrieval.work.order.scan_item_ids)
+    # Link to unified retrieval order (replaces legacy scan.retrieval.work.order)
     work_order_id = fields.Many2one(
-        comodel_name='scan.retrieval.work.order',
-        string='Scan Work Order',
+        comodel_name='records.retrieval.order',
+        string='Retrieval Order',
         ondelete='cascade',
         index=True,
+        help='Unified retrieval order that groups this scan item with other retrieval operations.'
     )
     file_retrieval_item_id = fields.Many2one(
         comodel_name='file.retrieval.item',
@@ -176,5 +177,3 @@ class ScanRetrievalItem(models.Model):
             body=_("Rescan requested for item"),
             message_type='notification'
         )
-
-

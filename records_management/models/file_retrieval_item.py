@@ -74,11 +74,11 @@ class FileRetrievalItem(models.Model):
     )
 
     work_order_id = fields.Many2one(
-        'file.retrieval.work.order',
-        string='Work Order',
+        'records.retrieval.order',
+        string='Retrieval Order',
         ondelete='cascade',
         tracking=True,
-        help="Associated work order for this retrieval item"
+        help="Unified retrieval order (replaces legacy file.retrieval.work.order)"
     )
 
     container_id = fields.Many2one(

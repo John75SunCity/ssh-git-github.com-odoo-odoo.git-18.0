@@ -52,10 +52,10 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
     # WORK ORDER AND BIN FIELDS
     # ============================================================================
     work_order_ids = fields.Many2many(
-        'file.retrieval.work.order',
-        string='Work Orders',
+        'records.retrieval.order',
+        string='Retrieval Orders',
         required=True,
-        help='Work orders to assign bins to'
+        help='Unified retrieval orders to assign bins to (replaces legacy file.retrieval.work.order)'
     )
 
     available_bin_ids = fields.Many2many(
@@ -198,8 +198,8 @@ class WorkOrderBinAssignmentWizard(models.TransientModel):
         if not self.selected_bin_ids and self.assignment_type == 'manual':
             raise UserError(_('Please select at least one bin for manual assignment'))
 
-        # Check for conflicting assignments
-        existing_assignments = self.env['file.retrieval.work.order'].search([
+    # Check for conflicting assignments
+    existing_assignments = self.env['records.retrieval.order'].search([
             ('assigned_bin_ids', 'in', self.selected_bin_ids.ids),
             ('state', 'in', ['confirmed', 'in_progress']),
             ('id', 'not in', self.work_order_ids.ids)

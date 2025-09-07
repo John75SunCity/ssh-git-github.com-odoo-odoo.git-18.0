@@ -15,12 +15,12 @@ class ScanDigitalAsset(models.Model):
     name = fields.Char(string="Asset Name", required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     active = fields.Boolean(default=True)
-    # Link to the scan retrieval work order (not project.task)
+    # Link to unified retrieval order
     work_order_id = fields.Many2one(
-        comodel_name='scan.retrieval.work.order',
-        string="Work Order",
+        comodel_name='records.retrieval.order',
+        string="Retrieval Order",
         ondelete='cascade',
-        help="The scan retrieval work order that generated this digital asset.",
+        help="Unified retrieval order associated with this digital asset (replaces legacy scan.retrieval.work.order)",
         index=True,
     )
 
