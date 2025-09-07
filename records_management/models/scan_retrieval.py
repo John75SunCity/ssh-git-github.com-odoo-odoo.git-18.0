@@ -17,7 +17,6 @@ class ScanRetrieval(models.Model):
 
     # Source document/file
     document_id = fields.Many2one('records.document', string='Document')
-    file_retrieval_id = fields.Many2one('file.retrieval', string='Related File Retrieval')
     partner_id = fields.Many2one('res.partner', string='Customer', required=True)
 
     # Scanning specifications
@@ -83,33 +82,36 @@ class ScanRetrieval(models.Model):
 
     def action_start_scanning(self):
         """Start the scanning process"""
-        for record in self:
-            if record.status != 'retrieved':
-                raise UserError(_("Document must be retrieved before scanning."))
-            record.write({
-                'status': 'scanning',
-                'scan_date': fields.Datetime.now()
-            })
-            record.message_post(body=_("Scanning started by %s", self.env.user.name))
+        self.ensure_one()
+        record = self
+        if record.status != 'retrieved':
+            raise UserError(_("Document must be retrieved before scanning."))
+        record.write({
+            'status': 'scanning',
+            'scan_date': fields.Datetime.now()
+        })
+        record.message_post(body=_('Scanning started by') + ' ' + self.env.user.name)
 
     def action_complete_scan(self):
         """Mark scanning as completed"""
-        for record in self:
-            if record.status != 'scanning':
-                raise UserError(_("Scanning must be in progress to complete."))
-            record.write({
-                'status': 'completed',
-                'scan_completed': True
-            })
-            record.message_post(body=_("Scanning completed by %s", self.env.user.name))
+        self.ensure_one()
+        record = self
+        if record.status != 'scanning':
+            raise UserError(_("Scanning must be in progress to complete."))
+        record.write({
+            'status': 'completed',
+            'scan_completed': True
+        })
+        record.message_post(body=_('Scanning completed by') + ' ' + self.env.user.name)
 
-    def action_quality_check(self):
-        """Perform quality check on scanned documents"""
-        for record in self:
-            if record.status != 'completed':
-                raise UserError(_("Scan must be completed before quality check."))
-            record.write({
-                'status': 'quality_check',
-                'quality_checked': True
-            })
-            record.message_post(body=_("Quality check performed by %s", self.env.user.name))
+    def action_quality(self):
+        """Perform quality check on scanned document"""
+        self.ensure_one()
+        record = self
+        if record.status != 'completed':
+            raise UserError(_("Scan must be completed before quality check."))
+        record.write({
+            'status': 'quality_check',
+            'quality_checked': True
+        })
+        record.message_post(body=_('Quality check performed by') + ' ' + self.env.user.name)

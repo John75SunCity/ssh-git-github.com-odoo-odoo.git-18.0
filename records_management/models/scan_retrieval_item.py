@@ -65,11 +65,6 @@ class ScanRetrievalItem(models.Model):
         help='Unified retrieval order that groups this scan item with other retrieval operations.'
     )
     # Legacy link (to be removed after migration)
-    file_retrieval_item_id = fields.Many2one(
-        comodel_name='file.retrieval.item',
-        string='Related File Retrieval (Legacy)',
-        help='Deprecated: will be removed once all retrieval items are unified as order lines.'
-    )
     # Unified link
     retrieval_line_id = fields.Many2one(
         comodel_name='records.retrieval.order.line',

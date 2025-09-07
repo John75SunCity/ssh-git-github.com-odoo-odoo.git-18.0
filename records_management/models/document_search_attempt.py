@@ -19,7 +19,6 @@ class DocumentSearchAttempt(models.Model):
 
     # Link to retrieval items
     retrieval_item_id = fields.Many2one('document.retrieval.item', string='Retrieval Item (DEPRECATED)')
-    file_retrieval_id = fields.Many2one('file.retrieval', string="File Retrieval")
     # New unified linkage (supersedes file_retrieval_id/retrieval_item variants)
     retrieval_line_id = fields.Many2one(
         'records.retrieval.order.line',
@@ -69,13 +68,13 @@ class DocumentSearchAttempt(models.Model):
     # CONSTRAINS
     # ============================================================================
     @api.constrains('search_duration')
-    def _check_search_duration(self):  # Renamed to follow Odoo naming conventions
+    def _check_duration_non_negative(self):
         for attempt in self:
             if attempt.search_duration and attempt.search_duration < 0:
                 raise ValidationError(_("Search duration cannot be negative."))
 
     @api.constrains('search_date', 'found_date')
-    def _check_date_sequence(self):  # Renamed to follow Odoo naming conventions
+    def _check_date_sequence(self):
         for attempt in self:
             if attempt.search_date and attempt.found_date and attempt.search_date > attempt.found_date:
                 raise ValidationError(_("Search date cannot be after the found date."))
@@ -93,7 +92,7 @@ class DocumentSearchAttempt(models.Model):
                 parts.append(attempt.name)
 
             if attempt.container_id:
-                parts.append(_("in %s", attempt.container_id.name))
+                parts.append(_('in') + ' ' + attempt.container_id.name)
 
             status = _("Found") if attempt.found else _("Not Found")
             parts.append("[%s]" % status)
@@ -112,15 +111,15 @@ class DocumentSearchAttempt(models.Model):
     # ============================================================================
     # ACTION METHODS
     # ============================================================================
-    def action_complete_search(self):  # Renamed to follow Odoo naming conventions
+    def action_finish(self):
         self.ensure_one()
         if self.state != 'in_progress':
-            raise UserError(_("Can only complete searches that are in progress."))
+            raise UserError(_('Can only complete searches that are in progress.'))
         if not self.search_notes:
-            raise UserError(_("Please provide search notes before completing."))
-    status_msg = _("found") if self.found else _("not found")
-    self.write({'state': 'completed'})
-    self.message_post(body=_("Search completed. Document was %s.", status_msg))
+            raise UserError(_('Please provide search notes before completing.'))
+        status_msg = _('found') if self.found else _('not found')
+        self.write({'state': 'completed'})
+        self.message_post(body=_('Search completed. Document was') + ' ' + status_msg)
         return True
 
     def action_create_retrieval_request(self):
@@ -137,7 +136,7 @@ class DocumentSearchAttempt(models.Model):
                     "container_id": self.container_id.id,
                     "requested_by_id": self.env.user.id,
                     "request_date": fields.Datetime.now(),
-                    "notes": _("Based on search attempt: %s\nFile: %s") % (self.name, self.requested_file_name or "N/A"),
+                    "notes": _('Based on search attempt:') + ' ' + self.name + '\n' + _('File:') + ' ' + (self.requested_file_name or 'N/A'),
                 }
             )
             self.container_retrieval_id = retrieval.id
@@ -160,7 +159,7 @@ class DocumentSearchAttempt(models.Model):
                 "location_id": self.location_id.id,
                 "assigned_to_id": self.searched_by_id.id,
                 "state": "assigned",
-                "notes": _("Work order for search attempt: %s", self.name),
+                "notes": _('Work order for search attempt:') + ' ' + self.name,
             })
             self.work_order_id = work_order.id
 
@@ -189,5 +188,5 @@ class DocumentSearchAttempt(models.Model):
             for attempt in self:
                 state_label = dict(attempt._fields['state'].selection).get(attempt.state)
                 if state_label:
-                    attempt.message_post(body=_("Status changed to %s", state_label))
+                    attempt.message_post(body=_('Status changed to') + ' ' + state_label)
         return res

@@ -23,7 +23,6 @@ class RetrievalMetric(models.Model):
     retrieval_item_id = fields.Reference(
         selection=[
             ('records.retrieval.order.line', 'Retrieval Line'),
-            ('file.retrieval.item', 'File Retrieval (Legacy)'),
             ('container.retrieval.item', 'Container Retrieval'),
             ('scan.retrieval.item', 'Scan Retrieval')
         ],
@@ -106,7 +105,7 @@ class RetrievalMetric(models.Model):
             metric_label = dict(record._fields['metric_type'].selection).get(record.metric_type, '')
             unit_label = dict(record._fields['metric_unit'].selection).get(record.metric_unit, '')
             # Ensure initial static text for translator context
-            record.display_name = _('Metric %s: %.2f %s', metric_label, record.metric_value, unit_label)
+            record.display_name = _('Metric') + ' ' + (metric_label or '') + ': ' + ('%.2f' % record.metric_value) + ' ' + (unit_label or '')
 
     @api.depends('start_time', 'end_time')
     def _compute_duration(self):
@@ -186,5 +185,5 @@ class RetrievalMetric(models.Model):
             for record in self:
                 state_label = dict(record._fields['state'].selection).get(record.state)
                 if state_label:
-                    record.message_post(body=_('State changed to %s', state_label))
+                    record.message_post(body=_('State changed to') + ' ' + state_label)
         return res

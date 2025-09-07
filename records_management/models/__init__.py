@@ -1,5 +1,4 @@
 from . import retrieval_item_base
-from . import file_retrieval_item
 from . import scan_retrieval_item
 from . import container_retrieval_item
 from . import account_move_line
@@ -56,7 +55,6 @@ from . import document_retrieval_item
 from . import document_search_attempt
 from . import feedback_improvement_area
 from . import field_label_customization
-from . import file_retrieval
 from . import full_customization_name
 from . import hard_drive_scan_wizard
 from . import hr_employee
