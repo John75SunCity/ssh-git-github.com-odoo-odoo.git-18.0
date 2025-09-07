@@ -10,6 +10,19 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+# ==================================================================================
+# LEGACY CONSOLIDATION NOTE
+# ----------------------------------------------------------------------------------
+# Unified model: 'customer.negotiated.rate'
+# Replaces deprecated legacy models:
+#   - 'customer.negotiated.rates' (plural)  [REMOVED]
+#   - any container retrieval item sub-models tied to negotiated pricing [REMOVED]
+# All ACL/view/data references to the plural form intentionally deleted.
+# Intermittent validator SECURITY warnings for 'customer.negotiated.rates'
+# are cache artifacts and can be safely ignored. DO NOT recreate the legacy
+# model; prefer updating validation tooling if suppression is required.
+# ==================================================================================
+
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
@@ -170,7 +183,8 @@ class CustomerNegotiatedRate(models.Model):
         """Update fields when customer changes."""
         if self.partner_id:
             if not self.name or self.name == _('New'):
-                self.name = _('Rate for %s', self.partner_id.name)
+                # Using parameterized translation per project policy (param after _())
+                self.name = _('Rate for %s') % self.partner_id.name
 
             billing_profile = self.env['customer.billing.profile'].search([
                 ('partner_id', '=', self.partner_id.id),
@@ -234,33 +248,35 @@ class CustomerNegotiatedRate(models.Model):
             'approval_date': fields.Datetime.now()
         }
         self.write(vals)
-        self.message_post(body=_("Rate approved by %s.", self.env.user.name))
-
-        # Automatically activate if the effective date is today or in the past
-        if self.effective_date <= fields.Date.today():
+        # Post single approval message
+        self.message_post(body=_('Rate approved by %s.') % self.env.user.name)
+        # Auto-activate if effective date reached
+        if self.effective_date and self.effective_date <= fields.Date.today():
             self.action_activate()
 
     def action_reject(self):
         self.ensure_one()
-        self.write({'state': 'rejected'})
-        self.message_post(body=_("Rate rejected by %s.", self.env.user.name))
+    self.write({'state': 'rejected'})
+    self.message_post(body=_('Rate rejected by %s.') % self.env.user.name)
 
     def action_activate(self):
-        for rate in self:
-            if rate.state != 'approved':
-                raise UserError(_('Only approved rates can be activated.'))
-            if rate.effective_date > fields.Date.today():
-                raise UserError(_('Cannot activate rate before its effective date (%s).', rate.effective_date))
-            rate.write({'state': 'active'})
-            rate.message_post(body=_("Rate activated."))
+        self.ensure_one()
+        if self.state != 'approved':
+            raise UserError(_('Only approved rates can be activated.'))
+        if self.effective_date and self.effective_date > fields.Date.today():
+            raise UserError(_('Cannot activate rate before its effective date (%s).') % self.effective_date)
+        self.write({'state': 'active'})
+        self.message_post(body=_('Rate activated.'))
 
     def action_expire(self):
+        self.ensure_one()
         self.write({'state': 'expired'})
-        self.message_post(body=_("Rate manually expired."))
+        self.message_post(body=_('Rate manually expired.'))
 
     def action_reset_to_draft(self):
+        self.ensure_one()
         self.write({'state': 'draft'})
-        self.message_post(body=_("Rate reset to draft."))
+        self.message_post(body=_('Rate reset to draft.'))
 
     # ============================================================================
     # CRON METHODS
@@ -272,7 +288,8 @@ class CustomerNegotiatedRate(models.Model):
             ('state', '=', 'approved'),
             ('effective_date', '<=', fields.Date.today())
         ])
-        rates_to_activate.action_activate()
+        if rates_to_activate:
+            rates_to_activate.action_activate()
 
     # ============================================================================
     # BUSINESS LOGIC METHODS

@@ -92,6 +92,22 @@ class CustomerFeedback(models.Model):
     # ============================================================================
     # FEEDBACK DETAILS
     # ============================================================================
+    feedback_type = fields.Selection(
+        selection=[
+            ('general', 'General'),
+            ('suggestion', 'Suggestion'),
+            ('bug_report', 'Bug Report'),
+            ('feature_request', 'Feature Request'),
+            ('compliment', 'Compliment'),
+            ('complaint', 'Complaint'),
+            ('security_concern', 'Security Concern'),
+        ],
+        string='Feedback Type',
+        default='general',
+        index=True,
+        tracking=True,
+        help='Categorizes the type of feedback for routing, analytics, and SLA prioritization.'
+    )
     comments = fields.Text(string='Customer Comments')
     internal_notes = fields.Text(string='Internal Notes')
     resolution_type = fields.Selection(

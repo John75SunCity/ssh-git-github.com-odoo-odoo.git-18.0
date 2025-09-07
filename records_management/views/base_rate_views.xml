@@ -483,7 +483,8 @@
         <menuitem id="menu_base_rates" name="Base Service Rates" parent="menu_rate_management" action="action_base_rates" sequence="10" groups="records_management.group_records_manager"/>
 
         <!-- Tree view for Customer -->
-        <menuitem id="menu_customer_negotiated_rates" name="Customer Negotiated Rates" parent="menu_rate_management" action="action_customer_negotiated_rates" sequence="20" groups="records_management.group_records_manager"/>
+<menuitem id="menu_customer_negotiated_rates" name="Customer Negotiated Rates" parent="menu_rate_management" action="action_customer_negotiated_rate" sequence="20" groups="records_management.group_records_manager"/>
+
 
         <!-- Tree view for Revenue -->
         <menuitem id="menu_revenue_forecaster" name="Revenue Forecaster" parent="menu_rate_management" action="action_revenue_forecaster" sequence="30" groups="records_management.group_records_manager"/>
