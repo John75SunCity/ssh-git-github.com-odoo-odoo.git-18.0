@@ -73,7 +73,8 @@ class RecordsRetrievalOrderLine(models.Model):
     )
     # Link search attempts directly to unified line (replaces file_retrieval_id / retrieval_item_id)
     search_attempt_ids = fields.One2many('document.search.attempt', 'retrieval_line_id', string='Search Attempts')
-    search_attempt_count = fields.Integer(string='Search Attempts', compute='_compute_attempt_count')
+    # Use distinct label to avoid duplicate with search_attempt_ids
+    search_attempt_count = fields.Integer(string='Search Attempt Count', compute='_compute_attempt_count')
     condition_before = fields.Selection([
         ('excellent', 'Excellent'),
         ('good', 'Good'),

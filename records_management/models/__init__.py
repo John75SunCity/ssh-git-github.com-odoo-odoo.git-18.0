@@ -45,6 +45,7 @@ from . import customer_inventory_report
 from . import customer_inventory_report_line
 from . import customer_inventory_report_model
 from . import customer_negotiated_rate
+from . import customer_negotiated_rates  # register aggregated negotiated rates model (fix ACL resolution)
 from . import destruction_certificate
 from . import destruction_event
 from . import destruction_item
@@ -250,6 +251,7 @@ from . import survey_improvement_action
 from . import survey_user_input
 from . import system_diagram_data
 from . import system_flowchart_wizard
+from . import customer_portal_diagram  # ensure portal diagram model is loaded (fix ACL resolution)
 from . import temp_inventory
 from . import temp_inventory_audit
 from . import temp_inventory_movement
