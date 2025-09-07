@@ -69,8 +69,8 @@
         "security/portal_request_security.xml",
         "security/destruction_certificate_security.xml",  # Portal destruction certificate visibility rule
     # (Previously removed portal visibility restriction rule now standardized & restored)
-        # 2. Data files (sequences and base data next)
-        "data/sequence_data.xml",  # Sequences often needed early
+    # 2. Data files (sequences and base data next)
+    "data/sequence_data.xml",  # Sequences often needed early
     "data/records_retrieval_order_sequences_data.xml",  # Unified retrieval order sequences
     "data/records_retrieval_order_cron_data.xml",  # SLA escalation scheduled action
         "data/core_records_data.xml",
@@ -88,7 +88,7 @@
         "data/scheduled_actions_data.xml",
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
-        "data/temp_inventory_configurator_data.xml",
+    "data/temp_inventory_configurator_data.xml",
     "data/field_label_customization_batch4.xml",
         # 3. Views (after security and data)
         "views/records_management_menus.xml",
@@ -118,7 +118,7 @@
         "views/location_report_wizard_views.xml",
         "views/maintenance_request_views.xml",
         "views/naid_audit_log_views.xml",
-        "views/naid_certificate_views.xml",
+    "views/naid_certificate_views.xml",
     "views/destruction_certificate_views.xml",
         "views/naid_compliance_checklist_item_views.xml",
         "views/naid_compliance_checklist_views.xml",
@@ -177,7 +177,7 @@
         "views/records_request_views.xml",
         "views/records_retention_policy_views.xml",
         "views/records_retention_rule_views.xml",
-    # LEGACY RETRIEVAL WORK ORDER VIEWS REMOVED (replaced by unified records_retrieval_order_views.xml)
+    # Unified retrieval order views (legacy individual retrieval views removed)
     "views/records_retrieval_order_views.xml",
         "views/records_security_audit_views.xml",
         "views/records_series_views.xml",
@@ -227,9 +227,9 @@
         "templates/portal_mobile_inventory_template.xml",
         "templates/portal_mobile_settings.xml",
         "templates/portal_mobile_template.xml",
-        "templates/portal_work_order_templates.xml",
-        "templates/portal_certifications.xml",
-        "views/records_container_views.xml",
+    "templates/portal_work_order_templates.xml",
+    "templates/portal_certifications.xml",
+    "views/records_container_views.xml",
         "views/records_billing_config_views.xml",
         "views/rm_module_configurator_views.xml",
         "views/portal_request_views.xml",

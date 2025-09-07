@@ -129,6 +129,7 @@ from . import portal_feedback_action
 from . import portal_feedback_actions
 from . import portal_feedback_analytic
 from . import portal_feedback_escalation
+from . import portal_feedback_communication  # register communication model (fix unknown comodel warning)
 from . import portal_feedback_resolution
 from . import portal_request
 from . import portal_request_line
