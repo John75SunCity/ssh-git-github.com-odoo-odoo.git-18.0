@@ -22,12 +22,14 @@ class RetrievalMetric(models.Model):
     # Polymorphic relation to link to any type of retrieval item
     retrieval_item_id = fields.Reference(
         selection=[
-            ('file.retrieval.item', 'File Retrieval'),
+            ('records.retrieval.order.line', 'Retrieval Line'),
+            ('file.retrieval.item', 'File Retrieval (Legacy)'),
             ('container.retrieval.item', 'Container Retrieval'),
             ('scan.retrieval.item', 'Scan Retrieval')
         ],
         string="Retrieval Item",
-        required=True
+        required=True,
+        help="Primary link now favors unified retrieval line; legacy file.retrieval.item kept temporarily for migration."
     )
 
     team_id = fields.Many2one('maintenance.team', string='Team')
@@ -103,7 +105,8 @@ class RetrievalMetric(models.Model):
         for record in self:
             metric_label = dict(record._fields['metric_type'].selection).get(record.metric_type, '')
             unit_label = dict(record._fields['metric_unit'].selection).get(record.metric_unit, '')
-            record.display_name = _('%s: %.2f %s', metric_label, record.metric_value, unit_label)
+            # Ensure initial static text for translator context
+            record.display_name = _('Metric %s: %.2f %s', metric_label, record.metric_value, unit_label)
 
     @api.depends('start_time', 'end_time')
     def _compute_duration(self):

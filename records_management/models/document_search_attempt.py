@@ -20,6 +20,12 @@ class DocumentSearchAttempt(models.Model):
     # Link to retrieval items
     retrieval_item_id = fields.Many2one('document.retrieval.item', string='Retrieval Item (DEPRECATED)')
     file_retrieval_id = fields.Many2one('file.retrieval', string="File Retrieval")
+    # New unified linkage (supersedes file_retrieval_id/retrieval_item variants)
+    retrieval_line_id = fields.Many2one(
+        'records.retrieval.order.line',
+        string='Retrieval Line',
+        help='Unified retrieval order line replacing legacy file/item links'
+    )
 
     # Specialized retrieval item links
     container_retrieval_id = fields.Many2one(
@@ -112,9 +118,9 @@ class DocumentSearchAttempt(models.Model):
             raise UserError(_("Can only complete searches that are in progress."))
         if not self.search_notes:
             raise UserError(_("Please provide search notes before completing."))
-        status_msg = _("found") if self.found else _("not found")
-        self.write({'state': 'completed'})
-        self.message_post(body=_("Search completed. Document was %s.", status_msg))  # Fixed translation formatting
+    status_msg = _("found") if self.found else _("not found")
+    self.write({'state': 'completed'})
+    self.message_post(body=_("Search completed. Document was %s.", status_msg))
         return True
 
     def action_create_retrieval_request(self):
@@ -131,8 +137,7 @@ class DocumentSearchAttempt(models.Model):
                     "container_id": self.container_id.id,
                     "requested_by_id": self.env.user.id,
                     "request_date": fields.Datetime.now(),
-                    "notes": _("Based on search attempt: %s\nFile: %s")
-                    % (self.name, self.requested_file_name or "N/A"),  # Fixed translation formatting
+                    "notes": _("Based on search attempt: %s\nFile: %s") % (self.name, self.requested_file_name or "N/A"),
                 }
             )
             self.container_retrieval_id = retrieval.id
@@ -150,15 +155,13 @@ class DocumentSearchAttempt(models.Model):
         """Create a work order for this search if none exists"""
         self.ensure_one()
         if not self.work_order_id:
-            work_order = self.env["records.retrieval.order"].create(
-                {
-                    "partner_id": self.partner_id.id,
-                    "location_id": self.location_id.id,
-                    "assigned_to_id": self.searched_by_id.id,
-                    "state": "assigned",
-                    "notes": _("Work order for search attempt: %s", self.name),  # Fixed translation formatting
-                }
-            )
+            work_order = self.env["records.retrieval.order"].create({
+                "partner_id": self.partner_id.id,
+                "location_id": self.location_id.id,
+                "assigned_to_id": self.searched_by_id.id,
+                "state": "assigned",
+                "notes": _("Work order for search attempt: %s", self.name),
+            })
             self.work_order_id = work_order.id
 
         return {
