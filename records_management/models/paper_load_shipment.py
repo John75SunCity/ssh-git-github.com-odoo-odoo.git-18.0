@@ -154,7 +154,8 @@ class PaperLoadShipment(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Bales in Shipment %s", self.name),
+            # Translation normalization: interpolate after _()
+            "name": _("Bales in Shipment %s") % self.name,
             "res_model": "paper.bale",
             "view_mode": "tree,form",
             "domain": [("id", "in", self.bale_ids.ids)],

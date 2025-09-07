@@ -46,9 +46,9 @@ class FieldDef:
 
 class ModelDef:
     def __init__(self):
-        self.name: str|None = None
         self.inherits: List[str] = []  # _inherit(s)
         self.fields: Dict[str, FieldDef] = {}
+        self.name: str | None = None
 
 
 def parse_models(module_path: Path) -> Dict[str, ModelDef]:

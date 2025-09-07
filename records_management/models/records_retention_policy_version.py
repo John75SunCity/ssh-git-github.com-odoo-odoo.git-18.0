@@ -9,10 +9,10 @@ from odoo.exceptions import ValidationError
 
 
 class RecordsRetentionPolicyVersion(models.Model):
-    """
-    parent_policy_id = fields.Many2one("records.retention.policy", string="Parent Policy")
-    Records Retention Policy Version
+    """Records Retention Policy Version
     Tracks versions of retention policies for audit and compliance.
+
+    NOTE: Field renamed to policy_id (was parent_policy_id) for consistency.
     """
     _name = 'records.retention.policy.version'
     _description = 'Records Retention Policy Version'
@@ -205,3 +205,9 @@ class RecordsRetentionPolicyVersion(models.Model):
     def action_view_audit_trail(self):
         self.ensure_one()
         return False
+
+    # Rename handling note:
+    # If upgrading from a version where the field was parent_policy_id,
+    # a manual column rename is required:
+    #   ALTER TABLE records_retention_policy_version RENAME COLUMN parent_policy_id TO policy_id;
+    # Or handle via a migration script.

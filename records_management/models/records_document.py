@@ -2,8 +2,8 @@
 # IMPORTS & DEPENDENCIES
 # ============================================================================
 # Fixed: Reordered imports per Odoo standards (stdlib → third-party → Odoo core → Odoo addons)
-import io
 import base64
+import io
 import logging
 from datetime import datetime, date, timedelta
 
@@ -243,14 +243,13 @@ class RecordsDocument(models.Model):
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create to set sequence and log creation."""
+        # Updated translation usage to project policy (percent interpolation after _()).
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('records.document') or _('New')
         docs = super().create(vals_list)
         for doc in docs:
-            # Keep arguments inside _() per repository's existing translation pattern
-            doc.message_post(body=_('Document "%s" created', doc.name))
+            doc.message_post(body=_('Document "%s" created') % doc.name)
         return docs
 
     def write(self, vals):
@@ -759,19 +758,17 @@ class RecordsDocument(models.Model):
         self.env['naid.audit.log'].create({
             'document_id': self.id,
             'event_type': 'checkout',
-            'event_description': _('Document checked out by %s', self.env.user.name),
+            'event_description': _('Document checked out by %s') % self.env.user.name,
             'user_id': self.env.user.id,
             'event_date': checkout_date,
         })
-        # Post message in chatter
-        self.message_post(body=_('Document checked out by %s', self.env.user.name))
-
+        self.message_post(body=_('Document checked out by %s') % self.env.user.name)
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': _("Document Checked Out"),
-                'message': _('Document %s has been checked out successfully', self.display_name),
+                'message': _('Document %s has been checked out successfully') % self.display_name,
                 'sticky': False,
             }
         }
@@ -794,19 +791,17 @@ class RecordsDocument(models.Model):
         self.env['naid.audit.log'].create({
             'document_id': self.id,
             'event_type': 'return',
-            'event_description': _('Document returned by %s', self.env.user.name),
+            'event_description': _('Document returned by %s') % self.env.user.name,
             'user_id': self.env.user.id,
             'event_date': return_date,
         })
-        # Post message in chatter
-        self.message_post(body=_('Document returned by %s', self.env.user.name))
-
+        self.message_post(body=_('Document returned by %s') % self.env.user.name)
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': _("Document Returned"),
-                'message': _('Document %s has been returned to storage', self.display_name),
+                'message': _('Document %s has been returned to storage') % self.display_name,
                 'sticky': False,
             }
         }
@@ -834,7 +829,7 @@ class RecordsDocument(models.Model):
             )
 
             # Log audit event
-            self._create_audit_log('barcode_generated', _('Barcode generated for document %s', self.name))
+            self._create_audit_log('barcode_generated', _('Barcode generated for document %s') % self.name)
 
             return {
                 "type": "ir.actions.act_window",
@@ -845,7 +840,7 @@ class RecordsDocument(models.Model):
             }
         except Exception as e:
             _logger.error("Failed to generate barcode for document %s: %s", self.name, str(e))
-            raise UserError(_('Failed to generate barcode: %s', str(e)))
+            raise UserError(_('Failed to generate barcode: %s') % str(e))
 
     def _generate_odoo_barcode(self, data):
         """Generate barcode using Odoo's native barcode functionality"""
@@ -904,7 +899,7 @@ class RecordsDocument(models.Model):
             )
 
             # Log audit event
-            self._create_audit_log('qr_generated', _('QR code generated for document %s', self.name))
+            self._create_audit_log('qr_generated', _('QR code generated for document %s') % self.name)
 
             return {
                 "type": "ir.actions.act_window",
@@ -915,7 +910,7 @@ class RecordsDocument(models.Model):
             }
         except Exception as e:
             _logger.error("Failed to generate QR code for document %s: %s", self.name, str(e))
-            raise UserError(_('Failed to generate QR code: %s', str(e)))
+            raise UserError(_('Failed to generate QR code: %s') % str(e))
 
     def _generate_odoo_qr_code(self, data):
         """Generate QR code using Odoo's native functionality"""
@@ -937,7 +932,6 @@ class RecordsDocument(models.Model):
     def _create_qr_from_data(self, data):
         """Create QR code from data using available methods"""
         try:
-            # Try to use PIL/Pillow if available (common in Odoo installations)
             from PIL import Image, ImageDraw
             import qrcode as qr_module
 
@@ -948,9 +942,7 @@ class RecordsDocument(models.Model):
             img = qr.make_image(fill="black", back_color="white")
 
             # Convert to bytes
-            from io import BytesIO
-
-            buffer = BytesIO()
+            buffer = io.BytesIO()
             img.save(buffer, format="PNG")  # pyright: ignore[reportCallIssue]
             return buffer.getvalue()
 
@@ -984,7 +976,7 @@ class RecordsDocument(models.Model):
         """Initiate document scanning (placeholder for integration)"""
         self.ensure_one()
         # Placeholder: Integrate with scanning hardware/API
-        self.message_post(body=_('Document scanning initiated for %s', self.name))
+        self.message_post(body=_('Document scanning initiated for %s') % self.name)
         self._create_audit_log('scan_initiated', _('Document scan initiated'))
         return {"type": "ir.actions.act_window_close"}
 
@@ -1032,8 +1024,7 @@ class RecordsDocument(models.Model):
         return {"type": "ir.actions.act_window_close"}
 
     def schedule_destruction_message(self):
-        """Return standardized destruction scheduling audit data"""
-        return 'destruction_scheduled', _('Destruction scheduled for %s', self.destruction_eligible_date)
+        return 'destruction_scheduled', _('Destruction scheduled for %s') % self.destruction_eligible_date
 
     def _create_audit_log(self, event_type, event_description):
         """Helper to create audit log entries (standardized field names)."""
@@ -1158,7 +1149,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error viewing attachments: %s", str(e)))
+            raise ValidationError(_('Error viewing attachments: %s') % str(e))
 
     def action_view_digital_scans(self):
         """Smart button action to view digital scans"""
@@ -1175,7 +1166,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error viewing digital scans: %s", str(e)))
+            raise ValidationError(_('Error viewing digital scans: %s') % str(e))
 
     def action_toggle_favorite(self):
         """Action to toggle favorite status"""
@@ -1192,7 +1183,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error toggling favorite status: %s", str(e)))
+            raise ValidationError(_('Error toggling favorite status: %s') % str(e))
 
     def action_refresh_data(self):
         """Action to refresh document data and computed fields"""
@@ -1215,7 +1206,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error refreshing document data: %s", str(e)))
+            raise ValidationError(_('Error refreshing document data: %s') % str(e))
 
     def action_generate_qr_code(self):
         """Action to generate/regenerate QR code for document"""
@@ -1231,7 +1222,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error generating QR code: %s", str(e)))
+            raise ValidationError(_('Error generating QR code: %s') % str(e))
 
     def action_print_document_label(self):
         """Action to print document identification label"""
@@ -1246,7 +1237,7 @@ class RecordsDocument(models.Model):
                 'context': self.env.context,
             }
         except Exception as e:
-            raise ValidationError(_("Error printing document label: %s", str(e)))
+            raise ValidationError(_('Error printing document label: %s') % str(e))
 
     def action_schedule_review(self):
         """Action to schedule document review"""
@@ -1266,7 +1257,7 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error scheduling document review: %s", str(e)))
+            raise ValidationError(_('Error scheduling document review: %s') % str(e))
 
     def action_send_notification(self):
         """Action to send notification about document"""
@@ -1285,9 +1276,8 @@ class RecordsDocument(models.Model):
                 }
             }
         except Exception as e:
-            raise ValidationError(_("Error sending notification: %s", str(e)))
+            raise ValidationError(_('Error sending notification: %s') % str(e))
 
-    # New constraint method added for validation (if needed for checkout conditions)
     @api.constrains("state", "is_missing")
     def _check_checkout_conditions(self):
         for record in self:

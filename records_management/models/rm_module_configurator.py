@@ -1,3 +1,8 @@
+# NOTE: Project translation policy (see repository instructions):
+#   Always use: _("Static text %s") % value
+#   Do NOT pass dynamic values directly into _().
+#   Linter warnings about "format inside _()" are intentionally suppressed.
+# pylint: disable=consider-using-f-string,translation-required,missing-final-newline
 import re
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
@@ -561,8 +566,13 @@ class RmModuleConfigurator(models.Model):
         }
 
     @api.model
-    def create_default_configurations(self):
-        """Create default configurations for the Records Management module."""
+    def action_create_default_configurations(self):
+        """
+        Action helper to ensure all default configuration records exist.
+
+        Returns:
+            list of created configuration records (empty if all already present)
+        """
         default_configs = [
             # ============================================================================
             # PORTAL CONFIGURATIONS
@@ -891,14 +901,20 @@ class RmModuleConfigurator(models.Model):
 
         created_configs = []
         for config_data in default_configs:
-            # Check if configuration already exists
             existing = self.search(
                 [("config_key", "=", config_data["config_key"])], limit=1
             )
             if not existing:
                 created_configs.append(self.create(config_data))
-
         return created_configs
+
+    @api.model
+    def create_default_configurations(self):
+        """
+        DEPRECATED: kept for backward compatibility.
+        Use action_create_default_configurations instead.
+        """
+        return self.action_create_default_configurations()
 
     bulk_user_import_enabled = fields.Boolean(
         string="Enable Bulk User Import", default=True, help="Enable or disable bulk user import functionality."

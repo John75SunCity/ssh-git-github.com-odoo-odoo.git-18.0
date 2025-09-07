@@ -10,8 +10,8 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
-from odoo import models, fields, api, _
 from datetime import datetime as py_datetime
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -92,7 +92,8 @@ class CustomerInventoryReportLine(models.Model):
             if line.container_id:
                 parts.append(line.container_id.name or line.container_id.barcode or _('Unknown Container'))
             if line.document_count:
-                parts.append(_("(%s docs)", line.document_count))
+                # fixed translation usage (remove arg form)
+                parts.append(_("(%s docs)") % line.document_count)
             if line.document_type:
                 parts.append(line.document_type)
             line.display_name = " - ".join(filter(None, parts)) or _("New Line")
@@ -125,7 +126,8 @@ class CustomerInventoryReportLine(models.Model):
     def _onchange_container_id(self):
         """Update fields when container changes"""
         if self.container_id:
-            self.name = _("Inventory Line: %s", (self.container_id.name or self.container_id.barcode))
+            # Translation normalization
+            self.name = _("Inventory Line: %s") % (self.container_id.name or self.container_id.barcode)
             # Align with container's computed count
             self.document_count = self.container_id.document_count
             if self.container_id.document_ids:
@@ -153,7 +155,7 @@ class CustomerInventoryReportLine(models.Model):
             'verified_by_id': self.env.user.id
         })
         # Log verification in chatter
-        self.message_post(body=_("Document count verified: %s documents.", self.document_count))
+        self.message_post(body=_("Document count verified: %s documents.") % self.document_count)
 
     def action_update_from_container(self):
         """Update line data from current container state"""
@@ -236,7 +238,8 @@ class CustomerInventoryReportLine(models.Model):
         if 'document_count' in vals:
             for line in self:
                 if not line.document_count_verified:
-                    line.message_post(body=_("Document count changed to %s (verification required).", line.document_count))
+                    # Translation normalization
+                    line.message_post(body=_("Document count changed to %s (verification required).") % line.document_count)
         return res
 
     def name_get(self):

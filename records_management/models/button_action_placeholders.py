@@ -48,7 +48,7 @@ class ProductTemplate(models.Model):
 
     def action_configure_pricing(self):
         self.ensure_one()
-        return False  # Placeholder – to be replaced with configuration wizard
+        return False  # Placeholder – intended to launch a pricing configuration wizard in future
 
     def action_view_sales(self):
         self.ensure_one()
@@ -64,7 +64,8 @@ class ProductTemplate(models.Model):
 
     def action_view_pricing_history(self):
         self.ensure_one()
-        return False  # To be implemented: open custom pricing change log
+        # Placeholder – intended to open product.pricing.change.log model filtered by product
+        return False
 
     def action_view_variants(self):
         self.ensure_one()
@@ -107,58 +108,58 @@ class RecordsRetentionPolicyVersion(models.Model):
 
     def action_compare_versions(self):
         self.ensure_one()
-        return False  # Intended future diff view
+        return False  # Planned: show a side-by-side diff view of retention policy versions
 
     def action_view_audit_trail(self):
         self.ensure_one()
-        return False  # Future: open audit log model filtered by version
+        return False  # Future: open records.audit.log model filtered by version
 
 class NaidOperatorCertification(models.Model):
     _inherit = 'naid.operator.certification'
 
     def action_renew_certification(self):
         self.ensure_one()
-        return False  # Future: launch renewal wizard
+        return False  # Future: launch renewal wizard (e.g., naid.certification.renewal.wizard or trigger renewal workflow)
 
 class NaidCertificate(models.Model):
     _inherit = 'naid.certificate'
 
     def action_conduct_audit(self):
         self.ensure_one()
-        return False  # Future: open audit creation wizard
+        return False  # Future: launch NAID audit creation wizard or process for certificate
 
     def action_renew_certificate(self):
         self.ensure_one()
-        return False  # Future: trigger renewal workflow
+        return False  # Future: trigger renewal workflow, e.g., launch naid.certificate.renewal.wizard or call renewal method
 
     def action_view_audit_history(self):
         self.ensure_one()
-        return False  # Future: open related audit log records
+        return False  # Future: open naid.audit.log records related to this certificate
 
     def action_view_destruction_records(self):
         self.ensure_one()
-        return False  # Future: open destruction records related to certificate
+        return False  # Future: open destruction.certificate.record model filtered by certificate
 
 class ShreddingService(models.Model):
     _inherit = 'shredding.service'
 
     def action_view_destruction_items(self):
         self.ensure_one()
-        return False  # Future: open destruction items tree
+        return False  # Future: open destruction.certificate.item tree view
 
 class PortalFeedback(models.Model):
     _inherit = 'portal.feedback'
 
     def action_view_related_records(self):
         self.ensure_one()
-        return False  # Future: open many2many related docs
+        return False  # Future: open related documents (e.g., feedback attachments or referenced records)
 
 class ServiceItem(models.Model):
     _inherit = 'service.item'
 
     def action_view_related_requests(self):
         self.ensure_one()
-        return False
+        return False  # Future: open records.request model filtered by service item
 
     def action_view_pricing_history(self):  # override placeholder specific to service items
         self.ensure_one()
@@ -166,9 +167,9 @@ class ServiceItem(models.Model):
 
 class RecordsStorageDepartmentUser(models.Model):
     _inherit = 'records.storage.department.user'
-
     def action_view_assignments(self):
         self.ensure_one()
+        return False  # Future: open records.assignment model filtered by user
         return False  # Future: open assignments
 
 ## Removed empty DocumentRetrievalTeam placeholder class (logic consolidated in document_retrieval_team.py)
@@ -178,30 +179,31 @@ class ShreddingServiceBin(models.Model):
 
     def action_view_work_orders(self):
         self.ensure_one()
+        # Future: open related work orders (model: records.retrieval.work.order)
         return False
 
 class PaperBale(models.Model):
     _inherit = 'paper.bale'
-
     def action_weigh_bale(self):
         self.ensure_one()
+        return False  # Future: open paper.bale.weigh.wizard
         return False  # Future: open weigh wizard
 
     def action_load_trailer(self):
         self.ensure_one()
-        return False  # Future: mark loaded and assign trailer
+        return False  # Future: mark bale as loaded and assign to a trailer (model: trailer or related model)
 
     def action_view_source_documents(self):
         self.ensure_one()
-        return False  # Future: open related source docs
+        return False  # Future: open related source docs (model: records.source.document)
 
     def action_view_trailer_info(self):
         self.ensure_one()
-        return False  # Future: open trailer record
+        return False  # Future: open trailer record (model: 'trailer')
 
     def action_view_weight_history(self):
         self.ensure_one()
-        return False  # Future: open weight history lines
+        return False  # Future: open paper.bale.weight.history lines
 
 # Removed deprecated placeholder WorkOrderCoordinator (real implementation in work_order_coordinator.py)
 # Removed deprecated placeholder models: DocumentRetrievalWorkOrder, rm.missing.model.placeholder

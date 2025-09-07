@@ -1,6 +1,6 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
 from datetime import date
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class RequiredDocument(models.Model):
@@ -49,20 +49,34 @@ class RequiredDocument(models.Model):
     # ============================================================================
     # COMPUTE & ONCHANGE METHODS
     # ============================================================================
+    def _sanitize_related_reference(self, value):
+        """Defensive helper: always return (model, id) tuple or False."""
+        if isinstance(value, tuple) and len(value) == 2:
+            return value
+        if isinstance(value, str) and ',' in value:
+            model_part, id_part = value.split(',', 1)
+            try:
+                return (model_part.strip(), int(id_part.strip()))
+            except ValueError:
+                return False
+        return False
+
     @api.depends('expiration_date')
     def _compute_is_expired(self):
-        """Check if the document is expired."""
+        """Compute helper marking documents as expired in memory (state change handled elsewhere)."""
         today = date.today()
         for doc in self:
-            doc.is_expired = doc.expiration_date and doc.expiration_date < today
+            doc.is_expired = bool(doc.expiration_date and doc.expiration_date < today)
             if doc.is_expired and doc.state == 'verified':
-                doc.state = 'expired'
+                # State transition deferred to scheduled job for batch consistency
+                pass
 
     @api.depends('res_model', 'res_id')
     def _compute_related_record(self):
+        """Ensure Reference field gets a tuple, never a raw string."""
         for record in self:
             if record.res_model and record.res_id:
-                record.related_record = f"{record.res_model},{record.res_id}"
+                record.related_record = (record.res_model, record.res_id)
             else:
                 record.related_record = False
 
@@ -86,6 +100,7 @@ class RequiredDocument(models.Model):
             raise UserError(_("You must upload a document file before submitting."))
         self.write({'state': 'submitted'})
         self.message_post(body=_("Document submitted for verification."))
+        return True
 
     def action_verify(self):
         """Mark document as verified."""
@@ -95,7 +110,9 @@ class RequiredDocument(models.Model):
             'verified_by_id': self.env.user.id,
             'verification_date': fields.Datetime.now()
         })
-        self.message_post(body=_("Document verified by %s.", self.env.user.name))
+        # Project translation policy: interpolate after _()
+        self.message_post(body=_("Document verified by %s.") % self.env.user.name)
+        return True
 
     def action_reject(self):
         """Mark document as rejected."""
@@ -103,6 +120,7 @@ class RequiredDocument(models.Model):
         self.ensure_one()
         self.write({'state': 'rejected'})
         self.message_post(body=_("Document rejected."))
+        return True
 
     def action_reset_to_pending(self):
         """Reset the document back to the pending state."""
@@ -113,24 +131,45 @@ class RequiredDocument(models.Model):
             'verification_date': False,
         })
         self.message_post(body=_("Document reset to pending."))
+        return True
 
     # ============================================================================
     # AUTOMATED ACTIONS (CRON)
     # ============================================================================
     @api.model
-    def _cron_check_expirations(self):
+    def _check_expirations(self):
         """
-        Scheduled action to check for documents that have expired or are expiring soon.
+        Scheduled expiration enforcement (called by ir.cron 'ir_cron_required_document_expiration').
+
+        Purpose:
+            Batch-process verified required documents whose expiration_date is in the past.
+
+        Logic:
+            1. Recompute (normal dependency flow ensures is_expired is up to date).
+            2. Search all documents still in state 'verified' and flagged is_expired.
+            3. Transition them to state 'expired'.
+            4. Post a chatter note and schedule a follow-up activity for the creator.
+
+        Side Effects:
+            - Updates 'state' to 'expired'.
+            - Creates mail.message entries (audit trail).
+            - Schedules mail.activity todos for renewal.
+
+        Idempotency:
+            Safe to run multiple times; already expired documents are not reprocessed.
+
+        Returns:
+            None
         """
         expired_docs = self.search([('state', '=', 'verified'), ('is_expired', '=', True)])
-        if expired_docs:
-            expired_docs.write({'state': 'expired'})
-            for doc in expired_docs:
-                doc.message_post(body=_("This document has expired."))
-                # Optionally, create an activity for follow-up
-                doc.activity_schedule(
-                    "mail.mail_activity_data_todo",
-                    summary=_("Expired Document: %s", doc.name),
-                    note=_("Please upload a new version of this required document."),
-                    user_id=doc.create_uid.id,  # Notify the creator
-                )
+        if not expired_docs:
+            return
+        expired_docs.write({'state': 'expired'})
+        for doc in expired_docs:
+            doc.message_post(body=_("This document has expired."))
+            doc.activity_schedule(
+                "mail.mail_activity_data_todo",
+                summary=_("Expired Document: %s") % doc.name,
+                note=_("Please upload a new version of this required document."),
+                user_id=doc.create_uid.id,
+            )

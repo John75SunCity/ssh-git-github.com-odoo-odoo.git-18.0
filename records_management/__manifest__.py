@@ -1,78 +1,34 @@
 {
     "name": "Records Management - Enterprise Edition",
-    "version": "18.0.11.0.0",
+    "version": "18.0.11.0.1",
     "category": "Document Management",
     "summary": "Complete Enterprise Records Management System with NAID AAA Compliance",
     "description": """
-        Records Management - Enterprise Grade DMS Module
-        A comprehensive, enterprise-grade Document Management System (DMS) built for Odoo 18.0.
-        This module provides advanced functionality for managing physical document boxes, records,
-        shredding services, and compliance tracking with NAID AAA and ISO 15489 standards.
-    """,
+Records Management - Enterprise Grade DMS Module.
+Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance, portal, shredding, retention, audit, billing.
+""",
     "author": "John75SunCity",
     "website": "https://github.com/John75SunCity",
     "license": "LGPL-3",
-    # Core Odoo modules - Essential and always available
-    # Standard modules - Usually available
-    # Conservative enterprise modules - Only the most essential ones
-    # Removed potentially unavailable modules to prevent installation failures
-    # Add back individual modules only after confirming availability in target environment
     "depends": [
-        "base",
-        "mail",
-        "web",
-        "product",
-        "stock",
-        "account",
-        "sale",
-        "portal",
-        "website",
-        "contacts",
-        "calendar",
-        "sms",
-        "hr",
-        "project",
-        "maintenance",
-        "fleet",
-        "crm",
-        "purchase",
-        "point_of_sale",
-        "repair",
-        "board",
-        "resource",
-        "barcodes",
-        "web_tour",
-        "web_editor",
-        "utm",
-        "digest",
-        "rating",
-        "bus",
-        "http_routing",
-        "base_setup",
-        "base_import",
-        "industry_fsm",
-        "sign",
-        "survey",
-        "documents",
-        "helpdesk",
-        "mass_mailing",
-        "website_slides",  # Required for training functionality in NAID certifications
-        "quality",  # Required for quality control checklists in audits
+        "base","mail","web","product","stock","account","sale","portal","website",
+        "contacts","calendar","sms","hr","project","maintenance","fleet","crm",
+        "purchase","point_of_sale","repair","board","resource","barcodes","web_tour",
+        "web_editor","utm","digest","rating","bus","http_routing","base_setup",
+        "base_import","industry_fsm","sign","survey","documents","helpdesk",
+        "mass_mailing","website_slides","quality"
     ],
     "data": [
-        # 1. Security files FIRST (critical for access rules and dependencies)
-        "security/records_management_security.xml",  # Groups must load BEFORE CSV references them
-        "security/ir.model.access.csv",  # ACLs - must be after groups are defined
+        "security/records_management_security.xml",
+        "security/ir.model.access.csv",
         "security/additional_models_security.xml",
         "security/intelligent_search_security.xml",
         "security/naid_security.xml",
         "security/portal_request_security.xml",
-        "security/destruction_certificate_security.xml",  # Portal destruction certificate visibility rule
-    # (Previously removed portal visibility restriction rule now standardized & restored)
-    # 2. Data files (sequences and base data next)
-    "data/sequence_data.xml",  # Sequences often needed early
-    "data/records_retrieval_order_sequences_data.xml",  # Unified retrieval order sequences
-    "data/records_retrieval_order_cron.xml",  # SLA escalation scheduled action (single source)
+        "security/destruction_certificate_security.xml",
+        "data/sequence_data.xml",
+        "data/records_retrieval_order_sequences_data.xml",
+        "data/records_retrieval_order_cron.xml",
         "data/core_records_data.xml",
         "data/container_types_base_rates.xml",
         "data/document_retrieval_rates_data.xml",
@@ -88,9 +44,8 @@
         "data/scheduled_actions_data.xml",
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
-    "data/temp_inventory_configurator_data.xml",
-    "data/field_label_customization_batch4.xml",
-        # 3. Views (after security and data)
+        "data/temp_inventory_configurator_data.xml",
+        "data/field_label_customization_batch4.xml",
         "views/records_management_menus.xml",
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_profile_views.xml",
@@ -117,8 +72,8 @@
         "views/location_report_wizard_views.xml",
         "views/maintenance_request_views.xml",
         "views/naid_audit_log_views.xml",
-    "views/naid_certificate_views.xml",
-    "views/destruction_certificate_views.xml",
+        "views/naid_certificate_views.xml",
+        "views/destruction_certificate_views.xml",
         "views/naid_compliance_checklist_item_views.xml",
         "views/naid_compliance_checklist_views.xml",
         "views/naid_compliance_policy_views.xml",
@@ -176,8 +131,7 @@
         "views/records_request_views.xml",
         "views/records_retention_policy_views.xml",
         "views/records_retention_rule_views.xml",
-    # Unified retrieval order views (legacy individual retrieval views removed)
-    "views/records_retrieval_order_views.xml",
+        "views/records_retrieval_order_views.xml",
         "views/records_security_audit_views.xml",
         "views/records_series_views.xml",
         "views/records_service_type_views.xml",
@@ -208,9 +162,8 @@
         "views/system_flowchart_wizard_views.xml",
         "views/temp_inventory_views.xml",
         "views/visitor_pos_wizard_views.xml",
-    "views/work_order_coordinator_views.xml",
-    "views/workflow_visualization_manager_views.xml",
-        # 4. Reports
+        "views/work_order_coordinator_views.xml",
+        "views/workflow_visualization_manager_views.xml",
         "reports/description_report.xml",
         "reports/document_search_attempt_report.xml",
         "reports/report_records_management_report_customer_inventory_report.xml",
@@ -219,16 +172,15 @@
         "report/naid_audit_log_reports.xml",
         "report/naid_certificate_reports.xml",
         "report/naid_compliance_action_plan_reports.xml",
-    "report/destruction_certificate_report.xml",
-        # 5. Templates (last)
+        "report/destruction_certificate_report.xml",
         "templates/portal_inventory_template.xml",
         "templates/portal_mobile_export.xml",
         "templates/portal_mobile_inventory_template.xml",
         "templates/portal_mobile_settings.xml",
         "templates/portal_mobile_template.xml",
-    "templates/portal_work_order_templates.xml",
-    "templates/portal_certifications.xml",
-    "views/records_container_views.xml",
+        "templates/portal_work_order_templates.xml",
+        "templates/portal_certifications.xml",
+        "views/records_container_views.xml",
         "views/records_billing_config_views.xml",
         "views/rm_module_configurator_views.xml",
         "views/portal_request_views.xml",
@@ -247,8 +199,7 @@
         "demo/naid_demo_certificates.xml",
         "demo/records_config_mail_templates_data.xml",
     ],
-        # Post-init hook: dynamically set cron fields (numbercall/doall vs max_calls/catchup)
-        "post_init_hook": "post_init_hook",
+    "post_init_hook": "post_init_hook",
     "assets": {
         "web.assets_backend": [
             "records_management/static/src/scss/records_management.scss",

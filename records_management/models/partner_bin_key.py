@@ -43,7 +43,7 @@ class PartnerBinKey(models.Model):
             if key.partner_id:
                 key.name = _("Key %s (Assigned to %s)") % (key.key_number, key.partner_id.name)
             else:
-                key.name = _("Key %s", key.key_number)
+                key.name = _("Key %s") % key.key_number
 
     @api.constrains("key_number", "company_id", "active")
     def _check_unique_key_number_active(self):
@@ -76,7 +76,9 @@ class PartnerBinKey(models.Model):
             'status': 'lost',
             'return_date': fields.Date.context_today(self),
         })
-        self.message_post(body=_("Key reported as lost by %s.", self.env.user.name))
+        # Translation normalization (project style)
+        self.message_post(body=_("Key reported as lost by %s.") % self.env.user.name)
+        return True
 
     def action_return_key(self):
         self.ensure_one()
@@ -86,7 +88,8 @@ class PartnerBinKey(models.Model):
             'status': 'returned',
             'return_date': fields.Date.context_today(self),
         })
-        self.message_post(body=_("Key marked as returned by %s.", self.env.user.name))
+        self.message_post(body=_("Key marked as returned by %s.") % self.env.user.name)
+        return True
 
     def action_make_available(self):
         self.ensure_one()
@@ -100,6 +103,7 @@ class PartnerBinKey(models.Model):
             'return_date': False,
         })
         self.message_post(body=_("Key is now available for assignment."))
+        return True
 
     def action_decommission(self):
         self.ensure_one()
@@ -108,3 +112,4 @@ class PartnerBinKey(models.Model):
             'active': False,
         })
         self.message_post(body=_("Key has been decommissioned."))
+        return True

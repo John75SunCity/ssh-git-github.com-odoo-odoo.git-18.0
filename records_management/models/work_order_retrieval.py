@@ -1,4 +1,4 @@
-from odoo import models, fields, api, _
+from odoo import _, api, fields, models  # reordered per guideline
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -13,7 +13,7 @@ class WorkOrderRetrieval(models.Model):
     # FIELDS
     # ============================================================================
     name = fields.Char(string='Work Order', required=True, readonly=True, default=lambda self: _('New'))
-    display_name = fields.Char(string='Display Name', compute='_compute_display_name')
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name', store=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(default=True)
     sequence = fields.Integer(default=10)
@@ -27,7 +27,7 @@ class WorkOrderRetrieval(models.Model):
     user_id = fields.Many2one('res.users', string='Assigned To', default=lambda self: self.env.user, tracking=True)
     assigned_team_id = fields.Many2one('hr.department', string='Assigned Team')
     team_leader_id = fields.Many2one('res.users', string='Team Leader')
-    technician_ids = fields.Many2many('res.users', 'work_order_retrieval_technician_rel', 'work_order_id', 'user_id', string='Technicians')
+    technician_ids = fields.Many2many('res.users', 'work_order_retrieval_res_users_rel', 'work_order_id', 'user_id', string='Technicians')
 
     # Scheduling and Dates
     scheduled_date = fields.Datetime(string='Scheduled Start Date', tracking=True)
@@ -108,6 +108,7 @@ class WorkOrderRetrieval(models.Model):
     # ============================================================================
     @api.depends('name', 'partner_id', 'work_order_type')
     def _compute_display_name(self):
+        """Compute the display name for the work order based on its name, partner, and type."""
         for record in self:
             parts = [record.name or 'New']
             if record.partner_id:
@@ -151,6 +152,7 @@ class WorkOrderRetrieval(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('work.order.retrieval') or _('New')
         return super().create(vals_list)
 
+    # ===================== CRUD / DISPLAY HELPERS =====================
     def name_get(self):
         """Custom name display"""
         result = []
@@ -164,89 +166,102 @@ class WorkOrderRetrieval(models.Model):
             result.append((record.id, ' '.join(name_parts)))
         return result
 
-    @api.model
-    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-        """Enhanced search by name or customer"""
-        args = args or []
-        domain = []
-        if name:
-            domain = [
-                '|', '|', '|',
-                ('name', operator, name),
-                ('partner_id.name', operator, name),
-                ('portal_request_id.name', operator, name),
-                ('contact_person', operator, name)
-            ]
-        ids = self._search(domain + args, limit=limit, access_rights_uid=name_get_uid)
-        return self.browse(ids).name_get()
+    # Replaces former _name_search (removed to follow _search_<field> convention)
+    def _search_display_name(self, operator, value):
+        """Domain generator for display_name searches (name / partner / portal / contact)."""
+        if not value:
+            return []
+        return [
+            '|', '|', '|',
+            ('name', operator, value),
+            ('partner_id.name', operator, value),
+            ('portal_request_id.name', operator, value),
+            ('contact_person', operator, value),
+        ]
 
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
     def action_confirm(self):
-        """Confirm the work order(s)"""
-        for record in self:
-            if record.state != "draft":
-                raise UserError(_("Only draft work orders can be confirmed."))
-            record.state = "confirmed"
-            record.message_post(body=_("Work order confirmed."))
+        """Confirm the work order"""
+        self.ensure_one()
+        if self.state != 'draft':
+            raise UserError(_("Only draft work orders can be confirmed."))
+        self.state = 'confirmed'
+        self.message_post(body=_("Work order confirmed."))
 
     def action_assign(self):
         """Assign the work order to a team"""
         self.ensure_one()
-        for record in self:
-            if record.state != 'confirmed':
-                raise UserError(_("Only confirmed work orders can be assigned."))
-            record.state = 'assigned'
-            record.message_post(body=_("Work order assigned."))
+        if self.state != 'confirmed':
+            raise UserError(_("Only confirmed work orders can be assigned."))
+        self.state = 'assigned'
+        self.message_post(body=_("Work order assigned."))
 
     def action_start(self):
         """Start the work order"""
-        for record in self:
-            if record.state != 'assigned':
-                raise UserError(_("Only assigned work orders can be started."))
-            record.state = 'in_progress'
-            record.start_date = fields.Datetime.now()
-            record.message_post(body=_("Work order started."))
+        self.ensure_one()
+        if self.state != 'assigned':
+            raise UserError(_("Only assigned work orders can be started."))
+        self.state = 'in_progress'
+        self.start_date = fields.Datetime.now()
+        self.message_post(body=_("Work order started."))
 
     def action_complete(self):
         """Complete the work order"""
-        for record in self:
-            if record.state != 'in_progress':
-                raise UserError(_("Only in-progress work orders can be completed."))
-            record.state = 'completed'
-            record.completion_date = fields.Datetime.now()
-            if record.start_date:
-                duration = (record.completion_date - record.start_date).total_seconds() / 3600
-                record.actual_duration = duration
-            record.message_post(body=_("Work order completed."))
-
-    def action_cancel(self):
-        """Cancel the work order"""
-        for record in self:
-            if record.state == 'completed':
-                raise UserError(_("Completed work orders cannot be cancelled."))
-            record.state = 'cancelled'
-            record.message_post(body=_("Work order cancelled."))
+        self.ensure_one()
+        if self.state != 'in_progress':
+            raise UserError(_("Only in-progress work orders can be completed."))
+        self.state = 'completed'
+        self.completion_date = fields.Datetime.now()
+        if self.start_date:
+            from pytz import UTC
+            start_dt = fields.Datetime.from_string(self.start_date)
+            completion_dt = fields.Datetime.from_string(self.completion_date)
+            if start_dt.tzinfo is None:
+                start_dt = UTC.localize(start_dt)
+            else:
+                start_dt = start_dt.astimezone(UTC)
+            if completion_dt.tzinfo is None:
+                completion_dt = UTC.localize(completion_dt)
+            else:
+                completion_dt = completion_dt.astimezone(UTC)
+            self.actual_duration = (completion_dt - start_dt).total_seconds() / 3600.0
+        self.message_post(body=_("Work order completed."))
 
     def action_reset_to_draft(self):
         """Reset to draft state"""
-        for record in self:
-            if record.state == 'completed':
-                raise UserError(_("Completed work orders cannot be reset to draft."))
-            record.state = 'draft'
-            record.start_date = False
-            record.completion_date = False
-            record.actual_duration = 0
-            record.message_post(body=_("Work order reset to draft."))
+        self.ensure_one()
+        if self.state == 'completed':
+            raise UserError(_("Completed work orders cannot be reset to draft."))
+        self.state = 'draft'
+        self.start_date = False
+        self.completion_date = False
+        self.actual_duration = 0.0
+        self.message_post(body=_("Work order reset to draft."))
 
     @api.model
-    def get_priority_work_orders(self):
-        """Get high priority work orders requiring attention"""
+    def get_priority_work_orders(self, limit=100):
+        """Get high priority work orders requiring attention (limited for performance)"""
         return self.search([
             ('priority', 'in', ['2', '3']),
             ('state', 'in', ['confirmed', 'assigned', 'in_progress']),
-        ], order='priority desc, scheduled_date asc')
+        ], order='priority desc, scheduled_date asc', limit=limit)
+
+    def action_bulk_confirm(self):
+        """Bulk confirm selected work orders"""
+        for record in self:
+            if record.state == 'draft':
+                record.action_confirm()
+
+    def action_bulk_start(self):
+        """Bulk start selected work orders"""
+        for record in self:
+            if record.state == 'assigned':
+                record.action_start()
+            ('priority', 'in', ['2', '3']),
+            ('state', 'in', ['confirmed', 'assigned', 'in_progress']),
+        ], order='priority desc, scheduled_date asc', limit=limit)
 
     def action_bulk_confirm(self):
         """Bulk confirm selected work orders"""

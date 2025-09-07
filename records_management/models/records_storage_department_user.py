@@ -62,11 +62,13 @@ class RecordsStorageDepartmentUser(models.Model):
     # ============================================================================
     def action_activate(self):
         """Activates the user's assignment to the department."""
+        self.ensure_one()
         self.write({'state': 'active', 'active': True})
         self.message_post(body=_("User assignment activated."))
 
     def action_deactivate(self):
         """Deactivates the user's assignment, effectively revoking access."""
+        self.ensure_one()
         self.write({'state': 'inactive', 'active': False, 'end_date': fields.Date.context_today(self)})
         self.message_post(body=_("User assignment deactivated."))
 

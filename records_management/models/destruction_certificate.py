@@ -12,7 +12,7 @@ License: LGPL-3
 
 import base64
 import logging
-from odoo import models, fields, api, _
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
@@ -252,26 +252,76 @@ class DestructionCertificate(models.Model):
     # REPORT SUPPORT HELPERS (aggregation for QWeb template)
     # -------------------------------------------------------------------------
     def _get_aggregated_events(self):
-        """Return simplified dict list of linked events for easier QWeb iteration.
+        """
+        Aggregate destruction events/lines for the PDF report.
 
-        Avoids heavy recordset logic in template and provides consistent ordering.
+        Returns:
+            list of dict: [{
+                'name': str,
+                'date': str|datetime,
+                'technician': str,
+                'location_type': str,
+                'items': str,
+                'quantity': float,
+                'uom': str,
+            }, ...]
         """
         self.ensure_one()
-        events = self.event_ids.sorted(lambda e: (e.date or '', e.name or ''))
-        data = []
-        for ev in events:
-            data.append(
-                {
-                    "name": ev.name,
-                    "date": ev.date,
-                    "technician": ev.technician_id.display_name,
-                    "location_type": ev.location_type,
-                    "items": ev.shredded_items,
-                    "quantity": ev.quantity,
-                    "uom": ev.unit_of_measure,
-                }
-            )
-        return data
+        results = []
+
+        # Try common relation names without assuming schema
+        candidate_lines = (
+            getattr(self, 'event_ids', False)
+            or getattr(self, 'line_ids', False)
+            or self.env['destruction.certificate']  # empty recordset sentinel
+        )
+
+        if candidate_lines:
+            for line in candidate_lines:
+                # Safe attribute getters
+                name = getattr(line, 'display_name', False) or getattr(line, 'name', '') or ''
+                date_val = getattr(line, 'date', False) or self.certificate_date or ''
+                tech = ''
+                if 'technician_id' in line._fields:
+                    tech = line.technician_id.display_name or ''
+                elif 'user_id' in line._fields:
+                    tech = line.user_id.display_name or ''
+                loc = ''
+                if 'location_type' in line._fields:
+                    loc = line.location_type or ''
+                elif 'location_id' in line._fields:
+                    loc = line.location_id.display_name or ''
+                items = ''
+                if 'item_description' in line._fields:
+                    items = line.item_description or ''
+                elif 'product_id' in line._fields:
+                    items = line.product_id.display_name or ''
+                qty = 0.0
+                if 'quantity' in line._fields:
+                    qty = line.quantity or 0.0
+                elif 'qty' in line._fields:
+                    qty = line.qty or 0.0
+                uom = ''
+                if 'uom_id' in line._fields and line.uom_id:
+                    uom = line.uom_id.display_name
+                elif 'product_uom_id' in line._fields and line.product_uom_id:
+                    uom = line.product_uom_id.display_name
+
+                results.append({
+                    'name': name,
+                    'date': date_val,
+                    'technician': tech,
+                    'location_type': loc,
+                    'items': items,
+                    'quantity': qty,
+                    'uom': uom,
+                })
+
+        # Optional: stable ordering (date desc then name)
+        def _key(d):
+            return (str(d.get('date') or ''), d.get('name') or '')
+        results.sort(key=_key)
+        return results
 
     def _signature_block_context(self):
         """Return context dict for signature placeholders in report.
