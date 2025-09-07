@@ -40,6 +40,7 @@ from . import custody_transfer_event
 from . import customer_billing_profile
 from . import customer_category
 from . import customer_feedback
+from . import customer_feedback_theme  # add theme tagging model for feedback
 from . import customer_inventory
 from . import customer_inventory_report
 from . import customer_inventory_report_line
