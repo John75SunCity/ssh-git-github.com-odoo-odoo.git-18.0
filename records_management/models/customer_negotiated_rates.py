@@ -1,8 +1,13 @@
-from odoo import fields, models
+"""Tombstone stub.
 
-class CustomerNegotiatedRates(models.Model):
-    _name = 'customer.negotiated.rates'
-    _description = 'Customer Negotiated Rates'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+Legacy model 'customer.negotiated.rates' has been replaced by
+the unified singular model 'customer.negotiated.rate'.
 
-    name = fields.Char(string='Name', required=True)
+This file is intentionally left without any model class so the
+validator and Odoo no longer expect security access rules or
+database tables for the deprecated plural model.
+
+Do NOT re-introduce a model class here.
+"""
+
+# No model definition on purpose.
