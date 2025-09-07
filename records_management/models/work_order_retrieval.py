@@ -1,4 +1,5 @@
-from odoo import _, api, fields, models  # reordered per guideline
+from pytz import UTC  # third-party before Odoo imports
+from odoo import _, api, fields, models  # ordered per guideline
 from odoo.exceptions import ValidationError, UserError
 
 
@@ -215,7 +216,6 @@ class WorkOrderRetrieval(models.Model):
         self.state = 'completed'
         self.completion_date = fields.Datetime.now()
         if self.start_date:
-            from pytz import UTC
             start_dt = fields.Datetime.from_string(self.start_date)
             completion_dt = fields.Datetime.from_string(self.completion_date)
             if start_dt.tzinfo is None:
@@ -248,29 +248,14 @@ class WorkOrderRetrieval(models.Model):
             ('state', 'in', ['confirmed', 'assigned', 'in_progress']),
         ], order='priority desc, scheduled_date asc', limit=limit)
 
-    def action_bulk_confirm(self):
-        """Bulk confirm selected work orders"""
+    def bulk_confirm(self):  # multi-record helper (not an 'action_' single-record)
+        """Bulk confirm selected work orders (utility method, not single-record action)."""
         for record in self:
             if record.state == 'draft':
                 record.action_confirm()
 
-    def action_bulk_start(self):
-        """Bulk start selected work orders"""
-        for record in self:
-            if record.state == 'assigned':
-                record.action_start()
-            ('priority', 'in', ['2', '3']),
-            ('state', 'in', ['confirmed', 'assigned', 'in_progress']),
-        ], order='priority desc, scheduled_date asc', limit=limit)
-
-    def action_bulk_confirm(self):
-        """Bulk confirm selected work orders"""
-        for record in self:
-            if record.state == 'draft':
-                record.action_confirm()
-
-    def action_bulk_start(self):
-        """Bulk start selected work orders"""
+    def bulk_start(self):  # multi-record helper (not an 'action_' single-record)
+        """Bulk start selected work orders (utility method, not single-record action)."""
         for record in self:
             if record.state == 'assigned':
                 record.action_start()

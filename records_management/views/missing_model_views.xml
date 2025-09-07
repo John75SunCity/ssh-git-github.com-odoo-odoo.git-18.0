@@ -2,52 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Container Retrieval Item Views -->
-        <record id="container_retrieval_item_tree" model="ir.ui.view">
-            <field name="name">container.retrieval.item.tree</field>
-            <field name="model">container.retrieval.item</field>
-        <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="container_id"/>
-                    <field name="retrieval_date"/>
-                    <field name="state"/>
-                </list>
-            </field>
-        </record>
-
-        <record id="container_retrieval_item_form" model="ir.ui.view">
-            <field name="name">container.retrieval.item.form</field>
-            <field name="model">container.retrieval.item</field>
-        <field name="arch" type="xml">
-                <form>
-                    <sheet>
-                        <div class="oe_title">
-                            <h1><field name="name"/></h1>
-                        </div>
-                        <group>
-                            <field name="container_id"/>
-                            <field name="retrieval_date"/>
-                            <field name="state"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="container_retrieval_item_search" model="ir.ui.view">
-            <field name="name">container.retrieval.item.search</field>
-            <field name="model">container.retrieval.item</field>
-        <field name="arch" type="xml">
-                <search>
-                    <field name="name"/>
-                    <field name="container_id"/>
-                    <field name="state"/>
-                    <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
-                    <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
-                </search>
-            </field>
-        </record>
+<!-- container.retrieval.item views removed (unified retrieval lines) -->
 
         <!-- Processing Log Resolution Wizard Views -->
         <record id="processing_log_resolution_wizard_form" model="ir.ui.view">

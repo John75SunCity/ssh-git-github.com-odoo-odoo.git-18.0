@@ -42,9 +42,9 @@ class DocumentSearchAttempt(models.Model):
     scan_retrieval_id = fields.Many2one(
         "scan.retrieval", string="Scan Retrieval", help="Link to scan retrieval request"
     )
-    container_retrieval_item_id = fields.Many2one(
-        "container.retrieval.item", string="Container Retrieval Item", help="Link to specific container retrieval item"
-    )
+    # Field removed: container_retrieval_item_id (Many2one to deprecated container.retrieval.item model)
+    # The legacy model was fully removed as part of unified retrieval line consolidation.
+    # Any historical references should migrate to retrieval_line_id or container_retrieval_id.
 
     # Related workflow tracking
     work_order_id = fields.Many2one(
