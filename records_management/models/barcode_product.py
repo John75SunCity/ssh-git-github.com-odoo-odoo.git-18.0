@@ -263,6 +263,14 @@ class BarcodeProduct(models.Model):
         help='Location context used when generating or assigning barcodes to physical assets.'
     )
 
+    # Batch identifier surfaced in views; reflects the most recent related generation history batch
+    batch_id = fields.Char(
+        string='Latest Batch ID',
+        compute='_compute_batch_id',
+        store=True,
+        help='Automatically populated with the most recent batch identifier from generation history.'
+    )
+
     # ============================================================================
     # MAIL THREAD FRAMEWORK FIELDS
     # ============================================================================
@@ -279,6 +287,17 @@ class BarcodeProduct(models.Model):
     # ============================================================================
     # RELATIONSHIPS (to be reflected back in views)
     # ============================================================================
+    # Primary (singular) storage box assignment referenced in some views. This complements
+    # the existing storage_box_ids One2many (all linked boxes). Keeping both allows a
+    # designated "primary" box while still listing all related boxes.
+    storage_box_id = fields.Many2one(
+        'records.storage.box',
+        string='Primary Storage Box',
+        help='Designated primary storage box linked to this barcode product.',
+        tracking=True,
+        ondelete='set null',
+        index=True,
+    )
     storage_box_ids = fields.One2many('records.storage.box', 'product_id', string='Storage Boxes', help='Storage boxes linked directly to this barcode product.')
     shred_bin_ids = fields.One2many('shred.bin', 'product_id', string='Shred Bins', help='Shred bins linked directly to this barcode product.')
     pricing_tier_ids = fields.One2many('barcode.pricing.tier', 'product_id', string='Pricing Tiers')
@@ -416,6 +435,25 @@ class BarcodeProduct(models.Model):
             if record.location_id:
                 count += 1
             record.created_records_count = count
+
+    @api.depends('generation_history_ids', 'generation_history_ids.batch_id', 'generation_history_ids.generation_date')
+    def _compute_batch_id(self):
+        """Derive latest batch identifier from related generation history records.
+
+        Selection logic:
+        - Pick history record with the most recent generation_date.
+        - Fall back to highest ID if dates missing.
+        - Leave blank if no related history or no batch_id values.
+        """
+        for record in self:
+            latest = False
+            # Filter only histories that actually have a batch id value
+            histories = record.generation_history_ids.filtered(lambda h: h.batch_id)
+            if histories:
+                # Prefer proper generation_date ordering; fallback to id
+                histories_sorted = histories.sorted(lambda h: (h.generation_date or fields.Datetime.from_string('1970-01-01'), h.id), reverse=True)
+                latest = histories_sorted[0]
+            record.batch_id = latest.batch_id if latest else False
 
     @api.depends('storage_box_ids', 'shred_bin_ids')
     def _compute_counts(self):

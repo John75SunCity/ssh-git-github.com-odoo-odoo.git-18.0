@@ -56,7 +56,14 @@ class RecordsRetrievalOrder(models.Model):
     # Team
     user_id = fields.Many2one('res.users', string='Owner', default=lambda self: self.env.user, tracking=True, required=True)
     coordinator_id = fields.Many2one('res.users', string='Coordinator')
-    retrieval_team_ids = fields.Many2many('res.users', string='Retrieval Team')
+    retrieval_team_ids = fields.Many2many(
+        comodel_name='res.users',
+        relation='records_retrieval_order_user_rel',
+        column1='retrieval_order_id',
+        column2='user_id',
+        string='Retrieval Team',
+        help="Team members assigned to physically retrieve the requested items"
+    )
     quality_inspector_id = fields.Many2one('res.users', string='Quality Inspector')
 
     # Lines & metrics
@@ -214,11 +221,17 @@ class RecordsRetrievalOrder(models.Model):
                 rec.estimated_cost = 0.0
 
     # Helpers
-                # Use string formatting for proper translation handling
-                raise UserError(_("Action not allowed in current state %s") % rec.state)
+    def _ensure_state(self, allowed):
+        """Ensure record is currently in an allowed state.
+
+        Args:
+            allowed (list[str]): Permitted state values.
+        Raises:
+            UserError: if current state not permitted.
+        """
+        for rec in self:
             if rec.state not in allowed:
-                # Concatenate dynamic value to avoid formatter style conflicts in linter
-                raise UserError(_("Action not allowed in current state ") + rec.state)
+                raise UserError(_("Action not allowed in current state %s") % rec.state)
 
     # Actions
     def action_confirm(self):

@@ -12,6 +12,7 @@ class BarcodeSeasonalPricing(models.Model):
     _name = 'barcode.seasonal.pricing'
     _description = 'Barcode Seasonal Pricing'
     _order = 'start_date desc'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # Fields
     name = fields.Char(

@@ -72,8 +72,10 @@
         "report/naid_compliance_action_plan_reports.xml",
         "report/naid_compliance_alert_reports.xml",
         "report/naid_compliance_reports.xml",
-        # Menus must load before any view files that reference their menu items
-        "views/records_management_menus.xml",
+    # Wizard/action definitions needed by menus must load first
+    "views/field_label_helper_wizard_views.xml",
+    # Menus (can now safely reference pre-loaded actions)
+    "views/records_management_menus.xml",
         # Compliance related views (may reference compliance menu)
         "views/naid_audit_log_views.xml",
         "views/naid_audit_verification_wizard_views.xml",
@@ -90,7 +92,6 @@
         "data/scheduled_actions_data.xml",
         "data/field_label_customization_batch_data.xml",
         "data/temp_inventory_configurator_data.xml",
-        "views/field_label_helper_wizard_views.xml",
         "views/records_digital_scan_views.xml",
         "views/report_window_actions_views.xml",
         "views/bin_issue_report_wizard_views.xml",
