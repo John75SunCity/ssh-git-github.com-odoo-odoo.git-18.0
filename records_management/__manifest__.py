@@ -16,13 +16,14 @@
         "mass_mailing","website_slides","quality"
     ],
     "data": [
+        # Security ordering: core groups first, then model security, then access CSV last
+        "security/records_management_security.xml",
         "security/additional_models_security.xml",
         "security/destruction_certificate_security.xml",
         "security/intelligent_search_security.xml",
-        "security/ir.model.access.csv",
         "security/naid_security.xml",
         "security/portal_request_security.xml",
-        "security/records_management_security.xml",
+        "security/ir.model.access.csv",
         "data/records_retrieval_order_sequences_data.xml",
         "data/core_records_data.xml",
         "data/load_data.xml",
@@ -61,7 +62,6 @@
         "views/hard_drive_scan_wizard_views.xml",
         "views/location_report_wizard_views.xml",
         "views/mobile_bin_key_wizard_views.xml",
-        "views/naid_audit_verification_wizard_views.xml",
         "views/paper_bale_inspection_wizard_views.xml",
         "views/paper_bale_weigh_wizard_views.xml",
         "views/permanent_flag_wizard_views.xml",
