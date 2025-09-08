@@ -149,6 +149,10 @@
 <!-- ========================================== -->
 
 <menuitem id="menu_records_inventory" name="Inventory" parent="menu_records_management_root" sequence="20" groups="records_management.group_records_user"/>
+<!-- Documents hierarchy (added to replace missing 'menu_records_management_documents' parent that was referenced elsewhere) -->
+<menuitem id="menu_records_management_documents" name="Documents" parent="menu_records_management_root" sequence="22" groups="records_management.group_records_user"/>
+<menuitem id="menu_records_digital_scan" name="Digital Scans" parent="menu_records_management_documents" action="action_records_digital_scan" sequence="10" groups="records_management.group_records_user"/>
+
 
 <!-- Temporarily commented out menuitems with missing actions -->
 <menuitem id="menu_customer_inventory" name="Customer Inventory" parent="menu_records_inventory" action="action_customer_inventory_browser" sequence="10" groups="records_management.group_records_user"/>

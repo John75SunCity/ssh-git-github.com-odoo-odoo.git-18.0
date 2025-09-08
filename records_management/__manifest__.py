@@ -40,12 +40,14 @@
         "data/scheduled_actions_data.xml",
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
-        "data/temp_inventory_configurator_data.xml",
+    "data/temp_inventory_configurator_data.xml",
     "data/field_label_customization_batch_data.xml",
+    # Digital scan views (defines action_records_digital_scan) must load before any menu referencing the action
+    "views/records_digital_scan_views.xml",
     # Load wizard action before menus because menus reference action_field_label_helper_wizard
     # Rule: Any referenced act_window XMLID must be defined earlier than the menuitem that uses it.
     "views/field_label_helper_wizard_views.xml",
-    # Menus must still precede any view files that add child menuitems referencing these root menus
+    # Root menus; must precede view files that add child menuitems referencing these root menus
     "views/records_management_menus.xml",
         "views/report_window_actions_views.xml",
     # Bin issue wizard adds menuitems with parent="records_management.menu_records_operations";

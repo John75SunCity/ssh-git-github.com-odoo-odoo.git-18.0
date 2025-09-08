@@ -112,7 +112,7 @@
     </record>
 
     <!-- Tree view for Menu -->
-    <menuitem id="menu_records_digital_scan" name="Digital Scans" action="action_records_digital_scan" parent="records_management.menu_records_management_documents" sequence="30"/>
+<!-- Menu removed: moved to central menus file (records_management_menus.xml) to keep top-level menu definitions unified -->
 </data>
 
 </odoo>
