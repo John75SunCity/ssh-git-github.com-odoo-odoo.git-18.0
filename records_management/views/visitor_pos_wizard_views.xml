@@ -46,7 +46,8 @@
                     <group>
                         <group name="customer_data" string="👥 Customer Data Management">
 <!-- Replaced nonexistent existing_customer_id with partner_id (core contact) -->
-<field name="partner_id" options="{'no_create': True}" widget="many2one"/>
+<field name="partner_id" options="{'no_create': False}" widget="many2one" attrs="{'readonly': [('create_new_customer','=', False)]}"/>
+
 
                             <field name="create_new_customer" widget="boolean_toggle"/>
                             <field name="customer_category" invisible="create_new_customer == False"/>
