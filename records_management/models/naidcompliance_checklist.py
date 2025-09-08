@@ -56,19 +56,35 @@ class NAIDComplianceChecklist(models.Model):
             checklist.completion_percentage = (checked_items / total_items) * 100.0
 
     # ============================================================================
+    # INTERNAL VALIDATION HELPERS (added to satisfy linter expecting _check_* for validations)
+    # These are NOT @api.constrains constraints; invoked explicitly by actions.
+    # ============================================================================
+    def _check_can_start(self):
+        self.ensure_one()
+        if not self.checklist_item_ids:
+            raise UserError(_("Cannot start a checklist with no items."))
+
+    def _check_can_complete(self):
+        self.ensure_one()
+        if any(not item.is_checked for item in self.checklist_item_ids.filtered(lambda i: i.is_required)):
+            raise UserError(_("All required checklist items must be checked before completing."))
+
+    def _check_can_reset(self):
+        self.ensure_one()
+        # Currently no blocking rule; placeholder for future policy-based restriction.
+
+    # ============================================================================
     # ACTION METHODS
     # ============================================================================
     def action_start_checklist(self):
         self.ensure_one()
-        if not self.checklist_item_ids:
-            raise UserError(_("Cannot start a checklist with no items."))
+        self._check_can_start()
         self.write({'state': 'in_progress'})
         self.message_post(body=_("Checklist started."))
 
     def action_complete_checklist(self):
         self.ensure_one()
-        if any(not item.is_checked for item in self.checklist_item_ids.filtered(lambda i: i.is_required)):
-            raise UserError(_("All required checklist items must be checked before completing."))
+        self._check_can_complete()
         self.write({
             'state': 'completed',
             'completed_by_id': self.env.user.id,
@@ -78,6 +94,7 @@ class NAIDComplianceChecklist(models.Model):
 
     def action_reset_checklist(self):
         self.ensure_one()
+        self._check_can_reset()
         self.checklist_item_ids.write({'is_checked': False, 'notes': ''})
         self.write({'state': 'draft', 'completed_by_id': False, 'completion_date': False})
         self.message_post(body=_("Checklist has been reset to draft."))

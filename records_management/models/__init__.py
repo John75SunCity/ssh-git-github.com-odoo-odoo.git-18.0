@@ -48,6 +48,7 @@ from . import records_approval_workflow
 from . import shredding_inventory_batch
 from . import customer_feedback
 from . import customer_inventory
+from . import customer_inventory_line
 from . import naidcompliance_checklist
 from . import payment_split
 from . import advanced_billing_profile
@@ -203,7 +204,7 @@ from . import mobile_bin_key_wizard
 from . import naid_certificate_actions
 from . import naid_custody_event
 from . import naid_operator_certification_actions
-from . import naid_performance_history
+from . import naidperformance_history
 from . import naid_risk_assessment
 from . import paper_bale_actions
 from . import paper_bale_inspection_wizard

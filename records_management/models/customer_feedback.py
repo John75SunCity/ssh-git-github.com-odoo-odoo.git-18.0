@@ -41,6 +41,7 @@ class CustomerFeedback(models.Model):
         ('high', 'High'),
         ('urgent', 'Urgent')
     ], string='Priority', default='normal', tracking=True)
+    description = fields.Text(string='Description', help="Detailed description used in extended views and reports")
 
     # Escalation & Ownership (added to match view usage)
     escalation_level = fields.Selection([

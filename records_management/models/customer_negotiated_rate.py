@@ -23,8 +23,7 @@ License: LGPL-3
 # model; prefer updating validation tooling if suppression is required.
 # ==================================================================================
 
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo import _, api, fields, models
 
 
 class CustomerNegotiatedRate(models.Model):
@@ -249,6 +248,7 @@ class CustomerNegotiatedRate(models.Model):
         }
         self.write(vals)
         # Post single approval message
+        # Translation style intentional (see policy note above).
         self.message_post(body=_('Rate approved by %s') % self.env.user.name)
         # Auto-activate if effective date reached
         if self.effective_date and self.effective_date <= fields.Date.today():

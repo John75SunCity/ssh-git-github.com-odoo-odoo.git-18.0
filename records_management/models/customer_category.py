@@ -32,6 +32,10 @@ class CustomerCategory(models.Model):
     description = fields.Text(string='Description')
     company_id = fields.Many2one('res.company', string='Company', required=True, default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
+    # Additional contact summary fields referenced in views (functional, stored)
+    email = fields.Char(string='Primary Email', help="Representative email shown in category overviews")
+    phone = fields.Char(string='Primary Phone', help="Representative phone displayed in category views")
+    is_company = fields.Boolean(string='Is Company', help="Flag used in views for filtering / display consistency")
 
     # ============================================================================
     # CONFIGURATION
@@ -58,6 +62,8 @@ class CustomerCategory(models.Model):
     # ============================================================================
     partner_ids = fields.One2many('res.partner', 'category_id', string='Customers')
     customer_count = fields.Integer(string='Customer Count', compute='_compute_customer_count', store=True)
+    total_active_customers = fields.Integer(string='Active Customers', compute='_compute_customer_count', store=True,
+                                           help="Number of active customers in this category")
 
     # ============================================================================
     # COMPUTE METHODS
@@ -67,6 +73,7 @@ class CustomerCategory(models.Model):
         """Calculates the number of customers in this category."""
         for record in self:
             record.customer_count = len(record.partner_ids)
+            record.total_active_customers = len(record.partner_ids.filtered(lambda p: p.active))
 
     # ============================================================================
     # CONSTRAINTS

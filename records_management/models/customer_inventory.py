@@ -13,9 +13,9 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+import logging
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
-import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -43,6 +43,11 @@ class CustomerInventory(models.Model):
     ], string='Status', default='draft', required=True, tracking=True)
     inventory_date = fields.Date(string='Inventory Date', default=fields.Date.context_today, required=True)
     completion_date = fields.Datetime(string='Completion Date', readonly=True)
+    last_updated = fields.Datetime(string='Last Updated', readonly=True, copy=False,
+                                   help="Timestamp of the last modification to any inventory line or core field")
+    status_detail = fields.Char(string='Status Detail', help="Extended textual status used in advanced views")
+    total_documents = fields.Integer(string='Total Documents', compute='_compute_inventory_totals', store=True,
+                                     help="Aggregate of file counts across all inventory lines")
 
     # ============================================================================
     # RELATIONSHIPS
@@ -110,6 +115,7 @@ class CustomerInventory(models.Model):
         for record in self:
             record.total_containers = len(record.inventory_line_ids.mapped('container_id'))
             record.total_files = sum(record.inventory_line_ids.mapped('file_count'))
+            record.total_documents = record.total_files
 
     @api.depends('inventory_line_ids.verified')
     def _compute_verification_stats(self):
@@ -149,9 +155,7 @@ class CustomerInventory(models.Model):
                     lambda l, record=record: l.department_id and l.department_id != record.department_id
                 )
                 if invalid_locations:
-                    raise ValidationError(_(
-                        "Selected locations must belong to the same department: %s"
-                    , ', '.join(invalid_locations.mapped('name'))))
+                    raise ValidationError(_("Selected locations must belong to the same department: %s") % ', '.join(invalid_locations.mapped('name')))
 
     # ============================================================================
     # ACTION METHODS
@@ -204,10 +208,11 @@ class CustomerInventory(models.Model):
 
         self.env['customer.inventory.line'].create(lines_to_create)
         self.write({'state': 'in_progress'})
-
-        self.message_post(body=_(
-            "Inventory lines generated for %s containers using %s inventory type."
-        ) % (len(containers), dict(self._fields['inventory_type'].selection)[self.inventory_type]))
+        self._touch_last_updated()
+        self.message_post(body=_("Inventory lines generated for %s containers using %s inventory type.") % (
+            len(containers),
+            dict(self._fields['inventory_type'].selection)[self.inventory_type]
+        ))
 
     def action_bulk_verify(self):
         """Bulk verify all unverified lines."""
@@ -221,7 +226,8 @@ class CustomerInventory(models.Model):
             'verification_date': fields.Datetime.now()
         })
 
-        self.message_post(body=_("Bulk verification completed for %s lines.", len(unverified_lines)))
+        self.message_post(body=_("Bulk verification completed for %s lines.") % len(unverified_lines))
+        self._touch_last_updated()
 
     def action_submit_for_review(self):
         """Submit inventory for review."""
@@ -231,6 +237,7 @@ class CustomerInventory(models.Model):
 
         self.write({'state': 'review'})
         self.message_post(body=_("Inventory submitted for review."))
+        self._touch_last_updated()
 
     def action_approve(self):
         """Approve the inventory (reviewer action)."""
@@ -244,6 +251,7 @@ class CustomerInventory(models.Model):
             'completion_date': fields.Datetime.now()
         })
         self.message_post(body=_("Inventory approved and completed."))
+        self._touch_last_updated()
 
     def action_complete(self):
         """Complete the inventory."""
@@ -253,16 +261,21 @@ class CustomerInventory(models.Model):
             'completion_date': fields.Datetime.now()
         })
         self.message_post(body=_("Inventory marked as completed."))
+        self._touch_last_updated()
 
     def action_cancel(self):
         """Cancel the inventory."""
+        self.ensure_one()
         self.write({'state': 'cancelled'})
         self.message_post(body=_("Inventory cancelled."))
+        self._touch_last_updated()
 
     def action_reset_to_draft(self):
         """Reset inventory to draft."""
+        self.ensure_one()
         self.write({'state': 'draft'})
         self.message_post(body=_("Inventory reset to draft."))
+        self._touch_last_updated()
 
     def action_export_to_excel(self):
         """Export inventory to Excel format."""
@@ -320,134 +333,8 @@ class CustomerInventory(models.Model):
                     vals['name'] = self.env['ir.sequence'].next_by_code('customer.inventory') or _('New')
 
         records = super().create(vals_list)
-
         for record in records:
-            record.message_post(body=_(
-                "Inventory created with type: %s"
-            , dict(record._fields['inventory_type'].selection)[record.inventory_type]))
-
+            record.message_post(body=_("Inventory created with type: %s") % dict(
+                record._fields['inventory_type'].selection
+            )[record.inventory_type])
         return records
-
-
-class CustomerInventoryLine(models.Model):
-    _name = 'customer.inventory.line'
-    _description = 'Customer Inventory Line'
-    _order = 'container_id'
-
-    # ============================================================================
-    # CORE FIELDS
-    # ============================================================================
-    inventory_id = fields.Many2one('customer.inventory', string='Inventory', required=True, ondelete='cascade')
-    container_id = fields.Many2one('records.container', string='Container', required=True)
-    location_id = fields.Many2one('records.location', string='Location', related='container_id.location_id', store=True)
-
-    # File counts
-    file_count = fields.Integer(string='Actual Count', help="Actual number of files found during inventory.")
-    expected_file_count = fields.Integer(string='Expected Count', help="Expected number of files based on system records.")
-    previous_file_count = fields.Integer(string='Previous Count', help="File count from previous inventory.")
-
-    # Verification
-    verified = fields.Boolean(string='Verified', default=False, help="Check this box if this line has been physically verified.")
-    verification_date = fields.Datetime(string='Verification Date', readonly=True)
-    verified_by_id = fields.Many2one('res.users', string='Verified By', readonly=True)
-    notes = fields.Text(string='Notes')
-
-    # ============================================================================
-    # ENHANCED FIELDS
-    # ============================================================================
-    # Variance tracking
-    has_variance = fields.Boolean(string='Has Variance', compute='_compute_variance', store=True)
-    variance_amount = fields.Integer(string='Variance', compute='_compute_variance', store=True)
-    variance_percentage = fields.Float(string='Variance %', compute='_compute_variance', store=True)
-    variance_reason = fields.Selection([
-        ('counting_error', 'Counting Error'),
-        ('missing_files', 'Missing Files'),
-        ('extra_files', 'Extra Files'),
-        ('system_error', 'System Error'),
-        ('other', 'Other')
-    ], string='Variance Reason')
-    variance_notes = fields.Text(string='Variance Notes')
-
-    # Container details (for reporting)
-    container_type_id = fields.Many2one('records.container.type', related='container_id.container_type_id',
-                                       string='Container Type', store=True)
-    department_id = fields.Many2one('records.department', related='container_id.department_id',
-                                   string='Department', store=True)
-
-    # ============================================================================
-    # COMPUTE METHODS
-    # ============================================================================
-    @api.depends('file_count', 'expected_file_count')
-    def _compute_variance(self):
-        """Compute variance between actual and expected counts."""
-        for line in self:
-            if line.expected_file_count > 0:
-                line.variance_amount = line.file_count - line.expected_file_count
-                line.has_variance = line.variance_amount != 0
-                line.variance_percentage = (line.variance_amount / line.expected_file_count) * 100
-            else:
-                line.variance_amount = 0
-                line.has_variance = False
-                line.variance_percentage = 0.0
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def action_verify_line(self):
-        """Enhanced line verification with user tracking."""
-        self.ensure_one()
-        self.write({
-            'verified': True,
-            'verification_date': fields.Datetime.now(),
-            'verified_by_id': self.env.user.id
-        })
-
-        # Log verification in chatter
-        self.inventory_id.message_post(body=_(
-            "Container %s verified by %s (Count: %s)"
-        ) % (self.container_id.name, self.env.user.name, self.file_count))
-
-    def action_update_system_count(self):
-        """Update the system count to match the actual count (for variance resolution)."""
-        self.ensure_one()
-        if not self.has_variance:
-            raise UserError(_("No variance to resolve."))
-
-        if not self.env.user.has_group('records_management.group_records_manager'):
-            raise UserError(_("Only managers can update system counts."))
-
-        # Update the container's file count
-        self.container_id.write({'file_count': self.file_count})
-
-        # Update expected count to match actual
-        self.write({'expected_file_count': self.file_count})
-
-        self.inventory_id.message_post(body=_(
-            "System count updated for container %s: %s files"
-        ) % (self.container_id.name, self.file_count))
-
-    def action_investigate_variance(self):
-        """Create an activity to investigate the variance."""
-        self.ensure_one()
-        if not self.has_variance:
-            raise UserError(_("No variance to investigate."))
-
-        self.env['mail.activity'].create({
-            'activity_type_id': self.env.ref('mail.mail_activity_data_call').id,
-            'summary': f'Investigate Variance - Container {self.container_id.name}',
-            'note': f'Variance of {self.variance_amount} files detected. Expected: {self.expected_file_count}, Actual: {self.file_count}',
-            'res_id': self.inventory_id.id,
-            'res_model_id': self.env.ref('records_management.model_customer_inventory').id,
-            'user_id': self.inventory_id.user_id.id,
-        })
-
-    # ============================================================================
-    # CONSTRAINTS
-    # ============================================================================
-    @api.constrains('file_count')
-    def _check_file_count(self):
-        """Validate file count is not negative."""
-        for line in self:
-            if line.file_count < 0:
-                raise ValidationError(_("File count cannot be negative."))
-

@@ -144,7 +144,7 @@ class NaidDestructionRecord(models.Model):
             raise UserError(_('Can only schedule draft destruction records'))
 
         self.write({'state': 'scheduled'})
-        self.message_post(body=_('Destruction scheduled for %s', self.destruction_date))
+        self.message_post(body=_('Destruction scheduled for %s') % self.destruction_date)
 
     def action_start_destruction(self):
         """Start the destruction process"""
@@ -204,7 +204,7 @@ class NaidDestructionRecord(models.Model):
             }
         )
 
-        self.message_post(body=_('NAID Certificate generated: %s', self.certificate_number))
+        self.message_post(body=_('NAID Certificate generated: %s') % self.certificate_number)
         return certificate
 
     def action_cancel_destruction(self):

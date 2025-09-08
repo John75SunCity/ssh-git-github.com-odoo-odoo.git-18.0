@@ -188,6 +188,12 @@ class NaidCompliance(models.Model):
         vals = [1 for f in flags if f]
         return (sum(vals) / float(len(flags))) * 100 if flags else 0.0
 
+    @api.depends(
+        "access_control_verified", "surveillance_system", "secure_storage",
+        "personnel_screening", "background_checks", "training_completed", "security_clearance",
+        "information_handling", "chain_of_custody", "destruction_verification", "certificate_tracking",
+        "equipment_certification", "process_verification", "quality_control", "incident_management",
+    )
     def _compute_metric_scores(self):
         for rec in self:
             # Simple heuristic scoring across four domains
@@ -214,17 +220,21 @@ class NaidCompliance(models.Model):
                 rec.quality_control,
                 rec.incident_management,
             )
-            rec.security_score = (physical + personnel + info_sec) / 3.0 if 3 else 0.0
+            rec.security_score = (physical + personnel + info_sec) / 3.0
             rec.operational_score = operational
             rec.documentation_score = info_sec
-            rec.overall_compliance_score = round((rec.security_score + rec.operational_score + rec.documentation_score) / 3.0, 2)
+            rec.overall_compliance_score = round(
+                (rec.security_score + rec.operational_score + rec.documentation_score) / 3.0, 2
+            )
 
+    @api.depends("last_audit_date", "expiry_date")
     def _compute_timeline_metrics(self):
         today = fields.Date.context_today(self)
         for rec in self:
             rec.days_since_last_audit = (today - rec.last_audit_date).days if rec.last_audit_date else 0
             rec.days_until_expiry = (rec.expiry_date - today).days if rec.expiry_date else 0
 
+    @api.depends("overall_compliance_score")
     def _compute_trend(self):
         for rec in self:
             if rec.overall_compliance_score >= 90:
@@ -234,6 +244,7 @@ class NaidCompliance(models.Model):
             else:
                 rec.compliance_trend = "down"
 
+    @api.depends("overall_compliance_score")
     def _compute_risk_level(self):
         for rec in self:
             score = rec.overall_compliance_score
