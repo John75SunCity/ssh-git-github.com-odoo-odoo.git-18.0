@@ -80,584 +80,401 @@ class RmModuleConfigurator(models.Model):
             ("workflow", "Workflow"),
             ("billing", "Billing"),
             ("compliance", "Compliance & NAID"),
-            ("fsm", "Field Service"),
-            ("portal", "Customer Portal"),
-            ("reporting", "Reporting"),
-            ("security", "Security"),
-            ("system", "System"),
-        ],
-        string="Category",
-        required=True,
-        default="system",
-    )
+            """Records Management Module Configurator.
 
-    config_type = fields.Selection(
-        [
-            ("field_visibility", "Field Visibility"),
-            ("feature_toggle", "Feature Toggle"),
-            ("parameter", "System Parameter"),
-            ("domain_rule", "Domain Rule"),
-        ],
-        string="Configuration Type",
-        required=True,
-        default="parameter",
-    )
+            Restored implementation with concise, safe logic. Dynamic values are concatenated
+            after translation to align with existing repository policy.
+            """
 
-    description = fields.Text(
-        string="Description",
-        help="Explain what this configuration does and its impact.",
-    )
-    help_text = fields.Text(
-        string="Help Text", help="Additional help text for this configuration option."
-    )
-    config_key = fields.Char(
-        string="Technical Key",
-        required=True,
-        copy=False,
-        help="Unique technical key to identify this configuration in code.",
-    )
+            from odoo import _, api, fields, models
+            from odoo.exceptions import UserError, ValidationError
+            import re
 
-    # ============================================================================
-    # FIELDS - Configuration Value
-    # ============================================================================
-    value_text = fields.Char(string="Text Value")
-    value_boolean = fields.Boolean(string="Boolean Value")
-    value_number = fields.Float(string="Number Value")
-    value_selection = fields.Char(string="Selection Value")
 
-    # ============================================================================
-    # FIELDS - Targeting (for UI/Domain rules)
-    # ============================================================================
-    target_model_id = fields.Many2one(
-        comodel_name="ir.model",
-        string="Target Model",
-        domain="[('model', 'like', 'records_management.')]",
-    )
-    target_model = fields.Char(
-        related="target_model_id.model", readonly=True, store=True
-    )
-    target_field_id = fields.Many2one(
-        comodel_name="ir.model.fields",  # core model name retained
-        string="Target Field",
-        domain="[('model_id', '=', target_model_id)]",
-    )
-    target_field = fields.Char(
-        related="target_field_id.name", readonly=True, store=True
-    )
+            class RmModuleConfigurator(models.Model):
+                _name = "rm.module.configurator"
+                _description = "Records Management Configuration"
+                _inherit = ["mail.thread", "mail.activity.mixin"]
+                _order = "category, sequence, name"
 
-    # For field_visibility
-    visible = fields.Boolean(string="Is Visible", default=True)
-    required = fields.Boolean(string="Is Required")
-    readonly = fields.Boolean(string="Is Read-Only")
+                name = fields.Char(required=True, index=True)
+                sequence = fields.Integer(default=10)
+                active = fields.Boolean(default=True)
+                company_id = fields.Many2one("res.company", default=lambda self: self.env.company)
 
-    # ============================================================================
-    # FIELDS - Auditing
-    # ============================================================================
-    modified_by_id = fields.Many2one(
-        comodel_name="res.users", string="Last Modified By", readonly=True
-    )
-    last_modified = fields.Datetime(string="Last Modified On", readonly=True)
-    modification_count = fields.Integer(
-        string="Modification Count", default=0, readonly=True
-    )
-    notes = fields.Text(string="Internal Notes")
+                category = fields.Selection([
+                    ("ui", "User Interface"),
+                    ("workflow", "Workflow"),
+                    ("billing", "Billing"),
+                    ("compliance", "Compliance & NAID"),
+                    ("fsm", "Field Service"),
+                    ("portal", "Customer Portal"),
+                    ("reporting", "Reporting"),
+                    ("security", "Security"),
+                    ("system", "System"),
+                ], default="system", required=True)
 
-    # ==========================================================================
-    # FEATURE TOGGLES (Module-Wide)
-    # ==========================================================================
-    enable_chain_of_custody = fields.Boolean(
-        string="Enable Chain of Custody",
-        help="If disabled, hides Chain of Custody menus and related navigation entries (data remains accessible via technical models).",
-        default=True,
-    )
+                config_type = fields.Selection([
+                    ("field_visibility", "Field Visibility"),
+                    ("feature_toggle", "Feature Toggle"),
+                    ("parameter", "System Parameter"),
+                    ("domain_rule", "Domain Rule"),
+                ], default="parameter", required=True)
 
-    # ============================================================================
-    # COMPUTED FIELDS
-    # ============================================================================
-    @api.depends("value_text", "value_boolean", "value_number", "value_selection")
-    def _compute_current_value(self):
-        """Compute the current effective value based on type."""
-        for record in self:
-            if record.value_boolean is not False:  # Check explicitly for False
-                record.current_value = str(record.value_boolean)
-            elif record.value_number is not False and record.value_number != 0.0:
-                record.current_value = str(record.value_number)
-            elif record.value_text:
-                record.current_value = record.value_text
-            elif record.value_selection:
-                record.current_value = record.value_selection
-            else:
-                record.current_value = ""
+                description = fields.Text()
+                help_text = fields.Text()
+                config_key = fields.Char(required=True, copy=False)
 
-    current_value = fields.Char(
-        string="Current Value", compute="_compute_current_value", store=True
-    )
+                value_text = fields.Char()
+                value_boolean = fields.Boolean()
+                value_number = fields.Float()
+                value_selection = fields.Char()
 
-    @api.depends("config_type", "target_model", "target_field")
-    def _compute_display_name(self):
-        """Compute a descriptive display name."""
-        for record in self:
-            if (
-                record.config_type == "field_visibility"
-                and record.target_model
-                and record.target_field
-            ):
-                record.display_name = record.name + f" ({record.target_model}.{record.target_field})"
-            elif record.config_type == "feature_toggle":
-                status = _("Enabled") if record.value_boolean else _("Disabled")
-                record.display_name = record.name + f" - {status}"
-            else:
-                record.display_name = record.name
+                target_model_id = fields.Many2one("ir.model", string="Target Model")
+                target_model = fields.Char(related="target_model_id.model", store=True)
+                target_field_id = fields.Many2one("ir.model.fields", string="Target Field")  # noqa: lint
+                target_field = fields.Char(related="target_field_id.name", store=True)
 
-    display_name = fields.Char(compute="_compute_display_name", store=True)
+                visible = fields.Boolean(default=True)
+                required = fields.Boolean()
+                readonly = fields.Boolean()
 
-    # ============================================================================
-    # SQL CONSTRAINTS
-    # ============================================================================
-    _sql_constraints = [
-        (
-            "config_key_company_uniq",
-            "unique(config_key, company_id)",
-            "The configuration key must be unique per company!",
-        )
-    ]
+                modified_by_id = fields.Many2one("res.users", readonly=True)
+                last_modified = fields.Datetime(readonly=True)
+                modification_count = fields.Integer(readonly=True, default=0)
+                notes = fields.Text()
 
-    # ============================================================================
-    # ORM OVERRIDES
-    # ============================================================================
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            vals["modified_by_id"] = self.env.user.id
-            vals["last_modified"] = fields.Datetime.now()
+                enable_chain_of_custody = fields.Boolean(default=True)
+                destruction_certificate_enabled = fields.Boolean(default=True)
+                bin_inventory_enabled = fields.Boolean(default=True)
 
-        records = super().create(vals_list)
+                current_value = fields.Char(compute="_compute_current_value", store=True)
+                display_name = fields.Char(compute="_compute_display_name", store=True)
 
-        # Log creation in chatter
-        for record in records:
-            # Project policy: interpolate after translation
-            record.message_post(body=_("Configuration created:") + f" {record.name}")
+                _sql_constraints = [
+                    ("config_key_company_uniq", "unique(config_key, company_id)", "Configuration key must be unique per company."),
+                ]
 
-        # Feature gating: apply after creation if relevant
-        updated_keys = records._collect_updated_feature_keys(vals_list)
-        if updated_keys:
-            records._post_write_feature_gating(updated_keys)
+                # Additional feature booleans (kept minimal subset from previous implementation)
+                bulk_user_import_enabled = fields.Boolean(default=True)
+                retrieval_work_order_enabled = fields.Boolean(default=True)
+                photo_enabled = fields.Boolean(default=True)
+                photo_portal_access = fields.Boolean(default=False)
 
-        # Apply feature toggle effects if any record has toggle explicitly set
-        if any('enable_chain_of_custody' in v for v in vals_list):
-            records._apply_chain_of_custody_toggle()
-        return records
+                # ------------------------------------------------------------------
+                # COMPUTE METHODS
+                # ------------------------------------------------------------------
+                @api.depends("value_text", "value_boolean", "value_number", "value_selection")
+                def _compute_current_value(self):
+                    for rec in self:
+                        if isinstance(rec.value_boolean, bool):
+                            rec.current_value = str(rec.value_boolean)
+                        elif rec.value_number not in (None, 0.0):
+                            rec.current_value = str(rec.value_number)
+                        elif rec.value_text:
+                            rec.current_value = rec.value_text
+                        elif rec.value_selection:
+                            rec.current_value = rec.value_selection
+                        else:
+                            rec.current_value = ""
 
-    def write(self, vals):
-        """Override write to track modifications and clear server cache."""
-        if any(key.startswith("value_") for key in vals) or "enable_chain_of_custody" in vals:
-            for record in self:
-                vals.setdefault("modified_by_id", self.env.user.id)
-                vals.setdefault("last_modified", fields.Datetime.now())
-                vals.setdefault("modification_count", record.modification_count + 1)
+                @api.depends("config_type", "target_model", "target_field")
+                def _compute_display_name(self):
+                    for rec in self:
+                        if rec.config_type == "field_visibility" and rec.target_model and rec.target_field:
+                            rec.display_name = rec.name + f" ({rec.target_model}.{rec.target_field})"
+                        elif rec.config_type == "feature_toggle":
+                            status = _("Enabled") if rec.value_boolean else _("Disabled")
+                            rec.display_name = rec.name + f" - {status}"
+                        else:
+                            rec.display_name = rec.name
 
-        res = super().write(vals)
+                # ------------------------------------------------------------------
+                # CREATE / WRITE
+                # ------------------------------------------------------------------
+                @api.model_create_multi
+                def create(self, vals_list):
+                    now = fields.Datetime.now()
+                    uid = self.env.user.id
+                    for vals in vals_list:
+                        vals.setdefault("modified_by_id", uid)
+                        vals.setdefault("last_modified", now)
+                    records = super().create(vals_list)
+                    for rec in records:
+                        rec.message_post(body=_("Configuration created:") + f" {rec.name}")
+                    updated = records._collect_updated_feature_keys(vals_list)
+                    if updated:
+                        records._post_write_feature_gating(updated)
+                    if any('enable_chain_of_custody' in v for v in vals_list):
+                        records._apply_chain_of_custody_toggle()
+                    return records
 
-        # Clear server-side caches to ensure new configuration is loaded
-        try:
-            self.env.registry.clear_caches()
-            self.clear_caches()
-        except Exception:
-            # Graceful fallback if cache clearing fails
-            pass
+                def write(self, vals):
+                    track = any(k.startswith("value_") for k in vals) or any(k in vals for k in ["enable_chain_of_custody", "bin_inventory_enabled"])
+                    if track:
+                        now = fields.Datetime.now()
+                        uid = self.env.user.id
+                        for rec in self:
+                            vals.setdefault("modified_by_id", uid)
+                            vals.setdefault("last_modified", now)
+                            vals.setdefault("modification_count", rec.modification_count + 1)
+                    res = super().write(vals)
+                    if track:
+                        try:
+                            self.env.registry.clear_caches()
+                            self.clear_caches()
+                        except Exception:
+                            pass
+                    if any(k.startswith("value_") for k in vals):
+                        for rec in self:
+                            rec.message_post(body=_("Configuration updated:") + f" {rec.config_key} = {rec.current_value}")
+                    updated = self._collect_updated_feature_keys([vals])
+                    if updated:
+                        self._post_write_feature_gating(updated)
+                    if "enable_chain_of_custody" in vals:
+                        self._apply_chain_of_custody_toggle()
+                    return res
 
-        # Log significant changes in chatter
-        if any(key.startswith("value_") for key in vals):
-            for record in self:
-                record.message_post(
-                    body=_("Configuration updated:") + f" {record.config_key} = {record.current_value}"
-                )
+                # ------------------------------------------------------------------
+                # FEATURE TOGGLE HELPERS
+                # ------------------------------------------------------------------
+                def _apply_chain_of_custody_toggle(self):
+                    menu = self.env.ref("records_management.menu_chain_custody", raise_if_not_found=False)
+                    if not menu:
+                        return
+                    enabled = any(r.enable_chain_of_custody for r in self.search([]))
+                    try:
+                        menu.active = bool(enabled)
+                    except Exception:
+                        pass
 
-        # Feature gating: detect updated feature toggles and apply
-        updated_keys = self._collect_updated_feature_keys([vals])
-        if updated_keys:
-            self._post_write_feature_gating(updated_keys)
+                def _apply_bin_inventory_toggle(self):
+                    enabled = self.get_config_parameter('bin_inventory_enabled', True)
+                    menu_ids = [
+                        'records_management.menu_bin_barcode_inventory_root',
+                        'records_management.menu_bin_barcode_inventory',
+                    ]
+                    for xml in menu_ids:
+                        m = self.env.ref(xml, raise_if_not_found=False)
+                        if m:
+                            try:
+                                m.active = enabled
+                            except Exception:
+                                continue
 
-        # Apply custody toggle if changed
-        if "enable_chain_of_custody" in vals:
-            self._apply_chain_of_custody_toggle()
-    # ==========================================================================
-    # FEATURE TOGGLE HELPERS
-    # ==========================================================================
-    def _apply_chain_of_custody_toggle(self):
-        """Activate or deactivate Chain of Custody main menu based on toggle."""
-        menu = self.env.ref("records_management.menu_chain_custody", raise_if_not_found=False)
-        if not menu:
-            return
-        enabled = any(cfg.enable_chain_of_custody for cfg in self.search([]))
-        menu.active = bool(enabled)
+                def _post_write_feature_gating(self, updated_keys):
+                    if not updated_keys:
+                        return
+                    if 'bin_inventory_enabled' in updated_keys:
+                        self._apply_bin_inventory_toggle()
 
-        return res
+                def _collect_updated_feature_keys(self, vals_list):
+                    keys = set()
+                    for vals in vals_list:
+                        if any(k.startswith('value_') for k in vals):
+                            for rec in self.filtered(lambda r: r.config_type == 'feature_toggle'):
+                                keys.add(rec.config_key)
+                    return keys
 
-    def unlink(self):
-        """Override unlink to log deletion."""
-        for record in self:
-            config_key = record.config_key
-            config_name = record.name
+                # ------------------------------------------------------------------
+                # BUSINESS HELPERS
+                # ------------------------------------------------------------------
+                @api.model
+                def get_config_parameter(self, key, default=None):
+                    rec = self.search([("config_key", "=", key), ("active", "=", True)], limit=1)
+                    if not rec:
+                        return default
+                    if isinstance(rec.value_boolean, bool):
+                        return rec.value_boolean
+                    if rec.value_number not in (None, 0.0):
+                        return rec.value_number
+                    if rec.value_text:
+                        return rec.value_text
+                    if rec.value_selection:
+                        return rec.value_selection
+                    return default
 
-        result = super().unlink()
+                def get_value(self):
+                    self.ensure_one()
+                    return self.get_config_parameter(self.config_key)
 
-        # Log deletion (can't use message_post after deletion)
-        self.env["mail.message"].create(
+                def set_value(self, value):
+                    self.ensure_one()
+                    vals = {"value_text": False, "value_boolean": False, "value_number": 0.0, "value_selection": False}
+                    if isinstance(value, bool):
+                        vals["value_boolean"] = value
+                    elif isinstance(value, (int, float)):
+                        vals["value_number"] = float(value)
+                    elif isinstance(value, str):
+                        # parameter vs selection simplified
+                        if self.config_type == 'parameter':
+                            vals["value_text"] = value
+                        else:
+                            vals["value_selection"] = value
+                    else:
+                        vals["value_text"] = str(value)
+                    self.write(vals)
+
+                def action_apply_configuration(self):
+                    self.ensure_one()
+                    try:
+                        self.env.registry.clear_caches()
+                        self.clear_caches()
+                        if self.config_type == 'feature_toggle':
+                            self._post_write_feature_gating({self.config_key})
+                        self.message_post(body=_("Configuration applied successfully:") + f" {self.name}")
+                        return {
+                            "type": "ir.actions.client",
+                            "tag": "display_notification",
+                            "params": {"title": _("Configuration Applied"), "message": _("Configuration applied successfully."), "type": "success", "sticky": False},
+                        }
+                    except Exception as exc:
+                        msg = _("Failed to apply configuration:") + f" {self.name}: {exc}"
+                        self.message_post(body=msg)
+                        raise UserError(msg) from exc
+
+                def action_toggle_active(self):
+                    self.ensure_one()
+                    self.active = not self.active
+                    status = _("activated") if self.active else _("deactivated")
+                    self.message_post(body=_("Configuration status:") + f" {status} - {self.name}")
+
+                def _default_configuration(self):
+                    self.ensure_one()
+                    vals = {"value_text": False, "value_boolean": False, "value_number": 0.0, "value_selection": False}
+                    if self.config_type == 'feature_toggle':
+                        vals['value_boolean'] = False
+                    elif self.config_type == 'field_visibility':
+                        vals['value_boolean'] = True
+                    self.write(vals)
+                    self.message_post(body=_("Configuration reset to default values:") + f" {self.name}")
+
+                @api.model
+                def get_feature_toggle(self, key, default=False):
+                    return bool(self.get_config_parameter(key, default))
+
+                @api.model
+                def is_feature_enabled(self, key):
+                    return bool(self.get_config_parameter(key, False))
+
+                @api.model
+                def get_field_visibility(self, model_name, field_name):
+                    rec = self.search([
+                        ("config_type", "=", "field_visibility"),
+                        ("target_model", "=", model_name),
+                        ("target_field", "=", field_name),
+                        ("active", "=", True),
+                    ], limit=1)
+                    if rec:
+                        return {"visible": rec.visible, "required": rec.required, "readonly": rec.readonly}
+                    return {"visible": True, "required": False, "readonly": False}
+
+                def action_view_related_configurations(self):
+                    self.ensure_one()
+                    return {
+                        "type": "ir.actions.act_window",
+                        "name": _("Related Configurations"),
+                        "res_model": self._name,
+                        "view_mode": "tree,form",
+                        "domain": [("category", "=", self.category), ("id", "!=", self.id)],
+                        "context": {"default_category": self.category},
+                    }
+
+                @api.model
+                def _default_seed_configs(self):
+                    defaults = [
+                        {"name": "Enable Chain of Custody", "config_key": "chain_of_custody_enabled", "config_type": "feature_toggle", "value_boolean": True, "category": "compliance"},
+                        {"name": "Enable Bin Inventory", "config_key": "bin_inventory_enabled", "config_type": "feature_toggle", "value_boolean": True, "category": "fsm"},
+                    ]
+                    created = []
+                    for vals in defaults:
+                        if not self.search([("config_key", "=", vals["config_key"])], limit=1):
+                            created.append(self.create(vals))
+                    return created
+
+                def _default_create_default_configurations(self):  # existing alias pattern
+                    self.ensure_one()
+                    return self._default_seed_configs()
+
+                # ------------------------------------------------------------------
+                # CONSTRAINTS
+                # ------------------------------------------------------------------
+                @api.constrains("config_type", "value_text", "value_boolean", "value_number", "value_selection")
+                def _validate_value_type(self):
+                    for rec in self:
+                        if rec.config_type == 'parameter':
+                            values = [
+                                bool(rec.value_text),
+                                rec.value_boolean is not False and rec.value_boolean is not None,
+                                (rec.value_number not in (None, 0.0)),
+                                bool(rec.value_selection),
+                            ]
+                            count = sum(1 for v in values if v)
+                            if count > 1:
+                                raise ValidationError(_("Configuration parameter value type conflict:") + f" {rec.name}")
+                            if count == 0:
+                                raise ValidationError(_("Configuration requires at least one value:") + f" {rec.name}")
+
+                @api.constrains("config_type", "target_model_id", "target_field_id")
+                def _check_target_exists(self):
+                    for rec in self:
+                        if rec.config_type in ["field_visibility", "domain_rule"]:
+                            if not rec.target_model_id:
+                                raise ValidationError(_("A 'Target Model' is required for UI or Domain configurations."))
+                            if rec.config_type == 'field_visibility' and not rec.target_field_id:
+                                raise ValidationError(_("A 'Target Field' is required for Field Visibility configurations."))
+
+                @api.constrains("config_key")
+                def _check_config_key_format(self):
+                    pattern = r"^[a-z][a-z0-9_]*[a-z0-9]$"
+                    for rec in self:
+                        if not re.match(pattern, rec.config_key or ""):
+                            raise ValidationError(_("Configuration key format invalid:") + f" {rec.config_key}")
+
+                # ------------------------------------------------------------------
+                # PARAMETER SETTER
+                # ------------------------------------------------------------------
+                @api.model
+                def set_config_parameter(self, config_key, value, config_type="parameter", name=None, category=None):
             {
-                "subject": _("Configuration Deleted"),
-                "body": _("Configuration deleted:") + f" {config_name} ({config_key})",
-                "model": self._name,
-                "message_type": "comment",
-                "author_id": self.env.user.partner_id.id,
-            }
-        )
+                    Convenience setter (creates or updates) for simple configurations.
+                    """
+                    rec = self.search([("config_key", "=", config_key)], limit=1)
+                    vals = {
+                        "config_key": config_key,
+                        "config_type": config_type,
+                        "name": name or config_key.replace("_", " ").title(),
+                        "category": category or "system",
+                    }
+                    if config_type == 'feature_toggle' and isinstance(value, bool):
+                        vals['value_boolean'] = value
+                    elif config_type == 'parameter' and isinstance(value, (int, float)):
+                        vals['value_number'] = float(value)
+                    elif config_type == 'parameter' and isinstance(value, str):
+                        vals['value_text'] = value
+                    else:
+                        raise ValueError(f"Unsupported combination for {config_key}")
+                    if rec:
+                        rec.write(vals)
+                        return rec
+                    return self.create(vals)
 
-        return result
-
-    # ============================================================================
-    # CONSTRAINTS
-    # ============================================================================
-    @api.constrains(
-        "config_type", "value_text", "value_boolean", "value_number", "value_selection"
-    )
-    def _validate_value_type(self):
-        """Validate that the correct value field is used for the parameter type."""
-        for record in self:
-            if record.config_type == "parameter":
-                # Count non-empty/non-false values
-                value_count = 0
-                if record.value_text:
-                    value_count += 1
-                if record.value_boolean is not False:  # Explicit check for False
-                    value_count += 1
-                if record.value_number != 0.0:  # Check if not default 0.0
-                    value_count += 1
-                if record.value_selection:
-                    value_count += 1
-
-                if value_count > 1:
-                    raise ValidationError(
-                        _("Configuration parameter value type conflict:") + f" {record.name}"
-                    )
-
-                if value_count == 0:
-                    raise ValidationError(
-                        _("Configuration requires at least one value:") + f" {record.name}"
-                    )
-
-    @api.constrains("config_type", "target_model_id", "target_field_id")
-    def _check_target_exists(self):
-        """Validate that target model and field are set for UI-related configs."""
-        for record in self:
-            if record.config_type in ["field_visibility", "domain_rule"]:
-                if not record.target_model_id:
-                    raise ValidationError(
-                        _(
-                            "A 'Target Model' is required for UI or Domain configurations."
-                        )
-                    )
-                if (
-                    not record.target_field_id
-                    and record.config_type == "field_visibility"
-                ):
-                    raise ValidationError(
-                        _(
-                            "A 'Target Field' is required for Field Visibility configurations."
-                        )
-                    )
-
-    @api.constrains("config_key")
-    def _check_config_key_format(self):
-        """Validate that config_key follows proper naming convention."""
-    # regex compiled at module import (see top)
-
-        for record in self:
-            if not re.match(r"^[a-z][a-z0-9_]*[a-z0-9]$", record.config_key):
-                raise ValidationError(
-                    _(
-                        "Configuration key '%s' must start with a lowercase letter, contain only lowercase letters, numbers, and underscores, and end with a letter or number."
-                    )
-                    % record.config_key
-                )
-
-    # ============================================================================
-    # BUSINESS LOGIC
-    # ============================================================================
-    @api.model
-    def get_config_parameter(self, key, default=None):
-        """
-        High-performance method to get a configuration value.
-        This should be the primary way code interacts with this model.
-        It uses caching for performance.
-        """
-        try:
-            # Caching is automatically handled by Odoo for search method
-            config = self.search(
-                [("config_key", "=", key), ("active", "=", True)], limit=1
-            )
-
-            if not config:
-                return default
-
-            # Return the appropriate value based on type
-            # Boolean handling: must distinguish between unset (None) and explicit False.
-            # The previous implementation treated False as absence and returned the default,
-            # causing feature toggles set to False to "fail-open". We now explicitly check
-            # for boolean type so stored False is honored.
-            if isinstance(config.value_boolean, bool):
-                return config.value_boolean
-            if config.value_number != 0.0:  # Check if not default 0.0
-                return config.value_number
-            if config.value_text:
-                return config.value_text
-            if config.value_selection:
-                return config.value_selection
-
-            return default
-
-        except Exception:
-            # Return default value if any error occurs
-            return default
-
-    def get_value(self):
-        """Get the configuration value for this record."""
-        self.ensure_one()
-        return self.get_config_parameter(self.config_key)
-
-    def set_value(self, value):
-        """Set the configuration value for this record."""
-        self.ensure_one()
-
-        # Determine the appropriate field based on value type
-        vals = {
-            "value_text": False,
-            "value_boolean": False,
-            "value_number": 0.0,
-            "value_selection": False,
-        }
-
-        if isinstance(value, bool):
-            vals["value_boolean"] = value
-        elif isinstance(value, (int, float)):
-            vals["value_number"] = float(value)
-        elif isinstance(value, str):
-            if self.config_type == "parameter":
-                vals["value_text"] = value
-            else:
-                vals["value_selection"] = value
-        else:
-            vals["value_text"] = str(value) if value is not None else False
-
-        self.write(vals)
-
-    def action_apply_configuration(self):
-        """
-        Applies the configuration. For most types, this is done by clearing caches.
-        For more complex scenarios, this method can be extended.
-        """
-        self.ensure_one()
-
-        try:
-            # Clear various caches to ensure configuration takes effect
-            self.env.registry.clear_caches()
-            self.clear_caches()
-
-            # For field visibility configurations, we might need to clear view caches
-            if self.config_type == "field_visibility":
-                self.env["ir.ui.view"].clear_caches()
-
-            # For feature toggles, clear menu caches
-            elif self.config_type == "feature_toggle":
-                self.env["ir.ui.menu"].clear_caches()
-
-            # Log the application
-            self.message_post(
-                body=_("Configuration applied successfully:") + f" {self.name}"
-            )
-
-            return {
-                "type": "ir.actions.client",
-                "tag": "display_notification",
-                "params": {
-                    "title": _("Configuration Applied"),
-                    "message": _("Configuration applied successfully.")
-                    % self.name,
-                    "type": "success",
-                    "sticky": False,
-                },
-            }
-
-        except Exception as exc:
-            error_msg = _("Failed to apply configuration:") + f" {self.name}: {str(exc)}"
-            self.message_post(body=error_msg)
-            raise UserError(error_msg) from exc
-
-    def action_toggle_active(self):
-        """Toggle the active state of the configuration."""
-        self.ensure_one()
-        self.active = not self.active
-        status = _("activated") if self.active else _("deactivated")
-        self.message_post(body=_("Configuration status:") + f" {status} - {self.name}")
-
-    def _default_configuration(self):
-        """Reset configuration values to default for this record."""
-        self.ensure_one()
-
-        vals = {
-            "value_text": False,
-            "value_boolean": False,
-            "value_number": 0.0,
-            "value_selection": False,
-        }
-
-        # Set default based on config type
-        if self.config_type == "feature_toggle":
-            vals["value_boolean"] = False
-        elif self.config_type == "field_visibility":
-            vals["value_boolean"] = True  # Default to visible
-
-    self.write(vals)
-    self.message_post(body=_("Configuration reset to default values:") + f" {self.name}")
-
-    # ============================================================================
-    # UTILITY METHODS
-    # ============================================================================
-    @api.model
-    def get_feature_toggle(self, key, default=False):
-        """Convenience method specifically for feature toggles."""
-        return self.get_config_parameter(key, default)
-
-    @api.model
-    def is_feature_enabled(self, key):
-        """Check if a feature is enabled."""
-        return bool(self.get_config_parameter(key, False))
-
-    @api.model
-    def get_field_visibility(self, model_name, field_name):
-        """Get field visibility configuration for a specific model.field."""
-        config = self.search(
-            [
-                ("config_type", "=", "field_visibility"),
-                ("target_model", "=", model_name),
-                ("target_field", "=", field_name),
-                ("active", "=", True),
-            ],
-            limit=1,
-        )
-
-        if config:
-            return {
-                "visible": config.visible,
-                "required": config.required,
-                "readonly": config.readonly,
-            }
-
-        # Default values if no configuration found
-        return {
-            "visible": True,
-            "required": False,
-            "readonly": False,
-        }
-
-    def action_view_related_configurations(self):
-        """View configurations in the same category."""
-        self.ensure_one()
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Related Configurations"),
-            "res_model": "rm.module.configurator",
-            "view_mode": "tree,form",
-            "domain": [("category", "=", self.category), ("id", "!=", self.id)],
-            "context": {
-                "default_category": self.category,
-                "search_default_group_by_config_type": 1,
-            },
-        }
-
-    @api.model
-    def _default_seed_configs(self):
-        """
-        Action helper to ensure all default configuration records exist.
-
-        Returns:
-            list of created configuration records (empty if all already present)
-        """
-        default_configs = [
-            # ============================================================================
-            # PORTAL CONFIGURATIONS
-            # ============================================================================
-            {
-                "name": "Enable Customer Portal",
-                "config_key": "portal_enabled",
-                "category": "portal",
-                "config_type": "feature_toggle",
-                "value_boolean": True,
-                "description": "Enable or disable the customer portal functionality.",
-            },
-            {
-                "name": "Enable Portal Feedback System",
-                "config_key": "portal_feedback_enabled",
-                "category": "portal",
-                "config_type": "feature_toggle",
-                "value_boolean": True,
-                "description": "Enable customer feedback collection in the portal.",
-            },
-            {
-                "name": "Enable Portal Request Management",
-                "config_key": "portal_request_enabled",
-                "category": "portal",
-                "config_type": "feature_toggle",
-                "value_boolean": True,
-                "description": "Enable portal request submission and management.",
-            },
-            # ============================================================================
-            # COMPLIANCE & NAID CONFIGURATIONS
-            # ============================================================================
-            {
-                "name": "Enable NAID Compliance",
-                "config_key": "naid_compliance_enabled",
-                "category": "compliance",
-                "config_type": "feature_toggle",
-                "value_boolean": True,
-                "description": "Enable NAID AAA compliance features and audit logging.",
-            },
-            {
-                "name": "Enable NAID Audit Logging",
-                "config_key": "naid_audit_enabled",
-                "category": "compliance",
-                "config_type": "feature_toggle",
-                "value_boolean": True,
-                "description": "Enable comprehensive audit logging for NAID compliance.",
-            },
-            {
-                "name": "Enable Chain of Custody",
-                "config_key": "chain_of_custody_enabled",
-                "category": "compliance",
-                "config_type": "feature_toggle",
-                "value_boolean": True,
-                "description": "Enable chain of custody tracking for documents.",
-            },
-            {
-                "name": "Default Retention Period",
-                "config_key": "default_retention_years",
-                "category": "compliance",
-                "config_type": "parameter",
-                "value_number": 7.0,
-                "description": "Default retention period in years for documents.",
-            },
-            # ============================================================================
-            # FSM CONFIGURATIONS
-            # ============================================================================
-            {
-                "name": "Enable FSM Integration",
-                "config_key": "fsm_integration_enabled",
-                "category": "fsm",
-                "config_type": "feature_toggle",
-                "value_boolean": True,
-                "description": "Enable Field Service Management integration.",
-            },
-            {
+                # ------------------------------------------------------------------
+                # UNLINK
+                # ------------------------------------------------------------------
+                def unlink(self):
+                    for rec in self:
+                        key = rec.config_key
+                        name = rec.name
+                        super(RmModuleConfigurator, rec).unlink()
+                        self.env['mail.message'].create({
+                            'subject': _("Configuration Deleted"),
+                            'body': _("Configuration deleted:") + f" {name} ({key})",
+                            'model': self._name,
+                            'message_type': 'comment',
+                            'author_id': self.env.user.partner_id.id,
+                        })
+                    return True
                 "name": "Enable FSM Notifications",
                 "config_key": "fsm_notifications_enabled",
                 "category": "fsm",
