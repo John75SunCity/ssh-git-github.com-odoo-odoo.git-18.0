@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields
+from odoo import models, fields, api, _
 
 class NaidCustody(models.Model):
     """
@@ -12,8 +12,16 @@ class NaidCustody(models.Model):
     _description = 'NAID Chain of Custody Log'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'event_date desc, id desc'
-    _rec_name = 'description'
+    # Use explicit name field for view compatibility (form title uses <field name="name"/>)
+    _rec_name = 'name'
 
+    name = fields.Char(
+        string="Reference",
+        required=False,
+        index=True,
+        copy=False,
+        help="Short reference for this custody event (auto-generated if left blank)."
+    )
     document_id = fields.Many2one(
         'records.document',
         string="Document",
@@ -63,9 +71,25 @@ class NaidCustody(models.Model):
         ('other', 'Other')
     ], string="Event Type", default='creation', required=True)
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            # Auto-generate reference if not provided
+            if not vals.get('name'):
+                # Build a lightweight reference using event_type and datetime once record exists
+                # Placeholder; will refine after create in write-back if needed
+                vals['name'] = _('Custody Event')
+        records = super().create(vals_list)
+        for rec in records:
+            # Post-creation enhancement including date and event type for uniqueness
+            if rec.name == _('Custody Event'):
+                rec.name = f"{rec.event_type.upper()}-{rec.id}"
+        return records
+
     def name_get(self):
         result = []
         for record in self:
-            name = f"[{record.event_date}] {record.event_type} - {record.user_id.name}"
+            base = record.name or record.description or _('Custody Event')
+            name = f"{base} - {record.event_type}" if record.event_type else base
             result.append((record.id, name))
         return result
