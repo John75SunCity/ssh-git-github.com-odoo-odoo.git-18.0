@@ -40,6 +40,12 @@ class NAIDComplianceChecklistItem(models.Model):
         help='Link to stock location for warehouse security and inventory checks'
     )
 
+    # Visibility / configurator control toggle referenced in views (invisible="not configurator_toggle")
+    configurator_toggle = fields.Boolean(
+        string='Configurator Mode',
+        help='Internal toggle used by views to reveal advanced linkage fields (equipment, task, visitor, location).'
+    )
+
     # ============================================================================
     # METHODS
     # ============================================================================

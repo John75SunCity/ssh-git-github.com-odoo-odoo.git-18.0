@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""View Field *_id Audit (Enhanced)
+"""View Field *_id + Modifier Field Audit (Enhanced)
 
 Scans the records_management module:
  1. Builds a mapping of model -> declared field names from Python model files (direct + inherited via simple _inherit chain merge).
  2. Parses XML view files to extract every <field name="..."> reference.
  3. Flags candidate *_id (or containing `_id`) references that do NOT exist in any referenced model for that view file.
+ 4. Scans common view modifier attributes (invisible, attrs, modifiers JSON blobs) to extract bare field identifiers
+     and reports any missing in the involved model(s) (covers cases like ``invisible="not configurator_toggle"``).
  4. Applies a WHITELIST and PATTERN_WHITELIST for pervasive framework / chatter / common relation fields to reduce noise.
  5. Outputs:
-            A. Full suspicious list (post-whitelist) with location & context.
-            B. Frequency summary.
-            C. High-confidence subset (low-frequency & not in soft-ignore patterns).
+            A. Suspicious *_id reference list (post-whitelist) with location & context.
+            B. Frequency summary (for *_id group).
+            C. High-confidence *_id subset (low-frequency & not in soft-ignore patterns).
+            D. Missing modifier fields (non-* _id) referenced in invisible/attrs/modifiers.
 
 Heuristics / Simplifications:
  - Inheritance: only single-string `_inherit = 'model.name'` merged (no list, no multiple inheritance resolution).
@@ -25,6 +28,7 @@ import re
 import ast
 from pathlib import Path
 from collections import defaultdict, Counter
+import json
 
 ROOT = Path(__file__).resolve().parent.parent
 MODULE = ROOT / 'records_management'
@@ -34,6 +38,19 @@ VIEWS_DIR = MODULE / 'views'
 FIELD_DEF_REGEX = re.compile(r"fields\.([A-Za-z0-9_]+)\(")
 FIELD_NAME_ARG_REGEX = re.compile(r"fields\.[A-Za-z0-9_]+\(.*?['\"]([A-Za-z0-9_]+)['\"][,)]")
 FIELD_TAG_REGEX = re.compile(r"<field[^>]*name=['\"]([A-Za-z0-9_.]+)['\"]")
+# Attribute capture (line scoped) for modifier expressions
+INVISIBLE_ATTR_REGEX = re.compile(r"invisible=\"([^\"]+)\"|")
+ATTRS_ATTR_REGEX = re.compile(r"attrs=\"([^\"]+)\"|")
+MODIFIERS_ATTR_REGEX = re.compile(r"modifiers=\"([^\"]+)\"|")
+
+# Field name token pattern inside expressions/domains (simple heuristic):
+# - bare identifiers with letters, numbers, underscores not starting with digit
+TOKEN_REGEX = re.compile(r"\b([a-zA-Z_][a-zA-Z0-9_]*)\b")
+
+# Keywords / operators to skip when extracting tokens from expressions
+KEYWORD_SKIP = {
+    'not', 'and', 'or', 'True', 'False', 'None', 'in', 'if', 'else'
+}
 MODEL_NAME_REGEX = re.compile(r"_name\s*=\s*['\"]([a-z0-9_.]+)['\"]")
 INHERIT_NAME_REGEX = re.compile(r"_inherit\s*=\s*['\"]([a-z0-9_.]+)['\"]")  # legacy single-string pattern (kept for reference)
 CLASS_REGEX = re.compile(r"class\s+([A-Za-z0-9_]+)\(")
@@ -182,7 +199,8 @@ def infer_model_from_view_path(xml_path: Path):
 
 
 def audit_views(model_field_map):
-    issues = []
+    issues = []  # *_id issues
+    modifier_issues = []  # non *_id issues from invisible/attrs/modifiers
     for xml_path in sorted(VIEWS_DIR.glob('*.xml')):
         text = xml_path.read_text(encoding='utf-8', errors='ignore')
         # Collect view-scoped models to map fields contextually
@@ -217,27 +235,81 @@ def audit_views(model_field_map):
                         'models': list(models_in_file) or ['<unknown>'],
                         'context': line.strip()[:200]
                     })
-    return issues
+
+            # Modifier attribute scanning (only if line contains potential attributes)
+            if 'invisible=' in line or 'attrs=' in line or 'modifiers=' in line:
+                expressions = []
+                # naive capture; if multiple attributes appear, findall returns each group with None for alternates
+                if 'invisible=' in line:
+                    for m in re.finditer(r'invisible="([^"]+)"', line):
+                        expressions.append(m.group(1))
+                if 'attrs=' in line:
+                    for m in re.finditer(r'attrs="([^"]+)"', line):
+                        expressions.append(m.group(1))
+                if 'modifiers=' in line:
+                    for m in re.finditer(r'modifiers="([^"]+)"', line):
+                        raw = m.group(1)
+                        # Attempt to unescape common XML entities
+                        raw_json = raw.replace('&quot;', '"')
+                        try:
+                            data = json.loads(raw_json)
+                            # Extract any field keys appearing in domain-like structures inside JSON
+                            expressions.append(str(data))
+                        except Exception:  # noqa: broad
+                            expressions.append(raw)
+                if expressions:
+                    # Extract tokens & validate
+                    for expr in expressions:
+                        for token in TOKEN_REGEX.findall(expr):
+                            if token in KEYWORD_SKIP:
+                                continue
+                            if token in WHITELIST:  # already known common field
+                                continue
+                            # Only consider if token looks like a field (heuristic: lowercase start or contains underscore)
+                            if not (token[0].islower() or '_' in token):
+                                continue
+                            # Skip already validated *_id issues path to avoid duplication
+                            if token.endswith('_id') and any(i['field'] == token and i['line'] == idx for i in issues):
+                                continue
+                            # Validate existence in ANY model; if absent in all, record
+                            valid_any = False
+                            for model_name in models_in_file:
+                                declared = model_field_map.get(model_name, set())
+                                if token in declared:
+                                    valid_any = True
+                                    break
+                            if not valid_any:
+                                modifier_issues.append({
+                                    'field': token,
+                                    'xml': xml_path.relative_to(ROOT),
+                                    'line': idx,
+                                    'models': list(models_in_file) or ['<unknown>'],
+                                    'context': expr[:200]
+                                })
+    return issues, modifier_issues
 
 
 def main():
     model_field_map = build_model_field_map()
-    issues = audit_views(model_field_map)
-    if not issues:
-        print('No suspicious *_id field references found in view XML files (post-whitelist).')
-        return
-    print('# Suspicious *_id fields in view XML (post-whitelist, missing in static model map)')
-    for issue in issues:
-        print(f"- Field: {issue['field']} | Models: {','.join(issue['models'])} | File: {issue['xml']} | Line: {issue['line']} | Context: {issue['context']}")
+    id_issues, modifier_issues = audit_views(model_field_map)
+    if not id_issues:
+        print('# Suspicious *_id fields in view XML: None (post-whitelist).')
+    else:
+        print('# Suspicious *_id fields in view XML (post-whitelist, missing in static model map)')
+        for issue in id_issues:
+            print(f"- Field: {issue['field']} | Models: {','.join(issue['models'])} | File: {issue['xml']} | Line: {issue['line']} | Context: {issue['context']}")
 
-    counter = Counter([i['field'] for i in issues])
-    print('\n# Frequency by field (descending)')
-    for field, count in counter.most_common():
-        print(f"{field}: {count}")
+    if id_issues:
+        counter = Counter([i['field'] for i in id_issues])
+        print('\n# Frequency by field (descending)')
+        for field, count in counter.most_common():
+            print(f"{field}: {count}")
+    else:
+        counter = Counter()
 
     # High-confidence subset: frequency <= 2, not soft ignored, not pattern white-listed again
     high_conf = []
-    for issue in issues:
+    for issue in id_issues:
         f = issue['field']
         if f in SOFT_IGNORE:
             continue
@@ -256,6 +328,20 @@ def main():
             print(f"* {issue['field']} | File: {issue['xml']} | Line: {issue['line']} | Models: {','.join(issue['models'])}")
     else:
         print('\n# High-Confidence Suspicious Fields: None identified with current heuristics.')
+
+    # Report modifier issues (non *_id)
+    if modifier_issues:
+        print('\n# Missing Fields Referenced in View Modifiers (invisible/attrs/modifiers)')
+        # De-duplicate by field+file+line for concise output
+        seen = set()
+        for mi in modifier_issues:
+            key = (mi['field'], mi['xml'], mi['line'])
+            if key in seen:
+                continue
+            seen.add(key)
+            print(f"- Field: {mi['field']} | Models: {','.join(mi['models'])} | File: {mi['xml']} | Line: {mi['line']} | Expr: {mi['context']}")
+    else:
+        print('\n# Missing Fields Referenced in View Modifiers: None detected.')
 
 if __name__ == '__main__':
     main()
