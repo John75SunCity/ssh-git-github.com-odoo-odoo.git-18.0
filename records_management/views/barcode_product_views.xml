@@ -199,7 +199,7 @@
 
                 <notebook>
 <!-- Converted states="product_category=='storage_box'" to invisible condition -->
-<page string="Storage Box Configuration" name="storage_config" invisible="product_category != 'storage_box'">
+<page string="Container Configuration" name="storage_config" invisible="product_category != 'container_box'">
                         <group>
                             <group string="📦 Storage Specifications">
                                 <field name="climate_controlled" widget="boolean_toggle"/>
@@ -217,7 +217,8 @@
                         </group>
                         <separator string="📋 Storage Box Assignment"/>
                         <group>
-                            <field name="storage_box_id" string="Assigned Storage Box"/>
+<field name="container_id" string="Assigned Container"/>
+
                         </group>
                     </page>
 <!-- Converted states="product_category=='shred_bin'" to invisible condition -->
