@@ -24,6 +24,7 @@ class RecordsStorageBox(models.Model):
     document_count = fields.Integer(string='Document Count', compute='_compute_document_count')
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company, required=True, readonly=True)
     user_id = fields.Many2one('res.users', string="Responsible", default=lambda self: self.env.user, tracking=True)
+    product_id = fields.Many2one('barcode.product', string='Barcode Product', ondelete='set null', index=True, help='Optional link to a barcode product template for this box.')
 
     @api.depends('document_ids')
     def _compute_document_count(self):

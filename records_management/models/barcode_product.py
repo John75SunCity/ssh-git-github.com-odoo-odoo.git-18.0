@@ -279,8 +279,8 @@ class BarcodeProduct(models.Model):
     # ============================================================================
     # RELATIONSHIPS (to be reflected back in views)
     # ============================================================================
-    storage_box_ids = fields.One2many('records.storage.box', 'location_id', string='Storage Boxes', help='Storage boxes associated via location context.')
-    shred_bin_ids = fields.One2many('shred.bin', 'partner_id', string='Shred Bins', help='Shred bins indirectly associated through customer context.')
+    storage_box_ids = fields.One2many('records.storage.box', 'product_id', string='Storage Boxes', help='Storage boxes linked directly to this barcode product.')
+    shred_bin_ids = fields.One2many('shred.bin', 'product_id', string='Shred Bins', help='Shred bins linked directly to this barcode product.')
     pricing_tier_ids = fields.One2many('barcode.pricing.tier', 'product_id', string='Pricing Tiers')
     seasonal_pricing_ids = fields.One2many('barcode.seasonal.pricing', 'product_id', string='Seasonal Pricing Rules')
     generation_history_ids = fields.One2many('barcode.generation.history', 'product_id', string='Generation History')
@@ -664,7 +664,7 @@ class BarcodeProduct(models.Model):
         return {
             "type": "ir.actions.act_window",
             "name": "Shred Bins",
-            "res_model": "shredding.bin",
+            "res_model": "shred.bin",
             "view_mode": "tree,form",
             "domain": [("product_id", "=", self.id)],
         }
