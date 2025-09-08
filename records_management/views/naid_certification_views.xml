@@ -184,7 +184,9 @@
     </record>
 
     <!-- Menu Items -->
-    <menuitem id="naid_certification_menu" name="NAID Certification" parent="records_management.menu_records_root" sequence="50"/>
+<!-- Updated parent from missing records_management.menu_records_root to existing menu_records_management_root -->
+<menuitem id="naid_certification_menu" name="NAID Certification" parent="menu_records_management_root" sequence="50"/>
+
     <menuitem id="naid_operator_certification_menu" name="Operator Certifications" parent="naid_certification_menu"
               action="naid_operator_certification_action" sequence="10"/>
     <menuitem id="naid_training_schedule_menu" name="Training Schedule" parent="naid_certification_menu"
