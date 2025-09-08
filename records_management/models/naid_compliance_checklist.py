@@ -13,6 +13,9 @@ class NAIDComplianceChecklist(models.Model):
     name = fields.Char(string='Checklist Name', required=True, tracking=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
     active = fields.Boolean(string='Active', default=True)
+    # Category field referenced in views (tree/form/search + group by). Added as simple Char with index
+    # to allow grouping and future extension to a dedicated category model if needed.
+    category = fields.Char(string='Category', index=True, tracking=True)
 
     # Link to compliance policy
     policy_id = fields.Many2one('naid.compliance.policy', string='Compliance Policy', ondelete='cascade')
