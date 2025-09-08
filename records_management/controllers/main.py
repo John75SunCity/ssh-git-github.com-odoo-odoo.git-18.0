@@ -75,6 +75,7 @@ class RecordsManagementController(http.Controller):
         except AccessError:
             return request.redirect('/web/login?redirect=/records/dashboard')
         except Exception as e:
+            # Keep multi-arg translation (linter preference here)
             return request.render(
                 "records_management.dashboard_error", {"error_message": _("Dashboard loading failed: %s", str(e))}
             )

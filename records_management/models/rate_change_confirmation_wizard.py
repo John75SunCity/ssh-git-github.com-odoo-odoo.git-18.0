@@ -160,7 +160,6 @@ Records Management Team""")
         if self.approved_by_id:
             message += _('- Approved by: %s on %s\n', self.approved_by_id.name, self.approval_date)
 
-        # Create audit log entry
         self.env['naid.audit.log'].create({
             'name': 'Rate Change Implementation',
             'description': message,
