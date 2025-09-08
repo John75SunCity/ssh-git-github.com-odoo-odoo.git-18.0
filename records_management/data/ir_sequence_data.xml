@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<odoo noupdate="1">
+<odoo>
     <data>
         <!-- Sequence for Records Container -->
         <record id="seq_records_container" model="ir.sequence">
@@ -173,16 +173,7 @@
         <record id="seq_chain_of_custody" model="ir.sequence">
             <field name="name">Chain of Custody Sequence</field>
             <field name="code">chain.of.custody</field>
-            <field name="prefix">COC</field>
-            <field name="padding">4</field>
-            <field name="company_id" eval="False"/>
-        </record>
-
-        <!-- Sequence for Destruction Certificate -->
-        <record id="seq_destruction_certificate" model="ir.sequence">
-            <field name="name">Destruction Certificate Sequence</field>
-            <field name="code">destruction.certificate</field>
-            <field name="prefix">DEST</field>
+            <field name="prefix">CHAIN</field>
             <field name="padding">4</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -191,7 +182,7 @@
         <record id="seq_paper_model_bale" model="ir.sequence">
             <field name="name">Paper Model Bale Sequence</field>
             <field name="code">paper.model_bale</field>
-            <field name="prefix">PMB</field>
+            <field name="prefix">BALE #</field>
             <field name="padding">5</field>
             <field name="number_next">1</field>
             <field name="company_id" eval="False"/>

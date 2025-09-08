@@ -3,11 +3,11 @@
     <!-- NAID Audit Requirements Views -->
 
     <!-- Tree/List View -->
-    <record id="naid_audit_requirement_view_tree" model="ir.ui.view">
-        <field name="name">naid.audit.requirement.view.tree</field>
+<record id="naid_audit_requirement_view_list" model="ir.ui.view">
+    <field name="name">naid.audit.requirement.view.list</field>
         <field name="model">naid.audit.requirement</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="status == 'overdue'" decoration-warning="status == 'scheduled'" decoration-success="status == 'completed'">
+<list decoration-danger="status == 'overdue'" decoration-warning="status == 'scheduled'" decoration-success="status == 'completed'">
                 <field name="name"/>
                 <field name="audit_type"/>
                 <field name="checklist_category"/>
@@ -18,7 +18,7 @@
                 <field name="compliance_score"/>
                 <field name="critical_item"/>
                 <field name="active"/>
-            </tree>
+</list>
         </field>
     </record>
 
@@ -228,7 +228,7 @@
     <record id="naid_audit_requirement_action" model="ir.actions.act_window">
         <field name="name">NAID Audit Requirements</field>
         <field name="res_model">naid.audit.requirement</field>
-        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+<field name="view_mode">list,kanban,form,pivot,graph</field>
         <field name="search_view_id" ref="naid_audit_requirement_view_search"/>
         <field name="help">Manage NAID AAA audit requirements and compliance checklists</field>
     </record>

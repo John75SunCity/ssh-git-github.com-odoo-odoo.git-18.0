@@ -2,11 +2,11 @@
 <odoo>
     <!-- Window actions + basic views to back previously commented reporting menus -->
     <!-- Storage Reports: Browse Containers -->
-    <record id="records_container_view_tree" model="ir.ui.view">
-        <field name="name">records.container.view.tree.storage</field>
+<record id="records_container_view_list" model="ir.ui.view">
+    <field name="name">records.container.view.list.storage</field>
         <field name="model">records.container</field>
         <field name="arch" type="xml">
-            <tree string="Containers" create="false" edit="false" delete="false">
+<list string="Containers" create="false" edit="false" delete="false">
                 <field name="name"/>
                 <field name="state"/>
                 <field name="location_id"/>
@@ -14,7 +14,7 @@
                 <field name="document_count"/>
                 <field name="used_capacity" widget="progressbar"/>
                 <field name="customer_id"/>
-            </tree>
+</list>
         </field>
     </record>
 
@@ -39,25 +39,26 @@
     <record id="action_storage_reports" model="ir.actions.act_window">
         <field name="name">Storage Reports</field>
         <field name="res_model">records.container</field>
-        <field name="view_mode">tree</field>
-    <field name="view_id" ref="records_management.records_container_view_tree"/>
+<field name="view_mode">list</field>
+<field name="view_id" ref="records_management.records_container_view_list"/>
+
     <field name="search_view_id" ref="records_management.records_container_view_search"/>
         <field name="context">{"search_default_state_active": 1}</field>
         <field name="domain">[]</field>
     </record>
 
     <!-- Compliance Reports: Browse Policies (source for report generation) -->
-    <record id="naid_compliance_policy_view_tree" model="ir.ui.view">
-        <field name="name">naid.compliance.policy.view.tree.report</field>
+<record id="naid_compliance_policy_view_list" model="ir.ui.view">
+    <field name="name">naid.compliance.policy.view.list.report</field>
         <field name="model">naid.compliance.policy</field>
         <field name="arch" type="xml">
-            <tree string="Compliance Policies" create="false" edit="false" delete="false">
+<list string="Compliance Policies" create="false" edit="false" delete="false">
                 <field name="name"/>
                 <field name="state"/>
                 <field name="responsible_id"/>
                 <field name="last_review_date"/>
                 <field name="next_review_date"/>
-            </tree>
+</list>
         </field>
     </record>
 
@@ -80,26 +81,27 @@
     <record id="action_compliance_reports" model="ir.actions.act_window">
         <field name="name">Compliance Reports</field>
         <field name="res_model">naid.compliance.policy</field>
-        <field name="view_mode">tree</field>
-    <field name="view_id" ref="records_management.naid_compliance_policy_view_tree"/>
+<field name="view_mode">list</field>
+<field name="view_id" ref="records_management.naid_compliance_policy_view_list"/>
+
     <field name="search_view_id" ref="records_management.naid_compliance_policy_view_search"/>
         <field name="context">{"search_default_state_active": 1}</field>
         <field name="domain">[]</field>
     </record>
 
     <!-- Customer Inventory Browser (partners with inventory) -->
-    <record id="res_partner_view_tree_customer_inventory" model="ir.ui.view">
-        <field name="name">res.partner.view.tree.customer.inventory</field>
+<record id="res_partner_view_list_customer_inventory" model="ir.ui.view">
+    <field name="name">res.partner.view.list.customer.inventory</field>
         <field name="model">res.partner</field>
         <field name="arch" type="xml">
-            <tree string="Customer Inventory" create="false" edit="false" delete="false">
+<list string="Customer Inventory" create="false" edit="false" delete="false">
                 <field name="name"/>
                 <field name="company_type"/>
                 <field name="parent_id"/>
                 <field name="user_id"/>
                 <field name="phone"/>
                 <field name="email"/>
-            </tree>
+</list>
         </field>
     </record>
 
@@ -122,8 +124,9 @@
     <record id="action_customer_inventory_browser" model="ir.actions.act_window">
         <field name="name">Customer Inventory</field>
         <field name="res_model">res.partner</field>
-        <field name="view_mode">tree</field>
-    <field name="view_id" ref="records_management.res_partner_view_tree_customer_inventory"/>
+<field name="view_mode">list</field>
+<field name="view_id" ref="records_management.res_partner_view_list_customer_inventory"/>
+
     <field name="search_view_id" ref="records_management.res_partner_view_search_customer_inventory"/>
         <field name="domain">['|', ('is_company','=',True), ('company_type','=','company')]</field>
     </record>

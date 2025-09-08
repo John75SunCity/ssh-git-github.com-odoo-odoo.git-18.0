@@ -121,11 +121,11 @@
 </record>
 
 <!-- Volume Calculator Tree/List View -->
-<record id="custom_box_volume_calculator_view_tree" model="ir.ui.view">
-    <field name="name">custom.box.volume.calculator.view.tree</field>
+<record id="custom_box_volume_calculator_view_list" model="ir.ui.view">
+    <field name="name">custom.box.volume.calculator.view.list</field>
     <field name="model">custom.box.volume.calculator</field>
     <field name="arch" type="xml">
-        <tree string="Volume Calculations">
+<list string="Volume Calculations">
             <field name="name"/>
             <field name="user_id"/>
             <field name="calculation_date"/>
@@ -135,7 +135,7 @@
             <field name="recommended_container_type"/>
             <field name="custom_box_price"/>
             <field name="fsm_task_id"/>
-        </tree>
+</list>
     </field>
 </record>
 
@@ -173,8 +173,9 @@
 <record id="custom_box_volume_calculator_action" model="ir.actions.act_window">
     <field name="name">Box Volume Calculator</field>
     <field name="res_model">custom.box.volume.calculator</field>
-    <field name="view_mode">tree,form</field>
-    <field name="view_id" ref="custom_box_volume_calculator_view_tree"/>
+<field name="view_mode">list,form</field>
+<field name="view_id" ref="custom_box_volume_calculator_view_list"/>
+
     <field name="search_view_id" ref="custom_box_volume_calculator_view_search"/>
     <field name="context">{'default_calculation_purpose': 'fsm_quote'}</field>
     <field name="help">Calculate custom box volumes and compare with standard containers</field>
