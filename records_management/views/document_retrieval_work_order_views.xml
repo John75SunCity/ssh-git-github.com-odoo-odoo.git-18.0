@@ -29,12 +29,19 @@
         <field name="arch" type="xml">
             <form string="Document Retrieval Work Order">
                 <header>
-                    <button name="action_confirm" type="object" string="Confirm" class="oe_highlight" states="draft" confirm="This will confirm the work order with estimated cost $%(total_cost).2f. Continue?"/>
-                    <button name="action_assign_technician" type="object" string="Assign Technician" states="confirmed" class="oe_highlight"/>
-                    <button name="action_start_retrieval" type="object" string="Start Retrieval" states="assigned" class="oe_highlight"/>
-                    <button name="action_ready_for_delivery" type="object" string="Ready for Delivery" states="in_progress" class="oe_highlight"/>
-                    <button name="action_deliver" type="object" string="Deliver" states="ready_delivery" class="oe_highlight"/>
-                    <button name="action_complete" type="object" string="Complete" states="delivered" class="oe_highlight"/>
+<!-- Converted states="draft" to invisible condition -->
+<button name="action_confirm" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'" confirm="This will confirm the work order with estimated cost $%(total_cost).2f. Continue?"/>
+<!-- Converted states="confirmed" to invisible condition -->
+<button name="action_assign_technician" type="object" string="Assign Technician" class="oe_highlight" invisible="state != 'confirmed'"/>
+<!-- Converted states="assigned" to invisible condition -->
+<button name="action_start_retrieval" type="object" string="Start Retrieval" class="oe_highlight" invisible="state != 'assigned'"/>
+<!-- Converted states="in_progress" to invisible condition -->
+<button name="action_ready_for_delivery" type="object" string="Ready for Delivery" class="oe_highlight" invisible="state != 'in_progress'"/>
+<!-- Converted states="ready_delivery" to invisible condition -->
+<button name="action_deliver" type="object" string="Deliver" class="oe_highlight" invisible="state != 'ready_delivery'"/>
+<!-- Converted states="delivered" to invisible condition -->
+<button name="action_complete" type="object" string="Complete" class="oe_highlight" invisible="state != 'delivered'"/>
+
                     <button name="action_view_pricing_breakdown" type="object" string="View Pricing" class="btn-secondary"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,assigned,in_progress,ready_delivery,delivered,completed"/>
                 </header>
@@ -72,7 +79,8 @@
 
                     <group>
                         <group name="assignment" string="Assignment">
-<field name="technician_id" required="state in ['assigned', 'in_progress']"/>
+<field name="technician_id" attrs="{'required':[('state','in',['assigned','in_progress'])]}"/>
+
 
                             <field name="driver_id"/>
                         </group>
@@ -104,9 +112,11 @@
                             <field name="retrieval_item_ids">
                                 <list editable="bottom">
                                     <field name="item_type"/>
-<field name="box_id" required="item_type == 'box'" invisible="item_type != 'box'"/>
+<field name="box_id" attrs="{'invisible':[('item_type','!=','box')],'required':[('item_type','=','box')]}"/>
 
-<field name="document_id" required="item_type == 'document'" invisible="item_type != 'document'"/>
+
+<field name="document_id" attrs="{'invisible':[('item_type','!=','document')],'required':[('item_type','=','document')]}"/>
+
 <!-- Fixed: Removed extra standalone "/>" that was causing syntax error -->
                                     <field name="barcode"/>
                                     <field name="description"/>

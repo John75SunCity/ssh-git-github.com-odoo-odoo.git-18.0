@@ -27,10 +27,11 @@
                         </h1>
                     </div>
 <group>
-    <field name="equipment_id" attrs="{'invisible': [('configurator_toggle', '=', False)]}" />
-    <field name="task_id" attrs="{'invisible': [('configurator_toggle', '=', False)]}" />
-    <field name="visitor_id" attrs="{'invisible': [('configurator_toggle', '=', False)]}" />
-    <field name="location_id" attrs="{'invisible': [('configurator_toggle', '=', False)]}" />
+<field name="equipment_id" invisible="not configurator_toggle" />
+<field name="task_id" invisible="not configurator_toggle" />
+<field name="visitor_id" invisible="not configurator_toggle" />
+<field name="location_id" invisible="not configurator_toggle" />
+
 </group>
                 </sheet>
             </form>

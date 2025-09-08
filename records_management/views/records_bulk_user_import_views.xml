@@ -22,7 +22,9 @@
         <field name="arch" type="xml">
                 <form string="Bulk User Import">
                     <header>
-                        <button name="action_import_users" string="Import Users" type="object" states="draft" class="btn-primary"/>
+<!-- Converted legacy states to invisible expression -->
+<button name="action_import_users" string="Import Users" type="object" class="btn-primary" invisible="state != 'draft'"/>
+
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>

@@ -16,7 +16,8 @@
 <field name="key_issuance_allowed"/>
 </group>
 <group name="key_restriction_details" invisible="key_issuance_allowed == True">
-<field name="key_restriction_reason" required="key_issuance_allowed == False"/>
+<field name="key_restriction_reason" attrs="{'required':[('key_issuance_allowed','=',False)]}"/>
+
 <field name="key_restriction_date"/>
 
 <field name="key_restriction_approved_by"/>
@@ -119,7 +120,8 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
                 </group>
                 <group name="restriction_details" invisible="action != 'restrict'">
                     <group>
-                        <field name="restriction_reason" required="action == 'restrict'"/>
+<field name="restriction_reason" attrs="{'required':[('action','=', 'restrict')]}"/>
+
 
 <field name="effective_date"/>
 </group>

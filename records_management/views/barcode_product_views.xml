@@ -112,8 +112,11 @@
         <field name="arch" type="xml">
         <form string="Barcode Product Configuration">
             <header>
-                <button name="action_activate" string="Activate" type="object" class="btn-primary" states="active=False"/>
-                <button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" states="active=True"/>
+<!-- Converted states="active=False" to invisible condition (show only when inactive) -->
+<button name="action_activate" string="Activate" type="object" class="btn-primary" invisible="active != False"/>
+<!-- Converted states="active=True" to invisible condition (show only when active) -->
+<button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" invisible="active != True"/>
+
                 <button name="action_generate_barcodes" string="Generate Barcodes" type="object" class="btn-success"/>
                 <button name="action_update_pricing" string="Update Pricing" type="object" class="btn-info"/>
                 <field name="active" widget="statusbar" statusbar_visible="False,True" options="{'clickable': '1'}"/>
@@ -195,7 +198,8 @@
                 </group>
 
                 <notebook>
-                    <page string="Storage Box Configuration" name="storage_config" states="product_category=='storage_box'">
+<!-- Converted states="product_category=='storage_box'" to invisible condition -->
+<page string="Storage Box Configuration" name="storage_config" invisible="product_category != 'storage_box'">
                         <group>
                             <group string="📦 Storage Specifications">
                                 <field name="climate_controlled" widget="boolean_toggle"/>
@@ -216,7 +220,8 @@
                             <field name="storage_box_id" string="Assigned Storage Box"/>
                         </group>
                     </page>
-                    <page string="Shred Bin Configuration" name="shred_config" states="product_category=='shred_bin'">
+<!-- Converted states="product_category=='shred_bin'" to invisible condition -->
+<page string="Shred Bin Configuration" name="shred_config" invisible="product_category != 'shred_bin'">
                         <group>
                             <group string="🗂️ Shredding Specifications">
                                 <field name="shred_security_level"/>

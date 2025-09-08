@@ -31,14 +31,16 @@
 
 <!-- Contact selection for existing operations -->
 <group string="👤 Contact Selection" invisible="action_type not in ['update_existing', 'create_unlock_service'] or not customer_company_id">
-    <field name="contact_id" options="{'no_create_edit': True}" required="action_type in ['update_existing', 'create_unlock_service']" placeholder="Search for contact..."/>
+<field name="contact_id" options="{'no_create_edit': True}" attrs="{'required':[('action_type','in',['update_existing','create_unlock_service'])]}" placeholder="Search for contact..."/>
+
 
                     </group>
 
 <!-- New contact creation -->
 <group string="➕ Create New Contact" invisible="action_type != 'issue_new' or not customer_company_id">
                         <field name="create_new_contact"/>
-<field name="contact_name" required="create_new_contact == True" invisible="create_new_contact == False" placeholder="Enter contact name..."/>
+<field name="contact_name" attrs="{'invisible':[('create_new_contact','=',False)],'required':[('create_new_contact','=',True)]}" placeholder="Enter contact name..."/>
+
 <field name="contact_email" invisible="create_new_contact == False" placeholder="email@company.com"/>
 <field name="contact_phone" invisible="create_new_contact == False" placeholder="(555) 123-4567"/>
 <field name="contact_mobile" invisible="create_new_contact == False" placeholder="(555) 987-6543"/>
@@ -56,10 +58,12 @@
 
 <!-- Unlock service details -->
 <group string="🔓 Unlock Service Details" invisible="not show_unlock_service">
-    <field name="unlock_reason" required="action_type == 'create_unlock_service'"/>
+<field name="unlock_reason" attrs="{'required':[('action_type','=', 'create_unlock_service')]}"/>
+
 
                         <field name="unlock_reason_description" placeholder="Describe why the unlock was needed..."/>
-<field name="unlock_bin_location" required="action_type == 'create_unlock_service'" placeholder="Specific bin location that was unlocked"/>
+<field name="unlock_bin_location" attrs="{'required':[('action_type','=', 'create_unlock_service')]}" placeholder="Specific bin location that was unlocked"/>
+
 
                         <field name="items_retrieved" placeholder="Describe any items retrieved from the bin..."/>
                         <field name="unlock_charge"/>

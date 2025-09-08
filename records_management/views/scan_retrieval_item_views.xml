@@ -105,9 +105,11 @@
         <field name="arch" type="xml">
             <form string="Scan Retrieval Item">
 <header>
-    <button name="action_start_processing" string="Start Processing" type="object" class="btn-primary" states="draft"/>
-    <button name="action_complete" string="Complete" type="object" class="btn-success" states="in_progress"/>
-    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary" states="draft,in_progress"/>
+<!-- Converted legacy states to invisible expressions -->
+<button name="action_start_processing" string="Start Processing" type="object" class="btn-primary" invisible="state != 'draft'"/>
+<button name="action_complete" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'"/>
+<button name="action_cancel" string="Cancel" type="object" class="btn-secondary" invisible="state not in ['draft','in_progress']"/>
+
     <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed"/>
 </header>
                 <sheet>

@@ -29,7 +29,8 @@
 </group>
                 </sheet>
 <footer>
-    <button name="action_select_field" type="object" class="btn-primary" string="Use This Field" attrs="{'invisible': ['|', ('model_id','=',False), ('field_id','=',False)]}"/>
+<button name="action_select_field" type="object" class="btn-primary" string="Use This Field" invisible="not model_id or not field_id"/>
+
     <button special="cancel" string="Cancel"/>
 </footer>
             </form>

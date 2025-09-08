@@ -24,12 +24,10 @@
         <field name="arch" type="xml">
             <form string="NAID Operator Certification">
                 <header>
-                    <button name="action_verify_training" string="Verify Training" type="object" class="btn-primary"
-                            attrs="{'invisible': [('training_verified', '=', True)]}"/>
-                    <button name="action_issue_certification" string="Issue Certification" type="object" class="btn-success"
-                            attrs="{'invisible': [('training_verified', '=', False)]}"/>
-                    <button name="action_schedule_refresher" string="Schedule Refresher" type="object" class="btn-warning"
-                            attrs="{'invisible': [('refresher_training_required', '=', False)]}"/>
+<button name="action_verify_training" string="Verify Training" type="object" class="btn-primary" invisible="training_verified"/>
+<button name="action_issue_certification" string="Issue Certification" type="object" class="btn-success" invisible="not training_verified"/>
+<button name="action_schedule_refresher" string="Schedule Refresher" type="object" class="btn-warning" invisible="not refresher_training_required"/>
+
                     <field name="status" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -145,10 +143,9 @@
         <field name="arch" type="xml">
             <form string="Training Schedule">
                 <header>
-                    <button name="action_mark_completed" string="Mark Completed" type="object" class="btn-success"
-                            attrs="{'invisible': [('status', 'in', ['completed', 'cancelled'])]}"/>
-                    <button name="action_start_training" string="Start Training" type="object" class="btn-primary"
-                            attrs="{'invisible': [('status', '!=', 'scheduled')]}"/>
+<button name="action_mark_completed" string="Mark Completed" type="object" class="btn-success" invisible="status in ['completed','cancelled']"/>
+<button name="action_start_training" string="Start Training" type="object" class="btn-primary" invisible="status != 'scheduled'"/>
+
                 </header>
                 <sheet>
                     <group>

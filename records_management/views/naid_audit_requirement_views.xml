@@ -32,8 +32,9 @@
                     <button name="action_schedule_audit" string="Schedule Audit" type="object" class="btn-primary"/>
                     <button name="action_verify_checklist_item" string="Verify Item" type="object" class="btn-secondary"/>
                     <button name="action_view_audit_reports" string="View Reports" type="object" class="btn-info"/>
-                    <button name="action_mark_verified" string="Mark Verified" type="object" class="btn-success" attrs="{'invisible': [('status', '=', 'completed')]}"/>
-                    <button name="create_default_naid_checklist" string="Create Default Checklist" type="object" class="btn-warning" attrs="{'invisible': [('id', '!=', False)]}"/>
+<button name="action_mark_verified" string="Mark Verified" type="object" class="btn-success" invisible="status == 'completed'"/>
+<button name="create_default_naid_checklist" string="Create Default Checklist" type="object" class="btn-warning" invisible="id"/>
+
                     <field name="status" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -91,7 +92,8 @@
                                 </group>
                                 <group string="Calendar &amp; Maintenance">
                                     <button name="action_schedule_calendar_event" string="Schedule Calendar Event" type="object" class="btn-info"/>
-                                    <button name="action_create_maintenance_request" string="Create Maintenance Request" type="object" class="btn-warning" attrs="{'invisible': [('checklist_category', '!=', 'equipment_maintenance')]}"/>
+<button name="action_create_maintenance_request" string="Create Maintenance Request" type="object" class="btn-warning" invisible="checklist_category != 'equipment_maintenance'"/>
+
                                 </group>
                             </group>
                         </page>

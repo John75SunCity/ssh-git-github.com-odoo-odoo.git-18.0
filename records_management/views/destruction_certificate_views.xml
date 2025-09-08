@@ -24,9 +24,12 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-<button name="action_confirm_destruction" type="object" string="✅ Confirm Destruction" class="btn-primary" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('destruction_confirmed', '=', True)]}"/>
+<button name="action_confirm_destruction" type="object" string="✅ Confirm Destruction" class="btn-primary" invisible="state != 'draft' or destruction_confirmed"/>
 
-<button name="action_force_regenerate_certificate" type="object" string="♻️ Regenerate Document" class="btn-secondary" attrs="{'invisible': ['|', ('state', '=', 'draft'), ('destruction_confirmed', '=', False)]}" help="Force regeneration of the attached certificate document"/>
+
+<button name="action_force_regenerate_certificate" type="object" string="♻️ Regenerate Document" class="btn-secondary" invisible="state == 'draft' or not destruction_confirmed" help="Force regeneration of the attached certificate document"/>
+
+
 
                         <button name="action_issue_certificate" type="object" string="📋 Issue Certificate" class="btn-primary" invisible="state != 'draft'"/>
                         <button name="action_revoke_certificate" type="object" string="🚫 Revoke Certificate" class="btn-danger" invisible="state not in ['issued', 'active']"/>
@@ -72,7 +75,8 @@
                                 <field name="destruction_facility"/>
                                 <field name="destruction_weight" widget="numeric"/>
                                 <field name="naid_verified" widget="boolean_toggle"/>
-                                <field name="naid_certificate_number" placeholder="Enter NAID certificate number (placeholder for development)"/>
+<field name="naid_certificate_number" placeholder="Official NAID certificate number (if applicable)"/>
+
                             </group>
                         </group>
 

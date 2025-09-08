@@ -501,7 +501,8 @@
 <group string="Basic Configuration">
     <field name="name" placeholder="e.g., User Access Analysis - John Doe"/>
     <field name="search_type" widget="radio" options="{'horizontal': true}"/>
-<field name="search_query" placeholder="Enter user name, model name, or company" required="search_type in ['user', 'model', 'company']"/>
+<field name="search_query" placeholder="Enter user name, model name, or company" attrs="{'required': [('search_type', 'in', ['user', 'model', 'company'])]}"/>
+
 
 </group>
 <group string="Display Options">

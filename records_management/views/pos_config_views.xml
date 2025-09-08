@@ -2,7 +2,7 @@
 <odoo>
     <data>
 <!-- Tree view for ENTERPRISE -->
-    
+
     <!-- Kanban view for KANBAN -->
     <record id="pos_config_view_kanban" model="ir.ui.view">
         <field name="name">pos.config.view.kanban</field>
@@ -105,11 +105,13 @@
         <field name="arch" type="xml">
             <form string="POS Configuration">
                 <header>
-                    <button name="action_activate" string="Activate" type="object" class="btn-primary" states="inactive"/>
-                    <button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" states="active"/>
-                    <button name="action_open_session" string="Open Session" type="object" class="btn-success" states="active"/>
-                    <button name="action_close_session" string="Close Session" type="object" class="btn-danger" states="active" context="{'force_close': False}"/>
-                    <button name="action_force_close_session" string="Force Close" type="object" class="btn-danger" states="active" context="{'force_close': True}"/>
+<!-- Converted legacy states attributes to invisible expressions -->
+<button name="action_activate" string="Activate" type="object" class="btn-primary" invisible="state != 'inactive'"/>
+<button name="action_deactivate" string="Deactivate" type="object" class="btn-warning" invisible="state != 'active'"/>
+<button name="action_open_session" string="Open Session" type="object" class="btn-success" invisible="state != 'active'"/>
+<button name="action_close_session" string="Close Session" type="object" class="btn-danger" context="{'force_close': False}" invisible="state != 'active'"/>
+<button name="action_force_close_session" string="Force Close" type="object" class="btn-danger" context="{'force_close': True}" invisible="state != 'active'"/>
+
                     <field name="state" widget="statusbar" statusbar_visible="inactive,active,deprecated"/>
                 </header>
                 <sheet>
@@ -139,7 +141,7 @@
                             </div>
                         </button>
                     </div>
-                    
+
                     <div class="oe_title">
                         <h1>
                             <field name="name" placeholder="POS Configuration Name"/>
@@ -150,7 +152,7 @@
                             <field name="currency_id" options="{'no_create': True}"/>
                         </div>
                     </div>
-                    
+
                     <group>
                         <group name="basic_settings" string="Basic Settings">
                             <field name="picking_type_id"/>
@@ -169,27 +171,29 @@
                             <field name="sequence_line_id"/>
                         </group>
                     </group>
-                    
+
                     <notebook>
                         <page string="Records Management Integration" name="records_integration">
                             <group>
                                 <group string="Walk-In Service Configuration">
                                     <field name="enable_walk_in_service" widget="boolean_toggle"/>
-                                    <field name="walk_in_customer_id" states="enable_walk_in_service=True"/>
-                                    <field name="walk_in_pricelist_id" states="enable_walk_in_service=True"/>
-                                    <field name="auto_create_customer" widget="boolean_toggle" states="enable_walk_in_service=True"/>
-                                    <field name="require_customer_info" widget="boolean_toggle" states="enable_walk_in_service=True"/>
+<field name="walk_in_customer_id" invisible="enable_walk_in_service != True"/>
+<field name="walk_in_pricelist_id" invisible="enable_walk_in_service != True"/>
+<field name="auto_create_customer" widget="boolean_toggle" invisible="enable_walk_in_service != True"/>
+<field name="require_customer_info" widget="boolean_toggle" invisible="enable_walk_in_service != True"/>
+
                                 </group>
                                 <group string="Document Services">
                                     <field name="enable_document_services" widget="boolean_toggle"/>
-                                    <field name="document_scanning_rate" widget="monetary" states="enable_document_services=True"/>
-                                    <field name="document_storage_rate" widget="monetary" states="enable_document_services=True"/>
-                                    <field name="shredding_service_rate" widget="monetary" states="enable_document_services=True"/>
-                                    <field name="rush_service_multiplier" widget="float" states="enable_document_services=True"/>
+<field name="document_scanning_rate" widget="monetary" invisible="enable_document_services != True"/>
+<field name="document_storage_rate" widget="monetary" invisible="enable_document_services != True"/>
+<field name="shredding_service_rate" widget="monetary" invisible="enable_document_services != True"/>
+<field name="rush_service_multiplier" widget="float" invisible="enable_document_services != True"/>
+
                                 </group>
                             </group>
                             <separator string="Service Products"/>
-                            <field name="service_product_ids" mode="list" states="enable_walk_in_service=True">
+<field name="service_product_ids" mode="list" invisible="enable_walk_in_service != True">
                                 <list string="Available Services" editable="bottom">
                                     <field name="product_id"/>
                                     <field name="pos_category_id"/>
@@ -230,8 +234,9 @@
                                 </group>
                                 <group string="Barcode Scanner">
                                     <field name="barcode_scanner_enabled" widget="boolean_toggle"/>
-                                    <field name="barcode_nomenclature_id" states="barcode_scanner_enabled=True"/>
-                                    <field name="scan_product_check" widget="boolean_toggle" states="barcode_scanner_enabled=True"/>
+<field name="barcode_nomenclature_id" invisible="barcode_scanner_enabled != True"/>
+<field name="scan_product_check" widget="boolean_toggle" invisible="barcode_scanner_enabled != True"/>
+
                                     <field name="restrict_price_control" widget="boolean_toggle"/>
                                 </group>
                             </group>
@@ -254,7 +259,8 @@
                                     <field name="stock_location_id"/>
                                     <field name="picking_type_id"/>
                                     <field name="limit_categories" widget="boolean_toggle"/>
-                                    <field name="iface_available_categ_ids" states="limit_categories=True" widget="many2many_tags"/>
+<field name="iface_available_categ_ids" invisible="limit_categories != True" widget="many2many_tags"/>
+
                                 </group>
                                 <group string="Product Options">
                                     <field name="module_pos_discount" widget="boolean_toggle"/>
@@ -312,21 +318,21 @@
                 <field name="company_id" string="Company"/>
                 <field name="pricelist_id" string="Pricelist"/>
                 <field name="session_user_id" string="Current User"/>
-                
+
                 <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
                 <filter string="Inactive" name="inactive" domain="[('state', '=', 'inactive')]"/>
                 <filter string="Deprecated" name="deprecated" domain="[('state', '=', 'deprecated')]"/>
-                
+
                 <separator/>
                 <filter string="With Open Session" name="open_session" domain="[('current_session_id', '!=', False)]"/>
                 <filter string="Walk-In Enabled" name="walk_in_enabled" domain="[('enable_walk_in_service', '=', True)]"/>
                 <filter string="Document Services" name="document_services" domain="[('enable_document_services', '=', True)]"/>
                 <filter string="Restaurant Mode" name="restaurant" domain="[('module_pos_restaurant', '=', True)]"/>
-                
+
                 <separator/>
                 <filter string="My Sessions" name="my_sessions" domain="[('session_user_id', '=', uid)]"/>
                 <filter string="Today's Sales" name="today_sales" domain="[('current_session_id.start_at', '&amp;gt;=', datetime.datetime.combine(context_today, datetime.time.min))]"/>
-                
+
                 <group expand="0" string="Group By">
                     <filter string="Status" name="group_status" context="{'group_by': 'state'}"/>
                     <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"/>
@@ -378,7 +384,7 @@
                 🏪 Set up your first POS configuration!
             </p>
             <p>
-                Configure advanced point-of-sale systems with integrated Records Management services for walk-in customers. 
+Configure advanced point-of-sale systems with integrated Records Management services for walk-in customers.
                 Enable document scanning, storage services, shredding operations, and comprehensive customer management.
             </p>
             <p>

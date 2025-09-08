@@ -33,24 +33,26 @@
             <field name="arch" type="xml">
                 <form string="Retrieval Order">
                     <header>
-                        <button name="action_confirm" type="object" string="Confirm" states="draft" class="btn-primary"/>
-                        <button name="action_start_locating" type="object" string="Start Locating" states="confirmed" class="btn-primary"/>
-                        <button name="action_start_retrieving" type="object" string="Start Retrieving" states="locating" class="btn-primary"/>
-                        <button name="action_quality_check" type="object" string="Quality Check" states="retrieving" class="btn-secondary"/>
-                        <button name="action_start_packaging" type="object" string="Start Packaging" states="quality" class="btn-secondary"/>
-                        <button name="action_start_delivery" type="object" string="Start Delivery" states="packaging" class="btn-secondary"/>
-                        <button name="action_mark_delivered" type="object" string="Mark Delivered" states="delivering" class="btn-secondary"/>
-                        <button name="action_complete" type="object" string="Complete" states="delivered" class="btn-success"/>
-                        <button name="action_cancel" type="object" string="Cancel" states="draft,confirmed,locating,retrieving,quality,packaging,delivering" class="btn-secondary"/>
-                        <button name="action_prepare_invoice" type="object" string="Prepare Invoice" states="completed" class="btn-secondary" groups="records_management.group_records_manager"/>
+<!-- Converted legacy states attributes to invisible expressions -->
+<button name="action_confirm" type="object" string="Confirm" class="btn-primary" invisible="state != 'draft'"/>
+<button name="action_start_locating" type="object" string="Start Locating" class="btn-primary" invisible="state != 'confirmed'"/>
+<button name="action_start_retrieving" type="object" string="Start Retrieving" class="btn-primary" invisible="state != 'locating'"/>
+<button name="action_quality_check" type="object" string="Quality Check" class="btn-secondary" invisible="state != 'retrieving'"/>
+<button name="action_start_packaging" type="object" string="Start Packaging" class="btn-secondary" invisible="state != 'quality'"/>
+<button name="action_start_delivery" type="object" string="Start Delivery" class="btn-secondary" invisible="state != 'packaging'"/>
+<button name="action_mark_delivered" type="object" string="Mark Delivered" class="btn-secondary" invisible="state != 'delivering'"/>
+<button name="action_complete" type="object" string="Complete" class="btn-success" invisible="state != 'delivered'"/>
+<button name="action_cancel" type="object" string="Cancel" class="btn-secondary" invisible="state not in ['draft','confirmed','locating','retrieving','quality','packaging','delivering']"/>
+<button name="action_prepare_invoice" type="object" string="Prepare Invoice" class="btn-secondary" groups="records_management.group_records_manager" invisible="state != 'completed'"/>
+
                         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,locating,retrieving,quality,packaging,delivering,delivered,completed,cancelled"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button type="object" name="action_prepare_invoice" class="oe_stat_button" icon="fa-file-invoice" attrs="{'invisible': [('billing_status','in',['not_billable'])]}">
+<button type="object" name="action_prepare_invoice" class="oe_stat_button" icon="fa-file-invoice" invisible="billing_status in ['not_billable']">
                                 <field name="billing_status" widget="badge" string="Billing"/>
                             </button>
-                            <button type="object" name="_check_cron_sla_escalation" class="oe_stat_button" icon="fa-exclamation-triangle" attrs="{'invisible': ['|', ('sla_breached','=',False), ('state','in',['completed','cancelled'])]}">
+<button type="object" name="_check_cron_sla_escalation" class="oe_stat_button" icon="fa-exclamation-triangle" invisible="(not sla_breached) or state in ['completed','cancelled']">
                                 <field name="sla_breached" widget="boolean_toggle" string="SLA Breached"/>
                             </button>
                         </div>

@@ -2,28 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Search view for base.rate -->
-        <record id="shredding_service_view_search" model="ir.ui.view">
-            <field name="name">shredding.service.view.search</field>
-            <field name="model">shredding.service</field>
-        <field name="arch" type="xml">
-                <search string="Search Shredding Services">
-                    <field name="name"/>
-                    <field name="partner_id"/>
-                    <field name="service_type"/>
-                    <filter string="Strip-Cut" name="shredding_security_level" domain="[('security_level', '=', 'level_1')]"/>
-                    <filter string="On-Site" name="service_type_on_site" domain="[('service_type', '=', 'onsite')]"/>
-                    <filter string="Off-Site" name="service_type_off_site" domain="[('service_type', '=', 'offsite')]"/>
-                    <separator/>
-                    <group expand="0" string="Group By">
-                        <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
-                        <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
-                        <filter string="Security Level" name="group_by_security_level" context="{'group_by': 'security_level'}"/>
-                        <filter string="Customer" name="group_by_partner" context="{'group_by': 'partner_id'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
+<!-- Removed duplicate initial search view definition (kept richer version later in file) -->
 
     </data>
 
@@ -96,10 +75,15 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm" type="object" string="Confirm Service" states="draft" class="btn-primary"/>
-                    <button name="action_start_shredding" type="object" string="Start Shredding" states="confirmed" class="btn-success"/>
-                    <button name="action_complete" type="object" string="Complete" states="in_progress" class="btn-success"/>
-                    <button name="action_generate_certificate" type="object" string="Generate Certificate" states="completed" class="btn-info"/>
+<!-- Converted states="draft" to invisible condition -->
+<button name="action_confirm" type="object" string="Confirm Service" invisible="state != 'draft'" class="btn-primary"/>
+<!-- Converted states="confirmed" to invisible condition -->
+<button name="action_start_shredding" type="object" string="Start Shredding" invisible="state != 'confirmed'" class="btn-success"/>
+<!-- Converted states="in_progress" to invisible condition -->
+<button name="action_complete" type="object" string="Complete" invisible="state != 'in_progress'" class="btn-success"/>
+<!-- Converted states="completed" to invisible condition -->
+<button name="action_generate_certificate" type="object" string="Generate Certificate" invisible="state != 'completed'" class="btn-info"/>
+
 <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
 
                 </header>
@@ -155,7 +139,8 @@
                             <group>
                                 <field name="service_location"/>
                                 <field name="assigned_technician"/>
-<field name="witness_name" required="witness_required == True" invisible="witness_required == False"/>
+<field name="witness_name" attrs="{'invisible':[('witness_required','=',False)],'required':[('witness_required','=',True)]}"/>
+
 
 <field name="witness_company" invisible="witness_required == False"/>
 

@@ -38,13 +38,15 @@
         <field name="arch" type="xml">
 <form string="Shredding Work Order">
     <header>
-        <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" states="draft"/>
-        <button name="action_start" string="Start Shredding" type="object" class="btn-warning" states="confirmed"/>
-        <button name="action_pause" string="Pause" type="object" class="btn-secondary" states="in_progress"/>
-        <button name="action_resume" string="Resume" type="object" class="btn-warning" states="paused"/>
-        <button name="action_complete" string="Complete" type="object" class="btn-success" states="in_progress"/>
-        <button name="action_cancel" string="Cancel" type="object" states="draft,confirmed"/>
-        <button name="action_reset_to_draft" string="Reset to Draft" type="object" states="cancelled"/>
+<!-- Converted legacy states to invisible expressions -->
+<button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+<button name="action_start" string="Start Shredding" type="object" class="btn-warning" invisible="state != 'confirmed'"/>
+<button name="action_pause" string="Pause" type="object" class="btn-secondary" invisible="state != 'in_progress'"/>
+<button name="action_resume" string="Resume" type="object" class="btn-warning" invisible="state != 'paused'"/>
+<button name="action_complete" string="Complete" type="object" class="btn-success" invisible="state != 'in_progress'"/>
+<button name="action_cancel" string="Cancel" type="object" invisible="state not in ['draft','confirmed']"/>
+<button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
+
         <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
     </header>
 
@@ -145,7 +147,8 @@
         <group name="naid_info" string="NAID Requirements">
             <field name="naid_level"/>
             <field name="certificate_required" widget="boolean_toggle"/>
-<field name="witness_name" required="witness_required == True"/>
+<field name="witness_name" attrs="{'required':[('witness_required','=',True)]}"/>
+
 
             <field name="witness_signature"/>
             <field name="chain_of_custody_id"/>

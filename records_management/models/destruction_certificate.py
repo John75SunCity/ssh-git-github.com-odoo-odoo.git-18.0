@@ -12,6 +12,9 @@ License: LGPL-3
 
 import base64
 import logging
+import random
+import string
+from datetime import date
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
@@ -86,6 +89,9 @@ class DestructionCertificate(models.Model):
     # COMPLIANCE
     # ============================================================================
     naid_certificate_id = fields.Many2one("naid.certificate", string="NAID Certificate")
+    naid_certificate_number = fields.Char(
+        string="NAID Certificate #",
+        help="External NAID membership or compliance certificate reference number, if applicable.")
     compliance_officer_id = fields.Many2one("res.users", string="Compliance Officer")
     witness_id = fields.Many2one("res.partner", string="Witness")
     operator_certification_id = fields.Many2one("naid.operator.certification", string="Operator Certification")
@@ -140,12 +146,53 @@ class DestructionCertificate(models.Model):
     # ============================================================================
     # NAME GENERATION
     # ============================================================================
+    def _generate_certificate_number(self, work_order):
+        """Generate formatted certificate number.
+
+        New Pattern:
+            COD/<work order name>/<RANDOM6>
+            or COD/<mmddyy>/<RANDOM6> if no work order.
+
+        RANDOM6 = 6-character uppercase alphanumeric, regenerated until unique
+        (collision-checked up to a small bounded number of attempts).
+        """
+        attempts = 0
+        max_attempts = 5
+        if work_order and work_order.name:
+            prefix_token = work_order.name.replace("/", "-")
+        else:
+            prefix_token = date.today().strftime("%m%d%y")
+
+        while attempts < max_attempts:
+            rand_part = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            candidate = f"COD/{prefix_token}/{rand_part}"
+            if not self.search_count([("name", "=", candidate)]):
+                return candidate
+            attempts += 1
+
+        # Fallback (very unlikely) - append attempt counter for traceability
+        rand_part = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+        return f"COD/{prefix_token}/{rand_part}-{attempts}"
+
     @api.model_create_multi
     def create(self, vals_list):
+        records_to_name = []
+        # Prefetch work orders for performance (collect ids first)
+        work_order_map = {}
+        work_order_ids = [vals.get("work_order_id") for vals in vals_list if vals.get("work_order_id")]
+        if work_order_ids:
+            wo_records = self.env["work.order.shredding"].browse(work_order_ids)
+            work_order_map = {wo.id: wo for wo in wo_records}
+
         for vals in vals_list:
-            if vals.get("name", _("New")) == _("New"):
-                vals["name"] = self.env["ir.sequence"].next_by_code("destruction.certificate") or _("New")
-        return super().create(vals_list)
+            current_name = vals.get("name")
+            if not current_name or current_name == _("New"):
+                wo = False
+                if vals.get("work_order_id"):
+                    wo = work_order_map.get(vals["work_order_id"])
+                vals["name"] = self._generate_certificate_number(wo)
+        records = super().create(vals_list)
+        return records
 
     # ============================================================================
     # BUSINESS METHODS

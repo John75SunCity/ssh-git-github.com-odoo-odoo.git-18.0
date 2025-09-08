@@ -10,8 +10,9 @@
                     <field name="checklist_category"/>
                     <field name="verification_notes"/>
                     <field name="verification_result"/>
-                    <field name="corrective_actions" attrs="{'invisible': [('verification_result', 'not in', ['fail', 'conditional'])]}"/>
-                    <field name="follow_up_date" attrs="{'invisible': [('verification_result', 'not in', ['fail', 'conditional'])]}"/>
+<field name="corrective_actions" invisible="verification_result not in ['fail','conditional']"/>
+<field name="follow_up_date" invisible="verification_result not in ['fail','conditional']"/>
+
                     <field name="digital_signature"/>
                     <field name="signature_name"/>
                 </group>
