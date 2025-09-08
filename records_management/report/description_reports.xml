@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="report_description" model="ir.actions.report">
+    <!-- Report Action for Description Model -->
+    <record id="description_report_action" model="ir.actions.report">
         <field name="name">Description</field>
         <field name="model">description</field>
         <field name="report_type">qweb-html</field>
-        <field name="report_name">addon.report_description_view</field>
-        <field name="report_file">addon.report_description</field>
+        <field name="report_name">records_management.report_description_view</field>
+        <field name="report_file">records_management.report_description</field>
         <field name="print_report_name">'%s' % object.name</field>
         <field name="binding_model_id" ref="model_description"/>
         <field name="binding_type">report</field>
     </record>
 
+    <!-- QWeb Template -->
     <template id="report_description_view">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2>Title</h2>
-                        <table class="table table-condensed">
+                        <h2>Description Overview</h2>
+                        <table class="table table-sm o_main_table">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -26,12 +28,8 @@
                             </thead>
                             <tbody>
                                 <tr t-foreach="doc.field_ids" t-as="field">
-                                    <td>
-                                        <span t-esc="field.name"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="field.description"/>
-                                    </td>
+                                    <td><span t-esc="field.name"/></td>
+                                    <td><span t-esc="field.description"/></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -40,5 +38,4 @@
             </t>
         </t>
     </template>
-
 </odoo>
