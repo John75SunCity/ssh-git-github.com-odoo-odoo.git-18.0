@@ -400,6 +400,51 @@ class ChainOfCustody(models.Model):
         string="Compliance Notes",
         help="Compliance verification details and notes.",
     )
+    # Environmental & Event Snapshot Fields (added to satisfy view references that expect
+    # these directly on the custody record in addition to event lines). These mirror the
+    # structure used on chain.of.custody.event for quick at-a-glance filtering in list / search views.
+    event_date = fields.Datetime(
+        string="Event Date",
+        help="Primary event timestamp for this custody record (used in list/search views).",
+    )
+    event_type = fields.Selection(
+        [
+            ("pickup", "Pickup"),
+            ("handoff", "Handoff"),
+            ("inspection", "Inspection"),
+            ("transport", "Transport"),
+            ("arrival", "Arrival"),
+            ("storage", "Storage"),
+            ("exception", "Exception"),
+        ],
+        string="Event Type",
+        help="Categorization of the primary custody event represented by this record.",
+    )
+    responsible_person = fields.Char(
+        string="Responsible Person",
+        help="Non-user textual identifier when the responsible individual isn't a system user.",
+    )
+    location = fields.Char(
+        string="Location",
+        help="Textual location description captured at the time of custody record creation.",
+    )
+    signature_verified = fields.Boolean(
+        string="Signature Verified",
+        help="Indicates that captured signatures have been independently verified.",
+        default=False,
+    )
+    temperature = fields.Float(
+        string="Temperature (°C)",
+        help="Environmental temperature reading at time of custody action (if applicable).",
+    )
+    humidity = fields.Float(
+        string="Humidity (%)",
+        help="Environmental humidity reading at time of custody action (if applicable).",
+    )
+    notes = fields.Text(
+        string="Notes",
+        help="General notes entered directly on the custody record (distinct from audit notes).",
+    )
     delay_reason = fields.Text(
         string="Delay Reason",
         help="Explanation for any delays encountered.",
@@ -784,9 +829,19 @@ class ChainOfCustody(models.Model):
         }
 
     def get_full_chain(self):
+        """Return the full chain for the related container/document preserving order.
+
+        Helper used by views / reports. Falls back to empty recordset if no
+        related container or document is set (should not normally happen once
+        record passes constraints).
+        """
         domain = []
         if self.container_id and self.document_id:
-            domain = ["|", ("container_id", "=", self.container_id.id), ("document_id", "=", self.document_id.id)]
+            domain = [
+                "|",
+                ("container_id", "=", self.container_id.id),
+                ("document_id", "=", self.document_id.id),
+            ]
         elif self.container_id:
             domain = [("container_id", "=", self.container_id.id)]
         elif self.document_id:
@@ -794,8 +849,7 @@ class ChainOfCustody(models.Model):
 
         if domain:
             return self.search(domain, order="sequence, transfer_date")
-        return self.browse()
-        return self.browse()
+        return self.env["chain.of.custody"].browse()
 
     # Integration Methods
     def create_destruction_record(self):

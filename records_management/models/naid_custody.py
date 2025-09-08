@@ -71,6 +71,45 @@ class NaidCustody(models.Model):
         ('other', 'Other')
     ], string="Event Type", default='creation', required=True)
 
+    # --- Compliance / Verification Fields (referenced in views) ---
+    signature_verified = fields.Boolean(
+        string="Signature Verified",
+        help="Indicates the signature associated with this custody event has been verified." ,
+        tracking=True,
+        copy=False,
+    )
+    witness_present = fields.Boolean(
+        string="Witness Present",
+        help="A qualified witness was present during this custody event.",
+        tracking=True,
+        copy=False,
+    )
+
+    # --- Environmental / Contextual Fields (missing in views) ---
+    company_id = fields.Many2one(
+        'res.company',
+        string="Company",
+        default=lambda self: self.env.company,
+        index=True,
+        help="Company responsible for this custody record (for multi-company separation)."
+    )
+    humidity = fields.Float(
+        string="Humidity (%)",
+        help="Approximate relative humidity at the time of custody event (percent)."
+    )
+    temperature = fields.Float(
+        string="Temperature (°C)",
+        help="Ambient temperature in Celsius during the custody event."
+    )
+    notes = fields.Text(
+        string="Internal Notes",
+        help="Optional internal notes for auditors or compliance team (not customer-facing)."
+    )
+    security_measures = fields.Char(
+        string="Security Measures",
+        help="Brief description of security controls applied (e.g., sealed container, tamper-evident tape)."
+    )
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:

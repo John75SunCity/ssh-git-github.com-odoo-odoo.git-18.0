@@ -99,6 +99,29 @@ class NaidOperatorCertification(models.Model):
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
 
+    # ------------------------------------------------------------------
+    # VIEW-REFERENCED FIELDS (Added to satisfy missing field audit)
+    # ------------------------------------------------------------------
+    # 'name' is used in views explicitly; hr.employee inheritance already provides name but we
+    # expose an explicit related for clarity and to ensure store behavior for this model's table.
+    name = fields.Char(string='Operator Name', related='display_name', store=False)
+    # certificate_number (alias of certification_number for legacy view references)
+    certificate_number = fields.Char(string='Certificate Number', help='Legacy alias referencing certification number')
+    certification_type = fields.Selection([
+        ('initial', 'Initial Certification'),
+        ('refresher', 'Refresher'),
+        ('specialized', 'Specialized Equipment'),
+        ('safety', 'Safety Compliance')
+    ], string='Certification Type', help='Type/category of certification')
+    completed_date = fields.Date(string='Completed Date', help='Date when all training requirements were completed')
+    instructor_id = fields.Many2one('res.users', string='Instructor', help='Primary instructor or trainer responsible')
+    issue_date = fields.Date(string='Issue Date', help='Official issuance date of certificate (may differ from completion)')
+    issuing_authority = fields.Char(string='Issuing Authority', help='Organization or authority issuing the certification')
+    scheduled_date = fields.Date(string='Scheduled Date', help='Initial scheduled date for training/certification')
+    scope_of_certification = fields.Text(string='Scope of Certification', help='Defines what operational scope this certification covers')
+    training_id = fields.Many2one('slide.channel', string='Primary Training', help='Primary training channel/course this certification is based on')
+    operator_id = fields.Many2one('hr.employee', string='Operator (Employee)', help='Explicit operator reference when linking externally')
+
     @api.model
     def _generate_certification_number(self):
         """Generate a unique certification number"""

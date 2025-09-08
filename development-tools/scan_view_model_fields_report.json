@@ -1,0 +1,1250 @@
+{
+  "chain.of.custody": {
+    "referenced": 44,
+    "defined": 76,
+    "missing_count": 0,
+    "missing": []
+  },
+  "customer.category": {
+    "referenced": 12,
+    "defined": 9,
+    "missing_count": 3,
+    "missing": [
+      "email",
+      "is_company",
+      "phone"
+    ]
+  },
+  "customer.feedback": {
+    "referenced": 13,
+    "defined": 37,
+    "missing_count": 1,
+    "missing": [
+      "description"
+    ]
+  },
+  "customer.inventory": {
+    "referenced": 5,
+    "defined": 39,
+    "missing_count": 3,
+    "missing": [
+      "last_updated",
+      "status",
+      "total_documents"
+    ]
+  },
+  "customer.inventory.line": {
+    "referenced": 17,
+    "defined": 39,
+    "missing_count": 0,
+    "missing": []
+  },
+  "customer.inventory.report": {
+    "referenced": 18,
+    "defined": 11,
+    "missing_count": 6,
+    "missing": [
+      "billing_status",
+      "container_id",
+      "document_count",
+      "line_status",
+      "monthly_storage_cost",
+      "notes"
+    ]
+  },
+  "customer.inventory.report.line": {
+    "referenced": 21,
+    "defined": 33,
+    "missing_count": 0,
+    "missing": []
+  },
+  "customer.inventory.report.wizard": {
+    "referenced": 5,
+    "defined": 0,
+    "missing_count": 5,
+    "missing": [
+      "company_id",
+      "department_id",
+      "inventory_date_from",
+      "inventory_date_to",
+      "partner_id"
+    ]
+  },
+  "customer.negotiated.rate": {
+    "referenced": 1,
+    "defined": 34,
+    "missing_count": 0,
+    "missing": []
+  },
+  "customer.portal.diagram": {
+    "referenced": 18,
+    "defined": 11,
+    "missing_count": 7,
+    "missing": [
+      "allowed_user_ids",
+      "edge_data",
+      "node_data",
+      "restricted_models",
+      "search_company_id",
+      "search_user_id",
+      "show_messaging"
+    ]
+  },
+  "naid.audit.log": {
+    "referenced": 16,
+    "defined": 19,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.audit.requirement": {
+    "referenced": 28,
+    "defined": 29,
+    "missing_count": 4,
+    "missing": [
+      "audit_date",
+      "auditor_id",
+      "notes",
+      "result"
+    ]
+  },
+  "naid.audit.verification.wizard": {
+    "referenced": 8,
+    "defined": 8,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.certificate": {
+    "referenced": 15,
+    "defined": 19,
+    "missing_count": 4,
+    "missing": [
+      "material_type",
+      "quantity",
+      "uom_id",
+      "weight"
+    ]
+  },
+  "naid.certificate.item": {
+    "referenced": 1,
+    "defined": 5,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.compliance": {
+    "referenced": 44,
+    "defined": 0,
+    "missing_count": 44,
+    "missing": [
+      "access_control_verified",
+      "audit_count",
+      "audit_date",
+      "audit_frequency",
+      "audit_history_ids",
+      "audit_required",
+      "audit_result",
+      "audit_scope",
+      "audit_type",
+      "auditor_name",
+      "auto_renewal",
+      "background_checks",
+      "certificate_count",
+      "certificate_tracking",
+      "certificate_valid",
+      "certification_date",
+      "chain_of_custody",
+      "compliance_officer",
+      "compliance_score",
+      "compliance_status",
+      "destruction_count",
+      "destruction_verification",
+      "equipment_certification",
+      "expiry_date",
+      "facility_manager",
+      "facility_name",
+      "findings_count",
+      "incident_management",
+      "information_handling",
+      "last_audit_date",
+      "naid_level",
+      "naid_member_id",
+      "name",
+      "next_audit_date",
+      "personnel_screening",
+      "physical_security_score",
+      "process_verification",
+      "quality_control",
+      "secure_storage",
+      "security_clearance",
+      "security_officer",
+      "surveillance_system",
+      "third_party_auditor",
+      "training_completed"
+    ]
+  },
+  "naid.compliance.action.plan": {
+    "referenced": 1,
+    "defined": 19,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.compliance.alert": {
+    "referenced": 1,
+    "defined": 17,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.compliance.checklist": {
+    "referenced": 9,
+    "defined": 14,
+    "missing_count": 3,
+    "missing": [
+      "description",
+      "is_required",
+      "sequence"
+    ]
+  },
+  "naid.compliance.checklist.item": {
+    "referenced": 5,
+    "defined": 12,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.compliance.policy": {
+    "referenced": 5,
+    "defined": 17,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.custody": {
+    "referenced": 18,
+    "defined": 15,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.custody.event": {
+    "referenced": 1,
+    "defined": 15,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.destruction.record": {
+    "referenced": 1,
+    "defined": 31,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.operator.certification": {
+    "referenced": 32,
+    "defined": 38,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.performance.history": {
+    "referenced": 1,
+    "defined": 14,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.risk.assessment": {
+    "referenced": 1,
+    "defined": 14,
+    "missing_count": 0,
+    "missing": []
+  },
+  "naid.training.schedule": {
+    "referenced": 10,
+    "defined": 10,
+    "missing_count": 0,
+    "missing": []
+  },
+  "paper.bale": {
+    "referenced": 30,
+    "defined": 19,
+    "missing_count": 25,
+    "missing": [
+      "bale_status",
+      "confidentiality_level",
+      "contamination_level",
+      "creation_date",
+      "customer_name",
+      "destruction_date",
+      "document_count",
+      "document_name",
+      "document_type",
+      "inspection_date",
+      "loaded_on_trailer",
+      "moisture_content",
+      "naid_compliance_verified",
+      "paper_type",
+      "quality_grade",
+      "quality_inspector",
+      "quality_notes",
+      "source_document_ids",
+      "source_facility",
+      "trailer_id",
+      "trailer_load_count",
+      "weighed_by",
+      "weight_contributed",
+      "weight_history_count",
+      "weight_unit"
+    ]
+  },
+  "paper.bale.inspection": {
+    "referenced": 1,
+    "defined": 10,
+    "missing_count": 0,
+    "missing": []
+  },
+  "paper.bale.inspection.wizard": {
+    "referenced": 1,
+    "defined": 5,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "paper.bale.line": {
+    "referenced": 8,
+    "defined": 9,
+    "missing_count": 0,
+    "missing": []
+  },
+  "paper.bale.movement": {
+    "referenced": 1,
+    "defined": 10,
+    "missing_count": 0,
+    "missing": []
+  },
+  "paper.bale.recycling": {
+    "referenced": 23,
+    "defined": 19,
+    "missing_count": 17,
+    "missing": [
+      "bale_number",
+      "contamination",
+      "contamination_notes",
+      "gps_coordinates",
+      "load_number",
+      "load_shipment_id",
+      "mobile_entry",
+      "moisture_level",
+      "paper_grade",
+      "processed_from_service",
+      "production_date",
+      "scale_reading",
+      "status",
+      "storage_location",
+      "weighed_by",
+      "weight_lbs",
+      "weight_net"
+    ]
+  },
+  "paper.bale.source.document": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "paper.bale.weigh.wizard": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "paper.load.shipment": {
+    "referenced": 44,
+    "defined": 19,
+    "missing_count": 40,
+    "missing": [
+      "bale_number",
+      "cardboard_weight",
+      "company_signature_date",
+      "delivery_notes",
+      "destination_address",
+      "driver_license",
+      "driver_name",
+      "driver_phone",
+      "driver_signature_date",
+      "gps_delivery_location",
+      "gps_pickup_location",
+      "invoice_amount",
+      "invoice_date",
+      "load_number",
+      "manifest_date",
+      "manifest_generated",
+      "manifest_number",
+      "mixed_paper_count",
+      "mixed_paper_weight",
+      "mobile_entry",
+      "mobile_manifest",
+      "paper_grade",
+      "partner_id",
+      "payment_amount",
+      "payment_due_date",
+      "payment_notes",
+      "payment_received_date",
+      "pickup_date",
+      "pickup_time",
+      "production_date",
+      "signed_by",
+      "status",
+      "total_weight_kg",
+      "total_weight_lbs",
+      "transportation_company",
+      "truck_info",
+      "weighed_by",
+      "weight_lbs",
+      "white_paper_count",
+      "white_paper_weight"
+    ]
+  },
+  "paper.model_bale": {
+    "referenced": 13,
+    "defined": 8,
+    "missing_count": 2,
+    "missing": [
+      "last_emptied",
+      "status"
+    ]
+  },
+  "portal.feedback": {
+    "referenced": 25,
+    "defined": 20,
+    "missing_count": 1,
+    "missing": [
+      "activity_exception_decoration"
+    ]
+  },
+  "portal.feedback.action": {
+    "referenced": 1,
+    "defined": 18,
+    "missing_count": 0,
+    "missing": []
+  },
+  "portal.feedback.analytic": {
+    "referenced": 1,
+    "defined": 20,
+    "missing_count": 0,
+    "missing": []
+  },
+  "portal.feedback.communication": {
+    "referenced": 1,
+    "defined": 16,
+    "missing_count": 0,
+    "missing": []
+  },
+  "portal.feedback.escalation": {
+    "referenced": 1,
+    "defined": 12,
+    "missing_count": 0,
+    "missing": []
+  },
+  "portal.feedback.resolution": {
+    "referenced": 1,
+    "defined": 16,
+    "missing_count": 0,
+    "missing": []
+  },
+  "portal.request": {
+    "referenced": 35,
+    "defined": 29,
+    "missing_count": 1,
+    "missing": [
+      "assigned_to_id"
+    ]
+  },
+  "portal.request.line": {
+    "referenced": 9,
+    "defined": 9,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.access.log": {
+    "referenced": 1,
+    "defined": 22,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.approval.step": {
+    "referenced": 1,
+    "defined": 12,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.approval.workflow": {
+    "referenced": 1,
+    "defined": 10,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.approval.workflow.line": {
+    "referenced": 1,
+    "defined": 8,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.audit.log": {
+    "referenced": 8,
+    "defined": 14,
+    "missing_count": 6,
+    "missing": [
+      "action",
+      "model_name",
+      "name",
+      "new_values",
+      "old_values",
+      "record_id"
+    ]
+  },
+  "records.billing": {
+    "referenced": 13,
+    "defined": 14,
+    "missing_count": 2,
+    "missing": [
+      "amount",
+      "billing_profile_id"
+    ]
+  },
+  "records.billing.config": {
+    "referenced": 28,
+    "defined": 86,
+    "missing_count": 3,
+    "missing": [
+      "discount_percentage",
+      "rate_type",
+      "tier_threshold"
+    ]
+  },
+  "records.billing.config.audit": {
+    "referenced": 23,
+    "defined": 0,
+    "missing_count": 20,
+    "missing": [
+      "action_type",
+      "approval_date",
+      "approval_required",
+      "approval_status",
+      "approved_by",
+      "audit_date",
+      "billing_config_id",
+      "change_reason",
+      "compliance_notes",
+      "currency_id",
+      "field_changed",
+      "financial_impact",
+      "impact_assessment",
+      "ip_address",
+      "name",
+      "new_value",
+      "old_value",
+      "session_id",
+      "user_agent",
+      "user_id"
+    ]
+  },
+  "records.billing.config.line": {
+    "referenced": 24,
+    "defined": 0,
+    "missing_count": 21,
+    "missing": [
+      "applies_to_count",
+      "applies_to_volume",
+      "applies_to_weight",
+      "billing_config_id",
+      "billing_method",
+      "container_type",
+      "currency_id",
+      "discount_percentage",
+      "effective_date",
+      "effective_rate",
+      "expiry_date",
+      "is_default",
+      "markup_percentage",
+      "maximum_charge",
+      "minimum_charge",
+      "name",
+      "notes",
+      "priority",
+      "quantity_parameter",
+      "service_type",
+      "unit_rate"
+    ]
+  },
+  "records.billing.line": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "records.billing.rate": {
+    "referenced": 8,
+    "defined": 9,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.bulk.user.import": {
+    "referenced": 7,
+    "defined": 6,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.category": {
+    "referenced": 7,
+    "defined": 13,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.center.location": {
+    "referenced": 12,
+    "defined": 12,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.chain.of.custody": {
+    "referenced": 1,
+    "defined": 47,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.config.setting": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "records.container": {
+    "referenced": 29,
+    "defined": 31,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.container.content.line": {
+    "referenced": 8,
+    "defined": 8,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.container.line": {
+    "referenced": 14,
+    "defined": 14,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.container.log": {
+    "referenced": 9,
+    "defined": 9,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.container.movement": {
+    "referenced": 7,
+    "defined": 26,
+    "missing_count": 2,
+    "missing": [
+      "moved_by",
+      "reason"
+    ]
+  },
+  "records.container.transfer": {
+    "referenced": 1,
+    "defined": 11,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.container.transfer.line": {
+    "referenced": 1,
+    "defined": 5,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "records.container.type": {
+    "referenced": 1,
+    "defined": 21,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.container.type.converter": {
+    "referenced": 6,
+    "defined": 4,
+    "missing_count": 5,
+    "missing": [
+      "current_type",
+      "new_container_type_code",
+      "reason",
+      "summary_line",
+      "update_location"
+    ]
+  },
+  "records.container.type.converter.wizard": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "records.customer.billing.profile": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "records.deletion.request": {
+    "referenced": 1,
+    "defined": 34,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.deletion.request.enhanced": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "records.department": {
+    "referenced": 15,
+    "defined": 15,
+    "missing_count": 3,
+    "missing": [
+      "email",
+      "is_primary",
+      "phone"
+    ]
+  },
+  "records.department.billing.approval": {
+    "referenced": 8,
+    "defined": 7,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.department.billing.contact": {
+    "referenced": 19,
+    "defined": 32,
+    "missing_count": 5,
+    "missing": [
+      "approval_date",
+      "approval_notes",
+      "charge_amount",
+      "service_description",
+      "vendor"
+    ]
+  },
+  "records.destruction": {
+    "referenced": 1,
+    "defined": 19,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.destruction.job": {
+    "referenced": 6,
+    "defined": 9,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.destruction.line": {
+    "referenced": 7,
+    "defined": 9,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.digital.scan": {
+    "referenced": 15,
+    "defined": 17,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.document": {
+    "referenced": 32,
+    "defined": 83,
+    "missing_count": 6,
+    "missing": [
+      "created_date",
+      "event_type",
+      "location",
+      "notes",
+      "responsible_person",
+      "signature_verified"
+    ]
+  },
+  "records.document.flag.permanent.wizard": {
+    "referenced": 6,
+    "defined": 0,
+    "missing_count": 6,
+    "missing": [
+      "confirm_action",
+      "current_state",
+      "document_id",
+      "document_name",
+      "document_reference",
+      "permanent_reason"
+    ]
+  },
+  "records.document.type": {
+    "referenced": 37,
+    "defined": 153,
+    "missing_count": 3,
+    "missing": [
+      "destruction_eligible_date",
+      "received_date",
+      "reference"
+    ]
+  },
+  "records.installer": {
+    "referenced": 1,
+    "defined": 8,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.inventory.dashboard": {
+    "referenced": 1,
+    "defined": 38,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.location": {
+    "referenced": 12,
+    "defined": 42,
+    "missing_count": 3,
+    "missing": [
+      "current_utilization",
+      "partner_id",
+      "storage_start_date"
+    ]
+  },
+  "records.location.inspection": {
+    "referenced": 1,
+    "defined": 16,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.location.inspection.line": {
+    "referenced": 1,
+    "defined": 16,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.location.report.wizard": {
+    "referenced": 8,
+    "defined": 25,
+    "missing_count": 1,
+    "missing": [
+      "utilization_percentage"
+    ]
+  },
+  "records.permanent.flag.wizard": {
+    "referenced": 10,
+    "defined": 0,
+    "missing_count": 10,
+    "missing": [
+      "action_type",
+      "box_id",
+      "document_count",
+      "document_ids",
+      "name",
+      "partner_id",
+      "permanent_flag",
+      "permanent_flag_set_by",
+      "permanent_flag_set_date",
+      "user_password"
+    ]
+  },
+  "records.policy.version": {
+    "referenced": 1,
+    "defined": 12,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.promotional.discount": {
+    "referenced": 1,
+    "defined": 17,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.request": {
+    "referenced": 11,
+    "defined": 9,
+    "missing_count": 3,
+    "missing": [
+      "box_id",
+      "container_id",
+      "document_id"
+    ]
+  },
+  "records.request.line": {
+    "referenced": 10,
+    "defined": 9,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.request.type": {
+    "referenced": 9,
+    "defined": 6,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.retention.policy": {
+    "referenced": 40,
+    "defined": 137,
+    "missing_count": 1,
+    "missing": [
+      "destruction_trigger"
+    ]
+  },
+  "records.retention.policy.version": {
+    "referenced": 28,
+    "defined": 16,
+    "missing_count": 25,
+    "missing": [
+      "applicable_document_types",
+      "approval_date",
+      "approval_status",
+      "approved_by",
+      "audit_requirements",
+      "certification_required",
+      "change_summary",
+      "compliance_officer",
+      "compliance_requirements",
+      "created_by",
+      "destruction_method",
+      "expiration_date",
+      "industry_standards",
+      "is_active",
+      "legal_hold_applicable",
+      "next_review_date",
+      "policy_description",
+      "previous_versions",
+      "regulatory_framework",
+      "rejection_reason",
+      "retention_period_years",
+      "review_frequency",
+      "special_handling_notes",
+      "superseded_by",
+      "version_number"
+    ]
+  },
+  "records.retention.rule": {
+    "referenced": 1,
+    "defined": 50,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.retrieval.order": {
+    "referenced": 41,
+    "defined": 46,
+    "missing_count": 11,
+    "missing": [
+      "assigned_user_id",
+      "barcode",
+      "container_id",
+      "date_delivered",
+      "date_retrieved",
+      "file_description",
+      "file_name",
+      "item_type",
+      "location_id",
+      "retrieved_by_id",
+      "status"
+    ]
+  },
+  "records.retrieval.work.order": {
+    "referenced": 19,
+    "defined": 10,
+    "missing_count": 5,
+    "missing": [
+      "date_requested",
+      "equipment_id",
+      "notes",
+      "requested_by",
+      "status"
+    ]
+  },
+  "records.security.audit": {
+    "referenced": 6,
+    "defined": 11,
+    "missing_count": 5,
+    "missing": [
+      "audit_date",
+      "auditor_id",
+      "findings",
+      "recommendations",
+      "status"
+    ]
+  },
+  "records.series": {
+    "referenced": 12,
+    "defined": 10,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.service.type": {
+    "referenced": 1,
+    "defined": 7,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.storage.box": {
+    "referenced": 11,
+    "defined": 10,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.storage.department.user": {
+    "referenced": 21,
+    "defined": 9,
+    "missing_count": 13,
+    "missing": [
+      "access_level",
+      "action",
+      "assignment_count",
+      "can_approve_requests",
+      "can_edit_containers",
+      "can_generate_reports",
+      "can_view_containers",
+      "date",
+      "description",
+      "history_ids",
+      "name",
+      "notes",
+      "priority"
+    ]
+  },
+  "records.survey.user.input": {
+    "referenced": 21,
+    "defined": 28,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.tag": {
+    "referenced": 2,
+    "defined": 10,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.tag.category": {
+    "referenced": 1,
+    "defined": 5,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.usage.tracking": {
+    "referenced": 1,
+    "defined": 22,
+    "missing_count": 0,
+    "missing": []
+  },
+  "records.user.invitation.wizard": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "shredding.bin": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "shredding.bin.barcode.wizard": {
+    "referenced": 1,
+    "defined": 0,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "shredding.bin.sequence.reset.wizard": {
+    "referenced": 4,
+    "defined": 0,
+    "missing_count": 4,
+    "missing": [
+      "bin_size",
+      "current_sequence_number",
+      "new_sequence_number",
+      "reset_reason"
+    ]
+  },
+  "shredding.certificate": {
+    "referenced": 1,
+    "defined": 27,
+    "missing_count": 0,
+    "missing": []
+  },
+  "shredding.hard_drive": {
+    "referenced": 22,
+    "defined": 10,
+    "missing_count": 17,
+    "missing": [
+      "bulk_serial_input",
+      "certificate_line_text",
+      "customer_location_notes",
+      "destroyed",
+      "facility_verification_notes",
+      "included_in_certificate",
+      "scan_count",
+      "scan_location",
+      "scan_notes",
+      "scanned_at_customer",
+      "scanned_at_customer_by",
+      "scanned_at_customer_date",
+      "scanned_serials",
+      "service_request_id",
+      "verified_at_facility_by",
+      "verified_at_facility_date",
+      "verified_before_destruction"
+    ]
+  },
+  "shredding.inventory.batch": {
+    "referenced": 1,
+    "defined": 15,
+    "missing_count": 0,
+    "missing": []
+  },
+  "shredding.inventory.item": {
+    "referenced": 24,
+    "defined": 0,
+    "missing_count": 20,
+    "missing": [
+      "approval_date",
+      "container_id",
+      "current_location_id",
+      "customer_approved",
+      "destroyed_by",
+      "destruction_date",
+      "destruction_notes",
+      "document_id",
+      "original_location_id",
+      "permanent_removal_cost",
+      "retrieval_cost",
+      "retrieval_notes",
+      "retrieved_by",
+      "retrieved_date",
+      "sequence",
+      "shredding_cost",
+      "status",
+      "supervisor_approved",
+      "total_cost",
+      "work_order_id"
+    ]
+  },
+  "shredding.picklist.item": {
+    "referenced": 13,
+    "defined": 14,
+    "missing_count": 3,
+    "missing": [
+      "location_id",
+      "picked_by",
+      "work_order_id"
+    ]
+  },
+  "shredding.rate": {
+    "referenced": 5,
+    "defined": 11,
+    "missing_count": 4,
+    "missing": [
+      "description",
+      "effective_date",
+      "rate_per_pound",
+      "service_type"
+    ]
+  },
+  "shredding.service": {
+    "referenced": 24,
+    "defined": 28,
+    "missing_count": 15,
+    "missing": [
+      "certificate_required",
+      "container_type",
+      "destruction_item_count",
+      "destruction_item_ids",
+      "destruction_method",
+      "destruction_status",
+      "item_description",
+      "naid_compliance_level",
+      "partner_id",
+      "quantity",
+      "scheduled_date",
+      "state",
+      "total_weight",
+      "weight",
+      "witness_required"
+    ]
+  },
+  "shredding.service.bin": {
+    "referenced": 32,
+    "defined": 24,
+    "missing_count": 25,
+    "missing": [
+      "base_monthly_rate",
+      "bin_specifications",
+      "current_location",
+      "estimated_monthly_revenue",
+      "estimated_weight",
+      "fill_count",
+      "installation_date",
+      "last_scan_date",
+      "location",
+      "location_history_ids",
+      "name",
+      "next_scheduled_service",
+      "notes",
+      "per_service_rate",
+      "placement_date",
+      "purchase_date",
+      "scan_type",
+      "service_count",
+      "service_frequency",
+      "service_notes",
+      "timestamp",
+      "total_weight",
+      "user_id",
+      "weight_percentage",
+      "work_order_count"
+    ]
+  },
+  "shredding.service.event": {
+    "referenced": 1,
+    "defined": 16,
+    "missing_count": 1,
+    "missing": [
+      "name"
+    ]
+  },
+  "shredding.service.log": {
+    "referenced": 1,
+    "defined": 20,
+    "missing_count": 0,
+    "missing": []
+  },
+  "shredding.service.photo": {
+    "referenced": 12,
+    "defined": 10,
+    "missing_count": 1,
+    "missing": [
+      "photo_filename"
+    ]
+  },
+  "shredding.team": {
+    "referenced": 1,
+    "defined": 36,
+    "missing_count": 0,
+    "missing": []
+  }
+}
