@@ -56,11 +56,23 @@ class BinKey(models.Model):
         ('temporary', 'Temporary')
     ], string='Key Type', default='standard', required=True)
     description = fields.Text(string='Description')
+    physical_key_id = fields.Many2one(
+        'bin.key',
+        string='Physical Parent Key',
+        help="If this is a derivative/duplicate, link to the original physical key",
+        tracking=True
+    )
 
     # ============================================================================
     # ASSIGNMENT & VALIDITY
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Assigned Customer', tracking=True)
+    key_holder_id = fields.Many2one(
+        'res.partner',
+        string='Current Key Holder',
+        help="Person or customer currently responsible for the key",
+        tracking=True
+    )
     issue_date = fields.Date(string='Issue Date', tracking=True)
     return_date = fields.Date(string='Expected Return Date', tracking=True)
     actual_return_date = fields.Date(string='Actual Return Date', readonly=True)
