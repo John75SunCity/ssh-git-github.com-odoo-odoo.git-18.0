@@ -41,10 +41,12 @@
         "data/storage_fee_data.xml",
         "data/tag_data.xml",
         "data/temp_inventory_configurator_data.xml",
-        "data/field_label_customization_batch_data.xml",
-    # Menus must be loaded before any view files that add child menuitems referencing them
+    "data/field_label_customization_batch_data.xml",
+    # Load wizard action before menus because menus reference action_field_label_helper_wizard
+    # Rule: Any referenced act_window XMLID must be defined earlier than the menuitem that uses it.
+    "views/field_label_helper_wizard_views.xml",
+    # Menus must still precede any view files that add child menuitems referencing these root menus
     "views/records_management_menus.xml",
-        "views/field_label_helper_wizard_views.xml",
         "views/report_window_actions_views.xml",
     # Bin issue wizard adds menuitems with parent="records_management.menu_records_operations";
     # ensure parent menus loaded first (see moved records_management_menus.xml above)
