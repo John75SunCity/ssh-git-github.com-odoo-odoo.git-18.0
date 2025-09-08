@@ -66,6 +66,13 @@ class NAIDAuditLog(models.Model):
         index=True,
         help='Related NAID audit requirement for this audit log entry.'
     )
+    compliance_id = fields.Many2one(
+        comodel_name='naid.compliance',
+        string='Compliance Record',
+        ondelete='set null',
+        index=True,
+        help='Link back to the NAID compliance master record.'
+    )
 
     # ============================================================================
     # COMPUTE METHODS
@@ -92,6 +99,7 @@ class NAIDAuditLog(models.Model):
         Central method to create a new audit log entry.
         This should be called from other models whenever a significant action occurs.
         """
+    # Not ensure_one since it's a model-level creator returning new record
         if user_id is None:
             user_id = self.env.user.id
 

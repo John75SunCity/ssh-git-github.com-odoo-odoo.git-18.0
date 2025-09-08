@@ -72,6 +72,13 @@ class NaidDestructionRecord(models.Model):
     equipment_used = fields.Char(string='Equipment Used')
     temperature = fields.Float(string='Temperature (°F)', help='Temperature during destruction process')
     humidity = fields.Float(string='Humidity (%)', help='Humidity during destruction process')
+    compliance_id = fields.Many2one(
+        comodel_name='naid.compliance',
+        string='Compliance Record',
+        ondelete='set null',
+        index=True,
+        help='Link to NAID compliance master record for aggregation.'
+    )
 
     # ============================================================================
     # WEIGHT AND VOLUME TRACKING

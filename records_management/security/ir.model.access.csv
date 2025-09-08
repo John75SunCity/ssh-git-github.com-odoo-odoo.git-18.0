@@ -248,6 +248,8 @@ access_portal_request_line_manager,portal_request_line,portal.request.line,recor
 access_portal_request_line_user,portal_request_line,portal.request.line,records_management.group_records_user,1,1,1,0
 access_portal_request_manager,portal_request,portal.request,records_management.group_records_manager,1,1,1,1
 access_portal_request_user,portal_request,portal.request,records_management.group_records_user,1,1,1,0
+access_naid_compliance_manager,naid_compliance,naid.compliance,records_management.group_records_manager,1,1,1,1
+access_naid_compliance_user,naid_compliance,naid.compliance,records_management.group_records_user,1,1,1,0
 access_processing_log_manager,processing_log,processing.log,records_management.group_records_manager,1,1,1,1
 access_processing_log_resolution_wizard_manager,processing_log_resolution_wizard,processing.log.resolution.wizard,records_management.group_records_manager,1,1,1,1
 access_processing_log_resolution_wizard_user,processing_log_resolution_wizard,processing.log.resolution.wizard,records_management.group_records_user,1,1,1,0

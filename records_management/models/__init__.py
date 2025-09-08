@@ -57,6 +57,7 @@ from . import container_access_activity
 from . import stock_lot_attribute
 from . import portal_request
 from . import naid_compliance_policy
+from . import naid_compliance
 from . import pickup_route
 from . import revenue_forecast_line
 from . import unlock_service_history

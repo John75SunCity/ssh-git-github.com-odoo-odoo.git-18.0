@@ -46,6 +46,13 @@ class NAIDComplianceChecklistItem(models.Model):
         string='Configurator Mode',
         help='Internal toggle used by views to reveal advanced linkage fields (equipment, task, visitor, location).'
     )
+    compliance_id = fields.Many2one(
+        comodel_name='naid.compliance',
+        string='Compliance Record',
+        ondelete='cascade',
+        index=True,
+        help='Parent NAID compliance record (inverse of compliance_checklist_ids).'
+    )
 
     # ============================================================================
     # METHODS

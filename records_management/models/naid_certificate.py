@@ -33,6 +33,13 @@ class NaidCertificate(models.Model):
     partner_id = fields.Many2one(
         "res.partner", string="Customer", required=True, readonly=True
     )
+    compliance_id = fields.Many2one(
+        comodel_name="naid.compliance",
+        string="Compliance Record",
+        ondelete="set null",
+        index=True,
+        help="Associated NAID compliance record (for certificate aggregation).",
+    )
 
     # Inverse link back to shredding service (used in shredding.service.certificate_ids)
     shredding_service_id = fields.Many2one(
@@ -425,9 +432,6 @@ class NaidCertificate(models.Model):
         self.ensure_one()
         return False
 
-    def action_view_destruction_records(self):
-        self.ensure_one()
-        return False
     def action_view_destruction_records(self):
         self.ensure_one()
         return False
