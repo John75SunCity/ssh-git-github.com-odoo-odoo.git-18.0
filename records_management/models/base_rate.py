@@ -266,8 +266,8 @@ class BaseRate(models.Model):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            # Linter: pass dynamic value as parameter to _()
-            "name": _("Revenue Forecast - %s", self.name),
+            # Project policy: interpolate after translation for consistency
+            "name": _("Revenue Forecast - %s") % self.name,
             "res_model": "revenue.forecaster",
             "view_mode": "form",
             "target": "new",
@@ -280,12 +280,16 @@ class BaseRate(models.Model):
     def action_approve_changes(self):
         """Approve rate changes (manager action)."""
         self.ensure_one()
-        self.write({"state": "active"})
-    self.message_post(body=_("Rate changes approved by %s", self.env.user.name))
+        self.write({'state': 'active'})
+        self.message_post(body=_("Rate changes approved by %s") % self.env.user.name)
         return {
-            "type": "ir.actions.client",
-            "tag": "display_notification",
-            "params": {"title": _("Approved"), "message": _("Rate changes have been approved."), "type": "success"},
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _("Approved"),
+                'message': _("Rate changes have been approved."),
+                'type': 'success'
+            },
         }
 
     def action_view_customers_using_rate(self):
