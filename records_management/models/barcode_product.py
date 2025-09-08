@@ -62,6 +62,117 @@ class BarcodeProduct(models.Model):
     ], string='Status', default='draft', required=True, tracking=True)
 
     # ============================================================================
+    # CORE PRODUCT & PHYSICAL SPECIFICATION FIELDS (Referenced in Views)
+    # ============================================================================
+    box_size = fields.Selection([
+        ('small', 'Small'),
+        ('medium', 'Medium'),
+        ('large', 'Large'),
+        ('xl', 'Extra Large')
+    ], string='Box Size', help='Physical classification used for pricing and volume analytics.')
+    capacity = fields.Float(string='Capacity (cu.ft)', help='Storage capacity in cubic feet (used in analytics).')
+    weight_limit = fields.Float(string='Weight Limit (lbs)', help='Maximum recommended weight in pounds.')
+    material_type = fields.Char(string='Material Type', help='Primary material composition (e.g., Corrugated).')
+    color = fields.Char(string='Color', help='Color or identifying visual attribute.')
+
+    # ============================================================================
+    # BARCODE STRUCTURE EXTENSIONS
+    # ============================================================================
+    barcode_length = fields.Integer(string='Barcode Length', compute='_compute_barcode_length', store=True)
+    barcode_prefix = fields.Char(string='Barcode Prefix')
+    barcode_suffix = fields.Char(string='Barcode Suffix')
+    check_digit_required = fields.Boolean(string='Check Digit Required', default=False)
+    auto_generate = fields.Boolean(string='Auto Generate', default=False, help='Automatically generate next barcode on related operations.')
+
+    # ============================================================================
+    # PRICING & RATE CONFIGURATION (Monetary fields reference company currency)
+    # ============================================================================
+    currency_id = fields.Many2one('res.currency', string='Currency', related='company_id.currency_id', readonly=True)
+    storage_rate = fields.Monetary(string='Storage Rate', currency_field='currency_id', help='Monthly storage rate applied to this product.')
+    shred_rate = fields.Monetary(string='Shred Rate', currency_field='currency_id', help='Shredding service rate per unit / bin.')
+    setup_fee = fields.Monetary(string='Setup Fee', currency_field='currency_id')
+    rush_service_rate = fields.Monetary(string='Rush Service Rate', currency_field='currency_id')
+    volume_discount_threshold = fields.Integer(string='Volume Discount Threshold')
+    volume_discount_rate = fields.Float(string='Volume Discount Rate (%)', help='Percentage discount applied after threshold is reached.')
+
+    # ============================================================================
+    # ANALYTICS & PERFORMANCE METRICS
+    # ============================================================================
+    monthly_volume = fields.Integer(string='Monthly Volume', help='Units processed or generated per month.')
+    monthly_revenue = fields.Monetary(string='Monthly Revenue', currency_field='currency_id', compute='_compute_monthly_revenue', store=True)
+    average_storage_duration = fields.Float(string='Avg. Storage Duration (days)', help='Average number of days items remain stored.', digits=(12, 2))
+    utilization_rate = fields.Float(string='Utilization Rate (%)', compute='_compute_utilization_rate', store=True, digits=(12, 2))
+    profit_margin = fields.Float(string='Profit Margin (%)', compute='_compute_profit_margin', store=True, digits=(12, 2))
+
+    # ============================================================================
+    # CONTAINER CONFIGURATION (Referenced on storage_config page)
+    # ============================================================================
+    climate_controlled = fields.Boolean(string='Climate Controlled')
+    fireproof_rating = fields.Char(string='Fireproof Rating')
+    security_level = fields.Selection([
+        ('standard', 'Standard'),
+        ('high', 'High'),
+        ('restricted', 'Restricted')
+    ], string='Security Level', default='standard')
+    stackable = fields.Boolean(string='Stackable')
+    max_stack_height = fields.Integer(string='Max Stack Height')
+    suitable_document_type_ids = fields.Many2many(
+        'records.document.type',
+        'barcode_product_document_type_rel',
+        'product_id',
+        'doc_type_id',
+        string='Suitable Document Types'
+    )
+    max_file_folders = fields.Integer(string='Max File Folders')
+    recommended_retention_years = fields.Integer(string='Recommended Retention (Years)')
+    access_frequency = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High')
+    ], string='Access Frequency', default='medium')
+
+    # ============================================================================
+    # SHRED BIN CONFIGURATION (Referenced on shred_config page)
+    # ============================================================================
+    shred_security_level = fields.Selection([
+        ('p1', 'P-1 (Basic)'),
+        ('p3', 'P-3 (Confidential)'),
+        ('p5', 'P-5 (High Security)'),
+        ('p7', 'P-7 (Top Secret)')
+    ], string='Shred Security Level')
+    naid_compliant = fields.Boolean(string='NAID Compliant')
+    witness_destruction = fields.Boolean(string='Witness Destruction')
+    certificate_provided = fields.Boolean(string='Certificate Provided')
+    pickup_frequency = fields.Selection([
+        ('weekly', 'Weekly'),
+        ('biweekly', 'Bi-Weekly'),
+        ('monthly', 'Monthly'),
+        ('quarterly', 'Quarterly'),
+        ('on_demand', 'On Demand')
+    ], string='Pickup Frequency')
+    bin_volume = fields.Float(string='Bin Volume (cu.ft)', digits=(12, 2))
+    lockable = fields.Boolean(string='Lockable')
+    mobile = fields.Boolean(string='Mobile / Wheeled')
+    indoor_outdoor = fields.Selection([
+        ('indoor', 'Indoor'),
+        ('outdoor', 'Outdoor'),
+        ('both', 'Indoor/Outdoor')
+    ], string='Indoor/Outdoor')
+    weight_capacity = fields.Float(string='Weight Capacity (lbs)', digits=(12, 2))
+
+    # ============================================================================
+    # BARCODE GENERATION CONFIGURATION
+    # ============================================================================
+    next_sequence_number = fields.Integer(string='Next Sequence Number', default=1)
+    last_generated_barcode = fields.Char(string='Last Generated Barcode', readonly=True)
+    total_generated = fields.Integer(string='Total Generated', readonly=True)
+    generation_batch_size = fields.Integer(string='Batch Size', default=50)
+    validate_format = fields.Boolean(string='Validate Format', default=True)
+    validate_uniqueness = fields.Boolean(string='Validate Uniqueness', default=True)
+    validate_check_digit = fields.Boolean(string='Validate Check Digit', default=False)
+    allowed_characters = fields.Char(string='Allowed Characters', help='Restrict allowed characters (regex char class). Empty for any.')
+
+    # ============================================================================
     # BARCODE DETAILS & CLASSIFICATION
     # ============================================================================
     barcode = fields.Char(
@@ -189,6 +300,12 @@ class BarcodeProduct(models.Model):
                 record.barcode_pattern = " - ".join(pattern_parts)
             else:
                 record.barcode_pattern = ""
+
+    @api.depends('barcode')
+    def _compute_barcode_length(self):
+        """Compute and store barcode length as integer for analytics and grouping."""
+        for record in self:
+            record.barcode_length = len(record.barcode.strip()) if record.barcode else 0
 
     @api.depends('barcode')
     def _compute_product_category(self):

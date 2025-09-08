@@ -51,6 +51,13 @@ TOKEN_REGEX = re.compile(r"\b([a-zA-Z_][a-zA-Z0-9_]*)\b")
 KEYWORD_SKIP = {
     'not', 'and', 'or', 'True', 'False', 'None', 'in', 'if', 'else'
 }
+
+# Common selection literal tokens (state values) that may appear in modifier expressions
+# These are not field names and should be suppressed to avoid noise.
+SUPPRESSED_LITERAL_TOKENS = {
+    'draft', 'confirmed', 'in_progress', 'paused', 'cancelled', 'active', 'inactive',
+    'archived', 'deprecated', 'pending', 'done', 'closed', 'open'
+}
 MODEL_NAME_REGEX = re.compile(r"_name\s*=\s*['\"]([a-z0-9_.]+)['\"]")
 INHERIT_NAME_REGEX = re.compile(r"_inherit\s*=\s*['\"]([a-z0-9_.]+)['\"]")  # legacy single-string pattern (kept for reference)
 CLASS_REGEX = re.compile(r"class\s+([A-Za-z0-9_]+)\(")
@@ -101,10 +108,14 @@ def extract_model_fields(py_path: Path):
     current_model = None
     for node in tree.body:
         if isinstance(node, ast.ClassDef):
-            # Detect if inherits models.Model / models.TransientModel by name presence in bases text
-            base_names = [getattr(b, 'id', None) or getattr(getattr(b, 'attr', None), 'id', None) for b in node.bases]
-            base_join = ' '.join([b for b in base_names if b])
-            if 'Model' not in base_join:
+            # Detect classes inheriting Odoo models: models.Model / models.TransientModel / models.AbstractModel
+            base_markers = []
+            for base in node.bases:
+                if isinstance(base, ast.Name):
+                    base_markers.append(base.id)
+                elif isinstance(base, ast.Attribute):  # e.g. models.Model
+                    base_markers.append(base.attr)
+            if not any(b in ('Model', 'TransientModel', 'AbstractModel') for b in base_markers):
                 continue
             # Find assignments inside class for _name / _inherit and fields
             model_name = None
@@ -201,6 +212,7 @@ def infer_model_from_view_path(xml_path: Path):
 def audit_views(model_field_map):
     issues = []  # *_id issues
     modifier_issues = []  # non *_id issues from invisible/attrs/modifiers
+    generic_missing = []  # general missing <field> name refs (non *_id) like 'category'
     for xml_path in sorted(VIEWS_DIR.glob('*.xml')):
         text = xml_path.read_text(encoding='utf-8', errors='ignore')
         # Collect view-scoped models to map fields contextually
@@ -209,32 +221,41 @@ def audit_views(model_field_map):
         for idx, line in enumerate(lines, 1):
             for match in FIELD_TAG_REGEX.finditer(line):
                 field_full = match.group(1)
-                # Skip expressions with dot path (related paths in search filter domain)
                 if '.' in field_full:
-                    continue
-                # Candidate only if endswith _id or contains _id inside
-                if '_id' not in field_full:
-                    continue
-                # Skip whitelisted or pattern-whitelisted fields immediately
-                if field_full in WHITELIST:
-                    continue
-                if any(pat.match(field_full) for pat in PATTERN_WHITELIST):
-                    continue
-                # Attempt to validate against each model in file; if any model has it we accept
-                valid_any = False
-                for model_name in models_in_file:
-                    declared = model_field_map.get(model_name, set())
-                    if field_full in declared:
-                        valid_any = True
-                        break
-                if not valid_any:
-                    issues.append({
-                        'field': field_full,
-                        'xml': xml_path.relative_to(ROOT),
-                        'line': idx,
-                        'models': list(models_in_file) or ['<unknown>'],
-                        'context': line.strip()[:200]
-                    })
+                    continue  # skip related dotted paths
+                declared_in_any = any(
+                    field_full in model_field_map.get(mn, set()) for mn in models_in_file
+                )
+                if '_id' in field_full:
+                    # original *_id logic
+                    if field_full in WHITELIST or any(pat.match(field_full) for pat in PATTERN_WHITELIST):
+                        continue
+                    if not declared_in_any:
+                        issues.append({
+                            'field': field_full,
+                            'xml': xml_path.relative_to(ROOT),
+                            'line': idx,
+                            'models': list(models_in_file) or ['<unknown>'],
+                            'context': line.strip()[:200]
+                        })
+                else:
+                    # Generic field: report only if clearly absent, not whitelisted, and not meta
+                    if field_full in WHITELIST:
+                        continue
+                    # Heuristic suppression: skip common view meta or synthetic UI fields
+                    if field_full in {'arch_db', 'display_name'}:
+                        continue
+                    # Skip standard ir.ui.view record fields (name/model/arch) when ir.ui.view involved
+                    if models_in_file and 'ir.ui.view' in models_in_file and field_full in {'name', 'model', 'arch'}:
+                        continue
+                    if not declared_in_any:
+                        generic_missing.append({
+                            'field': field_full,
+                            'xml': xml_path.relative_to(ROOT),
+                            'line': idx,
+                            'models': list(models_in_file) or ['<unknown>'],
+                            'context': line.strip()[:200]
+                        })
 
             # Modifier attribute scanning (only if line contains potential attributes)
             if 'invisible=' in line or 'attrs=' in line or 'modifiers=' in line:
@@ -263,6 +284,8 @@ def audit_views(model_field_map):
                         for token in TOKEN_REGEX.findall(expr):
                             if token in KEYWORD_SKIP:
                                 continue
+                            if token in SUPPRESSED_LITERAL_TOKENS:
+                                continue
                             if token in WHITELIST:  # already known common field
                                 continue
                             # Only consider if token looks like a field (heuristic: lowercase start or contains underscore)
@@ -286,12 +309,12 @@ def audit_views(model_field_map):
                                     'models': list(models_in_file) or ['<unknown>'],
                                     'context': expr[:200]
                                 })
-    return issues, modifier_issues
+    return issues, modifier_issues, generic_missing
 
 
 def main():
     model_field_map = build_model_field_map()
-    id_issues, modifier_issues = audit_views(model_field_map)
+    id_issues, modifier_issues, generic_missing = audit_views(model_field_map)
     if not id_issues:
         print('# Suspicious *_id fields in view XML: None (post-whitelist).')
     else:
@@ -342,6 +365,19 @@ def main():
             print(f"- Field: {mi['field']} | Models: {','.join(mi['models'])} | File: {mi['xml']} | Line: {mi['line']} | Expr: {mi['context']}")
     else:
         print('\n# Missing Fields Referenced in View Modifiers: None detected.')
+
+    # Report generic missing (non *_id) direct <field> references
+    if generic_missing:
+        print('\n# Missing Non-ID Field References in Views')
+        seen2 = set()
+        for gi in generic_missing:
+            key = (gi['field'], gi['xml'], gi['line'])
+            if key in seen2:
+                continue
+            seen2.add(key)
+            print(f"- Field: {gi['field']} | Models: {','.join(gi['models'])} | File: {gi['xml']} | Line: {gi['line']} | Context: {gi['context']}")
+    else:
+        print('\n# Missing Non-ID Field References in Views: None detected.')
 
 if __name__ == '__main__':
     main()
