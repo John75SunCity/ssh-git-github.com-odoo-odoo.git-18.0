@@ -62,7 +62,7 @@ class NaidCompliancePolicy(models.Model):
 
     # Responsibility & Review Tracking (added to match list/search views)
     responsible_id = fields.Many2one(
-        comodel_name='res.users',
+        comodel_name='res.users',  # Core Odoo model is 'res.users' (plural) by design; singular rule does not apply here.
         string='Responsible',
         tracking=True,
         help='User accountable for maintaining this compliance policy.'
