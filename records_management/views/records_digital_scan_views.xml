@@ -15,7 +15,8 @@
                 <field name="file_format"/>
                 <field name="resolution"/>
                 <field name="scan_quality"/>
-                <field name="scanned_by"/>
+<field name="scanned_by_id"/>
+
                 <field name="state"/>
             </list>
         </field>
@@ -43,7 +44,8 @@
                         <group>
                             <field name="document_id"/>
                             <field name="scan_date"/>
-                            <field name="scanned_by"/>
+<field name="scanned_by_id"/>
+
                         </group>
                         <group>
                             <field name="file_format"/>
@@ -79,15 +81,18 @@
             <search string="Digital Scans">
                 <field name="name"/>
                 <field name="document_id"/>
-                <field name="scanned_by"/>
+<field name="scanned_by_id"/>
+
                 <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
                 <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
                 <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
                 <separator/>
-                <filter string="My Scans" name="my_scans" domain="[('scanned_by', '=', uid)]"/>
+<filter string="My Scans" name="my_scans" domain="[('scanned_by_id.user_id', '=', uid)]"/>
+
                 <group expand="0" string="Group By">
                     <filter string="Document" name="group_document" context="{'group_by': 'document_id'}"/>
-                    <filter string="Scanned By" name="group_scanned_by" context="{'group_by': 'scanned_by'}"/>
+<filter string="Scanned By" name="group_scanned_by" context="{'group_by': 'scanned_by_id'}"/>
+
                     <filter string="File Format" name="group_format" context="{'group_by': 'file_format'}"/>
                     <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
                 </group>
@@ -100,7 +105,9 @@
         <field name="name">Digital Scans</field>
         <field name="res_model">records.digital.scan</field>
         <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_records_digital_scan_search"/>
+<!-- Corrected search view reference -->
+<field name="search_view_id" ref="records_digital_scan_view_search"/>
+
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first digital scan!

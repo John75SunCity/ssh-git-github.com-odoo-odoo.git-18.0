@@ -1,5 +1,11 @@
-from . import retrieval_item_base
-from . import scan_retrieval_item
+"""Model imports (alphabetically ordered).
+
+Maintains Odoo guideline: base model files appear before their *_actions
+extensions automatically due to lexical ordering (e.g. paper_bale before
+paper_bale_actions). Custom base modules that other files extend (e.g.
+retrieval_item_base) remain before dependents (e.g. scan_retrieval_item).
+"""
+
 from . import account_move_line
 from . import advanced_billing_contact
 from . import advanced_billing_line
@@ -19,6 +25,7 @@ from . import bin_key
 from . import bin_key_history
 from . import bin_key_unlock_service
 from . import bin_unlock_service
+from . import button_action_placeholders
 from . import calendar_event
 from . import certificate_template_data
 from . import chain_of_custody
@@ -45,6 +52,7 @@ from . import customer_inventory_report
 from . import customer_inventory_report_line
 from . import customer_inventory_report_model
 from . import customer_negotiated_rate
+from . import customer_portal_diagram
 from . import destruction_certificate
 from . import destruction_event
 from . import destruction_item
@@ -95,12 +103,12 @@ from . import naid_custody
 from . import naid_custody_event
 from . import naid_destruction_record
 from . import naid_equipment_standard
-from . import naid_training_schedule
 from . import naid_operator_certification
 from . import naid_operator_certification_actions
 from . import naid_performance_history
 from . import naid_risk_assessment
 from . import naid_training_requirement
+from . import naid_training_schedule
 from . import paper_bale
 from . import paper_bale_actions
 from . import paper_bale_inspection
@@ -126,8 +134,8 @@ from . import portal_feedback
 from . import portal_feedback_action
 from . import portal_feedback_actions
 from . import portal_feedback_analytic
-from . import portal_feedback_escalation
 from . import portal_feedback_communication
+from . import portal_feedback_escalation
 from . import portal_feedback_resolution
 from . import portal_request
 from . import portal_request_line
@@ -208,6 +216,7 @@ from . import required_document
 from . import res_config_settings
 from . import res_partner
 from . import res_partner_key_restriction
+from . import retrieval_item_base
 from . import retrieval_metric
 from . import revenue_analytic
 from . import revenue_forecast
@@ -218,6 +227,7 @@ from . import rm_module_configurator
 from . import route_optimizer
 from . import scan_digital_asset
 from . import scan_retrieval
+from . import scan_retrieval_item
 from . import service_item
 from . import service_item_actions
 from . import shred_bin
@@ -250,7 +260,6 @@ from . import survey_improvement_action
 from . import survey_user_input
 from . import system_diagram_data
 from . import system_flowchart_wizard
-from . import customer_portal_diagram
 from . import temp_inventory
 from . import temp_inventory_audit
 from . import temp_inventory_movement
@@ -264,4 +273,3 @@ from . import work_order_coordinator
 from . import work_order_retrieval
 from . import work_order_shredding
 from . import workflow_visualization_manager
-from . import button_action_placeholders
