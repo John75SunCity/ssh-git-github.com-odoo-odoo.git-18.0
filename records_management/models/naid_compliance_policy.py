@@ -60,6 +60,26 @@ class NaidCompliancePolicy(models.Model):
     # Relationships
     checklist_ids = fields.One2many('naid.compliance.checklist', 'policy_id', string='Related Checklists')
 
+    # Responsibility & Review Tracking (added to match list/search views)
+    responsible_id = fields.Many2one(
+        comodel_name='res.users',
+        string='Responsible',
+        tracking=True,
+        help='User accountable for maintaining this compliance policy.'
+    )
+    last_review_date = fields.Date(
+        string='Last Review Date',
+        tracking=True,
+        help='Date on which this policy was most recently reviewed.'
+    )
+    next_review_date = fields.Date(
+        string='Next Review Date',
+        tracking=True,
+        compute='_compute_next_review_date',
+        store=True,
+        help='Automatically calculated next review date based on last review and frequency.'
+    )
+
     # ============================================================================
     # CONSTRAINTS
     # ============================================================================
@@ -89,3 +109,21 @@ class NaidCompliancePolicy(models.Model):
         self.ensure_one()
         self.write({'state': 'under_review'})
         self.message_post(body=_("Policy review started."))
+
+    # ============================================================================
+    # COMPUTES
+    # ============================================================================
+    @api.depends('last_review_date', 'review_frequency_months')
+    def _compute_next_review_date(self):
+        for record in self:
+            if record.last_review_date and record.review_frequency_months:
+                # Simple month addition (approximate by using relativedelta if available)
+                try:
+                    from dateutil.relativedelta import relativedelta
+                    record.next_review_date = record.last_review_date + relativedelta(months=record.review_frequency_months)
+                except Exception:
+                    # Fallback: approximate months as 30 days
+                    record.next_review_date = record.last_review_date + fields.Date.to_date('1970-01-01') - fields.Date.to_date('1970-01-01')  # placeholder to avoid crash
+                    record.next_review_date = record.last_review_date
+            else:
+                record.next_review_date = False

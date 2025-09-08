@@ -31,6 +31,32 @@ class PosConfig(models.Model):
     )
 
     # ============================================================================
+    # WALK-IN CUSTOMER SERVICE (Align with view fields)
+    # ============================================================================
+    enable_walk_in_service = fields.Boolean(
+        string="Enable Walk-In Service",
+        help="Allow processing of walk-in customers with simplified POS flow."
+    )
+    walk_in_customer_id = fields.Many2one(
+        comodel_name='res.partner',
+        string='Default Walk-In Customer',
+        help="Default customer record used when processing anonymous walk-in visitors."
+    )
+    walk_in_pricelist_id = fields.Many2one(
+        comodel_name='product.pricelist',
+        string='Walk-In Pricelist',
+        help="Pricelist applied to walk-in customer transactions if specified."
+    )
+    auto_create_customer = fields.Boolean(
+        string='Auto Create Customer',
+        help="Automatically create a dedicated customer from visitor data when needed."
+    )
+    require_customer_info = fields.Boolean(
+        string='Require Customer Info',
+        help="Force entry of customer details before confirming walk-in POS orders."
+    )
+
+    # ============================================================================
     # CONSTRAINTS
     # ============================================================================
     @api.constrains('enable_records_management', 'destruction_service_product_id', 'pickup_request_product_id')

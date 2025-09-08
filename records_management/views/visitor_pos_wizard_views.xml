@@ -45,7 +45,9 @@
 
                     <group>
                         <group name="customer_data" string="👥 Customer Data Management">
-                            <field name="existing_customer_id" options="{'no_create': True}" widget="many2one"/>
+<!-- Replaced nonexistent existing_customer_id with partner_id (core contact) -->
+<field name="partner_id" options="{'no_create': True}" widget="many2one"/>
+
                             <field name="create_new_customer" widget="boolean_toggle"/>
                             <field name="customer_category" invisible="create_new_customer == False"/>
                             <field name="customer_credit_limit" widget="monetary" invisible="create_new_customer == False"/>
