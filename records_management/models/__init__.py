@@ -17,7 +17,11 @@ from . import bin_key
 from . import bin_key_history
 from . import bin_key_unlock_service
 from . import bin_unlock_service
-from . import button_action_placeholders
+# NOTE: Import order adjusted to ensure base models load before their extensions.
+# records_billing_config must be loaded before modules that _inherit it
+from . import records_billing_config
+from . import records_billing_config_actions  # extensions of billing config
+from . import button_action_placeholders  # generic placeholder actions (inherits billing config too)
 from . import calendar_event
 from . import certificate_template_data
 from . import chain_of_custody
@@ -147,9 +151,7 @@ from . import records_approval_step
 from . import records_approval_workflow
 from . import records_approval_workflow_line
 from . import records_audit_log
-from . import records_billing
-from . import records_billing_config
-from . import records_billing_config_actions
+from . import records_billing  # placed after config to avoid early inheritance issues
 from . import records_billing_rate
 from . import records_bulk_user_import
 from . import records_category
