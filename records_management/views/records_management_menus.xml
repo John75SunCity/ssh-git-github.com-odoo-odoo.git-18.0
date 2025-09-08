@@ -135,7 +135,8 @@
 
 <!-- NAID Audit Requirements -->
 <!-- Fixed action reference: was action_naid_audit_requirement (missing); now points to existing naid_audit_requirement_action -->
-<menuitem id="menu_naid_audit_requirements" name="Audit Requirements" parent="menu_records_compliance" action="records_management.naid_audit_requirement_action" sequence="10" groups="records_management.group_records_user"/>
+<!-- Removed duplicate NAID Audit Requirements menu (defined properly in naid_audit_requirement_views.xml after its action). -->
+<!-- <menuitem id="menu_naid_audit_requirements" name="Audit Requirements" parent="menu_records_compliance" action="naid_audit_requirement_action" sequence="10" groups="records_management.group_records_user"/> -->
 
 
 <!-- Temporarily commented out menuitems with missing actions -->

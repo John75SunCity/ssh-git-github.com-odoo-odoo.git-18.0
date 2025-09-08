@@ -344,93 +344,149 @@
     <field name="name">Service Dashboard</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">kanban,list,form</field>
-    <field name="domain">[]</field>
-    <field name="context">{'search_default_group_category': 1}</field>
+<field name="domain">[('active', '=', True)]</field>
+<field name="context">{
+        'search_default_active': 1,
+        'search_default_group_category': 1,
+        'pivot_measures': ['request_count','total_revenue']
+    }</field>
+<field name="help" type="html">
+    <p>Overview of all active services with quick access to categories and key metrics.</p>
+</field>
 </record>
 <record id="action_service_item_category" model="ir.actions.act_window">
     <field name="name">Service Categories</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">list,form</field>
-    <field name="domain">[]</field>
-    <field name="context">{'search_default_group_category': 1}</field>
+<field name="domain">[('service_category','!=',False)]</field>
+<field name="context">{
+        'search_default_group_category': 1,
+        'searchpanel_default_groupby': 'service_category'
+    }</field>
+<field name="help" type="html">
+    <p>List of services grouped by category for mass maintenance.</p>
+</field>
 </record>
 <record id="action_service_item_template" model="ir.actions.act_window">
     <field name="name">Service Templates</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">list,form</field>
-    <field name="domain">[('active', '=', True)]</field>
+<field name="domain">[('active', '=', True), ('portal_visible','=',False), ('customer_can_request','=',False)]</field>
+<field name="help" type="html">
+    <p>Internal reusable templates not exposed on the portal.</p>
+</field>
 </record>
 <record id="action_service_item_request" model="ir.actions.act_window">
     <field name="name">Service Requests</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">list,form</field>
-    <field name="domain">[('customer_can_request', '=', True)]</field>
+<field name="domain">[('customer_can_request', '=', True), ('active','=',True)]</field>
+<field name="context">{'search_default_customer_can_request': 1}</field>
+<field name="help" type="html">
+    <p>Services that customers are allowed to request directly.</p>
+</field>
 </record>
 <record id="action_service_item_schedule" model="ir.actions.act_window">
     <field name="name">Service Scheduling</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">list,form</field>
-    <field name="domain">[('auto_create_task', '=', True)]</field>
+<field name="domain">[('auto_create_task', '=', True), ('active','=',True)]</field>
+<field name="help" type="html">
+    <p>Services that automatically create tasks when requested.</p>
+</field>
 </record>
 <record id="action_service_item_billing" model="ir.actions.act_window">
     <field name="name">Service Billing</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">list,form</field>
-    <field name="domain">[]</field>
+<field name="domain">[('pricing_rule_ids','!=',False)]</field>
+<field name="help" type="html">
+    <p>Billable services with at least one pricing rule.</p>
+</field>
 </record>
 <record id="action_service_item_performance_report" model="ir.actions.act_window">
     <field name="name">Performance Report</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">pivot,graph,list</field>
-    <field name="domain">[]</field>
+<field name="domain">[('request_count','>',0)]</field>
+<field name="context">{'pivot_measures':['request_count','completed_count','average_completion_time','customer_satisfaction']}</field>
+<field name="help" type="html">
+    <p>Analyze operational performance metrics of active services.</p>
+</field>
 </record>
 <record id="action_service_item_analytics" model="ir.actions.act_window">
     <field name="name">Usage Analytics</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">pivot,graph,list</field>
-    <field name="domain">[]</field>
+<field name="domain">[('total_revenue','>',0)]</field>
+<field name="context">{'pivot_measures':['total_revenue','monthly_revenue','request_count']}</field>
+<field name="help" type="html">
+    <p>Revenue and demand analytics for monetized services.</p>
+</field>
 </record>
 <record id="action_service_item_revenue_report" model="ir.actions.act_window">
     <field name="name">Revenue Report</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">pivot,graph,list</field>
     <field name="domain">[('total_revenue', '>', 0)]</field>
+<field name="context">{'pivot_measures':['total_revenue','monthly_revenue']}</field>
+<field name="help" type="html">
+    <p>Focused revenue reporting view.</p>
+</field>
 </record>
 <record id="action_service_item_pricing_rules" model="ir.actions.act_window">
     <field name="name">Pricing Rules</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">list,form</field>
     <field name="domain">[('pricing_rule_ids', '!=', False)]</field>
+<field name="help" type="html">
+    <p>Services with conditional pricing logic.</p>
+</field>
 </record>
 <record id="action_service_item_quality_control" model="ir.actions.act_window">
     <field name="name">Quality Controls</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">list,form</field>
     <field name="domain">[('quality_check_required', '=', True)]</field>
+<field name="help" type="html">
+    <p>Services that require quality checks or audit trails.</p>
+</field>
 </record>
 <record id="action_service_item_mobile_tasks" model="ir.actions.act_window">
     <field name="name">Mobile Service Tasks</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">kanban,list,form</field>
-    <field name="domain">[('portal_visible', '=', True)]</field>
+<field name="domain">[('portal_visible', '=', True), ('auto_create_task','=',True)]</field>
+<field name="help" type="html">
+    <p>Portal-visible services that also generate tasks for mobile/FSM workflows.</p>
+</field>
 </record>
 <record id="action_service_item_fsm_integration" model="ir.actions.act_window">
     <field name="name">FSM Integration</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('auto_create_task', '=', True)]</field>
+<field name="help" type="html">
+    <p>Services configured for Field Service task automation.</p>
+</field>
 </record>
 <record id="action_portal_service_requests" model="ir.actions.act_window">
     <field name="name">Portal Service Requests</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">kanban,list,form</field>
-    <field name="domain">[('customer_can_request', '=', True)]</field>
+<field name="domain">[('customer_can_request', '=', True), ('portal_visible','=',True)]</field>
+<field name="help" type="html">
+    <p>Portal-visible services that customers may request.</p>
+</field>
 </record>
 <record id="action_service_item_self_service" model="ir.actions.act_window">
     <field name="name">Self-Service Setup</field>
     <field name="res_model">service.item</field>
     <field name="view_mode">list,form</field>
-    <field name="domain">[('portal_visible', '=', True)]</field>
+<field name="domain">[('portal_visible', '=', True), ('customer_can_request','=',False)]</field>
+<field name="help" type="html">
+    <p>Portal-visible informational services not requestable directly.</p>
+</field>
 </record>
 </data>
 
