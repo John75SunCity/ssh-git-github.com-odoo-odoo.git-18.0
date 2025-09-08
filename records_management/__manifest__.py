@@ -7,7 +7,14 @@
     "author": "John75SunCity",
     "website": "https://github.com/John75SunCity",
     "license": "LGPL-3",
-    "depends": ["base","mail","web","product","stock","account","sale","portal","website","contacts","calendar","sms","hr","project","maintenance","fleet","crm","purchase","point_of_sale","repair","board","resource","barcodes","web_tour","web_editor","utm","digest","rating","bus","http_routing","base_setup","base_import","industry_fsm","sign","survey","documents","helpdesk","mass_mailing","website_slides","quality"],
+    "depends": [
+        "base","mail","web","product","stock","account","sale","portal","website",
+        "contacts","calendar","sms","hr","project","maintenance","fleet","crm",
+        "purchase","point_of_sale","repair","board","resource","barcodes","web_tour",
+        "web_editor","utm","digest","rating","bus","http_routing","base_setup",
+        "base_import","industry_fsm","sign","survey","documents","helpdesk",
+        "mass_mailing","website_slides","quality"
+    ],
     "data": [
         "security/records_management_security.xml",
         "security/ir.model.access.csv",
