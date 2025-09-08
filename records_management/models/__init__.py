@@ -1,11 +1,3 @@
-"""Model imports (alphabetically ordered).
-
-Maintains Odoo guideline: base model files appear before their *_actions
-extensions automatically due to lexical ordering (e.g. paper_bale before
-paper_bale_actions). Custom base modules that other files extend (e.g.
-retrieval_item_base) remain before dependents (e.g. scan_retrieval_item).
-"""
-
 from . import account_move_line
 from . import advanced_billing_contact
 from . import advanced_billing_line
