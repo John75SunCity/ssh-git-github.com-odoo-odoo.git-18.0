@@ -9,7 +9,7 @@ class FsmOrder(models.Model):
     such as on-site shredding, off-site shredding, and hard drive destruction,
     while ensuring compliance with NAID AAA standards.
     """
-    _name = 'project.task'
+    # Pure extension of project.task (avoid clone warning)
     _inherit = 'project.task'
     _description = 'FSM Order Management'
 

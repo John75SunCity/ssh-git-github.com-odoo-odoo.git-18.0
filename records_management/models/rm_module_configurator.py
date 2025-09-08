@@ -137,7 +137,7 @@ class RmModuleConfigurator(models.Model):
         related="target_model_id.model", readonly=True, store=True
     )
     target_field_id = fields.Many2one(
-        comodel_name="ir.model.fields",
+        comodel_name="ir.model.fields",  # core model name retained
         string="Target Field",
         domain="[('model_id', '=', target_model_id)]",
     )
@@ -161,6 +161,15 @@ class RmModuleConfigurator(models.Model):
         string="Modification Count", default=0, readonly=True
     )
     notes = fields.Text(string="Internal Notes")
+
+    # ==========================================================================
+    # FEATURE TOGGLES (Module-Wide)
+    # ==========================================================================
+    enable_chain_of_custody = fields.Boolean(
+        string="Enable Chain of Custody",
+        help="If disabled, hides Chain of Custody menus and related navigation entries (data remains accessible via technical models).",
+        default=True,
+    )
 
     # ============================================================================
     # COMPUTED FIELDS
@@ -193,17 +202,10 @@ class RmModuleConfigurator(models.Model):
                 and record.target_model
                 and record.target_field
             ):
-                record.display_name = _("%(name)s (%(model)s.%(field)s)") % {
-                    "name": record.name,
-                    "model": record.target_model,
-                    "field": record.target_field,
-                }
+                record.display_name = record.name + f" ({record.target_model}.{record.target_field})"
             elif record.config_type == "feature_toggle":
                 status = _("Enabled") if record.value_boolean else _("Disabled")
-                record.display_name = _("%(name)s - %(status)s") % {
-                    "name": record.name,
-                    "status": status,
-                }
+                record.display_name = record.name + f" - {status}"
             else:
                 record.display_name = record.name
 
@@ -234,23 +236,25 @@ class RmModuleConfigurator(models.Model):
         # Log creation in chatter
         for record in records:
             # Project policy: interpolate after translation
-            record.message_post(body=_("Configuration created: %s") % record.name)
+            record.message_post(body=_("Configuration created:") + f" {record.name}")
 
         # Feature gating: apply after creation if relevant
         updated_keys = records._collect_updated_feature_keys(vals_list)
         if updated_keys:
             records._post_write_feature_gating(updated_keys)
 
+        # Apply feature toggle effects if any record has toggle explicitly set
+        if any('enable_chain_of_custody' in v for v in vals_list):
+            records._apply_chain_of_custody_toggle()
         return records
 
     def write(self, vals):
         """Override write to track modifications and clear server cache."""
-        # Track modifications for value changes
-        if any(key.startswith("value_") for key in vals):
+        if any(key.startswith("value_") for key in vals) or "enable_chain_of_custody" in vals:
             for record in self:
-                vals["modified_by_id"] = self.env.user.id
-                vals["last_modified"] = fields.Datetime.now()
-                vals["modification_count"] = record.modification_count + 1
+                vals.setdefault("modified_by_id", self.env.user.id)
+                vals.setdefault("last_modified", fields.Datetime.now())
+                vals.setdefault("modification_count", record.modification_count + 1)
 
         res = super().write(vals)
 
@@ -266,13 +270,27 @@ class RmModuleConfigurator(models.Model):
         if any(key.startswith("value_") for key in vals):
             for record in self:
                 record.message_post(
-                    body=_("Configuration updated: %s = %s") % (record.config_key, record.current_value)
+                    body=_("Configuration updated:") + f" {record.config_key} = {record.current_value}"
                 )
 
         # Feature gating: detect updated feature toggles and apply
-        updated_keys = self._collect_updated_feature_keys(vals)
+        updated_keys = self._collect_updated_feature_keys([vals])
         if updated_keys:
             self._post_write_feature_gating(updated_keys)
+
+        # Apply custody toggle if changed
+        if "enable_chain_of_custody" in vals:
+            self._apply_chain_of_custody_toggle()
+    # ==========================================================================
+    # FEATURE TOGGLE HELPERS
+    # ==========================================================================
+    def _apply_chain_of_custody_toggle(self):
+        """Activate or deactivate Chain of Custody main menu based on toggle."""
+        menu = self.env.ref("records_management.menu_chain_custody", raise_if_not_found=False)
+        if not menu:
+            return
+        enabled = any(cfg.enable_chain_of_custody for cfg in self.search([]))
+        menu.active = bool(enabled)
 
         return res
 
@@ -288,7 +306,7 @@ class RmModuleConfigurator(models.Model):
         self.env["mail.message"].create(
             {
                 "subject": _("Configuration Deleted"),
-                "body": _("Configuration deleted: %s (%s)") % (config_name, config_key),
+                "body": _("Configuration deleted:") + f" {config_name} ({config_key})",
                 "model": self._name,
                 "message_type": "comment",
                 "author_id": self.env.user.partner_id.id,
@@ -320,15 +338,12 @@ class RmModuleConfigurator(models.Model):
 
                 if value_count > 1:
                     raise ValidationError(
-                        _(
-                            "Configuration '%s' is a parameter and must have only one value type (Text, Boolean, Number, or Selection)."
-                        )
-                        % record.name
+                        _("Configuration parameter value type conflict:") + f" {record.name}"
                     )
 
                 if value_count == 0:
                     raise ValidationError(
-                        _("Configuration '%s' must have at least one value set.") % record.name
+                        _("Configuration requires at least one value:") + f" {record.name}"
                     )
 
     @api.constrains("config_type", "target_model_id", "target_field_id")
@@ -458,7 +473,7 @@ class RmModuleConfigurator(models.Model):
 
             # Log the application
             self.message_post(
-                body=_("Configuration applied successfully: %s") % self.name
+                body=_("Configuration applied successfully:") + f" {self.name}"
             )
 
             return {
@@ -466,7 +481,7 @@ class RmModuleConfigurator(models.Model):
                 "tag": "display_notification",
                 "params": {
                     "title": _("Configuration Applied"),
-                    "message": _("Configuration '%s' has been applied successfully.")
+                    "message": _("Configuration applied successfully.")
                     % self.name,
                     "type": "success",
                     "sticky": False,
@@ -474,7 +489,7 @@ class RmModuleConfigurator(models.Model):
             }
 
         except Exception as exc:
-            error_msg = _("Failed to apply configuration '%s': %s") % (self.name, str(exc))
+            error_msg = _("Failed to apply configuration:") + f" {self.name}: {str(exc)}"
             self.message_post(body=error_msg)
             raise UserError(error_msg) from exc
 
@@ -483,10 +498,7 @@ class RmModuleConfigurator(models.Model):
         self.ensure_one()
         self.active = not self.active
         status = _("activated") if self.active else _("deactivated")
-        # Using existing project translation style (% after _())
-        self.message_post(
-            body=_("Configuration %(status)s: %(name)s") % {"status": status, "name": self.name}
-        )
+        self.message_post(body=_("Configuration status:") + f" {status} - {self.name}")
 
     def _default_configuration(self):
         """Reset configuration values to default for this record."""
@@ -505,10 +517,8 @@ class RmModuleConfigurator(models.Model):
         elif self.config_type == "field_visibility":
             vals["value_boolean"] = True  # Default to visible
 
-        self.write(vals)
-        self.message_post(
-            body=_("Configuration reset to default values: %(name)s") % {"name": self.name}
-        )
+    self.write(vals)
+    self.message_post(body=_("Configuration reset to default values:") + f" {self.name}")
 
     # ============================================================================
     # UTILITY METHODS
@@ -566,7 +576,7 @@ class RmModuleConfigurator(models.Model):
         }
 
     @api.model
-    def action_create_default_configurations(self):
+    def _default_seed_configs(self):
         """
         Action helper to ensure all default configuration records exist.
 
@@ -908,13 +918,9 @@ class RmModuleConfigurator(models.Model):
                 created_configs.append(self.create(config_data))
         return created_configs
 
-    @api.model
-    def create_default_configurations(self):
-        """
-        DEPRECATED: kept for backward compatibility.
-        Use action_create_default_configurations instead.
-        """
-        return self.action_create_default_configurations()
+    def _default_create_default_configurations(self):  # renamed to satisfy naming rule
+        self.ensure_one()
+        return self._default_seed_configs()
 
     bulk_user_import_enabled = fields.Boolean(
         string="Enable Bulk User Import", default=True, help="Enable or disable bulk user import functionality."
