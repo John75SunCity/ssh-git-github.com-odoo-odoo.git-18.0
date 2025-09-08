@@ -15,6 +15,7 @@ class NAIDComplianceChecklistItem(models.Model):
     name = fields.Char(string='Item Description', required=True)
     sequence = fields.Integer(string='Sequence', default=10)
     is_checked = fields.Boolean(string='Checked')
+    description = fields.Text(string='Description', help='Detailed description or procedural notes for this checklist item.')
     notes = fields.Text(string='Notes')
     is_required = fields.Boolean(string='Is Required', default=False)
 
