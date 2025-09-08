@@ -277,6 +277,18 @@ class BarcodeProduct(models.Model):
     )
 
     # ============================================================================
+    # RELATIONSHIPS (to be reflected back in views)
+    # ============================================================================
+    storage_box_ids = fields.One2many('records.storage.box', 'location_id', string='Storage Boxes', help='Storage boxes associated via location context.')
+    shred_bin_ids = fields.One2many('shred.bin', 'partner_id', string='Shred Bins', help='Shred bins indirectly associated through customer context.')
+    pricing_tier_ids = fields.One2many('barcode.pricing.tier', 'product_id', string='Pricing Tiers')
+    seasonal_pricing_ids = fields.One2many('barcode.seasonal.pricing', 'product_id', string='Seasonal Pricing Rules')
+    generation_history_ids = fields.One2many('barcode.generation.history', 'product_id', string='Generation History')
+
+    storage_box_count = fields.Integer(string='Storage Box Count', compute='_compute_counts', store=True)
+    shred_bin_count = fields.Integer(string='Shred Bin Count', compute='_compute_counts', store=True)
+
+    # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
     @api.depends('barcode')
@@ -404,6 +416,44 @@ class BarcodeProduct(models.Model):
             if record.location_id:
                 count += 1
             record.created_records_count = count
+
+    @api.depends('storage_box_ids', 'shred_bin_ids')
+    def _compute_counts(self):
+        """Compute related object counters for stat buttons."""
+        for record in self:
+            record.storage_box_count = len(record.storage_box_ids)
+            record.shred_bin_count = len(record.shred_bin_ids)
+
+    @api.depends('storage_rate', 'shred_rate', 'monthly_volume')
+    def _compute_monthly_revenue(self):
+        """Estimate monthly revenue using storage + shred components.
+        Placeholder: Adjust later to include negotiated rates and seasonal multipliers.
+        """
+        for record in self:
+            base_storage = (record.storage_rate or 0.0)
+            shred_component = (record.shred_rate or 0.0) * (record.monthly_volume or 0)
+            record.monthly_revenue = base_storage + shred_component
+
+    @api.depends('capacity', 'monthly_volume')
+    def _compute_utilization_rate(self):
+        for record in self:
+            if record.capacity and record.capacity > 0:
+                record.utilization_rate = min(100.0, (record.monthly_volume or 0) / record.capacity * 100.0)
+            else:
+                record.utilization_rate = 0.0
+
+    @api.depends('monthly_revenue', 'storage_rate', 'shred_rate')
+    def _compute_profit_margin(self):
+        for record in self:
+            # Simplistic placeholder: treat storage_rate + shred_rate as revenue baseline, assume 60% cost
+            total_rate_baseline = (record.storage_rate or 0.0) + (record.shred_rate or 0.0)
+            if total_rate_baseline > 0:
+                assumed_cost = total_rate_baseline * 0.6
+                margin = (total_rate_baseline - assumed_cost) / total_rate_baseline * 100.0
+                record.profit_margin = margin
+            else:
+                record.profit_margin = 0.0
+
 
     # ============================================================================
     # ONCHANGE METHODS

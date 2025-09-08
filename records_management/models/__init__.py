@@ -9,6 +9,7 @@
 from . import records_billing_config
 from . import field_label_customization
 from . import records_tag
+from . import barcode_seasonal_pricing
 from . import rm_module_configurator
 from . import base_rates
 from . import naid_certificate
@@ -47,7 +48,7 @@ from . import records_approval_workflow
 from . import shredding_inventory_batch
 from . import customer_feedback
 from . import customer_inventory
-from . import naid_compliance_checklist
+from . import naidcompliance_checklist
 from . import payment_split
 from . import advanced_billing_profile
 from . import chain_of_custody
