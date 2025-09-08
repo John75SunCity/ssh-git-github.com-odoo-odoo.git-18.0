@@ -203,7 +203,7 @@ Enterprise physical & digital records lifecycle, NAID AAA + ISO 15489 compliance
         "report/naid_audit_log_reports.xml",
         "report/naid_certificate_reports.xml",
         "report/naid_compliance_action_plan_reports.xml",
-        "report/destruction_certificate_report.xml",
+    "report/destruction_certificate_reports.xml",
         "templates/portal_inventory_template.xml",
         "templates/portal_mobile_export.xml",
         "templates/portal_mobile_inventory_template.xml",

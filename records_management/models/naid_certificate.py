@@ -356,10 +356,9 @@ class NaidCertificate(models.Model):
         for record in records:
             # Using translation with inline interpolation arguments per linter requirement
             record.message_post(
-                body=_(
-                    "NAID Certificate created: %s for customer %s",
-                    record.certificate_number,
-                    record.partner_id.name,
+                body=(
+                    _("NAID Certificate created: %s for customer %s")
+                    % (record.certificate_number, record.partner_id.name)
                 )
             )
 
@@ -372,11 +371,7 @@ class NaidCertificate(models.Model):
             for record in self:
                 if record.state != vals["state"]:
                     record.message_post(
-                        body=_(
-                            "Certificate state changed from %s to %s",
-                            record.state,
-                            vals["state"],
-                        )
+                        body=_("Certificate state changed from %s to %s", record.state, vals["state"])
                     )
 
         return super(NaidCertificate, self).write(vals)
@@ -430,6 +425,9 @@ class NaidCertificate(models.Model):
         self.ensure_one()
         return False
 
+    def action_view_destruction_records(self):
+        self.ensure_one()
+        return False
     def action_view_destruction_records(self):
         self.ensure_one()
         return False

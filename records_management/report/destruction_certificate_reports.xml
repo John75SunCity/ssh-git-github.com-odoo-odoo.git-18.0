@@ -1,7 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Destruction Certificate Report Action -->
+<!-- Report for destruction.certificate model (renamed from destruction_certificate_report.xml) -->
+<record id="action_report_destruction_certificate" model="ir.actions.report">
+    <field name="name">Destruction Certificate</field>
+    <field name="model">destruction.certificate</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">records_management.report_destruction_certificate_template</field>
+    <field name="report_file">records_management.report_destruction_certificate_template</field>
+    <field name="binding_model_id" ref="records_management.model_destruction_certificate"/>
+    <field name="binding_type">report</field>
+    <field name="print_report_name">"DestructionCertificate-%s" % (object.name or '')</field>
+</record>
+
+<template id="report_destruction_certificate_template">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                                .o_signature_placeholder { height: 60px; border-bottom: 1px solid #000; }
+                    </style>
+                    <div class="text-center">
+                        <h2>Destruction Certificate</h2>
+                    </div>
+                    <p>
+                        <strong>Certificate Number:</strong>
+                        <span t-field="doc.name"/>
+                    </p>
+                    <p>
+                        <strong>Certificate Date:</strong>
+                        <span t-field="doc.certificate_date"/>
+                    </p>
+                    <p>
+                        <strong>Customer:</strong>
+                        <span t-field="doc.partner_id.display_name"/>
+                    </p>
+                    <p>
+                        <strong>Destruction Type:</strong>
+                        <span t-field="doc.destruction_type"/>
+                    </p>
+                    <p>
+                        <strong>Weight Processed (kg):</strong>
+                        <span t-field="doc.weight_processed"/>
+                    </p>
+                    <p>
+                        <strong>Containers Processed:</strong>
+                        <span t-field="doc.containers_processed"/>
+                    </p>
+                    <p>
+                        <strong>Status:</strong>
+                        <span t-field="doc.state"/>
+                    </p>
+                    <div t-if="doc.notes">
+                        <p>
+                            <strong>Notes:</strong>
+                        </p>
+                        <p t-field="doc.notes"/>
+                    </div>
+                    <t t-set="events" t-value="doc._get_aggregated_events()"/>
+                    <t t-if="events">
+                        <h3 class="mt32">Event Details</h3>
+                        <table class="table table-sm o_destruction_events">
+                            <thead>
+                                <tr>
+                                    <th>Ref</th>
+                                    <th>Date</th>
+                                    <th>Technician</th>
+                                    <th>Location</th>
+                                    <th>Items</th>
+                                    <th class="text-end">Quantity</th>
+                                    <th>UoM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="events" t-as="ev">
+                                    <td>
+                                        <span t-esc="ev['name']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="ev['date']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="ev['technician']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="ev['location_type']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="ev['items']"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-esc="ev['quantity']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="ev['uom']"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-set="sign_ctx" t-value="doc._signature_block_context()"/>
+                    <div class="row mt32" t-if="sign_ctx['compliance_officer'] or sign_ctx['witness'] or sign_ctx['operator']">
+                        <div class="col-4">
+                            <p class="mb4">
+                                <strong>Compliance Officer</strong>
+                            </p>
+                            <div class="o_signature_placeholder"></div>
+                            <p class="mt4">
+                                <span t-esc="sign_ctx['compliance_officer']"/>
+                            </p>
+                        </div>
+                        <div class="col-4">
+                            <p class="mb4">
+                                <strong>Witness</strong>
+                            </p>
+                            <div class="o_signature_placeholder" style="height:60px;border-bottom:1px solid #000;"></div>
+                            <p class="mt4">
+                                <span t-esc="sign_ctx['witness']"/>
+                            </p>
+                        </div>
+                        <div class="col-4">
+                            <p class="mb4">
+                                <strong>Operator</strong>
+                            </p>
+                            <div class="o_signature_placeholder" style="height:60px;border-bottom:1px solid #000;"></div>
+                            <p class="mt4">
+                                <span t-esc="sign_ctx['operator']"/>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+
+<!-- Existing shredding.service report retained (ids unchanged) -->
+<!-- Destruction Certificate Report Action for shredding.service -->
         <record id="action_destruction_certificate_report" model="ir.actions.report">
             <field name="name">NAID Destruction Certificate</field>
             <field name="model">shredding.service</field>
@@ -13,7 +149,7 @@
             <field name="print_report_name">'Destruction_Certificate_%s' % (object.name)</field>
         </record>
 
-        <!-- NAID AAA Destruction Certificate Template -->
+<!-- NAID AAA Destruction Certificate Template for shredding.service (id preserved) -->
         <template id="destruction_certificate_template">
             <t t-call="web.external_layout">
                 <div class="page">
@@ -60,8 +196,10 @@
                                             <td><strong>Address:</strong></td>
                                             <td>
                                                 <span t-field="service.partner_id.street"/><br/>
-                                                <span t-field="service.partner_id.city"/>, 
-                                                <span t-field="service.partner_id.state_id.name"/> 
+<span t-field="service.partner_id.city"/>
+,
+<span t-field="service.partner_id.state_id.name"/>
+
                                                 <span t-field="service.partner_id.zip"/>
                                             </td>
                                         </tr>
@@ -116,12 +254,12 @@
                         <div class="compliance-statement" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 30px; background-color: #f8f9fa;">
                             <h4>NAID AAA Compliance Certification</h4>
                             <p style="text-align: justify;">
-                                This certificate confirms that the above-listed materials have been destroyed 
-                                in accordance with NAID (National Association for Information Destruction) 
-                                AAA standards for secure destruction of confidential information. The destruction 
+This certificate confirms that the above-listed materials have been destroyed
+                                in accordance with NAID (National Association for Information Destruction)
+                                AAA standards for secure destruction of confidential information. The destruction
                                 process ensures complete obliteration of all data, making reconstruction impossible.
                             </p>
-                            
+
                             <div class="row">
                                 <div class="col-6">
                                     <p><strong>Destruction Method:</strong> <span t-field="service.destruction_method"/></p>
@@ -171,7 +309,7 @@
                                 <div class="col-4">
                                     <div style="border: 1px solid #ccc; height: 80px; text-align: center; padding-top: 30px;">
                                         <t t-if="service.technician_signature">
-                                            <img t-att-src="'data:image/png;base64,%s' % to_text(service.technician_signature)" 
+<img t-att-src="'data:image/png;base64,%s' % to_text(service.technician_signature)"
                                                  style="max-width: 150px; max-height: 60px;"/>
                                         </t>
                                         <t t-else="">
@@ -186,7 +324,7 @@
                                 <div class="col-4">
                                     <div style="border: 1px solid #ccc; height: 80px; text-align: center; padding-top: 30px;">
                                         <t t-if="service.supervisor_signature">
-                                            <img t-att-src="'data:image/png;base64,%s' % to_text(service.supervisor_signature)" 
+<img t-att-src="'data:image/png;base64,%s' % to_text(service.supervisor_signature)"
                                                  style="max-width: 150px; max-height: 60px;"/>
                                         </t>
                                         <t t-else="">
@@ -201,7 +339,7 @@
                                 <div class="col-4">
                                     <div style="border: 1px solid #ccc; height: 80px; text-align: center; padding-top: 30px;">
                                         <t t-if="service.customer_signature">
-                                            <img t-att-src="'data:image/png;base64,%s' % to_text(service.customer_signature)" 
+<img t-att-src="'data:image/png;base64,%s' % to_text(service.customer_signature)"
                                                  style="max-width: 150px; max-height: 60px;"/>
                                         </t>
                                         <t t-else="">
@@ -222,25 +360,26 @@
                                 <div class="col-8">
                                     <p style="font-size: 12px; text-align: left;">
                                         <strong>Certificate Verification:</strong><br/>
-                                        This certificate can be verified online using the QR code or by visiting our website 
+This certificate can be verified online using the QR code or by visiting our website
                                         and entering certificate number: <strong><span t-field="service.name"/></strong><br/>
-                                        
-                                        <strong>Legal Statement:</strong> This certificate serves as legal proof of destruction 
-                                        and satisfies regulatory compliance requirements for data protection laws including 
+<strong>Legal Statement:</strong> This certificate serves as legal proof of destruction
+                                        and satisfies regulatory compliance requirements for data protection laws including
                                         HIPAA, FACTA, SOX, and GDPR.
                                     </p>
                                 </div>
                                 <div class="col-4" style="text-align: center;">
                                     <!-- QR Code for verification -->
-                                    <img t-att-src="'/report/barcode/QR/'+service.name+'?width=100&amp;height=100'" 
+<img t-att-src="'/report/barcode/QR/'+service.name+'?width=100&amp;height=100'"
                                          alt="Certificate Verification QR Code" style="width: 100px; height: 100px;"/>
                                     <p style="font-size: 10px; margin-top: 5px;">Scan to verify certificate</p>
                                 </div>
                             </div>
-                            
+
                             <p style="font-size: 10px; color: #666; margin-top: 20px;">
-                                Certificate generated on <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/> | 
-                                NAID Member ID: <span t-field="env.company.naid_member_id"/> | 
+Certificate generated on<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/>
+ |
+                                NAID Member ID: <span t-field="env.company.naid_member_id"/>
+ |
                                 Page <span class="page"/> of <span class="topage"/>
                             </p>
                         </div>
@@ -287,11 +426,11 @@
                         <div class="destruction-statement" style="border: 1px solid #ddd; padding: 15px; margin: 20px 0; background-color: #f8f9fa;">
                             <h4>Destruction Confirmation</h4>
                             <p>
-                                This certificate confirms the secure destruction of customer-provided materials 
-                                in accordance with NAID AAA standards. All materials were destroyed using 
+This certificate confirms the secure destruction of customer-provided materials
+                                in accordance with NAID AAA standards. All materials were destroyed using
                                 cross-cut shredding methods ensuring complete data obliteration.
                             </p>
-                            
+
                             <div class="row" style="margin-top: 15px;">
                                 <div class="col-6">
                                     <p><strong>Items Destroyed:</strong></p>
@@ -311,7 +450,7 @@
                         </div>
 
                         <div class="verification" style="text-align: center; margin-top: 30px;">
-                            <img t-att-src="'/report/barcode/QR/'+order.name+'?width=80&amp;height=80'" 
+<img t-att-src="'/report/barcode/QR/'+order.name+'?width=80&amp;height=80'"
                                  alt="Certificate Verification" style="width: 80px; height: 80px;"/>
                             <p style="font-size: 12px; margin-top: 10px;">
                                 Certificate: <span t-field="order.name"/><br/>

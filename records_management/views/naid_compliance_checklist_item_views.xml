@@ -15,7 +15,7 @@
 
     <!-- Form view for naid.compliance.checklist.item -->
     <record id="naid_compliance_checklist_item_view_form" model="ir.ui.view">
-<field name="name">naid.compliance.checklist.item.form</field>
+<field name="name">naid.compliance.checklist.item.view.form</field>
 <field name="model">naid.compliance.checklist.item</field>
         <field name="arch" type="xml">
 <form>
