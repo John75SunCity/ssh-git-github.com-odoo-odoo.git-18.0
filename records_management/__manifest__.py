@@ -174,8 +174,7 @@
         "views/work_order_coordinator_views.xml",
         "views/workflow_visualization_manager_views.xml",
         "report/description_reports.xml",
-        "reports/document_search_attempt_report.xml",
-        "reports/report_records_management_report_customer_inventory_report.xml",
+        "report/document_search_attempt_report.xml",
         "report/naid_compliance_reports.xml",
         "report/naid_compliance_alert_reports.xml",
         "report/naid_audit_log_reports.xml",
@@ -198,7 +197,8 @@
         "views/revenue_forecast_views.xml",
         "views/revenue_forecast_line_views.xml",
         "views/revenue_analytic_views.xml",
-        "views/pickup_request_views.xml"
+        "views/pickup_request_views.xml",
+        "report/report_records_management_report_customer_inventory_report.xml"
     ],
     "demo": [
         "demo/customer_inventory_demo.xml",

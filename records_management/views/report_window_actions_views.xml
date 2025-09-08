@@ -13,8 +13,8 @@
                 <field name="cubic_feet"/>
 <field name="document_count"/>
 
+<field name="partner_id"/>
 
-                <field name="customer_id"/>
 </list>
         </field>
     </record>
@@ -26,12 +26,15 @@
             <search string="Search Containers">
                 <field name="name"/>
                 <field name="location_id"/>
-                <field name="customer_id"/>
+<field name="partner_id"/>
+
                 <filter name="state_active" string="Active" domain="[('state','=','active')]"/>
-                <filter name="state_archived" string="Archived" domain="[('state','=','archived')]"/>
+<filter name="state_destroyed" string="Destroyed" domain="[('state','=','destroyed')]"/>
+
                 <group expand="0" string="Group By">
                     <filter name="group_location" string="Location" context="{'group_by':'location_id'}"/>
-                    <filter name="group_customer" string="Customer" context="{'group_by':'customer_id'}"/>
+<filter name="group_partner" string="Customer" context="{'group_by':'partner_id'}"/>
+
                 </group>
             </search>
         </field>
