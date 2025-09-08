@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Inherited view to add Field Labels smart button on Document form -->
+        <record id="records_document_view_form_inherit" model="ir.ui.view">
+            <field name="name">records.document.view.form.inherit.field_label_helper</field>
+            <field name="model">records.document</field>
+            <field name="inherit_id" ref="records_management.records_document_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/div[@name='button_box']" position="inside">
+                    <button type="action"
+                            class="oe_stat_button"
+                            name="%(action_field_label_helper_wizard)d"
+                            context="{'default_model_id': ref('base.model_records_document')}"
+                            icon="fa-tag"
+                            groups="records_management.group_records_manager"
+                            string="Field Labels"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

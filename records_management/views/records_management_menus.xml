@@ -79,27 +79,45 @@
 <menuitem id="menu_records_documents" name="Files" parent="menu_records_operations" action="action_records_document" sequence="20" groups="records_management.group_records_user"/>
 
 <!-- Temporarily commented out menuitems with missing actions -->
-<!-- <menuitem id="menu_records_boxes" name="Scans PDF" parent="menu_records_operations" action="action_records_digital_scan" sequence="25" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_records_boxes" name="Scans PDF" parent="menu_records_operations" action="action_records_digital_scan" sequence="25" groups="records_management.group_records_user"/>
+
 
 <!-- Service Operations -->
-<!-- <menuitem id="menu_pickup_requests" name="Pickup Requests" parent="menu_records_operations" action="action_pickup_request" sequence="30" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_pickup_requests" name="Pickup Requests" parent="menu_records_operations" action="action_pickup_request" sequence="30" groups="records_management.group_records_user"/>
 
-<!-- <menuitem id="menu_shredding_services" name="Shredding Services" parent="menu_records_operations" action="action_shredding_service" sequence="40" groups="records_management.group_records_user"/> -->
 
-<!-- <menuitem id="menu_shredding_bins" name="Shredding Bins" parent="menu_records_operations" action="action_shredding_service_bin" sequence="41" groups="records_management.group_records_user"/> -->
 
-<!-- <menuitem id="menu_paper_model_bales" name="Bales" parent="menu_records_operations" action="action_paper_model_bale" sequence="42" groups="records_management.group_records_user"/> -->
 
-<!-- <menuitem id="menu_shred_model_bins" name="Shred Bins" parent="menu_records_operations" action="action_shred_model_bin" sequence="43" groups="records_management.group_records_user"/> -->
 
-<!-- <menuitem id="menu_destruction_services" name="Destruction Services" parent="menu_records_operations" action="action_records_destruction" sequence="45" groups="records_management.group_records_user"/> -->
 
-<!-- <menuitem id="menu_stock_lots" name="Serial Numbers" parent="menu_records_operations" action="action_stock_lot" sequence="50" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_shredding_services" name="Shredding Services" parent="menu_records_operations" action="action_shredding_service" sequence="40" groups="records_management.group_records_user"/>
+
+
+<menuitem id="menu_shredding_bins" name="Shredding Bins" parent="menu_records_operations" action="action_shredding_service_bin" sequence="41" groups="records_management.group_records_user"/>
+
+
+<menuitem id="menu_paper_model_bales" name="Bales" parent="menu_records_operations" action="action_paper_model_bale" sequence="42" groups="records_management.group_records_user"/>
+
+
+<menuitem id="menu_shred_model_bins" name="Shred Bins" parent="menu_records_operations" action="action_shred_model_bin" sequence="43" groups="records_management.group_records_user"/>
+
+
+<menuitem id="menu_destruction_services" name="Destruction Services" parent="menu_records_operations" action="action_records_destruction" sequence="45" groups="records_management.group_records_user"/>
+
+
+
+<menuitem id="menu_stock_lots" name="Serial Numbers" parent="menu_records_operations" action="action_stock_lot" sequence="50" groups="records_management.group_records_user"/>
+
+
+
 
 <!-- Work Order Management -->
-<!-- <menuitem id="menu_work_order_coordinators" name="Work Order Coordinators" parent="menu_records_operations" action="action_work_order_coordinator" sequence="55" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_work_order_coordinators" name="Work Order Coordinators" parent="menu_records_operations" action="action_work_order_coordinator" sequence="55" groups="records_management.group_records_user"/>
 
-<!-- <menuitem id="menu_workflow_visualizations" name="Workflow Visualizations" parent="menu_records_operations" action="action_workflow_visualization_manager" sequence="60" groups="records_management.group_records_manager"/> -->
+
+<menuitem id="menu_workflow_visualizations" name="Workflow Visualizations" parent="menu_records_operations" action="action_workflow_visualization_manager" sequence="60" groups="records_management.group_records_manager"/>
+
+
 
 <!-- ========================================== -->
 <!-- CUSTOMER PORTAL MENU (Level 1) -->
@@ -108,13 +126,22 @@
 <menuitem id="menu_records_portal" name="Customer Portal" parent="menu_records_management_root" sequence="15" groups="records_management.group_records_user"/>
 
 <!-- Temporarily commented out menuitems with missing actions -->
-<!-- <menuitem id="menu_portal_requests" name="Portal Requests" parent="menu_records_portal" action="action_portal_request" sequence="10" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_portal_requests" name="Portal Requests" parent="menu_records_portal" action="action_portal_request" sequence="10" groups="records_management.group_records_user"/>
 
-<!-- <menuitem id="menu_customer_feedback" name="Customer Feedback" parent="menu_records_portal" action="action_customer_feedback" sequence="20" groups="records_management.group_records_user"/> -->
 
-<!-- <menuitem id="menu_portal_feedback" name="Portal Feedback" parent="menu_records_portal" action="action_feedback_responses" sequence="30" groups="records_management.group_records_manager"/> -->
 
-<!-- <menuitem id="menu_feedback_analytics" name="Feedback Analytics" parent="menu_portal_feedback" action="action_feedback_analytics" sequence="10" groups="records_management.group_records_manager"/> -->
+<menuitem id="menu_customer_feedback" name="Customer Feedback" parent="menu_records_portal" action="customer_feedback_action" sequence="20" groups="records_management.group_records_user"/>
+
+
+<menuitem id="menu_portal_feedback" name="Portal Feedback" parent="menu_records_portal" action="action_feedback_responses" sequence="30" groups="records_management.group_records_manager"/>
+
+
+
+<menuitem id="menu_feedback_analytics" name="Feedback Analytics" parent="menu_portal_feedback" action="action_feedback_analytics" sequence="10" groups="records_management.group_records_manager"/>
+
+
+
+
 
 
 <!-- ========================================== -->
@@ -124,11 +151,15 @@
 <menuitem id="menu_records_inventory" name="Inventory" parent="menu_records_management_root" sequence="20" groups="records_management.group_records_user"/>
 
 <!-- Temporarily commented out menuitems with missing actions -->
-<!-- <menuitem id="menu_customer_inventory" name="Customer Inventory" parent="menu_records_inventory" action="action_customer_inventory_report" sequence="10" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_customer_inventory" name="Customer Inventory" parent="menu_records_inventory" action="action_customer_inventory_browser" sequence="10" groups="records_management.group_records_user"/>
 
-<!-- <menuitem id="menu_inventory_documents" name="Inventory Documents" parent="menu_records_inventory" action="action_inventory_item" sequence="15" groups="records_management.group_records_user"/> -->
 
-<!-- <menuitem id="menu_records_retention" name="Retention Policies" parent="menu_records_inventory" action="action_records_retention_policy" sequence="20" groups="records_management.group_records_manager"/> -->
+<menuitem id="menu_inventory_documents" name="Inventory Documents" parent="menu_records_inventory" action="action_inventory_item" sequence="15" groups="records_management.group_records_user"/>
+
+
+<menuitem id="menu_records_retention" name="Retention Policies" parent="menu_records_inventory" action="action_records_retention_policy" sequence="20" groups="records_management.group_records_manager"/>
+
+
 
 <!-- ========================================== -->
 <!-- COMPLIANCE MENU (Level 1) -->
@@ -143,13 +174,22 @@
 
 
 <!-- Temporarily commented out menuitems with missing actions -->
-<!-- <menuitem id="menu_naid_compliance" name="Compliance Records" parent="menu_records_compliance" action="action_naid_compliance" sequence="10" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_naid_compliance" name="Compliance Records" parent="menu_records_compliance" action="action_naid_compliance" sequence="10" groups="records_management.group_records_user"/>
 
-<!-- <menuitem id="menu_naid_certificates" name="Destruction Certificates" parent="menu_records_compliance" action="action_naid_certificate" sequence="20" groups="records_management.group_records_user"/> -->
 
-<!-- <menuitem id="menu_naid_audit_logs" name="Audit Logs" parent="menu_records_compliance" action="action_naid_audit_log" sequence="30" groups="records_management.group_records_manager"/> -->
 
-<!-- <menuitem id="menu_chain_custody" name="Chain of Custody" parent="menu_records_compliance" action="action_chain_of_custody" sequence="40" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_naid_certificates" name="Destruction Certificates" parent="menu_records_compliance" action="action_naid_certificate" sequence="20" groups="records_management.group_records_user"/>
+
+
+<menuitem id="menu_naid_audit_logs" name="Audit Logs" parent="menu_records_compliance" action="action_naid_audit_log" sequence="30" groups="records_management.group_records_manager"/>
+
+
+
+<menuitem id="menu_chain_custody" name="Chain of Custody" parent="menu_records_compliance" action="action_chain_of_custody" sequence="40" groups="records_management.group_records_user"/>
+
+
+
+
 
 <!-- ========================================== -->
 <!-- BILLING &amp; FINANCE MENU (Level 1) -->
@@ -158,13 +198,21 @@
 <menuitem id="menu_records_billing" name="Billing &amp; Finance" parent="menu_records_management_root" sequence="30" groups="records_management.group_records_manager"/>
 
 <!-- Temporarily commented out menuitems with missing actions -->
-<!-- <menuitem id="menu_billing_config" name="Billing Configuration" parent="menu_records_billing" action="action_records_billing_config" sequence="10" groups="records_management.group_records_manager"/> -->
+<menuitem id="menu_billing_config" name="Billing Configuration" parent="menu_records_billing" action="action_records_billing_config" sequence="10" groups="records_management.group_records_manager"/>
 
-<!-- <menuitem id="menu_advanced_billing" name="Advanced Billing" parent="menu_records_billing" action="advanced_billing_profile_action" sequence="20" groups="records_management.group_records_manager"/> -->
 
-<!-- <menuitem id="menu_base_rates" name="Base Rates" parent="menu_records_billing" action="action_base_rates" sequence="30" groups="records_management.group_records_manager"/> -->
+<menuitem id="menu_advanced_billing" name="Advanced Billing" parent="menu_records_billing" action="advanced_billing_profile_action" sequence="20" groups="records_management.group_records_manager"/>
 
-<!-- <menuitem id="menu_customer_rates" name="Customer Rates" parent="menu_records_billing" action="action_customer_negotiated_rates" sequence="40" groups="records_management.group_records_manager"/> -->
+
+<menuitem id="menu_base_rates" name="Base Rates" parent="menu_records_billing" action="action_base_rates" sequence="30" groups="records_management.group_records_manager"/>
+
+
+
+<menuitem id="menu_customer_rates" name="Customer Rates" parent="menu_records_billing" action="action_customer_negotiated_rates" sequence="40" groups="records_management.group_records_manager"/>
+
+
+
+
 
 <!-- ========================================== -->
 <!-- REPORTING MENU (Level 1) -->
@@ -175,13 +223,17 @@
         <menuitem id="menu_reports" name="Reporting Hub" parent="menu_records_reporting" sequence="41" groups="records_management.group_records_user"/>
 
 <!-- Temporarily commented out menuitems with missing actions -->
-<!-- <menuitem id="menu_records_reports" name="Storage Reports" parent="menu_records_reporting" action="report_container_contents" sequence="10" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_records_reports" name="Storage Reports" parent="menu_records_reporting" action="action_storage_reports" sequence="10" groups="records_management.group_records_user"/>
 
-<!-- <menuitem id="menu_inventory_reports" name="Inventory Reports" parent="menu_records_reporting" action="action_report_records_management_report_customer_inventory" sequence="20" groups="records_management.group_records_user"/> -->
+<menuitem id="menu_inventory_reports" name="Inventory Reports" parent="menu_records_reporting" action="action_report_records_management_report_customer_inventory" sequence="20" groups="records_management.group_records_user"/>
 
-<!-- <menuitem id="menu_compliance_reports" name="Compliance Reports" parent="menu_records_reporting" action="action_report_naid_compliance" sequence="30" groups="records_management.group_records_manager"/> -->
 
-<!-- <menuitem id="menu_revenue_forecaster" name="Revenue Forecasting" parent="menu_records_reporting" action="action_revenue_forecaster" sequence="40" groups="records_management.group_records_manager"/> -->
+<menuitem id="menu_compliance_reports" name="Compliance Reports" parent="menu_records_reporting" action="action_compliance_reports" sequence="30" groups="records_management.group_records_manager"/>
+
+
+<menuitem id="menu_revenue_forecaster" name="Revenue Forecasting" parent="menu_records_reporting" action="action_revenue_forecaster" sequence="40" groups="records_management.group_records_manager"/>
+
+
 
 <!-- Mobile & Analytics Features -->
 <!-- <menuitem id="menu_mobile_dashboard" name="Mobile Dashboard" parent="menu_records_reporting" action="action_mobile_dashboard" sequence="50" groups="records_management.group_records_user,records_management.group_records_manager"/> -->
@@ -199,23 +251,26 @@
         <!-- Master Data Sub-Menu -->
         <menuitem id="menu_records_master_data" name="Master Data" parent="menu_records_configuration" sequence="10" groups="records_management.group_records_manager"/>
 <!-- Temporarily commented out menuitems with missing actions -->
-<!-- <menuitem id="menu_records_location" name="Storage Locations" parent="menu_records_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager"/> -->
-<!-- <menuitem id="menu_records_document_type" name="Document Types" parent="menu_records_master_data" action="action_records_document_type" sequence="20" groups="records_management.group_records_manager"/> -->
-<!-- <menuitem id="menu_records_tags" name="Classification Tags" parent="menu_records_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager"/> -->
-<!-- <menuitem id="menu_records_departments" name="Records Departments" parent="menu_records_master_data" action="action_records_department" sequence="40" groups="records_management.group_records_manager"/> -->
+<menuitem id="menu_records_location" name="Storage Locations" parent="menu_records_master_data" action="action_records_location" sequence="10" groups="records_management.group_records_manager"/>
+<menuitem id="menu_records_document_type" name="Document Types" parent="menu_records_master_data" action="action_records_document_type" sequence="20" groups="records_management.group_records_manager"/>
+<menuitem id="menu_records_tags" name="Classification Tags" parent="menu_records_master_data" action="action_records_tag_simple" sequence="30" groups="records_management.group_records_manager"/>
+<menuitem id="menu_records_departments" name="Records Departments" parent="menu_records_master_data" action="action_records_department" sequence="40" groups="records_management.group_records_manager"/>
+
 <!-- Products &amp; Services Sub-Menu -->
         <menuitem id="menu_records_products" name="Products &amp; Services" parent="menu_records_configuration" sequence="20" groups="records_management.group_records_manager"/>
 <!-- Temporarily commented out menuitems with missing actions -->
-<!-- <menuitem id="menu_records_products_list" name="Service Products" parent="menu_records_products" action="product.product_template_action" sequence="10" groups="records_management.group_records_manager"/> -->
-<!-- <menuitem id="menu_records_product_variants" name="Product Variants" parent="menu_records_products" action="product.product_normal_action" sequence="20" groups="records_management.group_records_manager"/> -->
+<menuitem id="menu_records_products_list" name="Service Products" parent="menu_records_products" action="product.product_template_action" sequence="10" groups="records_management.group_records_manager"/>
+<menuitem id="menu_records_product_variants" name="Product Variants" parent="menu_records_products" action="product.product_normal_action" sequence="20" groups="records_management.group_records_manager"/>
+
 <!-- Department Billing Contacts -->
 <!-- <menuitem id="menu_department_billing_contacts" name="Department Billing Contacts" parent="menu_records_configuration" action="action_department_billing_contacts" sequence="25" groups="records_management.group_records_manager"/> -->
 
         <!-- Security &amp; Access Sub-Menu -->
         <menuitem id="menu_records_security" name="Security &amp; Access" parent="menu_records_configuration" sequence="30" groups="records_management.group_records_manager"/>
 <!-- Temporarily commented out menuitems with missing actions -->
-<!-- <menuitem id="menu_bin_key_management" name="Bin Key Management" parent="menu_records_security" action="action_bin_key_management" sequence="10" groups="records_management.group_records_manager"/> -->
-<!-- <menuitem id="menu_bin_keys" name="Physical Bin Keys" parent="menu_records_security" action="action_bin_key" sequence="20" groups="records_management.group_records_manager"/> -->
+<menuitem id="menu_bin_key_management" name="Bin Key Management" parent="menu_records_security" action="action_bin_key_management" sequence="10" groups="records_management.group_records_manager"/>
+<menuitem id="menu_bin_keys" name="Physical Bin Keys" parent="menu_records_security" action="action_bin_key" sequence="20" groups="records_management.group_records_manager"/>
+
 <!-- Service Items Sub-Menu -->
 <menuitem id="menu_service_item_main" name="Service Items" parent="menu_records_configuration" sequence="35" groups="records_management.group_records_manager"/>
 <!-- Service Items Dashboard -->
