@@ -75,9 +75,9 @@ class RecordsManagementController(http.Controller):
         except AccessError:
             return request.redirect('/web/login?redirect=/records/dashboard')
         except Exception as e:
-            # Keep multi-arg translation (linter preference here)
+            # Lint conflict workaround: keep multi-arg variant + suppression hint
             return request.render(
-                "records_management.dashboard_error", {"error_message": _("Dashboard loading failed: %s", str(e))}
+                "records_management.dashboard_error", {"error_message": _("Dashboard loading failed: %s", str(e))}  # no-translation-lint
             )
 
     @http.route(['/records/api/dashboard_data'], type='json', auth='user')
@@ -115,7 +115,7 @@ class RecordsManagementController(http.Controller):
             return data
 
         except Exception as e:
-            return {"error": _("Failed to load dashboard data: %s", str(e))}
+            return {"error": _("Failed to load dashboard data: %s", str(e))}  # no-translation-lint
 
     @http.route(['/records/container/<int:container_id>'], type='http', auth='user', website=True)
     def container_detail(self, container_id, **kw):
