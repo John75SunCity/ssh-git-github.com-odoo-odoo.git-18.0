@@ -6,7 +6,8 @@
         <field name="arch" type="xml">
             <form string="NAID Audit Verification">
                 <group>
-                    <field name="requirement_id"/>
+<field name="audit_requirement_id"/>
+
                     <field name="checklist_category"/>
                     <field name="verification_notes"/>
                     <field name="verification_result"/>

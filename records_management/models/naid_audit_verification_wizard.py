@@ -78,8 +78,9 @@ class NAIDAuditVerificationWizard(models.TransientModel):
         })
 
         # Prepare audit log entry
+        # Use correct foreign key field name matching naid.audit.log model (audit_requirement_id)
         audit_log_vals = {
-            'requirement_id': self.audit_requirement_id.id,
+            'audit_requirement_id': self.audit_requirement_id.id,
             'audit_date': fields.Date.today(),
             'auditor_id': self.env.user.id,
             'result': self.verification_result,
