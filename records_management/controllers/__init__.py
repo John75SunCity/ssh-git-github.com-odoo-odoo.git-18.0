@@ -15,3 +15,4 @@ from . import main  # core controllers
 from . import field_label_portal  # field label customization portal
 from . import intelligent_search  # search controllers
 from . import work_order_portal  # work order portal controllers
+from . import pos_customer_history  # POS customer history JSON endpoint

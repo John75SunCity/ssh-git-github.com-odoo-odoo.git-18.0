@@ -42,9 +42,13 @@
         "data/tag_data.xml",
         "data/temp_inventory_configurator_data.xml",
         "data/field_label_customization_batch_data.xml",
+    # Menus must be loaded before any view files that add child menuitems referencing them
+    "views/records_management_menus.xml",
         "views/field_label_helper_wizard_views.xml",
         "views/report_window_actions_views.xml",
-        "views/bin_issue_report_wizard_views.xml",
+    # Bin issue wizard adds menuitems with parent="records_management.menu_records_operations";
+    # ensure parent menus loaded first (see moved records_management_menus.xml above)
+    "views/bin_issue_report_wizard_views.xml",
         "views/customer_inventory_report_wizard_views.xml",
         "views/hard_drive_scan_wizard_views.xml",
         "views/location_report_wizard_views.xml",
@@ -66,7 +70,6 @@
         "views/temp_inventory_reject_wizard_views.xml",
         "views/visitor_pos_wizard_views.xml",
         "views/work_order_bin_assignment_wizard_views.xml",
-        "views/records_management_menus.xml",
         "views/advanced_billing_contact_views.xml",
         "views/advanced_billing_profile_views.xml",
         "views/approval_history_views.xml",
@@ -225,6 +228,7 @@
             "records_management/static/src/js/intelligent_search.js",
             "records_management/static/src/js/system_flowchart_view.js",
             "records_management/static/src/js/customer_portal_diagram_view.js",
+            "records_management/static/src/js/pos_customer_history.js",
             "records_management/static/src/xml/map_widget.xml",
             "records_management/static/src/xml/trailer_visualization.xml",
             "records_management/static/src/xml/intelligent_search_templates.xml",

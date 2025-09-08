@@ -177,6 +177,8 @@
                             <group>
                                 <group string="Walk-In Service Configuration">
                                     <field name="enable_walk_in_service" widget="boolean_toggle"/>
+<field name="enable_pos_customer_history" widget="boolean_toggle"/>
+
 <field name="walk_in_customer_id" invisible="enable_walk_in_service != True"/>
 <field name="walk_in_pricelist_id" invisible="enable_walk_in_service != True"/>
 <field name="auto_create_customer" widget="boolean_toggle" invisible="enable_walk_in_service != True"/>

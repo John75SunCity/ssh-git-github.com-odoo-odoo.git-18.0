@@ -37,6 +37,10 @@ class PosConfig(models.Model):
         string="Enable Walk-In Service",
         help="Allow processing of walk-in customers with simplified POS flow."
     )
+    enable_pos_customer_history = fields.Boolean(
+        string="Enable Customer History",
+        help="Display recent POS order history (with cashier and pricing) when selecting a customer in the PoS interface."
+    )
     walk_in_customer_id = fields.Many2one(
         comodel_name='res.partner',
         string='Default Walk-In Customer',

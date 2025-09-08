@@ -44,7 +44,7 @@ class VisitorPosWizard(models.TransientModel):
     partner_id = fields.Many2one(
         "res.partner",
         string="Customer",
-        help="Selected or newly created customer to associate with the POS order. Editable when creating a new one.",
+    help="Selected or newly created customer to associate with the POS order. Editable when 'Create New Customer' is enabled.",
     )
     create_new_customer = fields.Boolean(
         string="Create New Customer from Visitor",
@@ -86,10 +86,15 @@ class VisitorPosWizard(models.TransientModel):
 
     @api.onchange("partner_id")
     def _onchange_partner_id(self):
-        """If user selects a partner manually while create_new_customer is checked, defer linking until action."""
-        # Recompute unit price contextually when partner changes (compute handles but onchange improves reactivity)
+        """When partner changes: recompute unit price and reprice service lines."""
         for wizard in self:
             wizard._compute_unit_price()
+            wizard._reprice_service_items()
+
+    @api.onchange("pricelist_id")
+    def _onchange_pricelist_id(self):  # pricelist_id is computed; triggered indirectly when partner/config changes
+        for wizard in self:
+            wizard._reprice_service_items()
 
     # ============================================================================
     # CONSTRAINTS
@@ -218,3 +223,71 @@ class VisitorPosWizard(models.TransientModel):
             else:
                 price = product.lst_price
             wizard.unit_price = price
+
+    # =========================================================================
+    # REPRICING LOGIC FOR SERVICE ITEM LINES
+    # =========================================================================
+    def _reprice_service_items(self):
+        """Recompute unit price, discount, subtotal and aggregated totals for service_item_ids.
+
+        Expected line fields (from view): product_id, quantity, unit_price, discount_percent, subtotal, tax_id.
+        Aggregates updated: base_amount, total_discount, tax_amount, total_amount.
+        """
+        self.ensure_one()
+        if not self.service_item_ids:
+            # Still recompute header totals to zero if empty
+            self._update_pricing_totals()
+            return
+        partner = self.partner_id
+        pricelist = None
+        if partner and partner.property_product_pricelist:
+            pricelist = partner.property_product_pricelist
+        elif self.pos_config_id and self.pos_config_id.pricelist_id:
+            pricelist = self.pos_config_id.pricelist_id
+        for line in self.service_item_ids:
+            product = line.product_id
+            if not product:
+                continue
+            # Compute base price via pricelist (qty for future volume rules; here per unit then * quantity)
+            price_unit = product.lst_price
+            if pricelist:
+                try:
+                    price_unit = pricelist.get_product_price(product, 1.0, partner or False)
+                except Exception:
+                    price_unit = product.lst_price
+            line.unit_price = price_unit
+            # Apply discount percent if present to compute subtotal before tax
+            qty = line.quantity or 0.0
+            discount = (line.discount_percent or 0.0) / 100.0
+            line.subtotal = price_unit * qty * (1 - discount)
+            # Taxes recomputed only if tax_id present; store-only wizard assumption (no tax engine invocation)
+        self._update_pricing_totals()
+
+    def _update_pricing_totals(self):
+        """Aggregate wizard monetary totals from service_item_ids and express surcharge logic."""
+        base = 0.0
+        discount_total = 0.0
+        tax_total = 0.0  # Placeholder: real tax computation could use tax_id.compute_all
+        for line in self.service_item_ids:
+            qty = line.quantity or 0.0
+            unit_price = line.unit_price or 0.0
+            line_discount = (line.discount_percent or 0.0) / 100.0
+            base += unit_price * qty
+            discount_total += unit_price * qty * line_discount
+            tax_total += 0.0  # Extend if tax computation needed
+        # Express surcharge simple multiplier (placeholder: could link to config)
+        express = 0.0
+        if getattr(self, 'express_service', False):
+            express = base * 0.15  # 15% surcharge example
+        total = base - discount_total + express + tax_total
+        # Assign to monetary fields if defined
+        if 'base_amount' in self._fields:
+            self.base_amount = base
+        if 'total_discount' in self._fields:
+            self.total_discount = discount_total
+        if 'express_surcharge' in self._fields:
+            self.express_surcharge = express
+        if 'tax_amount' in self._fields:
+            self.tax_amount = tax_total
+        if 'total_amount' in self._fields:
+            self.total_amount = total
