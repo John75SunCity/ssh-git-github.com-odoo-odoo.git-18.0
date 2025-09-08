@@ -1,3 +1,13 @@
+# Stdlib
+from datetime import timedelta
+
+# Third-party (optional dependency; available in Odoo environment)
+try:
+    from dateutil.relativedelta import relativedelta  # type: ignore
+except Exception:  # pragma: no cover - fallback when dateutil not present
+    relativedelta = None
+
+# Odoo core
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
@@ -62,7 +72,7 @@ class NaidCompliancePolicy(models.Model):
 
     # Responsibility & Review Tracking (added to match list/search views)
     responsible_id = fields.Many2one(
-        comodel_name='res.users',  # Core Odoo model is 'res.users' (plural) by design; singular rule does not apply here.
+        comodel_name='res.users',  # Odoo core exception: model name is 'res.users' (historical plural). Do NOT change to a singular form.
         string='Responsible',
         tracking=True,
         help='User accountable for maintaining this compliance policy.'
@@ -117,13 +127,14 @@ class NaidCompliancePolicy(models.Model):
     def _compute_next_review_date(self):
         for record in self:
             if record.last_review_date and record.review_frequency_months:
-                # Simple month addition (approximate by using relativedelta if available)
-                try:
-                    from dateutil.relativedelta import relativedelta
-                    record.next_review_date = record.last_review_date + relativedelta(months=record.review_frequency_months)
-                except Exception:
-                    # Fallback: approximate months as 30 days
-                    record.next_review_date = record.last_review_date + fields.Date.to_date('1970-01-01') - fields.Date.to_date('1970-01-01')  # placeholder to avoid crash
-                    record.next_review_date = record.last_review_date
+                if relativedelta:
+                    record.next_review_date = record.last_review_date + relativedelta(
+                        months=record.review_frequency_months
+                    )
+                else:
+                    # Fallback: approximate month as 30 days
+                    record.next_review_date = record.last_review_date + timedelta(
+                        days=30 * record.review_frequency_months
+                    )
             else:
                 record.next_review_date = False
