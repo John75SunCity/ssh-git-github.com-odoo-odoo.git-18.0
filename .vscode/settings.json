@@ -350,5 +350,6 @@
     "editor.guides.highlightActiveBracketPair": true,
     "editor.guides.highlightActiveIndentation": true,
     "editor.guides.indentation": true,
-    "cSpell.words": ["naid"]
+    "cSpell.words": ["naid"],
+    "Odoo.selectedProfile": "default"
 }
