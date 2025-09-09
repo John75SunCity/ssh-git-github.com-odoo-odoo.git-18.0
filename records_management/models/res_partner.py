@@ -188,10 +188,10 @@ class ResPartner(models.Model):
         services = self.env['bin.unlock.service']._read_group(
             [('partner_id', 'in', self.ids), ('state', 'in', ['completed', 'invoiced'])],
             ['partner_id'],
-            ['__count', 'cost:sum']
+            ['__count', 'total_cost:sum']
         )
         svc_count_map = {d['partner_id'][0]: d['__count'] for d in services}
-        svc_cost_map = {d['partner_id'][0]: d.get('cost', 0.0) for d in services}
+        svc_cost_map = {d['partner_id'][0]: d.get('total_cost', 0.0) for d in services}
         for partner in self:
             partner.unlock_service_count = svc_count_map.get(partner.id, 0)
             partner.total_unlock_charges = svc_cost_map.get(partner.id, 0.0)
