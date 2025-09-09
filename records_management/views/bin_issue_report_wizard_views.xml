@@ -79,7 +79,7 @@
                                 </group>
                             </group>
 
-                            <div class="alert alert-info" role="alert" invisible="not bill_customer">
+<div class="alert alert-info" role="status" invisible="not bill_customer">
                                 <strong>Customer Billing Notice:</strong> This issue will result in charges to the customer.
                                 Ensure fault evidence is properly documented and photos are attached.
                             </div>
@@ -107,7 +107,7 @@
                                        placeholder="Message to send to customer about this issue..."/>
                             </group>
 
-                            <div class="alert alert-info" role="alert" invisible="not notify_customer">
+<div class="alert alert-info" role="status" invisible="not notify_customer">
                                 <strong>Customer Notification:</strong> The customer will be automatically
                                 notified via email about this issue.
                             </div>

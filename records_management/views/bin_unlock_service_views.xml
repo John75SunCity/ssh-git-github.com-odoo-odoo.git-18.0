@@ -284,7 +284,7 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
     <field name="inherit_id" ref="bin_unlock_service_view_form"/>
     <field name="arch" type="xml">
 <xpath expr="//sheet" position="before">
-    <div class="alert alert-info" role="alert" invisible="customer_key_restricted == False">
+<div class="alert alert-info" role="status" invisible="customer_key_restricted == False">
         <strong>🔑 Key Restricted Customer:</strong>
                         This customer is not allowed to receive bin keys.
         <br/>

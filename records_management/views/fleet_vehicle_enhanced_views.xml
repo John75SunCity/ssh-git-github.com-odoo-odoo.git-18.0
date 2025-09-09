@@ -50,7 +50,7 @@ invisible="records_operational_status != 'out_of_service'">
                     </group>
 
                     <separator string="Records Vehicle Configuration"/>
-                    <div class="alert alert-info">
+<div class="alert alert-info" role="status">
                         <h4>🚚 Records Vehicle Types:</h4>
                         <ul>
                             <li><strong>Standard Pickup:</strong> Regular document pickup and delivery</li>
@@ -64,7 +64,7 @@ invisible="records_operational_status != 'out_of_service'">
 <div class="alert alert-warning" invisible="(records_vehicle_type != 'secure_transport') or (naid_compliant == True)">
                             <strong>⚠️ NAID Compliance Required:</strong> Secure transport vehicles must be NAID compliant.
                         </div>
-<div class="alert alert-success" invisible="naid_compliant == False">
+<div class="alert alert-success" role="status" invisible="naid_compliant == False">
                             <strong>✅ NAID Compliant:</strong> This vehicle meets security standards for document transport.
                         </div>
                     </group>

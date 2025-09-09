@@ -59,7 +59,7 @@
                         </group>
 
                         <group name="comparison" string="Volume Comparison">
-                            <div class="alert alert-info" role="alert">
+<div class="alert alert-info" role="status">
                                 <strong>Recommendation:</strong>
                                 <field name="recommended_container_type" readonly="1" force_save="1"/>
                                         provides the closest match to your custom box volume.
@@ -84,7 +84,7 @@
                                 <field name="price_difference" widget="monetary" readonly="1" force_save="1"/>
                                         compared to standard boxes.
                             </div>
-<div class="alert alert-info" role="alert" invisible="price_difference &gt; 0">
+<div class="alert alert-info" role="status" invisible="price_difference &gt; 0">
                                 <strong>Note:</strong> Standard boxes may be more cost-effective for this volume.
                             </div>
                         </group>

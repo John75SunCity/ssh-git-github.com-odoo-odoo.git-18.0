@@ -147,11 +147,14 @@ action = {
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <field name="name" position="after">
-                <field name="has_bin_key" string="🔑" widget="boolean_toggle"/>
-                <field name="is_emergency_key_contact" string="🚨" widget="boolean_toggle"/>
-            </field>
-        </field>
+<!-- FIX: Original xpath <field name="name" position="after"> failed (node not found).
+                     Inject added fields at end of tree to avoid brittle dependency -->
+<xpath expr="//tree" position="inside">
+    <field name="has_bin_key" string="🔑" widget="boolean_toggle"/>
+    <field name="is_emergency_key_contact" string="🚨" widget="boolean_toggle"/>
+
+</xpath>
+</field>
     </record>
 
     <!-- Form view for Enhanced -->

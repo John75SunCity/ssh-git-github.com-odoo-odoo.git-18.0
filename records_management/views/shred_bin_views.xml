@@ -79,11 +79,11 @@
                         </group>
                     </group>
 
-<div class="alert alert-info" role="alert" invisible="current_fill_level &lt; 75">
+<div class="alert alert-info" role="status" invisible="current_fill_level &lt; 75">
                         <strong>Collection Notice:</strong> Your bin is getting full. Consider requesting collection when ready.
                     </div>
 
-<div class="alert alert-success" role="alert" invisible="needs_collection == True">
+<div class="alert alert-success" role="status" invisible="needs_collection == True">
                         <strong>Service Status:</strong> Your bin is in good service. We'll collect it when you request or when it's full.
                     </div>
 

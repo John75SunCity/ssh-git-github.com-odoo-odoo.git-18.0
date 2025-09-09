@@ -62,7 +62,7 @@
                             <field name="company_id" readonly="1" groups="base.group_multi_company"/>
                         </group>
                         <group string="Audit Details">
-                            <div class="alert alert-info" role="alert">
+<div class="alert alert-info" role="status">
                                 <strong>Security Note:</strong> This audit log entry is immutable and cannot be modified or deleted to maintain NAID AAA compliance.
                             </div>
                         </group>

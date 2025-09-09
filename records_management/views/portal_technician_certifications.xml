@@ -59,7 +59,7 @@
                 </div>
             </t>
             <t t-else="">
-                <div class="alert alert-info">
+<div class="alert alert-info" role="status">
 <p>No certified technicians are currently assigned to your account.</p>
 <p class="mb-0">Contact us if you need to schedule service with NAID certified personnel.</p>
                 </div>

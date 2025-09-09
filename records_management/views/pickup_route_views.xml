@@ -226,7 +226,7 @@
             <button name="action_view_fsm_task" type="object" string="Open FSM Task" class="btn-primary" icon="fa-external-link"/>
         </group>
     </group>
-    <div class="alert alert-info">
+<div class="alert alert-info" role="status">
         <p><strong>FSM Integration Benefits:</strong></p>
         <ul>
             <li>🔄 Automated task creation and synchronization</li>
