@@ -171,12 +171,14 @@
         </field>
     </record>
 
-    <!-- Menu item for NAID custody -->
+<!-- Menu item removed here (defined centrally in records_management_menus.xml). Keeping commented to document intentional removal. -->
+<!--
     <menuitem id="menu_naid_custody"
               name="Chain of Custody"
               parent="records_management.menu_records_compliance"
               action="action_naid_custody"
               sequence="35"/>
+-->
 </data>
 
 </odoo>
