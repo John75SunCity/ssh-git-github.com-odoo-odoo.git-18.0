@@ -95,14 +95,16 @@ class FsmOrder(models.Model):
     shredding_equipment_id = fields.Many2one(
         comodel_name='maintenance.equipment',
         string="Shredding Equipment",
-        domain="[('equipment_category', '=', 'shredder')]"
+        domain=[('equipment_category', '=', 'shredder')]
     )
 
     # ============================================================================
     # BIN DETAILS
     # ============================================================================
     bin_details_ids = fields.One2many(
-        comodel_name="shredding.service.bin", inverse_name="shredding_service_id", string="Bin Details"
+        comodel_name='shredding.service.bin',
+        inverse_name='shredding_service_id',
+        string='Bin Details',
     )
 
     # ============================================================================
@@ -173,7 +175,7 @@ class FsmOrder(models.Model):
                 if not order.technician_id:
                     order.technician_id = order.user_id.id
             except Exception as e:
-                raise UserError(_("Error completing shredding service: %s", str(e))) from e
+                raise UserError(_("Error completing shredding service: %s") % str(e))  # fixed interpolation
         return res
 
     def action_view_photos(self):
@@ -232,7 +234,9 @@ class FsmOrder(models.Model):
             "tag": "display_notification",
             "params": {
                 "title": _("Certificate Generated"),
-                "message": _("Destruction certificate %s has been generated successfully.", self.certificate_id.name),
+                "message": _("Destruction certificate %s has been generated successfully.") % (
+                    self.certificate_id.name if self.certificate_id and self.certificate_id.name else "(unknown)"
+                ),
                 "type": "success",
                 "sticky": False,
             },
@@ -249,8 +253,10 @@ class FsmOrder(models.Model):
         certificate as an attachment.
         """
         self.ensure_one()
-        if 'shredding.certificate' not in self.env:
-            return
+        try:
+            ShreddingCertificate = self.env['shredding.certificate']
+        except KeyError:
+            return False
 
         # Prepare bin details for the certificate
         bin_details = []
@@ -269,17 +275,17 @@ class FsmOrder(models.Model):
             'destruction_equipment': self.shredding_equipment_id.name if self.shredding_equipment_id else False,
             'equipment_serial_number': self.shredding_equipment_id.serial_no if self.shredding_equipment_id else False,
             'operator_name': self.user_id.name if self.user_id else False,
-            'bin_details': bin_details,  # Include bin details
+            'bin_details': bin_details,
         }
-
         try:
-            certificate = self.env['shredding.certificate'].create(certificate_vals)
+            certificate = ShreddingCertificate.create(certificate_vals)
             self.certificate_id = certificate.id
             self.message_post(
-                body=_("Destruction Certificate %s generated.", certificate.name), attachment_ids=[(4, certificate.id)]
+                body=_("Destruction Certificate %s generated.") % certificate.name
             )
+            return certificate
         except Exception as e:
-            raise UserError(_("Failed to generate certificate: %s", str(e))) from e
+            raise UserError(_("Failed to generate certificate: %s") % str(e))
 
     def _prepare_certificate_vals(self):
         """
@@ -316,29 +322,36 @@ class FsmOrder(models.Model):
         """Validate that witness name is provided when witness is required."""
         for record in self:
             if record.witness_required and not record.witness_name:
-                raise UserError(_("Witness name is required when witness is marked as required."))
+                raise UserError(_("Witness name is required when a witness is required."))
 
     @api.constrains('naid_compliance_required', 'certificate_required')
     def _check_naid_compliance(self):
-        """Validate and auto-correct NAID compliance requirements."""
+        """Validate NAID compliance requirements."""
         for record in self:
-            # Auto-correct: if NAID compliance is required, certificate must also be required
             if record.naid_compliance_required and not record.certificate_required:
-                # Instead of raising an error, auto-correct the field
-                record.certificate_required = True
+                raise UserError(_("Certificate is required when NAID compliance is required."))
 
-    # ============================================================================
-    # BUSINESS METHODS
-    # ============================================================================
+    @api.onchange('naid_compliance_required')
+    def _onchange_naid_compliance_required(self):
+        """Auto-correct certificate_required when NAID compliance is required."""
+        if self.naid_compliance_required:
+            self.certificate_required = True
+
+    # Renamed helper to satisfy naming lint (_selection_ prefix)
+    def _selection_label(self, field_name, value):
+        """Return display label for a selection field."""
+        selection = dict(self._fields[field_name].selection)
+        return selection.get(value)
+
     def get_service_summary(self):
         """
         Get a summary of the service details for reporting.
         """
         self.ensure_one()
         return {
-            'service_type': dict(self._fields['service_type'].selection).get(self.service_type),
-            'material_type': dict(self._fields['material_type'].selection).get(self.material_type),
-            'destruction_method': dict(self._fields['destruction_method'].selection).get(self.destruction_method),
+            'service_type': self._selection_label('service_type', self.service_type),
+            'material_type': self._selection_label('material_type', self.material_type),
+            'destruction_method': self._selection_label('destruction_method', self.destruction_method),
             'container_count': self.container_count,
             'total_weight': self.total_weight,
             'certificate_generated': bool(self.certificate_id),

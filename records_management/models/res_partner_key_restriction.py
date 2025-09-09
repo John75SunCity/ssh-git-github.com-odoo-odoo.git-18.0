@@ -1,6 +1,7 @@
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
 from datetime import date
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class ResPartnerKeyRestriction(models.Model):
@@ -49,9 +50,8 @@ class ResPartnerKeyRestriction(models.Model):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 partner = self.env['res.partner'].browse(vals.get('partner_id'))
-                vals['name'] = self.env['ir.sequence'].next_by_code('res.partner.key.restriction') or _('New')
-                if partner:
-                    vals['name'] = f"{partner.name} - {vals['name']}"
+                seq = self.env['ir.sequence'].next_by_code('res.partner.key.restriction') or _('New')
+                vals['name'] = f"{partner.name} - {seq}" if partner else seq
         return super().create(vals_list)
 
     # ============================================================================

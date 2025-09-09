@@ -1,54 +1,26 @@
 # -*- coding: utf-8 -*-
-"""
-Bin Issue Report Wizard
+import logging  # stdlib first
 
-Comprehensive wizard for reporting bin issues with photo documentation,
-automatic work order creation, and billing integration based on fault determination.
-
-Features:
-- Photo documentation using existing mobile.photo system
-- Automatic work order creation with appropriate priority
-- Custo        r        return {
-            'type': 'ir.actions.act_window',
-            'name': _('Issue Photos: %s', self.bin_id.barcode),
-            'res_model': 'mobile.photo',
-            'view_mode': 'kanban,list,form',
-            'domain': [('wizard_reference', '=', str(self.id))],
-            'context': {
-                'search_default_group_by_type': 1,
-            },
-        }          'type': 'ir.actions.act_window',
-            'name': _('Issue Photos: %s', self.bin_id.barcode),
-            'res_model': 'mobile.photo',
-            'view_mode': 'kanban,list,form',
-            'domain': [('wizard_reference', '=', str(self.id))],
-            'context': {
-                'search_default_group_by_type': 1,
-            },
-        }billing vs. company maintenance
-- Integration with base.rates for pricing
-- NAID compliance audit logging
-"""
-
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
-import logging
+from odoo import _, api, fields, models  # Odoo core
+from odoo.exceptions import ValidationError, UserError  # Odoo addons
 
 _logger = logging.getLogger(__name__)
 
 
 class BinIssueReportWizard(models.TransientModel):
     """
-    Wizard for reporting bin issues with photo documentation and automatic work order creation.
+    Bin Issue Report Wizard
 
-    Business Logic:
-    - Customer fault damage → billable work order with damaged bin rate
-    - Company fault issues → non-billable maintenance work order
-    - Label/barcode issues → non-billable maintenance (keep equipment functional)
-    - Photo documentation required for damage claims
-    - GPS coordinates captured for location verification
+    Comprehensive wizard for reporting bin issues with photo documentation,
+    automatic work order creation, and billing integration based on fault determination.
+
+    Features:
+    - Photo documentation using existing mobile.photo system
+    - Automatic work order creation with appropriate priority
+    - Customer billing vs. company maintenance
+    - Integration with base.rates for pricing
+    - NAID compliance audit logging
     """
-
     _name = 'bin.issue.report.wizard'
     _description = 'Bin Issue Report Wizard'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -335,7 +307,6 @@ class BinIssueReportWizard(models.TransientModel):
     def action_take_photo(self):
         """Open mobile photo capture interface."""
         self.ensure_one()
-
         return {
             "type": "ir.actions.act_window",
             "name": _("Take Issue Photo"),
@@ -343,7 +314,7 @@ class BinIssueReportWizard(models.TransientModel):
             "view_mode": "form",
             "target": "new",
             "context": {
-                "default_name": _("Bin Issue: %s - %s", self.bin_id.barcode, self.issue_type or "Unknown"),
+                "default_name": _("Bin Issue: %s - %s") % (self.bin_id.barcode, self.issue_type or "Unknown"),
                 "default_photo_type": "damage_report",
                 "default_wizard_reference": str(self.id),
                 "default_partner_id": self.customer_id.id if self.customer_id else False,
@@ -357,19 +328,13 @@ class BinIssueReportWizard(models.TransientModel):
     def action_view_photos(self):
         """View all photos attached to this issue report."""
         self.ensure_one()
-
         return {
             "type": "ir.actions.act_window",
-            "name": _(
-                "Issue Photos: %s",
-                self.bin_id.barcode,
-            ),
+            "name": _("Issue Photos: %s") % self.bin_id.barcode,
             "res_model": "mobile.photo",
             "view_mode": "kanban,list,form",
             "domain": [("wizard_reference", "=", str(self.id))],
-            "context": {
-                "search_default_group_by_type": 1,
-            },
+            "context": {"search_default_group_by_type": 1},
         }
 
     def action_submit_report(self):
@@ -473,84 +438,49 @@ class BinIssueReportWizard(models.TransientModel):
         """Format detailed description for work order."""
         description = [
             _("BIN ISSUE REPORT"),
-            _("=" * 50),
-            _("Bin: %s (%s)", self.bin_id.barcode, self.bin_id.bin_size),
-            _(
-                "Issue Type: %s",
-                dict(self.issue_type and self._fields["issue_type"].selection).get(self.issue_type, ""),
-            ),
-            _(
-                "Severity: %s",
-                dict(self._fields["issue_severity"].selection).get(self.issue_severity, ""),
-            ),
+            "=" * 50,
+            _("Bin: %s (%s)") % (self.bin_id.barcode, self.bin_id.bin_size),
+            _("Issue Type: %s") % dict(self.issue_type and self._fields["issue_type"].selection).get(self.issue_type, ""),
+            _("Severity: %s") % dict(self._fields["issue_severity"].selection).get(self.issue_severity, ""),
             "",
             _("ISSUE DESCRIPTION:"),
             self.issue_description or _("No description provided"),
             "",
         ]
-
         if self.customer_id:
-            description.extend(
-                [
-                    _("LOCATION DETAILS:"),
-                    _(
-                        "Customer: %s",
-                        self.customer_id.name,
-                    ),
-                    _(
-                        "Address: %s",
-                        self._format_address(),
-                    ),
-                    "",
-                ]
-            )
-
+            description.extend([
+                _("LOCATION DETAILS:"),
+                _("Customer: %s") % self.customer_id.name,
+                _("Address: %s") % self._format_address(),
+                "",
+            ])
         if self.gps_latitude and self.gps_longitude:
-            description.extend(
-                [
-                    _("GPS COORDINATES:"),
-                    _(
-                        "Latitude: %s",
-                        self.gps_latitude,
-                    ),
-                    _(
-                        "Longitude: %s",
-                        self.gps_longitude,
-                    ),
-                    "",
-                ]
-            )
-
+            description.extend([
+                _("GPS COORDINATES:"),
+                _("Latitude: %s") % self.gps_latitude,
+                _("Longitude: %s") % self.gps_longitude,
+                "",
+            ])
         if self.fault_evidence:
             description.extend([
                 _("FAULT EVIDENCE:"),
                 self.fault_evidence,
                 "",
             ])
-
         if self.bill_customer:
-            description.extend(
-                [
-                    _("BILLING INFORMATION:"),
-                    _("Customer Fault: Yes"),
-                    _("Estimated Cost: %s %s", self.billing_amount, self.currency_id.symbol),
-                    "",
-                ]
-            )
-
+            description.extend([
+                _("BILLING INFORMATION:"),
+                _("Customer Fault: Yes"),
+                _("Estimated Cost: %s %s") % (self.billing_amount, self.currency_id.symbol),
+                "",
+            ])
         if self.photo_count > 0:
-            description.extend(
-                [
-                    _("DOCUMENTATION:"),
-                    _(
-                        "Photos attached: %s",
-                        self.photo_count,
-                    ),
-                    _("View photos in work order attachments"),
-                    "",
-                ]
-            )
-
+            description.extend([
+                _("DOCUMENTATION:"),
+                _("Photos attached: %s") % self.photo_count,
+                _("View photos in work order attachments"),
+                "",
+            ])
         return "\n".join(description)
 
     def _format_address(self):
@@ -589,9 +519,8 @@ class BinIssueReportWizard(models.TransientModel):
         # Create mail message
         template_values = {
             "subject": _(
-                "Shred Bin Issue Report - %s",
-                self.bin_id.barcode,
-            ),
+                "Shred Bin Issue Report - %s"
+            ) % self.bin_id.barcode,
             "body_html": self._format_customer_email(),
             "partner_ids": [(6, 0, [self.customer_id.id])],
             "model": "shredding.service.bin",
@@ -647,7 +576,7 @@ class BinIssueReportWizard(models.TransientModel):
     def _create_issue_record(self, work_order):
         """Create permanent issue record for tracking."""
         issue_vals = {
-            "name": _("Issue: %s - %s", self.bin_id.barcode, self.issue_type),
+            "name": _("Issue: %s - %s") % (self.bin_id.barcode, self.issue_type),
             "bin_id": self.bin_id.id,
             "issue_type": self.issue_type,
             "issue_severity": self.issue_severity,
@@ -663,7 +592,6 @@ class BinIssueReportWizard(models.TransientModel):
             "gps_latitude": self.gps_latitude,
             "gps_longitude": self.gps_longitude,
         }
-
         return self.env['bin.issue.record'].create(issue_vals)
 
     def _update_bin_status(self):
@@ -675,30 +603,12 @@ class BinIssueReportWizard(models.TransientModel):
 
     def _create_audit_log(self, issue_record, work_order):
         """Create NAID compliance audit log."""
-        description = _("Bin issue reported: %s", issue_record.name)
+        description = _("Bin issue reported: %s") % issue_record.name
         if work_order:
-            description += _(" - Work Order %s created", work_order.name)
+            description += _(" - Work Order %s created") % work_order.name
         if self.bill_customer:
-            description += _(" - Customer billing required: %s %s", self.billing_amount, self.currency_id.symbol)
-
+            description += _(" - Customer billing required: %s %s") % (self.billing_amount, self.currency_id.symbol)
         self.bin_id._create_service_audit_log('issue_reported', description)
-
-    # ============================================================================
-    # CONSTRAINTS
-    # ============================================================================
-    @api.constrains('gps_latitude')
-    def _check_gps_latitude(self):
-        """Validate GPS latitude range."""
-        for record in self:
-            if record.gps_latitude and not -90 <= record.gps_latitude <= 90:
-                raise ValidationError(_('GPS latitude must be between -90 and 90 degrees.'))
-
-    @api.constrains('gps_longitude')
-    def _check_gps_longitude(self):
-        """Validate GPS longitude range."""
-        for record in self:
-            if record.gps_longitude and not -180 <= record.gps_longitude <= 180:
-                raise ValidationError(_('GPS longitude must be between -180 and 180 degrees.'))
 
 
 # ============================================================================
@@ -838,14 +748,10 @@ class BinIssueRecord(models.Model):
     # ACTION METHODS
     # ============================================================================
     def action_view_bin(self):
-        """View the related bin."""
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _(
-                "Bin: %s",
-                self.bin_id.barcode,
-            ),
+            "name": _("Bin: %s") % self.bin_id.barcode,
             "res_model": "shredding.service.bin",
             "res_id": self.bin_id.id,
             "view_mode": "form",
@@ -853,17 +759,12 @@ class BinIssueRecord(models.Model):
         }
 
     def action_view_work_order(self):
-        """View the related work order."""
         self.ensure_one()
         if not self.work_order_id:
             raise UserError(_("No work order associated with this issue."))
-
         return {
             "type": "ir.actions.act_window",
-            "name": _(
-                "Work Order: %s",
-                self.work_order_id.name,
-            ),
+            "name": _("Work Order: %s") % self.work_order_id.name,
             "res_model": "project.task",
             "res_id": self.work_order_id.id,
             "view_mode": "form",
@@ -871,28 +772,18 @@ class BinIssueRecord(models.Model):
         }
 
     def action_mark_resolved(self):
-        """Mark issue as resolved."""
         self.ensure_one()
         self.write({
             'resolution_status': 'resolved',
             'resolution_date': fields.Datetime.now(),
         })
-        self.message_post(body=_("Issue marked as resolved by %s", self.env.user.name))
+        # Post resolution message
+        self.message_post(body=_("Issue marked as resolved by %s") % (self.env.user.name or ''))
 
     def action_mark_billed(self):
-        """Mark customer as billed."""
         self.ensure_one()
         if not self.customer_fault or self.billing_amount <= 0:
             raise UserError(_("Cannot mark as billed - no customer billing required for this issue."))
-
         self.write({'billed': True})
-        self.message_post(body=_("Customer billed %s %s for bin issue", self.billing_amount, self.currency_id.symbol))
-
-    def action_mark_paid(self):
-        """Mark payment as received."""
-        self.ensure_one()
-        if not self.billed:
-            raise UserError(_("Cannot mark as paid - customer has not been billed yet."))
-
-        self.write({'payment_received': True})
-        self.message_post(body=_("Payment received for bin issue billing"))
+        # Post billing message
+        self.message_post(body=_("Customer billed for bin issue: %s %s") % (self.billing_amount, self.currency_id.symbol))

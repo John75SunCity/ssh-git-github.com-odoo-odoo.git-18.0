@@ -108,8 +108,11 @@ class ResPartner(models.Model):
             partner.department_count = len(partner.department_ids)
 
     def _compute_records_stats(self):
-        """Computes the count of containers and documents for the partner."""
-        # This approach is more efficient than looping and searching for each partner.
+        """Computes the count of containers and documents for the partner.
+
+        This method is optimized for batch computation using _read_group for efficiency,
+        avoiding per-record searches and improving performance.
+        """
         container_data = self.env['records.container']._read_group(
             [('partner_id', 'in', self.ids)],
             ['partner_id'],
@@ -140,7 +143,7 @@ class ResPartner(models.Model):
           - Most recent issue date: max(issue_date) across active/assigned keys.
           - Total issued: count of bin.key.history events with event_type in ('assign','create') for partner.
         """
-        if not self:
+        if not self.exists():
             return
         # Active key counts & latest issue date
         # Correct _read_group usage: groupby fields list, then aggregated specs list
@@ -151,7 +154,7 @@ class ResPartner(models.Model):
         )
         active_count_map = {d['key_holder_id'][0]: d['__count'] for d in keys_data}
         # Returned dictionary uses aggregated field base name for :max (issue_date)
-        latest_issue_map = {d['key_holder_id'][0]: d.get('issue_date') for d in keys_data if d.get('issue_date')}
+        latest_issue_map = {d['key_holder_id'][0]: d.get('issue_date') for d in keys_data}
 
         # Total issued from history
         history_data = self.env['bin.key.history']._read_group(
@@ -168,25 +171,25 @@ class ResPartner(models.Model):
             partner.key_issue_date = latest_issue_map.get(partner.id)
             partner.total_bin_keys_issued = total_issued_map.get(partner.id, 0)
 
-    # =========================================================================
-    # COMPUTE: UNLOCK SERVICE STATS
-    # =========================================================================
-    @api.depends('unlock_service_history_ids.cost', 'unlock_service_history_ids.state')
+    @api.depends(
+        'unlock_service_history_ids.state',
+        'unlock_service_history_ids.cost',
+        'unlock_service_history_ids.partner_id'
+    )
     def _compute_unlock_service_stats(self):
         """Compute unlock service counters and monetary totals.
 
         Counts only completed or invoiced services as historical events contributing to totals.
         """
-        if not self:
+        if not self.exists():
             return
         services = self.env['unlock.service.history']._read_group(
             [('partner_id', 'in', self.ids), ('state', 'in', ['completed', 'invoiced'])],
             ['partner_id'],
-            # Valid aggregate spec syntax: '<field>:<agg>'. Removed redundant '(cost)'.
             ['__count', 'cost:sum']
         )
         svc_count_map = {d['partner_id'][0]: d['__count'] for d in services}
-        svc_cost_map = {d['partner_id'][0]: d['cost'] for d in services}
+        svc_cost_map = {d['partner_id'][0]: d.get('cost', 0.0) for d in services}
         for partner in self:
             partner.unlock_service_count = svc_count_map.get(partner.id, 0)
             partner.total_unlock_charges = svc_cost_map.get(partner.id, 0.0)

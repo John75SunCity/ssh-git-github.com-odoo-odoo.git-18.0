@@ -146,18 +146,32 @@ class MobileBinKeyWizard(models.TransientModel):
             self.contact_id = False
             self.key_lookup_results = False
 
-    @api.onchange("action_type")
+    @api.onchange('action_type')
     def _onchange_action_type(self):
-        """Clear fields when action type changes"""
-        if self.action_type != "quick_lookup":
-            self.key_lookup_results = False
-        if self.action_type != "issue_new":
-            self.create_new_contact = False
-            self.contact_name = False
-            self.contact_email = False
-            self.contact_phone = False
-            self.contact_mobile = False
-            self.contact_title = False
+        """Onchange handler (standard pattern _onchange_<field>).
+        NOTE: This is NOT a user-triggered action; do not rename to action_*.
+        """
+        for wizard in self:
+            wizard._apply_action_type_side_effects_internal()
+
+    def action_apply_action_type(self):
+        """Explicit action version of the onchange to satisfy UI button usage."""
+        self.ensure_one()
+        self._apply_action_type_side_effects_internal()
+        return True
+
+    def _apply_action_type_side_effects_internal(self):
+        """Internal helper to reset transient fields when action_type changes (private)."""
+        for wizard in self:
+            if wizard.action_type != 'quick_lookup':
+                wizard.key_lookup_results = False
+            if wizard.action_type != 'issue_new':
+                wizard.create_new_contact = False
+                wizard.contact_name = False
+                wizard.contact_email = False
+                wizard.contact_phone = False
+                wizard.contact_mobile = False
+                wizard.contact_title = False
 
     def _perform_key_lookup(self):
         """Perform key lookup for the selected customer"""
@@ -173,10 +187,8 @@ class MobileBinKeyWizard(models.TransientModel):
         )
 
         if not existing_keys:
-            self.key_lookup_results = _(
-                "<p class='text-muted'>No active keys found for %s</p>",
-                self.customer_company_id.name,
-            )
+            # Fixed translation style: interpolation after _()
+            self.key_lookup_results = _("<p class='text-muted'>No active keys found for %s</p>") % self.customer_company_id.name
             return
 
         # Build HTML results
@@ -336,10 +348,7 @@ class MobileBinKeyWizard(models.TransientModel):
 
         # Create unlock service record
         service_vals = {
-            "name": _(
-                "Unlock Service - %s",
-                self.contact_id.name,
-            ),
+            "name": _("Unlock Service - %s") % self.contact_id.name,  # fixed translation style
             "partner_id": self.contact_id.id,
             "unlock_reason": self.unlock_reason,
             "unlock_reason_description": self.unlock_reason_description,

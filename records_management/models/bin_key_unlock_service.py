@@ -74,7 +74,7 @@ class BinKeyUnlockService(models.Model):
     # ============================================================================
     # FINANCIALS
     # ============================================================================
-    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency', comodel_name='res.currency')
+    currency_id = fields.Many2one(related='company_id.currency_id', string='Currency')
     unlock_charge = fields.Monetary(string='Service Charge', tracking=True, currency_field='currency_id')
     billable = fields.Boolean(string='Billable Service', default=True)
     invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True, copy=False)
@@ -129,7 +129,7 @@ class BinKeyUnlockService(models.Model):
             })],
         })
         self.write({'invoice_id': invoice.id, 'state': 'billed'})
-        self.message_post(body=_("Invoice created: %s", invoice.name))
+        self.message_post(body=_('Invoice created: %s') % invoice.name)
         return {
             'type': 'ir.actions.act_window',
             'name': _('Customer Invoice'),
@@ -153,6 +153,6 @@ class BinKeyUnlockService(models.Model):
     def create(self, vals_list):
         """Generate a sequence number for new service requests."""
         for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('bin.key.unlock.service') or _('New')
+            if vals.get('name', 'New') == 'New':
+                vals['name'] = self.env['ir.sequence'].next_by_code('bin.key.unlock.service') or 'New'
         return super().create(vals_list)
