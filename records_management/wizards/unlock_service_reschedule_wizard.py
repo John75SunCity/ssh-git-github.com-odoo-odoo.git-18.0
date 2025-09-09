@@ -5,8 +5,8 @@ class UnlockServiceRescheduleWizard(models.TransientModel):
     _name = 'unlock.service.reschedule.wizard'
     _description = 'Unlock Service Reschedule Wizard'
 
-    service_id = fields.Many2one('unlock.service.history', string="Service", required=True, readonly=True)
-    current_date = fields.Datetime(string="Current Date", readonly=True)
+    service_id = fields.Many2one('bin.unlock.service', string="Service", required=True, readonly=True)
+    current_date = fields.Datetime(string="Current Scheduled Date", readonly=True)
     new_date = fields.Datetime(string="New Scheduled Date", required=True, default=fields.Datetime.now)
     reason = fields.Text(string="Reason for Rescheduling", required=True)
     notify_customer = fields.Boolean(string="Notify Customer by Email", default=True)
@@ -20,10 +20,11 @@ class UnlockServiceRescheduleWizard(models.TransientModel):
     def action_reschedule(self):
         """Executes the reschedule action."""
         self.ensure_one()
-        self.service_id.write({'date': self.new_date})
+        # In merged model the scheduled datetime field is 'scheduled_date'
+        self.service_id.write({'scheduled_date': self.new_date})
 
-        log_message = _(
-            "Service rescheduled from %s to %s. Reason: %s",
+        # Compose message using interpolation after translation per project convention
+        log_message = _("Service rescheduled from %s to %s. Reason: %s") % (
             fields.Datetime.to_string(self.current_date),
             fields.Datetime.to_string(self.new_date),
             self.reason

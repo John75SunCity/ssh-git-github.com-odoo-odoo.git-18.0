@@ -16,9 +16,9 @@ class UnlockServicePart(models.Model):
     sequence = fields.Integer(string="Sequence", default=10)
     name = fields.Char(string="Description", related='product_id.name')
 
-    service_history_id = fields.Many2one('unlock.service.history', string="Service History", required=True, ondelete='cascade')
-    partner_id = fields.Many2one('res.partner', string="Customer", related='service_history_id.partner_id', store=True)
-    technician_id = fields.Many2one('res.users', string="Technician", related='service_history_id.technician_id', store=True)
+    service_id = fields.Many2one('bin.unlock.service', string="Unlock Service", required=True, ondelete='cascade')
+    partner_id = fields.Many2one('res.partner', string="Customer", related='service_id.partner_id', store=True)
+    technician_id = fields.Many2one('res.users', string="Technician", related='service_id.user_id', store=True)
 
     product_id = fields.Many2one('product.product', string="Product", required=True, domain="[('type', '=', 'product')]")
     product_category_id = fields.Many2one('product.category', string="Product Category", related='product_id.categ_id', store=True)
@@ -70,11 +70,11 @@ class UnlockServicePart(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('product_id', 'service_history_id.name', 'quantity')
+    @api.depends('product_id', 'service_id.name', 'quantity')
     def _compute_display_name(self):
         for record in self:
-            if record.product_id and record.service_history_id:
-                record.display_name = _("%s - %s (Qty: %s)", record.service_history_id.name, record.product_id.name, record.quantity)
+            if record.product_id and record.service_id:
+                record.display_name = _("%s - %s (Qty: %s)", record.service_id.name, record.product_id.name, record.quantity)
             elif record.product_id:
                 record.display_name = record.product_id.name
             else:

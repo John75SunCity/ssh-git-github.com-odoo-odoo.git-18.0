@@ -473,8 +473,6 @@ access_transitory_field_config_manager,transitory_field_config,transitory.field.
 access_transitory_field_config_user,transitory_field_config,transitory.field.config,records_management.group_records_user,1,1,1,0
 access_transitory_item_manager,transitory_item,transitory.item,records_management.group_records_manager,1,1,1,1
 access_transitory_item_user,transitory_item,transitory.item,records_management.group_records_user,1,1,1,0
-access_unlock_service_history_manager,unlock_service_history,unlock.service.history,records_management.group_records_manager,1,1,1,1
-access_unlock_service_history_user,unlock_service_history,unlock.service.history,records_management.group_records_user,1,1,1,0
 access_unlock_service_part_manager,unlock_service_part,unlock.service.part,records_management.group_records_manager,1,1,1,1
 access_unlock_service_part_user,unlock_service_part,unlock.service.part,records_management.group_records_user,1,1,1,0
 access_visitor_manager,visitor,visitor,records_management.group_records_manager,1,1,1,1

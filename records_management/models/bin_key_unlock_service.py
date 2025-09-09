@@ -155,15 +155,13 @@ class BinKeyUnlockService(models.Model):
         Adjust res_model / domain if a dedicated access history model exists.
         """
         self.ensure_one()
-        model = 'unlock.service.history' if 'unlock.service.history' in self.env else self._name
-        domain = [('service_id', '=', self.id)] if model != self._name else [('id', '=', self.id)]
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Access History'),
-            'res_model': model,
-            'view_mode': 'tree,form',
+            'name': _('Unlock Service'),
+            'res_model': self._name,
+            'view_mode': 'form',
+            'res_id': self.id,
             'target': 'current',
-            'domain': domain,
         }
 
     def action_view_service_history(self):
@@ -173,15 +171,13 @@ class BinKeyUnlockService(models.Model):
         if/when implemented.
         """
         self.ensure_one()
-        model = 'unlock.service.history' if 'unlock.service.history' in self.env else self._name
-        domain = [('service_id', '=', self.id)] if model != self._name else [('id', '=', self.id)]
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Service History'),
-            'res_model': model,
+            'name': _('Unlock Services'),
+            'res_model': self._name,
             'view_mode': 'tree,form',
-            'target': 'current',
-            'domain': domain,
+            'domain': [('partner_id', '=', self.partner_id.id)],
+            'context': {'default_partner_id': self.partner_id.id}
         }
     # ============================================================================
     # ORM OVERRIDES

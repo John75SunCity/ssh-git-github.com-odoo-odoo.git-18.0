@@ -9,7 +9,6 @@ from . import fsm_reschedule_wizard
 from . import hard_drive_scan_wizard
 from . import key_restriction_checker
 from . import location_report_wizard
-from . import mobile_bin_key_wizard
 from . import permanent_flag_wizard
 from . import rate_change_confirmation_wizard
 from . import records_container_type_converter

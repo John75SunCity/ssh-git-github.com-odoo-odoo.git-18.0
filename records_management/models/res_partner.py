@@ -75,10 +75,10 @@ class ResPartner(models.Model):
     )
 
     unlock_service_history_ids = fields.One2many(
-        'unlock.service.history',
+        'bin.unlock.service',
         'partner_id',
-        string="Unlock Service History",
-        help="Past unlock / service events performed for this partner."
+        string="Unlock Services",
+        help="Unlock / service events performed for this partner (merged model)."
     )
     unlock_service_count = fields.Integer(
         string="Unlock Service Count",
@@ -184,7 +184,8 @@ class ResPartner(models.Model):
         """
         if not self.exists():
             return
-        services = self.env['unlock.service.history']._read_group(
+        # Aggregate unified unlock service records
+        services = self.env['bin.unlock.service']._read_group(
             [('partner_id', 'in', self.ids), ('state', 'in', ['completed', 'invoiced'])],
             ['partner_id'],
             ['__count', 'cost:sum']
@@ -259,12 +260,12 @@ class ResPartner(models.Model):
         }
 
     def action_view_unlock_services(self):
-        """Open unlock.service.history records for this partner/contact."""
+        """Open unified bin.unlock.service records for this partner/contact."""
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
             'name': _('Unlock Services'),
-            'res_model': 'unlock.service.history',
+            'res_model': 'bin.unlock.service',
             'view_mode': 'tree,form',
             'domain': [('partner_id', '=', self.id)],
             'context': {

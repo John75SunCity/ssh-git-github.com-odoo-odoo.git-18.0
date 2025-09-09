@@ -38,7 +38,15 @@ class BinUnlockService(models.Model):
         tracking=True,
         index=True,
         copy=False,
-        default=lambda self: _('New Unlock Service')
+        default=lambda self: _('New')
+    )
+
+    service_number = fields.Char(
+        string='Service Number',
+        index=True,
+        copy=False,
+        readonly=True,
+        help='External/human readable reference (merged from history model).'
     )
 
     display_name = fields.Char(
@@ -46,14 +54,6 @@ class BinUnlockService(models.Model):
         compute='_compute_display_name',
         store=True,
         help="Formatted display name for the service"
-    )
-
-    # Human readable unique service number (referenced by multiple views)
-    service_number = fields.Char(
-        string='Service Number',
-        index=True,
-        copy=False,
-        help='External or user-facing reference number for this unlock service.'
     )
 
     sequence = fields.Integer(string='Sequence', default=10)
@@ -117,12 +117,6 @@ class BinUnlockService(models.Model):
     # CUSTOMER AND BIN INFORMATION
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    work_order_id = fields.Many2one(
-        'project.task',
-        string='FSM Work Order',
-        domain="[('is_fsm','=',True)]",
-        help='Linked Field Service work order if this unlock originates from FSM.'
-    )
     bin_id = fields.Many2one(
         'shred.bin',
         string='Bin',
@@ -227,22 +221,20 @@ class BinUnlockService(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('service_cost', 'emergency_surcharge')
+    @api.depends('service_cost', 'emergency_surcharge', 'part_ids.total_price')
     def _compute_total_cost(self):
         for record in self:
-            record.total_cost = (record.service_cost or 0.0) + (record.emergency_surcharge or 0.0)
+            parts_total = sum(record.part_ids.mapped('total_price')) if record.part_ids else 0.0
+            record.total_cost = (record.service_cost or 0.0) + (record.emergency_surcharge or 0.0) + parts_total
 
-    @api.depends('name', 'bin_id.name', 'partner_id.name')
+    @api.depends('name', 'service_number', 'bin_id.name', 'partner_id.name')
     def _compute_display_name(self):
         for record in self:
-            parts = []
-            if record.name and record.name != _('New Unlock Service'):
-                parts.append(record.name)
-            if record.bin_id:
-                parts.append(record.bin_id.name)
-            if record.partner_id:
-                parts.append(record.partner_id.name)
-            record.display_name = " - ".join(parts) if parts else _('New Unlock Service')
+            base = record.service_number or record.name
+            bin_part = record.bin_id.name if record.bin_id else ''
+            partner_part = record.partner_id.name if record.partner_id else ''
+            parts = [p for p in [base, bin_part, partner_part] if p]
+            record.display_name = " - ".join(parts) if parts else _('New')
 
     @api.depends('service_start_time', 'completion_date')
     def _compute_service_duration(self):
@@ -260,13 +252,14 @@ class BinUnlockService(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if not vals.get('name') or vals['name'] == _('New Unlock Service'):
+            if not vals.get('name') or vals['name'] in (_('New Unlock Service'), _('New'), 'New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('bin.unlock.service') or _('New')
-            # Auto-generate service_number if missing
             if not vals.get('service_number'):
-                seq = self.env['ir.sequence'].next_by_code('bin.unlock.service.number')
-                vals['service_number'] = seq or vals['name']
-        return super().create(vals_list)
+                vals['service_number'] = vals['name']
+        records = super().create(vals_list)
+        for rec in records:
+            rec.message_post(body=_('Service created.'))
+        return records
 
     # ============================================================================
     # ACTION METHODS
@@ -283,8 +276,8 @@ class BinUnlockService(models.Model):
         if not self.assigned_technician_id:
             raise UserError(_("Please assign a technician before scheduling."))
         self.write({'state': 'scheduled'})
-        # Corrected indentation + translation style
-        self.message_post(body=_("Service scheduled for %s") % (self.scheduled_date))
+    # Post scheduling notification
+    self.message_post(body=_('Service scheduled for %s') % self.scheduled_date)
 
     def action_start_service(self):
         self.ensure_one()
@@ -294,9 +287,9 @@ class BinUnlockService(models.Model):
             'state': 'in_progress',
             'service_start_time': fields.Datetime.now()
         })
-        # Corrected indentation + translation stylee}")
-        self.message_post(body=_("Service started by %s") % (self.assigned_technician_id.name or _("Unknown")))
-        self._create_audit_log('service_started')
+    # Post start notification
+    self.message_post(body=_('Service started by %s') % (self.assigned_technician_id.name or self.env.user.name))
+    self._create_audit_log('service_started')
 
     def action_complete(self):
         self.ensure_one()
@@ -356,8 +349,8 @@ class BinUnlockService(models.Model):
         }
         invoice = self.env['account.move'].create(invoice_vals)
         self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
-        # Corrected indentation + translation style
-        self.message_post(body=_("Invoice %s created.") % (invoice.name))
+        # Post invoice creation notification
+        self.message_post(body=_('Invoice %s created.') % invoice.name)
         return {
             'type': 'ir.actions.act_window',
             'name': _('Invoice'),
@@ -375,15 +368,14 @@ class BinUnlockService(models.Model):
         Replace res_model once a dedicated access history model exists.
         """
         self.ensure_one()
-        model = 'unlock.service.history' if 'unlock.service.history' in self.env else self._name
-        domain = [('service_id', '=', self.id)] if model != self._name else [('id', '=', self.id)]
+        # History model removed after merge -> return self record
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Access History'),
-            'res_model': model,
-            'view_mode': 'tree,form',
+            'name': _('Unlock Service'),
+            'res_model': self._name,
+            'view_mode': 'form',
+            'res_id': self.id,
             'target': 'current',
-            'domain': domain,
         }
 
     def action_view_service_history(self):
@@ -392,15 +384,13 @@ class BinUnlockService(models.Model):
         Mirrors access history until a more granular model is introduced.
         """
         self.ensure_one()
-        model = 'unlock.service.history' if 'unlock.service.history' in self.env else self._name
-        domain = [('service_id', '=', self.id)] if model != self._name else [('id', '=', self.id)]
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Service History'),
-            'res_model': model,
+            'name': _('Unlock Services'),
+            'res_model': self._name,
             'view_mode': 'tree,form',
-            'target': 'current',
-            'domain': domain,
+            'domain': [('partner_id', '=', self.partner_id.id)],
+            'context': {'default_partner_id': self.partner_id.id}
         }
 
     # ============================================================================
@@ -410,6 +400,7 @@ class BinUnlockService(models.Model):
         """Return a formatted service summary for reports or external use."""
         self.ensure_one()
         return {
+            'service_number': self.service_number,
             'reference': self.name,
             'customer': self.partner_id.name,
             'bin': self.bin_id.name,
@@ -426,8 +417,7 @@ class BinUnlockService(models.Model):
                 'action_type': action,
                 'user_id': self.env.user.id,
                 'timestamp': fields.Datetime.now(),
-                # Translation style: positional interpolation arguments
-                'description': f"Bin Unlock Service: {action} for {self.name}",
+                'description': _('Bin Unlock Service: %s for %s') % (action, self.name),
                 'naid_compliant': self.naid_compliant,
             })
 
@@ -435,26 +425,35 @@ class BinUnlockService(models.Model):
     def _check_dates(self):
         for record in self:
             if record.scheduled_date and record.request_date and record.scheduled_date < record.request_date:
-                raise ValidationError(_("Scheduled date cannot be before the request date."))
-            if record.completion_date and record.scheduled_date and record.completion_date < record.scheduled_date:
-                raise ValidationError(_("Completion date cannot be before the scheduled date."))
+                raise ValidationError(_('Scheduled date cannot be before the request date.'))
+            if record.service_start_time and record.scheduled_date and record.service_start_time < record.scheduled_date:
+                raise ValidationError(_('Start time cannot be before the scheduled date.'))
+            if record.completion_date and record.service_start_time and record.completion_date < record.service_start_time:
+                raise ValidationError(_('Completion date cannot be before the start time.'))
 
     @api.constrains('estimated_duration', 'actual_duration')
     def _check_duration(self):
         for record in self:
-            if record.estimated_duration < 0:
-                raise ValidationError(_("Estimated duration cannot be negative."))
-            if record.actual_duration < 0:
-                raise ValidationError(_("Actual duration cannot be negative."))
+            if record.estimated_duration and record.estimated_duration < 0:
+                raise ValidationError(_('Estimated duration cannot be negative.'))
+            if record.actual_duration and record.actual_duration < 0:
+                raise ValidationError(_('Actual duration cannot be negative.'))
 
     @api.constrains('service_cost', 'emergency_surcharge')
     def _check_costs(self):
         for record in self:
-            if record.service_cost < 0 or record.emergency_surcharge < 0:
-                raise ValidationError(_("Costs cannot be negative."))
+            if record.service_cost and record.service_cost < 0:
+                raise ValidationError(_('Service cost cannot be negative.'))
+            if record.emergency_surcharge and record.emergency_surcharge < 0:
+                raise ValidationError(_('Emergency surcharge cannot be negative.'))
 
     @api.constrains('witness_required', 'witness_name')
     def _check_witness_requirements(self):
         for record in self:
             if record.witness_required and not record.witness_name:
-                raise ValidationError(_("A witness name is required when a witness is marked as required."))
+                raise ValidationError(_('A witness name is required when a witness is marked as required.'))
+
+    # ------------------------------------------------------------------
+    # PARTS RELATION (migrated from history model)
+    # ------------------------------------------------------------------
+    part_ids = fields.One2many('unlock.service.part', 'service_id', string='Parts Used')
