@@ -90,7 +90,7 @@ from . import naid_certificate_item
 from . import naid_certification_level
 from . import naid_compliance_action_plan
 from . import naid_compliance_alert
-from . import naid_compliance_checklist
+from . import naidcompliance_checklist
 from . import naid_compliance_checklist_item
 from . import naid_compliance_policy
 from . import naid_compliance
