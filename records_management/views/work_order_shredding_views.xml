@@ -147,7 +147,8 @@
         <group name="naid_info" string="NAID Requirements">
             <field name="naid_level"/>
             <field name="certificate_required" widget="boolean_toggle"/>
-<field name="witness_name" attrs="{'required':[('witness_required','=',True)]}"/>
+<field name="witness_name" required="witness_required == True"/>
+
 
 
             <field name="witness_signature"/>

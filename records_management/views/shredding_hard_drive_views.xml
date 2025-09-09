@@ -85,7 +85,7 @@
                     <group>
                         <group string="Serial Number Scanning">
 <field name="serial_number" placeholder="Scan or type serial number..."
-widget="char" attrs="{'required': [('bulk_serial_input', '=', False)]}"/>
+widget="char" required="bulk_serial_input == False"/>
 <button name="action_scan_serial" string="Add Serial Number" type="object"
                                     class="btn-success" invisible="not serial_number"/>
                         </group>

@@ -86,7 +86,8 @@
                                     <field name="unlock_reason"/>
                                     <field name="access_level_required"/>
                                     <field name="emergency_access" widget="boolean_toggle"/>
-<field name="authorized_by" attrs="{'required':[('emergency_access','=',True)]}"/>
+<field name="authorized_by" required="emergency_access == True"/>
+
 
 
                                     <field name="authorization_reference"/>
@@ -96,7 +97,8 @@
                                     <field name="verification_method"/>
                                     <field name="verification_reference"/>
                                     <field name="witness_required" widget="boolean_toggle"/>
-<field name="witness_id" attrs="{'required':[('witness_required','=',True)]}"/>
+<field name="witness_id" required="witness_required == True"/>
+
 
 
                                 </group>
