@@ -109,15 +109,37 @@ class MobileBinKeyWizard(models.TransientModel):
 
     @api.onchange('action_type')
     def _onchange_action_type(self):
+        """Framework onchange hook (must keep this name for automatic trigger)."""
+        for wizard in self:
+            wizard._apply_action_type_logic()
+
+    def action_apply_action_type(self):
+        """Explicit button-friendly action to re-apply action_type side effects."""
+        self.ensure_one()
+        self._apply_action_type_logic()
+        return True
+
+    def _apply_action_type_logic(self):
+        """Shared logic for action_type changes."""
         if self.action_type == 'emergency_access':
             self.priority = 'urgent'
             self.authorization_required = True
             self.show_emergency_options = True
+            self.show_lookup_results = False
         elif self.action_type == 'quick_lookup':
             self.show_lookup_results = True
             self.billable = False
+            self.show_emergency_options = False
+            self.naid_compliance_check = False
         elif self.action_type in ['inspect', 'audit_check']:
             self.naid_compliance_check = True
+            self.show_emergency_options = False
+            self.show_lookup_results = False
+        else:
+            # Reset flags for standard access
+            self.show_emergency_options = False
+            self.show_lookup_results = False
+            self.naid_compliance_check = False
 
     # ============================================================================
     # ACTION METHODS
@@ -134,9 +156,8 @@ class MobileBinKeyWizard(models.TransientModel):
             'state': 'in_progress',
             'operation_start_time': fields.Datetime.now()
         })
-    self._create_audit_log('operation_started')
-    # Project policy: translate then format with %
-    self.message_post(body=_("Mobile operation started by %s") % self.user_id.name)
+        self._create_audit_log('operation_started')
+        self.message_post(body=_("Mobile operation started by %s") % (self.user_id.name or ''))
         return self._return_mobile_interface()
 
     def action_complete_operation(self):
@@ -153,6 +174,7 @@ class MobileBinKeyWizard(models.TransientModel):
 
         if self.naid_compliance_check:
             self._create_chain_of_custody_record()
+
         self._create_audit_log('operation_completed')
         self.message_post(body=_("Mobile operation completed successfully."))
 
@@ -191,7 +213,9 @@ class MobileBinKeyWizard(models.TransientModel):
         self.activity_schedule(
             "mail.mail_activity_data_todo",
             summary=_("Authorization Required: %s") % self.name,
-            note=_("Mobile operation '%s' by %s requires supervisor authorization.") % (self.action_type, self.user_id.name),
+            note=_("Mobile operation '%s' by %s requires supervisor authorization.") % (
+                self.action_type, self.user_id.name or ''
+            ),
             user_id=manager_group.users[0].id if manager_group.users else self.env.ref("base.user_admin").id,
         )
         self.message_post(body=_("Authorization requested from supervisors."))
@@ -207,35 +231,13 @@ class MobileBinKeyWizard(models.TransientModel):
             'state': 'draft'
         })
         self._create_audit_log('operation_authorized')
-        self.message_post(body=_("Operation authorized by %s") % self.env.user.name)
+        self.message_post(body=_("Operation authorized by %s") % (self.env.user.name or ''))
         return self._return_mobile_interface()
 
-    # ------------------------------------------------------------------
-    # VIEW BUTTON ALIAS
-    # ------------------------------------------------------------------
-    def action_execute(self):
-        """Alias for view button -> lookup action.
-
-        The mobile view binds to name="action_execute" while the explicit
-        implementation method is action_execute_lookup (clearer intent).
-        Keep this delegator thin so refactors only change one location.
-        """
-        self.ensure_one()
-        return self.action_execute_lookup()
-
-    # ============================================================================
-    # BUSINESS LOGIC
-    # ============================================================================
-    def _check_access_permissions(self):
-        self.ensure_one()
-        # This is a simplified placeholder. Real logic would be more robust.
-        if self.access_level_required == 'secure_vault':
-            return self.env.user.has_group('records_management.group_records_manager')
-        return True
-
+    # BUSINESS HELPERS (indent fixes)
     def _perform_database_lookup(self):
         self.ensure_one()
-        query = self.lookup_query.strip()
+        query = (self.lookup_query or '').strip()
         results = {'containers_count': 0, 'documents_count': 0, 'formatted_results': ''}
         if not query:
             return results
@@ -247,11 +249,21 @@ class MobileBinKeyWizard(models.TransientModel):
 
         lines = []
         if containers:
-            lines.append(_("CONTAINERS FOUND (%d):") % len(containers))
-            lines.extend([f"- {c.name} (Location: {c.location_id.name or 'N/A'})" for c in containers])
+            lines.append(_("CONTAINERS FOUND (%s):") % len(containers))
+            lines.extend([
+                "- %s (%s %s)" % (
+                    c.name,
+                    _("Location:"), c.location_id.name or 'N/A'
+                ) for c in containers
+            ])
         if documents:
-            lines.append(_("\nDOCUMENTS FOUND (%d):") % len(documents))
-            lines.extend([f"- {d.name} (Container: {d.container_id.name or 'N/A'})" for d in documents])
+            lines.append(_("\nDOCUMENTS FOUND (%s):") % len(documents))
+            lines.extend([
+                "- %s (%s %s)" % (
+                    d.name,
+                    _("Container:"), d.container_id.name or 'N/A'
+                ) for d in documents
+            ])
 
         results['formatted_results'] = '\n'.join(lines) if lines else _("No results found.")
         return results
@@ -262,7 +274,9 @@ class MobileBinKeyWizard(models.TransientModel):
             self.env['naid.audit.log'].create({
                 'action_type': action,
                 'user_id': self.env.user.id,
-                'description': _("Mobile bin key operation: %s on bin %s") % (action, self.bin_number or 'N/A'),
+                'description': _("Mobile bin key operation: %s on bin %s") % (
+                    action, self.bin_number or 'N/A'
+                ),
                 'naid_compliant': self.naid_compliance_check,
             })
             self.audit_trail_created = True
@@ -272,7 +286,7 @@ class MobileBinKeyWizard(models.TransientModel):
         if 'records.chain.of.custody' in self.env:
             custody = self.env["records.chain.of.custody"].create(
                 {
-                    "name": _("Mobile Operation: %s") % self.name,
+                    "name": f"Mobile Operation: {self.name}",
                     "event_type": "mobile_access",
                     "responsible_user_id": self.user_id.id,
                     "location_id": self.bin_location_id.id if self.bin_location_id else False,
@@ -295,7 +309,7 @@ class MobileBinKeyWizard(models.TransientModel):
                         0,
                         0,
                         {
-                            "name": _("Mobile Bin Key Service: %s") % self.action_type,
+                            "name": f"Mobile Bin Key Service: {self.action_type}",
                             "quantity": 1,
                             "price_unit": self.service_charge,
                         },
