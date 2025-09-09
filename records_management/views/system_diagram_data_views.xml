@@ -514,7 +514,7 @@
 
 <notebook>
 <page string="📊 Diagram Visualization" name="diagram_viz">
-<div class="alert alert-info" role="alert" invisible="nodes_data != False or edges_data != False">
+<div class="alert alert-info" role="status" invisible="nodes_data != False or edges_data != False">
         <i class="fa fa-info-circle"/>
 
                             Click <strong>"Generate Interactive Flowchart"</strong> to create the diagram visualization.

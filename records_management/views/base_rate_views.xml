@@ -258,7 +258,7 @@
 
                     </header>
                     <sheet>
-<div class="alert alert-info" role="alert" invisible="analysis_complete == True">
+<div class="alert alert-info" role="status" invisible="analysis_complete == True">
                             <strong>Revenue Forecasting Tool</strong>
                             <br/>
                             Configure your scenario parameters below and click "Run Forecast Analysis" to see the potential revenue impact.
