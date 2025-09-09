@@ -1,3 +1,19 @@
+# Core models that other models depend on - load first
+from . import res_partner
+from . import res_config_settings
+from . import product_template
+from . import product_product
+from . import stock_lot
+
+# Records core models - load early
+from . import records_billing_config
+from . import records_billing
+from . import records_billing_rate
+from . import records_container
+from . import records_location
+from . import records_department
+
+# Base models
 from . import account_move_line
 from . import advanced_billing_contact
 from . import advanced_billing_line
@@ -18,7 +34,6 @@ from . import bin_key
 from . import bin_key_history
 from . import bin_key_unlock_service
 from . import bin_unlock_service
-from . import button_action_placeholders
 from . import calendar_event
 from . import certificate_template_data
 from . import chain_of_custody
@@ -138,8 +153,6 @@ from . import processing_log
 from . import prod_ext
 from . import prod_ext_field
 from . import product_container_type
-from . import product_product
-from . import product_template
 from . import product_template_actions
 from . import project_task
 from . import proj_task_ext
@@ -149,16 +162,11 @@ from . import records_approval_step
 from . import records_approval_workflow
 from . import records_approval_workflow_line
 from . import records_audit_log
-from . import records_billing
-from . import records_billing_config
-from . import records_billing_config_actions
-from . import records_billing_rate
 from . import records_bulk_user_import
 from . import records_category
 from . import records_center_location
 from . import records_chain_of_custody
 from . import records_config_settings
-from . import records_container
 from . import records_container_content_line
 from . import records_container_line
 from . import records_container_log
@@ -168,7 +176,6 @@ from . import records_container_transfer_line
 from . import records_container_type
 from . import records_container_type_converter
 from . import records_deletion_request
-from . import records_department
 from . import records_department_billing_approval
 from . import records_department_billing_contact
 from . import records_department_sharing
@@ -180,7 +187,6 @@ from . import records_document
 from . import records_document_type
 from . import records_installer
 from . import records_inventory_dashboard
-from . import records_location
 from . import records_location_inspection
 from . import records_location_report_wizard
 from . import records_policy_version
@@ -207,8 +213,6 @@ from . import records_tag_category
 from . import records_usage_tracking
 from . import records_vehicle
 from . import required_document
-from . import res_config_settings
-from . import res_partner
 from . import res_partner_key_restriction
 from . import retrieval_item_base
 from . import retrieval_metric
@@ -242,7 +246,6 @@ from . import shredding_team
 from . import sign_request
 from . import signed_document
 from . import signed_document_audit
-from . import stock_lot
 from . import stock_lot_actions
 from . import stock_lot_attribute
 from . import stock_lot_attribute_option
@@ -266,6 +269,10 @@ from . import work_order_coordinator
 from . import work_order_retrieval
 from . import work_order_shredding
 from . import workflow_visualization_manager
+
+# Models that inherit from or extend records.billing.config - load LAST
+from . import records_billing_config_actions
+from . import button_action_placeholders
 
 import logging
 _logger = logging.getLogger(__name__)
