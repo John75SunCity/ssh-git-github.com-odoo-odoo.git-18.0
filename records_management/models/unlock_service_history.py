@@ -14,6 +14,8 @@ class UnlockServiceHistory(models.Model):
     # ============================================================================
     name = fields.Char(string="Service Reference", required=True, copy=False, readonly=True, default=lambda self: _('New'))
     display_name = fields.Char(string="Display Name", compute='_compute_display_name', store=True)
+    # Unique service number referenced in partner views
+    service_number = fields.Char(string="Service Number", index=True, copy=False, help="External or human-readable reference for this unlock service history record.")
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -26,6 +28,7 @@ class UnlockServiceHistory(models.Model):
 
     partner_id = fields.Many2one('res.partner', string="Customer", required=True, tracking=True)
     technician_id = fields.Many2one('res.users', string="Technician", default=lambda self: self.env.user, tracking=True)
+    work_order_id = fields.Many2one('project.task', string='FSM Work Order', domain="[('is_fsm','=',True)]", help='Linked FSM work order for this service instance.')
 
     service_type = fields.Selection([
         ('unlock', 'Unlock'),
@@ -120,12 +123,13 @@ class UnlockServiceHistory(models.Model):
         if self.invoice_id:
             raise UserError(_("An invoice already exists for this service."))
 
-        invoice_vals = self._prepare_invoice_values()
-        invoice = self.env['account.move'].create(invoice_vals)
-        self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
-        self.message_post(body=_("Invoice %s created.", invoice.name))
+    invoice_vals = self._prepare_invoice_values()
+    invoice = self.env['account.move'].create(invoice_vals)
+    self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
+    # Post invoice creation message inside method scope
+    self.message_post(body=f"Invoice {invoice.name} created.")
 
-        return {
+    return {
             'type': 'ir.actions.act_window',
             'name': _('Invoice'),
             'res_model': 'account.move',

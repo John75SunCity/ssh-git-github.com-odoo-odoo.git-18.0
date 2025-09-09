@@ -252,6 +252,7 @@ from . import records_vehicle
 from . import required_document
 from . import res_config_settings
 from . import res_partner
+from . import res_partner_certification_stats
 from . import res_partner_key_restriction
 from . import retrieval_metric
 from . import revenue_forecasting_reports

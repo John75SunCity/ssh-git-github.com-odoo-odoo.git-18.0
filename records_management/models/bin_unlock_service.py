@@ -48,6 +48,14 @@ class BinUnlockService(models.Model):
         help="Formatted display name for the service"
     )
 
+    # Human readable unique service number (referenced by multiple views)
+    service_number = fields.Char(
+        string='Service Number',
+        index=True,
+        copy=False,
+        help='External or user-facing reference number for this unlock service.'
+    )
+
     sequence = fields.Integer(string='Sequence', default=10)
     active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(
@@ -109,6 +117,12 @@ class BinUnlockService(models.Model):
     # CUSTOMER AND BIN INFORMATION
     # ============================================================================
     partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
+    work_order_id = fields.Many2one(
+        'project.task',
+        string='FSM Work Order',
+        domain="[('is_fsm','=',True)]",
+        help='Linked Field Service work order if this unlock originates from FSM.'
+    )
     bin_id = fields.Many2one(
         'shred.bin',
         string='Bin',
@@ -248,6 +262,10 @@ class BinUnlockService(models.Model):
         for vals in vals_list:
             if not vals.get('name') or vals['name'] == _('New Unlock Service'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('bin.unlock.service') or _('New')
+            # Auto-generate service_number if missing
+            if not vals.get('service_number'):
+                seq = self.env['ir.sequence'].next_by_code('bin.unlock.service.number')
+                vals['service_number'] = seq or vals['name']
         return super().create(vals_list)
 
     # ============================================================================
@@ -265,7 +283,8 @@ class BinUnlockService(models.Model):
         if not self.assigned_technician_id:
             raise UserError(_("Please assign a technician before scheduling."))
         self.write({'state': 'scheduled'})
-        self.message_post(body=_("Service scheduled for %s", self.scheduled_date))
+        # Corrected indentation + translation style
+        self.message_post(body=_("Service scheduled for %s") % (self.scheduled_date))
 
     def action_start_service(self):
         self.ensure_one()
@@ -275,7 +294,8 @@ class BinUnlockService(models.Model):
             'state': 'in_progress',
             'service_start_time': fields.Datetime.now()
         })
-        self.message_post(body=_("Service started by %s", self.assigned_technician_id.name))
+        # Corrected indentation + translation stylee}")
+        self.message_post(body=_("Service started by %s") % (self.assigned_technician_id.name or _("Unknown")))
         self._create_audit_log('service_started')
 
     def action_complete(self):
@@ -336,7 +356,8 @@ class BinUnlockService(models.Model):
         }
         invoice = self.env['account.move'].create(invoice_vals)
         self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
-        self.message_post(body=_("Invoice %s created.", invoice.name))
+        # Corrected indentation + translation style
+        self.message_post(body=_("Invoice %s created.") % (invoice.name))
         return {
             'type': 'ir.actions.act_window',
             'name': _('Invoice'),
@@ -406,7 +427,7 @@ class BinUnlockService(models.Model):
                 'user_id': self.env.user.id,
                 'timestamp': fields.Datetime.now(),
                 # Translation style: positional interpolation arguments
-                'description': _("Bin Unlock Service: %s for %s", action, self.name),
+                'description': f"Bin Unlock Service: {action} for {self.name}",
                 'naid_compliant': self.naid_compliant,
             })
 
