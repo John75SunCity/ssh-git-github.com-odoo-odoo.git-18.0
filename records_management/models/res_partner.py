@@ -143,13 +143,15 @@ class ResPartner(models.Model):
         if not self:
             return
         # Active key counts & latest issue date
+        # Correct _read_group usage: groupby fields list, then aggregated specs list
         keys_data = self.env['bin.key']._read_group(
             [('key_holder_id', 'in', self.ids), ('state', '=', 'assigned')],
-            ['key_holder_id', 'issue_date:max(issue_date)'],
-            ['__count']
+            ['key_holder_id'],
+            ['issue_date:max']
         )
         active_count_map = {d['key_holder_id'][0]: d['__count'] for d in keys_data}
-        latest_issue_map = {d['key_holder_id'][0]: d['issue_date'] for d in keys_data if d.get('issue_date')}
+        # Returned dictionary uses aggregated field base name for :max (issue_date)
+        latest_issue_map = {d['key_holder_id'][0]: d.get('issue_date') for d in keys_data if d.get('issue_date')}
 
         # Total issued from history
         history_data = self.env['bin.key.history']._read_group(
