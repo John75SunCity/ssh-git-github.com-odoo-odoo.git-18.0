@@ -139,7 +139,8 @@
                             <group>
                                 <field name="service_location"/>
                                 <field name="assigned_technician"/>
-<field name="witness_name" attrs="{'invisible':[('witness_required','=',False)],'required':[('witness_required','=',True)]}"/>
+<field name="witness_name" invisible="witness_required == False" required="witness_required == True"/>
+
 
 
 <field name="witness_company" invisible="witness_required == False"/>

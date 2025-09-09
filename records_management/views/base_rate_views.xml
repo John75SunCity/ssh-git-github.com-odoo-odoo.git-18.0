@@ -321,10 +321,12 @@
                                 <field name="customer_segment"/>
                             </group>
                             <group>
-<field name="custom_start_date" attrs="{'invisible':[('forecast_period','!=','custom')],'required':[('forecast_period','=','custom')]}"/>
+<field name="custom_start_date" invisible="forecast_period != 'custom'" required="forecast_period == 'custom'"/>
 
 
-<field name="custom_end_date" attrs="{'invisible':[('forecast_period','!=','custom')],'required':[('forecast_period','=','custom')]}"/>
+
+<field name="custom_end_date" invisible="forecast_period != 'custom'" required="forecast_period == 'custom'"/>
+
 
 
 <field name="specific_customer_ids" widget="many2many_tags" invisible="customer_segment != 'specific_customers'"/>
@@ -338,7 +340,8 @@
 
 <field name="global_adjustment_value" invisible="scenario_type not in ('global_increase', 'global_decrease')"/>
 
-<field name="service_category" attrs="{'invisible':[('scenario_type','!=','category_specific')],'required':[('scenario_type','=','category_specific')]}"/>
+<field name="service_category" invisible="scenario_type != 'category_specific'" required="scenario_type == 'category_specific'"/>
+
 
 
 <field name="category_adjustment_value" invisible="scenario_type != 'category_specific'"/>

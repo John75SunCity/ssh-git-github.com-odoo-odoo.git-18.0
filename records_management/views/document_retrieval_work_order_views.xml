@@ -79,7 +79,8 @@
 
                     <group>
                         <group name="assignment" string="Assignment">
-<field name="technician_id" attrs="{'required':[('state','in',['assigned','in_progress'])]}"/>
+<field name="technician_id" required="state in ['assigned','in_progress']"/>
+
 
 
                             <field name="driver_id"/>
@@ -112,10 +113,12 @@
                             <field name="retrieval_item_ids">
                                 <list editable="bottom">
                                     <field name="item_type"/>
-<field name="box_id" attrs="{'invisible':[('item_type','!=','box')],'required':[('item_type','=','box')]}"/>
+<field name="box_id" invisible="item_type != 'box'" required="item_type == 'box'"/>
 
 
-<field name="document_id" attrs="{'invisible':[('item_type','!=','document')],'required':[('item_type','=','document')]}"/>
+
+<field name="document_id" invisible="item_type != 'document'" required="item_type == 'document'"/>
+
 
 <!-- Fixed: Removed extra standalone "/>" that was causing syntax error -->
                                     <field name="barcode"/>
