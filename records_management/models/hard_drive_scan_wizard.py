@@ -10,6 +10,14 @@ class HardDriveScanWizard(models.TransientModel):
     """
     _name = 'hard.drive.scan.wizard'
     _description = 'Hard Drive Scanning Wizard'
+    # NOTE: Single authoritative implementation. A duplicate lightweight
+    # definition existed in wizards/hard_drive_scan_wizard.py and was removed
+    # because it re-declared the model without required FSM fields, causing
+    # the system to see an incomplete schema (missing fsm_task_id). Keeping
+    # only this version ensures the domain/relations load correctly when
+    # FSM features are enabled. If FSM is disabled via configurator, launch
+    # of this wizard should be hidden at the UI/menu level instead of using
+    # a stub model.
 
     # ============================================================================
     # WIZARD FIELDS
