@@ -270,3 +270,30 @@ class ResPartner(models.Model):
                 'default_partner_id': self.id,
             }
         }
+
+    # --------------------------------------------------------------
+    # Missing Button Action: Issue New Bin Key (stub implementation)
+    # --------------------------------------------------------------
+    def action_issue_new_key(self):
+        """Wizard entry point for issuing a new bin key to this contact.
+
+        This stub returns an act_window opening the mobile.bin.key.wizard
+        pre-configured for issuing a new key. It mirrors the existing quick
+        access server action but ensures the view button resolves properly.
+        Future enhancements may:
+          - Pre-populate additional defaults (e.g., default_issue_location)
+          - Enforce security or eligibility checks
+        """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Issue Bin Key'),
+            'res_model': 'mobile.bin.key.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_action_type': 'issue_new',
+                'default_contact_id': self.id,
+                'default_customer_company_id': self.parent_id.id if self.parent_id else (self.company_id.partner_id.id if self.company_id and self.company_id.partner_id else False),
+            }
+        }
