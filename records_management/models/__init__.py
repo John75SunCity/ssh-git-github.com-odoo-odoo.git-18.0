@@ -1,19 +1,5 @@
-# Core models that other models depend on - load first
-from . import res_partner
-from . import res_config_settings
-from . import product_template
-from . import product_product
-from . import stock_lot
-
-# Records core models - load early
-from . import records_billing_config
-from . import records_billing
-from . import records_billing_rate
-from . import records_container
-from . import records_location
-from . import records_department
-
-# Base models
+from . import retrieval_item_base
+from . import scan_retrieval_item
 from . import account_move_line
 from . import advanced_billing_contact
 from . import advanced_billing_line
@@ -56,11 +42,11 @@ from . import customer_category
 from . import customer_feedback
 from . import customer_feedback_theme
 from . import customer_inventory
+from . import customer_inventory_line
 from . import customer_inventory_report
 from . import customer_inventory_report_line
 from . import customer_inventory_report_model
 from . import customer_negotiated_rate
-from . import customer_portal_diagram
 from . import destruction_certificate
 from . import destruction_event
 from . import destruction_item
@@ -102,12 +88,12 @@ from . import naid_certificate
 from . import naid_certificate_actions
 from . import naid_certificate_item
 from . import naid_certification_level
-from . import naid_compliance
 from . import naid_compliance_action_plan
 from . import naid_compliance_alert
 from . import naid_compliance_checklist
 from . import naid_compliance_checklist_item
 from . import naid_compliance_policy
+from . import naid_compliance
 from . import naid_custody
 from . import naid_custody_event
 from . import naid_destruction_record
@@ -143,30 +129,37 @@ from . import portal_feedback
 from . import portal_feedback_action
 from . import portal_feedback_actions
 from . import portal_feedback_analytic
-from . import portal_feedback_communication
 from . import portal_feedback_escalation
+from . import portal_feedback_communication
 from . import portal_feedback_resolution
 from . import portal_request
 from . import portal_request_line
 from . import pos_config
-from . import processing_log
 from . import prod_ext
 from . import prod_ext_field
+from . import processing_log
 from . import product_container_type
+from . import product_product
+from . import product_template
 from . import product_template_actions
-from . import project_task
 from . import proj_task_ext
+from . import project_task
 from . import rate_change_confirmation_wizard
 from . import records_access_log
 from . import records_approval_step
 from . import records_approval_workflow
 from . import records_approval_workflow_line
 from . import records_audit_log
+from . import records_billing
+from . import records_billing_config
+from . import records_billing_config_actions
+from . import records_billing_rate
 from . import records_bulk_user_import
 from . import records_category
 from . import records_center_location
 from . import records_chain_of_custody
 from . import records_config_settings
+from . import records_container
 from . import records_container_content_line
 from . import records_container_line
 from . import records_container_log
@@ -176,6 +169,7 @@ from . import records_container_transfer_line
 from . import records_container_type
 from . import records_container_type_converter
 from . import records_deletion_request
+from . import records_department
 from . import records_department_billing_approval
 from . import records_department_billing_contact
 from . import records_department_sharing
@@ -187,6 +181,7 @@ from . import records_document
 from . import records_document_type
 from . import records_installer
 from . import records_inventory_dashboard
+from . import records_location
 from . import records_location_inspection
 from . import records_location_report_wizard
 from . import records_policy_version
@@ -213,8 +208,9 @@ from . import records_tag_category
 from . import records_usage_tracking
 from . import records_vehicle
 from . import required_document
+from . import res_config_settings
+from . import res_partner
 from . import res_partner_key_restriction
-from . import retrieval_item_base
 from . import retrieval_metric
 from . import revenue_analytic
 from . import revenue_forecast
@@ -225,7 +221,6 @@ from . import rm_module_configurator
 from . import route_optimizer
 from . import scan_digital_asset
 from . import scan_retrieval
-from . import scan_retrieval_item
 from . import service_item
 from . import service_item_actions
 from . import shred_bin
@@ -246,6 +241,7 @@ from . import shredding_team
 from . import sign_request
 from . import signed_document
 from . import signed_document_audit
+from . import stock_lot
 from . import stock_lot_actions
 from . import stock_lot_attribute
 from . import stock_lot_attribute_option
@@ -257,6 +253,7 @@ from . import survey_improvement_action
 from . import survey_user_input
 from . import system_diagram_data
 from . import system_flowchart_wizard
+from . import customer_portal_diagram
 from . import temp_inventory
 from . import temp_inventory_audit
 from . import temp_inventory_movement
@@ -269,9 +266,6 @@ from . import work_order_coordinator
 from . import work_order_retrieval
 from . import work_order_shredding
 from . import workflow_visualization_manager
-
-# Models that inherit from or extend records.billing.config - load LAST
-from . import records_billing_config_actions
 from . import button_action_placeholders
 
 import logging
