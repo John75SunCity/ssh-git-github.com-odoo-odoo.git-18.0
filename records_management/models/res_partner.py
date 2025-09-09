@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 
 class ResPartner(models.Model):
@@ -295,5 +296,116 @@ class ResPartner(models.Model):
                 'default_action_type': 'issue_new',
                 'default_contact_id': self.id,
                 'default_customer_company_id': self.parent_id.id if self.parent_id else (self.company_id.partner_id.id if self.company_id and self.company_id.partner_id else False),
+            }
+        }
+
+    # --------------------------------------------------------------
+    # Additional Bin Key Actions referenced by partner form buttons
+    # --------------------------------------------------------------
+    def action_view_active_key(self):
+        """Open the currently assigned (active) key for this contact.
+
+        Behaviour:
+          - If no active key: raise a friendly error.
+          - If exactly one active key: open its form view directly.
+          - If multiple active keys (rare but supported): open list filtered to assigned.
+        """
+        self.ensure_one()
+        assigned_keys = self.env['bin.key'].search([
+            ('key_holder_id', '=', self.id),
+            ('state', '=', 'assigned')
+        ])
+        if not assigned_keys:
+            raise UserError(_("No active (assigned) bin key found for this contact."))
+        if len(assigned_keys) == 1:
+            key = assigned_keys[0]
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Active Bin Key'),
+                'res_model': 'bin.key',
+                'res_id': key.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        # Multiple keys: fallback to list view
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Active Bin Keys'),
+            'res_model': 'bin.key',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', assigned_keys.ids)],
+            'context': {
+                'search_default_assigned': 1,
+                'default_key_holder_id': self.id,
+            }
+        }
+
+    def action_return_key(self):
+        """Partner-level helper to process key return.
+
+        Logic mirrors action_view_active_key to select the key. We do NOT
+        directly change state here to avoid unintended side-effects. Instead:
+          - If single assigned key: invoke its action_return_key() method.
+          - If multiple: open filtered list so user can choose which key to return.
+        """
+        self.ensure_one()
+        assigned_keys = self.env['bin.key'].search([
+            ('key_holder_id', '=', self.id),
+            ('state', '=', 'assigned')
+        ])
+        if not assigned_keys:
+            raise UserError(_("No assigned key to return for this contact."))
+        if len(assigned_keys) == 1:
+            # Delegate to key model method (ensures history + chatter logging)
+            assigned_keys.action_return_key()
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Bin Key Returned'),
+                    'message': _('The active bin key has been marked as returned.'),
+                    'sticky': False,
+                    'type': 'success'
+                }
+            }
+        # Multiple keys: open list for manual selection / action
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Return Bin Key'),
+            'res_model': 'bin.key',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', assigned_keys.ids)],
+            'context': {
+                'search_default_assigned': 1,
+                'default_key_holder_id': self.id,
+            }
+        }
+
+    def action_report_lost_key(self):
+        """Partner-level helper to mark an active key as lost.
+
+        Behaviour parallels return logic. If a single key is active we call
+        action_mark_lost on it (which opens replacement wizard). If multiple
+        keys are active we present the list for user selection.
+        """
+        self.ensure_one()
+        assigned_keys = self.env['bin.key'].search([
+            ('key_holder_id', '=', self.id),
+            ('state', '=', 'assigned')
+        ])
+        if not assigned_keys:
+            raise UserError(_("No active key to mark as lost for this contact."))
+        if len(assigned_keys) == 1:
+            return assigned_keys.action_mark_lost()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Mark Key as Lost'),
+            'res_model': 'bin.key',
+            'view_mode': 'tree,form',
+            'domain': [('id', 'in', assigned_keys.ids)],
+            'context': {
+                'search_default_assigned': 1,
+                'default_key_holder_id': self.id,
+                'bin_key_mark_lost_mode': True,
             }
         }
