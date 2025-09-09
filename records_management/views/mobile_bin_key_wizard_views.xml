@@ -12,9 +12,9 @@
 <!-- Header section -->
                     <div class="row">
                         <div class="col-12">
-<div class="alert alert-info" role="status" aria-live="polite" aria-atomic="true">
-                                <h4 class="alert-heading">🔑 Mobile Key Management</h4>
-                                <p>Quick access for field technicians to manage bin keys and services</p>
+<div class="alert alert-info o_alert" role="status" aria-live="polite">
+    <strong>🔑 Mobile Key Management</strong>
+    <span class="d-block">Quick access for field technicians to manage bin keys and services</span>
                             </div>
                         </div>
                     </div>
@@ -197,15 +197,15 @@ action = {
                     <!-- Tree view for Quick -->
                     <div class="row mb-3">
                         <div class="col-12">
-<div class="alert alert-info" role="status" invisible="has_bin_key == True">
-                                <h4 class="alert-heading">No Active Bin Key</h4>
-                                <p>This contact does not currently have an active bin key assigned.</p>
+<div class="alert alert-info o_alert" role="status" aria-live="polite" invisible="has_bin_key == True">
+    <strong>No Active Bin Key</strong>
+    <span class="d-block">This contact does not currently have an active bin key assigned.</span>
                                 <button name="action_issue_new_key" string="🔑 Issue New Key" type="object" class="btn btn-primary btn-sm"/>
                             </div>
 
-<div class="alert alert-success" role="status" invisible="has_bin_key == False">
-                                <h4 class="alert-heading">Active Bin Key</h4>
-                                <p>This contact has an active bin key assigned.</p>
+<div class="alert alert-success o_alert" role="status" aria-live="polite" invisible="has_bin_key == False">
+    <strong>Active Bin Key</strong>
+    <span class="d-block">This contact has an active bin key assigned.</span>
                                 <div class="btn-group" role="group">
                                     <button name="action_view_active_key" string="👀 View Key Details" type="object" class="btn btn-info btn-sm"/>
                                     <button name="action_return_key" string="🔄 Return Key" type="object" class="btn btn-warning btn-sm"/>
