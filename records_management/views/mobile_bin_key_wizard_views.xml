@@ -12,7 +12,7 @@
 <!-- Header section -->
                     <div class="row">
                         <div class="col-12">
-<div class="alert alert-info" role="status">
+<div class="alert alert-info" role="status" aria-live="polite" aria-atomic="true">
                                 <h4 class="alert-heading">🔑 Mobile Key Management</h4>
                                 <p>Quick access for field technicians to manage bin keys and services</p>
                             </div>
@@ -147,9 +147,8 @@ action = {
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-<!-- FIX: Original xpath <field name="name" position="after"> failed (node not found).
-                     Inject added fields at end of tree to avoid brittle dependency -->
-<xpath expr="//tree" position="inside">
+<!-- FIX: Adjusted xpath: Odoo 18 base partner list view uses <list> not <tree>; switch selector -->
+<xpath expr="//list" position="inside">
     <field name="has_bin_key" string="🔑" widget="boolean_toggle"/>
     <field name="is_emergency_key_contact" string="🚨" widget="boolean_toggle"/>
 

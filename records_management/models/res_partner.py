@@ -37,6 +37,67 @@ class ResPartner(models.Model):
 
     destruction_address_id = fields.Many2one('res.partner', string='Destruction Address')
 
+    # =========================================================================
+    # BIN KEY & UNLOCK SERVICE FIELDS (used by mobile_bin_key_wizard_views.xml)
+    # =========================================================================
+    has_bin_key = fields.Boolean(
+        string="Has Active Bin Key",
+        compute='_compute_bin_key_stats',
+        store=True,
+        help="Indicates whether this partner currently holds at least one active (assigned) bin key."
+    )
+    is_emergency_key_contact = fields.Boolean(
+        string="Emergency Key Contact",
+        help="Flag contact as an emergency key contact (manually managed)."
+    )
+    active_bin_key_count = fields.Integer(
+        string="Active Bin Key Count",
+        compute='_compute_bin_key_stats',
+        store=True
+    )
+    key_issue_date = fields.Date(
+        string="Most Recent Key Issue Date",
+        compute='_compute_bin_key_stats',
+        store=True,
+        help="Date when the most recent key was issued to this partner."
+    )
+    total_bin_keys_issued = fields.Integer(
+        string="Total Bin Keys Issued",
+        compute='_compute_bin_key_stats',
+        store=True
+    )
+    bin_key_history_ids = fields.One2many(
+        'bin.key.history',
+        'partner_id',
+        string="Bin Key History",
+        help="Historical key assignment events related to this partner."
+    )
+
+    unlock_service_history_ids = fields.One2many(
+        'unlock.service.history',
+        'partner_id',
+        string="Unlock Service History",
+        help="Past unlock / service events performed for this partner."
+    )
+    unlock_service_count = fields.Integer(
+        string="Unlock Service Count",
+        compute='_compute_unlock_service_stats',
+        store=True
+    )
+    total_unlock_charges = fields.Monetary(
+        string="Total Unlock Charges",
+        compute='_compute_unlock_service_stats',
+        store=True,
+        currency_field='company_currency_id',
+        help="Sum of billable unlock service costs for this partner."
+    )
+    company_currency_id = fields.Many2one(
+        'res.currency',
+        related='company_id.currency_id',
+        string='Company Currency',
+        readonly=True
+    )
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -66,6 +127,66 @@ class ResPartner(models.Model):
         for partner in self:
             partner.container_count = container_map.get(partner.id, 0)
             partner.document_count = document_map.get(partner.id, 0)
+
+    # =========================================================================
+    # COMPUTE: BIN KEY STATS
+    # =========================================================================
+    @api.depends('bin_key_history_ids.event_date', 'bin_key_history_ids.event_type')
+    def _compute_bin_key_stats(self):
+        """Aggregate bin key related statistics in batch for performance.
+
+        Logic:
+          - Active keys: bin.key records where key_holder_id == partner AND state = 'assigned'.
+          - Most recent issue date: max(issue_date) across active/assigned keys.
+          - Total issued: count of bin.key.history events with event_type in ('assign','create') for partner.
+        """
+        if not self:
+            return
+        # Active key counts & latest issue date
+        keys_data = self.env['bin.key']._read_group(
+            [('key_holder_id', 'in', self.ids), ('state', '=', 'assigned')],
+            ['key_holder_id', 'issue_date:max(issue_date)'],
+            ['__count']
+        )
+        active_count_map = {d['key_holder_id'][0]: d['__count'] for d in keys_data}
+        latest_issue_map = {d['key_holder_id'][0]: d['issue_date'] for d in keys_data if d.get('issue_date')}
+
+        # Total issued from history
+        history_data = self.env['bin.key.history']._read_group(
+            [('partner_id', 'in', self.ids), ('event_type', 'in', ['assign', 'create'])],
+            ['partner_id'],
+            ['__count']
+        )
+        total_issued_map = {d['partner_id'][0]: d['__count'] for d in history_data}
+
+        for partner in self:
+            active_count = active_count_map.get(partner.id, 0)
+            partner.active_bin_key_count = active_count
+            partner.has_bin_key = bool(active_count)
+            partner.key_issue_date = latest_issue_map.get(partner.id)
+            partner.total_bin_keys_issued = total_issued_map.get(partner.id, 0)
+
+    # =========================================================================
+    # COMPUTE: UNLOCK SERVICE STATS
+    # =========================================================================
+    @api.depends('unlock_service_history_ids.cost', 'unlock_service_history_ids.state')
+    def _compute_unlock_service_stats(self):
+        """Compute unlock service counters and monetary totals.
+
+        Counts only completed or invoiced services as historical events contributing to totals.
+        """
+        if not self:
+            return
+        services = self.env['unlock.service.history']._read_group(
+            [('partner_id', 'in', self.ids), ('state', 'in', ['completed', 'invoiced'])],
+            ['partner_id'],
+            ['__count', 'cost:sum(cost)']
+        )
+        svc_count_map = {d['partner_id'][0]: d['__count'] for d in services}
+        svc_cost_map = {d['partner_id'][0]: d['cost'] for d in services}
+        for partner in self:
+            partner.unlock_service_count = svc_count_map.get(partner.id, 0)
+            partner.total_unlock_charges = svc_cost_map.get(partner.id, 0.0)
 
     # ============================================================================
     # ACTION METHODS
