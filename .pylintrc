@@ -1,6 +1,8 @@
 [MASTER]
 # Add Odoo addons paths
 init-hook='import sys; sys.path.append("./addons"); sys.path.append("./records_management")'
+ignore=development-tools,testing-workspace,backup
+ignore-paths=development-tools,testing-workspace,backup
 
 [MESSAGES CONTROL]
 # Disable import-related errors for Odoo

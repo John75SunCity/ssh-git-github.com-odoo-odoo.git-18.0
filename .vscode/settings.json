@@ -247,8 +247,16 @@
         "**/*.pyc": true,
         "**/.git": true,
         "**/.DS_Store": true,
-        "**/Thumbs.db": true
+        "**/Thumbs.db": true,
+        "**/development-tools": true,
+        "**/testing-workspace": true,
+        "**/backup": true
     },
+    "python.analysis.exclude": [
+        "development-tools",
+        "testing-workspace",
+        "backup"
+    ],
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": true,
     "python.testing.pytestArgs": [
@@ -326,7 +334,8 @@
         "**/venv/**": true,
         "**/venv312/**": true,
         "**/development-tools/**": true,
-        "**/backup/**": true
+        "**/backup/**": true,
+        "**/testing-workspace/**": true
     },
     "task.allowAutomaticTasks": "on",
     "task.quickOpen.detail": true,

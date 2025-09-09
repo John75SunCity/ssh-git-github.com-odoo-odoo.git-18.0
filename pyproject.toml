@@ -1,6 +1,11 @@
 [tool.ruff]
 line-length = 120
 target-version = "py39"
+extend-exclude = [
+    "development-tools",
+    "testing-workspace",
+    "backup",
+]
 
 [tool.ruff.lint]
 # Disable all Odoo-specific false positive warnings
@@ -249,6 +254,11 @@ strict_equality = true
 ignore_missing_imports = true
 follow_imports = "silent"
 show_error_codes = true
+exclude = [
+    "development-tools/.*",
+    "testing-workspace/.*",
+    "backup/.*"
+]
 
 [[tool.mypy.overrides]]
 module = [
