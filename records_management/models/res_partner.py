@@ -182,7 +182,8 @@ class ResPartner(models.Model):
         services = self.env['unlock.service.history']._read_group(
             [('partner_id', 'in', self.ids), ('state', 'in', ['completed', 'invoiced'])],
             ['partner_id'],
-            ['__count', 'cost:sum(cost)']
+            # Valid aggregate spec syntax: '<field>:<agg>'. Removed redundant '(cost)'.
+            ['__count', 'cost:sum']
         )
         svc_count_map = {d['partner_id'][0]: d['__count'] for d in services}
         svc_cost_map = {d['partner_id'][0]: d['cost'] for d in services}
