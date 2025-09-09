@@ -56,11 +56,12 @@ class RecordsRetrievalOrder(models.Model):
     # Team
     user_id = fields.Many2one('res.users', string='Owner', default=lambda self: self.env.user, tracking=True, required=True)
     coordinator_id = fields.Many2one('res.users', string='Coordinator')
+    # Using positional args for clearer static analysis: (comodel, relation, column1, column2)
     retrieval_team_ids = fields.Many2many(
-        comodel_name='res.users',
-        relation='records_retrieval_order_user_rel',
-        column1='retrieval_order_id',
-        column2='user_id',
+        'res.users',
+        'records_retrieval_order_user_rel',
+        'retrieval_order_id',
+        'user_id',
         string='Retrieval Team',
         help="Team members assigned to physically retrieve the requested items"
     )
