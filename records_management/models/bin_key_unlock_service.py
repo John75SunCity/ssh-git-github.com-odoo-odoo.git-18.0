@@ -146,6 +146,43 @@ class BinKeyUnlockService(models.Model):
         self.write({'state': 'draft'})
         self.message_post(body=_("Service reset to draft."))
 
+    # ------------------------------------------------------------------
+    # VIEW SUPPORT PLACEHOLDERS (Referenced by XML buttons)
+    # ------------------------------------------------------------------
+    def action_view_access_history(self):
+        """Placeholder action for viewing access history related to this service.
+
+        Adjust res_model / domain if a dedicated access history model exists.
+        """
+        self.ensure_one()
+        model = 'unlock.service.history' if 'unlock.service.history' in self.env else self._name
+        domain = [('service_id', '=', self.id)] if model != self._name else [('id', '=', self.id)]
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Access History'),
+            'res_model': model,
+            'view_mode': 'tree,form',
+            'target': 'current',
+            'domain': domain,
+        }
+
+    def action_view_service_history(self):
+        """Placeholder action for viewing service history records.
+
+        Can be replaced with a dedicated model (e.g. unlock.service.history)
+        if/when implemented.
+        """
+        self.ensure_one()
+        model = 'unlock.service.history' if 'unlock.service.history' in self.env else self._name
+        domain = [('service_id', '=', self.id)] if model != self._name else [('id', '=', self.id)]
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Service History'),
+            'res_model': model,
+            'view_mode': 'tree,form',
+            'target': 'current',
+            'domain': domain,
+        }
     # ============================================================================
     # ORM OVERRIDES
     # ============================================================================

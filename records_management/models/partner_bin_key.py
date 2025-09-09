@@ -113,3 +113,42 @@ class PartnerBinKey(models.Model):
         })
         self.message_post(body=_("Key has been decommissioned."))
         return True
+
+    # ------------------------------------------------------------------
+    # VIEW SUPPORT PLACEHOLDERS (Referenced by XML buttons)
+    # ------------------------------------------------------------------
+    def action_view_management_records(self):
+        """Open related management/history records for this key.
+
+        Placeholder implementation to satisfy view button binding.
+        Returns a basic action; can be extended later with domain or
+        custom view logic.
+        """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Key Management Records'),
+            'res_model': 'partner.bin.key',  # could be replaced with dedicated history model later
+            'view_mode': 'tree,form',
+            'target': 'current',
+            'domain': [('id', '=', self.id)],
+            'context': {'default_partner_id': self.partner_id.id},
+        }
+
+    def action_view_key_history(self):
+        """Placeholder: open key history entries.
+
+        If/when a dedicated key history model exists (e.g. bin.key.history),
+        adjust res_model & domain accordingly.
+        """
+        self.ensure_one()
+        model = 'bin.key.history' if 'bin.key.history' in self.env else self._name
+        domain = [('key_id', '=', self.id)] if model == 'bin.key.history' else [('id', '=', self.id)]
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Key History'),
+            'res_model': model,
+            'view_mode': 'tree,form',
+            'target': 'current',
+            'domain': domain,
+        }

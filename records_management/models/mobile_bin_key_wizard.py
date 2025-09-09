@@ -211,6 +211,18 @@ class MobileBinKeyWizard(models.TransientModel):
         self.message_post(body=_("Operation authorized by %s.", self.env.user.name))
         return self._return_mobile_interface()
 
+    # ------------------------------------------------------------------
+    # VIEW BUTTON ALIAS
+    # ------------------------------------------------------------------
+    def action_execute(self):
+        """Alias for the XML button name mapping to lookup execution.
+
+        The mobile view uses name="action_execute" while the core logic
+        method is action_execute_lookup to remain explicit. Keep this
+        thin delegator so future refactors touch only one implementation.
+        """
+        return self.action_execute_lookup()
+
     # ============================================================================
     # BUSINESS LOGIC
     # ============================================================================

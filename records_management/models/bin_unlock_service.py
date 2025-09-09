@@ -345,6 +345,43 @@ class BinUnlockService(models.Model):
             'view_mode': 'form',
         }
 
+    # ------------------------------------------------------------------
+    # VIEW SUPPORT PLACEHOLDERS (Referenced by XML buttons)
+    # ------------------------------------------------------------------
+    def action_view_access_history(self):
+        """Placeholder to open related access history rows.
+
+        Replace res_model once a dedicated access history model exists.
+        """
+        self.ensure_one()
+        model = 'unlock.service.history' if 'unlock.service.history' in self.env else self._name
+        domain = [('service_id', '=', self.id)] if model != self._name else [('id', '=', self.id)]
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Access History'),
+            'res_model': model,
+            'view_mode': 'tree,form',
+            'target': 'current',
+            'domain': domain,
+        }
+
+    def action_view_service_history(self):
+        """Placeholder to open related service history rows.
+
+        Mirrors access history until a more granular model is introduced.
+        """
+        self.ensure_one()
+        model = 'unlock.service.history' if 'unlock.service.history' in self.env else self._name
+        domain = [('service_id', '=', self.id)] if model != self._name else [('id', '=', self.id)]
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Service History'),
+            'res_model': model,
+            'view_mode': 'tree,form',
+            'target': 'current',
+            'domain': domain,
+        }
+
     # ============================================================================
     # BUSINESS LOGIC AND VALIDATION
     # ============================================================================
@@ -368,6 +405,7 @@ class BinUnlockService(models.Model):
                 'action_type': action,
                 'user_id': self.env.user.id,
                 'timestamp': fields.Datetime.now(),
+                # Translation style: positional interpolation arguments
                 'description': _("Bin Unlock Service: %s for %s", action, self.name),
                 'naid_compliant': self.naid_compliant,
             })
