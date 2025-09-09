@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Consolidated definitions for previously missing ir.sequence codes referenced by next_by_code() calls.
+         Added by automated audit to prevent early registry load failures when create() overrides fire. -->
+    <data noupdate="0">
+        <!-- NOTE: Only sequences not already defined in existing sequence XML files are added here.
+             Prefixes kept short; adjust as needed. All company-agnostic (company_id False). -->
+        <record id="seq_portal_feedback" model="ir.sequence">
+            <field name="name">Portal Feedback</field>
+            <field name="code">portal.feedback</field>
+            <field name="prefix">FDB</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_naid_compliance_alert" model="ir.sequence">
+            <field name="name">NAID Compliance Alert</field>
+            <field name="code">naid.compliance.alert</field>
+            <field name="prefix">NCA</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_system_flowchart_wizard" model="ir.sequence">
+            <field name="name">System Flowchart Wizard</field>
+            <field name="code">system.flowchart.wizard</field>
+            <field name="prefix">FLOW</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_stock_move_sms_validation" model="ir.sequence">
+            <field name="name">Stock Move SMS Validation</field>
+            <field name="code">stock.move.sms.validation</field>
+            <field name="prefix">SMSV</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_container_access_work_order" model="ir.sequence">
+            <field name="name">Container Access Work Order</field>
+            <field name="code">container.access.work.order</field>
+            <field name="prefix">CAWO</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_location" model="ir.sequence">
+            <field name="name">Records Location</field>
+            <field name="code">records.location</field>
+            <field name="prefix">LOC</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_bulk_user_import" model="ir.sequence">
+            <field name="name">Records Bulk User Import</field>
+            <field name="code">records.bulk.user.import</field>
+            <field name="prefix">BUI</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_inventory_item_destruction" model="ir.sequence">
+            <field name="name">Inventory Item Destruction</field>
+            <field name="code">inventory.item.destruction</field>
+            <field name="prefix">IID</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_shred_bin" model="ir.sequence">
+            <field name="name">Shred Bin</field>
+            <field name="code">shred.bin</field>
+            <field name="prefix">SBN</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_destruction_job" model="ir.sequence">
+            <field name="name">Records Destruction Job</field>
+            <field name="code">records.destruction.job</field>
+            <field name="prefix">RDJ</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_mobile_bin_key_wizard" model="ir.sequence">
+            <field name="name">Mobile Bin Key Wizard</field>
+            <field name="code">mobile.bin.key.wizard</field>
+            <field name="prefix">MBKW</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_payment_split" model="ir.sequence">
+            <field name="name">Payment Split</field>
+            <field name="code">payment.split</field>
+            <field name="prefix">PSPL</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_shredding_certificate" model="ir.sequence">
+            <field name="name">Shredding Certificate</field>
+            <field name="code">shredding.certificate</field>
+            <field name="prefix">SCERT</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_storage_box" model="ir.sequence">
+            <field name="name">Records Storage Box</field>
+            <field name="code">records.storage.box</field>
+            <field name="prefix">BOX</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_location_inspection" model="ir.sequence">
+            <field name="name">Records Location Inspection</field>
+            <field name="code">records.location.inspection</field>
+            <field name="prefix">RLI</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_retention_policy" model="ir.sequence">
+            <field name="name">Records Retention Policy</field>
+            <field name="code">records.retention.policy</field>
+            <field name="prefix">RRP</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_work_order_retrieval" model="ir.sequence">
+            <field name="name">Work Order Retrieval</field>
+            <field name="code">work.order.retrieval</field>
+            <field name="prefix">WOR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_document_search_attempt" model="ir.sequence">
+            <field name="name">Document Search Attempt</field>
+            <field name="code">document.search.attempt</field>
+            <field name="prefix">DSA</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_container_access_activity" model="ir.sequence">
+            <field name="name">Container Access Activity</field>
+            <field name="code">container.access.activity</field>
+            <field name="prefix">CAA</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_digital_scan" model="ir.sequence">
+            <field name="name">Records Digital Scan</field>
+            <field name="code">records.digital.scan</field>
+            <field name="prefix">SCAN</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_customer_inventory_report_line" model="ir.sequence">
+            <field name="name">Customer Inventory Report Line</field>
+            <field name="code">customer.inventory.report.line</field>
+            <field name="prefix">CIRL</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_paper_load_shipment" model="ir.sequence">
+            <field name="name">Paper Load Shipment</field>
+            <field name="code">paper.load.shipment</field>
+            <field name="prefix">PLS</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_destruction" model="ir.sequence">
+            <field name="name">Records Destruction</field>
+            <field name="code">records.destruction</field>
+            <field name="prefix">RD</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_inventory_item" model="ir.sequence">
+            <field name="name">Inventory Item</field>
+            <field name="code">inventory.item</field>
+            <field name="prefix">ITEM</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_request" model="ir.sequence">
+            <field name="name">Records Request</field>
+            <field name="code">records.request</field>
+            <field name="prefix">RRQ</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_container_movement" model="ir.sequence">
+            <field name="name">Records Container Movement</field>
+            <field name="code">records.container.movement</field>
+            <field name="prefix">RCM</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_portal_feedback_resolution" model="ir.sequence">
+            <field name="name">Portal Feedback Resolution</field>
+            <field name="code">portal.feedback.resolution</field>
+            <field name="prefix">PFRES</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_processing_log" model="ir.sequence">
+            <field name="name">Processing Log</field>
+            <field name="code">processing.log</field>
+            <field name="prefix">PLOG</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_paper_bale_movement" model="ir.sequence">
+            <field name="name">Paper Bale Movement</field>
+            <field name="code">paper.bale.movement</field>
+            <field name="prefix">PBM</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_custody_transfer_event" model="ir.sequence">
+            <field name="name">Custody Transfer Event</field>
+            <field name="code">custody.transfer.event</field>
+            <field name="prefix">CTE</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_naid_performance_history" model="ir.sequence">
+            <field name="name">NAID Performance History</field>
+            <field name="code">naid.performance.history</field>
+            <field name="prefix">NPH</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_portal_feedback_communication" model="ir.sequence">
+            <field name="name">Portal Feedback Communication</field>
+            <field name="code">portal.feedback.communication</field>
+            <field name="prefix">PFC</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_retrieval_work_order" model="ir.sequence">
+            <field name="name">Records Retrieval Work Order</field>
+            <field name="code">records.retrieval.work.order</field>
+            <field name="prefix">RRWO</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_shredding_inventory_batch" model="ir.sequence">
+            <field name="name">Shredding Inventory Batch</field>
+            <field name="code">shredding.inventory.batch</field>
+            <field name="prefix">SIB</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_bin_unlock_service" model="ir.sequence">
+            <field name="name">Bin Unlock Service</field>
+            <field name="code">bin.unlock.service</field>
+            <field name="prefix">BUS</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_customer_inventory" model="ir.sequence">
+            <field name="name">Customer Inventory</field>
+            <field name="code">customer.inventory</field>
+            <field name="prefix">CINV</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_inventory_item_retrieval" model="ir.sequence">
+            <field name="name">Inventory Item Retrieval</field>
+            <field name="code">inventory.item.retrieval</field>
+            <field name="prefix">IIR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_unlock_service_history" model="ir.sequence">
+            <field name="name">Unlock Service History</field>
+            <field name="code">unlock.service.history</field>
+            <field name="prefix">USH</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_access_log" model="ir.sequence">
+            <field name="name">Records Access Log</field>
+            <field name="code">records.access.log</field>
+            <field name="prefix">RAL</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_usage_tracking" model="ir.sequence">
+            <field name="name">Records Usage Tracking</field>
+            <field name="code">records.usage.tracking</field>
+            <field name="prefix">RUT</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_container_destruction_work_order" model="ir.sequence">
+            <field name="name">Container Destruction Work Order</field>
+            <field name="code">container.destruction.work.order</field>
+            <field name="prefix">CDWO</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_barcode_generation_history" model="ir.sequence">
+            <field name="name">Barcode Generation History</field>
+            <field name="code">barcode.generation.history</field>
+            <field name="prefix">BGH</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_signed_document" model="ir.sequence">
+            <field name="name">Signed Document</field>
+            <field name="code">signed.document</field>
+            <field name="prefix">SDOC</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_bin_key_unlock_service" model="ir.sequence">
+            <field name="name">Bin Key Unlock Service</field>
+            <field name="code">bin.key.unlock.service</field>
+            <field name="prefix">BKUS</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_paper_bale_inspection" model="ir.sequence">
+            <field name="name">Paper Bale Inspection</field>
+            <field name="code">paper.bale.inspection</field>
+            <field name="prefix">PBI</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_res_partner_key_restriction" model="ir.sequence">
+            <field name="name">Partner Key Restriction</field>
+            <field name="code">res.partner.key.restriction</field>
+            <field name="prefix">PKR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_invoice_generation_log" model="ir.sequence">
+            <field name="name">Invoice Generation Log</field>
+            <field name="code">invoice.generation.log</field>
+            <field name="prefix">IGL</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_portal_feedback_escalation" model="ir.sequence">
+            <field name="name">Portal Feedback Escalation</field>
+            <field name="code">portal.feedback.escalation</field>
+            <field name="prefix">PFE</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_key_restriction_checker" model="ir.sequence">
+            <field name="name">Key Restriction Checker</field>
+            <field name="code">key.restriction.checker</field>
+            <field name="prefix">KRC</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_bin_key_history" model="ir.sequence">
+            <field name="name">Bin Key History</field>
+            <field name="code">bin.key.history</field>
+            <field name="prefix">BKH</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_shredding_service_log" model="ir.sequence">
+            <field name="name">Shredding Service Log</field>
+            <field name="code">shredding.service.log</field>
+            <field name="prefix">SSL</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_naid_destruction_record" model="ir.sequence">
+            <field name="name">NAID Destruction Record</field>
+            <field name="code">naid.destruction.record</field>
+            <field name="prefix">NDR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_bin_key" model="ir.sequence">
+            <field name="name">Bin Key</field>
+            <field name="code">bin.key</field>
+            <field name="prefix">KEY</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_shredding_hard_drive" model="ir.sequence">
+            <field name="name">Shredding Hard Drive</field>
+            <field name="code">shredding.hard_drive</field>
+            <field name="prefix">HD</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_paper_bale_recycling" model="ir.sequence">
+            <field name="name">Paper Bale Recycling</field>
+            <field name="code">paper.bale.recycling</field>
+            <field name="prefix">PBR</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_naid_operator_certification" model="ir.sequence">
+            <field name="name">NAID Operator Certification</field>
+            <field name="code">naid.operator.certification</field>
+            <field name="prefix">NOC</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_temp_inventory_movement" model="ir.sequence">
+            <field name="name">Temp Inventory Movement</field>
+            <field name="code">temp.inventory.movement</field>
+            <field name="prefix">TIM</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_barcode_storage_box" model="ir.sequence">
+            <field name="name">Barcode Storage Box</field>
+            <field name="code">barcode.storage.box</field>
+            <field name="prefix">BSBX</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_barcode_storage_box_barcode" model="ir.sequence">
+            <field name="name">Storage Box Barcode Number</field>
+            <field name="code">barcode.storage.box.barcode</field>
+            <field name="prefix">BXBC</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_records_document_type" model="ir.sequence">
+            <field name="name">Records Document Type</field>
+            <field name="code">records.document.type</field>
+            <field name="prefix">RDT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_signed_document_audit" model="ir.sequence">
+            <field name="name">Signed Document Audit</field>
+            <field name="code">signed.document.audit</field>
+            <field name="prefix">SDA</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -60,6 +60,11 @@
         "security/ir.model.access.csv",
     # Root menus must be available before any child menus declared in scattered views
     "views/records_management_root_menus.xml",
+        # Core sequence data (previously omitted, required for many next_by_code usages)
+        "data/ir_sequence_data.xml",
+        "data/sequence_data.xml",
+        # Newly added consolidated missing sequences (must load before any records using them)
+        "data/missing_sequences_data.xml",
         "data/records_retrieval_order_sequences_data.xml",
         "data/core_records_data.xml",
         "data/load_data.xml",
