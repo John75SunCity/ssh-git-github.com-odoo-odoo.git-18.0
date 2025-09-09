@@ -689,3 +689,30 @@ class RecordsBillingConfig(models.Model):
             'domain': [('id', '=', 0)],
             'target': 'current',
         }
+
+    # -----------------------------------------------------------------
+    # ADDITIONAL BILLING CONFIG BUTTON STUBS (referenced by XML)
+    # -----------------------------------------------------------------
+    def action_configure_rates(self):  # placeholder for rate matrix UI
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Configure Rates'),
+            'res_model': 'records.billing.rate',
+            'view_mode': 'tree,form',
+            'domain': [('id', '=', 0)],
+            'target': 'current',
+        }
+
+    def action_test_billing(self):  # placeholder for simulation wizard
+        self.ensure_one()
+        # Future: open a simulation wizard to preview next invoice lines
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Billing Simulation'),
+            'res_model': 'records.billing.config',  # self reference until wizard added
+            'view_mode': 'form',
+            'res_id': self.id,
+            'target': 'current',
+            'context': {'default_id': self.id},
+        }

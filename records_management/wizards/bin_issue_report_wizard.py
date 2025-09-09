@@ -787,3 +787,17 @@ class BinIssueRecord(models.Model):
         self.write({'billed': True})
         # Post billing message
         self.message_post(body=_("Customer billed for bin issue: %s %s") % (self.billing_amount, self.currency_id.symbol))
+
+    def action_mark_paid(self):
+        """Mark the issue as paid (records customer payment)."""
+        self.ensure_one()
+        if not self.billed:
+            raise UserError(_("Cannot mark as paid - issue has not been billed."))
+        if self.payment_received:
+            return True
+        self.write({'payment_received': True})
+        # Optional: close issue if resolved & paid
+        if self.resolution_status in ['resolved']:
+            self.resolution_status = 'closed'
+        self.message_post(body=_('Payment received for billed bin issue.'))
+        return True

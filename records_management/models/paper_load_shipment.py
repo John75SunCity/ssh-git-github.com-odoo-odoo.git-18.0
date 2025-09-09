@@ -161,3 +161,33 @@ class PaperLoadShipment(models.Model):
             "domain": [("id", "in", self.bale_ids.ids)],
             "context": {"create": False},
         }
+
+    # ------------------------------------------------------------------
+    # ADDITIONAL VIEW BUTTON / WORKFLOW STUBS (referenced in XML)
+    # ------------------------------------------------------------------
+    def action_prepare_load(self):  # placeholder for pre-shipment prep
+        self.ensure_one()
+        if self.state == 'draft':
+            # Intentionally lightweight: do not auto-transition to ready to keep user control
+            self.message_post(body=_("Load preparation logged (placeholder)."))
+        return True
+
+    def action_start_loading(self):  # placeholder mapping to action_ready_for_shipment logic
+        self.ensure_one()
+        if self.state == 'draft':
+            # Reuse existing validation from ready action
+            return self.action_ready_for_shipment()
+        return True
+
+    def action_ship_load(self):  # placeholder mapping to start_transit
+        self.ensure_one()
+        if self.state in ('ready', 'draft'):
+            return self.action_start_transit()
+        return True
+
+    def action_mark_sold(self):  # placeholder for commercial closure
+        self.ensure_one()
+        # Future: integrate revenue recognition / accounting link
+        if self.state not in ('completed', 'cancelled'):
+            self.message_post(body=_("Shipment marked as sold (placeholder – no state change)."))
+        return True

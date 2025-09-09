@@ -144,3 +144,38 @@ class PaperBale(models.Model):
     def action_view_weight_history(self):
         self.ensure_one()
         return False  # Future: open weight history lines
+
+    # ------------------------------------------------------------------
+    # ADDITIONAL VIEW BUTTON STUBS (quality / inspection / labels / reports)
+    # ------------------------------------------------------------------
+    def action_quality_inspection(self):  # XML button placeholder
+        self.ensure_one()
+        # Future: open inspection wizard (paper.bale.inspection.wizard)
+        return False
+
+    def action_view_inspection_details(self):  # XML button placeholder
+        self.ensure_one()
+        # Future: open existing inspection records tree
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Inspection Details %s") % self.name,
+            'res_model': 'paper.bale.inspection',
+            'view_mode': 'tree,form',
+            'domain': [('bale_id', '=', self.id)],
+            'context': {'default_bale_id': self.id},
+        }
+
+    def action_print_label(self):  # XML button placeholder
+        self.ensure_one()
+        # Future: generate QWeb PDF / ZPL output for bale label
+        return False
+
+    def action_view_weight_tickets(self):  # XML button placeholder
+        self.ensure_one()
+        # Future: open related weight ticket records (model TBD)
+        return False
+
+    def action_view_revenue_report(self):  # XML button placeholder
+        self.ensure_one()
+        # Future: open reporting action or pivot view filtered by bale
+        return False
