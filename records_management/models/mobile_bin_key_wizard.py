@@ -130,13 +130,13 @@ class MobileBinKeyWizard(models.TransientModel):
             raise UserError(_("Authorization is required before starting this operation."))
         if not self._check_access_permissions():
             raise UserError(_("You do not have sufficient access permissions for this operation."))
-
         self.write({
             'state': 'in_progress',
             'operation_start_time': fields.Datetime.now()
         })
-        self._create_audit_log('operation_started')
-        self.message_post(body=_("Mobile operation started by %s.", self.user_id.name))
+    self._create_audit_log('operation_started')
+    # Project policy: translate then format with %
+    self.message_post(body=_("Mobile operation started by %s") % self.user_id.name)
         return self._return_mobile_interface()
 
     def action_complete_operation(self):
@@ -190,9 +190,8 @@ class MobileBinKeyWizard(models.TransientModel):
 
         self.activity_schedule(
             "mail.mail_activity_data_todo",
-            summary=_("Authorization Required: %s", self.name),
-            note=_("Mobile operation '%s' by %s requires supervisor authorization.")
-            % (self.action_type, self.user_id.name),
+            summary=_("Authorization Required: %s") % self.name,
+            note=_("Mobile operation '%s' by %s requires supervisor authorization.") % (self.action_type, self.user_id.name),
             user_id=manager_group.users[0].id if manager_group.users else self.env.ref("base.user_admin").id,
         )
         self.message_post(body=_("Authorization requested from supervisors."))
@@ -208,19 +207,20 @@ class MobileBinKeyWizard(models.TransientModel):
             'state': 'draft'
         })
         self._create_audit_log('operation_authorized')
-        self.message_post(body=_("Operation authorized by %s.", self.env.user.name))
+        self.message_post(body=_("Operation authorized by %s") % self.env.user.name)
         return self._return_mobile_interface()
 
     # ------------------------------------------------------------------
     # VIEW BUTTON ALIAS
     # ------------------------------------------------------------------
     def action_execute(self):
-        """Alias for the XML button name mapping to lookup execution.
+        """Alias for view button -> lookup action.
 
-        The mobile view uses name="action_execute" while the core logic
-        method is action_execute_lookup to remain explicit. Keep this
-        thin delegator so future refactors touch only one implementation.
+        The mobile view binds to name="action_execute" while the explicit
+        implementation method is action_execute_lookup (clearer intent).
+        Keep this delegator thin so refactors only change one location.
         """
+        self.ensure_one()
         return self.action_execute_lookup()
 
     # ============================================================================
@@ -247,10 +247,10 @@ class MobileBinKeyWizard(models.TransientModel):
 
         lines = []
         if containers:
-            lines.append(_("CONTAINERS FOUND (%d):", len(containers)))
+            lines.append(_("CONTAINERS FOUND (%d):") % len(containers))
             lines.extend([f"- {c.name} (Location: {c.location_id.name or 'N/A'})" for c in containers])
         if documents:
-            lines.append(_("\nDOCUMENTS FOUND (%d):", len(documents)))
+            lines.append(_("\nDOCUMENTS FOUND (%d):") % len(documents))
             lines.extend([f"- {d.name} (Container: {d.container_id.name or 'N/A'})" for d in documents])
 
         results['formatted_results'] = '\n'.join(lines) if lines else _("No results found.")
@@ -272,7 +272,7 @@ class MobileBinKeyWizard(models.TransientModel):
         if 'records.chain.of.custody' in self.env:
             custody = self.env["records.chain.of.custody"].create(
                 {
-                    "name": _("Mobile Operation: %s", self.name),
+                    "name": _("Mobile Operation: %s") % self.name,
                     "event_type": "mobile_access",
                     "responsible_user_id": self.user_id.id,
                     "location_id": self.bin_location_id.id if self.bin_location_id else False,
@@ -295,7 +295,7 @@ class MobileBinKeyWizard(models.TransientModel):
                         0,
                         0,
                         {
-                            "name": _("Mobile Bin Key Service: %s", self.action_type),
+                            "name": _("Mobile Bin Key Service: %s") % self.action_type,
                             "quantity": 1,
                             "price_unit": self.service_charge,
                         },
