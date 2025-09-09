@@ -50,7 +50,7 @@ import re
 import json
 import sys
 from pathlib import Path
-from typing import Dict, Set, List
+from typing import Dict, Set, List, TypedDict
 
 ADDON_ROOT_MARKER = 'records_management'
 PREFIXES = (
@@ -66,6 +66,12 @@ META_FIELDS = {
 }
 
 REPORT_PATH = Path('development-tools/scan_view_model_fields_report.json')
+
+class SummaryEntry(TypedDict):
+    referenced: int
+    defined: int
+    missing_count: int
+    missing: List[str]
 
 
 def collect_view_field_references(module_path: Path) -> Dict[str, Set[str]]:
@@ -148,7 +154,7 @@ def main() -> int:
     view_refs = collect_view_field_references(module_path)
     defined = collect_python_model_fields(module_path)
 
-    summary = {}
+    summary: Dict[str, SummaryEntry] = {}
     for model, refs in sorted(view_refs.items()):
         defined_fields = defined.get(model, set()) | META_FIELDS
         missing = sorted(refs - defined_fields)
@@ -156,7 +162,7 @@ def main() -> int:
             'referenced': len(refs),
             'defined': len(defined.get(model, set())),
             'missing_count': len(missing),
-            'missing': missing[:200],  # cap to prevent runaway output
+            'missing': missing[:200],
         }
 
     REPORT_PATH.write_text(json.dumps(summary, indent=2), encoding='utf-8')
@@ -167,6 +173,7 @@ def main() -> int:
         for model, info in summary.items():
             print(f"{model}: referenced={info['referenced']} defined={info['defined']} missing={info['missing_count']}")
             if info['missing_count']:
+                # type-safe slice after TypedDict annotation
                 print('  Missing sample:', ', '.join(info['missing'][:20]))
     print(f"Report written: {REPORT_PATH}")
     return 0
