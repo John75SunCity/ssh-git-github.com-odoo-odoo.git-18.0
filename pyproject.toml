@@ -8,201 +8,21 @@ extend-exclude = [
 ]
 
 [tool.ruff.lint]
-# Disable all Odoo-specific false positive warnings
+# For a full list of rules, see https://docs.astral.sh/ruff/rules/
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
 ignore = [
-    # Odoo translation false positives
-    "E501",  # Line too long (handled by black)
-    "F401",  # Unused imports (Odoo imports are dynamic)
-    "F841",  # Unused variables (Odoo patterns)
-    "E999",  # Syntax errors (handled by other tools)
-    # Odoo-specific patterns that are actually correct
-    "S101",  # Assert statements (used in tests)
-    "S104",  # Binding to all interfaces (Odoo server patterns)
-    "S105",  # Hardcoded password (Odoo config patterns)
-    "S106",  # Hardcoded password (Odoo config patterns)
-    "S107",  # Hardcoded password (Odoo config patterns)
-    "B904",  # raise-without-from-inside-except (Odoo patterns)
-    "BLE001",  # blind-except (Odoo error handling)
-    "FBT001",  # Boolean positional arg in function definition
-    "FBT002",  # Boolean default positional argument
-    "FBT003",  # Boolean positional arg in function call
-    "A003",  # Class attribute shadows a python builtin
-    "C901",  # Too complex
-    "PLR0912",  # Too many branches
-    "PLR0915",  # Too many statements
-    "PLR2004",  # Magic value comparison
-    "SIM108",  # Use ternary operator
-    "T201",  # Print statement
-    "ERA001",  # Found commented-out code
-    "PD",  # Pandas (not used)
-    "NPY",  # NumPy (not used)
-    "AIR",  # airflow (not used)
-    "PERF",  # Perflint (not relevant)
-    "FURB",  # refurb (not relevant)
-    "LOG",  # logging (handled by Odoo)
-    "G",  # flake8-logging-format (handled by Odoo)
-    "INP",  # flake8-no-pep420 (not relevant)
-    "PT",  # pytest (not used)
-    "RSE",  # flake8-raise (not relevant)
-    "SLF",  # flake8-self (not relevant)
-    "SLOT",  # flake8-slots (not relevant)
-    "TCH",  # flake8-type-checking (not relevant)
-    "TID",  # flake8-tidy-imports (handled by isort)
-    "T10",  # flake8-debugger (not relevant)
-    "DJ",  # flake8-django (not used)
-    "EM",  # flake8-errmsg (handled by ruff)
-    "EXE",  # flake8-executable (not relevant)
-    "FA",  # flake8-future-annotations (not relevant)
-    "ISC",  # flake8-implicit-str-concat (handled by ruff)
-    "ICN",  # flake8-import-conventions (handled by ruff)
-    "G004",  # flake8-logging-format (handled by Odoo)
-    "G010",  # flake8-logging-format (handled by Odoo)
-    "G201",  # flake8-logging-format (handled by Odoo)
-    "G202",  # flake8-logging-format (handled by Odoo)
-    "N",  # pep8-naming (handled by ruff)
-    "D",  # pydocstyle (handled by ruff)
-    "ANN",  # flake8-annotations (not relevant)
-    "S",  # flake8-bandit (handled separately)
-    "BLE",  # flake8-blind-except (handled by ruff)
-    "FBT",  # flake8-boolean-trap (handled by ruff)
-    "B",  # flake8-bugbear (handled by ruff)
-    "A",  # flake8-builtins (handled by ruff)
-    "C4",  # flake8-comprehensions (handled by ruff)
-    "DTZ",  # flake8-datetimez (not relevant)
-    "T",  # flake8-print (handled by ruff)
-    "FIX",  # flake8-fixme (handled by ruff)
-    "PIE",  # flake8-pie (handled by ruff)
-    "RET",  # flake8-return (handled by ruff)
-    "SIM",  # flake8-simplify (handled by ruff)
-    "ARG",  # flake8-unused-arguments (handled by ruff)
-    "PTH",  # flake8-use-pathlib (not relevant)
-    "ERA",  # eradicate (handled by ruff)
-    "PD",  # pandas-vet (not used)
-    "PGH",  # pygrep-hooks (not relevant)
-    "PL",  # Pylint (handled by pylint)
-    "TRY",  # tryceratops (not relevant)
-    "FLY",  # flynt (not relevant)
-    "NPY",  # NumPy-specific (not used)
-    "AIR",  # Airflow (not used)
-    "PERF",  # Perflint (not relevant)
-    "FURB",  # refurb (not relevant)
-    "LOG",  # flake8-logging-format (handled by Odoo)
-    "G",  # flake8-logging-format (handled by Odoo)
-    "INP",  # flake8-no-pep420 (not relevant)
-    "PT",  # pytest (not used)
-    "RSE",  # flake8-raise (not relevant)
-    "SLF",  # flake8-self (not relevant)
-    "SLOT",  # flake8-slots (not relevant)
-    "TCH",  # flake8-type-checking (not relevant)
-    "TID",  # flake8-tidy-imports (handled by isort)
-    "T10",  # flake8-debugger (not relevant)
-    "DJ",  # flake8-django (not used)
-    "EM",  # flake8-errmsg (handled by ruff)
-    "EXE",  # flake8-executable (not relevant)
-    "FA",  # flake8-future-annotations (not relevant)
-    "ISC",  # flake8-implicit-str-concat (handled by ruff)
-    "ICN",  # flake8-import-conventions (handled by ruff)
-    "G004",  # flake8-logging-format (handled by Odoo)
-    "G010",  # flake8-logging-format (handled by Odoo)
-    "G201",  # flake8-logging-format (handled by Odoo)
-    "G202",  # flake8-logging-format (handled by Odoo)
-    "N",  # pep8-naming (handled by ruff)
-    "D",  # pydocstyle (handled by ruff)
-    "ANN",  # flake8-annotations (not relevant)
-    "S",  # flake8-bandit (handled separately)
-    "BLE",  # flake8-blind-except (handled by ruff)
-    "FBT",  # flake8-boolean-trap (handled by ruff)
-    "B",  # flake8-bugbear (handled by ruff)
-    "A",  # flake8-builtins (handled by ruff)
-    "C4",  # flake8-comprehensions (handled by ruff)
-    "DTZ",  # flake8-datetimez (not relevant)
-    "T",  # flake8-print (handled by ruff)
-    "FIX",  # flake8-fixme (handled by ruff)
-    "PIE",  # flake8-pie (handled by ruff)
-    "RET",  # flake8-return (handled by ruff)
-    "SIM",  # flake8-simplify (handled by ruff)
-    "ARG",  # flake8-unused-arguments (handled by ruff)
-    "PTH",  # flake8-use-pathlib (not relevant)
-    "ERA",  # eradicate (handled by ruff)
-    "PD",  # pandas-vet (not used)
-    "PGH",  # pygrep-hooks (not relevant)
-    "PL",  # Pylint (handled by pylint)
-    "TRY",  # tryceratops (not relevant)
-    "FLY",  # flynt (not relevant)
-    "NPY",  # NumPy-specific (not used)
-    "AIR",  # Airflow (not used)
-    "PERF",  # Perflint (not relevant)
-    "FURB",  # refurb (not relevant)
-    "LOG",  # flake8-logging-format (handled by Odoo)
-    "G",  # flake8-logging-format (handled by Odoo)
-    "INP",  # flake8-no-pep420 (not relevant)
-    "PT",  # pytest (not used)
-    "RSE",  # flake8-raise (not relevant)
-    "SLF",  # flake8-self (not relevant)
-    "SLOT",  # flake8-slots (not relevant)
-    "TCH",  # flake8-type-checking (not relevant)
-    "TID",  # flake8-tidy-imports (handled by isort)
-    "T10",  # flake8-debugger (not relevant)
-    "DJ",  # flake8-django (not used)
-    "EM",  # flake8-errmsg (handled by ruff)
-    "EXE",  # flake8-executable (not relevant)
-    "FA",  # flake8-future-annotations (not relevant)
-    "ISC",  # flake8-implicit-str-concat (handled by ruff)
-    "ICN",  # flake8-import-conventions (handled by ruff)
-    "G004",  # flake8-logging-format (handled by Odoo)
-    "G010",  # flake8-logging-format (handled by Odoo)
-    "G201",  # flake8-logging-format (handled by Odoo)
-    "G202",  # flake8-logging-format (handled by Odoo)
-    "N",  # pep8-naming (handled by ruff)
-    "D",  # pydocstyle (handled by ruff)
-    "ANN",  # flake8-annotations (not relevant)
-    "S",  # flake8-bandit (handled separately)
-    "BLE",  # flake8-blind-except (handled by ruff)
-    "FBT",  # flake8-boolean-trap (handled by ruff)
-    "B",  # flake8-bugbear (handled by ruff)
-    "A",  # flake8-builtins (handled by ruff)
-    "C4",  # flake8-comprehensions (handled by ruff)
-    "DTZ",  # flake8-datetimez (not relevant)
-    "T",  # flake8-print (handled by ruff)
-    "FIX",  # flake8-fixme (handled by ruff)
-    "PIE",  # flake8-pie (handled by ruff)
-    "RET",  # flake8-return (handled by ruff)
-    "SIM",  # flake8-simplify (handled by ruff)
-    "ARG",  # flake8-unused-arguments (handled by ruff)
-    "PTH",  # flake8-use-pathlib (not relevant)
-    "ERA",  # eradicate (handled by ruff)
-    "PD",  # pandas-vet (not used)
-    "PGH",  # pygrep-hooks (not relevant)
-    "PL",  # Pylint (handled by pylint)
-    "TRY",  # tryceratops (not relevant)
-    "FLY",  # flynt (not relevant)
+    "E501",  # Line too long, handled by black
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# Odoo-specific files that should ignore certain rules
-"records_management/**/*.py" = [
-    "E501",  # Line too long (Odoo has long lines)
-    "F401",  # Unused imports (Odoo dynamic imports)
-    "F841",  # Unused variables (Odoo patterns)
-    "S101",  # Assert statements (used in Odoo tests)
-    "S104",  # Binding to all interfaces (Odoo server)
-    "S105",  # Hardcoded password (Odoo config)
-    "S106",  # Hardcoded password (Odoo config)
-    "S107",  # Hardcoded password (Odoo config)
-    "B904",  # raise-without-from-inside-except (Odoo patterns)
-    "BLE001",  # blind-except (Odoo error handling)
-    "FBT001",  # Boolean positional arg in function definition
-    "FBT002",  # Boolean default positional argument
-    "FBT003",  # Boolean positional arg in function call
-    "A003",  # Class attribute shadows a python builtin
-    "C901",  # Too complex (Odoo business logic)
-    "PLR0912",  # Too many branches (Odoo workflows)
-    "PLR0915",  # Too many statements (Odoo methods)
-    "PLR2004",  # Magic value comparison (Odoo constants)
-    "SIM108",  # Use ternary operator (Odoo style)
-    "T201",  # Print statement (Odoo debugging)
-    "ERA001",  # Found commented-out code (Odoo development)
-]
+"__init__.py" = ["F401"]
 
 [tool.black]
 line-length = 120
