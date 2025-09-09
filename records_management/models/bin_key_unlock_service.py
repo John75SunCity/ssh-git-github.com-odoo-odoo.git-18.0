@@ -167,7 +167,7 @@ class BinKeyUnlockService(models.Model):
     def action_view_service_history(self):
         """Placeholder action for viewing service history records.
 
-        Can be replaced with a dedicated model (e.g. unlock.service.history)
+    (Legacy unlock.service.history model fully merged; historical reference removed.)
         if/when implemented.
         """
         self.ensure_one()

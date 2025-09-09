@@ -264,14 +264,7 @@
             <field name="padding">5</field>
             <field name="company_id" eval="False"/>
         </record>
-        <record id="seq_unlock_service_history" model="ir.sequence">
-            <field name="name">Unlock Service History</field>
-<!-- Removed obsolete unlock.service.history sequence after model merge -->
-<field name="code">bin.unlock.service</field>
-            <field name="prefix">USH</field>
-            <field name="padding">5</field>
-            <field name="company_id" eval="False"/>
-        </record>
+<!-- Legacy seq_unlock_service_history removed after merge into bin.key.unlock.service -->
         <record id="seq_records_access_log" model="ir.sequence">
             <field name="name">Records Access Log</field>
             <field name="code">records.access.log</field>

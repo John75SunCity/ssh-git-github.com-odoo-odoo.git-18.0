@@ -257,7 +257,6 @@ from . import temp_inventory_movement
 from . import temp_inventory_reject_wizard
 from . import transitory_field_config
 from . import transitory_item
-from . import unlock_service_history
 from . import unlock_service_part
 from . import visitor
 from . import work_order_coordinator
