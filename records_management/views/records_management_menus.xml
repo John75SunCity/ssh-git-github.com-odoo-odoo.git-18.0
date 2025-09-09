@@ -58,17 +58,8 @@
 </record>
 
 <!-- ========================================== -->
-<!-- ROOT MENU STRUCTURE -->
-<!-- ========================================== -->
-
-<!-- Main Records Management Root Menu -->
-<menuitem id="menu_records_management_root" name="Records Management" sequence="50" web_icon="records_management,static/description/icon.png"/>
-
-<!-- ========================================== -->
-<!-- OPERATIONS MENU (Level 1) -->
-<!-- ========================================== -->
-
-<menuitem id="menu_records_operations" name="Operations" parent="menu_records_management_root" sequence="10" groups="records_management.group_records_user"/>
+<!-- ROOT + LEVEL-1 MENUS relocated to records_management_root_menus.xml to ensure early parent availability -->
+<!-- <menuitem id="menu_records_management_root" .../> and <menuitem id="menu_records_operations" .../> removed here to avoid duplicate XML IDs -->
 
 <!-- Records Operations -->
 <menuitem id="menu_records_containers" name="Containers" parent="menu_records_operations" action="action_records_container" sequence="10" groups="records_management.group_records_user"/>

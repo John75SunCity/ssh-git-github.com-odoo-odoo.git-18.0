@@ -58,6 +58,8 @@
         "security/naid_security.xml",
         "security/portal_request_security.xml",
         "security/ir.model.access.csv",
+    # Root menus must be available before any child menus declared in scattered views
+    "views/records_management_root_menus.xml",
         "data/records_retrieval_order_sequences_data.xml",
         "data/core_records_data.xml",
         "data/load_data.xml",
