@@ -232,3 +232,38 @@ class ResPartner(models.Model):
             'domain': [('partner_id', '=', self.id)],
             'context': {'default_partner_id': self.id}
         }
+
+    # --------------------------------------------------------------
+    # NEW: Bin Key / Unlock Service action handlers (used in views)
+    # --------------------------------------------------------------
+    def action_view_bin_keys(self):
+        """Open bin.key records for this contact as key holder.
+
+        Provides a simple list/form view for active and historical keys.
+        """
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Bin Keys'),
+            'res_model': 'bin.key',
+            'view_mode': 'tree,form',
+            'domain': [('key_holder_id', '=', self.id)],
+            'context': {
+                'default_key_holder_id': self.id,
+                'search_default_assigned': 1,
+            }
+        }
+
+    def action_view_unlock_services(self):
+        """Open unlock.service.history records for this partner/contact."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Unlock Services'),
+            'res_model': 'unlock.service.history',
+            'view_mode': 'tree,form',
+            'domain': [('partner_id', '=', self.id)],
+            'context': {
+                'default_partner_id': self.id,
+            }
+        }
