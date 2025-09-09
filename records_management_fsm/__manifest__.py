@@ -20,5 +20,6 @@
         "views/mobile_fsm_integration_views.xml",
     ],
     "installable": True,
-    "auto_install": False,
+    # Auto-install so it comes in automatically with records_management + industry_fsm
+    "auto_install": True,
 }

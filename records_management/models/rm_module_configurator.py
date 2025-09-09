@@ -75,6 +75,8 @@ class RmModuleConfigurator(models.Model):
     enable_chain_of_custody = fields.Boolean(default=True)
     bin_inventory_enabled = fields.Boolean(default=True)
     destruction_certificate_enabled = fields.Boolean(default=True)
+    # New: Global FSM feature enable (controls visibility of FSM integration menus/views)
+    enable_fsm_features = fields.Boolean(default=True, help="Master switch for Records Management FSM integration UI components.")
 
     # Additional referenced toggles kept (avoid view breakage)
     bulk_user_import_enabled = fields.Boolean(default=True)
@@ -195,6 +197,8 @@ class RmModuleConfigurator(models.Model):
             return
         if 'bin_inventory_enabled' in updated_keys:
             self._apply_bin_inventory_toggle()
+        if 'enable_fsm_features' in updated_keys:
+            self._apply_fsm_visibility_toggle()
 
     def _collect_updated_feature_keys(self, vals_list):
         keys = set()
@@ -202,6 +206,10 @@ class RmModuleConfigurator(models.Model):
             if any(k.startswith('value_') for k in vals):
                 for rec in self.filtered(lambda r: r.config_type == 'feature_toggle'):
                     keys.add(rec.config_key)
+            # direct boolean feature toggles tracked explicitly
+            for direct in ['bin_inventory_enabled', 'enable_fsm_features']:
+                if direct in vals:
+                    keys.add(direct)
         return keys
 
     # ------------------------------------------------------------------
@@ -312,12 +320,35 @@ class RmModuleConfigurator(models.Model):
         defaults = [
             {"name": "Enable Chain of Custody", "config_key": "chain_of_custody_enabled", "config_type": "feature_toggle", "value_boolean": True, "category": "compliance"},
             {"name": "Enable Bin Inventory", "config_key": "bin_inventory_enabled", "config_type": "feature_toggle", "value_boolean": True, "category": "fsm"},
+            {"name": "Enable FSM Features", "config_key": "enable_fsm_features", "config_type": "feature_toggle", "value_boolean": True, "category": "fsm"},
         ]
         created = []
         for vals in defaults:
             if not self.search([("config_key", "=", vals["config_key"])], limit=1):
                 created.append(self.create(vals))
         return created
+
+    # ------------------------------------------------------------------
+    # FSM VISIBILITY TOGGLE
+    # ------------------------------------------------------------------
+    def _apply_fsm_visibility_toggle(self):
+        """Activate/deactivate FSM integration menus and (optionally) views.
+
+        We only toggle menus here to avoid costly view arch rewrites. Field- or action-level
+        conditional logic can key off this configurator via self.env['rm.module.configurator'].
+        """
+        enabled = self.get_config_parameter('enable_fsm_features', True)
+        xml_ids = [
+            'records_management_fsm.menu_fleet_fsm_integration_root',
+            'records_management_fsm.menu_fsm_notification_manager',
+        ]
+        for xmlid in xml_ids:
+            menu = self.env.ref(xmlid, raise_if_not_found=False)
+            if menu:
+                try:
+                    menu.active = bool(enabled)
+                except Exception:
+                    continue
 
     def _default_create_default_configurations(self):  # alias (backwards compatibility)
         self.ensure_one()

@@ -102,7 +102,14 @@
         <field name="destruction_certificate_enabled"/>
 <field name="enable_chain_of_custody"/>
 
-    </group>
+</group>
+</page>
+<page string="Field Service" name="fsm_features">
+<group string="FSM Feature Toggles">
+<field name="enable_fsm_features"/>
+<field name="bin_inventory_enabled"/>
+
+</group>
 </page>
 </notebook>
                 </sheet>
