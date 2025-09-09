@@ -79,7 +79,6 @@
     # Menus (can now safely reference pre-loaded actions)
     # Ensure pickup_request action loads before menus referencing it
     "views/pickup_request_views.xml",
-    "views/records_management_menus.xml",
         # Compliance related views (may reference compliance menu)
         "views/naid_audit_log_views.xml",
         "views/naid_audit_verification_wizard_views.xml",
@@ -228,6 +227,8 @@
         "views/records_container_field_label_helper_views.xml",
         "views/records_billing_config_views.xml",
     "views/portal_request_views.xml",
+    # Menus moved to end to ensure all referenced actions are defined beforehand
+    "views/records_management_menus.xml",
         "report/description_reports.xml",
         "report/destruction_certificate_reports.xml",
         "report/document_search_attempt_report.xml",
