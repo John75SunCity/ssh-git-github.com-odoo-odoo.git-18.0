@@ -93,6 +93,12 @@ class ProjectTask(models.Model):
         string='NAID Operator',
         help="NAID certified operator assigned to this FSM task"
     )
+    # Flag used by hard drive destruction wizard domain
+    allow_hard_drive_destruction = fields.Boolean(
+        string='Allow Hard Drive Destruction',
+        help="Enable this task to appear in the Hard Drive Scan wizard for destruction processing.",
+        default=False
+    )
     audit_requirement_id = fields.Many2one(
         comodel_name='naid.audit.requirement',
         string='NAID Audit Requirement',
