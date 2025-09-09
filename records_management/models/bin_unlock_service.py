@@ -1,105 +1,31 @@
-# -*- coding: utf-8 -*-
-"""
-Bin Unlock Service Model
-
-Manages requests for unlocking physical bins, tracking the entire process
-from request to completion with full audit trails for NAID AAA compliance.
-
-Author: Records Management System
-Version: 18.0.6.0.0
-License: LGPL    d    def     def     def     def action_schedule(self):
-        self.ensure_one()
-        if not self.scheduled_date:
-            raise UserError(_("Please set a scheduled date first."))
-        if not self.assigned_technician_id:
-            raise UserError(_("Please assign a technician before scheduling."))
-        self.write({'state': 'scheduled'})
-        # Post scheduling notification
-        self.message_post(body=_('Service scheduled for %s', self.scheduled_date))hedule(self):
-        self.ensure_one()
-        if not self.scheduled_date:
-            raise UserError(_("Please set a scheduled date first."))
-        if not self.assigned_technician_id:
-            raise UserError(_("Please assign a technician before scheduling."))
-        self.write({'state': 'scheduled'})
-        # Post scheduling notification
-        self.message_post(body=_('Service scheduled for %s') % self.scheduled_date)hedule(self):
-        self.ensure_one()
-        if not self.scheduled_date:
-            raise UserError(_("Please set a scheduled date first."))
-        if not self.assigned_technician_id:
-            raise UserError(_("Please assign a technician before scheduling."))
-        self.write({'state': 'scheduled'})
-        # Post scheduling notification
-        self.message_post(body=_('Service scheduled for %s') % self.scheduled_date)hedule(self):
-        self.ensure_one()
-        if not self.scheduled_date:
-            raise UserError(_("Please set a scheduled date first."))
-        if not self.assigned_technician_id:
-            raise UserError(_("Please assign a technician before scheduling."))
-        self.write({'state': 'scheduled'})
-        # Post scheduling notification
-        self.message_post(body=_('Service scheduled for %s') % self.scheduled_date)_schedule(self):
-        self.ensure_one()
-        if not self.scheduled_date:
-            raise UserError(_("Please set a scheduled date first."))
-        if not self.assigned_technician_id:
-            raise UserError(_("Please assign a technician before scheduling."))
-        self.write({'state': 'scheduled'})
-        # Post scheduling notification
-        self.message_post(body=_('Service scheduled for %s', self.scheduled_date))rom odoo import models, fields, api, _
+from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 
 
 class BinUnlockService(models.Model):
-    """
-    Bin Unlock Service Management
-
-    Handles the workflow for unlocking physical bins, including scheduling,
-    technician assignment, authorization, and billing. Ensures a secure
-    and auditable process for all bin access operations.
-    """
-
     _name = 'bin.unlock.service'
     _description = 'Bin Unlock Service'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'request_date desc, id desc'
-    _rec_name = 'display_name'
 
     # ============================================================================
-    # CORE IDENTIFICATION FIELDS
+    # IDENTITY
     # ============================================================================
     name = fields.Char(
-        string='Service Reference',
+        string='Reference',
         required=True,
+        copy=False,
+        default=lambda self: _('New Unlock Service'),
         tracking=True,
-        index=True,
-        copy=False,
-        default=lambda self: _('New')
     )
+    service_number = fields.Char(string='Service Number', copy=False, tracking=True)
+    display_name = fields.Char(string='Display Name', compute='_compute_display_name')
 
-    service_number = fields.Char(
-        string='Service Number',
-        index=True,
-        copy=False,
-        readonly=True,
-        help='External/human readable reference (merged from history model).'
-    )
-
-    display_name = fields.Char(
-        string='Display Name',
-        compute='_compute_display_name',
-        store=True,
-        help="Formatted display name for the service"
-    )
-
-    sequence = fields.Integer(string='Sequence', default=10)
-    active = fields.Boolean(string='Active', default=True)
     company_id = fields.Many2one(
-        'res.company',
+        comodel_name='res.company',
         string='Company',
         default=lambda self: self.env.company,
-        required=True
+        required=True,
+        index=True,
     )
 
     user_id = fields.Many2one(
@@ -228,8 +154,9 @@ class BinUnlockService(models.Model):
         string='Total Cost',
         compute='_compute_total_cost',
         store=True,
-        tracking=True
-    , currency_field='currency_id')
+        tracking=True,
+        currency_field='currency_id'
+    )
     service_rate = fields.Float(string='Service Rate (per hour)')
     invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True, copy=False)
 
@@ -258,11 +185,10 @@ class BinUnlockService(models.Model):
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
-    @api.depends('service_cost', 'emergency_surcharge', 'part_ids.total_price')
+    @api.depends('service_cost', 'emergency_surcharge')
     def _compute_total_cost(self):
         for record in self:
-            parts_total = sum(record.part_ids.mapped('total_price')) if record.part_ids else 0.0
-            record.total_cost = (record.service_cost or 0.0) + (record.emergency_surcharge or 0.0) + parts_total
+            record.total_cost = (record.service_cost or 0.0) + (record.emergency_surcharge or 0.0)
 
     @api.depends('name', 'service_number', 'bin_id.name', 'partner_id.name')
     def _compute_display_name(self):
@@ -275,7 +201,6 @@ class BinUnlockService(models.Model):
 
     @api.depends('service_start_time', 'completion_date')
     def _compute_service_duration(self):
-        """Calculate service duration in hours"""
         for record in self:
             if record.service_start_time and record.completion_date:
                 duration = record.completion_date - record.service_start_time
@@ -313,8 +238,7 @@ class BinUnlockService(models.Model):
         if not self.assigned_technician_id:
             raise UserError(_("Please assign a technician before scheduling."))
         self.write({'state': 'scheduled'})
-        # Post scheduling notification
-        self.message_post(body=_('Service scheduled for %s', self.scheduled_date))
+        self.message_post(body=_('Service scheduled for %s') % self.scheduled_date)
 
     def action_start_service(self):
         self.ensure_one()
@@ -324,8 +248,7 @@ class BinUnlockService(models.Model):
             'state': 'in_progress',
             'service_start_time': fields.Datetime.now()
         })
-        # Post start notification
-        self.message_post(body=_('Service started by %s', (self.assigned_technician_id.name or self.env.user.name)))
+        self.message_post(body=_('Service started by %s') % (self.assigned_technician_id.name or self.env.user.name))
         self._create_audit_log('service_started')
 
     def action_complete(self):
@@ -353,9 +276,6 @@ class BinUnlockService(models.Model):
         self.ensure_one()
         if self.state != 'completed':
             raise UserError(_("A service certificate can only be generated for completed services."))
-
-        # This would typically call a report action
-        # For a wizard-based approach:
         return {
             'type': 'ir.actions.act_window',
             'name': _("Generate Service Certificate"),
@@ -386,8 +306,7 @@ class BinUnlockService(models.Model):
         }
         invoice = self.env['account.move'].create(invoice_vals)
         self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
-        # Post invoice creation notification
-        self.message_post(body=_('Invoice %s created.', invoice.name))
+        self.message_post(body=_('Invoice %s created.') % invoice.name)
         return {
             'type': 'ir.actions.act_window',
             'name': _('Invoice'),
@@ -397,15 +316,10 @@ class BinUnlockService(models.Model):
         }
 
     # ------------------------------------------------------------------
-    # VIEW SUPPORT PLACEHOLDERS (Referenced by XML buttons)
+    # VIEW SUPPORT PLACEHOLDERS
     # ------------------------------------------------------------------
     def action_view_access_history(self):
-        """Placeholder to open related access history rows.
-
-        Replace res_model once a dedicated access history model exists.
-        """
         self.ensure_one()
-        # History model removed after merge -> return self record
         return {
             'type': 'ir.actions.act_window',
             'name': _('Unlock Service'),
@@ -416,10 +330,6 @@ class BinUnlockService(models.Model):
         }
 
     def action_view_service_history(self):
-        """Placeholder to open related service history rows.
-
-        Mirrors access history until a more granular model is introduced.
-        """
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
@@ -434,7 +344,6 @@ class BinUnlockService(models.Model):
     # BUSINESS LOGIC AND VALIDATION
     # ============================================================================
     def get_service_summary(self):
-        """Return a formatted service summary for reports or external use."""
         self.ensure_one()
         return {
             'service_number': self.service_number,
@@ -447,14 +356,13 @@ class BinUnlockService(models.Model):
         }
 
     def _create_audit_log(self, action):
-        """Create NAID compliance audit log."""
         self.ensure_one()
         if 'naid.audit.log' in self.env:
             self.env['naid.audit.log'].create({
                 'action_type': action,
                 'user_id': self.env.user.id,
                 'timestamp': fields.Datetime.now(),
-                'description': _('Bin Unlock Service: %s for %s', action, self.name),
+                'description': _('Bin Unlock Service: %s for %s') % (action, self.name),
                 'naid_compliant': self.naid_compliant,
             })
 
@@ -491,6 +399,6 @@ class BinUnlockService(models.Model):
                 raise ValidationError(_('A witness name is required when a witness is marked as required.'))
 
     # ------------------------------------------------------------------
-    # PARTS RELATION (migrated from history model)
+    # PARTS RELATION
     # ------------------------------------------------------------------
     part_ids = fields.One2many('unlock.service.part', 'service_id', string='Parts Used')
