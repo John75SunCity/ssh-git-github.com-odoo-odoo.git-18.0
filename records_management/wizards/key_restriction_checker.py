@@ -16,7 +16,7 @@ class KeyRestrictionChecker(models.TransientModel):
     Quick checker for technicians to verify key issuance permissions
     """
 
-    _name = 'key.restriction.checker.wizard.wizard'
+    _name = 'key.restriction.checker.wizard'
     _description = 'Key Restriction Checker Wizard'
 
     # ==========================================
