@@ -1,62 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <data>
-<!-- Tree view for base.rate -->
-    <record id="paper_bale_weigh_wizard_view_tree" model="ir.ui.view">
-        <field name="name">paper.bale.weigh.wizard.view.tree</field>
-        <field name="model">paper.bale.weigh.wizard</field>
-        <field name="arch" type="xml">
-            <list>
-                <field name="name"/>
-            </list>
-        </field>
-    </record>
+<!-- Form view for paper bale weigh wizard -->
+<record id="paper_bale_weigh_wizard_view_form" model="ir.ui.view">
+    <field name="name">paper.bale.weigh.wizard.view.form</field>
+    <field name="model">paper.bale.weigh.wizard</field>
+    <field name="arch" type="xml">
+<form string="Weigh Paper Bale">
+    <sheet>
+        <div class="oe_title">
+<h1>
+<span>Weigh Bale: </span>
+<field name="bale_number" readonly="1" class="oe_inline"/>
+</h1>
+</div>
+<group>
+    <group>
+        <field name="bale_id" invisible="1"/>
+        <field name="current_weight" readonly="1"/>
+        <field name="new_weight" required="1"/>
+    </group>
+    <group>
+        <field name="weigh_date"/>
+    </group>
+</group>
+<group>
+    <field name="notes" placeholder="Optional notes about the weighing..."/>
+</group>
+</sheet>
+<footer>
+    <button name="action_confirm_weight" string="Confirm Weight" type="object" class="btn-primary"/>
+    <button string="Cancel" class="btn-secondary" special="cancel"/>
+</footer>
+</form>
+</field>
+</record>
 
-    <!-- Form view for base.rate -->
-    <record id="paper_bale_weigh_wizard_view_form" model="ir.ui.view">
-        <field name="name">paper.bale.weigh.wizard.view.form</field>
-        <field name="model">paper.bale.weigh.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Paper Bale Weigh Wizard">
-                <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Search view for base.rate -->
-    <record id="paper_bale_weigh_wizard_view_search" model="ir.ui.view">
-        <field name="name">paper.bale.weigh.wizard.view.search</field>
-        <field name="model">paper.bale.weigh.wizard</field>
-        <field name="arch" type="xml">
-            <search>
-                <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- Tree view for Action -->
-    <record id="action_paper_bale_weigh_wizard" model="ir.actions.act_window">
-        <field name="name">Paper Bale Weigh Wizard</field>
-        <field name="res_model">paper.bale.weigh.wizard</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Paper Bale Weigh Wizard.
-            </p>
-        </field>
-    </record>
+<!-- Action for paper bale weigh wizard -->
+<record id="action_paper_bale_weigh_wizard" model="ir.actions.act_window">
+<field name="name">Weigh Paper Bale</field>
+<field name="res_model">paper.bale.weigh.wizard</field>
+<field name="view_mode">form</field>
+<field name="target">new</field>
+<field name="context">{'default_bale_id': active_id}</field>
+</record>
 </data>
-
 </odoo>

@@ -196,6 +196,8 @@ access_paper_bale_inspection_manager,paper_bale_inspection,paper.bale.inspection
 access_paper_bale_inspection_user,paper_bale_inspection,paper.bale.inspection,records_management.group_records_user,1,1,1,0
 access_paper_bale_inspection_wizard_manager,paper_bale_inspection_wizard,paper.bale.inspection.wizard,records_management.group_records_manager,1,1,1,1
 access_paper_bale_inspection_wizard_user,paper_bale_inspection_wizard,paper.bale.inspection.wizard,records_management.group_records_user,1,1,1,0
+access_paper_bale_weigh_wizard_manager,paper_bale_weigh_wizard,paper.bale.weigh.wizard,records_management.group_records_manager,1,1,1,1
+access_paper_bale_weigh_wizard_user,paper_bale_weigh_wizard,paper.bale.weigh.wizard,records_management.group_records_user,1,1,1,0
 access_paper_bale_line_manager,paper_bale_line,paper.bale.line,records_management.group_records_manager,1,1,1,1
 access_paper_bale_line_user,paper_bale_line,paper.bale.line,records_management.group_records_user,1,1,1,0
 access_paper_bale_manager,paper_bale,paper.bale,records_management.group_records_manager,1,1,1,1

@@ -99,25 +99,25 @@ class PaperBaleWeighWizard(models.TransientModel):
             self.env['paper.bale.movement'].create(movement_vals)
 
         # Log the weight change in the chatter
-        self.bale_id.message_post(
-            body=_("Bale weighed: %s kg (was %s kg). Notes: %s",
-                   self.new_weight, self.current_weight or 0, self.notes or _("No notes"))
+        message_body = "Bale weighed: %s kg (was %s kg). Notes: %s" % (
+            self.new_weight, self.current_weight or 0, self.notes or "No notes"
         )
+        self.bale_id.message_post(body=message_body)
 
         # Close the wizard and show success message
+        notification_message = "Bale %s has been weighed: %s kg" % (
+            self.bale_id.name, self.new_weight
+        )
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': _("Weight Updated"),
-                'message': _("Bale %s has been weighed: %s kg",
-                           self.bale_id.name, self.new_weight),
+                'message': notification_message,
                 'type': 'success',
                 'sticky': False,
             }
-        }
-
-    # ============================================================================
+        }    # ============================================================================
     # ONCHANGE METHODS
     # ============================================================================
 

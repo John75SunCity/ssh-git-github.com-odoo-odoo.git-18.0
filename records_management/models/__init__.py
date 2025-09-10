@@ -109,6 +109,7 @@ from . import paper_bale
 from . import paper_bale_actions
 from . import paper_bale_inspection
 from . import paper_bale_inspection_wizard
+from . import paper_bale_weigh_wizard
 from . import paper_bale_line
 from . import paper_bale_load
 from . import paper_bale_movement
