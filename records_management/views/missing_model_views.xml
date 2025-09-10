@@ -347,7 +347,7 @@
         <!-- Key Restriction Checker Views -->
         <record id="key_restriction_checker_form" model="ir.ui.view">
             <field name="name">key.restriction.checker.form</field>
-            <field name="model">key.restriction.checker</field>
+<field name="model">key.restriction.checker.wizard</field>
         <field name="arch" type="xml">
                 <form>
                     <sheet>

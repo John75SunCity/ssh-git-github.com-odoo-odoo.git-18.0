@@ -2,9 +2,9 @@
 <odoo>
     <data>
 <!-- Form view for Key -->
-    <record id="key_restriction_checker_view_form" model="ir.ui.view">
-        <field name="name">key.restriction.checker.view.form</field>
-        <field name="model">key.restriction.checker</field>
+<record id="key_restriction_checker_form_view" model="ir.ui.view">
+    <field name="name">Key Restriction Checker Form</field>
+    <field name="model">key.restriction.checker.wizard</field>
         <field name="arch" type="xml">
             <form string="Key Restriction Checker">
                 <sheet>
@@ -73,7 +73,7 @@
     <!-- Tree view for Action -->
     <record id="action_key_restriction_checker" model="ir.actions.act_window">
         <field name="name">Key Restriction Checker</field>
-        <field name="res_model">key.restriction.checker</field>
+<field name="res_model">key.restriction.checker.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="context">{}</field>

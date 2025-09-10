@@ -112,7 +112,7 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
 <!-- Wizard View -->
 <record id="key_restriction_management_wizard_view_form" model="ir.ui.view">
     <field name="name">key.restriction.management.wizard.view.form</field>
-    <field name="model">key.restriction.checker</field>
+<field name="model">key.restriction.checker.wizard</field>
     <field name="arch" type="xml">
         <form string="Key Restriction Management">
             <sheet>
