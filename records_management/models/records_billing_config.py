@@ -466,7 +466,7 @@ class RecordsBillingConfig(models.Model):
         This method is called by the scheduled action.
         """
         try:
-            self._run_storage_fee_workflow()
+            self.action_run_storage_fee_workflow()
         except Exception as e:
             self.env["ir.logging"].create(
                 {
@@ -480,8 +480,9 @@ class RecordsBillingConfig(models.Model):
             )
             raise
 
-    def _run_storage_fee_workflow(self):
+    def action_run_storage_fee_workflow(self):
         """Internal method to run storage fee workflow"""
+        self.ensure_one()
         # Log workflow start
         self.env['ir.logging'].create({
             'name': 'Storage Fee Workflow',
@@ -489,7 +490,7 @@ class RecordsBillingConfig(models.Model):
             'level': 'INFO',
             'message': _('Storage fee automation workflow started'),
             'path': 'records.billing.config',
-            'func': '_run_storage_fee_workflow',
+            'func': 'action_run_storage_fee_workflow',
         })
 
         # ============================================================================
@@ -497,7 +498,7 @@ class RecordsBillingConfig(models.Model):
         # ============================================================================
 
         # 1. Check for overdue payments and send reminders
-        self._process_overdue_payments()
+        self.action_process_overdue_payments()
 
         # 2. Generate automated billing for recurring services
         self._generate_recurring_billing()
@@ -506,7 +507,7 @@ class RecordsBillingConfig(models.Model):
         self._update_billing_statuses()
 
         # 4. Send automated billing notifications
-        self._send_billing_notifications()
+        self.action_send_billing_notifications()
 
         # Log workflow completion
         self.env['ir.logging'].create({
@@ -515,15 +516,16 @@ class RecordsBillingConfig(models.Model):
             'level': 'INFO',
             'message': _('Storage fee automation workflow completed successfully'),
             'path': 'records.billing.config',
-            'func': '_run_storage_fee_workflow',
+            'func': 'action_run_storage_fee_workflow',
         })
 
     # ============================================================================
     # BILLING WORKFLOW IMPLEMENTATION METHODS - Odoo 18.0 Best Practices
     # ============================================================================
 
-    def _process_overdue_payments(self):
+    def action_process_overdue_payments(self):
         """Process overdue payments and send reminder notifications"""
+        self.ensure_one()
         # Find overdue invoices
         overdue_invoices = self.env["account.move"].search(
             [
@@ -596,8 +598,9 @@ class RecordsBillingConfig(models.Model):
                         # Mark as paid in any related records
                         pass
 
-    def _send_billing_notifications(self):
+    def action_send_billing_notifications(self):
         """Send automated billing notifications to customers"""
+        self.ensure_one()
         # Find recent invoices to send notifications
         recent_invoices = self.env["account.move"].search(
             [

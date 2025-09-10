@@ -7,7 +7,9 @@ and customer communication features.
 """
 
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.except    def action_send_certificate_email(self):
+        """Send certificate email to customer"""
+        self.ensure_one()ns import ValidationError, UserError
 
 
 class ShreddingCertificate(models.Model):
@@ -351,7 +353,7 @@ class ShreddingCertificate(models.Model):
 
         # Handle delivery based on method
         if self.delivery_method == 'email':
-            self._send_certificate_email()
+            self.action_send_certificate_email()
         elif self.delivery_method == 'portal':
             self._prepare_portal_delivery()
 

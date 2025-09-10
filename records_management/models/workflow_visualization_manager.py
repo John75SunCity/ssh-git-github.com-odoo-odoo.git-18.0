@@ -76,12 +76,12 @@ class WorkflowVisualizationManager(models.Model):
     )
 
     @api.model
-    def generate_process_flow_diagram(self, model_name):
+    def action_generate_process_flow_diagram(self, model_name):
         """
         Generate a process flow diagram for the specified model.
         """
         try:
-            return self._generate_process_flow(model_name)
+            return self.action_generate_process_flow(model_name)
         except Exception as e:
             self.env["ir.logging"].create(
                 {
@@ -90,13 +90,14 @@ class WorkflowVisualizationManager(models.Model):
                     "level": "ERROR",
                     "message": _("Error generating process flow diagram: %s", str(e)),
                     "path": "workflow.visualization.manager",
-                    "func": "generate_process_flow_diagram",
+                    "func": "action_generate_process_flow_diagram",
                 }
             )
             raise
 
-    def _generate_process_flow(self, model_name):
-        """Internal method to generate process flow diagram"""
+    def action_generate_process_flow(self, model_name):
+        """Internal method to generate process flow"""
+        self.ensure_one()
         model = self.env['ir.model'].search([('model', '=', model_name)], limit=1)
         if not model:
             raise UserError(_("Model %s not found", model_name))

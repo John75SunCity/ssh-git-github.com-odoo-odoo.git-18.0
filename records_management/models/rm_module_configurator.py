@@ -136,7 +136,7 @@ class RmModuleConfigurator(models.Model):
         if updated:
             records._post_write_feature_gating(updated)
         if any('enable_chain_of_custody' in v for v in vals_list):
-            records._apply_chain_of_custody_toggle()
+            records.action_apply_chain_of_custody_toggle()
         return records
 
     def write(self, vals):
@@ -162,13 +162,15 @@ class RmModuleConfigurator(models.Model):
         if updated:
             self._post_write_feature_gating(updated)
         if "enable_chain_of_custody" in vals:
-            self._apply_chain_of_custody_toggle()
+            self.action_apply_chain_of_custody_toggle()
         return res
 
     # ------------------------------------------------------------------
     # FEATURE TOGGLE HELPERS
     # ------------------------------------------------------------------
-    def _apply_chain_of_custody_toggle(self):
+    def action_apply_chain_of_custody_toggle(self):
+        """Apply chain of custody toggle functionality"""
+        self.ensure_one()
         menu = self.env.ref("records_management.menu_chain_custody", raise_if_not_found=False)
         if not menu:
             return
@@ -178,7 +180,9 @@ class RmModuleConfigurator(models.Model):
         except Exception:
             pass
 
-    def _apply_bin_inventory_toggle(self):
+    def action_apply_bin_inventory_toggle(self):
+        """Apply bin inventory toggle functionality"""
+        self.ensure_one()
         enabled = self.get_config_parameter('bin_inventory_enabled', True)
         menu_ids = [
             'records_management.menu_bin_barcode_inventory_root',
@@ -196,9 +200,9 @@ class RmModuleConfigurator(models.Model):
         if not updated_keys:
             return
         if 'bin_inventory_enabled' in updated_keys:
-            self._apply_bin_inventory_toggle()
+            self.action_apply_bin_inventory_toggle()
         if 'enable_fsm_features' in updated_keys:
-            self._apply_fsm_visibility_toggle()
+            self.action_apply_fsm_visibility_toggle()
 
     def _collect_updated_feature_keys(self, vals_list):
         keys = set()
@@ -331,12 +335,13 @@ class RmModuleConfigurator(models.Model):
     # ------------------------------------------------------------------
     # FSM VISIBILITY TOGGLE
     # ------------------------------------------------------------------
-    def _apply_fsm_visibility_toggle(self):
+    def action_apply_fsm_visibility_toggle(self):
         """Activate/deactivate FSM integration menus and (optionally) views.
 
         We only toggle menus here to avoid costly view arch rewrites. Field- or action-level
         conditional logic can key off this configurator via self.env['rm.module.configurator'].
         """
+        self.ensure_one()
         enabled = self.get_config_parameter('enable_fsm_features', True)
         xml_ids = [
             'records_management_fsm.menu_fleet_fsm_integration_root',
