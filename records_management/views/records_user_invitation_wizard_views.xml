@@ -1,70 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <data>
-<!-- List view for records.user.invitation.wizard -->
-    <record id="records_user_invitation_wizard_view_tree" model="ir.ui.view">
-        <field name="name">records.user.invitation.wizard.view.tree</field>
-        <field name="model">records.user.invitation.wizard</field>
-        <field name="arch" type="xml">
-<list string="User Invitation Wizard">
-    <field name="user_ids" widget="many2many_tags"/>
-
-</list>
-        </field>
-    </record>
+<data>
 
 <!-- Form view for records.user.invitation.wizard -->
-    <record id="records_user_invitation_wizard_view_form" model="ir.ui.view">
-        <field name="name">records.user.invitation.wizard.view.form</field>
-        <field name="model">records.user.invitation.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Records User Invitation Wizard">
-                <sheet>
-                    <div class="oe_title">
-<label for="user_ids"/>
+<record id="records_user_invitation_wizard_view_form" model="ir.ui.view">
+    <field name="name">records.user.invitation.wizard.view.form</field>
+    <field name="model">records.user.invitation.wizard</field>
+    <field name="arch" type="xml">
+        <form string="Records User Invitation Wizard">
+            <sheet>
+                <div class="oe_title">
+                    <label for="user_ids"/>
 
-                        <h1>
-<field name="user_ids" widget="many2many_tags" placeholder="Select users to invite..."/>
+<h1>
+    <field name="user_ids" widget="many2many_tags" placeholder="Select users to invite..."/>
 
-                        </h1>
-                    </div>
+</h1>
+</div>
 </sheet>
 <footer>
 <button name="action_invite_users" string="Send Invitations" type="object" class="btn-primary"/>
 <button string="Cancel" class="btn-secondary" special="cancel"/>
 
 </footer>
-            </form>
-        </field>
-    </record>
+</form>
+</field>
+</record>
 
-<!-- Search view for records.user.invitation.wizard -->
-    <record id="records_user_invitation_wizard_view_search" model="ir.ui.view">
-        <field name="name">records.user.invitation.wizard.view.search</field>
-        <field name="model">records.user.invitation.wizard</field>
-        <field name="arch" type="xml">
-            <search>
-<field name="user_ids"/>
+<!-- Action for User Invitation Wizard -->
+<record id="action_records_user_invitation_wizard" model="ir.actions.act_window">
+    <field name="name">Records User Invitation Wizard</field>
+    <field name="res_model">records.user.invitation.wizard</field>
+<field name="view_mode">form</field>
+<field name="target">new</field>
+<field name="context">{}</field>
+<field name="help" type="html">
+    <p class="oe_view_nocontent_create">
+Invite users to access the Records Management portal.
+</p>
+</field>
+</record>
 
-<!-- Note: Cannot group by Many2many fields directly -->
-            </search>
-        </field>
-    </record>
-
-    <!-- Tree view for Action -->
-    <record id="action_records_user_invitation_wizard" model="ir.actions.act_window">
-        <field name="name">Records User Invitation Wizard</field>
-        <field name="res_model">records.user.invitation.wizard</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Records User Invitation Wizard.
-            </p>
-        </field>
-    </record>
 </data>
-
 </odoo>
