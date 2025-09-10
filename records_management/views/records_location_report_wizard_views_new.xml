@@ -31,7 +31,7 @@
                                 <field name="name" placeholder="Report Name..."/>
                             </h1>
                         </div>
-                        
+
                         <div class="alert alert-info" role="status">
                             <strong>📍 Location Analysis</strong><br/>
                             Generate detailed utilization and capacity reports for storage locations.
