@@ -41,8 +41,9 @@
                             </page>
                         </notebook>
                         <footer>
-                            <button name="action_confirm" type="object" string="Confirm" states="draft" class="btn-primary"/>
-                            <button name="action_expire" type="object" string="Expire" states="confirmed"/>
+<button name="action_confirm" type="object" string="Confirm" invisible="state != 'draft'" class="btn-primary"/>
+<button name="action_expire" type="object" string="Expire" invisible="state != 'confirmed'"/>
+
                             <button string="Close" class="btn-secondary" special="cancel"/>
                         </footer>
                     </sheet>
