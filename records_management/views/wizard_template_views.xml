@@ -2,43 +2,52 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- Tree view for wizard.template -->
     <record id="wizard_template_view_tree" model="ir.ui.view">
         <field name="name">wizard.template.view.tree</field>
         <field name="model">wizard.template</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
+<field name="reason"/>
+<field name="confirm_action"/>
+
             </list>
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+<!-- Form view for wizard.template -->
     <record id="wizard_template_view_form" model="ir.ui.view">
         <field name="name">wizard.template.view.form</field>
         <field name="model">wizard.template</field>
         <field name="arch" type="xml">
             <form string="Wizard Template">
                 <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
+<group>
+    <field name="note"/>
+    <field name="reason"/>
+    <field name="confirm_action"/>
+</group>
+<footer>
+    <button name="action_apply" string="Apply" type="object" class="btn-primary"/>
+    <button name="action_cancel" string="Cancel" class="btn-secondary" special="cancel"/>
+</footer>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+<!-- Search view for wizard.template -->
     <record id="wizard_template_view_search" model="ir.ui.view">
         <field name="name">wizard.template.view.search</field>
         <field name="model">wizard.template</field>
         <field name="arch" type="xml">
             <search>
+<field name="reason"/>
+<filter string="Confirmed" name="confirmed" domain="[('confirm_action', '=', True)]"/>
+
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="Confirm Action" name="confirm_action" domain="[]" context="{'group_by':'confirm_action'}"/>
+
                 </group>
             </search>
         </field>

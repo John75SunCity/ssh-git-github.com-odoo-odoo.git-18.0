@@ -8,7 +8,11 @@
         <field name="model">shredding.bin.barcode.wizard</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
+<field name="bin_id"/>
+<field name="current_barcode"/>
+<field name="scan_issue"/>
+<field name="new_barcode"/>
+
             </list>
         </field>
     </record>
@@ -18,14 +22,24 @@
         <field name="name">shredding.bin.barcode.wizard.view.form</field>
         <field name="model">shredding.bin.barcode.wizard</field>
         <field name="arch" type="xml">
-            <form string="Shredding Bin Barcode Wizard">
+<form string="Fix Shredding Bin Barcode">
                 <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
+<group>
+    <group>
+        <field name="bin_id"/>
+        <field name="current_barcode"/>
+        <field name="scan_issue"/>
+    </group>
+    <group>
+        <field name="use_manual_override"/>
+        <field name="manual_bin_size" attrs="{'invisible': [('use_manual_override', '=', False)], 'required': [('use_manual_override', '=', True)]}"/>
+        <field name="new_barcode" attrs="{'invisible': [('use_manual_override', '=', True)], 'required': [('use_manual_override', '=', False)]}"/>
+    </group>
+</group>
+<footer>
+    <button name="action_apply_fix" string="Apply Fix" type="object" class="btn-primary"/>
+    <button string="Cancel" class="btn-secondary" special="cancel"/>
+</footer>
                 </sheet>
             </form>
         </field>
@@ -37,8 +51,14 @@
         <field name="model">shredding.bin.barcode.wizard</field>
         <field name="arch" type="xml">
             <search>
+<field name="bin_id"/>
+<field name="current_barcode"/>
+<field name="scan_issue"/>
+
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="Bin" name="bin_id" domain="[]" context="{'group_by':'bin_id'}"/>
+<filter string="Scan Issue" name="scan_issue" domain="[]" context="{'group_by':'scan_issue'}"/>
+
                 </group>
             </search>
         </field>

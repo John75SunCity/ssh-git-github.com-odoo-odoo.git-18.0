@@ -2,43 +2,70 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- Tree view for rate.change.confirmation.wizard -->
     <record id="rate_change_confirmation_wizard_view_tree" model="ir.ui.view">
         <field name="name">rate.change.confirmation.wizard.view.tree</field>
         <field name="model">rate.change.confirmation.wizard</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
+<field name="forecast_id"/>
+<field name="effective_date"/>
+<field name="revenue_impact"/>
+<field name="customer_count"/>
+
             </list>
         </field>
     </record>
 
-    <!-- Form view for base.rate -->
+<!-- Form view for rate.change.confirmation.wizard -->
     <record id="rate_change_confirmation_wizard_view_form" model="ir.ui.view">
         <field name="name">rate.change.confirmation.wizard.view.form</field>
         <field name="model">rate.change.confirmation.wizard</field>
         <field name="arch" type="xml">
-            <form string="Rate Change Confirmation Wizard">
+<form string="Rate Change Confirmation">
                 <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
+<group>
+    <group>
+        <field name="forecast_id"/>
+        <field name="effective_date"/>
+        <field name="implementation_method"/>
+    </group>
+    <group>
+        <field name="revenue_impact"/>
+        <field name="customer_count"/>
+        <field name="notification_required"/>
+        <field name="advance_notice_days" attrs="{'invisible': [('notification_required', '=', False)]}"/>
+    </group>
+</group>
+<group string="Approval" attrs="{'invisible': [('requires_approval', '=', False)]}">
+    <field name="requires_approval"/>
+    <field name="approved_by_id" readonly="1"/>
+    <field name="approval_date" readonly="1"/>
+    <field name="approval_notes"/>
+</group>
+<footer>
+    <button name="action_approve_changes" string="Approve Changes" type="object" class="btn-primary"/>
+    <button name="action_implement_changes" string="Implement Changes" type="object" class="btn-success"/>
+    <button string="Cancel" class="btn-secondary" special="cancel"/>
+</footer>
                 </sheet>
             </form>
         </field>
     </record>
 
-    <!-- Search view for base.rate -->
+<!-- Search view for rate.change.confirmation.wizard -->
     <record id="rate_change_confirmation_wizard_view_search" model="ir.ui.view">
         <field name="name">rate.change.confirmation.wizard.view.search</field>
         <field name="model">rate.change.confirmation.wizard</field>
         <field name="arch" type="xml">
             <search>
+<field name="forecast_id"/>
+<field name="effective_date"/>
+
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="Forecast" name="forecast_id" domain="[]" context="{'group_by':'forecast_id'}"/>
+<filter string="Effective Date" name="effective_date" domain="[]" context="{'group_by':'effective_date'}"/>
+
                 </group>
             </search>
         </field>

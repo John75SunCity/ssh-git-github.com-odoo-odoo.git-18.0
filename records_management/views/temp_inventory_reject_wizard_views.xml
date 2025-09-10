@@ -8,7 +8,9 @@
         <field name="model">temp.inventory.reject.wizard</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
+<field name="inventory_id"/>
+<field name="rejection_reason"/>
+
             </list>
         </field>
     </record>
@@ -18,14 +20,16 @@
         <field name="name">temp.inventory.reject.wizard.view.form</field>
         <field name="model">temp.inventory.reject.wizard</field>
         <field name="arch" type="xml">
-            <form string="Temp.Inventory.Reject.Wizard">
+<form string="Reject Temporary Inventory">
                 <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
+<group>
+    <field name="inventory_id" readonly="1"/>
+    <field name="rejection_reason" placeholder="Enter rejection reason..."/>
+</group>
+<footer>
+    <button name="action_confirm_rejection" string="Confirm Rejection" type="object" class="btn-primary"/>
+    <button string="Cancel" class="btn-secondary" special="cancel"/>
+</footer>
                 </sheet>
             </form>
         </field>
@@ -37,8 +41,12 @@
         <field name="model">temp.inventory.reject.wizard</field>
         <field name="arch" type="xml">
             <search>
+<field name="inventory_id"/>
+<field name="rejection_reason"/>
+
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="Inventory Movement" name="inventory_id" domain="[]" context="{'group_by':'inventory_id'}"/>
+
                 </group>
             </search>
         </field>
