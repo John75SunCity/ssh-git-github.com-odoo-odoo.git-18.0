@@ -8,7 +8,11 @@
         <field name="model">location.report.wizard</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
+<field name="location_id"/>
+<field name="include_child_locations"/>
+<field name="report_date"/>
+<field name="company_id"/>
+
             </list>
         </field>
     </record>
@@ -18,15 +22,26 @@
         <field name="name">location.report.wizard.view.form</field>
         <field name="model">location.report.wizard</field>
         <field name="arch" type="xml">
-            <form string="Location.Report.Wizard">
+<form string="Location Report Wizard">
                 <sheet>
                     <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
+<h1>📊 Location Utilization Report</h1>
                     </div>
+<group>
+    <group string="📍 Location Selection">
+        <field name="location_id"/>
+        <field name="include_child_locations"/>
+    </group>
+    <group string="📅 Report Settings">
+        <field name="report_date"/>
+        <field name="company_id"/>
+    </group>
+</group>
                 </sheet>
+<footer>
+    <button name="action_print_report" type="object" string="📊 Generate Report" class="btn-primary"/>
+    <button string="Cancel" class="btn-secondary" special="cancel"/>
+</footer>
             </form>
         </field>
     </record>
@@ -37,8 +52,13 @@
         <field name="model">location.report.wizard</field>
         <field name="arch" type="xml">
             <search>
+<field name="location_id"/>
+<field name="company_id"/>
+
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="Location" name="location_id" domain="[]" context="{'group_by':'location_id'}"/>
+<filter string="Company" name="company_id" domain="[]" context="{'group_by':'company_id'}"/>
+
                 </group>
             </search>
         </field>
@@ -46,14 +66,13 @@
 
     <!-- Action for location.report.wizard -->
     <record id="action_location_report_wizard" model="ir.actions.act_window">
-        <field name="name">Location.Report.Wizard</field>
+<field name="name">Location Report Wizard</field>
         <field name="res_model">location.report.wizard</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
+<field name="view_mode">form</field>
+<field name="target">new</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                Click to add a new location.report.wizard.
+Generate location utilization reports.
             </p>
         </field>
     </record>
