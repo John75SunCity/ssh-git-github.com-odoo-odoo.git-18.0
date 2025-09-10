@@ -216,6 +216,7 @@ from . import revenue_forecast
 from . import revenue_forecast_line
 from . import revenue_forecaster
 from . import revenue_forecasting_reports
+from . import rate_change_confirmation_wizard
 from . import rm_module_configurator
 from . import route_optimizer
 from . import scan_digital_asset
@@ -245,7 +246,7 @@ from . import stock_lot_actions
 from . import stock_lot_attribute
 from . import stock_lot_attribute_option
 from . import stock_lot_attribute_value
-from . import stock_move_smsvalidation
+from . import stock_move_sms_validation
 from . import stock_picking
 from . import survey_feedback_theme
 from . import survey_improvement_action

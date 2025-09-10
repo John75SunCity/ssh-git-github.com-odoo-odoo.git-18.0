@@ -148,6 +148,17 @@ class HardDriveScanWizard(models.TransientModel):
             'target': 'current',
         }
 
+    def action_add_serial_line(self):
+        """Add a single serial number line for manual entry."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'hard.drive.scan.wizard.line',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_wizard_id': self.id},
+        }
+
 
 class HardDriveScanWizardLine(models.TransientModel):
     """Lines for the Hard Drive Scanning Wizard."""

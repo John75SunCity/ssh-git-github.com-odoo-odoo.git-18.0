@@ -91,3 +91,27 @@ class ShreddingHardDrive(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('shredding.hard_drive') or _('New')
         return super().create(vals_list)
 
+    def action_mark_scanned(self):
+        """Mark hard drive as scanned"""
+        self.ensure_one()
+        self.state = 'scanned'
+
+    def action_mark_destroyed(self):
+        """Mark hard drive as destroyed"""
+        self.ensure_one()
+        if self.state != 'scanned':
+            raise ValidationError(_('Hard drive must be scanned before destruction.'))
+
+        self.write({
+            'state': 'destroyed',
+            'destruction_date': fields.Datetime.now(),
+            'destruction_technician_id': self.env.user.id,
+        })
+
+    def action_mark_certified(self):
+        """Mark hard drive as certified"""
+        self.ensure_one()
+        if self.state != 'destroyed':
+            raise ValidationError(_('Hard drive must be destroyed before certification.'))
+
+        self.state = 'certified'
