@@ -11,22 +11,22 @@
             <form>
                 <header>
                     <h1>
-                        <span t-if="context.get('default_action_type') == 'mark'">
+<span invisible="action_type != 'mark'">
                             🛡️ Mark Documents as PERMANENT
                         </span>
-                        <span t-if="context.get('default_action_type') == 'unmark'">
+<span invisible="action_type != 'unmark'">
                             ⚠️ Remove PERMANENT Flag (Admin Only)
                         </span>
                     </h1>
                 </header>
                 <sheet>
-<div class="alert alert-info" role="status" t-if="context.get('default_action_type') == 'mark'">
+<div class="alert alert-info" role="status" invisible="action_type != 'mark'">
                         <strong>🛡️ PERMANENT RECORD PROTECTION</strong><br/>
                         Documents marked as permanent will be <strong>excluded from all destruction schedules</strong>
                         and shredding rotations. This action requires password verification for security.
                     </div>
 
-                    <div class="alert alert-warning" role="alert" t-if="context.get('default_action_type') == 'unmark'">
+<div class="alert alert-warning" role="alert" invisible="action_type != 'unmark'">
                         <strong>⚠️ ADMINISTRATOR SECURITY WARNING</strong><br/>
                         You are about to <strong>remove permanent protection</strong> from documents.
                         This will allow them to be included in destruction schedules again.
