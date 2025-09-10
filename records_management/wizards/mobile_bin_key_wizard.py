@@ -30,6 +30,12 @@ class MobileBinKeyWizard(models.TransientModel):
     )
 
     # Customer and contact fields
+    partner_id = fields.Many2one(
+        "res.partner",
+        string="Customer",
+        domain=[("customer_rank", ">", 0)],
+        help="Select the customer for this operation"
+    )
     customer_company_id = fields.Many2one(
         "res.partner",
         string="Customer Company",
