@@ -34,10 +34,11 @@
         <field name="revenue_impact"/>
         <field name="customer_count"/>
         <field name="notification_required"/>
-        <field name="advance_notice_days" attrs="{'invisible': [('notification_required', '=', False)]}"/>
+<field name="advance_notice_days" invisible="not notification_required"/>
+
     </group>
 </group>
-<group string="Approval" attrs="{'invisible': [('requires_approval', '=', False)]}">
+<group string="Approval" invisible="not requires_approval">
     <field name="requires_approval"/>
     <field name="approved_by_id" readonly="1"/>
     <field name="approval_date" readonly="1"/>
