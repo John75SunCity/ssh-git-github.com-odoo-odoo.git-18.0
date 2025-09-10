@@ -801,9 +801,18 @@ class OdooValidator:
             except Exception as e:
                 self.errors.append(f"❌ VIEW FIELD CHECK: {xml_file.name}: {str(e)}")
 
-    def _collect_model_fields(self) -> Dict[str, List[str]]:
-        """Collect all fields from model definitions"""
-        model_fields = {}
+    def _collect_model_fields(self) -> Dict[str, Dict]:
+        """
+        Collect all fields from model definitions, accounting for inheritance.
+
+        Returns:
+            Dict with model_name -> {
+                'own_fields': [fields defined in this module],
+                'inherits_from': [list of inherited models],
+                'is_inherited_model': bool (True if this extends existing Odoo model)
+            }
+        """
+        model_info = {}
 
         python_files = []
         for ext in ["*.py"]:
@@ -822,6 +831,8 @@ class OdooValidator:
                         # Check if this is an Odoo model
                         model_name = None
                         fields = []
+                        inherit_targets = []
+                        is_inherited_model = False
 
                         for item in node.body:
                             if isinstance(item, ast.Assign):
@@ -832,6 +843,21 @@ class OdooValidator:
                                             model_name = item.value.s
                                         elif isinstance(item.value, ast.Constant) and isinstance(item.value.value, str):
                                             model_name = item.value.value
+
+                                    # Check for _inherit assignment
+                                    elif item.targets[0].id == "_inherit":
+                                        is_inherited_model = True
+                                        # Parse _inherit values
+                                        if isinstance(item.value, ast.Str):
+                                            inherit_targets.append(item.value.s)
+                                        elif isinstance(item.value, ast.Constant) and isinstance(item.value.value, str):
+                                            inherit_targets.append(item.value.value)
+                                        elif isinstance(item.value, ast.List):
+                                            for elt in item.value.elts:
+                                                if isinstance(elt, ast.Str):
+                                                    inherit_targets.append(elt.s)
+                                                elif isinstance(elt, ast.Constant) and isinstance(elt.value, str):
+                                                    inherit_targets.append(elt.value)
 
                                 # Check for field definitions
                                 elif isinstance(item.value, ast.Call):
@@ -845,47 +871,142 @@ class OdooValidator:
                                             if len(item.targets) == 1 and isinstance(item.targets[0], ast.Name):
                                                 fields.append(item.targets[0].id)
 
-                        if model_name and fields:
-                            model_fields[model_name] = fields
+                        # Store model information
+                        if model_name or (is_inherited_model and inherit_targets):
+                            # If no _name but has _inherit, use the first inherit target as model name
+                            if not model_name and inherit_targets:
+                                model_name = inherit_targets[0]
+
+                            if model_name:
+                                model_info[model_name] = {
+                                    'own_fields': fields,
+                                    'inherits_from': inherit_targets,
+                                    'is_inherited_model': is_inherited_model
+                                }
 
             except Exception as e:
                 # Skip files that can't be parsed
                 continue
 
-        return model_fields
+        return model_info
 
-    def _check_view_fields(self, xml_file: Path, content: str, model_fields: Dict[str, List[str]]) -> None:
-        """Check field references in a view file"""
+    def _check_view_fields(self, xml_file: Path, content: str, model_info: Dict[str, Dict]) -> None:
+        """Check field references in a view file, accounting for inheritance"""
         try:
-            # Extract model name from view
-            model_name = None
-            if 'model="records.document"' in content:
-                model_name = "records.document"
-            elif 'model="records.container"' in content:
-                model_name = "records.container"
-            elif 'model="records.request"' in content:
-                model_name = "records.request"
-            # Add more model mappings as needed
+            import re
 
-            if not model_name:
+            # Common Odoo core fields that exist on most models
+            COMMON_ODOO_FIELDS = {
+                # Base model fields (from models.Model)
+                'id', 'create_date', 'create_uid', 'write_date', 'write_uid', '__last_update',
+
+                # Common inherited fields
+                'name', 'display_name', 'active', 'sequence', 'color', 'state',
+
+                # Mail thread fields (mail.thread)
+                'message_ids', 'message_follower_ids', 'message_partner_ids', 'message_channel_ids',
+                'message_unread', 'message_unread_counter', 'message_needaction', 'message_needaction_counter',
+                'message_has_error', 'message_has_error_counter', 'message_attachment_count',
+                'message_main_attachment_id', 'website_message_ids',
+
+                # Mail activity mixin fields (mail.activity.mixin)
+                'activity_ids', 'activity_state', 'activity_user_id', 'activity_type_id',
+                'activity_summary', 'activity_date_deadline',
+
+                # Partner-related fields (common in many models)
+                'partner_id', 'user_id', 'company_id', 'currency_id',
+
+                # Common business fields
+                'date', 'amount', 'total', 'subtotal', 'price', 'quantity', 'description',
+                'notes', 'reference', 'origin', 'source', 'priority',
+
+                # Portal fields
+                'access_url', 'access_token', 'access_warning',
+
+                # Website fields
+                'website_id', 'website_published', 'website_url',
+
+                # Image fields (common pattern)
+                'image', 'image_medium', 'image_small', 'image_1920', 'image_1024', 'image_512', 'image_256', 'image_128',
+
+                # Address fields (from res.partner mixin)
+                'street', 'street2', 'city', 'zip', 'state_id', 'country_id', 'phone', 'mobile', 'email',
+
+                # Many2many widget fields that are often auto-generated
+                'user_ids', 'tag_ids', 'category_ids', 'group_ids', 'member_ids',
+
+                # View-specific meta fields that aren't model fields
+                'arch', 'inherit_id', 'view_id', 'mode', 'priority', 'groups_id'
+            }
+
+            # Models that are commonly inherited from Odoo core
+            ODOO_CORE_MODELS = {
+                'res.partner', 'res.users', 'res.company', 'res.currency', 'res.country', 'res.country.state',
+                'product.product', 'product.template', 'product.category',
+                'account.move', 'account.move.line', 'account.account', 'account.journal',
+                'sale.order', 'sale.order.line', 'purchase.order', 'purchase.order.line',
+                'stock.picking', 'stock.move', 'stock.location', 'stock.warehouse',
+                'project.project', 'project.task', 'hr.employee', 'hr.department',
+                'mail.thread', 'mail.activity.mixin', 'portal.mixin', 'website.published.mixin',
+                'ir.model', 'ir.model.fields', 'ir.ui.view', 'ir.actions.act_window', 'ir.ui.menu',
+                'ir.attachment', 'ir.cron', 'ir.sequence', 'ir.rule', 'res.groups'
+            }
+
+            # Extract ALL model names from view file dynamically
+            model_pattern = r'model="([^"]+)"'
+            model_matches = re.findall(model_pattern, content)
+
+            if not model_matches:
                 return
 
             # Extract field references from XML
-            import re
-
             field_pattern = r'<field\s+name="([^"]+)"'
             field_matches = re.findall(field_pattern, content)
 
-            # Check each field reference
-            available_fields = model_fields.get(model_name, [])
-            for field_name in field_matches:
-                if field_name not in available_fields:
-                    # Skip common computed/related fields that might not be in the basic field list
-                    skip_fields = ["display_name", "create_date", "write_date", "create_uid", "write_uid"]
-                    if field_name not in skip_fields:
-                        self.errors.append(
-                            f"❌ VIEW FIELD: {xml_file.name}: Field '{field_name}' does not exist in model '{model_name}'"
-                        )
+            # Check each field against each model found in the view
+            for model_name in set(model_matches):  # Use set to avoid duplicates
+
+                # Skip checking fields for Odoo core models (they have their own fields)
+                if model_name in ODOO_CORE_MODELS:
+                    continue
+
+                # Skip if model not found in our module
+                if model_name not in model_info:
+                    continue
+
+                model_data = model_info[model_name]
+                available_fields = set(model_data.get('own_fields', []))
+
+                # Add common Odoo fields if this model inherits from core models
+                is_inherited = model_data.get('is_inherited_model', False)
+                inherits_from = model_data.get('inherits_from', [])
+
+                if is_inherited or inherits_from:
+                    available_fields.update(COMMON_ODOO_FIELDS)
+
+                # Add fields from explicitly inherited models that we know about
+                for inherited_model in inherits_from:
+                    if inherited_model in model_info:
+                        inherited_fields = model_info[inherited_model].get('own_fields', [])
+                        available_fields.update(inherited_fields)
+
+                # Get the specific field pattern for this model within the view
+                # Look for field references within record elements for this model
+                model_section_pattern = rf'<record[^>]*model="{re.escape(model_name)}"[^>]*>.*?</record>'
+                model_sections = re.findall(model_section_pattern, content, re.DOTALL)
+
+                for section in model_sections:
+                    section_field_matches = re.findall(field_pattern, section)
+
+                    for field_name in section_field_matches:
+                        # Skip computed/related field syntax (e.g., "partner_id.name")
+                        if '.' in field_name:
+                            continue
+
+                        if field_name not in available_fields:
+                            self.errors.append(
+                                f"❌ VIEW FIELD: {xml_file.name}: Field '{field_name}' does not exist in model '{model_name}'"
+                            )
 
         except Exception as e:
             self.errors.append(f"❌ VIEW FIELD CHECK: {xml_file.name}: {str(e)}")
