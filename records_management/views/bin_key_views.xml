@@ -45,10 +45,10 @@
 
                 <sheet>
 <div class="oe_button_box" name="button_box">
-    <button name="action_view_management_records" type="object" class="oe_stat_button" icon="fa-key">
+<button name="action_view_management_records" type="object" class="oe_stat_button" icon="fa-key" title="View Management Records">
         <field name="management_record_count" widget="statbutton" string="Management Records"/>
     </button>
-    <button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt">
+<button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" title="View Unlock Services">
         <field name="unlock_service_count" widget="statbutton" string="Unlock Services"/>
     </button>
 </div>

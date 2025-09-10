@@ -110,7 +110,7 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_bales" type="object" class="oe_stat_button" icon="fa-cubes">
+<button name="action_view_bales" type="object" class="oe_stat_button" icon="fa-cubes" title="View Paper Bales">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
                                     <field name="bale_count"/>
@@ -118,7 +118,7 @@
                                 <span class="o_stat_text">Paper Bales</span>
                             </div>
                         </button>
-                        <button name="action_view_revenue_report" type="object" class="oe_stat_button" icon="fa-dollar">
+<button name="action_view_revenue_report" type="object" class="oe_stat_button" icon="fa-dollar" title="View Revenue Report">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
                                     <field name="estimated_revenue" widget="monetary"/>
@@ -126,7 +126,7 @@
                                 <span class="o_stat_text">Revenue</span>
                             </div>
                         </button>
-                        <button name="action_view_weight_tickets" type="object" class="oe_stat_button" icon="fa-balance-scale">
+<button name="action_view_weight_tickets" type="object" class="oe_stat_button" icon="fa-balance-scale" title="View Weight Tickets">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
                                     <field name="weight_ticket_count"/>

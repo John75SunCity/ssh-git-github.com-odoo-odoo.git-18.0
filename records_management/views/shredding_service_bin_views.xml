@@ -37,16 +37,16 @@
                     <button name="action_report_bin_issue" string="Report Issue" type="object"
 class="btn-warning" icon="fa-exclamation-triangle" title="Warning Action"/>
                     <button name="action_schedule_service" string="Schedule Service" type="object"
-                            class="btn-primary" icon="fa-calendar"
+class="btn-primary" icon="fa-calendar" title="Schedule Service"
                             invisible="status == 'retired'"/>
                     <button name="action_empty_bin" string="Empty Bin" type="object"
-                            class="btn-success" icon="fa-recycle"
+class="btn-success" icon="fa-recycle" title="Empty Bin"
                             invisible="status != 'active' or fill_count == 0"/>
                     <button name="action_place_bin" string="Place at Customer" type="object"
-                            class="btn-primary" icon="fa-map-marker"
+class="btn-primary" icon="fa-map-marker" title="Place at Customer"
                             invisible="current_customer_id"/>
                     <button name="action_recall_bin" string="Recall Bin" type="object"
-                            class="btn-secondary" icon="fa-undo"
+class="btn-secondary" icon="fa-undo" title="Recall Bin"
                             invisible="not current_customer_id"/>
                     <field name="status" widget="statusbar"
                            statusbar_visible="available,active,maintenance,retired"/>

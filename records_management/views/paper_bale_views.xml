@@ -109,10 +109,10 @@
                 <field name="trailer_id" string="🚛 Trailer"/>
                 <field name="bale_status" string="🎯 Status" widget="badge"/>
                 <button name="action_weigh_bale" type="object" string="Weigh"
-                        icon="fa-balance-scale" class="btn-link"
+icon="fa-balance-scale" class="btn-link" title="Weigh Bale"
                         invisible="bale_status in ('weighed', 'loaded', 'shipped')"/>
                 <button name="action_load_trailer" type="object" string="Load"
-                        icon="fa-truck" class="btn-link"
+icon="fa-truck" class="btn-link" title="Load on Trailer"
                         invisible="loaded_on_trailer"/>
             </list>
         </field>
@@ -135,16 +135,16 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_source_documents" icon="fa-file-text">
+<button class="oe_stat_button" type="object" name="action_view_source_documents" icon="fa-file-text" title="View Source Documents">
                             <field name="document_count" string="Source Documents" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_weight_history" icon="fa-history">
+<button class="oe_stat_button" type="object" name="action_view_weight_history" icon="fa-history" title="View Weight History">
                             <field name="weight_history_count" string="Weight History" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" type="object" name="action_view_trailer_info" icon="fa-truck">
+<button class="oe_stat_button" type="object" name="action_view_trailer_info" icon="fa-truck" title="View Trailer Information">
                             <field name="trailer_load_count" string="Trailer Info" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-star"
+<button class="oe_stat_button" icon="fa-star" title="Premium Grade A"
                                 invisible="quality_grade != 'A'">>
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">⭐</span>
@@ -232,7 +232,8 @@
                                     <field name="moisture_reading"/>
                                     <field name="grade_assigned"/>
                                     <field name="passed_inspection"/>
-                                    <button name="action_view_inspection_details" type="object" string="Details" icon="fa-eye" class="btn-link"/>
+<button name="action_view_inspection_details" type="object" string="Details" icon="fa-eye" class="btn-link" title="View Inspection Details"/>
+
                                 </list>
                             </field>
                         </page>

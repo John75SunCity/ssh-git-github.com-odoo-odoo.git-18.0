@@ -40,7 +40,7 @@
 </header>
                 <sheet>
 <div class="oe_button_box" name="button_box">
-    <button class="oe_stat_button" type="object" name="action_view_assignments" icon="fa-tasks" groups="records_management.group_records_user">
+<button class="oe_stat_button" type="object" name="action_view_assignments" icon="fa-tasks" title="View Assignments" groups="records_management.group_records_user">
         <field name="assignment_count" string="Assignments" widget="statbutton"/>
     </button>
 </div>

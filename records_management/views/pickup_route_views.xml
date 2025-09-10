@@ -116,19 +116,19 @@
 </header>
                 <sheet>
 <div class="oe_button_box" name="button_box">
-    <button name="action_view_pickup_requests" type="object" class="oe_stat_button" icon="fa-truck">
+<button name="action_view_pickup_requests" type="object" class="oe_stat_button" icon="fa-truck" title="View Pickup Requests">
         <field name="request_count" widget="statbutton" string="Requests"/>
     </button>
-<button name="action_view_fsm_task" type="object" class="oe_stat_button" icon="fa-tasks" invisible="fsm_task_id == False">
+<button name="action_view_fsm_task" type="object" class="oe_stat_button" icon="fa-tasks" invisible="fsm_task_id == False" title="View FSM Task">
         <div class="o_field_widget o_stat_info">
             <span class="o_stat_value"><field name="fsm_state"/></span>
             <span class="o_stat_text">FSM Task</span>
         </div>
     </button>
-    <button class="oe_stat_button" icon="fa-map-marker">
+<button class="oe_stat_button" icon="fa-map-marker" title="Route Stops">
         <field name="total_stops" widget="statbutton" string="Stops"/>
     </button>
-    <button class="oe_stat_button" icon="fa-percent">
+<button class="oe_stat_button" icon="fa-percent" title="Completion Percentage">
         <field name="completion_percentage" widget="statbutton" string="Complete"/>
     </button>
 </div>
@@ -223,7 +223,8 @@
             <field name="fsm_state" readonly="1"/>
         </group>
         <group string="Task Actions">
-            <button name="action_view_fsm_task" type="object" string="Open FSM Task" class="btn-primary" icon="fa-external-link"/>
+<button name="action_view_fsm_task" type="object" string="Open FSM Task" class="btn-primary" icon="fa-external-link" title="Open FSM Task"/>
+
         </group>
     </group>
 <div class="alert alert-info" role="status">

@@ -2,7 +2,7 @@
 <odoo>
     <data>
 <!-- Partner Form Inheritance: Key Restrictions -->
-<record id="res_partner_view_form_inherit_key_restrictions" model="ir.ui.view">
+<record id="res_partner_view_form_inherit" model="ir.ui.view">
     <field name="name">res.partner.view.form.inherit.key_restrictions</field>
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form"/>
@@ -29,10 +29,12 @@
 <field name="key_restriction_notes" nolabel="1" placeholder="Additional notes about key restrictions..."/>
 </group>
 <group name="key_restriction_buttons" invisible="key_issuance_allowed == True">
-<button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt"/>
+<button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" title="View Unlock Services"/>
+
 </group>
 <div class="oe_button_box" name="key_restriction_buttons">
-<button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt"/>
+<button name="action_view_unlock_services" type="object" class="oe_stat_button" icon="fa-unlock-alt" title="View Unlock Services"/>
+
 <field name="restricted_unlock_count" widget="statinfo" string="Unlock Services"/>
 
 </div>
@@ -60,16 +62,16 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
 </xpath>
 <!-- Button box additions -->
 <xpath expr="//div[@name='button_box']" position="inside">
-<button name="action_restrict_key_issuance" type="object" class="oe_stat_button" icon="fa-ban" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager">
+<button name="action_restrict_key_issuance" type="object" class="oe_stat_button" icon="fa-ban" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager" title="Restrict Key Issuance">
     <div class="o_field_widget o_stat_info">
 <span class="o_stat_text">Restrict</span>
 <span class="o_stat_text">Keys</span>
 </div>
 </button>
-<button name="action_view_key_history" type="object" class="oe_stat_button" icon="fa-history" invisible="key_restriction_history_count == 0">
+<button name="action_view_key_history" type="object" class="oe_stat_button" icon="fa-history" invisible="key_restriction_history_count == 0" title="View Key History">
     <field name="key_restriction_history_count" widget="statinfo" string="Key History"/>
 </button>
-<button name="action_allow_key_issuance" type="object" class="oe_stat_button" icon="fa-key" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager">
+<button name="action_allow_key_issuance" type="object" class="oe_stat_button" icon="fa-key" invisible="key_issuance_allowed == True" groups="records_management.group_records_manager" title="Allow Key Issuance">
     <div class="o_field_widget o_stat_info">
 <span class="o_stat_text">Allow</span>
 <span class="o_stat_text">Keys</span>
@@ -80,7 +82,7 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
 </record>
 
 <!-- Partner Tree Inheritance -->
-<record id="res_partner_view_tree_key_restrictions" model="ir.ui.view">
+<record id="res_partner_view_tree_inherit" model="ir.ui.view">
     <field name="name">res.partner.view.tree.inherit.key_restrictions</field>
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_tree"/>
@@ -94,7 +96,7 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
 </record>
 
 <!-- Partner Search Inheritance -->
-<record id="res_partner_view_search_key_restrictions" model="ir.ui.view">
+<record id="res_partner_view_search_inherit" model="ir.ui.view">
     <field name="name">res.partner.view.search.inherit.key_restrictions</field>
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_res_partner_filter"/>
@@ -278,7 +280,7 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
 </record>
 
 <!-- Inherited Bin Unlock Service Form (Key Restrictions) -->
-<record id="bin_unlock_service_view_form_key_restrictions" model="ir.ui.view">
+<record id="bin_unlock_service_view_form_inherit" model="ir.ui.view">
     <field name="name">bin.unlock.service.view.form.inherit.key_restrictions</field>
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_form"/>
@@ -304,7 +306,7 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
 </record>
 
 <!-- Inherited Bin Unlock Service Tree (Key Restrictions) -->
-<record id="bin_unlock_service_view_list_key_restrictions" model="ir.ui.view">
+<record id="bin_unlock_service_view_tree_inherit" model="ir.ui.view">
     <field name="name">bin.unlock.service.view.tree.inherit.key_restrictions</field>
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_tree"/>
@@ -322,7 +324,7 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
 </record>
 
 <!-- Inherited Bin Unlock Service Search (Key Restrictions) -->
-<record id="bin_unlock_service_view_search_key_restrictions" model="ir.ui.view">
+<record id="bin_unlock_service_view_search_inherit" model="ir.ui.view">
     <field name="name">bin.unlock.service.view.search.inherit.key_restrictions</field>
     <field name="model">bin.unlock.service</field>
     <field name="inherit_id" ref="bin_unlock_service_view_search"/>
