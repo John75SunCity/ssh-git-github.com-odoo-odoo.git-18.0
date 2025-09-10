@@ -7,10 +7,11 @@
         <field name="name">records.user.invitation.wizard.view.tree</field>
         <field name="model">records.user.invitation.wizard</field>
         <field name="arch" type="xml">
-            <list>
-<field name="user_ids" widget="many2many_tags"/>
+<tree string="User Invitation Wizard">
+    <field name="user_ids" widget="many2many_tags"/>
 
-            </list>
+
+</tree>
         </field>
     </record>
 
@@ -29,11 +30,11 @@
 
                         </h1>
                     </div>
+</sheet>
 <footer>
     <button name="action_invite_users" string="Send Invitations" type="object" class="btn-primary"/>
     <button string="Cancel" class="btn-secondary" special="cancel"/>
 </footer>
-                </sheet>
             </form>
         </field>
     </record>
@@ -46,10 +47,7 @@
             <search>
 <field name="user_ids"/>
 
-                <group expand="1" string="Group By">
-<filter string="Users" name="user_ids" domain="[]" context="{'group_by':'user_ids'}"/>
-
-                </group>
+<!-- Note: Cannot group by Many2many fields directly -->
             </search>
         </field>
     </record>

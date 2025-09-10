@@ -8,15 +8,12 @@
         <field name="arch" type="xml">
             <form string="Key Restriction Checker">
                 <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <i class="fa fa-key"/>
- Key Restriction Checker
-                        </h1>
-                        <p>Quick tool for technicians to check if a customer can receive bin keys</p>
-                    </div>
-
-                    <group name="input_section">
+<div class="col-md-6 text-center">
+    <i class="fa fa-key" title="Key Restrictions" aria-hidden="true"/>
+    <h5 class="mt-2">Key Restrictions</h5>
+    <p>Current restrictions and permissions for this key</p>
+</div>
+<group name="input_section">
                         <group name="customer_info">
                             <field name="customer_name" placeholder="Start typing customer name..."/>
                             <field name="partner_id" options="{'no_create': True, 'no_edit': True}"/>
@@ -28,11 +25,13 @@
 
                     <div class="oe_button_box" name="action_buttons">
                         <button name="action_check_customer" string="Check Customer" type="object" class="oe_highlight" invisible="not customer_id">
-                            <i class="fa fa-search"/>
+<i class="fa fa-search" title="Search Customer" aria-hidden="true"/>
+
  Check Status
                         </button>
                         <button name="action_reset" string="Reset" type="object" class="oe_button" invisible="not check_performed">
-                            <i class="fa fa-refresh"/>
+<i class="fa fa-refresh" title="Reset Check" aria-hidden="true"/>
+
  Reset
                         </button>
                     </div>
@@ -61,7 +60,8 @@
 
                 <footer>
                     <button name="action_create_unlock_service" string="Create Unlock Service" type="object" class="btn-primary" invisible="key_allowed or not check_performed or not bin_identifier">
-                        <i class="fa fa-unlock-alt"/>
+<i class="fa fa-unlock-alt" title="Unlock Service" aria-hidden="true"/>
+
  Create Service Request
                     </button>
                     <button string="Close" class="btn-secondary" special="cancel"/>
