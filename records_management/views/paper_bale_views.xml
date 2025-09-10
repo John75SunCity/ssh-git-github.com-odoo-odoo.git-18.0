@@ -3,7 +3,15 @@
 <data>
 <!-- Kanban view for Paper -->
 <record id="paper_bale_view_kanban" model="ir.ui.view">
-    <field name="name">paper.bale.view.kanban</field>
+<field name="name">paper.bale.view.ka    <field name="movement_ids" mode="tree">
+    <list>
+        <field name="name"/>
+        <field name="movement_date"/>
+        <field name="from_location_id"/>
+        <field name="to_location_id"/>
+        <field name="user_id"/>
+    </list>
+</field>ld>
     <field name="model">paper.bale</field>
     <field name="arch" type="xml">
 <kanban default_group_by="state" class="o_kanban_paper_bale_dashboard">
@@ -98,7 +106,7 @@ Grade:<field name="paper_grade"/>
     <field name="name">paper.bale.view.tree</field>
     <field name="model">paper.bale</field>
     <field name="arch" type="xml">
-<tree decoration-success="state == 'shipped'" decoration-warning="state == 'weighed'" decoration-info="paper_grade == 'wht'">
+<list decoration-success="state == 'shipped'" decoration-warning="state == 'weighed'" decoration-info="paper_grade == 'wht'">
     <field name="name" string="📦 Bale ID"/>
     <field name="bale_number" string="🏷️ Bale Number"/>
 
@@ -112,7 +120,7 @@ Grade:<field name="paper_grade"/>
 invisible="state in ('weighed', 'shipped')"/>
 <button name="action_load_trailer" type="object" string="Load" icon="fa-truck" class="btn-link" title="Load on Trailer"
 invisible="state == 'shipped'"/>
-</tree>
+</list>
 </field>
 </record>
 
@@ -169,24 +177,24 @@ class="btn-info" invisible="state == 'shipped'"/>
 </page>
 <page string="🔍 Inspections" name="inspections">
     <field name="inspection_ids" mode="tree">
-        <tree>
+<list>
             <field name="name"/>
             <field name="inspection_date"/>
 
 <field name="inspector_id"/>
 <field name="result"/>
-</tree>
+</list>
 </field>
 </page>
 <page string="📋 Movements" name="movements">
     <field name="movement_ids" mode="tree">
-        <tree>
+<list>
             <field name="name"/>
             <field name="movement_date"/>
             <field name="from_location_id"/>
             <field name="to_location_id"/>
             <field name="user_id"/>
-        </tree>
+</list>
     </field>
 </page>
 </notebook>

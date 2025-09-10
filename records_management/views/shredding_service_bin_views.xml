@@ -11,7 +11,7 @@
     <field name="name">shredding.service.bin.view.tree</field>
         <field name="model">shredding.service.bin</field>
         <field name="arch" type="xml">
-<tree string="Shredding Service Bins" decoration-success="status == 'active'"
+<list string="Shredding Service Bins" decoration-success="status == 'active'"
                   decoration-warning="status == 'maintenance'" decoration-danger="status == 'retired'">
                 <field name="barcode"/>
                 <field name="bin_size" widget="badge"/>
@@ -23,7 +23,7 @@
                 <field name="total_weight" sum="Total Weight" widget="float"/>
                 <field name="estimated_monthly_revenue" sum="Monthly Revenue" widget="monetary"/>
                 <field name="last_scan_date" widget="datetime"/>
-</tree>
+</list>
         </field>
     </record>
 

@@ -33,12 +33,12 @@
     <field name="name">scan.digital.asset.view.tree</field>
             <field name="model">scan.digital.asset</field>
 <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="asset_type"/>
                     <field name="scan_date"/>
                     <field name="status"/>
-</tree>
+</list>
             </field>
         </record>
 
@@ -67,12 +67,12 @@
     <field name="name">serial.number.view.tree</field>
     <field name="model">serial.number</field>
     <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="product_id"/>
                     <field name="serial_number"/>
                     <field name="status"/>
-</tree>
+</list>
             </field>
         </record>
 
@@ -101,13 +101,13 @@
     <field name="name">route.optimizer.view.tree</field>
             <field name="model">route.optimizer</field>
 <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="start_location"/>
                     <field name="end_location"/>
                     <field name="distance"/>
                     <field name="status"/>
-</tree>
+</list>
             </field>
         </record>
 
@@ -137,12 +137,12 @@
     <field name="name">document.retrieval.item.view.tree</field>
             <field name="model">document.retrieval.item</field>
 <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="document_id"/>
                     <field name="retrieval_date"/>
                     <field name="status"/>
-</tree>
+</list>
             </field>
         </record>
 
@@ -171,13 +171,13 @@
     <field name="name">records.audit.log.view.tree</field>
             <field name="model">records.audit.log</field>
 <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="user_id"/>
                     <field name="action"/>
                     <field name="timestamp"/>
                     <field name="model_name"/>
-</tree>
+</list>
             </field>
         </record>
 
@@ -209,12 +209,12 @@
     <field name="name">container.access.document.view.tree</field>
             <field name="model">container.access.document</field>
 <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="container_id"/>
                     <field name="access_date"/>
                     <field name="access_type"/>
-</tree>
+</list>
             </field>
         </record>
 
@@ -246,12 +246,12 @@
     <field name="name">revenue.forecast.line.view.tree</field>
             <field name="model">revenue.forecast.line</field>
 <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="forecast_date"/>
                     <field name="amount"/>
                     <field name="category"/>
-</tree>
+</list>
             </field>
         </record>
 
@@ -280,12 +280,12 @@
     <field name="name">records.security.audit.view.tree</field>
             <field name="model">records.security.audit</field>
 <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="audit_date"/>
                     <field name="auditor_id"/>
                     <field name="status"/>
-</tree>
+</list>
             </field>
         </record>
 
@@ -315,12 +315,12 @@
     <field name="name">shredding.rate.view.tree</field>
             <field name="model">shredding.rate</field>
 <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="rate_per_pound"/>
                     <field name="effective_date"/>
                     <field name="service_type"/>
-</tree>
+</list>
             </field>
         </record>
 
@@ -375,14 +375,14 @@
     <field name="name">records.container.movement.view.tree</field>
             <field name="model">records.container.movement</field>
 <field name="arch" type="xml">
-<tree>
+<list>
                     <field name="name"/>
                     <field name="container_id"/>
                     <field name="from_location_id"/>
                     <field name="to_location_id"/>
                     <field name="movement_date"/>
                     <field name="moved_by"/>
-</tree>
+</list>
             </field>
         </record>
 

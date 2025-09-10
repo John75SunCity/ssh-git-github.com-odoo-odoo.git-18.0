@@ -5,7 +5,7 @@
     <field name="name">naid.operator.certification.view.tree</field>
         <field name="model">naid.operator.certification</field>
         <field name="arch" type="xml">
-<tree string="NAID Operator Certifications">
+<list string="NAID Operator Certifications">
                 <field name="certification_number"/>
                 <field name="name"/>
                 <field name="status"/>
@@ -14,7 +14,7 @@
                 <field name="training_progress"/>
                 <field name="refresher_overdue"/>
                 <field name="company_id"/>
-</tree>
+</list>
         </field>
     </record>
 
@@ -69,13 +69,13 @@
                         </page>
                         <page string="Training Schedule">
                             <field name="training_schedule_ids">
-                                <tree>
+<list>
                                     <field name="training_id"/>
                                     <field name="scheduled_date"/>
                                     <field name="status"/>
                                     <field name="completed_date"/>
                                     <field name="instructor_id"/>
-                                </tree>
+</list>
                             </field>
                         </page>
                         <page string="Related Records">
@@ -126,14 +126,14 @@
     <field name="name">naid.training.schedule.view.tree</field>
         <field name="model">naid.training.schedule</field>
         <field name="arch" type="xml">
-<tree string="Training Schedule">
+<list string="Training Schedule">
                 <field name="certification_id"/>
                 <field name="training_id"/>
                 <field name="scheduled_date"/>
                 <field name="status"/>
                 <field name="completed_date"/>
                 <field name="instructor_id"/>
-</tree>
+</list>
         </field>
     </record>
 

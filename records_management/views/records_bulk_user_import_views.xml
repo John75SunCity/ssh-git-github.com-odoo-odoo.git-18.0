@@ -6,12 +6,12 @@
     <field name="name">records.bulk.user.import.view.tree</field>
             <field name="model">records.bulk.user.import</field>
         <field name="arch" type="xml">
-<tree string="Bulk User Imports">
+<list string="Bulk User Imports">
                     <field name="name"/>
                     <field name="filename"/>
                     <field name="state"/>
                     <field name="create_date"/>
-</tree>
+</list>
             </field>
         </record>
 

@@ -95,7 +95,7 @@
                         <notebook>
                             <page string="Lines" name="lines">
                                 <field name="line_ids" context="{'default_order_id': active_id}" mode="tree,form" colspan="4">
-                                    <tree editable="bottom" decoration-success="status in ['delivered','completed']" decoration-danger="status == 'not_found'" decoration-warning="status == 'pending'">
+                                    <list editable="bottom" decoration-success="status in ['delivered','completed']" decoration-danger="status == 'not_found'" decoration-warning="status == 'pending'">
                                         <field name="name"/>
                                         <field name="item_type"/>
                                         <field name="file_name"/>
@@ -108,7 +108,7 @@
                                         <field name="retrieved_by_id" optional="show"/>
                                         <field name="date_retrieved" optional="show"/>
                                         <field name="date_delivered" optional="show"/>
-                                    </tree>
+                                    </list>
                                     <form string="Retrieval Line">
                                         <group>
                                             <field name="name"/>

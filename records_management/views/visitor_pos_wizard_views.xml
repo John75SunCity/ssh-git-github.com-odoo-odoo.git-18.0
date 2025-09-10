@@ -253,7 +253,7 @@
         <field name="name">visitor.pos.wizard.view.tree</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
-<tree string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
+<list string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
                 <field name="wizard_start_time" string="Processing Date" widget="datetime"/>
                 <field name="visitor_name" string="Visitor"/>
                 <field name="service_type" string="Service Type"/>
@@ -265,7 +265,7 @@
                 <field name="customer_record_created" string="Customer Created" widget="boolean_toggle"/>
                 <field name="naid_compliance_required" string="NAID Required" widget="boolean_toggle"/>
                 <field name="total_processing_time" string="Processing Time" widget="float"/>
-</tree>
+</list>
         </field>
     </record>
 
