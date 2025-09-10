@@ -17,6 +17,7 @@ Version: 18.0.6.0.0
 License: LGPL-3
 """
 
+import json
 from odoo import models, fields, api, _
 
 from odoo.exceptions import ValidationError
@@ -164,6 +165,13 @@ class SystemFlowchartWizard(models.TransientModel):
         help="Preview of diagram data",
     )
 
+    config_valid = fields.Boolean(
+        string="Configuration Valid",
+        compute="_compute_config_valid",
+        store=False,
+        help="Indicates if the current configuration is valid",
+    )
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -215,8 +223,6 @@ class SystemFlowchartWizard(models.TransientModel):
             if record.target_company:
                 config["target_company_id"] = record.target_company.id
 
-            import json
-
             record.generated_config = json.dumps(config, indent=2)
 
     @api.depends("search_scenario", "target_user", "target_company")
@@ -264,6 +270,28 @@ class SystemFlowchartWizard(models.TransientModel):
                 preview.append("• Custom configuration based on your selections")
 
             record.preview_data = "\n".join(preview)
+
+    @api.depends('search_scenario', 'layout_style', 'color_scheme')
+    def _compute_config_valid(self):
+        """Check if current configuration is valid"""
+        for record in self:
+            # Basic validation - all required fields have values
+            config_valid = bool(
+                record.search_scenario and
+                record.layout_style and
+                record.color_scheme
+            )
+
+            # Additional scenario-specific validation
+            if record.search_scenario == 'user_access' and not record.target_user:
+                # User access scenario should have a target user for best results
+                pass  # Not required, but recommended
+
+            if record.search_scenario == 'company_structure' and not record.target_company:
+                # Company structure scenario should have a target company for best results
+                pass  # Not required, but recommended
+
+            record.config_valid = config_valid
 
     # ============================================================================
     # ACTION METHODS

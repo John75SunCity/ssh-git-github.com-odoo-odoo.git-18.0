@@ -254,7 +254,6 @@ from . import survey_feedback_theme
 from . import survey_improvement_action
 from . import survey_user_input
 from . import system_diagram_data
-from . import system_flowchart_wizard
 from . import customer_portal_diagram
 from . import temp_inventory
 from . import temp_inventory_audit

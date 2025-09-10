@@ -365,6 +365,7 @@ class RecordsDocumentType(models.Model):
         self.ensure_one()
         for record in self:
             if record.document_count > 0:
-                message = _("Retention policy change for document type '%s' affects %d existing documents.", record.name, record.document_count)
+                # Using same pattern as line 280 in this file
+                message = _("Retention policy change for document type '%s' affects %d existing documents.") % (record.name, record.document_count)
                 record.message_post(body=message)
-                _logger.warning(message)
+                _logger.warning("Retention policy changed for %s affecting %d documents", record.name, record.document_count)
