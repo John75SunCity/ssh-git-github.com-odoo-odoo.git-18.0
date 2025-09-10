@@ -43,15 +43,15 @@
 
                 <sheet>
 <div class="oe_button_box" name="button_box">
-    <button class="oe_stat_button" type="action" name="action_view_work_orders" icon="fa-tasks">
-        <field name="active_work_orders" string="Work Orders" widget="statinfo"/>
+<button class="oe_stat_button" type="action" name="action_view_work_orders" icon="fa-tasks" title="Work Orders">
+    <field name="work_orders_count" string="Work Orders"/>
+
     </button>
-    <button class="oe_stat_button" type="action" name="action_view_completed_orders" icon="fa-check-circle">
-        <field name="completed_work_orders" string="Completed" widget="statinfo"/>
+<button class="oe_stat_button" type="action" name="action_view_completed_orders" icon="fa-check-circle" title="Completed Orders">
+    <field name="completed_orders_count" string="Completed"/>
+
     </button>
-    <button class="oe_stat_button" type="action" name="action_view_certifications" icon="fa-certificate">
-        <field name="certification_count" string="Certifications" widget="statinfo"/>
-    </button>
+<button class="oe_stat_button" type="action" name="action_view_certifications" icon="fa-certificate" title="Certifications"></button>
 </div>
 
 <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>

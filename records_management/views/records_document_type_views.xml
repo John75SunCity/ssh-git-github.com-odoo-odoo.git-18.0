@@ -17,7 +17,8 @@
                 <field name="container_count" string="📦 Containers" widget="integer"/>
                 <field name="state" string="🎯 Status" widget="badge"/>
                 <field name="active" string="✅ Active"/>
-                <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link"/>
+<button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" title="View Documents"/>
+
             </list>
         </field>
     </record>
@@ -39,13 +40,13 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file">
+<button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file" title="View Documents">
                             <field name="document_count" string="Documents" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-cube">
+<button class="oe_stat_button" icon="fa-cube" title="Container Information">
                             <field name="container_count" string="Containers" widget="statinfo"/>
                         </button>
-                        <button class="oe_stat_button" icon="fa-clock">
+<button class="oe_stat_button" icon="fa-clock" title="Retention Period">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value">
                                     <field name="effective_retention_years"/>

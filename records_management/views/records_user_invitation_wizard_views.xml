@@ -7,11 +7,10 @@
         <field name="name">records.user.invitation.wizard.view.tree</field>
         <field name="model">records.user.invitation.wizard</field>
         <field name="arch" type="xml">
-<tree string="User Invitation Wizard">
+<list string="User Invitation Wizard">
     <field name="user_ids" widget="many2many_tags"/>
 
-
-</tree>
+</list>
         </field>
     </record>
 

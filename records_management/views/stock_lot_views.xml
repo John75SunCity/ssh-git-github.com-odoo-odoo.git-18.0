@@ -105,6 +105,7 @@
 <field name="ref" string="🔗 Reference" optional="hide"/>
 <field name="company_id" string="🏢 Company" groups="base.group_multi_company" optional="hide"/>
 <button name="action_view_stock_moves" type="object" string="Movements" icon="fa-exchange" class="btn-link" title="View Stock Movements"/>
+
 </list>
 </field>
 </record>

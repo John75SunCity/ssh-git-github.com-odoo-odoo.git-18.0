@@ -129,7 +129,8 @@
         <field name="arch" type="xml">
             <list decoration-success="state == 'stored'" decoration-info="state == 'active'" decoration-warning="state == 'retrieved'" decoration-danger="state == 'destroyed'" decoration-muted="state == 'draft'" multi_edit="1">
                 <header>
-                    <button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh"/>
+<button name="action_bulk_convert_container_type" type="object" string="Bulk Convert Types" class="btn-primary" icon="fa-refresh" title="Bulk Convert Container Types"/>
+
                 </header>
                 <field name="name" string="Container ID"/>
                 <field name="barcode" string="Barcode"/>
@@ -170,7 +171,7 @@
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o">
+<button class="oe_stat_button" type="object" name="action_view_documents" icon="fa-file-text-o" title="View Documents">
                             <field name="document_count" string="Documents" widget="statinfo"/>
                         </button>
                     </div>

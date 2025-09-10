@@ -12,12 +12,12 @@
             <!-- Add Records Management stat buttons -->
             <div name="button_box" position="inside">
                 <button name="action_view_pickup_routes" type="object"
-                        class="oe_stat_button" icon="fa-route"
+class="oe_stat_button" icon="fa-route" title="Pickup Routes"
 invisible="pickup_route_ids == []">
                     <field name="pickup_route_ids" widget="statbutton" string="Routes"/>
                 </button>
                 <button name="action_set_records_available" type="object"
-                        class="oe_stat_button" icon="fa-check-circle"
+class="oe_stat_button" icon="fa-check-circle" title="Set Vehicle Available"
 invisible="records_operational_status != 'out_of_service'">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_value">Available</span>

@@ -39,10 +39,10 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" icon="fa-file-text-o">
+<button class="oe_stat_button" icon="fa-file-text-o" title="Certificate Items">
                                 <field name="certificate_item_count" string="Certificate Items" widget="statinfo"/>
                             </button>
-                            <button class="oe_stat_button" icon="fa-money">
+<button class="oe_stat_button" icon="fa-money" title="Total Profit">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="total_profit" widget="monetary"/>
@@ -50,7 +50,7 @@
                                     <span class="o_stat_text">Total Profit</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button" icon="fa-calendar" invisible="not expiry_date">
+<button class="oe_stat_button" icon="fa-calendar" invisible="not expiry_date" title="Expiry Date">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="days_until_expiry"/>

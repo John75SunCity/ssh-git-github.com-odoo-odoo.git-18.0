@@ -18,8 +18,9 @@
                     <field name="state" string="🎯 Status" widget="badge"/>
                     <field name="naid_compliant" string="✅ NAID" widget="boolean"/>
                     <field name="security_level" string="🔒 Security"/>
-                    <button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'"/>
-<button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'in_transit'"/>
+<button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'" title="Confirm Transfer"/>
+<button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'in_transit'" title="Complete Transfer"/>
+
 
                 </list>
             </field>
@@ -43,16 +44,16 @@
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" icon="fa-file-text-o">
+<button class="oe_stat_button" icon="fa-file-text-o" title="Audit Logs">
                                 <field name="audit_log_count" widget="statinfo"/>
                             </button>
-                            <button class="oe_stat_button" icon="fa-shield" invisible="not naid_compliant">
+<button class="oe_stat_button" icon="fa-shield" invisible="not naid_compliant" title="NAID Compliance">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">NAID</span>
                                     <span class="o_stat_text">Compliant</span>
                                 </div>
                             </button>
-                            <button class="oe_stat_button" icon="fa-clock-o" invisible="not transfer_duration">
+<button class="oe_stat_button" icon="fa-clock-o" invisible="not transfer_duration" title="Transfer Duration">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="transfer_duration"/>

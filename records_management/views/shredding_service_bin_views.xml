@@ -35,7 +35,7 @@
             <form string="Shredding Service Bin">
                 <header>
                     <button name="action_report_bin_issue" string="Report Issue" type="object"
-                            class="btn-warning" icon="fa-exclamation-triangle"/>
+class="btn-warning" icon="fa-exclamation-triangle" title="Warning Action"/>
                     <button name="action_schedule_service" string="Schedule Service" type="object"
                             class="btn-primary" icon="fa-calendar"
                             invisible="status == 'retired'"/>
@@ -54,13 +54,13 @@
 
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_service_history" type="object" class="oe_stat_button" icon="fa-history">
+<button name="action_view_service_history" type="object" class="oe_stat_button" icon="fa-history" title="Service History">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value"><field name="service_count"/></span>
                                 <span class="o_stat_text">Services</span>
                             </div>
                         </button>
-                        <button name="action_view_work_orders" type="object" class="oe_stat_button" icon="fa-wrench">
+<button name="action_view_work_orders" type="object" class="oe_stat_button" icon="fa-wrench" title="Work Orders">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_value"><field name="work_order_count"/></span>
                                 <span class="o_stat_text">Work Orders</span>
