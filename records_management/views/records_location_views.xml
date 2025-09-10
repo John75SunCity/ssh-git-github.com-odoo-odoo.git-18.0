@@ -81,7 +81,7 @@
             </field>
         </record>
 
-        <!-- Tree view for Enhanced -->
+        <!-- List view for Enhanced -->
         <record id="records_location_view_tree" model="ir.ui.view">
             <field name="name">records.location.view.tree</field>
             <field name="model">records.location</field>

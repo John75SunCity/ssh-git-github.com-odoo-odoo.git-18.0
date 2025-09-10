@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for records.promotional.discount -->
+<!-- List view for records.promotional.discount -->
     <record id="records_promotional_discount_view_tree" model="ir.ui.view">
         <field name="name">records.promotional.discount.view.tree</field>
         <field name="model">records.promotional.discount</field>

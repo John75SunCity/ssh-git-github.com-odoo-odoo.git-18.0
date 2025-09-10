@@ -74,7 +74,7 @@ invisible="records_operational_status != 'out_of_service'">
         </field>
     </record>
 
-    <!-- Enhanced Fleet Vehicle Tree View with Records Information -->
+    <!-- Enhanced Fleet Vehicle List View with Records Information -->
 <record id="fleet_vehicle_view_tree" model="ir.ui.view">
     <field name="name">fleet.vehicle.view.tree.inherit.records</field>
         <field name="model">fleet.vehicle</field>

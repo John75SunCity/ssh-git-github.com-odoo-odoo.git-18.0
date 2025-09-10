@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="records_container_log_view_tree" model="ir.ui.view">
             <field name="name">records.container.log.view.tree</field>
             <field name="model">records.container.log</field>

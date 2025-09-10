@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="records_request_line_view_tree" model="ir.ui.view">
             <field name="name">records.request.line.view.tree</field>
             <field name="model">records.request.line</field>

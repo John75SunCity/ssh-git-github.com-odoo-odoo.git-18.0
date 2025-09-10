@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for Minimal -->
+<!-- List view for Minimal -->
 
-    <!-- Tree view for base.rate -->
+    <!-- List view for base.rate -->
     <record id="records_tag_view_tree" model="ir.ui.view">
         <field name="name">records.tag.view.tree</field>
         <field name="model">records.tag</field>
@@ -42,7 +42,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Simple -->
+    <!-- List view for Simple -->
     <record id="action_records_tag_simple" model="ir.actions.act_window">
         <field name="name">Records Tags</field>
         <field name="res_model">records.tag</field>

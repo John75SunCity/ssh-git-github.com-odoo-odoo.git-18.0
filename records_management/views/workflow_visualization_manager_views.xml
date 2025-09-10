@@ -3,7 +3,7 @@
     <data>
         <!-- Workflow Visualization Manager Views -->
 
-        <!-- Tree/List View -->
+        <!-- List View -->
         <record id="workflow_visualization_manager_view_tree" model="ir.ui.view">
             <field name="name">workflow.visualization.manager.view.tree</field>
             <field name="model">workflow.visualization.manager</field>

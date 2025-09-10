@@ -3,7 +3,7 @@
     <data>
 <!-- Enhanced Departmental Billing Contact Views -->
 
-    <!-- Tree view -->
+<!-- List view -->
     <record id="records_department_billing_contact_view_tree" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.tree</field>
         <field name="model">records.department.billing.contact</field>
@@ -45,7 +45,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+<!-- List view for Action -->
     <record id="action_records_department_billing_contact" model="ir.actions.act_window">
         <field name="name">Records Department Billing Contact</field>
         <field name="res_model">records.department.billing.contact</field>
@@ -59,7 +59,7 @@
         </field>
     </record>
 
-<!-- Tree view for ENTERPRISE -->
+<!-- List view for ENTERPRISE -->
 
     <!-- Kanban view for Departmental -->
     <record id="records_department_billing_contact_view_kanban" model="ir.ui.view">
@@ -263,7 +263,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Graph -->
+<!-- List view for Graph -->
     <record id="records_department_billing_contact_view_graph" model="ir.ui.view">
         <field name="name">records.department.billing.contact.view.graph</field>
         <field name="model">records.department.billing.contact</field>
@@ -309,7 +309,7 @@
         </field>
     </record>
 
-    <!-- Tree view for ENTERPRISE -->
+<!-- List view for ENTERPRISE -->
     <record id="action_department_billing" model="ir.actions.act_window">
         <field name="name">💰 Departmental Billing</field>
         <field name="res_model">records.department.billing.contact</field>

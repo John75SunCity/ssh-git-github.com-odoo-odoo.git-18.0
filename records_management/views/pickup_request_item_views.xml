@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- List view for base.rate -->
     <record id="pickup_request_item_view_tree" model="ir.ui.view">
         <field name="name">pickup.request.item.view.tree</field>
         <field name="model">pickup.request.item</field>
@@ -44,7 +44,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_pickup_request_item" model="ir.actions.act_window">
         <field name="name">Pickup Request Item</field>
         <field name="res_model">pickup.request.item</field>

@@ -60,7 +60,7 @@
         </field>
     </record>
 
-<!-- Enhanced Tree view for Portal Requests -->
+<!-- Enhanced List view for Portal Requests -->
     <record id="portal_request_view_tree" model="ir.ui.view">
         <field name="name">portal.request.view.tree</field>
         <field name="model">portal.request</field>

@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="location_group_view_tree" model="ir.ui.view">
             <field name="name">location.group.view.tree</field>
             <field name="model">location.group</field>

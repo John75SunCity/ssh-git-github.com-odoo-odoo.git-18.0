@@ -72,7 +72,7 @@
     </field>
 </record>
 
-<!-- Enhanced Tree view for Pickup Routes with FSM Integration -->
+<!-- Enhanced List view for Pickup Routes with FSM Integration -->
     <record id="pickup_route_view_tree" model="ir.ui.view">
         <field name="name">pickup.route.view.tree</field>
         <field name="model">pickup.route</field>

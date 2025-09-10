@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for scan.digital.asset -->
+<!-- List view for scan.digital.asset -->
     <record id="scan_digital_asset_view_tree" model="ir.ui.view">
         <field name="name">scan.digital.asset.view.tree</field>
         <field name="model">scan.digital.asset</field>

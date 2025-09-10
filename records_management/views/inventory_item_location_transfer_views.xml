@@ -3,7 +3,7 @@
 
     This XML file defines the Odoo views and actions for the `inventory.item.location.transfer` model
     in the Records Management module. It includes:
-      - Tree view for listing transfers
+      - List view for listing transfers
       - Form view for editing/creating transfers
       - Search view for filtering transfers
       - Window action for accessing the model
@@ -14,7 +14,7 @@
 -->
 <odoo>
     <data>
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="inventory_item_location_transfer_view_tree" model="ir.ui.view">
             <field name="name">inventory.item.location.transfer.view.tree</field>
             <field name="model">inventory.item.location.transfer</field>

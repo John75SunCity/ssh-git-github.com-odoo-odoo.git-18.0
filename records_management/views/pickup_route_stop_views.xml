@@ -102,7 +102,7 @@
     </field>
 </record>
 
-<!-- Enhanced Tree view for Pickup Route Stops -->
+<!-- Enhanced List view for Pickup Route Stops -->
     <record id="pickup_route_stop_view_tree" model="ir.ui.view">
         <field name="name">pickup.route.stop.view.tree</field>
         <field name="model">pickup.route.stop</field>

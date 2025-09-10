@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="naid_operator_certification_view_tree" model="ir.ui.view">
             <field name="name">naid.operator.certification.view.tree</field>
             <field name="model">naid.operator.certification</field>

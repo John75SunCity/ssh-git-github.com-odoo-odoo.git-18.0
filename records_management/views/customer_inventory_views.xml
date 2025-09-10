@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for CUSTOMER -->
+<!-- List view for CUSTOMER -->
 
     <!-- Kanban view for Kanban -->
     <record id="customer_inventory_view_kanban" model="ir.ui.view">
@@ -39,7 +39,7 @@
         </field>
     </record>
 
-    <!-- Tree view for List -->
+    <!-- List view for List -->
     <record id="customer_inventory_view_tree" model="ir.ui.view">
         <field name="name">customer.inventory.view.tree</field>
         <field name="model">customer.inventory</field>
@@ -77,7 +77,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_customer_inventory" model="ir.actions.act_window">
         <field name="name">Customer Inventory</field>
         <field name="res_model">customer.inventory</field>

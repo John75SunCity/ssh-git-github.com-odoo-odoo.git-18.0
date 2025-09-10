@@ -89,7 +89,7 @@
 </field>
 </record>
 
-<!-- Enhanced Tree view -->
+<!-- Enhanced List view -->
 <record id="stock_lot_view_tree" model="ir.ui.view">
     <field name="name">stock.lot.view.tree</field>
     <field name="model">stock.lot</field>

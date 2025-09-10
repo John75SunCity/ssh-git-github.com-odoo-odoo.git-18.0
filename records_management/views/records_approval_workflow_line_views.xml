@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for records.approval.workflow.line -->
+<!-- List view for records.approval.workflow.line -->
     <record id="records_approval_workflow_line_view_tree" model="ir.ui.view">
         <field name="name">records.approval.workflow.line.view.tree</field>
         <field name="model">records.approval.workflow.line</field>

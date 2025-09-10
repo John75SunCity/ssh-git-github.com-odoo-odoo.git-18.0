@@ -1,7 +1,7 @@
 <odoo>
 <!-- Added root menu (only create once; if already defined elsewhere, remove this line there) -->
 <menuitem id="records_management_menu_root" name="Records Management" sequence="10"/>
-<!-- List (Tree) View -->
+<!-- List View -->
 <record id="customer_feedback_view_tree" model="ir.ui.view">
     <field name="name">customer.feedback.view.tree</field>
     <field name="model">customer.feedback</field>

@@ -28,7 +28,7 @@
 
                     <sheet>
                         <div class="row mt16 o_settings_container">
-                            <!-- Tree view for Dashboard -->
+                            <!-- List view for Dashboard -->
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane"/>
                                 <div class="o_setting_right_pane">
@@ -63,7 +63,7 @@
                             </div>
                         </div>
 
-                        <!-- Tree view for Records -->
+                        <!-- List view for Records -->
                         <h2>Records Management</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -163,7 +163,7 @@
                             </div>
                         </div>
 
-                        <!-- Tree view for NAID -->
+                        <!-- List view for NAID -->
                         <h2>NAID Compliance &amp; Security</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -263,7 +263,7 @@
                             </div>
                         </div>
 
-                        <!-- Tree view for Pickup -->
+                        <!-- List view for Pickup -->
                         <h2>Pickup &amp; Field Service</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -327,7 +327,7 @@
                             </div>
                         </div>
 
-                        <!-- Tree view for Billing -->
+                        <!-- List view for Billing -->
                         <h2>Billing &amp; Pricing</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -391,7 +391,7 @@
                             </div>
                         </div>
 
-                        <!-- Tree view for Portal -->
+                        <!-- List view for Portal -->
                         <h2>Customer Portal</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -467,7 +467,7 @@
                             </div>
                         </div>
 
-                        <!-- Tree view for Notifications -->
+                        <!-- List view for Notifications -->
                         <h2>Notifications</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -519,7 +519,7 @@
                             </div>
                         </div>
 
-                        <!-- Tree view for Analytics -->
+                        <!-- List view for Analytics -->
                         <h2>Analytics &amp; Reporting</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -571,7 +571,7 @@
                             </div>
                         </div>
 
-                        <!-- Tree view for Integration -->
+                        <!-- List view for Integration -->
                         <h2>System Integration</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -627,7 +627,7 @@
             </field>
         </record>
 
-        <!-- Tree view for Action -->
+        <!-- List view for Action -->
         <record id="action_records_config_settings" model="ir.actions.act_window">
             <field name="name">Records Management Configuration</field>
 <field name="res_model">res.config.settings</field>
@@ -636,7 +636,7 @@
             <field name="context">{'module': 'records_management'}</field>
         </record>
 
-        <!-- Tree view for Menu -->
+        <!-- List view for Menu -->
         <menuitem id="menu_records_config_settings"
                   name="Configuration"
                   parent="records_management.menu_records_configuration"

@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- List view for base.rate -->
 <record id="container_destruction_work_order_view_tree" model="ir.ui.view">
     <field name="name">container.destruction.work.order.view.tree</field>
         <field name="model">container.destruction.work.order</field>
@@ -44,7 +44,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_container_destruction_work_order" model="ir.actions.act_window">
         <field name="name">Container Destruction Work Order</field>
         <field name="res_model">container.destruction.work.order</field>

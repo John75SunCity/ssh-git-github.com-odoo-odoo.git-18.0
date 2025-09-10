@@ -5,7 +5,7 @@
 <!-- SHRED MODEL BIN VIEWS -->
 <!-- ============================================================================ -->
 
-<!-- Tree/List View -->
+<!-- List View -->
 <record id="shred_model_bin_view_tree" model="ir.ui.view">
     <field name="name">shred.model.bin.view.tree</field>
     <field name="model">shred.model_bin</field>

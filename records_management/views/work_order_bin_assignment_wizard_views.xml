@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- List view for base.rate -->
     <record id="work_order_bin_assignment_wizard_view_tree" model="ir.ui.view">
         <field name="name">work.order.bin.assignment.wizard.view.tree</field>
         <field name="model">work.order.bin.assignment.wizard</field>
@@ -44,7 +44,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_work_order_bin_assignment_wizard" model="ir.actions.act_window">
         <field name="name">Work Order Bin Assignment Wizard</field>
         <field name="res_model">work.order.bin.assignment.wizard</field>

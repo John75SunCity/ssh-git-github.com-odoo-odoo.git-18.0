@@ -89,7 +89,7 @@ invisible="state != 'full'"/>
             </field>
         </record>
 
-        <!-- Bin Barcode Inventory Tree View -->
+        <!-- Bin Barcode Inventory List View -->
 <record id="bin_barcode_inventory_view_tree" model="ir.ui.view">
     <field name="name">bin.barcode.inventory.view.tree</field>
 <field name="model">bin.barcode.inventory</field>

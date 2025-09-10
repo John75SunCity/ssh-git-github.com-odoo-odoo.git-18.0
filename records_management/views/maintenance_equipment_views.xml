@@ -53,7 +53,7 @@
         </field>
     </record>
 
-<!-- Maintenance Equipment Tree View Extension -->
+<!-- Maintenance Equipment List View Extension -->
 <record id="maintenance_equipment_view_tree" model="ir.ui.view">
         <field name="name">maintenance.equipment.tree.inherit.records</field>
         <field name="model">maintenance.equipment</field>

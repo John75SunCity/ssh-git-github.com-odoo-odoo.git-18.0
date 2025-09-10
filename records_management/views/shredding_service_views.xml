@@ -49,7 +49,7 @@
         </field>
     </record>
 
-<!-- Tree view for Shredding Services -->
+<!-- List view for Shredding Services -->
     <record id="shredding_service_view_tree" model="ir.ui.view">
         <field name="name">shredding.service.view.tree</field>
         <field name="model">shredding.service</field>

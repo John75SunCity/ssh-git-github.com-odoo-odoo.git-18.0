@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Tree/List View for Destruction Certificates -->
+        <!-- List View for Destruction Certificates -->
         <record id="destruction_certificate_view_tree" model="ir.ui.view">
             <field name="name">destruction.certificate.view.tree</field>
             <field name="model">destruction.certificate</field>

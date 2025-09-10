@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- List view for base.rate -->
     <record id="records_billing_config_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.view.tree</field>
         <field name="model">records.billing.config</field>
@@ -44,7 +44,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_records_billing_config" model="ir.actions.act_window">
         <field name="name">Records Billing Config</field>
         <field name="res_model">records.billing.config</field>
@@ -58,7 +58,7 @@
         </field>
     </record>
 
-<!-- Tree view for ENTERPRISE -->
+<!-- List view for ENTERPRISE -->
 
     <!-- Kanban view for Billing -->
     <record id="records_billing_config_view_kanban" model="ir.ui.view">
@@ -145,7 +145,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Enhanced -->
+    <!-- List view for Enhanced -->
     <record id="records_billing_config_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.view.tree</field>
         <field name="model">records.billing.config</field>
@@ -386,7 +386,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Calendar -->
+    <!-- List view for Calendar -->
     <record id="records_billing_config_view_calendar" model="ir.ui.view">
         <field name="name">records.billing.config.view.calendar</field>
         <field name="model">records.billing.config</field>
@@ -442,7 +442,7 @@
         </field>
     </record>
 
-    <!-- Tree view for ENTERPRISE -->
+    <!-- List view for ENTERPRISE -->
     <record id="action_billing_config" model="ir.actions.act_window">
         <field name="name">💳 Billing Configuration</field>
         <field name="res_model">records.billing.config</field>

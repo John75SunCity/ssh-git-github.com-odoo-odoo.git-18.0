@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- List view for base.rate -->
     <record id="revenue_analytic_view_tree" model="ir.ui.view">
         <field name="name">revenue.analytic.view.tree</field>
         <field name="model">revenue.analytic</field>
@@ -44,7 +44,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_revenue_analytic" model="ir.actions.act_window">
         <field name="name">Revenue Analytic</field>
         <field name="res_model">revenue.analytic</field>

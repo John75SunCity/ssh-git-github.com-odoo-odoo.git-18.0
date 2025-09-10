@@ -3,7 +3,7 @@
     <data>
 <!-- Records Billing Config Line Views -->
     
-    <!-- Tree View -->
+    <!-- List View -->
     <record id="records_billing_config_line_view_tree" model="ir.ui.view">
         <field name="name">records.billing.config.line.view.tree</field>
         <field name="model">records.billing.config.line</field>

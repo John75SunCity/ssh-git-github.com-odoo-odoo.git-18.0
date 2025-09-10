@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for naid.compliance.checklist.item -->
+<!-- List view for naid.compliance.checklist.item -->
     <record id="naid_compliance_checklist_item_view_tree" model="ir.ui.view">
         <field name="name">naid.compliance.checklist.item.view.tree</field>
         <field name="model">naid.compliance.checklist.item</field>

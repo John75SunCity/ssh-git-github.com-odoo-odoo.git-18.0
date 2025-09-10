@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Tree view for transitory.field.config -->
+    <!-- List view for transitory.field.config -->
     <record id="transitory_field_config_view_tree" model="ir.ui.view">
         <field name="name">transitory.field.config.view.tree</field>
         <field name="model">transitory.field.config</field>
@@ -161,7 +161,7 @@
         </field>
     </record>
 
-    <!-- Tree view for field.label.customization -->
+    <!-- List view for field.label.customization -->
     <record id="field_label_customization_view_tree" model="ir.ui.view">
         <field name="name">field.label.customization.view.tree</field>
         <field name="model">field.label.customization</field>

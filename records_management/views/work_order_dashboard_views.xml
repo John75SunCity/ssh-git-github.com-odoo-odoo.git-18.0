@@ -53,10 +53,10 @@
     </record>
 
 <!-- ============================================================================ -->
-<!-- WORK ORDER TYPES - SIMPLIFIED TREE VIEW (For Dashboard) -->
+<!-- WORK ORDER TYPES - SIMPLIFIED LIST VIEW (For Dashboard) -->
 <!-- ============================================================================ -->
 
-    <!-- All Work Orders - Unified Tree View -->
+    <!-- All Work Orders - Unified List View -->
     <record id="work_order_dashboard_view_tree" model="ir.ui.view">
         <field name="name">work.order.dashboard.view.tree</field>
         <field name="model">project.task</field>

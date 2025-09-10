@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for PAPER -->
+<!-- List view for PAPER -->
 
     <!-- Kanban view for KANBAN -->
     <record id="load_view_kanban" model="ir.ui.view">
@@ -68,7 +68,7 @@
         </field>
     </record>
 
-    <!-- Tree view for TREE -->
+    <!-- List view for TREE -->
     <record id="load_view_tree" model="ir.ui.view">
         <field name="name">load.view.tree</field>
         <field name="model">paper.bale.load</field>
@@ -328,7 +328,7 @@
         </field>
     </record>
 
-    <!-- Tree view for CALENDAR -->
+    <!-- List view for CALENDAR -->
     <record id="load_view_calendar" model="ir.ui.view">
         <field name="name">load.view.calendar</field>
         <field name="model">paper.bale.load</field>
@@ -343,7 +343,7 @@
         </field>
     </record>
 
-    <!-- Tree view for GRAPH -->
+    <!-- List view for GRAPH -->
     <record id="load_view_graph" model="ir.ui.view">
         <field name="name">load.view.graph</field>
         <field name="model">paper.bale.load</field>
@@ -370,7 +370,7 @@
         </field>
     </record>
 
-    <!-- Tree view for ACTION -->
+    <!-- List view for ACTION -->
     <record id="action_load" model="ir.actions.act_window">
         <field name="name">� Paper Bale Load Management</field>
         <field name="res_model">paper.bale.load</field>

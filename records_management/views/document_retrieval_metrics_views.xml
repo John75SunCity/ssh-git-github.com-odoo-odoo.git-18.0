@@ -3,7 +3,7 @@
     <data>
 <!-- Document Retrieval Metrics Views -->
     
-    <!-- Tree View -->
+    <!-- List View -->
     <record id="document_retrieval_metrics_view_tree" model="ir.ui.view">
         <field name="name">document.retrieval.metrics.view.tree</field>
         <field name="model">document.retrieval.metrics</field>

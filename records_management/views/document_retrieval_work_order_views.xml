@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-<!-- Tree view for Document -->
+<!-- List view for Document -->
 
-    <!-- Tree view for base.rate -->
+    <!-- List view for base.rate -->
 <record id="document_retrieval_work_order_view_tree" model="ir.ui.view">
     <field name="name">document.retrieval.work.order.view.tree</field>
         <field name="model">document.retrieval.work.order</field>
@@ -92,7 +92,7 @@
                         </group>
                     </group>
 
-                    <!-- Tree view for Pricing -->
+                    <!-- List view for Pricing -->
                     <group string="Cost Breakdown" name="pricing_breakdown">
                         <group>
                             <field name="base_retrieval_cost" widget="monetary" readonly="1"/>
@@ -107,7 +107,7 @@
                         </group>
                     </group>
 
-                    <!-- Tree view for Items -->
+                    <!-- List view for Items -->
                     <notebook>
                         <page string="Items to Retrieve" name="items">
                             <field name="retrieval_item_ids">
@@ -267,7 +267,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_document_retrieval_work_order" model="ir.actions.act_window">
         <field name="name">Document Retrieval Work Order</field>
         <field name="res_model">document.retrieval.work.order</field>

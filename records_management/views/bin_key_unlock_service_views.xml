@@ -3,7 +3,7 @@
 
     <data>
 <!-- ============================================================================ -->
-    <!-- BIN KEY UNLOCK SERVICE - TREE VIEW -->
+    <!-- BIN KEY UNLOCK SERVICE - LIST VIEW -->
     <!-- ============================================================================ -->
     <record id="bin_key_unlock_service_view_tree" model="ir.ui.view">
         <field name="name">bin.key.unlock.service.view.tree</field>

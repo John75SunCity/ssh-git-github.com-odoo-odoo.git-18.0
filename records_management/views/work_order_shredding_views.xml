@@ -3,7 +3,7 @@
 
 <data>
 <!-- ============================================================================ -->
-<!-- WORK ORDER SHREDDING - TREE VIEW -->
+<!-- WORK ORDER SHREDDING - LIST VIEW -->
 <!-- ============================================================================ -->
     <record id="work_order_shredding_view_tree" model="ir.ui.view">
         <field name="name">work.order.shredding.view.tree</field>

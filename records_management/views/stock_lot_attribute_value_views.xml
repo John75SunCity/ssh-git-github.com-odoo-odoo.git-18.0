@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- List view for base.rate -->
     <record id="stock_lot_attribute_value_view_tree" model="ir.ui.view">
         <field name="name">stock.lot.attribute.value.view.tree</field>
         <field name="model">stock.lot.attribute.value</field>
@@ -44,7 +44,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_stock_lot_attribute_value" model="ir.actions.act_window">
         <field name="name">Stock Lot Attribute Value</field>
         <field name="res_model">stock.lot.attribute.value</field>

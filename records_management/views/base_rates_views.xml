@@ -45,7 +45,7 @@
             </field>
         </record>
 
-        <!-- Base Rates Tree View -->
+        <!-- Base Rates List View -->
         <record id="base_rates_view_tree" model="ir.ui.view">
 <field name="name">base.rates.view.tree</field>
             <field name="model">base.rates</field>

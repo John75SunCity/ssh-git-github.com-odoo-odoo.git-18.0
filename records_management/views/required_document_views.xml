@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- List view for base.rate -->
     <record id="required_document_view_tree" model="ir.ui.view">
         <field name="name">required.document.view.tree</field>
         <field name="model">required.document</field>
@@ -44,7 +44,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_required_document" model="ir.actions.act_window">
         <field name="name">Required Document</field>
         <field name="res_model">required.document</field>

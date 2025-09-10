@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!--                    <filter name="low_value" string="Low Value (&lt;$100)" domain="[('charge_amount','&lt;',100)]"/> Tree View -->
+        <!--                    <filter name="low_value" string="Low Value (&lt;$100)" domain="[('charge_amount','&lt;',100)]"/> List View -->
         <record id="records_department_billing_approval_view_tree" model="ir.ui.view">
 <field name="name">records.department.billing.approval.view.tree</field>
             <field name="model">records.department.billing.approval</field>

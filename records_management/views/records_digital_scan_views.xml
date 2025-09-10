@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for Digital -->
+<!-- List view for Digital -->
 
-    <!-- Tree view for base.rate -->
+    <!-- List view for base.rate -->
     <record id="records_digital_scan_view_tree" model="ir.ui.view">
         <field name="name">records.digital.scan.view.tree</field>
         <field name="model">records.digital.scan</field>
@@ -100,7 +100,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_records_digital_scan" model="ir.actions.act_window">
         <field name="name">Digital Scans</field>
         <field name="res_model">records.digital.scan</field>
@@ -118,7 +118,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Menu -->
+    <!-- List view for Menu -->
 <!-- Menu removed: moved to central menus file (records_management_menus.xml) to keep top-level menu definitions unified -->
 </data>
 

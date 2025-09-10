@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for records.department -->
+<!-- List view for records.department -->
     <record id="records_department_view_tree" model="ir.ui.view">
         <field name="name">records.department.view.tree</field>
         <field name="model">records.department</field>

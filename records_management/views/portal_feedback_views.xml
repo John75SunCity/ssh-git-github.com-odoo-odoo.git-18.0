@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for PORTAL -->
+<!-- List view for PORTAL -->
 
     <!-- Kanban view for Kanban -->
     <record id="portal_feedback_view_kanban" model="ir.ui.view">
@@ -60,7 +60,7 @@
         </field>
     </record>
 
-    <!-- Tree view for List -->
+    <!-- List view for List -->
     <record id="portal_feedback_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.view.tree</field>
         <field name="model">portal.feedback</field>
@@ -194,7 +194,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_portal_feedback" model="ir.actions.act_window">
         <field name="name">Customer Feedback</field>
         <field name="res_model">portal.feedback</field>
@@ -209,7 +209,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Menu -->
+    <!-- List view for Menu -->
     <menuitem id="menu_portal_feedback"
               name="Customer Feedback"
               parent="records_management.menu_portal_root"

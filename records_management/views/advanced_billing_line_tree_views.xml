@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Tree view for advanced.billing.line (simple version) -->
+        <!-- List view for advanced.billing.line (simple version) -->
         <record id="advanced_billing_line_view_tree" model="ir.ui.view">
             <field name="name">advanced.billing.line.view.tree</field>
             <field name="model">advanced.billing.line</field>
@@ -17,7 +17,7 @@
             </field>
         </record>
 
-        <!-- Tree view for advanced.billing.line (detailed version) -->
+        <!-- List view for advanced.billing.line (detailed version) -->
 <record id="advanced_billing_line_view_tree" model="ir.ui.view">
     <field name="name">advanced.billing.line.view.tree</field>
             <field name="model">advanced.billing.line</field>

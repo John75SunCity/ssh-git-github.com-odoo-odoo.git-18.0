@@ -79,7 +79,7 @@
     </field>
 </record>
 
-<!-- Enhanced Tree View -->
+<!-- Enhanced List View -->
     <record id="scan_retrieval_item_view_tree" model="ir.ui.view">
         <field name="name">scan.retrieval.item.view.tree</field>
         <field name="model">scan.retrieval.item</field>

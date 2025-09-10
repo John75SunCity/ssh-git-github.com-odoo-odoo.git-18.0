@@ -3,10 +3,10 @@
     <data>
     <!-- ============================================================================ -->
     <!-- ============================================================================ -->
-    <!-- Tree view for SHRED (Internal) -->
+    <!-- List view for SHRED (Internal) -->
     <!-- ============================================================================ -->
     <!-- ============================================================================ -->
-    <!-- Tree view for SHRED (Internal) -->
+    <!-- List view for SHRED (Internal) -->
     <!-- ============================================================================ -->
     <record id="shred_bin_view_tree" model="ir.ui.view">
         <field name="model">shred.bin</field>
@@ -236,10 +236,10 @@
     </record>
 
     <!-- ============================================================================ -->
-    <!-- Tree view for SHRED -->
+    <!-- List view for SHRED -->
     <!-- ============================================================================ -->
 
-    <!-- Tree view for Internal -->
+    <!-- List view for Internal -->
     <record id="action_shred_bin" model="ir.actions.act_window">
         <field name="name">Customer Shred Bins</field>
         <field name="res_model">shred.bin</field>
@@ -274,7 +274,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Customer -->
+    <!-- List view for Customer -->
     <record id="action_shred_bin_portal" model="ir.actions.act_window">
         <field name="name">My Shred Bins</field>
         <field name="res_model">shred.bin</field>
@@ -304,16 +304,16 @@
     </record>
 
     <!-- ============================================================================ -->
-    <!-- Tree view for MENU -->
+    <!-- List view for MENU -->
     <!-- ============================================================================ -->
 
-    <!-- Tree view for Internal -->
+    <!-- List view for Internal -->
     <menuitem id="menu_shred_bin" name="Shred Bins" parent="records_management.menu_records_management_operations" action="action_shred_bin" sequence="15"/>
 
-    <!-- Tree view for Customer -->
+    <!-- List view for Customer -->
     <menuitem id="menu_shred_bin_portal" name="My Shred Bins" parent="portal.portal_menu" action="action_shred_bin_portal" sequence="20" groups="base.group_portal"/>
 
-    <!-- Tree view for Add -->
+    <!-- List view for Add -->
     <template id="shred_bin_custom_css" name="Shred Bin Custom CSS" inherit_id="web.layout">
         <xpath expr="//head" position="inside">
             <style>

@@ -101,7 +101,7 @@ Grade:<field name="paper_grade"/>
 </field>
 </record>
 
-<!-- Tree view for Enhanced -->
+<!-- List view for Enhanced -->
 <record id="paper_bale_view_tree" model="ir.ui.view">
     <field name="name">paper.bale.view.tree</field>
     <field name="model">paper.bale</field>

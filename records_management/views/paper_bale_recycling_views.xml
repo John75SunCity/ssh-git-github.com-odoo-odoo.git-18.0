@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for Paper -->
+<!-- List view for Paper -->
 
-    <!-- Tree view for base.rate -->
+    <!-- List view for base.rate -->
     <record id="paper_bale_recycling_view_tree" model="ir.ui.view">
         <field name="name">paper.bale.recycling.view.tree</field>
         <field name="model">paper.bale.recycling</field>
@@ -195,7 +195,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_paper_bale_recycling" model="ir.actions.act_window">
         <field name="name">Paper Bales</field>
         <field name="res_model">paper.bale.recycling</field>

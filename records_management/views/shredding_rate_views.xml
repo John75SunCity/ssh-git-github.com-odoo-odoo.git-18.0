@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for shredding.rate -->
+<!-- List view for shredding.rate -->
     <record id="shredding_rate_view_tree" model="ir.ui.view">
         <field name="name">shredding.rate.view.tree</field>
         <field name="model">shredding.rate</field>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for Paper -->
+<!-- List view for Paper -->
 
-    <!-- Tree view for base.rate -->
+    <!-- List view for base.rate -->
     <record id="paper_load_shipment_view_tree" model="ir.ui.view">
         <field name="name">paper.load.shipment.view.tree</field>
         <field name="model">paper.load.shipment</field>
@@ -80,14 +80,14 @@
                         </div>
                     </div>
 
-                    <!-- Tree view for Truck -->
+                    <!-- List view for Truck -->
                     <div class="row" name="truck_visualization" invisible="bale_count == 0">
                         <div class="col-12">
                             <div class="o_group">
                                 <div class="o_group_header">
                                     <h5>Load Progress Visualization</h5>
                                 </div>
-                                <!-- Tree view for Custom -->
+                                <!-- List view for Custom -->
                                 <field name="bale_count" widget="paper_load_progress" nolabel="1"/>
                             </div>
                         </div>
@@ -227,7 +227,7 @@
                                 </span>
                             </div>
                             <div class="o_kanban_record_body">
-                                <!-- Tree view for Load -->
+                                <!-- List view for Load -->
                                 <div class="mb-2">
                                     <div class="d-flex justify-content-between">
                                         <small>
@@ -301,7 +301,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_paper_load_shipment" model="ir.actions.act_window">
         <field name="name">Load Shipments</field>
         <field name="res_model">paper.load.shipment</field>
@@ -318,18 +318,18 @@
         </field>
     </record>
 
-<!-- Tree view for Paper -->
+<!-- List view for Paper -->
 
-    <!-- Tree view for Main -->
+    <!-- List view for Main -->
     <menuitem id="menu_paper_recycling" name="Paper Recycling" parent="records_management_main_menu" sequence="25" groups="records_management.group_records_user"/>
 
-    <!-- Tree view for Paper -->
+    <!-- List view for Paper -->
     <menuitem id="menu_paper_bales" name="Paper Bales" parent="menu_paper_recycling" action="action_paper_bale_recycling" sequence="10" groups="records_management.group_records_user"/>
 
-    <!-- Tree view for Load -->
+    <!-- List view for Load -->
     <menuitem id="menu_load_shipments" name="Load Shipments" parent="menu_paper_recycling" action="action_paper_load_shipment" sequence="20" groups="records_management.group_records_user"/>
 
-    <!-- Tree view for Paper -->
+    <!-- List view for Paper -->
     <record id="action_paper_recycling_dashboard" model="ir.actions.act_window">
         <field name="name">Paper Recycling Dashboard</field>
         <field name="res_model">paper.load.shipment</field>
@@ -348,7 +348,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Dashboard -->
+    <!-- List view for Dashboard -->
     <menuitem id="menu_paper_recycling_dashboard" name="Dashboard" parent="menu_paper_recycling" action="action_paper_recycling_dashboard" sequence="5" groups="records_management.group_records_user"/>
 </data>
 

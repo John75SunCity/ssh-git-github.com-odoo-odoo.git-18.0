@@ -57,7 +57,7 @@
     </record>
 
     <!-- ============================================================================ -->
-    <!-- SERVICE ITEM - TREE VIEW -->
+    <!-- SERVICE ITEM - LIST VIEW -->
     <!-- ============================================================================ -->
     <record id="service_item_view_tree" model="ir.ui.view">
         <field name="name">service.item.view.tree</field>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Inherited Tree View: add retrieval-specific columns -->
+<!-- Inherited List View: add retrieval-specific columns -->
 <record id="document_retrieval_team_view_tree" model="ir.ui.view">
 <field name="name">maintenance.team.view.tree.inherit.retrieval</field>
 <field name="model">maintenance.team</field>

@@ -2,7 +2,7 @@
 <odoo>
 
 <!-- ============================================================================ -->
-<!-- SYSTEM DIAGRAM DATA - TREE VIEW -->
+<!-- SYSTEM DIAGRAM DATA - LIST VIEW -->
 <!-- ============================================================================ -->
     <record id="system_diagram_data_view_tree" model="ir.ui.view">
         <field name="name">system.diagram.data.view.tree</field>
@@ -356,7 +356,7 @@
     </record>
 
     <!-- ============================================================================ -->
-    <!-- SYSTEM DIAGRAM DATA - TREE VIEW (Enhanced) -->
+    <!-- SYSTEM DIAGRAM DATA - LIST VIEW (Enhanced) -->
     <!-- ============================================================================ -->
     <record id="system_diagram_data_view_tree" model="ir.ui.view">
         <field name="name">system.diagram.data.view.tree</field>

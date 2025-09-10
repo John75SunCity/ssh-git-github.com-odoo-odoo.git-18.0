@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for wizard.template -->
+<!-- List view for wizard.template -->
     <record id="wizard_template_view_tree" model="ir.ui.view">
         <field name="name">wizard.template.view.tree</field>
         <field name="model">wizard.template</field>
@@ -53,7 +53,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_wizard_template" model="ir.actions.act_window">
         <field name="name">Wizard Template</field>
         <field name="res_model">wizard.template</field>

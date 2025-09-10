@@ -1,7 +1,7 @@
 <odoo>
     <data>
 
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="records_request_view_tree" model="ir.ui.view">
             <field name="name">records.request.view.tree</field>
             <field name="model">records.request</field>

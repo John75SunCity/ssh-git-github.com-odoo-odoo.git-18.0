@@ -22,7 +22,7 @@
         </field>
     </record>
 
-<!-- HR Employee Tree View Extension for Records Management -->
+<!-- HR Employee List View Extension for Records Management -->
     <record id="hr_employee_view_tree" model="ir.ui.view">
 <field name="name">hr.employee.tree.inherit.records</field>
         <field name="model">hr.employee</field>

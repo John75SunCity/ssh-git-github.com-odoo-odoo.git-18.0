@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for Department -->
+<!-- List view for Department -->
     
-    <!-- Tree view for Menu -->
+    <!-- List view for Menu -->
     <menuitem id="menu_department_billing_contacts" 
               name="Department Billing Contacts" 
               parent="menu_records_configuration"

@@ -37,7 +37,7 @@
 </field>
 </record>
 
-<!-- SMS Validation Tree View -->
+<!-- SMS Validation List View -->
 <record id="stock_move_sms_validation_view_tree" model="ir.ui.view">
     <field name="name">stock.move.sms.validation.view.tree</field>
     <field name="model">stock.move.sms.validation</field>

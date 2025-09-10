@@ -3,7 +3,7 @@
 
     This XML file defines the Odoo views for the `container.access.activity` model in the Records Management module.
     It includes:
-      - Tree view for listing container access activities
+      - List view for listing container access activities
       - Form view for detailed activity entry and editing
       - Search view for filtering and searching activities
       - Window action for launching the model views
@@ -14,7 +14,7 @@
 <odoo>
     <data>
 
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="container_access_activity_view_tree" model="ir.ui.view">
             <field name="name">container.access.activity.view.tree</field>
             <field name="model">container.access.activity</field>

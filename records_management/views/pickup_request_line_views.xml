@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="pickup_request_line_view_tree" model="ir.ui.view">
             <field name="name">pickup.request.line.view.tree</field>
             <field name="model">pickup.request.line</field>

@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for retrieval.metric -->
+<!-- List view for retrieval.metric -->
     <record id="retrieval_metric_view_tree" model="ir.ui.view">
         <field name="name">retrieval.metric.view.tree</field>
         <field name="model">retrieval.metric</field>

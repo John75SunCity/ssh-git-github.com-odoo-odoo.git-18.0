@@ -3,7 +3,7 @@
 
     <data>
 <!-- ============================================================================= -->
-    <!-- Tree view for Customer -->
+    <!-- List view for Customer -->
     <!-- ============================================================================= -->
 
     <!-- Form view for base.rate -->
@@ -67,7 +67,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Custom -->
+    <!-- List view for Custom -->
     <record id="customer_portal_diagram_view_tree" model="ir.ui.view">
         <field name="name">customer.portal.diagram.view.tree</field>
         <field name="model">customer.portal.diagram</field>
@@ -82,7 +82,7 @@
         </field>
     </record>
 
-    <!-- Tree view for base.rate -->
+    <!-- List view for base.rate -->
     <record id="customer_portal_diagram_view_tree" model="ir.ui.view">
         <field name="name">customer.portal.diagram.view.tree</field>
         <field name="model">customer.portal.diagram</field>
@@ -128,10 +128,10 @@
     </record>
 
     <!-- ============================================================================= -->
-    <!-- Tree view for Actions -->
+    <!-- List view for Actions -->
     <!-- ============================================================================= -->
 
-    <!-- Tree view for Main -->
+    <!-- List view for Main -->
     <record id="action_customer_portal_diagram" model="ir.actions.act_window">
         <field name="name">Organization Diagram</field>
         <field name="res_model">customer.portal.diagram</field>
@@ -164,7 +164,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_customer_portal_diagram_admin" model="ir.actions.act_window">
         <field name="name">Portal Diagram Configuration</field>
         <field name="res_model">customer.portal.diagram</field>
@@ -182,7 +182,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Simplified -->
+    <!-- List view for Simplified -->
     <record id="action_customer_portal_diagram_simple" model="ir.actions.client">
         <field name="name">My Organization</field>
         <field name="tag">customer_portal_diagram</field>
@@ -195,13 +195,13 @@
     </record>
 
     <!-- ============================================================================= -->
-    <!-- Tree view for Menu -->
+    <!-- List view for Menu -->
     <!-- ============================================================================= -->
 
-    <!-- Tree view for Main -->
+    <!-- List view for Main -->
     <menuitem id="menu_customer_portal_diagram" name="Portal Organization" parent="records_management.menu_root" action="action_customer_portal_diagram_admin" sequence="7" groups="records_management.group_records_manager"/>
 
-    <!-- Tree view for Submenu -->
+    <!-- List view for Submenu -->
     <menuitem id="menu_customer_portal_diagram_config" name="Diagram Configuration" parent="records_management.menu_configuration" action="action_customer_portal_diagram_admin" sequence="50" groups="records_management.group_records_manager"/>
 </data>
 

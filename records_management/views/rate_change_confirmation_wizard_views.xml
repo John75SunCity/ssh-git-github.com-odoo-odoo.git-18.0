@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for rate.change.confirmation.wizard -->
+<!-- List view for rate.change.confirmation.wizard -->
     <record id="rate_change_confirmation_wizard_view_tree" model="ir.ui.view">
         <field name="name">rate.change.confirmation.wizard.view.tree</field>
         <field name="model">rate.change.confirmation.wizard</field>
@@ -72,7 +72,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_rate_change_confirmation_wizard" model="ir.actions.act_window">
         <field name="name">Rate Change Confirmation Wizard</field>
         <field name="res_model">rate.change.confirmation.wizard</field>

@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="portal_request_line_view_tree" model="ir.ui.view">
             <field name="name">portal.request.line.view.tree</field>
             <field name="model">portal.request.line</field>

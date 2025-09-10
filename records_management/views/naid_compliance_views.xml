@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for ENTERPRISE -->
+<!-- List view for ENTERPRISE -->
 
     <!-- Kanban view for NAID -->
     <record id="naid_compliance_view_kanban" model="ir.ui.view">
@@ -84,7 +84,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Enhanced -->
+    <!-- List view for Enhanced -->
     <record id="naid_compliance_view_tree" model="ir.ui.view">
         <field name="name">naid.compliance.view.tree</field>
         <field name="model">naid.compliance</field>

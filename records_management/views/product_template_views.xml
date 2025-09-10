@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for ENTERPRISE -->
+<!-- List view for ENTERPRISE -->
 
     <!-- Kanban view for Product -->
     <record id="product_template_view_kanban" model="ir.ui.view">
@@ -97,7 +97,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Enhanced -->
+    <!-- List view for Enhanced -->
     <record id="product_template_view_tree" model="ir.ui.view">
         <field name="name">product.template.view.tree</field>
         <field name="model">product.template</field>
@@ -348,7 +348,7 @@
         </field>
     </record>
 
-    <!-- Tree view for ENTERPRISE -->
+    <!-- List view for ENTERPRISE -->
     <record id="action_product_template_records" model="ir.actions.act_window">
         <field name="name">💼 Records Management Products</field>
         <field name="res_model">product.template</field>

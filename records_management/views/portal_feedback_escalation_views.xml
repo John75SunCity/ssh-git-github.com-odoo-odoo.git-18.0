@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- List view for base.rate -->
     <record id="portal_feedback_escalation_view_tree" model="ir.ui.view">
         <field name="name">portal.feedback.escalation.view.tree</field>
         <field name="model">portal.feedback.escalation</field>
@@ -44,7 +44,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_portal_feedback_escalation" model="ir.actions.act_window">
         <field name="name">Portal Feedback Escalation</field>
         <field name="res_model">portal.feedback.escalation</field>

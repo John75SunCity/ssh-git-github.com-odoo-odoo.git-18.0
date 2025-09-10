@@ -38,7 +38,7 @@
         </field>
     </record>
 
-    <!-- Full Customization Name Tree View -->
+    <!-- Full Customization Name List View -->
     <record id="full_customization_name_view_tree" model="ir.ui.view">
         <field name="name">full.customization.name.tree</field>
         <field name="model">full.customization.name</field>

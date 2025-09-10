@@ -47,7 +47,7 @@ invisible="records_related == False">
         </field>
     </record>
 
-    <!-- Account Move Line Tree View Extension for Records Management -->
+    <!-- Account Move Line List View Extension for Records Management -->
     <record id="account_move_line_view_tree" model="ir.ui.view">
         <field name="name">account.move.line.tree.inherit.records</field>
         <field name="model">account.move.line</field>

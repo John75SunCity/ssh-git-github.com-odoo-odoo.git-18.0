@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for base.rate -->
+<!-- List view for base.rate -->
     <record id="records_deletion_request_enhanced_view_tree" model="ir.ui.view">
         <field name="name">records.deletion.request.enhanced.view.tree</field>
         <field name="model">records.deletion.request.enhanced</field>
@@ -44,7 +44,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_records_deletion_request_enhanced" model="ir.actions.act_window">
         <field name="name">Records Deletion Request Enhanced</field>
         <field name="res_model">records.deletion.request.enhanced</field>

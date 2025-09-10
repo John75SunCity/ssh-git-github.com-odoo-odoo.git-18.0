@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Document Retrieval Item Tree View -->
+<!-- Document Retrieval Item List View -->
     <record id="document_retrieval_item_view_tree" model="ir.ui.view">
         <field name="name">document.retrieval.item.view.tree</field>
         <field name="model">document.retrieval.item</field>

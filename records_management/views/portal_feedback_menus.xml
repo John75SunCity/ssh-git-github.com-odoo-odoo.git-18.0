@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for Portal -->
+<!-- List view for Portal -->
     
-    <!-- Tree view for Main -->
+    <!-- List view for Main -->
     <menuitem id="menu_portal_feedback" 
               name="Portal Feedback" 
               parent="menu_records_management_root" 
@@ -11,7 +11,7 @@
               sequence="60"
               groups="records_management.group_records_manager"/>
 
-    <!-- Tree view for Analytics -->
+    <!-- List view for Analytics -->
     <menuitem id="menu_feedback_analytics" 
               name="Analytics Dashboard" 
               parent="menu_portal_feedback" 

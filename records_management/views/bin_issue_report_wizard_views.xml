@@ -156,7 +156,7 @@
     <!-- BIN ISSUE RECORD VIEWS -->
     <!-- ============================================================================ -->
 
-    <!-- Tree View -->
+    <!-- List View -->
     <record id="bin_issue_record_view_tree" model="ir.ui.view">
 <field name="name">bin.issue.record.view.list</field>
         <field name="model">bin.issue.record</field>

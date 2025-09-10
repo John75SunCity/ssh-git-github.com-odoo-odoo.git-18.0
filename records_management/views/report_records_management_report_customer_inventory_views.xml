@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for report.records_management.report_customer_inventory -->
+<!-- List view for report.records_management.report_customer_inventory -->
     <record id="report_records_management_report_customer_inventory_view_tree" model="ir.ui.view">
         <field name="name">report.records_management.report_customer_inventory.view.tree</field>
         <field name="model">report.records_management.report_customer_inventory</field>

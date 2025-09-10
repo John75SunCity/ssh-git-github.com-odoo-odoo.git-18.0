@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="inventory_adjustment_reason_view_tree" model="ir.ui.view">
             <field name="name">inventory.adjustment.reason.view.tree</field>
             <field name="model">inventory.adjustment.reason</field>

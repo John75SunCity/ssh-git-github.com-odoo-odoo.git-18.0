@@ -248,7 +248,7 @@
         </field>
     </record>
 
-<!-- FIXED: Corrected tree view element name -->
+<!-- FIXED: Corrected list view element name -->
     <record id="visitor_pos_wizard_view_tree" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.tree</field>
         <field name="model">visitor.pos.wizard</field>
@@ -313,7 +313,7 @@
         </field>
     </record>
 
-    <!-- Tree view for GRAPH -->
+    <!-- List view for GRAPH -->
     <record id="visitor_pos_wizard_view_graph" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.graph</field>
         <field name="model">visitor.pos.wizard</field>

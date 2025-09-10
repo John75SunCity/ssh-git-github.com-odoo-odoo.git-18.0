@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for records.inventory.dashboard -->
+<!-- List view for records.inventory.dashboard -->
     <record id="records_inventory_dashboard_view_tree" model="ir.ui.view">
         <field name="name">records.inventory.dashboard.view.tree</field>
         <field name="model">records.inventory.dashboard</field>

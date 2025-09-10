@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Tree view for base.rate -->
+    <!-- List view for base.rate -->
 <record id="base_rate_view_tree" model="ir.ui.view">
     <field name="name">base.rate.view.tree</field>
         <field name="model">base.rate</field>
@@ -43,7 +43,7 @@
         </field>
     </record>
 
-    <!-- Tree view for Action -->
+    <!-- List view for Action -->
     <record id="action_base_rate" model="ir.actions.act_window">
         <field name="name">Base Rate</field>
         <field name="res_model">base.rate</field>
@@ -58,7 +58,7 @@
     </record>
 
 <data>
-        <!-- Tree view for Base -->
+        <!-- List view for Base -->
         <record id="base_rates_view_tree" model="ir.ui.view">
             <field name="name">base.rate.view.tree</field>
             <field name="model">base.rate</field>
@@ -243,7 +243,7 @@
             </field>
         </record>
 
-        <!-- Tree view for Revenue -->
+        <!-- List view for Revenue -->
         <record id="revenue_forecaster_view_form" model="ir.ui.view">
             <field name="name">revenue.forecaster.view.form</field>
             <field name="model">revenue.forecaster</field>
@@ -264,7 +264,7 @@
                             Configure your scenario parameters below and click "Run Forecast Analysis" to see the potential revenue impact.
                         </div>
 
-                        <!-- Tree view for Results -->
+                        <!-- List view for Results -->
 <div class="o_form_sheet_bg" invisible="analysis_complete == False">
                             <div class="row">
                                 <div class="col-md-3">
@@ -360,7 +360,7 @@
                             </group>
                         </group>
 
-                        <!-- Tree view for Detailed -->
+                        <!-- List view for Detailed -->
 <notebook invisible="analysis_complete == False">
                             <page string="Customer Impact Analysis">
                                 <field name="forecast_line_ids" readonly="1">
@@ -382,7 +382,7 @@
             </field>
         </record>
 
-        <!-- Tree view for Rate -->
+        <!-- List view for Rate -->
         <record id="rate_change_confirmation_wizard_view_form" model="ir.ui.view">
             <field name="name">rate.change.confirmation.wizard.view.form</field>
             <field name="model">rate.change.confirmation.wizard</field>
@@ -452,7 +452,7 @@
             </field>
         </record>
 
-        <!-- Tree view for Menu -->
+        <!-- List view for Menu -->
         <record id="action_base_rates" model="ir.actions.act_window">
             <field name="name">Base Service Rates</field>
             <field name="res_model">base.rate</field>
@@ -485,20 +485,20 @@
             <field name="context">{}</field>
         </record>
 
-        <!-- Tree view for Rate -->
+        <!-- List view for Rate -->
         <menuitem id="menu_rate_management" name="Rate Management" parent="records_management.menu_records_configuration" sequence="30" groups="records_management.group_records_manager"/>
 
-        <!-- Tree view for Base -->
+        <!-- List view for Base -->
         <menuitem id="menu_base_rates" name="Base Service Rates" parent="menu_rate_management" action="action_base_rates" sequence="10" groups="records_management.group_records_manager"/>
 
-        <!-- Tree view for Customer -->
+        <!-- List view for Customer -->
 <menuitem id="menu_customer_negotiated_rates" name="Customer Negotiated Rates" parent="menu_rate_management" action="action_customer_negotiated_rate" sequence="20" groups="records_management.group_records_manager"/>
 
 
-        <!-- Tree view for Revenue -->
+        <!-- List view for Revenue -->
         <menuitem id="menu_revenue_forecaster" name="Revenue Forecaster" parent="menu_rate_management" action="action_revenue_forecaster" sequence="30" groups="records_management.group_records_manager"/>
 
-        <!-- Tree view for Rate -->
+        <!-- List view for Rate -->
         <menuitem id="menu_rate_analysis" name="Rate Analysis Tools" parent="menu_rate_management" action="action_rate_analysis_wizard" sequence="40" groups="records_management.group_records_manager"/>
 
     </data>

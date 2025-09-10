@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for records.chain.of.custody -->
+<!-- List view for records.chain.of.custody -->
     <record id="records_chain_of_custody_view_tree" model="ir.ui.view">
         <field name="name">records.chain.of.custody.view.tree</field>
         <field name="model">records.chain.of.custody</field>

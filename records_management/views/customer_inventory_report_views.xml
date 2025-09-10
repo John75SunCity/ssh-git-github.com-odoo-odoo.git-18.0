@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree/List View -->
+<!-- List View -->
         <record id="customer_inventory_report_view_tree" model="ir.ui.view">
 <field name="name">customer.inventory.report.view.list</field>
             <field name="model">customer.inventory.report</field>

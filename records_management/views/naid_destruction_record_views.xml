@@ -2,7 +2,7 @@
 <odoo>
 
     <data>
-<!-- Tree view for naid.destruction.record -->
+<!-- List view for naid.destruction.record -->
     <record id="naid_destruction_record_view_tree" model="ir.ui.view">
         <field name="name">naid.destruction.record.view.tree</field>
         <field name="model">naid.destruction.record</field>

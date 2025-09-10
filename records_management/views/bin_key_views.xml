@@ -2,7 +2,7 @@
 <odoo>
 
 <data>
-<!-- Tree view for bin.key -->
+<!-- List view for bin.key -->
     <record id="bin_key_view_tree" model="ir.ui.view">
         <field name="name">bin.key.view.tree</field>
         <field name="model">bin.key</field>

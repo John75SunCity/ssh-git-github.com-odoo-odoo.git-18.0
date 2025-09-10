@@ -40,7 +40,7 @@
         </field>
     </record>
 
-    <!-- Pickup Location Tree View -->
+    <!-- Pickup Location List View -->
     <record id="pickup_location_view_tree" model="ir.ui.view">
         <field name="name">pickup.location.tree</field>
         <field name="model">pickup.location</field>
