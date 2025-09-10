@@ -1,62 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <data>
-<!-- Tree view for base.rate -->
-    <record id="paper_bale_inspection_wizard_view_tree" model="ir.ui.view">
-        <field name="name">paper.bale.inspection.wizard.view.tree</field>
-        <field name="model">paper.bale.inspection.wizard</field>
-        <field name="arch" type="xml">
-            <list>
-                <field name="name"/>
-            </list>
-        </field>
-    </record>
+<!-- Tree view for paper bale inspection wizard -->
+<record id="paper_bale_inspection_wizard_view_tree" model="ir.ui.view">
+    <field name="name">paper.bale.inspection.wizard.view.tree</field>
+    <field name="model">paper.bale.inspection.wizard</field>
+    <field name="arch" type="xml">
+        <list>
+<field name="bale_id"/>
+<field name="inspection_type"/>
+<field name="passed"/>
+</list>
+</field>
+</record>
 
-    <!-- Form view for base.rate -->
-    <record id="paper_bale_inspection_wizard_view_form" model="ir.ui.view">
-        <field name="name">paper.bale.inspection.wizard.view.form</field>
-        <field name="model">paper.bale.inspection.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Paper Bale Inspection Wizard">
-                <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
-                </sheet>
-            </form>
-        </field>
-    </record>
+<!-- Form view for paper bale inspection wizard -->
+<record id="paper_bale_inspection_wizard_view_form" model="ir.ui.view">
+    <field name="name">paper.bale.inspection.wizard.view.form</field>
+    <field name="model">paper.bale.inspection.wizard</field>
+    <field name="arch" type="xml">
+        <form string="Paper Bale Inspection Wizard">
+            <sheet>
+                <div class="oe_title">
+<h1>Paper Bale Inspection</h1>
+</div>
+<group>
+    <field name="bale_id"/>
+    <field name="inspection_type"/>
+    <field name="passed"/>
+</group>
+<group string="Details" invisible="not passed">
+    <field name="notes" placeholder="Inspection notes..."/>
+</group>
+<group string="Rejection Details" invisible="passed">
+    <field name="rejection_reason" placeholder="Explain why the inspection failed..."/>
+    <field name="notes" placeholder="Additional notes..."/>
+</group>
+</sheet>
+<footer>
+    <button string="Create Inspection" name="action_create_inspection" type="object" class="btn-primary"/>
+    <button string="Cancel" class="btn-secondary" special="cancel"/>
+</footer>
+</form>
+</field>
+</record>
 
-    <!-- Search view for base.rate -->
-    <record id="paper_bale_inspection_wizard_view_search" model="ir.ui.view">
-        <field name="name">paper.bale.inspection.wizard.view.search</field>
-        <field name="model">paper.bale.inspection.wizard</field>
-        <field name="arch" type="xml">
-            <search>
-                <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+<!-- Search view for paper bale inspection wizard -->
+<record id="paper_bale_inspection_wizard_view_search" model="ir.ui.view">
+    <field name="name">paper.bale.inspection.wizard.view.search</field>
+    <field name="model">paper.bale.inspection.wizard</field>
+    <field name="arch" type="xml">
+        <search>
+<field name="bale_id"/>
+<field name="inspection_type"/>
+<filter string="Passed" name="passed" domain="[('passed', '=', True)]"/>
+<filter string="Failed" name="failed" domain="[('passed', '=', False)]"/>
 
-    <!-- Tree view for Action -->
-    <record id="action_paper_bale_inspection_wizard" model="ir.actions.act_window">
-        <field name="name">Paper Bale Inspection Wizard</field>
-        <field name="res_model">paper.bale.inspection.wizard</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Paper Bale Inspection Wizard.
-            </p>
-        </field>
-    </record>
+<group expand="1" string="Group By">
+<filter string="Inspection Type" name="inspection_type" domain="[]" context="{'group_by':'inspection_type'}"/>
+<filter string="Status" name="passed" domain="[]" context="{'group_by':'passed'}"/>
+</group>
+</search>
+</field>
+</record>
+
+<!-- Action for paper bale inspection wizard -->
+<record id="action_paper_bale_inspection_wizard" model="ir.actions.act_window">
+    <field name="name">Paper Bale Inspection Wizard</field>
+    <field name="res_model">paper.bale.inspection.wizard</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{}</field>
+    <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+Click here to create a new paper bale inspection.
+</p>
+</field>
+</record>
 </data>
-
 </odoo>
