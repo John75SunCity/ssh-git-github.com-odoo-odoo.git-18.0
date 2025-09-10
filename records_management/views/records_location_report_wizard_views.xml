@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Tree view for location.report.wizard -->
+<!-- Tree view for records.location.report.wizard -->
         <record id="records_location_report_wizard_view_tree" model="ir.ui.view">
-<field name="name">location.report.wizard.view.tree</field>
-<field name="model">location.report.wizard</field>
+<field name="name">records.location.report.wizard.view.tree</field>
+<field name="model">records.location.report.wizard</field>
             <field name="arch" type="xml">
                 <list>
 <field name="location_id"/>
@@ -16,10 +16,10 @@
             </field>
         </record>
 
-<!-- Form view for location.report.wizard -->
+<!-- Form view for records.location.report.wizard -->
         <record id="records_location_report_wizard_view_form" model="ir.ui.view">
-<field name="name">location.report.wizard.view.form</field>
-<field name="model">location.report.wizard</field>
+<field name="name">records.location.report.wizard.view.form</field>
+<field name="model">records.location.report.wizard</field>
             <field name="arch" type="xml">
 <form string="Location Report Wizard">
                     <header>
@@ -54,10 +54,10 @@
             </field>
         </record>
 
-        <!-- Search view for location.report.wizard -->
+<!-- Search view for records.location.report.wizard -->
         <record id="records_location_report_wizard_view_search" model="ir.ui.view">
-            <field name="name">location.report.wizard.view.search</field>
-            <field name="model">location.report.wizard</field>
+<field name="name">records.location.report.wizard.view.search</field>
+<field name="model">records.location.report.wizard</field>
             <field name="arch" type="xml">
                 <search>
                     <field name="location_id"/>
@@ -70,10 +70,10 @@
             </field>
         </record>
 
-        <!-- Action for location.report.wizard -->
+<!-- Action for records.location.report.wizard -->
         <record id="action_records_location_report_wizard" model="ir.actions.act_window">
             <field name="name">Location Report Wizard</field>
-            <field name="res_model">location.report.wizard</field>
+<field name="res_model">records.location.report.wizard</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="help" type="html">
