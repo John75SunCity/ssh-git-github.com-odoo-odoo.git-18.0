@@ -36,7 +36,6 @@ class RecordsBulkUserImport(models.Model):
         "group_id",
         string="Default User Groups",
         help="Groups to assign to newly created users. If empty, defaults to 'base.group_user'.",
-        inverse_name="bulk_import_id",
     )
 
     # ============================================================================
