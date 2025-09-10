@@ -271,7 +271,7 @@ class RecordsDocumentType(models.Model):
             vals["encryption_required"] = True
         res = super().write(vals)
         if 'retention_policy_id' in vals or 'default_retention_years' in vals:
-            self._handle_retention_changes()
+            self.action_handle_retention_changes()
         return res
 
     def unlink(self):
@@ -360,9 +360,11 @@ class RecordsDocumentType(models.Model):
         if self.state in valid_transitions and new_state not in valid_transitions.get(self.state, []):
             raise UserError(_("Invalid state transition from '%s' to '%s'.") % (self.state, new_state))
 
-    def _handle_retention_changes(self):
+    def action_handle_retention_changes(self):
+        """Handle retention policy changes and notify affected documents."""
+        self.ensure_one()
         for record in self:
             if record.document_count > 0:
-                message = _("Retention policy change for document type '%s' affects %d existing documents.") % (record.name, record.document_count)
+                message = _("Retention policy change for document type '%s' affects %d existing documents.", record.name, record.document_count)
                 record.message_post(body=message)
                 _logger.warning(message)

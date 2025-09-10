@@ -30,7 +30,7 @@ class OdooValidator:
     This class accumulates errors and warnings in lists for later reporting.
     """
 
-    def __init__(self, module_path, translation_level: str = "info"):
+    def __init__(self, module_path, translation_level: str = "info", verbose: bool = False, debug: bool = False):
         self.module_path = Path(module_path) if isinstance(module_path, str) else module_path
         # Raw collected issues (unfiltered)
         self.errors: List[str] = []
@@ -44,6 +44,17 @@ class OdooValidator:
         self._filtered_infos: Optional[List[str]] = None
         # Config
         self.translation_level = translation_level  # one of: warn | info | suppress
+        self.verbose = verbose  # Show detailed processing info
+        self.debug = debug  # Show debug-level detail including file contents
+
+    def _log(self, message: str, level: str = "info") -> None:
+        """Log messages based on verbosity level"""
+        if level == "debug" and self.debug:
+            print(f"🔍 DEBUG: {message}")
+        elif level == "verbose" and (self.verbose or self.debug):
+            print(f"📝 VERBOSE: {message}")
+        elif level == "info":
+            print(message)
 
     # ------------------------------------------------------------------
     # Restored phase: Manifest validation (previously removed accidentally)
@@ -118,22 +129,35 @@ class OdooValidator:
         python_files = []
         for ext in ["*.py"]:
             python_files.extend(list(self.module_path.glob(f"**/{ext}")))
+
+        self._log(f"Found {len(python_files)} Python files to analyze", "verbose")
+
         for py_file in python_files:
+            self._log(f"Analyzing: {py_file.relative_to(self.module_path)}", "debug")
             try:
                 with open(py_file, "r", encoding="utf-8") as f:
                     content = f.read()
 
+                self._log(f"File size: {len(content)} characters, {content.count(chr(10))} lines", "debug")
+
                 # Try to compile the content
                 compile(content, str(py_file), "exec")
+                self._log(f"✅ Python syntax OK: {py_file.name}", "debug")
 
                 # Additional checks for Odoo-specific issues
                 self._check_odoo_imports(py_file, content)
                 self._check_model_definitions(py_file, content)
 
             except SyntaxError as e:
-                self.errors.append(f"❌ PYTHON SYNTAX: {py_file.name}: {e.msg} at line {e.lineno}")
+                error_msg = f"❌ PYTHON SYNTAX: {py_file.name}: {e.msg} at line {e.lineno}"
+                self.errors.append(error_msg)
+                self._log(f"SYNTAX ERROR DETAILS: {py_file.name} - {e.msg} at line {e.lineno}, column {e.offset}", "verbose")
+                if self.debug and e.text:
+                    self._log(f"Problem line: {e.text.strip()}", "debug")
             except Exception as e:
-                self.errors.append(f"❌ PYTHON ERROR: {py_file.name}: {str(e)}")
+                error_msg = f"❌ PYTHON ERROR: {py_file.name}: {str(e)}"
+                self.errors.append(error_msg)
+                self._log(f"PROCESSING ERROR: {py_file.name} - {str(e)}", "verbose")
 
         manifest_file = self.module_path / "__manifest__.py"
         if manifest_file.exists():
@@ -812,14 +836,18 @@ class OdooValidator:
                 'is_inherited_model': bool (True if this extends existing Odoo model)
             }
         """
+        self._log("Starting model field collection analysis...", "verbose")
         model_info: Dict[str, Dict] = {}
 
         python_files = []
         for ext in ["*.py"]:
             python_files.extend(list(self.module_path.glob(f"**/{ext}")))
 
+        self._log(f"Analyzing {len(python_files)} Python files for model definitions", "verbose")
+
         for py_file in python_files:
             try:
+                self._log(f"Processing: {py_file.relative_to(self.module_path)}", "debug")
                 with open(py_file, "r", encoding="utf-8") as f:
                     content = f.read()
 
@@ -878,11 +906,19 @@ class OdooValidator:
                                 model_name = inherit_targets[0]
 
                             if model_name:
+                                self._log(f"Found model '{model_name}' in {py_file.name} with {len(fields)} fields", "debug")
+                                if inherit_targets:
+                                    self._log(f"  - Inherits from: {inherit_targets}", "debug")
+                                if fields:
+                                    self._log(f"  - Fields: {fields}", "debug")
+
                                 # Check for duplicate model names
                                 if model_name in model_info:
-                                    self.errors.append(f"❌ DUPLICATE MODEL: Model '{model_name}' is defined in multiple files. "
-                                                     f"Previous: {model_info[model_name].get('file', 'unknown')}, "
-                                                     f"Current: {py_file.name}")
+                                    error_msg = (f"❌ DUPLICATE MODEL: Model '{model_name}' is defined in multiple files. "
+                                               f"Previous: {model_info[model_name].get('file', 'unknown')}, "
+                                               f"Current: {py_file.name}")
+                                    self.errors.append(error_msg)
+                                    self._log(f"DUPLICATE MODEL DETECTED: {model_name}", "verbose")
 
                                 model_info[model_name] = {
                                     'own_fields': fields,
@@ -893,7 +929,13 @@ class OdooValidator:
 
             except Exception as e:
                 # Skip files that can't be parsed
+                self._log(f"Could not parse {py_file.name}: {e}", "debug")
                 continue
+
+        self._log(f"Model collection complete: found {len(model_info)} models", "verbose")
+        if self.debug:
+            for model_name, info in model_info.items():
+                self._log(f"  - {model_name}: {len(info['own_fields'])} fields in {info['file']}", "debug")
 
         return model_info
 
@@ -979,10 +1021,15 @@ class OdooValidator:
 
                 # Skip if model not found in our module
                 if model_name not in model_info:
+                    self._log(f"Model '{model_name}' not found in current module, skipping field validation", "debug")
                     continue
+
+                self._log(f"Validating fields for model '{model_name}' in view {xml_file.name}", "debug")
 
                 model_data = model_info[model_name]
                 available_fields = set(model_data.get('own_fields', []))
+
+                self._log(f"Model '{model_name}' own fields: {sorted(available_fields)}", "debug")
 
                 # Add common Odoo fields if this model inherits from core models
                 is_inherited = model_data.get('is_inherited_model', False)
@@ -990,12 +1037,16 @@ class OdooValidator:
 
                 if is_inherited or inherits_from:
                     available_fields.update(COMMON_ODOO_FIELDS)
+                    self._log(f"Added common Odoo fields (inheritance detected)", "debug")
 
                 # Add fields from explicitly inherited models that we know about
                 for inherited_model in inherits_from:
                     if inherited_model in model_info:
                         inherited_fields = model_info[inherited_model].get('own_fields', [])
                         available_fields.update(inherited_fields)
+                        self._log(f"Added fields from inherited model '{inherited_model}': {inherited_fields}", "debug")
+
+                self._log(f"Total available fields for '{model_name}': {len(available_fields)}", "verbose")
 
                 # Get the specific field pattern for this model within the view
                 # Look for field references within record elements for this model
@@ -1004,19 +1055,104 @@ class OdooValidator:
 
                 for section in model_sections:
                     section_field_matches = re.findall(field_pattern, section)
+                    self._log(f"Found {len(section_field_matches)} field references in section for model '{model_name}'", "debug")
 
                     for field_name in section_field_matches:
                         # Skip computed/related field syntax (e.g., "partner_id.name")
                         if '.' in field_name:
+                            self._log(f"Skipping computed field reference: {field_name}", "debug")
                             continue
 
                         if field_name not in available_fields:
-                            self.errors.append(
-                                f"❌ VIEW FIELD: {xml_file.name}: Field '{field_name}' does not exist in model '{model_name}'"
-                            )
+                            error_msg = f"❌ VIEW FIELD: {xml_file.name}: Field '{field_name}' does not exist in model '{model_name}'"
+                            self.errors.append(error_msg)
+                            self._log(f"FIELD VALIDATION ERROR: {field_name} not found in {model_name}", "verbose")
+                            self._log(f"Available fields: {sorted(list(available_fields))[:10]}{'...' if available_fields and len(available_fields) > 10 else ''}", "debug")
+                        else:
+                            self._log(f"✅ Field '{field_name}' validated for model '{model_name}'", "debug")
 
         except Exception as e:
             self.errors.append(f"❌ VIEW FIELD CHECK: {xml_file.name}: {str(e)}")
+
+    def validate_odoo_naming_conventions(self) -> None:
+        """Check Odoo naming conventions for methods and classes"""
+        print("🔍 Checking Odoo naming conventions...")
+
+        python_files = []
+        for ext in ["*.py"]:
+            python_files.extend(list(self.module_path.glob(f"**/{ext}")))
+
+        self._log(f"Checking naming conventions in {len(python_files)} Python files", "verbose")
+
+        for py_file in python_files:
+            try:
+                self._log(f"Checking naming conventions in: {py_file.relative_to(self.module_path)}", "debug")
+                with open(py_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Parse the Python file
+                tree = ast.parse(content)
+
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.ClassDef):
+                        # Check if this is an Odoo model class
+                        is_odoo_model = False
+                        for class_item in node.body:
+                            if isinstance(class_item, ast.Assign):
+                                for target in class_item.targets:
+                                    if isinstance(target, ast.Name) and target.id in ['_name', '_inherit']:
+                                        is_odoo_model = True
+                                        break
+
+                        if is_odoo_model:
+                            self._log(f"Checking Odoo model class: {node.name}", "debug")
+
+                            # Check method naming conventions
+                            for class_item in node.body:
+                                if isinstance(class_item, ast.FunctionDef):
+                                    method_name = class_item.name
+
+                                    # Skip magic methods and private methods that are properly named
+                                    if method_name.startswith('__') and method_name.endswith('__'):
+                                        continue
+
+                                    # Check for action-like methods that don't follow convention
+                                    action_indicators = [
+                                        '_apply_', '_execute_', '_perform_', '_trigger_', '_process_',
+                                        '_handle_', '_run_', '_launch_', '_start_', '_complete_',
+                                        '_finish_', '_cancel_', '_confirm_', '_validate_action',
+                                        '_send_', '_create_action', '_update_action', '_delete_action'
+                                    ]
+
+                                    for indicator in action_indicators:
+                                        if indicator in method_name and not method_name.startswith('action_'):
+                                            error_msg = (f"❌ ODOO NAMING: {py_file.name}: Action method '{method_name}' "
+                                                       f"should follow pattern: action_<action_name>")
+                                            self.errors.append(error_msg)
+                                            self._log(f"NAMING VIOLATION: {method_name} in {node.name}", "verbose")
+                                            break
+
+                                    # Also check for methods that clearly should be actions based on their names
+                                    action_verbs = [
+                                        'apply', 'execute', 'perform', 'trigger', 'process',
+                                        'handle', 'run', 'launch', 'start', 'complete',
+                                        'finish', 'cancel', 'confirm', 'send'
+                                    ]
+
+                                    if method_name.startswith('_') and not method_name.startswith('_compute_') and not method_name.startswith('_search_') and not method_name.startswith('_inverse_') and not method_name.startswith('_default_') and not method_name.startswith('_selection_') and not method_name.startswith('_onchange_') and not method_name.startswith('_check_'):
+                                        # Remove leading underscore and check if it starts with action verb
+                                        base_name = method_name[1:]
+                                        for verb in action_verbs:
+                                            if base_name.startswith(verb + '_'):
+                                                error_msg = (f"❌ ODOO NAMING: {py_file.name}: Action method '{method_name}' "
+                                                           f"should follow pattern: action_<action_name>")
+                                                self.errors.append(error_msg)
+                                                self._log(f"NAMING VIOLATION: {method_name} in {node.name}", "verbose")
+                                                break
+
+            except Exception as e:
+                self._log(f"Could not parse {py_file.name} for naming conventions: {e}", "debug")
+                continue
 
     def run_validation(self, quiet: bool = False) -> Tuple[List[str], List[str]]:
         """Run all validation checks with timing instrumentation."""
@@ -1064,6 +1200,7 @@ class OdooValidator:
             print("=" * 60)
 
         phases = [
+            ("odoo_naming_conventions", self.validate_odoo_naming_conventions),
             ("manifest", self.validate_manifest),
             ("models_init", self.validate_models_init),
             ("python_syntax", self.validate_python_syntax),
@@ -1195,6 +1332,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         help="Suppress detailed output; still sets exit code",
     )
     parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Show detailed processing information and file analysis",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Show debug-level detail including file contents and AST analysis",
+    )
+    parser.add_argument(
         "--json-output",
         metavar="FILE",
         help="Write machine-readable JSON report (after suppression filtering)",
@@ -1231,7 +1378,12 @@ def main(argv: _Optional[_List[str]] = None):
             print(f"❌ Error: Module directory {module_path} does not exist")
         return 1
 
-    validator = OdooValidator(module_path, translation_level=args.translation_level)
+    validator = OdooValidator(
+        module_path,
+        translation_level=args.translation_level,
+        verbose=args.verbose,
+        debug=args.debug
+    )
     validator.run_validation(quiet=args.quiet)
     validator.print_results(
         suppress_patterns=args.suppress,

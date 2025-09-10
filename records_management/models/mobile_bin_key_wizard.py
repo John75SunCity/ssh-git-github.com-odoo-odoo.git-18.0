@@ -111,16 +111,17 @@ class MobileBinKeyWizard(models.TransientModel):
     def _onchange_action_type(self):
         """Framework onchange hook (must keep this name for automatic trigger)."""
         for wizard in self:
-            wizard._apply_action_type_logic()
+            wizard.action_apply_action_type_logic()
 
     def action_apply_action_type(self):
         """Explicit button-friendly action to re-apply action_type side effects."""
         self.ensure_one()
-        self._apply_action_type_logic()
+        self.action_apply_action_type_logic()
         return True
 
-    def _apply_action_type_logic(self):
+    def action_apply_action_type_logic(self):
         """Shared logic for action_type changes."""
+        self.ensure_one()
         if self.action_type == 'emergency_access':
             self.priority = 'urgent'
             self.authorization_required = True
@@ -193,7 +194,7 @@ class MobileBinKeyWizard(models.TransientModel):
         self.ensure_one()
         if not self.lookup_query:
             raise UserError(_("Please enter search criteria for the lookup."))
-        results = self._perform_database_lookup()
+        results = self.action_perform_database_lookup()
         self.write({
             'lookup_results': results.get('formatted_results', ''),
             'containers_found': results.get('containers_count', 0),
@@ -235,7 +236,7 @@ class MobileBinKeyWizard(models.TransientModel):
         return self._return_mobile_interface()
 
     # BUSINESS HELPERS (indent fixes)
-    def _perform_database_lookup(self):
+    def action_perform_database_lookup(self):
         self.ensure_one()
         query = (self.lookup_query or '').strip()
         results = {'containers_count': 0, 'documents_count': 0, 'formatted_results': ''}

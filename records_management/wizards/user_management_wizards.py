@@ -3,10 +3,10 @@ from odoo import models, fields, api, _
 
 
 
-class RecordsUserInvitationWizard(models.TransientModel):
+class RecordsPortalUserInvitationWizard(models.TransientModel):
     """Wizard for inviting new users to access records management portal"""
-    _name = 'records.user.invitation.wizard'
-    _description = 'Records User Invitation Wizard'
+    _name = 'records.portal.user.invitation.wizard'
+    _description = 'Records Portal User Invitation Wizard'
 
     # Customer context
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
@@ -29,7 +29,7 @@ class RecordsUserInvitationWizard(models.TransientModel):
     send_invitation_email = fields.Boolean(string='Send Invitation Email', default=True)
 
     # Message
-    invitation_message = fields.Text(string='Invitation Message', 
+    invitation_message = fields.Text(string='Invitation Message',
                                 default="You have been invited to access our Records Management Portal.")
 
     def action_send_invitation(self):
