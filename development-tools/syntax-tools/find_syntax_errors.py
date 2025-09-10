@@ -30,8 +30,8 @@ class OdooValidator:
     This class accumulates errors and warnings in lists for later reporting.
     """
 
-    def __init__(self, module_path: Path, translation_level: str = "info"):
-        self.module_path = module_path
+    def __init__(self, module_path, translation_level: str = "info"):
+        self.module_path = Path(module_path) if isinstance(module_path, str) else module_path
         # Raw collected issues (unfiltered)
         self.errors: List[str] = []
         self.warnings: List[str] = []
@@ -812,7 +812,7 @@ class OdooValidator:
                 'is_inherited_model': bool (True if this extends existing Odoo model)
             }
         """
-        model_info = {}
+        model_info: Dict[str, Dict] = {}
 
         python_files = []
         for ext in ["*.py"]:
@@ -859,8 +859,8 @@ class OdooValidator:
                                                 elif isinstance(elt, ast.Constant) and isinstance(elt.value, str):
                                                     inherit_targets.append(elt.value)
 
-                                # Check for field definitions
-                                elif isinstance(item.value, ast.Call):
+                                # Check for field definitions (separate from _name/_inherit checks)
+                                if isinstance(item.value, ast.Call):
                                     # Look for fields.XXX pattern
                                     if isinstance(item.value.func, ast.Attribute):
                                         if (
@@ -878,10 +878,17 @@ class OdooValidator:
                                 model_name = inherit_targets[0]
 
                             if model_name:
+                                # Check for duplicate model names
+                                if model_name in model_info:
+                                    self.errors.append(f"❌ DUPLICATE MODEL: Model '{model_name}' is defined in multiple files. "
+                                                     f"Previous: {model_info[model_name].get('file', 'unknown')}, "
+                                                     f"Current: {py_file.name}")
+
                                 model_info[model_name] = {
                                     'own_fields': fields,
                                     'inherits_from': inherit_targets,
-                                    'is_inherited_model': is_inherited_model
+                                    'is_inherited_model': is_inherited_model,
+                                    'file': py_file.name
                                 }
 
             except Exception as e:
