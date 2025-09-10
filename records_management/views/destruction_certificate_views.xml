@@ -34,7 +34,8 @@
                         <button name="action_issue_certificate" type="object" string="📋 Issue Certificate" class="btn-primary" invisible="state != 'draft'"/>
                         <button name="action_revoke_certificate" type="object" string="🚫 Revoke Certificate" class="btn-danger" invisible="state not in ['issued', 'active']"/>
                         <button name="action_print_certificate" type="object" string="🖨️ Print Certificate" class="btn-secondary"/>
-                        <button name="action_send_notification" type="object" string="📧 Send Notification" class="btn-info"/>
+<button name="action_print_certificate" type="object" string="📧 Send Notification" class="btn-info"/>
+
                         <field name="state" widget="statusbar" statusbar_visible="draft,issued,active,expired,revoked"/>
                     </header>
                     <sheet>
@@ -258,7 +259,7 @@
                                             </button>
                                         </div>
                                         <div class="col-6">
-                                            <button class="btn btn-info btn-sm" type="object" name="action_send_notification">
+<button class="btn btn-info btn-sm" type="object" name="action_print_certificate">
                                                 📧 Notify
                                             </button>
                                         </div>
@@ -268,7 +269,7 @@
                                     <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Certificate</a>
                                     <a role="menuitem" type="object" name="action_view_details" class="dropdown-item">📋 View Details</a>
                                     <a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">🖨️ Print Certificate</a>
-                                    <a role="menuitem" type="object" name="action_send_notification" class="dropdown-item">📧 Send Notification</a>
+<a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">📧 Send Notification</a>
                                     <div class="dropdown-divider"/>
                                     <a role="menuitem" type="object" name="action_revoke_certificate" class="dropdown-item" invisible="state not in ['issued', 'active']">🚫 Revoke Certificate</a>
                                 </div>

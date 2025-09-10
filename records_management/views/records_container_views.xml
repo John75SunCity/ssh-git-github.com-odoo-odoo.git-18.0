@@ -113,7 +113,9 @@
     <i class="fas fa-qrcode" title="Generate QR Code" aria-hidden="true"/>
  Generate QR Code</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_destroy_container" class="dropdown-item"><i class="fas fa-trash" title="Destroy Container"/> Destroy Container</a>
+<a role="menuitem" type="object" name="action_destroy" class="dropdown-item">
+    <i class="fas fa-trash" title="Destroy Container"/>
+ Destroy Container</a>
                             </div>
                         </div>
                     </t>

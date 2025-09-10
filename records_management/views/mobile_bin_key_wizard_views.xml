@@ -98,9 +98,7 @@
                             <button string="Cancel" class="btn btn-secondary btn-block" special="cancel"/>
                         </div>
                         <div class="col-6">
-<button string="Execute" class="btn btn-primary btn-block" name="action_execute_wizard" type="object" invisible="action_type == False"/>
-
-<button string="Execute Lookup" class="btn btn-info btn-block" name="action_execute_lookup" type="object" invisible="action_type != 'quick_lookup'"/>
+<button string="Execute" class="btn btn-primary btn-block" name="action_execute" type="object" invisible="action_type == False"/>
 
                         </div>
                     </div>
