@@ -78,6 +78,7 @@ from . import maintenance_equipment
 from . import maintenance_request
 from . import maintenance_team
 from . import media_type
+from . import mobile_bin_key_wizard
 from . import mobile_dashboard_widget
 from . import mobile_dashboard_widget_category
 from . import mobile_photo
