@@ -5,10 +5,10 @@
 <!-- container.retrieval.item views removed (unified retrieval lines) -->
 
         <!-- Processing Log Resolution Wizard Views -->
-        <record id="processing_log_resolution_wizard_form" model="ir.ui.view">
-            <field name="name">processing.log.resolution.wizard.form</field>
+<record id="processing_log_resolution_wizard_view_form" model="ir.ui.view">
+    <field name="name">processing.log.resolution.wizard.view.form</field>
             <field name="model">processing.log.resolution.wizard</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -29,23 +29,23 @@
         </record>
 
         <!-- Scan Digital Asset Views -->
-        <record id="scan_digital_asset_tree" model="ir.ui.view">
-            <field name="name">scan.digital.asset.tree</field>
+<record id="scan_digital_asset_view_tree" model="ir.ui.view">
+    <field name="name">scan.digital.asset.view.tree</field>
             <field name="model">scan.digital.asset</field>
-        <field name="arch" type="xml">
-                <list>
+<field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="asset_type"/>
                     <field name="scan_date"/>
                     <field name="status"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="scan_digital_asset_form" model="ir.ui.view">
-            <field name="name">scan.digital.asset.form</field>
+<record id="scan_digital_asset_view_form" model="ir.ui.view">
+    <field name="name">scan.digital.asset.view.form</field>
             <field name="model">scan.digital.asset</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -63,23 +63,23 @@
         </record>
 
         <!-- Serial Number Views -->
-        <record id="serial_number_tree" model="ir.ui.view">
-            <field name="name">serial_number.tree</field>
-            <field name="model">serial_number</field>
-        <field name="arch" type="xml">
-                <list>
+<record id="serial_number_view_tree" model="ir.ui.view">
+    <field name="name">serial.number.view.tree</field>
+    <field name="model">serial.number</field>
+    <field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="product_id"/>
                     <field name="serial_number"/>
                     <field name="status"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="serial_number_form" model="ir.ui.view">
-            <field name="name">serial_number.form</field>
-            <field name="model">serial_number</field>
-        <field name="arch" type="xml">
+<record id="serial_number_view_form" model="ir.ui.view">
+    <field name="name">serial.number.view.form</field>
+    <field name="model">serial.number</field>
+    <field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -97,24 +97,24 @@
         </record>
 
         <!-- Route Optimizer Views -->
-        <record id="route_optimizer_tree" model="ir.ui.view">
-            <field name="name">route.optimizer.tree</field>
+<record id="route_optimizer_view_tree" model="ir.ui.view">
+    <field name="name">route.optimizer.view.tree</field>
             <field name="model">route.optimizer</field>
-        <field name="arch" type="xml">
-                <list>
+<field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="start_location"/>
                     <field name="end_location"/>
                     <field name="distance"/>
                     <field name="status"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="route_optimizer_form" model="ir.ui.view">
-            <field name="name">route.optimizer.form</field>
+<record id="route_optimizer_view_form" model="ir.ui.view">
+    <field name="name">route.optimizer.view.form</field>
             <field name="model">route.optimizer</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -133,23 +133,23 @@
         </record>
 
         <!-- Document Retrieval Item Views -->
-        <record id="document_retrieval_item_tree" model="ir.ui.view">
-            <field name="name">document.retrieval.item.tree</field>
+<record id="document_retrieval_item_view_tree" model="ir.ui.view">
+    <field name="name">document.retrieval.item.view.tree</field>
             <field name="model">document.retrieval.item</field>
-        <field name="arch" type="xml">
-                <list>
+<field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="document_id"/>
                     <field name="retrieval_date"/>
                     <field name="status"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="document_retrieval_item_form" model="ir.ui.view">
-            <field name="name">document.retrieval.item.form</field>
+<record id="document_retrieval_item_view_form" model="ir.ui.view">
+    <field name="name">document.retrieval.item.view.form</field>
             <field name="model">document.retrieval.item</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -167,24 +167,24 @@
         </record>
 
         <!-- Records Audit Log Views -->
-        <record id="records_audit_log_tree" model="ir.ui.view">
-            <field name="name">records.audit.log.tree</field>
+<record id="records_audit_log_view_tree" model="ir.ui.view">
+    <field name="name">records.audit.log.view.tree</field>
             <field name="model">records.audit.log</field>
-        <field name="arch" type="xml">
-                <list>
+<field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="user_id"/>
                     <field name="action"/>
                     <field name="timestamp"/>
                     <field name="model_name"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="records_audit_log_form" model="ir.ui.view">
-            <field name="name">records.audit.log.form</field>
+<record id="records_audit_log_view_form" model="ir.ui.view">
+    <field name="name">records.audit.log.view.form</field>
             <field name="model">records.audit.log</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -205,23 +205,23 @@
         </record>
 
         <!-- Container Access Document Views -->
-        <record id="container_access_document_tree" model="ir.ui.view">
-            <field name="name">container.access.document.tree</field>
+<record id="container_access_document_view_tree" model="ir.ui.view">
+    <field name="name">container.access.document.view.tree</field>
             <field name="model">container.access.document</field>
-        <field name="arch" type="xml">
-                <list>
+<field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="container_id"/>
                     <field name="access_date"/>
                     <field name="access_type"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="container_access_document_form" model="ir.ui.view">
-            <field name="name">container.access.document.form</field>
+<record id="container_access_document_view_form" model="ir.ui.view">
+    <field name="name">container.access.document.view.form</field>
             <field name="model">container.access.document</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -242,23 +242,23 @@
 <!-- (Removed legacy records_retrieval_work_order_* views after consolidation) -->
 
         <!-- Revenue Forecast Line Views -->
-        <record id="revenue_forecast_line_tree" model="ir.ui.view">
-            <field name="name">revenue.forecast.line.tree</field>
+<record id="revenue_forecast_line_view_tree" model="ir.ui.view">
+    <field name="name">revenue.forecast.line.view.tree</field>
             <field name="model">revenue.forecast.line</field>
-        <field name="arch" type="xml">
-                <list>
+<field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="forecast_date"/>
                     <field name="amount"/>
                     <field name="category"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="revenue_forecast_line_form" model="ir.ui.view">
-            <field name="name">revenue.forecast.line.form</field>
+<record id="revenue_forecast_line_view_form" model="ir.ui.view">
+    <field name="name">revenue.forecast.line.view.form</field>
             <field name="model">revenue.forecast.line</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -276,23 +276,23 @@
         </record>
 
         <!-- Records Security Audit Views -->
-        <record id="records_security_audit_tree" model="ir.ui.view">
-            <field name="name">records.security.audit.tree</field>
+<record id="records_security_audit_view_tree" model="ir.ui.view">
+    <field name="name">records.security.audit.view.tree</field>
             <field name="model">records.security.audit</field>
-        <field name="arch" type="xml">
-                <list>
+<field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="audit_date"/>
                     <field name="auditor_id"/>
                     <field name="status"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="records_security_audit_form" model="ir.ui.view">
-            <field name="name">records.security.audit.form</field>
+<record id="records_security_audit_view_form" model="ir.ui.view">
+    <field name="name">records.security.audit.view.form</field>
             <field name="model">records.security.audit</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -311,23 +311,23 @@
         </record>
 
         <!-- Shredding Rate Views -->
-        <record id="shredding_rate_tree" model="ir.ui.view">
-            <field name="name">shredding.rate.tree</field>
+<record id="shredding_rate_view_tree" model="ir.ui.view">
+    <field name="name">shredding.rate.view.tree</field>
             <field name="model">shredding.rate</field>
-        <field name="arch" type="xml">
-                <list>
+<field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="rate_per_pound"/>
                     <field name="effective_date"/>
                     <field name="service_type"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="shredding_rate_form" model="ir.ui.view">
-            <field name="name">shredding.rate.form</field>
+<record id="shredding_rate_view_form" model="ir.ui.view">
+    <field name="name">shredding.rate.view.form</field>
             <field name="model">shredding.rate</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -345,10 +345,10 @@
         </record>
 
         <!-- Key Restriction Checker Views -->
-        <record id="key_restriction_checker_form" model="ir.ui.view">
-            <field name="name">key.restriction.checker.form</field>
-<field name="model">key.restriction.checker.wizard</field>
-        <field name="arch" type="xml">
+<record id="key_restriction_checker_wizard_view_form" model="ir.ui.view">
+    <field name="name">key.restriction.checker.wizard.view.form</field>
+    <field name="model">key.restriction.checker.wizard</field>
+    <field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">
@@ -371,25 +371,25 @@
         </record>
 
         <!-- Records Container Movement Views -->
-        <record id="records_container_movement_tree" model="ir.ui.view">
-            <field name="name">records.container.movement.tree</field>
+<record id="records_container_movement_view_tree" model="ir.ui.view">
+    <field name="name">records.container.movement.view.tree</field>
             <field name="model">records.container.movement</field>
-        <field name="arch" type="xml">
-                <list>
+<field name="arch" type="xml">
+<tree>
                     <field name="name"/>
                     <field name="container_id"/>
                     <field name="from_location_id"/>
                     <field name="to_location_id"/>
                     <field name="movement_date"/>
                     <field name="moved_by"/>
-                </list>
+</tree>
             </field>
         </record>
 
-        <record id="records_container_movement_form" model="ir.ui.view">
-            <field name="name">records.container.movement.form</field>
+<record id="records_container_movement_view_form" model="ir.ui.view">
+    <field name="name">records.container.movement.view.form</field>
             <field name="model">records.container.movement</field>
-        <field name="arch" type="xml">
+<field name="arch" type="xml">
                 <form>
                     <sheet>
                         <div class="oe_title">

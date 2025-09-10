@@ -1,89 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Form view for Key -->
-<record id="key_restriction_checker_form_view" model="ir.ui.view">
-    <field name="name">Key Restriction Checker Form</field>
+<!-- Form view for Key Restriction Checker -->
+<record id="key_restriction_checker_wizard_view_form" model="ir.ui.view">
+    <field name="name">key.restriction.checker.wizard.view.form</field>
     <field name="model">key.restriction.checker.wizard</field>
-        <field name="arch" type="xml">
-            <form string="Key Restriction Checker">
-                <sheet>
-<div class="col-md-6 text-center">
-    <i class="fa fa-key" title="Key Restrictions" aria-hidden="true"/>
-    <h5 class="mt-2">Key Restrictions</h5>
-    <p>Current restrictions and permissions for this key</p>
-</div>
-<group name="input_section">
-                        <group name="customer_info">
-                            <field name="customer_name" placeholder="Start typing customer name..."/>
-                            <field name="partner_id" options="{'no_create': True, 'no_edit': True}"/>
-                        </group>
-                        <group name="bin_info">
-                            <field name="bin_identifier" placeholder="Enter bin number or identifier"/>
-                        </group>
+    <field name="arch" type="xml">
+        <form string="Key Restriction Checker">
+            <sheet>
+                <div class="col-md-6 text-center">
+                    <i class="fa fa-key" title="Key Restrictions" aria-hidden="true"/>
+                    <h5 class="mt-2">Key Restrictions</h5>
+                    <p>Current restrictions and permissions for this key</p>
+                </div>
+                <group name="input_section">
+                    <group name="customer_info">
+                        <field name="customer_name" placeholder="Start typing customer name..."/>
+                        <field name="partner_id" options="{'no_create': True, 'no_edit': True}"/>
                     </group>
+                    <group name="bin_info">
+                        <field name="bin_identifier" placeholder="Enter bin number or identifier"/>
+                    </group>
+                </group>
 
-                    <div class="oe_button_box" name="action_buttons">
-                        <button name="action_check_customer" string="Check Customer" type="object" class="oe_highlight" invisible="not customer_id">
-<i class="fa fa-search" title="Search Customer" aria-hidden="true"/>
+<div class="oe_button_box" name="action_buttons">
+    <button name="action_check_customer" string="Check Customer" type="object" class="oe_highlight" invisible="not customer_id">
+        <i class="fa fa-search" title="Search Customer" aria-hidden="true"/>
 
- Check Status
-                        </button>
-                        <button name="action_reset" string="Reset" type="object" class="oe_button" invisible="not check_performed">
+Check Status
+</button>
+<button name="action_reset" string="Reset" type="object" class="oe_button" invisible="not check_performed">
 <i class="fa fa-refresh" title="Reset Check" aria-hidden="true"/>
 
- Reset
-                        </button>
-                    </div>
+Reset
+</button>
+</div>
 
-                    <separator string="Check Results" invisible="not check_performed"/>
+<separator string="Check Results" invisible="not check_performed"/>
 
-                    <group name="results_section" invisible="not check_performed">
-                        <field name="status_message" nolabel="1"/>
-                        <field name="action_required" nolabel="1"/>
-                    </group>
 
-                    <group name="restriction_details" invisible="key_allowed or not check_performed">
-                        <group>
-                            <field name="restriction_reason"/>
-                            <field name="restriction_date"/>
-                        </group>
-                        <group>
-                            <field name="restriction_notes" nolabel="1" placeholder="No additional notes available"/>
-                        </group>
-                    </group>
+<group name="results_section" invisible="not check_performed">
+    <field name="status_message" nolabel="1"/>
+    <field name="action_required" nolabel="1"/>
+</group>
 
-                    <!-- Tree view for Hidden -->
-                    <field name="check_performed" invisible="1"/>
-                    <field name="key_allowed" invisible="1"/>
-                </sheet>
+<group name="restriction_details" invisible="key_allowed or not check_performed">
+    <group>
+        <field name="restriction_reason"/>
+        <field name="restriction_date"/>
+    </group>
+    <group>
+        <field name="restriction_notes" nolabel="1" placeholder="No additional notes available"/>
+    </group>
+</group>
 
-                <footer>
-                    <button name="action_create_unlock_service" string="Create Unlock Service" type="object" class="btn-primary" invisible="key_allowed or not check_performed or not bin_identifier">
-<i class="fa fa-unlock-alt" title="Unlock Service" aria-hidden="true"/>
+<!-- Hidden fields for conditional logic -->
+<field name="check_performed" invisible="1"/>
+<field name="key_allowed" invisible="1"/>
+</sheet>
 
- Create Service Request
-                    </button>
-                    <button string="Close" class="btn-secondary" special="cancel"/>
-                </footer>
-            </form>
-        </field>
-    </record>
+<footer>
+    <button name="action_create_unlock_service" string="Create Unlock Service" type="object" class="btn-primary" invisible="key_allowed or not check_performed or not bin_identifier">
+        <i class="fa fa-unlock-alt" title="Unlock Service" aria-hidden="true"/>
 
-    <!-- Tree view for Action -->
-    <record id="action_key_restriction_checker" model="ir.actions.act_window">
-        <field name="name">Key Restriction Checker</field>
-<field name="res_model">key.restriction.checker.wizard</field>
-        <field name="view_mode">form</field>
-        <field name="target">new</field>
-        <field name="context">{}</field>
-    </record>
+Create Service Request
+</button>
+<button string="Close" class="btn-secondary" special="cancel"/>
+</footer>
+</form>
+</field>
+</record>
 
-    <!-- Tree view for Menu -->
-    <menuitem id="menu_key_restriction_checker" name="Key Restriction Checker" parent="records_management.menu_records_tools" action="action_key_restriction_checker" sequence="50" groups="records_management.group_records_user"/>
+<!-- Action for Key Restriction Checker -->
+<record id="action_key_restriction_checker" model="ir.actions.act_window">
+    <field name="name">Key Restriction Checker</field>
+    <field name="res_model">key.restriction.checker.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="context">{}</field>
+</record>
 
-    <!-- Tree view for Add -->
-    <menuitem id="menu_key_checker_shortcut" name="Key Checker" parent="records_management.menu_records_management_root" action="action_key_restriction_checker" sequence="15" groups="records_management.group_records_user"/>
+<!-- Menu Items -->
+<menuitem id="menu_key_restriction_checker" name="Key Restriction Checker" parent="records_management.menu_records_tools" action="action_key_restriction_checker" sequence="50" groups="records_management.group_records_user"/>
+
+
+<menuitem id="menu_key_checker_shortcut" name="Key Checker" parent="records_management.menu_records_management_root" action="action_key_restriction_checker" sequence="15" groups="records_management.group_records_user"/>
 </data>
-
 </odoo>
