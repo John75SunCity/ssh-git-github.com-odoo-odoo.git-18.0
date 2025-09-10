@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
 <data>
 <!-- ============================================================================ -->
 <!-- WORK ORDER COORDINATOR - TREE VIEW -->
@@ -9,18 +8,18 @@
         <field name="name">work.order.coordinator.view.tree</field>
         <field name="model">work.order.coordinator</field>
         <field name="arch" type="xml">
-                <list string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
-                    <field name="name"/>
-                    <field name="employee_id"/>
-                    <field name="department_id"/>
-                    <field name="coordinator_type"/>
-                    <field name="active_work_orders"/>
-                    <field name="specialization"/>
-                    <field name="priority" widget="priority"/>
-                    <field name="state" widget="badge" decoration-info="state=='available'" decoration-warning="state=='busy'" decoration-danger="state=='unavailable'"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
-                </list>
-            </field>
+<list string="Work Order Coordinators" decoration-info="state=='draft'" decoration-warning="state=='in_progress'" decoration-success="state=='completed'">
+    <field name="name"/>
+    <field name="employee_id"/>
+    <field name="department_id"/>
+    <field name="coordinator_type"/>
+    <field name="active_work_orders"/>
+    <field name="specialization"/>
+    <field name="priority" widget="priority"/>
+    <field name="state" widget="badge" decoration-info="state=='available'" decoration-warning="state=='busy'" decoration-danger="state=='unavailable'"/>
+    <field name="company_id" groups="base.group_multi_company"/>
+</list>
+</field>
     </record>
 
 <!-- ============================================================================ -->
@@ -34,11 +33,14 @@
 <header>
 <button name="action_set_available" string="Set Available" type="object" class="oe_highlight" invisible="state == 'available'"/>
 
+
 <button name="action_set_busy" string="Set Busy" type="object" invisible="state == 'busy'"/>
 
 <button name="action_set_unavailable" string="Set Unavailable" type="object" invisible="state == 'unavailable'"/>
 
-    <field name="state" widget="statusbar" statusbar_visible="available,busy,unavailable"/>
+<field name="state" widget="statusbar" statusbar_visible="available,busy,unavailable"/>
+
+
 </header>
 
                 <sheet>
@@ -46,12 +48,16 @@
 <button class="oe_stat_button" type="action" name="action_view_work_orders" icon="fa-tasks" title="Work Orders">
     <field name="work_orders_count" string="Work Orders"/>
 
-    </button>
-<button class="oe_stat_button" type="action" name="action_view_completed_orders" icon="fa-check-circle" title="Completed Orders">
-    <field name="completed_orders_count" string="Completed"/>
 
-    </button>
-<button class="oe_stat_button" type="action" name="action_view_certifications" icon="fa-certificate" title="Certifications"></button>
+</button>
+<button class="oe_stat_button" type="action" name="action_view_completed_orders" icon="fa-check-circle" title="Completed Orders">
+<field name="completed_orders_count" string="Completed"/>
+
+
+
+</button>
+<button class="oe_stat_button" type="action" name="action_view_certifications" icon="fa-certificate" title="Certifications"/>
+
 </div>
 
 <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active == True"/>
@@ -100,93 +106,93 @@
             </group>
         </group>
 
-        <separator string="Current Work Orders"/>
-        <field name="current_work_order_ids" nolabel="1">
-            <list editable="bottom">
-                <field name="name"/>
-                <field name="work_order_type"/>
-                <field name="partner_id"/>
-                <field name="priority" widget="priority"/>
-                <field name="scheduled_date"/>
-                <field name="state" widget="badge"/>
-            </list>
-        </field>
-    </page>
+<separator string="Current Work Orders"/>
+<field name="current_work_order_ids" nolabel="1">
+    <list editable="bottom">
+        <field name="name"/>
+        <field name="work_order_type"/>
+        <field name="partner_id"/>
+        <field name="priority" widget="priority"/>
+        <field name="scheduled_date"/>
+        <field name="state" widget="badge"/>
+    </list>
+</field>
+</page>
 
-    <page name="skills_certifications" string="🏆 Skills &amp; Certifications">
-        <group>
-            <group name="skills" string="🎯 Skills &amp; Specializations">
-                <field name="skill_level"/>
-                <field name="years_experience"/>
-                <field name="training_completed"/>
-                <field name="next_training_date"/>
-            </group>
-            <group name="availability" string="📅 Availability">
-                <field name="work_schedule"/>
-                <field name="time_zone"/>
-                <field name="overtime_approved"/>
-                <field name="weekend_availability"/>
-            </group>
+<page name="skills_certifications" string="🏆 Skills &amp; Certifications">
+    <group>
+        <group name="skills" string="🎯 Skills &amp; Specializations">
+            <field name="skill_level"/>
+            <field name="years_experience"/>
+            <field name="training_completed"/>
+            <field name="next_training_date"/>
         </group>
-
-        <separator string="Certifications &amp; Training"/>
-        <field name="certification_ids" nolabel="1">
-            <list editable="bottom">
-                <field name="name"/>
-                <field name="certification_type"/>
-                <field name="issue_date"/>
-                <field name="expiry_date"/>
-                <field name="is_active" widget="boolean_toggle"/>
-            </list>
-        </field>
-    </page>
-
-    <page name="equipment_tools" string="🔧 Equipment &amp; Tools">
-        <group>
-            <group name="equipment_access" string="🚛 Equipment Access">
-                <field name="vehicle_access"/>
-                <field name="equipment_authorizations"/>
-                <field name="tool_certifications"/>
-            </group>
-            <group name="safety" string="🛡️ Safety &amp; Compliance">
-                <field name="safety_training_date"/>
-                <field name="safety_incidents"/>
-                <field name="naid_certified"/>
-                <field name="background_check_date"/>
-            </group>
+        <group name="availability" string="📅 Availability">
+            <field name="work_schedule"/>
+            <field name="time_zone"/>
+            <field name="overtime_approved"/>
+            <field name="weekend_availability"/>
         </group>
+    </group>
 
-        <separator string="Assigned Equipment"/>
-        <field name="assigned_equipment_ids" nolabel="1">
-            <list>
-                <field name="name"/>
-                <field name="equipment_type"/>
-                <field name="serial_number"/>
-                <field name="last_maintenance_date"/>
-                <field name="next_maintenance_due"/>
-            </list>
-        </field>
-    </page>
+<separator string="Certifications &amp; Training"/>
+<field name="certification_ids" nolabel="1">
+    <list editable="bottom">
+        <field name="name"/>
+        <field name="certification_type"/>
+        <field name="issue_date"/>
+        <field name="expiry_date"/>
+        <field name="is_active" widget="boolean_toggle"/>
+    </list>
+</field>
+</page>
 
-    <page name="audit_tracking" string="📋 Audit &amp; Tracking">
-        <group>
-            <group name="audit_info" string="🔍 Audit Information">
-                <field name="user_id"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-                <field name="create_date"/>
-                <field name="write_date"/>
-            </group>
-            <group name="tracking_info" string="📈 Tracking Information">
-                <field name="last_login"/>
-                <field name="total_hours_logged"/>
-                <field name="productivity_score"/>
-                <field name="quality_score"/>
-            </group>
+<page name="equipment_tools" string="🔧 Equipment &amp; Tools">
+    <group>
+        <group name="equipment_access" string="🚛 Equipment Access">
+            <field name="vehicle_access"/>
+            <field name="equipment_authorizations"/>
+            <field name="tool_certifications"/>
         </group>
+        <group name="safety" string="🛡️ Safety &amp; Compliance">
+            <field name="safety_training_date"/>
+            <field name="safety_incidents"/>
+            <field name="naid_certified"/>
+            <field name="background_check_date"/>
+        </group>
+    </group>
 
-        <separator string="Recent Activities"/>
-        <field name="activity_ids" nolabel="1"/>
-    </page>
+<separator string="Assigned Equipment"/>
+<field name="assigned_equipment_ids" nolabel="1">
+    <list>
+        <field name="name"/>
+        <field name="equipment_type"/>
+        <field name="serial_number"/>
+        <field name="last_maintenance_date"/>
+        <field name="next_maintenance_due"/>
+    </list>
+</field>
+</page>
+
+<page name="audit_tracking" string="📋 Audit &amp; Tracking">
+    <group>
+        <group name="audit_info" string="🔍 Audit Information">
+            <field name="user_id"/>
+            <field name="company_id" groups="base.group_multi_company"/>
+            <field name="create_date"/>
+            <field name="write_date"/>
+        </group>
+        <group name="tracking_info" string="📈 Tracking Information">
+            <field name="last_login"/>
+            <field name="total_hours_logged"/>
+            <field name="productivity_score"/>
+            <field name="quality_score"/>
+        </group>
+    </group>
+
+<separator string="Recent Activities"/>
+<field name="activity_ids" nolabel="1"/>
+</page>
 </notebook>
                 </sheet>
 <!-- Chatter for communication history -->
@@ -214,22 +220,29 @@
     <field name="specialization" string="Specialization"/>
     <field name="coordinator_type" string="Type"/>
 
-    <!-- Filters -->
-    <separator/>
-    <filter name="available" string="Available" domain="[('state', '=', 'available')]"/>
-    <filter name="busy" string="Busy" domain="[('state', '=', 'busy')]"/>
-    <filter name="unavailable" string="Unavailable" domain="[('state', '=', 'unavailable')]"/>
 
-    <separator/>
-    <filter name="high_priority" string="High Priority" domain="[('priority', '=', '3')]"/>
-    <filter name="certified" string="NAID Certified" domain="[('naid_certified', '=', True)]"/>
-    <filter name="overtime_approved" string="Overtime Approved" domain="[('overtime_approved', '=', True)]"/>
+<!-- Filters -->
+<separator/>
+<filter name="available" string="Available" domain="[('state', '=', 'available')]"/>
+<filter name="busy" string="Busy" domain="[('state', '=', 'busy')]"/>
+<filter name="unavailable" string="Unavailable" domain="[('state', '=', 'unavailable')]"/>
 
-    <separator/>
-    <filter name="active" string="Active" domain="[('active', '=', True)]"/>
-    <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
 
-    <!-- Group By -->
+
+<separator/>
+<filter name="high_priority" string="High Priority" domain="[('priority', '=', '3')]"/>
+<filter name="certified" string="NAID Certified" domain="[('naid_certified', '=', True)]"/>
+<filter name="overtime_approved" string="Overtime Approved" domain="[('overtime_approved', '=', True)]"/>
+
+
+
+<separator/>
+<filter name="active" string="Active" domain="[('active', '=', True)]"/>
+<filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+
+
+
+<!-- Group By -->
                 <group expand="1" string="Group By">
 <filter string="State" name="group_state" domain="[]" context="{'group_by': 'state'}"/>
 <filter string="Department" name="group_department" domain="[]" context="{'group_by': 'department_id'}"/>
@@ -250,54 +263,59 @@
     <field name="name">work.order.coordinator.view.kanban</field>
     <field name="model">work.order.coordinator</field>
         <field name="arch" type="xml">
-        <kanban default_group_by="state">
-            <field name="id"/>
-            <field name="name"/>
-            <field name="employee_id"/>
-            <field name="department_id"/>
-            <field name="state"/>
-            <field name="active_work_orders"/>
-            <field name="priority"/>
-            <field name="specialization"/>
-            <field name="success_rate"/>
+<kanban default_group_by="state">
+    <field name="id"/>
+    <field name="name"/>
+    <field name="employee_id"/>
+    <field name="department_id"/>
+    <field name="state"/>
+    <field name="active_work_orders"/>
+    <field name="priority"/>
+    <field name="specialization"/>
+    <field name="success_rate"/>
 
-            <templates>
-<t t-name="card">
-                    <div class="oe_kanban_card oe_kanban_global_click">
-                        <div class="o_kanban_image">
-                            <img t-att-src="kanban_image('work.order.coordinator', 'image_128', record.id.raw_value)" alt="Coordinator"/>
-                        </div>
-                        <div class="oe_kanban_details">
-                            <strong class="o_kanban_record_title">
-                                <field name="name"/>
-                            </strong>
-                            <div class="o_kanban_record_subtitle">
-                                <field name="employee_id"/>
-                                <field name="department_id"/>
-                            </div>
 
-                            <div class="oe_kanban_bottom_left">
-                                <div class="o_kanban_inline_block">
-                                    <field name="specialization" widget="label"/>
-                                </div>
-                                <div class="o_kanban_inline_block">
+
+<templates>
+    <t t-name="card">
+        <div class="oe_kanban_card oe_kanban_global_click">
+            <div class="o_kanban_image">
+                <img t-att-src="kanban_image('work.order.coordinator', 'image_128', record.id.raw_value)" alt="Coordinator"/>
+            </div>
+            <div class="oe_kanban_details">
+                <strong class="o_kanban_record_title">
+                    <field name="name"/>
+                </strong>
+                <div class="o_kanban_record_subtitle">
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                </div>
+
+<div class="oe_kanban_bottom_left">
+    <div class="o_kanban_inline_block">
+        <field name="specialization" widget="label"/>
+    </div>
+    <div class="o_kanban_inline_block">
                                         Priority: <field name="priority" widget="priority"/>
-                                </div>
-                            </div>
+</div>
+</div>
 
-                        <div class="oe_kanban_bottom_right">
-                            <div class="o_kanban_inline_block">
-                                Active Orders: <strong><field name="active_work_orders"/></strong>
-                            </div>
-                            <div class="o_kanban_inline_block">
-                                Success Rate: <field name="success_rate"/>%
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                </t>
-            </templates>
-        </kanban>
+<div class="oe_kanban_bottom_right">
+    <div class="o_kanban_inline_block">
+Active Orders:<strong>
+    <field name="active_work_orders"/>
+</strong>
+</div>
+<div class="o_kanban_inline_block">
+Success Rate:<field name="success_rate"/>
+%
+</div>
+</div>
+</div>
+</div>
+</t>
+</templates>
+</kanban>
         </field>
     </record>
 
@@ -333,11 +351,11 @@ Click to create a new Work Order Coordinator.
 
 <!-- Performance Dashboard Action -->
 <record id="action_work_order_coordinator_performance" model="ir.actions.act_window">
-    <field name="name">Coordinator Performance</field>
-    <field name="res_model">work.order.coordinator</field>
-    <field name="view_mode">list,form</field>
-    <field name="domain">[]</field>
-    <field name="context">{'search_default_group_department': 1}</field>
+<field name="name">Coordinator Performance</field>
+<field name="res_model">work.order.coordinator</field>
+<field name="view_mode">list,form</field>
+<field name="domain">[]</field>
+<field name="context">{'search_default_group_department': 1}</field>
 </record>
 </data>
 
