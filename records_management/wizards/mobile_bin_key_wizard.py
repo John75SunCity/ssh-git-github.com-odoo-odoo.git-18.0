@@ -160,8 +160,9 @@ class MobileBinKeyWizard(models.TransientModel):
         self._apply_action_type_side_effects_internal()
         return True
 
-    def _apply_action_type_side_effects_internal(self):
-        """Internal helper to reset transient fields when action_type changes (private)."""
+    def action_apply_action_type_side_effects_internal(self):
+        """Apply side effects based on action type"""
+        self.ensure_one()
         for wizard in self:
             if wizard.action_type != 'quick_lookup':
                 wizard.key_lookup_results = False
@@ -234,11 +235,11 @@ class MobileBinKeyWizard(models.TransientModel):
             raise ValidationError(_("Please select a customer company"))
 
         if self.action_type == "issue_new":
-            return self._execute_issue_new()
+            return self.action_execute_issue_new()
         elif self.action_type == "update_existing":
-            return self._execute_update_existing()
+            return self.action_execute_update_existing()
         elif self.action_type == "create_unlock_service":
-            return self._execute_unlock_service()
+            return self.action_execute_unlock_service()
 
         return {"type": "ir.actions.act_window_close"}
 
