@@ -27,70 +27,66 @@
                     <!-- Operation details -->
                     <group string="Operation Details" invisible="action_type in [False, 'quick_lookup']">
                         <field name="partner_id" options="{'no_create_edit': True}" placeholder="Select customer..."/>
-                        <field name="priority"/>
-                        <field name="operation_reason"/>
+<field name="customer_company_id" options="{'no_create_edit': True}" placeholder="Select customer company..."/>
+<field name="unlock_reason" invisible="action_type != 'create_unlock_service'"/>
+
                     </group>
 
                     <!-- Bin key details -->
                     <group string="Bin Key Information" invisible="action_type in [False, 'quick_lookup']">
-                        <field name="bin_key_id" options="{'no_create_edit': True}"/>
-                        <field name="bin_location_id" readonly="1"/>
-                        <field name="bin_number" readonly="1"/>
-                        <field name="key_code"/>
-                        <field name="access_level_required" readonly="1"/>
+<field name="issue_location" invisible="action_type not in ['issue_new', 'update_existing']"/>
+<field name="bin_locations" invisible="action_type not in ['issue_new', 'update_existing']"/>
+<field name="unlock_bin_location" invisible="action_type != 'create_unlock_service'"/>
+<field name="emergency_contact" invisible="action_type not in ['issue_new', 'update_existing']"/>
+
                     </group>
 
                     <!-- Quick lookup section -->
                     <group string="Quick Lookup" invisible="action_type != 'quick_lookup'">
-                        <field name="lookup_query" placeholder="Enter search terms..."/>
+<field name="customer_company_id" string="Lookup Customer" options="{'no_create_edit': True}" placeholder="Select customer to lookup..."/>
+
                     </group>
 
                     <!-- Operation description -->
                     <group string="Operation Details" invisible="action_type == 'quick_lookup'">
-                        <field name="operation_description" placeholder="Describe the operation..."/>
-                        <field name="billable"/>
-                        <field name="service_charge" invisible="not billable"/>
+<field name="unlock_reason_description" invisible="action_type != 'create_unlock_service'" placeholder="Describe the unlock reason..."/>
+<field name="key_notes" invisible="action_type not in ['issue_new', 'update_existing']" placeholder="Add key notes..."/>
+<field name="billable" invisible="action_type != 'create_unlock_service'"/>
+<field name="unlock_charge" invisible="action_type != 'create_unlock_service' or not billable"/>
+
                     </group>
 
-                    <!-- Emergency options -->
-                    <group string="Emergency Access" invisible="not show_emergency_options">
-                        <field name="authorization_required" readonly="1"/>
-                        <field name="authorized_by_id" readonly="1"/>
-                        <field name="approval_date" readonly="1"/>
+<!-- Contact creation -->
+<group string="New Contact" invisible="not show_contact_creation">
+    <field name="create_new_contact"/>
+    <field name="contact_name" invisible="not create_new_contact" required="create_new_contact"/>
+    <field name="contact_email" invisible="not create_new_contact"/>
+    <field name="contact_phone" invisible="not create_new_contact"/>
+    <field name="contact_mobile" invisible="not create_new_contact"/>
+    <field name="contact_title" invisible="not create_new_contact"/>
+
                     </group>
 
                     <!-- Lookup results -->
                     <div invisible="not show_lookup_results">
                         <separator string="Lookup Results"/>
-                        <group>
-                            <field name="containers_found" readonly="1"/>
-                            <field name="documents_found" readonly="1"/>
-                        </group>
-                        <field name="lookup_results" readonly="1" widget="text"/>
+<field name="key_lookup_results" readonly="1" widget="html"/>
+
                     </div>
 
-                    <!-- Operation tracking -->
-                    <group string="Operation Tracking" invisible="state == 'draft'">
-                        <field name="operation_start_time" readonly="1"/>
-                        <field name="operation_end_time" readonly="1"/>
-                        <field name="actual_duration" readonly="1"/>
-                    </group>
+<!-- Service documentation -->
+<group string="Service Documentation" invisible="action_type != 'create_unlock_service'">
+    <field name="items_retrieved" placeholder="List items retrieved..."/>
+    <field name="service_notes" placeholder="Add service notes..."/>
+    <field name="photo_ids" widget="many2many_binary"/>
 
-                    <!-- Compliance -->
-                    <group string="Compliance" invisible="not naid_compliance_check">
-                        <field name="naid_compliance_check" readonly="1"/>
-                        <field name="audit_trail_created" readonly="1"/>
-                        <field name="chain_of_custody_id" readonly="1"/>
-                    </group>
-
-                    <!-- Operation status -->
-                    <group string="Status" invisible="state == 'draft'">
-                        <field name="state" readonly="1"/>
-                        <field name="operation_notes"/>
                     </group>
 
                     <!-- Hidden visibility control fields -->
-                    <field name="show_emergency_options" invisible="1"/>
+<field name="show_contact_creation" invisible="1"/>
+<field name="show_key_assignment" invisible="1"/>
+<field name="show_unlock_service" invisible="1"/>
+
                     <field name="show_lookup_results" invisible="1"/>
 
                 </div>
@@ -102,10 +98,10 @@
                             <button string="Cancel" class="btn btn-secondary btn-block" special="cancel"/>
                         </div>
                         <div class="col-6">
-                            <button string="Start Operation" class="btn btn-primary btn-block" name="action_start_operation" type="object" invisible="state != 'draft'"/>
-                            <button string="Complete Operation" class="btn btn-success btn-block" name="action_complete_operation" type="object" invisible="state != 'in_progress'"/>
-                            <button string="Execute Lookup" class="btn btn-info btn-block" name="action_execute_lookup" type="object" invisible="action_type != 'quick_lookup'"/>
-                            <button string="Request Authorization" class="btn btn-warning btn-block" name="action_request_authorization" type="object" invisible="not authorization_required or state != 'draft'"/>
+<button string="Execute" class="btn btn-primary btn-block" name="action_execute_wizard" type="object" invisible="action_type == False"/>
+
+<button string="Execute Lookup" class="btn btn-info btn-block" name="action_execute_lookup" type="object" invisible="action_type != 'quick_lookup'"/>
+
                         </div>
                     </div>
                 </footer>
