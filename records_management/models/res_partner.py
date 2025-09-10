@@ -174,7 +174,7 @@ class ResPartner(models.Model):
 
     @api.depends(
         'unlock_service_history_ids.state',
-        'unlock_service_history_ids.cost',
+        'unlock_service_history_ids.total_cost',
         'unlock_service_history_ids.partner_id'
     )
     def _compute_unlock_service_stats(self):
