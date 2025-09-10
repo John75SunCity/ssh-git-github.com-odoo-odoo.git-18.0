@@ -8,7 +8,9 @@
         <field name="model">processing.log.resolution.wizard</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
+<field name="log_id"/>
+<field name="resolution_notes"/>
+
             </list>
         </field>
     </record>
@@ -18,15 +20,24 @@
         <field name="name">processing.log.resolution.wizard.view.form</field>
         <field name="model">processing.log.resolution.wizard</field>
         <field name="arch" type="xml">
-            <form string="Processing.Log.Resolution.Wizard">
+<form string="Resolve Processing Log">
                 <sheet>
                     <div class="oe_title">
-                        <label for="name"/>
+<label for="log_id"/>
+
                         <h1>
-                            <field name="name" placeholder="Name..."/>
+<field name="log_id" readonly="1"/>
+
                         </h1>
                     </div>
+<group>
+    <field name="resolution_notes" placeholder="Enter resolution notes..."/>
+</group>
                 </sheet>
+<footer>
+    <button string="Mark as Resolved" name="action_confirm_resolution" type="object" class="btn-primary"/>
+    <button string="Cancel" class="btn-secondary" special="cancel"/>
+</footer>
             </form>
         </field>
     </record>
@@ -37,8 +48,12 @@
         <field name="model">processing.log.resolution.wizard</field>
         <field name="arch" type="xml">
             <search>
+<field name="log_id"/>
+<field name="resolution_notes"/>
+
                 <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
+<filter string="Log Entry" name="log_id" domain="[]" context="{'group_by':'log_id'}"/>
+
                 </group>
             </search>
         </field>
@@ -46,14 +61,14 @@
 
     <!-- Action for processing.log.resolution.wizard -->
     <record id="action_processing_log_resolution_wizard" model="ir.actions.act_window">
-        <field name="name">Processing.Log.Resolution.Wizard</field>
+<field name="name">Resolve Processing Log</field>
         <field name="res_model">processing.log.resolution.wizard</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                Click to add a new processing.log.resolution.wizard.
+Click to resolve processing logs.
             </p>
         </field>
     </record>
