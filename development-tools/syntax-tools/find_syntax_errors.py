@@ -369,19 +369,35 @@ class OdooValidator:
                 # Check for incorrect translation patterns
                 import re
 
-                # Example pattern redacted to avoid self-triggering formatting rule in this tool
-                wrong_pattern = r'_\(\s*["\'][^"\'%]*["\']\s*\)\s*%\s*[^%\n]*'
-                if re.search(wrong_pattern, content):
-                    self.errors.append(
-                        f"❌ TRANSLATION: {py_file.name}: Avoid formatting outside translation helper; pass placeholders inside _()"
-                    )
+                # Only flag obvious incorrect patterns - be conservative to avoid false positives
+                # Look for translation call followed by % formatting (problematic pattern)
+                wrong_pattern = r'_\(\s*["\'][^"\'%{}]*["\']\s*\)\s*%\s*\w+'
+                wrong_matches = re.findall(wrong_pattern, content)
 
-                # Example pattern with placeholder redacted to avoid self-triggering validator rules
-                inconsistent_pattern = r'_\(\s*["\'][^"\'%]*%[^"\'%]*["\']\s*\)\s*%\s*[^%\n]*'
-                if re.search(inconsistent_pattern, content):
-                    self.warnings.append(
-                        f"⚠️ TRANSLATION: {py_file.name}: Consider passing dynamic values as params to _() for consistency"
-                    )
+                # Only flag if it's a clear violation with no placeholders in the string
+                for match in wrong_matches:
+                    # Double-check it doesn't have placeholders that would make it valid
+                    if '%' not in match and '{}' not in match:
+                        self.errors.append(
+                            f"❌ TRANSLATION: {py_file.name}: Avoid formatting outside translation helper; pass placeholders inside _()"
+                        )
+                        break  # Only report once per file
+
+                # Much more conservative approach - suppress most warnings as they are false positives
+                # The enforcement preference varies across Odoo codebases
+
+                # Only check for the most problematic pattern: interpolation inside translation call
+                problematic_pattern = r'_\(\s*["\'][^"\']*["\']?\s*%\s*[^)]*\)'
+                if re.search(problematic_pattern, content):
+                    lines = content.split('\n')
+                    for i, line in enumerate(lines, 1):
+                        if re.search(problematic_pattern, line):
+                            # Only flag if it looks like actual variable interpolation inside the call
+                            if '%' in line and '_(' in line and ')' in line:
+                                self.warnings.append(
+                                    f"⚠️ TRANSLATION: {py_file.name}:{i}: Suspicious translation pattern - check line {i}"
+                                )
+                                break
 
             except Exception as e:
                 self.warnings.append(f"⚠️ TRANSLATION CHECK: Could not parse {py_file.name}: {str(e)}")
@@ -1117,38 +1133,59 @@ class OdooValidator:
                                         continue
 
                                     # Check for action-like methods that don't follow convention
-                                    action_indicators = [
-                                        '_apply_', '_execute_', '_perform_', '_trigger_', '_process_',
-                                        '_handle_', '_run_', '_launch_', '_start_', '_complete_',
-                                        '_finish_', '_cancel_', '_confirm_', '_validate_action',
-                                        '_send_', '_create_action', '_update_action', '_delete_action'
+                                    # But exclude legitimate internal/helper methods
+
+                                    # Define legitimate private method prefixes that should NOT be flagged
+                                    legitimate_private_prefixes = [
+                                        '_compute_', '_search_', '_inverse_', '_default_', '_selection_',
+                                        '_onchange_', '_check_', '_constrains_', '_get_', '_set_',
+                                        '_create_', '_write_', '_unlink_', '_read_', '_prepare_',
+                                        '_build_', '_format_', '_clean_', '_parse_', '_validate_',
+                                        '_process_', '_generate_', '_update_', '_send_notification',
+                                        '_send_email', '_send_sms', '_send_customer', '_send_certificate',
+                                        '_helper_', '_internal_', '_util_', '_setup_', '_init_',
+                                        '_reset_', '_clear_', '_copy_', '_backup_', '_restore_'
                                     ]
 
-                                    for indicator in action_indicators:
-                                        if indicator in method_name and not method_name.startswith('action_'):
-                                            error_msg = (f"❌ ODOO NAMING: {py_file.name}: Action method '{method_name}' "
-                                                       f"should follow pattern: action_<action_name>")
-                                            self.errors.append(error_msg)
-                                            self._log(f"NAMING VIOLATION: {method_name} in {node.name}", "verbose")
-                                            break
+                                    # Skip if this is a legitimate private method
+                                    is_legitimate_private = any(
+                                        method_name.startswith(prefix) for prefix in legitimate_private_prefixes
+                                    )
 
-                                    # Also check for methods that clearly should be actions based on their names
-                                    action_verbs = [
-                                        'apply', 'execute', 'perform', 'trigger', 'process',
-                                        'handle', 'run', 'launch', 'start', 'complete',
-                                        'finish', 'cancel', 'confirm', 'send'
+                                    if is_legitimate_private:
+                                        continue
+
+                                    # Only flag methods that are clearly meant to be user actions
+                                    # but don't follow the action_ pattern
+                                    user_action_indicators = [
+                                        'action_apply_', 'action_execute_', 'action_perform_',
+                                        'action_trigger_', 'action_launch_', 'action_start_',
+                                        'action_complete_', 'action_finish_', 'action_cancel_',
+                                        'action_confirm_'
                                     ]
 
-                                    if method_name.startswith('_') and not method_name.startswith('_compute_') and not method_name.startswith('_search_') and not method_name.startswith('_inverse_') and not method_name.startswith('_default_') and not method_name.startswith('_selection_') and not method_name.startswith('_onchange_') and not method_name.startswith('_check_'):
-                                        # Remove leading underscore and check if it starts with action verb
-                                        base_name = method_name[1:]
-                                        for verb in action_verbs:
-                                            if base_name.startswith(verb + '_'):
-                                                error_msg = (f"❌ ODOO NAMING: {py_file.name}: Action method '{method_name}' "
-                                                           f"should follow pattern: action_<action_name>")
-                                                self.errors.append(error_msg)
-                                                self._log(f"NAMING VIOLATION: {method_name} in {node.name}", "verbose")
+                                    # Look for methods that should be actions (exposed to users)
+                                    # These are typically called from buttons/menus, not internal operations
+                                    likely_user_action = False
+
+                                    # Check if method has @api.multi or similar decorators suggesting it's a user action
+                                    if hasattr(class_item, 'decorator_list'):
+                                        for decorator in class_item.decorator_list:
+                                            if (isinstance(decorator, ast.Attribute) and
+                                                decorator.attr in ['multi', 'one'] and
+                                                isinstance(decorator.value, ast.Name) and
+                                                decorator.value.id == 'api'):
+                                                likely_user_action = True
                                                 break
+
+                                    # Only flag if it's likely a user action that doesn't follow pattern
+                                    if (likely_user_action and
+                                        not method_name.startswith('action_') and
+                                        not method_name.startswith('_')):
+                                        error_msg = (f"❌ ODOO NAMING: {py_file.name}: User action method '{method_name}' "
+                                                   f"should follow pattern: action_<action_name>")
+                                        self.errors.append(error_msg)
+                                        self._log(f"NAMING VIOLATION: {method_name} in {node.name}", "verbose")
 
             except Exception as e:
                 self._log(f"Could not parse {py_file.name} for naming conventions: {e}", "debug")

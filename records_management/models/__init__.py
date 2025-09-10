@@ -78,7 +78,6 @@ from . import maintenance_equipment
 from . import maintenance_request
 from . import maintenance_team
 from . import media_type
-from . import mobile_bin_key_wizard
 from . import mobile_dashboard_widget
 from . import mobile_dashboard_widget_category
 from . import mobile_photo
@@ -146,7 +145,6 @@ from . import product_template
 from . import product_template_actions
 from . import proj_task_ext
 from . import project_task
-from . import rate_change_confirmation_wizard
 from . import records_access_log
 from . import records_approval_step
 from . import records_approval_workflow

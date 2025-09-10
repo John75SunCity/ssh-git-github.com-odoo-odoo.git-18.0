@@ -3,12 +3,12 @@ from odoo.exceptions import UserError
 
 
 class LocationReport(models.AbstractModel):
-    _inherit = ['mail.thread']
     """
     Abstract model to prepare data for the Location Utilization QWeb report.
     """
     _name = 'report.records_management.report_location_utilization'
     _description = 'Location Utilization Report'
+    _inherit = ['mail.thread']
 
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -27,12 +27,12 @@ class LocationReport(models.AbstractModel):
 
 
 class LocationReportWizard(models.TransientModel):
-    _inherit = ['mail.thread']
     """
     Wizard to generate a report on location utilization.
     """
     _name = 'location.report.wizard'
     _description = 'Location Report Wizard'
+    _inherit = ['mail.thread']
 
     # ============================================================================
     # WIZARD FIELDS
