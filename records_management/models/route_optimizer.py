@@ -207,7 +207,7 @@ class RouteOptimizer(models.Model):
         self.message_post(body=_('Route optimization started...'))
 
         try:
-            self._perform_optimization()
+            self.action_perform_optimization()
             self.write({
                 'status': 'completed',
                 'completion_time': fields.Datetime.now()
@@ -254,7 +254,7 @@ class RouteOptimizer(models.Model):
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
-    def _perform_optimization(self):
+    def action_perform_optimization(self):
         """
         Executes the optimization algorithm to generate routes.
         - Simulates route generation for demonstration purposes.

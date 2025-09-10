@@ -141,7 +141,7 @@ class SignedDocument(models.Model):
         if self.state != "signed":
             raise UserError(_("Only signed documents can be verified."))
 
-        verification_result = self._perform_signature_verification()
+        verification_result = self.action_perform_signature_verification()
 
         if verification_result:
             self.write({
@@ -179,8 +179,9 @@ class SignedDocument(models.Model):
     # ============================================================================
     # BUSINESS METHODS
     # ============================================================================
-    def _perform_signature_verification(self):
+    def action_perform_signature_verification(self):
         """Perform actual signature verification. Placeholder for now."""
+        self.ensure_one()
         return True
 
     def _create_audit_log(self, action, details=None):
@@ -234,7 +235,7 @@ class SignedDocument(models.Model):
         res = super().write(vals)
         if "state" in vals:
             for record in self:
-                details = _('State changed from %s to %s', old_states.get(record, 'N/A'), record.state)
+                details = _("State changed from %s to %s") % (old_states.get(record, 'N/A'), record.state)
                 self.with_context(old_state=old_states.get(record))._create_audit_log(
                     "state_changed",
                     details=details

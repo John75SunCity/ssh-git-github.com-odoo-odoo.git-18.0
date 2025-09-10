@@ -45,7 +45,7 @@ class NAIDTrainingSchedule(models.Model):  # noqa: E305 (naming retained per exi
     reminder_sent = fields.Boolean(string='Reminder Sent', default=False)
 
     @api.model
-    def _send_training_reminders(self):
+    def action_send_training_reminders(self):
         """Send reminders for upcoming trainings"""
         today = fields.Date.context_today(self)
         reminder_date = today + relativedelta(days=7)
