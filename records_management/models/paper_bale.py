@@ -39,7 +39,7 @@ class PaperBale(models.Model):
 
     location_id = fields.Many2one('records.location', string="Current Location", tracking=True)
     shipment_id = fields.Many2one('paper.load.shipment', string="Shipment", readonly=True)
-    load_id = fields.Many2one('load', string="Load")
+    load_id = fields.Many2one('paper.bale.load', string="Load")
 
     inspection_ids = fields.One2many('paper.bale.inspection', 'bale_id', string="Inspections")
     inspection_count = fields.Integer(compute='_compute_inspection_count', string="Inspection Count")
@@ -80,7 +80,7 @@ class PaperBale(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Inspections for %s', self.name),
+            'name': _('Inspections for %s') % self.name,
             'res_model': 'paper.bale.inspection',
             'view_mode': 'tree,form',
             'domain': [('bale_id', '=', self.id)],
@@ -91,7 +91,7 @@ class PaperBale(models.Model):
         self.ensure_one()
         return {
             'type': 'ir.actions.act_window',
-            'name': _('Movements for %s', self.name),
+            'name': _('Movements for %s') % self.name,
             'res_model': 'paper.bale.movement',
             'view_mode': 'tree,form',
             'domain': [('bale_id', '=', self.id)],

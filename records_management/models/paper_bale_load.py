@@ -3,7 +3,7 @@ from odoo.exceptions import UserError
 
 
 class Load(models.Model):
-    _name = 'load'
+    _name = 'paper.bale.load'
     _description = 'Paper Bale Load Management'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'scheduled_ship_date desc, name'

@@ -134,8 +134,8 @@ access_key_inventory_manager,key_inventory,key.inventory,records_management.grou
 access_key_inventory_user,key_inventory,key.inventory,records_management.group_records_user,1,1,1,0
 access_key_restriction_checker_wizard_manager,key_restriction_checker_wizard,key.restriction.checker.wizard,records_management.group_records_manager,1,1,1,1
 access_key_restriction_checker_wizard_user,key_restriction_checker_wizard,key.restriction.checker.wizard,records_management.group_records_user,1,1,1,0
-access_load_manager,load,load,records_management.group_records_manager,1,1,1,1
-access_load_user,load,load,records_management.group_records_user,1,1,1,0
+access_paper_bale_load_manager,paper_bale_load,paper.bale.load,records_management.group_records_manager,1,1,1,1
+access_paper_bale_load_user,paper_bale_load,paper.bale.load,records_management.group_records_user,1,1,1,0
 access_location_group_manager,location_group,location.group,records_management.group_records_manager,1,1,1,1
 access_location_group_user,location_group,location.group,records_management.group_records_user,1,1,1,0
 access_location_report_wizard_manager,location_report_wizard,location.report.wizard,records_management.group_records_manager,1,1,1,1
