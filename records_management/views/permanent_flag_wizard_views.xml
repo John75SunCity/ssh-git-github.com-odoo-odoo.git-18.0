@@ -41,7 +41,8 @@
 
 <group string="🔐 Security Verification">
     <div class="alert alert-secondary" role="status">
-        <i class="fa fa-shield"/>
+<i class="fa fa-shield" title="Security Protection"/>
+
         <strong>Password Required:</strong>
         <br/>
                                     Enter your user password to confirm this security-sensitive action.
@@ -56,7 +57,8 @@
 <list decoration-success="is_permanent == True" decoration-muted="is_permanent == False">
     <field name="name"/>
     <field name="partner_id"/>
-    <field name="box_id"/>
+<field name="storage_box_id"/>
+
 
 <field name="is_permanent" string="🛡️ Currently Permanent" widget="boolean"/>
 <field name="permanent_user_id" string="Set By" invisible="not is_permanent"/>
