@@ -2,8 +2,8 @@
 <odoo>
 
     <data>
-<!-- View file.retrieval.item View List -->
-    <record id="file_retrieval_item_view_list" model="ir.ui.view">
+<!-- List view for file.retrieval.item -->
+<record id="file_retrieval_item_view_tree" model="ir.ui.view">
         <field name="name">file.retrieval.item.view.list</field>
         <field name="model">file.retrieval.item</field>
         <field name="arch" type="xml">

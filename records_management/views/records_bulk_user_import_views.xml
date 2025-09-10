@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- List View -->
-        <record id="records_bulk_user_import_view_list" model="ir.ui.view">
-            <field name="name">records.bulk.user.import.view.list</field>
+<!-- Tree View -->
+<record id="records_bulk_user_import_view_tree" model="ir.ui.view">
+    <field name="name">records.bulk.user.import.view.tree</field>
             <field name="model">records.bulk.user.import</field>
         <field name="arch" type="xml">
-                <list string="Bulk User Imports">
+<tree string="Bulk User Imports">
                     <field name="name"/>
                     <field name="filename"/>
                     <field name="state"/>
                     <field name="create_date"/>
-                </list>
+</tree>
             </field>
         </record>
 
@@ -65,7 +65,8 @@
             <field name="name">Bulk User Import</field>
             <field name="res_model">records.bulk.user.import</field>
             <field name="view_mode">list,form</field>
-            <field name="view_id" ref="records_bulk_user_import_view_list"/>
+<field name="view_id" ref="records_bulk_user_import_view_tree"/>
+
             <field name="groups" eval="[(4, ref('records_management.group_records_manager'))]"/>
         </record>
 

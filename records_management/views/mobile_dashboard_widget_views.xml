@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="mobile_dashboard_widget_view_list" model="ir.ui.view">
+<record id="mobile_dashboard_widget_view_tree" model="ir.ui.view">
         <field name="name">mobile.dashboard.widget.view.list</field>
         <field name="model">mobile.dashboard.widget</field>
         <field name="arch" type="xml">

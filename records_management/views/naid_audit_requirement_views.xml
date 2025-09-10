@@ -2,9 +2,9 @@
 <odoo>
     <!-- NAID Audit Requirements Views -->
 
-    <!-- Tree/List View -->
-<record id="naid_audit_requirement_view_list" model="ir.ui.view">
-    <field name="name">naid.audit.requirement.view.list</field>
+<!-- List View -->
+<record id="naid_audit_requirement_view_tree" model="ir.ui.view">
+    <field name="name">naid.audit.requirement.view.tree</field>
         <field name="model">naid.audit.requirement</field>
         <field name="arch" type="xml">
 <list decoration-danger="status == 'overdue'" decoration-warning="status == 'scheduled'" decoration-success="status == 'completed'">

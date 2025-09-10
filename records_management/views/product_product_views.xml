@@ -14,8 +14,8 @@
     </record>
 
 
-    <!-- View product.product list -->
-    <record id="product_product_view_list" model="ir.ui.view">
+<!-- List view for product.product -->
+<record id="product_product_view_tree" model="ir.ui.view">
         <field name="name">product.product.view.list.inherit.records_management</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref=""/>

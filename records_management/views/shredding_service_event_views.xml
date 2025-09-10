@@ -2,8 +2,8 @@
 <odoo>
 
     <data>
-<!-- View shredding.service.event View List -->
-    <record id="shredding_service_event_view_list" model="ir.ui.view">
+<!-- List view for shredding.service.event -->
+<record id="shredding_service_event_view_tree" model="ir.ui.view">
         <field name="name">shredding.service.event.view.list</field>
         <field name="model">shredding.service.event</field>
         <field name="arch" type="xml">

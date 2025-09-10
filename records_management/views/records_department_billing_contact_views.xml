@@ -145,9 +145,9 @@
         </field>
     </record>
 
-    <!-- Tree view for Enhanced -->
-    <record id="records_department_billing_contact_view_list" model="ir.ui.view">
-        <field name="name">records.department.billing.contact.view.list</field>
+<!-- List view for Enhanced -->
+<record id="records_department_billing_contact_view_tree" model="ir.ui.view">
+    <field name="name">records.department.billing.contact.view.tree</field>
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
             <list decoration-danger="budget_utilization &amp;gt; 90" decoration-warning="budget_utilization &amp;gt; 75" decoration-success="budget_utilization &amp;lt;= 50">

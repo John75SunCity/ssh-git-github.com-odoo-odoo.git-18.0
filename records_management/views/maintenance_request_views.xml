@@ -14,9 +14,9 @@
     </record>
 
 
-    <!-- View maintenance.request list -->
-    <record id="maintenance_request_view_list" model="ir.ui.view">
-        <field name="name">maintenance.request.view.list.inherit.records_management</field>
+<!-- View maintenance.request tree -->
+<record id="maintenance_request_view_tree" model="ir.ui.view">
+    <field name="name">maintenance.request.view.tree.inherit.records_management</field>
         <field name="model">maintenance.request</field>
         <field name="inherit_id" ref=""/>
         <field name="arch" type="xml">

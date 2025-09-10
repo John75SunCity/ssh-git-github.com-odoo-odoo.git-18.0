@@ -79,15 +79,15 @@
             </field>
         </record>
 
-        <!-- List view for advanced.billing.profile -->
-        <record id="advanced_billing_profile_view_list" model="ir.ui.view">
-            <field name="name">advanced.billing.profile.view.list</field>
+<!-- Tree view for advanced.billing.profile -->
+<record id="advanced_billing_profile_view_tree" model="ir.ui.view">
+    <field name="name">advanced.billing.profile.view.tree</field>
             <field name="model">advanced.billing.profile</field>
             <field name="arch" type="xml">
-                <list>
+<list>
                     <field name="name"/>
                     <field name="primary_contact_id"/>
-                </list>
+</list>
             </field>
         </record>
 

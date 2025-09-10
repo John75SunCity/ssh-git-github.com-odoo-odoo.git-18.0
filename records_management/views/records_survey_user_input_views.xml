@@ -2,8 +2,8 @@
 <odoo>
 
     <data>
-<!-- Records Survey User Input List View -->
-    <record id="records_survey_user_input_view_list" model="ir.ui.view">
+<!-- List view for records.survey.user.input -->
+<record id="records_survey_user_input_view_tree" model="ir.ui.view">
         <field name="name">records.survey.user.input.view.list</field>
         <field name="model">records.survey.user.input</field>
         <field name="arch" type="xml">

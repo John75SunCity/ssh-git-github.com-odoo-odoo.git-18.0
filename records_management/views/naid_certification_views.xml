@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- NAID Operator Certification Views -->
-<record id="naid_operator_certification_view_list" model="ir.ui.view">
-    <field name="name">naid.operator.certification.view.list</field>
+<record id="naid_operator_certification_view_tree" model="ir.ui.view">
+    <field name="name">naid.operator.certification.view.tree</field>
         <field name="model">naid.operator.certification</field>
         <field name="arch" type="xml">
-<list string="NAID Operator Certifications">
+<tree string="NAID Operator Certifications">
                 <field name="certification_number"/>
                 <field name="name"/>
                 <field name="status"/>
@@ -14,7 +14,7 @@
                 <field name="training_progress"/>
                 <field name="refresher_overdue"/>
                 <field name="company_id"/>
-</list>
+</tree>
         </field>
     </record>
 
@@ -122,18 +122,18 @@
     </record>
 
     <!-- Training Schedule Views -->
-<record id="naid_training_schedule_view_list" model="ir.ui.view">
-    <field name="name">naid.training.schedule.view.list</field>
+<record id="naid_training_schedule_view_tree" model="ir.ui.view">
+    <field name="name">naid.training.schedule.view.tree</field>
         <field name="model">naid.training.schedule</field>
         <field name="arch" type="xml">
-<list string="Training Schedule">
+<tree string="Training Schedule">
                 <field name="certification_id"/>
                 <field name="training_id"/>
                 <field name="scheduled_date"/>
                 <field name="status"/>
                 <field name="completed_date"/>
                 <field name="instructor_id"/>
-</list>
+</tree>
         </field>
     </record>
 

@@ -3,8 +3,8 @@
 
     <data>
 <!-- View records.service.type View List -->
-    <record id="records_service_type_view_list" model="ir.ui.view">
-        <field name="name">records.service.type.view.list</field>
+<record id="records_service_type_view_tree" model="ir.ui.view">
+    <field name="name">records.service.type.view.tree</field>
         <field name="model">records.service.type</field>
         <field name="arch" type="xml">
             <list>

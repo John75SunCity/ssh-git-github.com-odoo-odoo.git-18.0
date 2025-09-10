@@ -2,8 +2,8 @@
 <odoo>
 
     <data>
-<!-- View records.container.transfer.line View List -->
-    <record id="records_container_transfer_line_view_list" model="ir.ui.view">
+<!-- List view for records.container.transfer.line -->
+<record id="records_container_transfer_line_view_tree" model="ir.ui.view">
         <field name="name">records.container.transfer.line.view.list</field>
         <field name="model">records.container.transfer.line</field>
         <field name="arch" type="xml">

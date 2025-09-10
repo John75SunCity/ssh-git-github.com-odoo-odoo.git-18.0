@@ -2,14 +2,14 @@
 <odoo>
 
     <data>
-<!-- View mobile.photo View List -->
-    <record id="mobile_photo_view_list" model="ir.ui.view">
-        <field name="name">mobile.photo.view.list</field>
+<!-- View mobile.photo View Tree -->
+<record id="mobile_photo_view_tree" model="ir.ui.view">
+    <field name="name">mobile.photo.view.tree</field>
         <field name="model">mobile.photo</field>
         <field name="arch" type="xml">
-            <list>
+<list>
                 <field name="name"/>
-            </list>
+</list>
         </field>
     </record>
 

@@ -2,14 +2,14 @@
 <odoo>
 
     <data>
-<!-- View file_retrieveal_work_order_item.py View List -->
-    <record id="file_retrieveal_work_order_item_py_view_list" model="ir.ui.view">
-        <field name="name">file_retrieveal_work_order_item.py.view.list</field>
+<!-- View file_retrieveal_work_order_item.py View Tree -->
+<record id="file_retrieveal_work_order_item_py_view_tree" model="ir.ui.view">
+    <field name="name">file_retrieveal_work_order_item.py.view.tree</field>
         <field name="model">file_retrieveal_work_order_item.py</field>
         <field name="arch" type="xml">
-            <list>
+<list>
                 <field name="name"/>
-            </list>
+</list>
         </field>
     </record>
 
