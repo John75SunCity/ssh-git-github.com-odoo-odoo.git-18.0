@@ -32,8 +32,14 @@
     </group>
     <group>
         <field name="use_manual_override"/>
-<field name="manual_bin_size" invisible="not use_manual_override" required="use_manual_override"/>
-<field name="new_barcode" invisible="use_manual_override" required="not use_manual_override"/>
+<field name="manual_bin_size" invisible="[['use_manual_override','=',False]]" required="[['use_manual_override','=',True]]"/>
+<!--
+    The 'new_barcode' field is invisible when 'use_manual_override' is True,
+    and required when 'use_manual_override' is False.
+    This ensures users only enter a new barcode when not using manual override.
+-->
+<field name="new_barcode" attrs="{'invisible': [('use_manual_override', '=', True)], 'required': [('use_manual_override', '=', False)]}"/>
+
 
     </group>
 </group>
@@ -58,7 +64,8 @@
 
                 <group expand="1" string="Group By">
 <filter string="Bin" name="bin_id" domain="[]" context="{'group_by':'bin_id'}"/>
-<filter string="Scan Issue" name="scan_issue" domain="[]" context="{'group_by':'scan_issue'}"/>
+<filter string="Scan Issue" name="scan_issue" context="{'group_by':'scan_issue'}"/>
+
 
                 </group>
             </search>
@@ -69,12 +76,10 @@
     <record id="shredding_bin_barcode_wizard_action" model="ir.actions.act_window">
         <field name="name">Shredding Bin Barcode Wizard</field>
         <field name="res_model">shredding.bin.barcode.wizard</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
+<field name="view_mode">list,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Shredding Bin Barcode Wizard.
+There are no examples. Click here to add a new Shredding Bin Barcode Wizard.
             </p>
         </field>
     </record>

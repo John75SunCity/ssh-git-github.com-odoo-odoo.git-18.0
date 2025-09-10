@@ -7,11 +7,11 @@
         <field name="name">processing.log.resolution.wizard.view.tree</field>
         <field name="model">processing.log.resolution.wizard</field>
         <field name="arch" type="xml">
-            <list>
+<tree>
 <field name="log_id"/>
 <field name="resolution_notes"/>
 
-            </list>
+</tree>
         </field>
     </record>
 
@@ -22,14 +22,12 @@
         <field name="arch" type="xml">
 <form string="Resolve Processing Log">
                 <sheet>
-                    <div class="oe_title">
-<label for="log_id"/>
+<div class="oe_title">
+    <label for="log_id"/>
 
-                        <h1>
 <field name="log_id" readonly="1"/>
 
-                        </h1>
-                    </div>
+</div>
 <group>
     <field name="resolution_notes" placeholder="Enter resolution notes..."/>
 </group>
@@ -52,7 +50,7 @@
 <field name="resolution_notes"/>
 
                 <group expand="1" string="Group By">
-<filter string="Log Entry" name="log_id" domain="[]" context="{'group_by':'log_id'}"/>
+<filter string="Log Entry" name="log_id" context="{'group_by':'log_id'}"/>
 
                 </group>
             </search>
@@ -64,8 +62,7 @@
 <field name="name">Resolve Processing Log</field>
         <field name="res_model">processing.log.resolution.wizard</field>
         <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
+<field name="domain">[]</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
 Click to resolve processing logs.

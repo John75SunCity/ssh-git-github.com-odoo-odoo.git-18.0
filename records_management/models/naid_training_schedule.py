@@ -14,7 +14,7 @@ except Exception:  # pragma: no cover
     relativedelta = _RelativedeltaFallback  # fallback: minimal days-only implementation when python-dateutil is unavailable
 
 import logging  # stdlib first
-from odoo import models, fields, api  # odoo imports
+from odoo import models, fields, api, _  # odoo imports
 
 _logger = logging.getLogger(__name__)
 
@@ -59,19 +59,25 @@ class NAIDTrainingSchedule(models.Model):  # noqa: E305 (naming retained per exi
         for training in upcoming_trainings:
             # Send reminder notification/email
             training.certification_id.message_post(
-                body=f"Reminder: Training '{training.training_id.name}' is scheduled for {training.scheduled_date}"
+                body=_("Reminder: Training '%s' is scheduled for %s") % (training.training_id.name, training.scheduled_date)
             )
             training.reminder_sent = True
 
     def action_mark_completed(self):
         """Mark training as completed"""
         self.ensure_one()
-        self.completed_date = fields.Date.context_today(self)
-        self.status = 'completed'
+        self.write({
+            'completed_date': fields.Date.context_today(self),
+            'status': 'completed'
+        })
         # Update certification's completed trainings
-        self.certification_id.completed_trainings_ids = [(4, self.training_id.id)]
+        self.certification_id.write({
+            'completed_trainings_ids': [(4, self.training_id.id)]
+        })
+        self.message_post(body=_("Training completed."))
 
     def action_start_training(self):
         """Mark training as in progress"""
         self.ensure_one()
-        self.status = 'in_progress'
+        self.write({'status': 'in_progress'})
+        self.message_post(body=_("Training started."))

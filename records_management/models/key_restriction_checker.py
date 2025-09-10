@@ -1,141 +1,207 @@
-from datetime import date
+# -*- coding: utf-8 -*-
+"""
+Key Restriction Checker Wizard
+For technicians to quickly check if a customer can receive keys
+"""
+
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import UserError
 
 
-class KeyRestrictionChecker(models.Model):
-    _name = 'key.restriction.checker'
-    _description = 'Key Restriction Checker Log'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'create_date desc'
+class KeyRestrictionChecker(models.TransientModel):
+    """
+    Quick checker for technicians to verify key issuance permissions
+    """
 
-    # ============================================================================
-    # FIELDS
-    # ============================================================================
-    name = fields.Char(string='Check Reference', required=True, copy=False, readonly=True, default=lambda self: _('New'))
-    active = fields.Boolean(string='Active', default=True)
-    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    user_id = fields.Many2one('res.users', string='Checked By', default=lambda self: self.env.user)
-    partner_id = fields.Many2one('res.partner', string='Customer', tracking=True)
+    _name = 'key.restriction.checker.wizard'
+    _description = 'Key Restriction Checker Wizard'
 
-    restriction_type = fields.Selection([
-        ('none', 'None'),
-        ('blacklist', 'Blacklisted'),
-        ('whitelist', 'Whitelisted'),
-        ('limited', 'Limited Access')
-    ], string='Restriction Type', default='none', tracking=True)
+    # ==========================================
+    # INPUT FIELDS
+    # ==========================================
 
-    access_level = fields.Selection([
-        ('none', 'No Access'),
-        ('read', 'Read-Only'),
-        ('full', 'Full Access')
-    ], string='Access Level', default='none', tracking=True)
+    customer_name = fields.Char(string='Customer Name', help='Start typing customer name')
+    customer_id = fields.Many2one('res.partner', string='Customer',
+                                domain=[('is_company', '=', True)])
+    bin_identifier = fields.Char(string='Bin Identifier', help='Bin number or identifier')
 
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('checked', 'Checked'),
-        ('violation', 'Violation Detected'),
-        ('resolved', 'Resolved')
-    ], string='Status', default='draft', tracking=True)
+    # ==========================================
+    # RESULT FIELDS
+    # ==========================================
 
-    bin_number = fields.Char(string='Bin Number', tracking=True)
-    key_allowed = fields.Boolean(string='Key Allowed', readonly=True)
-    authorized_by_id = fields.Many2one('res.users', string='Authorized By', readonly=True)
-    authorization_bypass_used = fields.Boolean(string='Bypass Used', readonly=True)
-    override_reason = fields.Text(string='Override Reason', readonly=True)
-    security_violation_detected = fields.Boolean(string='Violation Detected', readonly=True)
+    check_performed = fields.Boolean(string='Check Performed', default=False)
+    key_allowed = fields.Boolean(string='Key Issuance Allowed')
+    restriction_reason = fields.Selection([
+        ('policy', 'Company Policy'),
+        ('security', 'Security Requirements'),
+        ('compliance', 'Compliance Requirements'),
+        ('contract', 'Contract Terms'),
+        ('risk', 'Risk Assessment'),
+        ('other', 'Other')
+    ], string='Restriction Reason', readonly=True)
 
-    expiration_date = fields.Date(string='Restriction Expiry Date')
-    last_check_date = fields.Datetime(string='Last Check Time', readonly=True)
+    restriction_notes = fields.Text(string='Restriction Notes', readonly=True)
+    restriction_date = fields.Date(string='Restriction Effective Date', readonly=True)
 
-    notes = fields.Text(string='Check Notes')
-    restriction_reason = fields.Text(string='Reason for Restriction')
+    # Display fields
+    status_message = fields.Html(string='Status', readonly=True)
+    action_required = fields.Html(string='Action Required', readonly=True)
 
-    is_expired = fields.Boolean(string="Is Expired", compute='_compute_expiration_status')
-    days_until_expiration = fields.Integer(string="Days to Expire", compute='_compute_expiration_status')
+    # ==========================================
+    # ACTIONS
+    # ==========================================
 
-    # Essential fields for key restriction functionality
-    related_user_id = fields.Many2one('res.users', string='Related User')
-    related_partner_id = fields.Many2one('res.partner', string='Related Customer')
-    related_bin_id = fields.Many2one('shred.bin', string='Related Bin')
-    related_container_id = fields.Many2one('records.container', string='Related Container')
-
-    # Optional fields for extended functionality (only if modules are installed)
-    related_project_task_id = fields.Many2one('project.task', string='Related Project Task')
-    related_sale_order_id = fields.Many2one('sale.order', string='Related Sale Order')
-    related_invoice_id = fields.Many2one('account.move', string='Related Invoice')
-
-    # ============================================================================
-    # ORM OVERRIDES
-    # ============================================================================
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('key.restriction.checker') or _('New')
-        return super().create(vals_list)
-
-    def write(self, vals):
-        """Override write to track updates and log messages."""
-        if any(key in self for key in ('state', 'restriction_type', 'access_level')):
-            self.message_post(body=_("Restriction details updated."))
-        return super().write(vals)
-
-    # ============================================================================
-    # COMPUTE METHODS
-    # ============================================================================
-    @api.depends('expiration_date')
-    def _compute_expiration_status(self):
-        """Compute if the restriction has expired and days remaining."""
-        for record in self:
-            if record.expiration_date:
-                today = date.today()
-                delta = record.expiration_date - today
-                record.is_expired = delta.days < 0
-                record.days_until_expiration = delta.days if delta.days >= 0 else 0
-            else:
-                record.is_expired = False
-                record.days_until_expiration = 0
-
-    # ============================================================================
-    # ACTION METHODS
-    # ============================================================================
-    def _check_restrictions(self):
-        """Check customer and bin restrictions."""
+    def action_verify_customer(self):
+        """Check customer key restriction status"""
         self.ensure_one()
-        # Placeholder for actual restriction checking logic
-        # This would query other models based on self.partner_id and self.bin_number
+
+        if not self.customer_id:
+            raise UserError(_("Please select a customer first"))
+
+        # Get customer restriction info
+        customer = self.customer_id
+
+        # Update result fields
         self.write({
-            'state': 'checked',
-            'key_allowed': True, # Default to allowed, logic would change this
-            'last_check_date': fields.Datetime.now(),
+            'check_performed': True,
+            'key_allowed': customer.key_issuance_allowed,
+            'restriction_reason': customer.key_restriction_reason,
+            'restriction_notes': customer.key_restriction_notes,
+            'restriction_date': customer.key_restriction_date,
         })
-        self.message_post(body=_("Restriction check performed."))
+
+        # Generate status message
+        if customer.key_issuance_allowed:
+            status_html = """
+                <div class="alert alert-success" role="alert">
+                    <i class="fa fa-check-circle"></i>
+                    <strong>KEY ISSUANCE ALLOWED</strong>
+                    <br/>Customer: <strong>%s</strong>
+                    <br/>You may issue bin keys to this customer's authorized personnel.
+                </div>
+            """ % customer.name
+
+            action_html = """
+                <div class="alert alert-info">
+                    <strong>Instructions:</strong>
+                    <ul>
+                        <li>Verify the person's identity and authorization</li>
+                        <li>Record the key issuance in the system</li>
+                        <li>Provide standard key handling instructions</li>
+                    </ul>
+                </div>
+            """
+        else:
+            reason_text = dict(self._fields['restriction_reason'].selection).get(
+                customer.key_restriction_reason, 'Not specified'
+            )
+
+            status_html = """
+                <div class="alert alert-danger" role="alert">
+                    <i class="fa fa-ban"></i>
+                    <strong>KEY ISSUANCE RESTRICTED</strong>
+                    <br/>Customer: <strong>%s</strong>
+                    <br/>Restriction Reason: <strong>%s</strong>
+                    <br/>Effective Date: %s
+                </div>
+            """ % (
+                customer.name,
+                reason_text,
+                customer.key_restriction_date.strftime('%B %d, %Y') if customer.key_restriction_date else 'Not specified'
+            )
+
+            action_html = """
+                <div class="alert alert-warning">
+                    <strong>Required Action:</strong>
+                    <ul>
+                        <li><strong>DO NOT</strong> issue keys to this customer</li>
+                        <li>Create a bin unlock service request instead</li>
+                        <li>Explain the restriction policy to the customer</li>
+                        <li>Offer alternative service options</li>
+                    </ul>
+                </div>
+            """
+
+        self.write({
+            'status_message': status_html,
+            'action_required': action_html
+        })
+
+        # Return updated form view
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'key.restriction.checker.wizard',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',
+            'context': self.env.context
+        }
+
+    def action_create_unlock_service(self):
+        """Create bin unlock service for restricted customer"""
+        self.ensure_one()
+
+        if not self.customer_id:
+            raise UserError(_("Please select a customer first"))
+
+        if self.customer_id.key_issuance_allowed:
+            raise UserError(_("Customer is not restricted from receiving keys"))
+
+        if not self.bin_identifier:
+            raise UserError(_("Please enter bin identifier"))
+
+        # Create bin unlock service
+        unlock_service = self.env['bin.unlock.service'].create({
+            'customer_id': self.customer_id.id,
+            'bin_identifier': self.bin_identifier,
+            'unlock_reason_code': 'key_restriction',
+            'reason': _("Customer is restricted from receiving keys. Service requested by technician."),
+            'urgency': 'normal',
+            'approval_required': True,
+        })
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Bin Unlock Service'),
+            'res_model': 'bin.unlock.service',
+            'res_id': unlock_service.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    @api.onchange('customer_name')
+    def _onchange_customer_name(self):
+        """Auto-search customers by name"""
+        if self.customer_name and len(self.customer_name) >= 3:
+            customers = self.env['res.partner'].search([
+                ('name', 'ilike', self.customer_name),
+                ('is_company', '=', True)
+            ], limit=10)
+
+            if len(customers) == 1:
+                self.customer_id = customers[0]
 
     def action_reset(self):
-        """Reset checker to initial state."""
+        """Reset the checker"""
         self.ensure_one()
         self.write({
-            'state': 'draft',
+            'customer_name': False,
+            'customer_id': False,
+            'bin_identifier': False,
+            'check_performed': False,
             'key_allowed': False,
-            'security_violation_detected': False,
-            'override_reason': False,
+            'restriction_reason': False,
+            'restriction_notes': False,
+            'restriction_date': False,
+            'status_message': False,
+            'action_required': False,
         })
 
-    def action_escalate_violation(self):
-        """Escalate security violation to management."""
-        self.ensure_one()
-        if not self.security_violation_detected:
-            raise UserError(_("There is no security violation to escalate."))
-        # Logic to create an activity for a security manager
-        self.message_post(body=_("Security violation has been escalated."))
-
-    # ============================================================================
-    # CONSTRAINTS
-    # ============================================================================
-    @api.constrains('restriction_type', 'access_level')
-    def _check_access_consistency(self):
-        """Validate access level is consistent with restriction type."""
-        for record in self:
-            if record.restriction_type == "blacklist" and record.access_level == "full":
-                raise ValidationError(_("Blacklisted entries cannot have full access level."))
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'key.restriction.checker.wizard',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new',
+            'context': self.env.context
+        }

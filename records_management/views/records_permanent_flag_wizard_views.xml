@@ -65,12 +65,11 @@
     <record id="action_records_permanent_flag_wizard" model="ir.actions.act_window">
         <field name="name">Records Permanent Flag Wizard</field>
         <field name="res_model">records.permanent.flag.wizard</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
+<field name="view_mode">tree,form</field>
+<field name="domain">[]</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Records Permanent Flag Wizard.
+There are no examples. Click here to add a new Records Permanent Flag Wizard.
             </p>
         </field>
     </record>

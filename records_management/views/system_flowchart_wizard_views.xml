@@ -33,11 +33,11 @@ System Architecture Flowchart</h1>
 <h2>Configuration Preview</h2>
 <p class="text-muted">Review settings before generating the flowchart</p>
 <group>
-    <field name="preview_data" readonly="1" widget="text" height="150"/>
+    <field name="preview_data" readonly="1" widget="text"/>
     <field name="config_valid" readonly="1"/>
 </group>
 </div>
-<div invisible="step != 'complete'" class="alert alert-success text-center" role="status">
+<div invisible="step != 'complete'" class="alert alert-success text-center">
     <h3>
         <i class="fa fa-check-circle me-2" aria-hidden="true"/>
 Ready to Launch!</h3>
@@ -61,7 +61,7 @@ Ready to Launch!</h3>
                                 'default_export_format': 'png'
                         }</field>
 </record>
-<menuitem id="system_flowchart_wizard_menu" name="📊 System Flowchart" parent="menu_records_management_root" action="system_flowchart_wizard_action" sequence="15" groups="records_management.group_records_manager"/>
+<menuitem id="system_flowchart_wizard_menu" name="System Flowchart" parent="menu_records_management_root" action="system_flowchart_wizard_action" sequence="15" groups="records_management.group_records_manager"/>
 
 </data>
 </odoo>

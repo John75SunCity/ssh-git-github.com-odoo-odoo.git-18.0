@@ -45,15 +45,14 @@
 
                     <group>
                         <group name="customer_data" string="👥 Customer Data Management">
-<!-- Replaced nonexistent existing_customer_id with partner_id (core contact) -->
-<field name="partner_id" options="{'no_create': False}" widget="many2one" readonly="create_new_customer == False"/>
-
-
+<!-- FIXED: Corrected field visibility logic -->
+<field name="partner_id" options="{'no_create': False}" widget="many2one" attrs="{'readonly': [('create_new_customer', '=', True)]}"/>
 
                             <field name="create_new_customer" widget="boolean_toggle"/>
-                            <field name="customer_category" invisible="create_new_customer == False"/>
-                            <field name="customer_credit_limit" widget="monetary" invisible="create_new_customer == False"/>
-                            <field name="customer_payment_terms" invisible="create_new_customer == False"/>
+<field name="customer_category" attrs="{'invisible': [('create_new_customer', '=', False)]}"/>
+<field name="customer_credit_limit" widget="monetary" attrs="{'invisible': [('create_new_customer', '=', False)]}"/>
+<field name="customer_payment_terms" attrs="{'invisible': [('create_new_customer', '=', False)]}"/>
+
                         </group>
                         <group name="service_selection" string="🛍️ Service Selection">
                             <field name="service_type" required="1" widget="radio"/>
@@ -68,20 +67,23 @@
                         <page string="Service Details" name="service_details">
                             <group>
                                 <group string="📄 Document Services">
-                                    <field name="document_count" invisible="service_type != 'document_processing'"/>
-                                    <field name="document_type" invisible="service_type != 'document_processing'"/>
-                                    <field name="scanning_required" widget="boolean_toggle" invisible="service_type != 'document_processing'"/>
-                                    <field name="digitization_format" invisible="scanning_required == False"/>
-                                    <field name="retention_period" invisible="service_type != 'document_storage'"/>
-                                    <field name="confidentiality_level" invisible="service_type not in ['document_processing', 'document_storage']"/>
+<!-- FIXED: Corrected visibility attributes syntax -->
+<field name="document_count" attrs="{'invisible': [('service_type', '!=', 'document_processing')]}"/>
+<field name="document_type" attrs="{'invisible': [('service_type', '!=', 'document_processing')]}"/>
+<field name="scanning_required" widget="boolean_toggle" attrs="{'invisible': [('service_type', '!=', 'document_processing')]}"/>
+<field name="digitization_format" attrs="{'invisible': [('scanning_required', '=', False)]}"/>
+<field name="retention_period" attrs="{'invisible': [('service_type', '!=', 'document_storage')]}"/>
+<field name="confidentiality_level" attrs="{'invisible': [('service_type', 'not in', ['document_processing', 'document_storage'])]}"/>
+
                                 </group>
                                 <group string="🗂️ Shredding Services">
-                                    <field name="shredding_type" invisible="service_type != 'shredding'"/>
-                                    <field name="witness_required" widget="boolean_toggle" invisible="service_type != 'shredding'"/>
-                                    <field name="certificate_required" widget="boolean_toggle" invisible="service_type != 'shredding'"/>
-                                    <field name="pickup_required" widget="boolean_toggle" invisible="service_type != 'shredding'"/>
-                                    <field name="estimated_volume" invisible="service_type != 'shredding'" widget="float"/>
-                                    <field name="destruction_method" invisible="service_type != 'shredding'"/>
+<field name="shredding_type" attrs="{'invisible': [('service_type', '!=', 'shredding')]}"/>
+<field name="witness_required" widget="boolean_toggle" attrs="{'invisible': [('service_type', '!=', 'shredding')]}"/>
+<field name="certificate_required" widget="boolean_toggle" attrs="{'invisible': [('service_type', '!=', 'shredding')]}"/>
+<field name="pickup_required" widget="boolean_toggle" attrs="{'invisible': [('service_type', '!=', 'shredding')]}"/>
+<field name="estimated_volume" attrs="{'invisible': [('service_type', '!=', 'shredding')]}" widget="float"/>
+<field name="destruction_method" attrs="{'invisible': [('service_type', '!=', 'shredding')]}"/>
+
                                 </group>
                             </group>
                             <separator string="Service Items"/>
@@ -111,11 +113,14 @@
                                     <field name="payment_reference"/>
                                     <field name="payment_terms"/>
                                     <field name="invoice_required" widget="boolean_toggle"/>
-                                    <field name="receipt_email" invisible="invoice_required == False" widget="email"/>
+<!-- FIXED: Corrected visibility attribute syntax -->
+<field name="receipt_email" attrs="{'invisible': [('invoice_required', '=', False)]}" widget="email"/>
+
                                 </group>
                             </group>
-                            <separator string="💵 Payment Split" invisible="payment_method_id == False"/>
-                            <field name="payment_split_ids" mode="list" invisible="payment_method_id == False" widget="one2many">
+<!-- FIXED: Corrected visibility attribute syntax -->
+<separator string="💵 Payment Split" attrs="{'invisible': [('payment_method_id', '=', False)]}"/>
+<field name="payment_split_ids" mode="list" attrs="{'invisible': [('payment_method_id', '=', False)]}" widget="one2many">
                                 <list string="Payment Methods" editable="bottom">
                                     <field name="payment_method_id" options="{'no_create': True}"/>
                                     <field name="amount" widget="monetary" sum="Total"/>
@@ -129,13 +134,17 @@
                             <group>
                                 <group string="📋 Audit Trail Configuration">
                                     <field name="audit_required" widget="boolean_toggle"/>
-                                    <field name="audit_level" invisible="audit_required == False"/>
-                                    <field name="compliance_officer" invisible="audit_required == False" options="{'no_create': True}"/>
-                                    <field name="audit_notes" invisible="audit_required == False" widget="text"/>
+<!-- FIXED: Corrected visibility attribute syntax -->
+<field name="audit_level" attrs="{'invisible': [('audit_required', '=', False)]}"/>
+<field name="compliance_officer" attrs="{'invisible': [('audit_required', '=', False)]}" options="{'no_create': True}"/>
+<field name="audit_notes" attrs="{'invisible': [('audit_required', '=', False)]}" widget="text"/>
+
                                 </group>
                                 <group string="🔒 NAID Compliance">
                                     <field name="naid_certificate_required" widget="boolean_toggle"/>
-                                    <field name="witness_verification" widget="boolean_toggle" invisible="naid_certificate_required == False"/>
+<!-- FIXED: Corrected visibility attribute syntax -->
+<field name="witness_verification" widget="boolean_toggle" attrs="{'invisible': [('naid_certificate_required', '=', False)]}"/>
+
                                     <field name="chain_of_custody" widget="boolean_toggle"/>
                                     <field name="compliance_documentation" widget="text"/>
                                 </group>
@@ -183,22 +192,29 @@
                             <group>
                                 <group string="🔗 System Integration">
                                     <field name="pos_order_created" widget="boolean_toggle" readonly="1"/>
-                                    <field name="pos_order_id" readonly="1" invisible="pos_order_created == False" options="{'no_create': True}"/>
+<!-- FIXED: Corrected visibility attribute syntax -->
+<field name="pos_order_id" readonly="1" attrs="{'invisible': [('pos_order_created', '=', False)]}" options="{'no_create': True}"/>
+
                                     <field name="customer_record_created" widget="boolean_toggle" readonly="1"/>
-                                    <field name="customer_record_id" readonly="1" invisible="customer_record_created == False" options="{'no_create': True}"/>
+<field name="customer_record_id" readonly="1" attrs="{'invisible': [('customer_record_created', '=', False)]}" options="{'no_create': True}"/>
+
                                     <field name="invoice_generated" widget="boolean_toggle" readonly="1"/>
-                                    <field name="invoice_id" readonly="1" invisible="invoice_generated == False" options="{'no_create': True}"/>
+<field name="invoice_id" readonly="1" attrs="{'invisible': [('invoice_generated', '=', False)]}" options="{'no_create': True}"/>
+
                                 </group>
                                 <group string="📋 Records Management Link">
                                     <field name="records_request_created" widget="boolean_toggle" readonly="1"/>
-                                    <field name="records_request_id" readonly="1" invisible="records_request_created == False" options="{'no_create': True}"/>
+<field name="records_request_id" readonly="1" attrs="{'invisible': [('records_request_created', '=', False)]}" options="{'no_create': True}"/>
+
                                     <field name="naid_audit_created" widget="boolean_toggle" readonly="1"/>
-                                    <field name="naid_audit_id" readonly="1" invisible="naid_audit_created == False" options="{'no_create': True}"/>
+<field name="naid_audit_id" readonly="1" attrs="{'invisible': [('naid_audit_created', '=', False)]}" options="{'no_create': True}"/>
+
                                     <field name="chain_of_custody_id" readonly="1" options="{'no_create': True}"/>
                                 </group>
                             </group>
-                            <separator string="⚠️ Integration Errors" invisible="integration_errors == False"/>
-                            <field name="integration_error_ids" mode="list" readonly="1" invisible="integration_errors == False" widget="one2many">
+<!-- FIXED: Corrected visibility attribute syntax -->
+<separator string="⚠️ Integration Errors" attrs="{'invisible': [('integration_errors', '=', False)]}"/>
+<field name="integration_error_ids" mode="list" readonly="1" attrs="{'invisible': [('integration_errors', '=', False)]}" widget="one2many">
                                 <list string="Integration Errors" decoration-danger="resolved == False" decoration-muted="resolved == True">
                                     <field name="error_time" widget="datetime"/>
                                     <field name="error_type"/>
@@ -220,12 +236,12 @@
         </field>
     </record>
 
-    <!-- Tree view for TREE -->
+<!-- FIXED: Corrected tree view element name -->
     <record id="visitor_pos_wizard_view_tree" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.tree</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
-            <list string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
+<tree string="Visitor POS Processing History" decoration-success="pos_order_created=True" decoration-info="customer_record_created=True" decoration-warning="audit_required=True" sample="1">
                 <field name="wizard_start_time" string="Processing Date" widget="datetime"/>
                 <field name="visitor_name" string="Visitor"/>
                 <field name="service_type" string="Service Type"/>
@@ -237,18 +253,19 @@
                 <field name="customer_record_created" string="Customer Created" widget="boolean_toggle"/>
                 <field name="naid_compliance_required" string="NAID Required" widget="boolean_toggle"/>
                 <field name="total_processing_time" string="Processing Time" widget="float"/>
-            </list>
+</tree>
         </field>
     </record>
 
-    <!-- Search view corrected -->
+<!-- FIXED: Corrected POS config domain in search view -->
     <record id="visitor_pos_wizard_view_search" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.search</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
             <search string="Search Visitor POS Processing">
                 <field name="visitor_name" string="Visitor Name" filter_domain="[('visitor_name', 'ilike', self)]"/>
-                <field name="pos_config_id" string="POS Terminal"/>
+<field name="pos_config_id" string="POS Terminal" domain="[('active', '=', True)]"/>
+
                 <field name="cashier_id" string="Cashier"/>
                 <field name="service_type" string="Service Type"/>
 

@@ -23,7 +23,7 @@
             <field name="arch" type="xml">
 <form string="Location Report Wizard">
                     <header>
-                        <h1>📊 Location Utilization Report</h1>
+                        <h1>Location Utilization Report</h1>
                     </header>
 <sheet>
                         <div class="alert alert-info" role="status">
@@ -32,13 +32,13 @@
                         </div>
 
                         <group>
-                            <group string="📍 Location Selection">
+                            <group string="Location Selection">
 <field name="location_id"/>
 <field name="include_child_locations"/>
 
                             </group>
 
-<group string="📅 Report Settings">
+<group string="Report Settings">
     <field name="report_date"/>
     <field name="company_id"/>
 
@@ -46,9 +46,9 @@
 </group>
                     </sheet>
                     <footer>
-<button name="action_print_report" type="object" string="📊 Generate Report"
+<button name="action_print_report" type="object" string="Generate Report"
                                 class="btn-primary"/>
-                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" type="object"/>
                     </footer>
                 </form>
             </field>

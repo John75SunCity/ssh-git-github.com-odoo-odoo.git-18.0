@@ -3,13 +3,14 @@
 Workflow Visualization Manager
 
 This model manages workflow visualizations, process diagrams, and workflow analytics
-for the Records Management module. It                       'target_model_id': self.env.ref('records_management.model_pickup_request').id,         'target_model_id': self.env.ref('records_management.model_records_document').id,rovides tools for visualizing business processes,
+for the Records Management module. It provides tools for visualizing business processes,
 workflow states, and system interactions.
 """
 
+from datetime import datetime, timedelta
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from datetime import datetime, timedelta
 
 
 class WorkflowVisualizationManager(models.Model):
@@ -88,7 +89,7 @@ class WorkflowVisualizationManager(models.Model):
                     "name": "Process Flow Generation Error",
                     "type": "server",
                     "level": "ERROR",
-                    "message": _("Error generating process flow diagram: %s", str(e)),
+                    "message": _("Error generating process flow diagram: %s") % str(e),
                     "path": "workflow.visualization.manager",
                     "func": "action_generate_process_flow_diagram",
                 }
@@ -100,7 +101,7 @@ class WorkflowVisualizationManager(models.Model):
         self.ensure_one()
         model = self.env['ir.model'].search([('model', '=', model_name)], limit=1)
         if not model:
-            raise UserError(_("Model %s not found", model_name))
+            raise UserError(_("Model %s not found") % model_name)
 
         # Get workflow states and transitions
         states = []
@@ -162,7 +163,7 @@ class WorkflowVisualizationManager(models.Model):
                 "name": "Workflow Analytics",
                 "type": "server",
                 "level": "INFO",
-                "message": _("Generated workflow analytics for model %s", model_name),
+                "message": _("Generated workflow analytics for model %s") % model_name,
                 "path": "workflow.visualization.manager",
                 "func": "get_workflow_analytics",
             }
@@ -171,10 +172,11 @@ class WorkflowVisualizationManager(models.Model):
         return analytics
 
     @api.model
-    def create_default_visualizations(self):
+    def action_create_default_visualizations(self):
         """
         Create default workflow visualizations for common models.
         """
+        self.ensure_one()
         default_visualizations = [
             {
                 "name": "Container Lifecycle Process",
@@ -186,13 +188,13 @@ class WorkflowVisualizationManager(models.Model):
                 "name": "Document Management Workflow",
                 "description": "Document processing and management workflow",
                 "visualization_type": "process_flow",
-                "target_model": self.env.ref("records_management.model_records_document").id,
+                "target_model_id": self.env.ref("records_management.model_records_document").id,
             },
             {
                 "name": "Pickup Request Process",
                 "description": "Customer pickup request processing workflow",
                 "visualization_type": "user_journey",
-                "target_model": self.env.ref("records_management.model_pickup_request").id,
+                "target_model_id": self.env.ref("records_management.model_pickup_request").id,
             },
         ]
 
@@ -206,9 +208,9 @@ class WorkflowVisualizationManager(models.Model):
                     'name': 'Default Visualization Creation Error',
                     'type': 'server',
                     'level': 'ERROR',
-                    'message': _('Error creating default visualization %s: %s', viz_data['name'], str(e)),
+                    'message': _('Error creating default visualization %s: %s') % (viz_data['name'], str(e)),
                     'path': 'workflow.visualization.manager',
-                    'func': 'create_default_visualizations',
+                    'func': 'action_create_default_visualizations',
                 })
 
         return created_visualizations

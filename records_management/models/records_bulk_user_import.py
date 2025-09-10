@@ -97,14 +97,14 @@ class RecordsBulkUserImport(models.Model):
         users_to_create = []
         for row_num, row in enumerate(csv_reader, start=2):
             if len(row) <= max(name_idx, email_idx):
-                log_lines.append(_("Row %s: Insufficient columns.", row_num))
+                log_lines.append(_("Row %s: Insufficient columns.") % row_num)
                 continue
 
             user_name = row[name_idx].strip()
             user_email = row[email_idx].strip()
 
             if not user_name or not user_email:
-                log_lines.append(_("Row %s: Missing name or email.", row_num))
+                log_lines.append(_("Row %s: Missing name or email.") % row_num)
                 continue
 
             # Prepare user data
@@ -127,17 +127,17 @@ class RecordsBulkUserImport(models.Model):
         if users_to_create:
             try:
                 self.env["res.users"].create(users_to_create)
-                log_lines.append(_("Successfully imported %s users.", len(users_to_create)))
+                log_lines.append(_("Successfully imported %s users.") % len(users_to_create))
                 # Log to audit trail for compliance
                 self.env["naid.audit.log"].create(
                     {
                         "action": "bulk_user_import",
-                        "details": _("Imported %s users via CSV.", len(users_to_create)),
+                        "details": _("Imported %s users via CSV.") % len(users_to_create),
                         "user_id": self.env.user.id,
                     }
                 )
             except Exception as e:
-                log_lines.append(_("Error creating users: %s", str(e)))
+                log_lines.append(_("Error creating users: %s") % str(e))
 
         self.write(
             {

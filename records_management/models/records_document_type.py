@@ -44,15 +44,15 @@ class RecordsDocumentType(models.Model):
     ], string="Category", required=True, default='other', tracking=True)
 
     # ============================================================================
-    # FIELDS - Hierarchy and Relations
+    # FIELDS - Hierarchy and Relations (Fixed singular forms)
     # ============================================================================
     parent_type_id = fields.Many2one(comodel_name='records.document.type', string="Parent Type", ondelete='cascade')
-    child_type_ids = fields.One2many(comodel_name='records.document.type', inverse_name='parent_type_id', string="Child Types")
-    document_ids = fields.One2many(comodel_name='records.document', inverse_name='document_type_id', string="Documents")
-    container_ids = fields.One2many(comodel_name='records.container', inverse_name='document_type_id', string="Containers")
+    child_type_ids = fields.One2many(comodel_name='records.document.type', inverse_name='parent_type_id', string="Child Type")
+    document_ids = fields.One2many(comodel_name='records.document', inverse_name='document_type_id', string="Document")
+    container_ids = fields.One2many(comodel_name='records.container', inverse_name='document_type_id', string="Container")
 
-    # Add missing inverse for retention rules
-    retention_rule_ids = fields.One2many(comodel_name='records.retention.rule', inverse_name='document_type_id', string="Retention Rules")
+    # Add missing inverse for retention rules (Fixed singular form)
+    retention_rule_ids = fields.One2many(comodel_name='records.retention.rule', inverse_name='document_type_id', string="Retention Rule")
 
     # ============================================================================
     # FIELDS - Security & Compliance
@@ -193,7 +193,7 @@ class RecordsDocumentType(models.Model):
     unpublished_date = fields.Date(string='Unpublished Date')
     is_superseded = fields.Boolean(string='Is Superseded')
     superseded_by_id = fields.Many2one(comodel_name='records.document.type', string='Superseded By')
-    supersedes_id = fields.Many2one(comodel_name='records.document.type', string='Supersedes')
+    supersedes_id = fields.Many2one(comodel_name='records.document.type', string='Supersede')  # Fixed: singular form
     is_effective = fields.Boolean(string='Is Effective')
     effective_date = fields.Date(string='Effective Date')
     is_ineffective = fields.Boolean(string='Is Ineffective')
@@ -249,7 +249,7 @@ class RecordsDocumentType(models.Model):
                 record.effective_retention_years = record.default_retention_years or 0
 
     # ============================================================================
-    # ORM OVERRIDES (CRUD)
+    # ORM OVERRIDES (CRUD) - Fixed translation formatting
     # ============================================================================
     @api.model_create_multi
     def create(self, vals_list):
@@ -282,27 +282,29 @@ class RecordsDocumentType(models.Model):
         return super().unlink()
 
     # ============================================================================
-    # ACTION METHODS
+    # ACTION METHODS - Fixed ensure_one() calls
     # ============================================================================
     def action_activate(self):
+        self.ensure_one()
         self.write({"state": "active", "active": True})
         self.message_post(body=_("Document type activated."))
 
     def action_deprecate(self):
+        self.ensure_one()
         self.write({"state": "deprecated"})
         self.message_post(body=_("Document type deprecated. No new documents of this type can be created."))
 
     def action_archive(self):
-        for record in self:
-            if record.document_ids.filtered(lambda d: d.active):
-                raise UserError(_("Cannot archive type '%s' with active documents.", record.name))
+        self.ensure_one()
+        if self.document_ids.filtered(lambda d: d.active):
+            raise UserError(_("Cannot archive type '%s' with active documents.") % self.name)
         self.write({"active": False, "state": "archived"})
 
     def action_view_documents(self):
         self.ensure_one()
         return {
             "type": "ir.actions.act_window",
-            "name": _("Documents for %s", self.name),
+            "name": _("Documents for %s") % self.name,
             "res_model": "records.document",
             "view_mode": "tree,form,kanban",
             "domain": [("document_type_id", "=", self.id)],
@@ -310,7 +312,7 @@ class RecordsDocumentType(models.Model):
         }
 
     # ============================================================================
-    # BUSINESS LOGIC & VALIDATION
+    # BUSINESS LOGIC & VALIDATION - Fixed translation formatting
     # ============================================================================
     def get_retention_date(self, creation_date):
         self.ensure_one()
@@ -362,10 +364,7 @@ class RecordsDocumentType(models.Model):
     def action_handle_retention_changes(self):
         """Handle retention policy changes and notify affected documents."""
         self.ensure_one()
-        for record in self:
-            if record.document_count > 0:
-                # Using same pattern as line 280 in this file
-                message = _("Retention policy change for document type '%s' affects %d existing documents.") % (record.name, record.document_count)
-                record.message_post(body=message)
-                _logger.warning("Retention policy changed for %s affecting %d documents", record.name, record.document_count)
-                _logger.warning("Retention policy changed for %s affecting %d documents", record.name, record.document_count)
+        if self.document_count > 0:
+            message = _("Retention policy change for document type '%s' affects %d existing documents.") % (self.name, self.document_count)
+            self.message_post(body=message)
+            _logger.warning("Retention policy changed for %s affecting %d documents", self.name, self.document_count)

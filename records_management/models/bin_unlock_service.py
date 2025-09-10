@@ -238,7 +238,7 @@ class BinUnlockService(models.Model):
         if not self.assigned_technician_id:
             raise UserError(_("Please assign a technician before scheduling."))
         self.write({'state': 'scheduled'})
-        self.message_post(body=_('Service scheduled for %s') % self.scheduled_date)
+        self.message_post(body=_("Service scheduled for %s" % self.scheduled_date))
 
     def action_start_service(self):
         self.ensure_one()
@@ -248,7 +248,7 @@ class BinUnlockService(models.Model):
             'state': 'in_progress',
             'service_start_time': fields.Datetime.now()
         })
-        self.message_post(body=_('Service started by %s') % (self.assigned_technician_id.name or self.env.user.name))
+        self.message_post(body=_("Service started by %s" % (self.assigned_technician_id.name or self.env.user.name)))
         self._create_audit_log('service_started')
 
     def action_complete(self):
@@ -306,7 +306,7 @@ class BinUnlockService(models.Model):
         }
         invoice = self.env['account.move'].create(invoice_vals)
         self.write({'invoice_id': invoice.id, 'state': 'invoiced'})
-        self.message_post(body=_('Invoice %s created.') % invoice.name)
+        self.message_post(body=_("Invoice %s created." % invoice.name))
         return {
             'type': 'ir.actions.act_window',
             'name': _('Invoice'),
@@ -362,7 +362,7 @@ class BinUnlockService(models.Model):
                 'action_type': action,
                 'user_id': self.env.user.id,
                 'timestamp': fields.Datetime.now(),
-                'description': _('Bin Unlock Service: %s for %s') % (action, self.name),
+                'description': _("Bin Unlock Service: %s for %s" % (action, self.name)),
                 'naid_compliant': self.naid_compliant,
             })
 

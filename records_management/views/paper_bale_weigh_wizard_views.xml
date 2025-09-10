@@ -16,7 +16,7 @@
 </div>
 <group>
     <group>
-        <field name="bale_id" invisible="1"/>
+        <field name="bale_id" attrs="{'invisible': [('bale_id', '!=', False)]}"/>
         <field name="current_weight" readonly="1"/>
         <field name="new_weight" required="1"/>
     </group>
@@ -25,7 +25,7 @@
     </group>
 </group>
 <group>
-    <field name="notes" placeholder="Optional notes about the weighing..."/>
+    <field name="notes" placeholder="Optional notes about the weighing..." help="Add any relevant comments or observations about this weighing."/>
 </group>
 </sheet>
 <footer>
@@ -42,7 +42,7 @@
 <field name="res_model">paper.bale.weigh.wizard</field>
 <field name="view_mode">form</field>
 <field name="target">new</field>
-<field name="context">{'default_bale_id': active_id}</field>
+<field name="context" eval="{'default_bale_id': active_id}"/>
 </record>
 </data>
 </odoo>
