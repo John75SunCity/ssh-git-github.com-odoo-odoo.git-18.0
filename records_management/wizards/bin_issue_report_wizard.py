@@ -619,8 +619,8 @@ class BinIssueRecord(models.Model):
     Permanent record of bin issues for tracking, analytics, and compliance.
     """
 
-    _name = 'bin.issue.record'
-    _description = 'Bin Issue Record'
+    _name = 'bin.issue.record.wizard'
+    _description = 'Bin Issue Record (Wizard Context)'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'report_date desc'
     _rec_name = 'name'

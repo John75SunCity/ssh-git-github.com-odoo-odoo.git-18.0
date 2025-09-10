@@ -900,32 +900,32 @@ class OdooValidator:
                                                 fields.append(item.targets[0].id)
 
                         # Store model information
-                        if model_name or (is_inherited_model and inherit_targets):
-                            # If no _name but has _inherit, use the first inherit target as model name
-                            if not model_name and inherit_targets:
-                                model_name = inherit_targets[0]
+                        if model_name:
+                            # Only process models with explicit _name (new model definitions)
+                            # Skip models that only have _inherit (they extend existing models)
+                            self._log(f"Found model '{model_name}' in {py_file.name} with {len(fields)} fields", "debug")
+                            if inherit_targets:
+                                self._log(f"  - Inherits from: {inherit_targets}", "debug")
+                            if fields:
+                                self._log(f"  - Fields: {fields}", "debug")
 
-                            if model_name:
-                                self._log(f"Found model '{model_name}' in {py_file.name} with {len(fields)} fields", "debug")
-                                if inherit_targets:
-                                    self._log(f"  - Inherits from: {inherit_targets}", "debug")
-                                if fields:
-                                    self._log(f"  - Fields: {fields}", "debug")
+                            # Check for duplicate model names (only for _name definitions)
+                            if model_name in model_info:
+                                error_msg = (f"❌ DUPLICATE MODEL: Model '{model_name}' is defined in multiple files. "
+                                           f"Previous: {model_info[model_name].get('file', 'unknown')}, "
+                                           f"Current: {py_file.name}")
+                                self.errors.append(error_msg)
+                                self._log(f"DUPLICATE MODEL DETECTED: {model_name}", "verbose")
 
-                                # Check for duplicate model names
-                                if model_name in model_info:
-                                    error_msg = (f"❌ DUPLICATE MODEL: Model '{model_name}' is defined in multiple files. "
-                                               f"Previous: {model_info[model_name].get('file', 'unknown')}, "
-                                               f"Current: {py_file.name}")
-                                    self.errors.append(error_msg)
-                                    self._log(f"DUPLICATE MODEL DETECTED: {model_name}", "verbose")
-
-                                model_info[model_name] = {
-                                    'own_fields': fields,
-                                    'inherits_from': inherit_targets,
-                                    'is_inherited_model': is_inherited_model,
-                                    'file': py_file.name
-                                }
+                            model_info[model_name] = {
+                                'own_fields': fields,
+                                'inherits_from': inherit_targets,
+                                'is_inherited_model': is_inherited_model,
+                                'file': py_file.name
+                            }
+                        elif is_inherited_model and inherit_targets:
+                            # Models with only _inherit extend existing models (not duplicates)
+                            self._log(f"Found model extension in {py_file.name} extending {inherit_targets} with {len(fields)} fields", "debug")
 
             except Exception as e:
                 # Skip files that can't be parsed

@@ -86,7 +86,8 @@ class RecordsPortalUserInvitationWizard(models.TransientModel):
 
 class RecordsBulkUserImport(models.TransientModel):
     """Wizard for bulk importing users from CSV/Excel"""
-    _name = 'records.bulk.user.import'
+    _name = 'records.bulk.user.import.wizard'
+    _description = 'Bulk User Import (Multi-wizard Context)'
     _description = 'Records Bulk User Import'
 
     # Import file

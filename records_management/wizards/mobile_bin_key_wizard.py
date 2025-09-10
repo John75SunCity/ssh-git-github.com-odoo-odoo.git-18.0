@@ -242,8 +242,9 @@ class MobileBinKeyWizard(models.TransientModel):
 
         return {"type": "ir.actions.act_window_close"}
 
-    def _execute_issue_new(self):
+    def action_execute_issue_new(self):
         """Execute new key issuance"""
+        self.ensure_one()
         # Create or get contact
         if self.create_new_contact:
             if not self.contact_name:
@@ -290,8 +291,9 @@ class MobileBinKeyWizard(models.TransientModel):
             "target": "current",
         }
 
-    def _execute_update_existing(self):
-        """Execute existing key update"""
+    def action_execute_update_existing(self):
+        """Execute update of existing key data"""
+        self.ensure_one()
         if not self.contact_id:
             raise ValidationError(_("Please select a contact to update"))
 
@@ -333,8 +335,9 @@ class MobileBinKeyWizard(models.TransientModel):
             "target": "current",
         }
 
-    def _execute_unlock_service(self):
+    def action_execute_unlock_service(self):
         """Execute unlock service creation"""
+        self.ensure_one()
         if not self.contact_id:
             raise ValidationError(
                 _("Please select a contact for the unlock service")

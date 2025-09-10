@@ -12,7 +12,8 @@ class RecordsPermanentFlagWizard(models.TransientModel):
     Records Permanent Flag Wizard
     """
 
-    _name = "records.permanent.flag.wizard"
+    _name = "records.permanent.flag.wizard.manager"
+    _description = "Permanent Flag Wizard (Manager)"
     _description = "Records Permanent Flag Wizard"
 
     # Core fields
