@@ -7,9 +7,7 @@ and customer communication features.
 """
 
 from odoo import models, fields, api, _
-from odoo.except    def action_send_certificate_email(self):
-        """Send certificate email to customer"""
-        self.ensure_one()ns import ValidationError, UserError
+from odoo.exceptions import ValidationError, UserError
 
 
 class ShreddingCertificate(models.Model):
@@ -310,15 +308,14 @@ class ShreddingCertificate(models.Model):
     # ACTION METHODS
     # ============================================================================
     def action_issue_certificate(self):
-        """Issue the shredding certificate after validation.
-
-        Validates that the certificate is in draft state and has at least one
-        linked shredding service before changing status to 'issued'. Posts a
-        notification message to the certificate's chatter for audit purposes.
-
-        Raises:
-            UserError: If certificate is not in draft state or has no linked services.
         """
+        Issue the certificate and update tracking information.
+        Transitions certificate from draft to issued state with audit trail.
+
+        Updates certificate issue date and posts notification to chatter.
+        Only allows issuing if certificate is in draft state.
+        """
+        self.ensure_one()
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_("Only draft certificates can be issued."))
@@ -377,6 +374,7 @@ class ShreddingCertificate(models.Model):
         to False, effectively removing it from active views while preserving
         the record for historical and compliance purposes.
         """
+        self.ensure_one()
         self.write({'state': 'archived', 'active': False})
         self.message_post(
             body=_("Certificate has been archived on %s", fields.Date.context_today(self)), message_type="notification"
@@ -388,11 +386,18 @@ class ShreddingCertificate(models.Model):
         Changes the certificate status back to 'draft' and ensures the active
         flag is set to True, allowing for modifications and re-issuance.
         """
+        self.ensure_one()
         self.write({'state': 'draft', 'active': True})
         self.message_post(
             body=_("Certificate has been reset to draft on %(date)s", {"date": fields.Date.context_today(self)}),
             message_type="notification",
         )
+
+    def action_send_certificate_email(self):
+        """Send certificate email to customer"""
+        self.ensure_one()
+        self._send_certificate_email()
+        return True
 
     def action_print_certificate(self):
         """Generate and return print action for the certificate.
