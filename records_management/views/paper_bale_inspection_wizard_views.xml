@@ -29,7 +29,7 @@
     <field name="inspection_type"/>
     <field name="passed"/>
 </group>
-<group string="Details" attrs="{'invisible': [('passed', '=', False)]}">
+<group string="Details" invisible="not passed">
     <!-- Details group content can go here if needed -->
 </group>
 <group string="Rejection Details" invisible="passed">

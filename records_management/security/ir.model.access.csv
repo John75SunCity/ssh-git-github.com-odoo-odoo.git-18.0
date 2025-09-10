@@ -495,7 +495,3 @@ access_slide_channel_manager,slide_channel,slide.channel,records_management.grou
 access_slide_channel_user,slide_channel,slide.channel,records_management.group_records_user,1,1,1,0
 access_barcode_seasonal_pricing_user,barcode_seasonal_pricing,barcode.seasonal.pricing,records_management.group_records_user,1,1,1,0
 access_barcode_seasonal_pricing_manager,barcode_seasonal_pricing,barcode.seasonal.pricing,records_management.group_records_manager,1,1,1,1
-access_rate_change_confirmation_wizard_user,rate.change.confirmation.wizard,rate.change.confirmation.wizard,records_management.group_records_user,1,1,1,0
-access_rate_change_confirmation_wizard_manager,rate.change.confirmation.wizard,rate.change.confirmation.wizard,records_management.group_records_manager,1,1,1,1
-access_stock_move_sms_validation_user,stock.move.sms.validation,stock.move.sms.validation,records_management.group_records_user,1,1,1,0
-access_stock_move_sms_validation_manager,stock.move.sms.validation,stock.move.sms.validation,records_management.group_records_manager,1,1,1,1

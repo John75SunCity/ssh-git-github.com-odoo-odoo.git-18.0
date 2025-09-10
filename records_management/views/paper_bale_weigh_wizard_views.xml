@@ -16,7 +16,8 @@
 </div>
 <group>
     <group>
-        <field name="bale_id" attrs="{'invisible': [('bale_id', '!=', False)]}"/>
+<field name="bale_id" invisible="bale_id != False"/>
+
         <field name="current_weight" readonly="1"/>
         <field name="new_weight" required="1"/>
     </group>

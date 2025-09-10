@@ -38,7 +38,8 @@
     and required when 'use_manual_override' is False.
     This ensures users only enter a new barcode when not using manual override.
 -->
-<field name="new_barcode" attrs="{'invisible': [('use_manual_override', '=', True)], 'required': [('use_manual_override', '=', False)]}"/>
+<field name="new_barcode" invisible="use_manual_override == True" required="use_manual_override == False"/>
+
 
 
     </group>

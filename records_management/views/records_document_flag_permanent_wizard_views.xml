@@ -14,7 +14,8 @@
 
                     <group>
                         <group string="Document Information">
-<field name="document_id" attrs="{'invisible': [('document_id','!=',False)]}"/>
+<field name="document_id" invisible="document_id != False"/>
+
 
                             <field name="document_name" readonly="1"/>
                             <field name="document_reference" readonly="1"/>
