@@ -16,15 +16,15 @@ class KeyRestrictionChecker(models.TransientModel):
     Quick checker for technicians to verify key issuance permissions
     """
 
-    _name = 'key.restriction.checker'
-    _description = 'Key Restriction Checker'
+    _name = 'key.restriction.checker.wizard.wizard'
+    _description = 'Key Restriction Checker Wizard'
 
     # ==========================================
     # INPUT FIELDS
     # ==========================================
 
     customer_name = fields.Char(string='Customer Name', help='Start typing customer name')
-    customer_id = fields.Many2one('res.partner', string='Customer', 
+    customer_id = fields.Many2one('res.partner', string='Customer',
                                 domain=[('is_company', '=', True)])
     bin_identifier = fields.Char(string='Bin Identifier', help='Bin number or identifier')
 
@@ -109,7 +109,7 @@ class KeyRestrictionChecker(models.TransientModel):
                     <br/>Effective Date: %s
                 </div>
             """ % (
-                customer.name, 
+                customer.name,
                 reason_text,
                 customer.key_restriction_date.strftime('%B %d, %Y') if customer.key_restriction_date else 'Not specified'
             )
@@ -134,7 +134,7 @@ class KeyRestrictionChecker(models.TransientModel):
         # Return updated form view
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'key.restriction.checker',
+            'res_model': 'key.restriction.checker.wizard',
             'res_id': self.id,
             'view_mode': 'form',
             'target': 'new',
@@ -205,7 +205,7 @@ class KeyRestrictionChecker(models.TransientModel):
 
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'key.restriction.checker',
+            'res_model': 'key.restriction.checker.wizard',
             'res_id': self.id,
             'view_mode': 'form',
             'target': 'new',

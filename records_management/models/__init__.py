@@ -185,7 +185,6 @@ from . import records_installer
 from . import records_inventory_dashboard
 from . import records_location
 from . import records_location_inspection
-from . import records_location_report_wizard
 from . import records_policy_version
 from . import records_promotional_discount
 from . import records_request
