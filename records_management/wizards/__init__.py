@@ -13,6 +13,7 @@ from . import rate_change_confirmation_wizard
 from . import records_container_type_converter
 from . import records_document_flag_permanent_wizard
 from . import records_location_report_wizard
+from . import records_permanent_flag_wizard
 from . import records_user_invitation_wizard
 from . import shredding_bin_barcode_wizard
 from . import shredding_bin_sequence_reset_wizard

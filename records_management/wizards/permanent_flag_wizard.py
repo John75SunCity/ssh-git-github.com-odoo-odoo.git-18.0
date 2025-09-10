@@ -2,43 +2,95 @@
 from odoo import models, fields, api
 
 
-
-class PermanentFlagWizard(models.TransientModel):
+class RecordsPermanentFlagWizard(models.TransientModel):
     _name = 'records.permanent.flag.wizard'
     _description = 'Records Permanent Flag Wizard'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    # Core fields
-    action_type = fields.Selection([
-        ('mark', 'Mark as Permanent'),
-        ('unmark', 'Remove Permanent Flag')
-    ], string='Action', required=True, default='mark')
+    # Core fields matching view expectations
+    operation_type = fields.Selection([
+        ('set', 'Set Permanent Flag'),
+        ('remove', 'Remove Permanent Flag')
+    ], string='Operation Type', required=True, default='set', tracking=True)
+
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled')
+    ], string='State', default='draft', tracking=True)
+
+    document_count = fields.Integer(
+        string='Document Count',
+        compute='_compute_document_count',
+        store=True
+    )
+
+    container_ids = fields.Many2many(
+        'records.container',
+        string='Containers',
+        help='Containers to apply permanent flag operation'
+    )
 
     document_ids = fields.Many2many(
         'records.document',
         string='Documents',
-        required=True
+        help='Documents to apply permanent flag operation'
     )
 
-    document_count = fields.Integer(
-        string='Document Count',
-        compute='_compute_document_count'
+    reason = fields.Text(
+        string='Reason',
+        help='Reason for permanent flag operation'
     )
 
-    user_password = fields.Char(
-        string='Password',
-        required=True
+    confirm = fields.Boolean(
+        string='Confirm Operation',
+        help='Confirm that you want to proceed with this operation'
     )
 
-    @api.depends('document_ids')
+    @api.depends('document_ids', 'container_ids')
     def _compute_document_count(self):
         for wizard in self:
-            wizard.document_count = len(wizard.document_ids)
+            doc_count = len(wizard.document_ids)
+            # Add documents from containers
+            for container in wizard.container_ids:
+                doc_count += len(container.document_ids) if hasattr(container, 'document_ids') else 0
+            wizard.document_count = doc_count
 
-    # Action method
-    def action_confirm(self):
-        """Execute the wizard action."""
+    def action_apply_changes(self):
+        """Execute the permanent flag operation."""
         self.ensure_one()
 
-        # Here you would implement the logic to mark/unmark documents as permanent
-        # For now, just close the wizard
-        return {'type': 'ir.actions.act_window_close'}
+        if not self.confirm:
+            raise models.UserError('Please confirm the operation before proceeding.')
+
+        self.state = 'in_progress'
+
+        # Apply permanent flag to documents
+        if self.document_ids:
+            if self.operation_type == 'set':
+                self.document_ids.write({'permanent_flag': True})
+            else:
+                self.document_ids.write({'permanent_flag': False})
+
+        # Apply permanent flag to documents in containers
+        if self.container_ids:
+            for container in self.container_ids:
+                if hasattr(container, 'document_ids'):
+                    if self.operation_type == 'set':
+                        container.document_ids.write({'permanent_flag': True})
+                    else:
+                        container.document_ids.write({'permanent_flag': False})
+
+        self.state = 'done'
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Success',
+                'message': f'Permanent flag operation completed for {self.document_count} documents.',
+                'type': 'success',
+                'sticky': False,
+            }
+        }
