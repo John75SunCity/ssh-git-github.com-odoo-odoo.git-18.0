@@ -4,8 +4,8 @@
 <!-- ENTERPRISE VISITOR POS WIZARD - Advanced Walk-In Customer Processing &amp; Audit Integration -->
 
 <!-- Form view for visitor.pos.wizard - Fixed for cache refresh -->
-<record id="visitor_pos_wizard_view_form_cache_fix" model="ir.ui.view">
-    <field name="name">visitor.pos.wizard.view.form.cache.fix</field>
+<record id="visitor_pos_wizard_view_form" model="ir.ui.view">
+    <field name="name">visitor.pos.wizard.view.form</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
             <form string="Visitor POS Processing Wizard">
@@ -25,19 +25,19 @@
                     </div>
 
                     <group>
-                        <group name="visitor_info" string="<i class="fa fa-user"/> Visitor Information">
+<group name="visitor_info" string="👤 Visitor Information">
 <field name="visitor_id" required="1" options="{'no_create': True}" widget="many2one"/>
 
 
                         </group>
-                        <group name="pos_config" string="🏪 POS Configuration">
+<group name="pos_config" string="🏢 POS Configuration">
 <field name="pos_config_id" required="1" options="{'no_create': True}"/>
 
                         </group>
                     </group>
 
                     <group>
-<group name="customer_data" string="<i class="fa fa-users"/> Customer Data Management">
+<group name="customer_data" string="👥 Customer Data Management">
 <field name="partner_id" options="{'no_create': False}" widget="many2one" readonly="create_new_customer == True"/>
 
 <field name="create_new_customer" widget="boolean_toggle"/>
@@ -49,7 +49,7 @@
 
 
 </group>
-<group name="service_selection" string="🛍️ Service Selection">
+<group name="service_selection" string="🛒 Service Selection">
     <field name="product_id" required="1" options="{'no_create': True}"/>
 
 
@@ -63,7 +63,7 @@
 
 </group>
 </group>
-<group string="� Order Summary">
+<group string="📋 Order Summary">
     <group>
 <field name="pricelist_id" readonly="1"/>
 </group>
@@ -181,7 +181,8 @@ Streamline walk-in customer processing with integrated POS transactions.
         <field name="name">Process Walk-In Visitor</field>
         <field name="res_model">visitor.pos.wizard</field>
         <field name="view_mode">form</field>
-<field name="view_id" ref="visitor_pos_wizard_view_form_cache_fix"/>
+<field name="view_id" ref="visitor_pos_wizard_view_form"/>
+
 
         <field name="target">new</field>
 <field name="context">{}</field>

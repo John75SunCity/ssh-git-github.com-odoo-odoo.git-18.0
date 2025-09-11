@@ -31,8 +31,7 @@
         <field name="arch" type="xml">
             <form string="Work Order Coordinator">
 <header>
-<button name="action_set_available" string="Set Available" type="object" class="oe_highlight" invisible="state == 'available'"/>
-
+    <button name="action_set_available" string="Set Available" type="object" class="oe_highlight" invisible="state == 'available'"/>
 
 <button name="action_set_busy" string="Set Busy" type="object" invisible="state == 'busy'"/>
 
@@ -40,20 +39,16 @@
 
 <field name="state" widget="statusbar" statusbar_visible="available,busy,unavailable"/>
 
-
 </header>
 
                 <sheet>
 <div class="oe_button_box" name="button_box">
-<button class="oe_stat_button" type="action" name="action_view_work_orders" icon="fa-tasks" title="Work Orders">
-    <field name="work_orders_count" string="Work Orders"/>
-
+    <button class="oe_stat_button" type="action" name="action_view_work_orders" icon="fa-tasks" title="Work Orders">
+        <field name="work_orders_count" string="Work Orders"/>
 
 </button>
 <button class="oe_stat_button" type="action" name="action_view_completed_orders" icon="fa-check-circle" title="Completed Orders">
 <field name="completed_orders_count" string="Completed"/>
-
-
 
 </button>
 <button class="oe_stat_button" type="action" name="action_view_certifications" icon="fa-certificate" title="Certifications"/>
@@ -72,39 +67,39 @@
                         </h1>
                     </div>
 <group>
-    <group name="coordinator_info" string="<i class="fa fa-user"/> Coordinator Information">
-        <field name="employee_id" options="{'no_create': True}"/>
-        <field name="department_id"/>
-        <field name="coordinator_type"/>
-        <field name="specialization"/>
-        <field name="priority" widget="priority"/>
-        <field name="active"/>
-    </group>
-    <group name="contact_info" string="📞 Contact Information">
-        <field name="phone"/>
-        <field name="mobile"/>
-        <field name="email"/>
-        <field name="emergency_contact"/>
-        <field name="emergency_phone"/>
-    </group>
+<group name="coordinator_info" string="&lt;i class=&quot;fa fa-user&quot;/&gt; Coordinator Information">
+    <field name="employee_id" options="{'no_create': True}"/>
+    <field name="department_id"/>
+    <field name="coordinator_type"/>
+    <field name="specialization"/>
+    <field name="priority" widget="priority"/>
+    <field name="active"/>
+</group>
+<group name="contact_info" string="&lt;i class=&quot;fa fa-phone&quot;/&gt; Contact Information">
+    <field name="phone"/>
+    <field name="mobile"/>
+    <field name="email"/>
+    <field name="emergency_contact"/>
+    <field name="emergency_phone"/>
+</group>
 </group>
 
 <notebook>
-    <page name="work_orders" string="<i class="fa fa-clipboard"/> Work Orders">
-        <group>
-            <group name="workload_stats" string="<i class="fa fa-bar-chart"/> Workload Statistics">
-                <field name="active_work_orders"/>
-                <field name="completed_work_orders"/>
-                <field name="pending_assignments"/>
-                <field name="average_completion_time"/>
-            </group>
-            <group name="performance_metrics" string="<i class="fa fa-bolt"/> Performance Metrics">
-                <field name="success_rate" widget="percentage"/>
-                <field name="customer_satisfaction"/>
-                <field name="on_time_completion_rate" widget="percentage"/>
-                <field name="last_performance_review"/>
-            </group>
-        </group>
+<page name="work_orders" string="&lt;i class=&quot;fa fa-clipboard&quot;/&gt; Work Orders">
+    <group>
+<group name="workload_stats" string="&lt;i class=&quot;fa fa-bar-chart&quot;/&gt; Workload Statistics">
+    <field name="active_work_orders"/>
+    <field name="completed_work_orders"/>
+    <field name="pending_assignments"/>
+    <field name="average_completion_time"/>
+</group>
+<group name="performance_metrics" string="&lt;i class=&quot;fa fa-bolt&quot;/&gt; Performance Metrics">
+    <field name="success_rate" widget="percentage"/>
+    <field name="customer_satisfaction"/>
+    <field name="on_time_completion_rate" widget="percentage"/>
+    <field name="last_performance_review"/>
+</group>
+</group>
 
 <separator string="Current Work Orders"/>
 <field name="current_work_order_ids" nolabel="1">
@@ -119,21 +114,21 @@
 </field>
 </page>
 
-<page name="skills_certifications" string="<i class="fa fa-trophy"/> Skills &amp; Certifications">
+<page name="skills_certifications" string="&lt;i class=&quot;fa fa-trophy&quot;/&gt; Skills &amp; Certifications">
     <group>
-        <group name="skills" string="<i class="fa fa-bullseye"/> Skills &amp; Specializations">
-            <field name="skill_level"/>
-            <field name="years_experience"/>
-            <field name="training_completed"/>
-            <field name="next_training_date"/>
-        </group>
-        <group name="availability" string="<i class="fa fa-calendar"/> Availability">
-            <field name="work_schedule"/>
-            <field name="time_zone"/>
-            <field name="overtime_approved"/>
-            <field name="weekend_availability"/>
-        </group>
-    </group>
+<group name="skills" string="&lt;i class=&quot;fa fa-bullseye&quot;/&gt; Skills &amp; Specializations">
+    <field name="skill_level"/>
+    <field name="years_experience"/>
+    <field name="training_completed"/>
+    <field name="next_training_date"/>
+</group>
+<group name="availability" string="&lt;i class=&quot;fa fa-calendar&quot;/&gt; Availability">
+    <field name="work_schedule"/>
+    <field name="time_zone"/>
+    <field name="overtime_approved"/>
+    <field name="weekend_availability"/>
+</group>
+</group>
 
 <separator string="Certifications &amp; Training"/>
 <field name="certification_ids" nolabel="1">
@@ -147,20 +142,20 @@
 </field>
 </page>
 
-<page name="equipment_tools" string="<i class="fa fa-wrench"/> Equipment &amp; Tools">
+<page name="equipment_tools" string="&lt;i class=&quot;fa fa-wrench&quot;/&gt; Equipment &amp; Tools">
     <group>
-        <group name="equipment_access" string="🚛 Equipment Access">
-            <field name="vehicle_access"/>
-            <field name="equipment_authorizations"/>
-            <field name="tool_certifications"/>
-        </group>
-        <group name="safety" string="🛡️ Safety &amp; Compliance">
-            <field name="safety_training_date"/>
-            <field name="safety_incidents"/>
-            <field name="naid_certified"/>
-            <field name="background_check_date"/>
-        </group>
-    </group>
+<group name="equipment_access" string="&lt;i class=&quot;fa fa-truck&quot;/&gt; Equipment Access">
+    <field name="vehicle_access"/>
+    <field name="equipment_authorizations"/>
+    <field name="tool_certifications"/>
+</group>
+<group name="safety" string="&lt;i class=&quot;fa fa-shield&quot;/&gt; Safety &amp; Compliance">
+    <field name="safety_training_date"/>
+    <field name="safety_incidents"/>
+    <field name="naid_certified"/>
+    <field name="background_check_date"/>
+</group>
+</group>
 
 <separator string="Assigned Equipment"/>
 <field name="assigned_equipment_ids" nolabel="1">
@@ -174,21 +169,21 @@
 </field>
 </page>
 
-<page name="audit_tracking" string="<i class="fa fa-clipboard"/> Audit &amp; Tracking">
+<page name="audit_tracking" string="&lt;i class=&quot;fa fa-clipboard&quot;/&gt; Audit &amp; Tracking">
     <group>
-        <group name="audit_info" string="<i class="fa fa-search"/> Audit Information">
-            <field name="user_id"/>
-            <field name="company_id" groups="base.group_multi_company"/>
-            <field name="create_date"/>
-            <field name="write_date"/>
-        </group>
-        <group name="tracking_info" string="<i class="fa fa-line-chart"/> Tracking Information">
-            <field name="last_login"/>
-            <field name="total_hours_logged"/>
-            <field name="productivity_score"/>
-            <field name="quality_score"/>
-        </group>
-    </group>
+<group name="audit_info" string="&lt;i class=&quot;fa fa-search&quot;/&gt; Audit Information">
+    <field name="user_id"/>
+    <field name="company_id" groups="base.group_multi_company"/>
+    <field name="create_date"/>
+    <field name="write_date"/>
+</group>
+<group name="tracking_info" string="&lt;i class=&quot;fa fa-line-chart&quot;/&gt; Tracking Information">
+    <field name="last_login"/>
+    <field name="total_hours_logged"/>
+    <field name="productivity_score"/>
+    <field name="quality_score"/>
+</group>
+</group>
 
 <separator string="Recent Activities"/>
 <field name="activity_ids" nolabel="1"/>
@@ -228,18 +223,15 @@
 <filter name="unavailable" string="Unavailable" domain="[('state', '=', 'unavailable')]"/>
 
 
-
 <separator/>
 <filter name="high_priority" string="High Priority" domain="[('priority', '=', '3')]"/>
 <filter name="certified" string="NAID Certified" domain="[('naid_certified', '=', True)]"/>
 <filter name="overtime_approved" string="Overtime Approved" domain="[('overtime_approved', '=', True)]"/>
 
 
-
 <separator/>
 <filter name="active" string="Active" domain="[('active', '=', True)]"/>
 <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
-
 
 
 <!-- Group By -->
@@ -273,7 +265,6 @@
     <field name="priority"/>
     <field name="specialization"/>
     <field name="success_rate"/>
-
 
 
 <templates>
@@ -351,12 +342,11 @@ Click to create a new Work Order Coordinator.
 
 <!-- Performance Dashboard Action -->
 <record id="action_work_order_coordinator_performance" model="ir.actions.act_window">
-<field name="name">Coordinator Performance</field>
-<field name="res_model">work.order.coordinator</field>
-<field name="view_mode">list,form</field>
-<field name="domain">[]</field>
-<field name="context">{'search_default_group_department': 1}</field>
+    <field name="name">Coordinator Performance</field>
+    <field name="res_model">work.order.coordinator</field>
+    <field name="view_mode">list,form</field>
+    <field name="domain">[]</field>
+    <field name="context">{'search_default_group_department': 1}</field>
 </record>
 </data>
-
 </odoo>
