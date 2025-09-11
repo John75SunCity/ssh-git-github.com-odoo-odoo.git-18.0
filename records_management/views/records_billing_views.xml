@@ -112,7 +112,7 @@ class="btn-danger" invisible="state in ['paid', 'cancelled']"/>
         <record id="records_billing_action" model="ir.actions.act_window">
             <field name="name">Billing Records</field>
             <field name="res_model">records.billing</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_id" ref="records_billing_view_tree"/>
             <field name="search_view_id" ref="records_billing_view_search"/>
             <field name="context">{'search_default_filter_draft': 1}</field>

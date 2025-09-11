@@ -54,7 +54,7 @@
         <record id="barcode_seasonal_pricing_action" model="ir.actions.act_window">
             <field name="name">Seasonal Pricing</field>
             <field name="res_model">barcode.seasonal.pricing</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
         </record>
 
     <menuitem id="barcode_seasonal_pricing_menu" name="Seasonal Pricing" parent="menu_barcode_config" action="barcode_seasonal_pricing_action" sequence="95"/>

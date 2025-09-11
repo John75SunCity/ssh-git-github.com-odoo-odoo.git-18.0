@@ -9,7 +9,7 @@
 <record id="action_records_container" model="ir.actions.act_window">
     <field name="name">Storage Containers</field>
     <field name="res_model">records.container</field>
-    <field name="view_mode">tree,kanban,form,calendar,graph</field>
+        <field name="view_mode">list,kanban,form,calendar,graph</field>
     <field name="context">{
                 'search_default_stored': 1,
                 'search_default_active': 1
@@ -37,7 +37,7 @@
 <record id="action_records_document" model="ir.actions.act_window">
     <field name="name">Documents</field>
     <field name="res_model">records.document</field>
-    <field name="view_mode">tree,form</field>
+        <field name="view_mode">list,form</field>
     <field name="context">{
                 'search_default_active': 1
             }</field>

@@ -213,7 +213,7 @@
 <record id="action_work_order_retrieval" model="ir.actions.act_window">
 <field name="name">Work Order Retrievals</field>
 <field name="res_model">work.order.retrieval</field>
-<field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">kanban,list,form</field>
 <field name="domain">[]</field>
 <field name="context">{
                 'search_default_in_progress': 1,
@@ -241,7 +241,7 @@
 <record id="action_work_order_retrieval_dashboard" model="ir.actions.act_window">
     <field name="name">My Retrievals</field>
     <field name="res_model">work.order.retrieval</field>
-    <field name="view_mode">kanban,tree,form</field>
+    <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('assigned_technician_id', '=', uid)]</field>
     <field name="context">{
                 'search_default_today': 1,

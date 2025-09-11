@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Enhanced Tree View for Chain of Custody -->
-        <record id="chain_of_custody_view_tree" model="ir.ui.view">
-            <field name="name">chain.of.custody.view.tree</field>
+        <!-- Enhanced List View for Chain of Custody -->
+    <record id="chain_of_custody_view_list" model="ir.ui.view">
+            <field name="name">chain.of.custody.view.list</field>
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
                 <tree decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'cancelled'" decoration-info="naid_compliant == True">
@@ -321,9 +321,9 @@
 
         <!-- Enhanced Action Window for Chain of Custody -->
         <record id="action_chain_of_custody" model="ir.actions.act_window">
-<field name="name">Chain of Custody</field>
+            <field name="name">Chain of Custody</field>
             <field name="res_model">chain.of.custody</field>
-            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">kanban,list,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search"/>
             <field name="context">{
                 'search_default_draft': 1,

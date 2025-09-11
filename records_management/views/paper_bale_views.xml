@@ -263,7 +263,7 @@ domain="[('source_date', '>=', context_today.strftime('%Y-%m-01'))]"/>
 <record id="action_paper_bale" model="ir.actions.act_window">
     <field name="name"><i class='fa fa-box'/> Paper Bales</field>
     <field name="res_model">paper.bale</field>
-<field name="view_mode">kanban,tree,form</field>
+<field name="view_mode">kanban,list,form</field>
 <field name="search_view_id" ref="paper_bale_view_search"/>
 <field name="context">{
                 'search_default_this_month': 1

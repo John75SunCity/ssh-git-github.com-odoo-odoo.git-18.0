@@ -254,7 +254,7 @@
     <record id="action_portal_request" model="ir.actions.act_window">
         <field name="name">Portal Requests</field>
         <field name="res_model">portal.request</field>
-        <field name="view_mode">kanban,tree,form</field>
+    <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
         <field name="context">{
             'default_user_id': uid,

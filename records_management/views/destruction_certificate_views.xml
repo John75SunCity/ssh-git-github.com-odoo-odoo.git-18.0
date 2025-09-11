@@ -273,7 +273,7 @@ Notify
         <record id="action_destruction_certificate" model="ir.actions.act_window">
 <field name="name">Destruction Certificates</field>
             <field name="res_model">destruction.certificate</field>
-            <field name="view_mode">kanban,tree,form,calendar</field>
+            <field name="view_mode">kanban,list,form,calendar</field>
             <field name="search_view_id" ref="destruction_certificate_view_search"/>
             <field name="context">{
                 'search_default_active': 1,

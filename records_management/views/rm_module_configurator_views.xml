@@ -263,7 +263,7 @@
 <record id="action_rm_module_configurator" model="ir.actions.act_window">
 <field name="name">Records Management Configurator</field>
 <field name="res_model">rm.module.configurator</field>
-<field name="view_mode">kanban,tree,form</field>
+            <field name="view_mode">kanban,list,form</field>
 <field name="search_view_id" ref="rm_module_configurator_view_search"/>
 <field name="domain">[]</field>
 <field name="context">{
