@@ -26,15 +26,11 @@
                     <header>
 <button name="action_confirm_destruction" type="object" string="✅ Confirm Destruction" class="btn-primary" invisible="state != 'draft' or destruction_confirmed"/>
 
-
 <button name="action_force_regenerate_certificate" type="object" string="♻️ Regenerate Document" class="btn-secondary" invisible="state == 'draft' or not destruction_confirmed" help="Force regeneration of the attached certificate document"/>
-
-
 
                         <button name="action_issue_certificate" type="object" string="📋 Issue Certificate" class="btn-primary" invisible="state != 'draft'"/>
                         <button name="action_revoke_certificate" type="object" string="🚫 Revoke Certificate" class="btn-danger" invisible="state not in ['issued', 'active']"/>
-                        <button name="action_print_certificate" type="object" string="🖨️ Print Certificate" class="btn-secondary"/>
-<button name="action_print_certificate" type="object" string="📧 Send Notification" class="btn-info"/>
+<button name="action_print_certificate" type="object" string="🖨️ Print Certificate" class="btn-secondary"/>
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,issued,active,expired,revoked"/>
                     </header>

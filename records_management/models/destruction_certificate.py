@@ -445,23 +445,20 @@ class DestructionCertificate(models.Model):
             }
         return False
 
-        # -------------------------------------------------------------------------
-        # ADDITIONAL VIEW BUTTON STUBS (safety placeholders)
-        # -------------------------------------------------------------------------
-        def action_revoke_certificate(self):  # referenced by XML button
-                """Placeholder: revoke an already issued/delivered certificate.
+    def action_revoke_certificate(self):  # referenced by XML button
+        """Placeholder: revoke an already issued/delivered certificate.
 
-                Future Behavior (planned):
-                    - Transition to a 'archived' or dedicated 'revoked' state (if added)
-                    - Log reason + user in chatter / audit log model
-                    - Optionally remove / supersede existing attachment
-                """
-                self.ensure_one()
-                # Minimal safe action: move to archived if not already to avoid noop button.
-                if self.state not in ("archived",):
-                        self.write({"state": "archived"})
-                        self.message_post(body=_("Certificate revoked (archived)."))
-                return True
+        Future Behavior (planned):
+            - Transition to a 'archived' or dedicated 'revoked' state (if added)
+            - Log reason + user in chatter / audit log model
+            - Optionally remove / supersede existing attachment
+        """
+        self.ensure_one()
+        # Minimal safe action: move to archived if not already to avoid noop button.
+        if self.state not in ("archived",):
+            self.write({"state": "archived"})
+            self.message_post(body=_("Certificate revoked (archived)."))
+        return True
 
     # -------------------------------------------------------------------------
     # COMPUTE METHODS
