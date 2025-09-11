@@ -24,13 +24,11 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-<button name="action_confirm_destruction" type="object" string="✅ Confirm Destruction" class="btn-primary" invisible="state != 'draft' or destruction_confirmed"/>
-
-<button name="action_force_regenerate_certificate" type="object" string="♻️ Regenerate Document" class="btn-secondary" invisible="state == 'draft' or not destruction_confirmed" help="Force regeneration of the attached certificate document"/>
-
-                        <button name="action_issue_certificate" type="object" string="📋 Issue Certificate" class="btn-primary" invisible="state != 'draft'"/>
-                        <button name="action_revoke_certificate" type="object" string="🚫 Revoke Certificate" class="btn-danger" invisible="state not in ['issued', 'active']"/>
-<button name="action_print_certificate" type="object" string="🖨️ Print Certificate" class="btn-secondary"/>
+<button name="action_confirm_destruction" type="object" string="Confirm Destruction" class="btn-primary" invisible="state != 'draft' or destruction_confirmed"/>
+<button name="action_force_regenerate_certificate" type="object" string="Regenerate Document" class="btn-secondary" invisible="state == 'draft' or not destruction_confirmed" help="Force regeneration of the attached certificate document"/>
+<button name="action_issue_certificate" type="object" string="Issue Certificate" class="btn-primary" invisible="state != 'draft'"/>
+<button name="action_revoke_certificate" type="object" string="Revoke Certificate" class="btn-danger" invisible="state not in ['issued', 'active']"/>
+<button name="action_print_certificate" type="object" string="Print Certificate" class="btn-secondary"/>
 
                         <field name="state" widget="statusbar" statusbar_visible="draft,issued,active,expired,revoked"/>
                     </header>
@@ -38,20 +36,19 @@
 <div class="oe_button_box" name="button_box">
 </div>
 <group>
-                            <group string="🆔 Certificate Information">
-<field name="name"/>
+<group string="Certificate Information">
+    <field name="name"/>
 
 <field name="partner_id"/>
-
 
 <field name="certificate_date"/>
 
                                 <field name="state"/>
                             </group>
-                            <group string="🗑️ Destruction Details">
-<field name="destruction_type"/>
-<field name="weight_processed" widget="numeric"/>
-<field name="containers_processed"/>
+<group string="Destruction Details">
+    <field name="destruction_type"/>
+    <field name="weight_processed" widget="numeric"/>
+    <field name="containers_processed"/>
 
 <field name="naid_certificate_number" placeholder="Official NAID certificate number (if applicable)"/>
 
@@ -59,15 +56,14 @@
                         </group>
 
                         <group>
-<group string="👥 Personnel">
+<group string="Personnel">
     <field name="compliance_officer_id"/>
     <field name="witness_id"/>
-
 
 <field name="operator_certification_id"/>
 
                             </group>
-<group string="� Related Records">
+<group string="Related Records">
     <field name="fsm_task_id"/>
     <field name="work_order_id"/>
     <field name="invoice_id"/>
@@ -77,8 +73,8 @@
                         </group>
 
                         <notebook>
-<page string="📋 Destruction Events" name="events">
-<field name="event_ids">
+<page string="Destruction Events" name="events">
+    <field name="event_ids">
         <list>
             <field name="name"/>
             <field name="date"/>
@@ -87,24 +83,24 @@
             <field name="shredded_items"/>
             <field name="quantity"/>
             <field name="unit_of_measure"/>
-</list>
-<form>
-<group>
-    <field name="name"/>
-    <field name="date"/>
-    <field name="time"/>
-    <field name="technician_id"/>
-    <field name="requestor_id"/>
-    <field name="location_type"/>
-    <field name="shredded_items"/>
-    <field name="quantity"/>
-    <field name="unit_of_measure"/>
-    <field name="notes"/>
-</group>
-</form>
-</field>
+        </list>
+        <form>
+            <group>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="time"/>
+                <field name="technician_id"/>
+                <field name="requestor_id"/>
+                <field name="location_type"/>
+                <field name="shredded_items"/>
+                <field name="quantity"/>
+                <field name="unit_of_measure"/>
+                <field name="notes"/>
+            </group>
+        </form>
+    </field>
 </page>
-<page string="📄 Notes" name="notes">
+<page string="Notes" name="notes">
     <field name="notes" nolabel="1" placeholder="Certificate notes and additional information..."/>
 </page>
 </notebook>
@@ -134,11 +130,13 @@
                                 <div class="o_kanban_card_header">
                                     <div class="o_kanban_card_header_title">
                                         <div class="o_primary">
-<strong>🆔    <field name="name"/>
+<strong>
+    <field name="name"/>
 </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            👤 <field name="partner_id"/>
+<field name="partner_id"/>
+
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
@@ -163,7 +161,8 @@
                                             </div>
 <div>
     <i class="fa fa-archive" title="Containers Processed" aria-label="Containers Processed" role="img"/>
-    <field name="containers_processed"/>
+
+<field name="containers_processed"/>
  containers
                                             </div>
                                         </div>
@@ -172,7 +171,7 @@
                                                 <field name="naid_verified" widget="boolean"/>
                                                 <div t-if="record.naid_verified.raw_value" class="text-success">
 <i class="fa fa-shield" title="NAID Verified" aria-label="NAID Verified" role="img"/>
- NAID
+                                                    NAID
                                                 </div>
                                             </div>
                                         </div>
@@ -180,23 +179,23 @@
                                     <div class="row mt-2">
                                         <div class="col-6">
                                             <button class="btn btn-primary btn-sm" type="object" name="action_print_certificate">
-                                                🖨️ Print
+Print
                                             </button>
                                         </div>
                                         <div class="col-6">
 <button class="btn btn-info btn-sm" type="object" name="action_print_certificate">
-                                                📧 Notify
+Notify
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                    <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Certificate</a>
-                                    <a role="menuitem" type="object" name="action_view_details" class="dropdown-item">📋 View Details</a>
-                                    <a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">🖨️ Print Certificate</a>
-<a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">📧 Send Notification</a>
+<a role="menuitem" type="edit" class="dropdown-item">Edit Certificate</a>
+<a role="menuitem" type="object" name="action_view_details" class="dropdown-item">View Details</a>
+<a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">Print Certificate</a>
+<a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">Send Notification</a>
                                     <div class="dropdown-divider"/>
-                                    <a role="menuitem" type="object" name="action_revoke_certificate" class="dropdown-item" invisible="state not in ['issued', 'active']">🚫 Revoke Certificate</a>
+<a role="menuitem" type="object" name="action_revoke_certificate" class="dropdown-item" invisible="state not in ['issued', 'active']">Revoke Certificate</a>
                                 </div>
                             </div>
                         </t>
@@ -218,23 +217,26 @@
                     <field name="destruction_method"/>
                     <field name="naid_certificate_number"/>
 
-                    <filter string="📋 Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                    <filter string="📄 Issued" name="issued" domain="[('state', '=', 'issued')]"/>
-                    <filter string="✅ Active" name="active" domain="[('state', '=', 'active')]"/>
-                    <filter string="⏰ Expired" name="expired" domain="[('state', '=', 'expired')]"/>
-                    <filter string="🚫 Revoked" name="revoked" domain="[('state', '=', 'revoked')]"/>
+<filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="Issued" name="issued" domain="[('state', '=', 'issued')]"/>
+<filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
+<filter string="Expired" name="expired" domain="[('state', '=', 'expired')]"/>
+<filter string="Revoked" name="revoked" domain="[('state', '=', 'revoked')]"/>
+
 
                     <separator/>
-                    <filter string="✅ NAID Verified" name="naid_verified" domain="[('naid_verified', '=', True)]"/>
-                    <filter string="❌ Not NAID Verified" name="naid_not_verified" domain="[('naid_verified', '=', False)]"/>
+<filter string="NAID Verified" name="naid_verified" domain="[('naid_verified', '=', True)]"/>
+<filter string="Not NAID Verified" name="naid_not_verified" domain="[('naid_verified', '=', False)]"/>
+
 
                     <separator/>
-                    <filter string="⚠️ Expiring Soon" name="expiring_soon" domain="[('expiry_date', '&lt;=', (context_today + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
-                    <filter string="📅 Expired" name="already_expired" domain="[('expiry_date', '&lt;', context_today)]"/>
-                    <filter string="💰 Profitable" name="profitable" domain="[('total_profit', '&gt;', 0)]"/>
-                    <filter string="📈 High Revenue" name="high_revenue" domain="[('total_revenue', '&gt;', 1000)]"/>
+<filter string="Expiring Soon" name="expiring_soon" domain="[('expiry_date', '&lt;=', (context_today + relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+<filter string="Expired" name="already_expired" domain="[('expiry_date', '&lt;', context_today)]"/>
+<filter string="Profitable" name="profitable" domain="[('total_profit', '&gt;', 0)]"/>
+<filter string="High Revenue" name="high_revenue" domain="[('total_revenue', '&gt;', 1000)]"/>
 
-                    <group expand="0" string="📊 Group By">
+
+<group expand="0" string="Group By">
                         <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Destruction Method" name="group_by_method" context="{'group_by': 'destruction_method'}"/>
@@ -252,8 +254,8 @@
             <field name="name">destruction.certificate.view.calendar</field>
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
-                <calendar string="📅 Destruction Certificate Schedule" date_start="destruction_date" color="state">
-<field name="name"/>
+<calendar string="Destruction Certificate Schedule" date_start="destruction_date" color="state">
+    <field name="name"/>
 
                     <field name="partner_id"/>
                     <field name="destruction_method"/>
@@ -265,7 +267,7 @@
 
         <!-- Action Window for Destruction Certificates -->
         <record id="action_destruction_certificate" model="ir.actions.act_window">
-            <field name="name">🗑️ Destruction Certificates</field>
+<field name="name">Destruction Certificates</field>
             <field name="res_model">destruction.certificate</field>
             <field name="view_mode">kanban,tree,form,calendar</field>
             <field name="search_view_id" ref="destruction_certificate_view_search"/>
@@ -275,6 +277,27 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
+Create your first destruction certificate!
+</p>
+<p>
+<b>NAID AAA Compliant Destruction Certificates:</b>
+<br/>
+                    • Unique certificate numbering system<br/>
+                    • NAID verification and compliance tracking<br/>
+                    • Multi-signature authorization process<br/>
+                    • Detailed item-by-item destruction records<br/>
+                    • Complete chain of custody integration<br/>
+                    • Financial tracking and profitability analysis<br/>
+                    • Automated expiry and renewal management<br/>
+                    • Full audit trail for regulatory compliance
+</p>
+</field>
+</record>
+
+<!-- Menu item for destruction certificates -->
+<menuitem id="menu_destruction_certificates" name="Destruction Certificates" parent="records_management.menu_records_compliance" action="action_destruction_certificate" sequence="25"/>
+</data>
+</odoo>
                     🗑️ Create your first destruction certificate!
                 </p>
                 <p>
