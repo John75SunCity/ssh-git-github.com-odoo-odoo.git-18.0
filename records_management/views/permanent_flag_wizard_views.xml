@@ -13,39 +13,39 @@
                                 🛡️ Mark Documents as PERMANENT
                     </span>
 <span invisible="operation_type != 'remove'">
-                                ⚠️ Remove PERMANENT Flag (Admin Only)
+                                <i class='fa fa-warning'/> Remove PERMANENT Flag (Admin Only)
                     </span>
                 </h1>
             </header>
             <sheet>
-<div class="alert alert-info" role="status" invisible="operation_type != 'set'">
-                    <strong>🛡️ PERMANENT RECORD PROTECTION</strong>
-                    <br/>
+<div class="alert alert-info" role="status" invisible="operation_type != 'set'>
+                    <strong>🛡️ PERMANENT RECORD PROTECTION</strong">
+                    <br"/>
                             Documents marked as permanent will be <strong>excluded from all destruction schedules</strong>
                             and shredding rotations. This action requires password verification for security.
                 </div>
 
-<div class="alert alert-warning" role="alert" invisible="operation_type != 'remove'">
-    <strong>⚠️ ADMINISTRATOR SECURITY WARNING</strong>
-    <br/>
+<div class="alert alert-warning" role="alert" invisible="operation_type != 'remove'>
+    <strong"><i class='fa fa-warning'"/> ADMINISTRATOR SECURITY WARNING</strong>
+    <br"/>
                             You are about to <strong>remove permanent protection</strong> from documents.
                             This will allow them to be included in destruction schedules again.
 </div>
 
 <group>
-    <group string="<i class="fa fa-file-o"/> Documents to Process">
+    <group string=" Documents to Process">
         <field name="document_count" string="Number of Documents"/>
 <field name="operation_type" readonly="1"/>
 
         <field name="document_ids" widget="many2many_tags" readonly="1" options="{'no_create': True, 'no_edit': True}"/>
     </group>
 
-<group string="<i class="fa fa-unlock"/> Security Verification">
+<group string=" Security Verification">
     <div class="alert alert-secondary" role="status">
-<i class="fa fa-shield" title="Security Protection"/>
+<i class='fa fa-shield' title="Security Protection"/>
 
         <strong>Password Required:</strong>
-        <br/>
+        <br"/>
                                     Enter your user password to confirm this security-sensitive action.
     </div>
     <field name="user_password" password="True" placeholder="Enter your password"/>
@@ -53,7 +53,7 @@
 </group>
 
 <div class="mt-3">
-    <h4><i class="fa fa-clipboard"/> Selected Documents:</h4>
+    <h4><i class='fa fa-clipboard'/> Selected Documents:</h4>
     <field name="document_ids" mode="list" nolabel="1">
 <list decoration-success="is_permanent == True" decoration-muted="is_permanent == False">
     <field name="name"/>
@@ -70,7 +70,7 @@
 </sheet>
 <footer>
 <button name="action_apply_changes" type="object" string="🛡️ Confirm Permanent Flag" class="btn-primary" invisible="operation_type != 'set'"/>
-<button name="action_apply_changes" type="object" string="⚠️ Remove Permanent Flag" class="btn-warning" invisible="operation_type != 'remove'"/>
+<button name="action_apply_changes" type="object" string=" Remove Permanent Flag" class="btn-warning" invisible="operation_type != 'remove'"/>
 
 <button string="Cancel" class="btn-secondary" special="cancel"/>
 </footer>

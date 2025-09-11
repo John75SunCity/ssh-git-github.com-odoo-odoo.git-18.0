@@ -36,21 +36,21 @@
                             <field name="notes"/>
                         </group>
                         <notebook>
-                            <page name="details" string="<i class="fa fa-clipboard"/> Details">
+                            <page name="details" string=" Details">
                                 <group>
-                                    <group name="dates" string="<i class="fa fa-calendar"/> Scheduling">
+                                    <group name="dates" string=" Scheduling">
 <field name="completion_date" readonly="state != 'in_progress'"/>
 
                                     </group>
-                                    <group name="financials" string="<i class="fa fa-money"/> Financial Information">
+                                    <group name="financials" string=" Financial Information">
                                         <field name="currency_id" invisible="1"/>
                                         <!-- Future: Add cost/billing fields -->
                                     </group>
                                 </group>
-                                <separator string="<i class="fa fa-pencil"/> Retrieval Instructions"/>
+                                <separator string=" Retrieval Instructions"/>
                                 <field name="message_ids" widget="mail_thread"/>
                             </page>
-                            <page name="tracking" string="<i class="fa fa-bar-chart"/> Tracking &amp; History">
+                            <page name="tracking" string=" Tracking &amp; History">
                                 <group>
                                     <group name="timestamps" string="⏰ Timestamps">
                                         <field name="create_date" readonly="1"/>
@@ -100,7 +100,7 @@
                                         </div>
                                         <div class="o_kanban_manage_button_section">
                                             <a class="o_kanban_manage_toggle_button" href="#">
-<i class="fa fa-ellipsis-v" role="img" aria-label="Manage options" title="Manage options"/>
+<i class='fa fa-ellipsis-v' role="img" aria-label="Manage options" title="Manage options"/>
 
                                             </a>
                                         </div>
@@ -109,12 +109,12 @@
                                         <div class="o_kanban_record_bottom">
                                             <div class="oe_kanban_bottom_left">
                                                 <div>
-<i class="fa fa-user" aria-hidden="true"/>
+<i class='fa fa-user' aria-hidden="true"/>
 <field name="user_id"/>
 
                                                 </div>
                                                 <div>
-<i class="fa fa-truck" aria-hidden="true"/>
+<i class='fa fa-truck' aria-hidden="true"/>
 <field name="delivery_method"/>
 
                                                 </div>

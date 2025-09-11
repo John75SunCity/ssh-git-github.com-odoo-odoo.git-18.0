@@ -33,7 +33,7 @@
                                     </span>
                                 </div>
                                 <span class="o_kanban_record_subtitle text-muted">
-                                    � <field name="bale_count"/> bales | <field name="buyer_company"/>
+                                    <i class='fa fa-cog'/> <field name="bale_count"/> bales | <field name="buyer_company"/>
                                 </span>
                             </div>
                             <div class="o_kanban_record_body">
@@ -54,7 +54,7 @@
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
                                     <span class="badge badge-pill badge-info">
-                                        � <field name="total_weight" widget="float"/> lbs
+                                        <i class='fa fa-cog'/> <field name="total_weight" widget="float"/> lbs
                                     </span>
                                 </div>
                                 <div class="oe_kanban_bottom_right">
@@ -148,7 +148,7 @@
                     </div>
 
                     <group>
-                        <group name="load_details" string="<i class="fa fa-box"/> Load Details">
+                        <group name="load_details" string=" Load Details">
                             <field name="total_weight" widget="float"/>
                             <field name="bale_count"/>
                             <field name="average_bale_weight" widget="float"/>
@@ -156,7 +156,7 @@
                             <field name="moisture_content" widget="percentage"/>
                             <field name="contamination_level"/>
                         </group>
-                        <group name="market_details" string="<i class="fa fa-money"/> Market Details">
+                        <group name="market_details" string=" Market Details">
                             <field name="market_price_per_ton" widget="monetary"/>
                             <field name="estimated_revenue" widget="monetary"/>
                             <field name="actual_sale_price" widget="monetary" invisible="state != 'sold'"/>
@@ -229,13 +229,13 @@
                         </page>
                         <page string="Documentation" name="documentation">
                             <group>
-                                <group string="<i class="fa fa-file-o"/> Sales Documentation">
+                                <group string=" Sales Documentation">
                                     <field name="bill_of_lading"/>
                                     <field name="sales_contract_number"/>
                                     <field name="invoice_number" invisible="state != 'sold'"/>
                                     <field name="payment_terms"/>
                                 </group>
-                                <group string="<i class="fa fa-bar-chart"/> Quality Documentation">
+                                <group string=" Quality Documentation">
                                     <field name="quality_certificate"/>
                                     <field name="weight_certificate"/>
                                     <field name="moisture_test_report"/>
@@ -372,7 +372,7 @@
 
     <!-- List view for ACTION -->
     <record id="action_load" model="ir.actions.act_window">
-        <field name="name">� Paper Bale Load Management</field>
+        <field name="name"><i class='fa fa-cog'/> Paper Bale Load Management</field>
         <field name="res_model">paper.bale.load</field>
         <field name="view_mode">kanban,list,form,calendar,graph,pivot</field>
         <field name="search_view_id" ref="view_load_search"/>
@@ -382,7 +382,7 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                � Create your first paper bale load!
+                <i class='fa fa-cog'/> Create your first paper bale load!
             </p>
             <p>
                 Track paper bale loads for post-shredding market sales operations.

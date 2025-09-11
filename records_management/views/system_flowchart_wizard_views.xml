@@ -9,14 +9,14 @@
             <header>
                 <button name="action_previous_step" string="← Back" type="object" invisible="step == 'welcome'" class="btn btn-secondary"/>
                 <button name="action_next_step" string="Next →" type="object" invisible="step in ('complete', 'preview')" class="btn btn-primary"/>
-                <button name="action_open_flowchart" string="🚀 Generate Flowchart" type="object" invisible="step != 'preview'" class="btn btn-success btn-lg"/>
-                <button name="action_open_flowchart" string="<i class="fa fa-bar-chart"/> Open Flowchart" type="object" invisible="step != 'complete'" class="btn btn-primary btn-lg"/>
+                <button name="action_open_flowchart" string=" Generate Flowchart" type="object" invisible="step != 'preview'" class="btn btn-success btn-lg"/>
+                <button name="action_open_flowchart" string=" Open Flowchart" type="object" invisible="step != 'complete'" class="btn btn-primary btn-lg"/>
                 <field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete" statusbar_colors='{"welcome":"blue","configure":"orange","preview":"yellow","complete":"green"}'/>
             </header>
             <sheet>
 <div invisible="step != 'welcome'" class="text-center mb-3">
     <h1>
-        <i class="fa fa-sitemap text-primary me-2"/>
+        <i class='fa fa-sitemap text-primary me-2'/>
 System Architecture Flowchart</h1>
     <p class="lead text-muted">Interactive visualization of your Records Management System</p>
 </div>
@@ -37,9 +37,9 @@ System Architecture Flowchart</h1>
     <field name="config_valid" readonly="1"/>
 </group>
 </div>
-<div invisible="step != 'complete'" class="alert alert-success text-center" role="status" aria-live="polite">
-    <h3>
-        <i class="fa fa-check-circle me-2" aria-hidden="true"/>
+<div invisible="step != 'complete'" class="alert alert-success text-center" role="status" aria-live="polite>
+    <h3">
+        <i class='fa fa-check-circle me-2' aria-hidden="true"/>
 Ready to Launch!</h3>
     <p class="mb-0">Your interactive flowchart configuration is complete and ready to use.</p>
 </div>

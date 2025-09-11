@@ -84,7 +84,7 @@
 </div>
 
 <group>
-<group name="order_info" string="<i class="fa fa-clipboard"/> Order Information">
+<group name="order_info" string=" Order Information">
     <field name="partner_id" options="{'no_create': True}"/>
     <field name="coordinator_id" options="{'no_create': True}"/>
     <field name="department_id"/>
@@ -94,7 +94,7 @@
     <field name="deadline_date"/>
     <field name="active"/>
 </group>
-<group name="progress_info" string="<i class="fa fa-bolt"/> Progress &amp; Status">
+<group name="progress_info" string=" Progress &amp; Status">
     <field name="started_date" readonly="1"/>
     <field name="completed_date" readonly="1"/>
     <field name="estimated_duration"/>
@@ -105,7 +105,7 @@
 </group>
 
 <notebook>
-<page name="containers" string="<i class="fa fa-box"/> Containers &amp; Items">
+<page name="containers" string=" Containers &amp; Items">
     <field name="container_ids">
         <list editable="bottom" decoration-muted="is_shredded">
             <field name="name"/>
@@ -125,7 +125,7 @@
     </group>
 </page>
 
-<page name="equipment" string="<i class="fa fa-wrench"/> Equipment &amp; Resources">
+<page name="equipment" string=" Equipment &amp; Resources">
     <group>
         <group name="equipment_info" string="Shredding Equipment">
             <field name="shredding_equipment_id"/>
@@ -161,7 +161,7 @@
             <field name="documentation_level"/>
         </group>
     </group>
-    <separator string="<i class="fa fa-clipboard"/> Compliance Checklist"/>
+    <separator string=" Compliance Checklist"/>
     <field name="compliance_checklist_ids">
         <list editable="bottom">
             <field name="check_item"/>
@@ -173,7 +173,7 @@
     </field>
 </page>
 
-<page name="timeline" string="⏱️ Timeline &amp; Tracking">
+<page name="timeline" string=" Timeline &amp; Tracking">
     <field name="timeline_ids">
         <list create="false" delete="false">
             <field name="timestamp"/>
@@ -185,11 +185,11 @@
     </field>
 </page>
 
-<page name="notes" string="<i class="fa fa-pencil"/> Notes &amp; Instructions">
+<page name="notes" string=" Notes &amp; Instructions">
     <group>
         <field name="description" placeholder="Special instructions for this shredding work order..."/>
     </group>
-    <separator string="<i class="fa fa-clipboard"/> Internal Notes"/>
+    <separator string=" Internal Notes"/>
     <field name="internal_notes" placeholder="Internal notes for coordination team..."/>
 </page>
 </notebook>
@@ -224,7 +224,7 @@
 <t t-name="card">
                     <div t-attf-class="oe_kanban_card oe_kanban_global_click">
                         <div class="o_kanban_image">
-                            <i class="fa fa-scissors fa-2x text-primary"/>
+                            <i class='fa fa-scissors fa-2x text-primary'/>
                         </div>
                         <div class="oe_kanban_content">
                             <div class="o_kanban_record_top">
@@ -244,11 +244,11 @@
                             <div class="o_kanban_record_body">
                                 <div class="row">
                                     <div class="col-6">
-                                        <small><i class="fa fa-calendar"/>                                            <field name="scheduled_date"/>
+                                        <small><i class='fa fa-calendar'/>                                            <field name="scheduled_date"/>
                                         </small>
                                     </div>
                                     <div class="col-6">
-                                        <small><i class="fa fa-user"/>                                            <field name="coordinator_id"/>
+                                        <small><i class='fa fa-user'/>                                            <field name="coordinator_id"/>
                                         </small>
                                     </div>
                                 </div>

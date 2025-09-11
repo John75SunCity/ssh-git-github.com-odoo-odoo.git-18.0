@@ -80,16 +80,16 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong>💼                                            <field name="contact_name"/>
+                                        <strong><i class='fa fa-briefcase'/>                                            <field name="contact_name"/>
                                         </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        <i class="fa fa-building"/>                                        <field name="department_id"/>
+                                        <i class='fa fa-building'/>                                        <field name="department_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#">
-<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+<i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
 
                                     </a>
                                 </div>
@@ -98,17 +98,17 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div>
-<i class="fa fa-user-circle" aria-hidden="true"/>
+<i class='fa fa-user-circle' aria-hidden="true"/>
 
                                             <field name="billing_role"/>
                                         </div>
                                         <div>
-<i class="fa fa-dollar" aria-hidden="true"/>
+<i class='fa fa-dollar' aria-hidden="true"/>
 
  Budget: $<field name="monthly_budget"/>
                                         </div>
                                         <div>
-<i class="fa fa-credit-card" aria-hidden="true"/>
+<i class='fa fa-credit-card' aria-hidden="true"/>
 
  Used: $<field name="current_month_charges"/>
                                         </div>
@@ -119,24 +119,24 @@
 % Used
                                         </span>
                                         <span class="badge badge-primary" t-if="record.approval_authority.raw_value">
-                                            <i class="fa fa-check-circle text-success"/> Approver
+                                            <i class='fa fa-check-circle text-success'"/> Approver
                                         </span>
                                     </div>
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col-12">
                                         <button class="btn btn-info btn-sm" type="object" name="action_view_approvals">
-                                            <i class="fa fa-check-circle text-success"/> Approvals
+                                            <i class='fa fa-check-circle text-success'"/> Approvals
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Contact</a>
-                                <a role="menuitem" type="object" name="action_view_approvals" class="dropdown-item"><i class="fa fa-check-circle text-success"/> View Approvals</a>
-                                <a role="menuitem" type="object" name="action_budget_report" class="dropdown-item"><i class="fa fa-clipboard"/> Budget Report</a>
+                                <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Contact</a>
+                                <a role="menuitem" type="object" name="action_view_approvals" class="dropdown-item"><i class='fa fa-check-circle text-success'/> View Approvals</a>
+                                <a role="menuitem" type="object" name="action_budget_report" class="dropdown-item"><i class='fa fa-clipboard'/> Budget Report</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_send_bill_notification" class="dropdown-item">📧 Send Bill Notification</a>
+                                <a role="menuitem" type="object" name="action_send_bill_notification" class="dropdown-item"><i class='fa fa-envelope'/> Send Bill Notification</a>
                             </div>
                         </div>
                     </t>
@@ -151,16 +151,16 @@
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
             <list decoration-danger="budget_utilization &amp;gt; 90" decoration-warning="budget_utilization &amp;gt; 75" decoration-success="budget_utilization &amp;lt;= 50">
-                <field name="contact_name" string="💼 Contact"/>
-                <field name="department_id" string="<i class="fa fa-building"/> Department"/>
-                <field name="billing_role" string="<i class="fa fa-bullseye"/> Role"/>
-                <field name="email" string="📧 Email"/>
-                <field name="phone" string="📞 Phone"/>
-                <field name="monthly_budget" string="<i class="fa fa-money"/> Monthly Budget" sum="Total Budget"/>
+                <field name="contact_name" string=" Contact"/>
+                <field name="department_id" string=" Department"/>
+                <field name="billing_role" string=" Role"/>
+                <field name="email" string=" Email"/>
+                <field name="phone" string=" Phone"/>
+                <field name="monthly_budget" string=" Monthly Budget" sum="Total Budget"/>
                 <field name="current_month_charges" string="💳 Current Charges" sum="Total Charges"/>
-                <field name="budget_utilization" string="<i class="fa fa-bar-chart"/> Utilization %" widget="percentage"/>
-                <field name="approval_authority" string="<i class="fa fa-check-circle text-success"/> Approver" widget="boolean_toggle"/>
-                <field name="active" string="🔄 Active" widget="boolean_toggle"/>
+                <field name="budget_utilization" string=" Utilization %" widget="percentage"/>
+                <field name="approval_authority" string=" Approver" widget="boolean_toggle"/>
+                <field name="active" string=" Active" widget="boolean_toggle"/>
                 <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link"/>
             </list>
         </field>
@@ -173,8 +173,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_budget_report" type="object" string="<i class="fa fa-clipboard"/> Generate Budget Report" class="btn-primary"/>
-                    <button name="action_send_bill_notification" type="object" string="📧 Send Bill Notification" class="btn-secondary"/>
+                    <button name="action_budget_report" type="object" string=" Generate Budget Report" class="btn-primary"/>
+                    <button name="action_send_bill_notification" type="object" string=" Send Bill Notification" class="btn-secondary"/>
                     <field name="active" widget="boolean_toggle"/>
                 </header>
                 <sheet>
@@ -193,14 +193,14 @@
                     </div>
 
                     <group>
-                        <group string="💼 Contact Information">
+                        <group string=" Contact Information">
                             <field name="contact_name" placeholder="Contact Full Name"/>
                             <field name="department_id"/>
                             <field name="billing_role"/>
                             <field name="email" widget="email"/>
                             <field name="phone" widget="phone"/>
                         </group>
-                        <group string="<i class="fa fa-money"/> Budget &amp;amp; Authority">
+                        <group string=" Budget &amp;amp; Authority">
                             <field name="monthly_budget"/>
                             <field name="current_month_charges"/>
                             <field name="budget_utilization" widget="percentage"/>
@@ -210,7 +210,7 @@
                     </group>
 
                     <notebook>
-                        <page string="<i class="fa fa-check-circle text-success"/> Approval History" name="approvals">
+                        <page string=" Approval History" name="approvals">
                             <field name="approval_history_ids" mode="list">
                                 <list>
                                     <field name="approval_date"/>
@@ -221,15 +221,15 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="<i class="fa fa-clipboard"/> Budget Analysis" name="budget">
+                        <page string=" Budget Analysis" name="budget">
                             <group>
-                                <group string="<i class="fa fa-line-chart"/> Current Period">
+                                <group string=" Current Period">
                                     <field name="current_month_budget"/>
                                     <field name="current_month_actual"/>
                                     <field name="current_month_variance"/>
                                     <field name="current_month_forecast"/>
                                 </group>
-                                <group string="<i class="fa fa-bar-chart"/> Year to Date">
+                                <group string=" Year to Date">
                                     <field name="ytd_budget"/>
                                     <field name="ytd_actual"/>
                                     <field name="ytd_variance"/>
@@ -237,15 +237,15 @@
                                 </group>
                             </group>
                         </page>
-                        <page string="📧 Notifications" name="notifications">
+                        <page string=" Notifications" name="notifications">
                             <group>
-                                <group string="🔔 Alert Settings">
+                                <group string=" Alert Settings">
                                     <field name="budget_alert_threshold"/>
                                     <field name="email_notifications"/>
                                     <field name="weekly_reports"/>
                                     <field name="monthly_statements"/>
                                 </group>
-                                <group string="<i class="fa fa-users"/> CC Recipients">
+                                <group string=" CC Recipients">
                                     <field name="cc_finance_team"/>
                                     <field name="cc_department_head"/>
                                     <field name="cc_additional_emails"/>
@@ -268,7 +268,7 @@
         <field name="name">records.department.billing.contact.view.graph</field>
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
-            <graph string="<i class="fa fa-bar-chart"/> Department Budget Analytics">
+            <graph string=" Department Budget Analytics">
                 <field name="department_id" type="row"/>
                 <field name="monthly_budget" type="measure"/>
                 <field name="current_month_charges" type="measure"/>
@@ -286,9 +286,9 @@
                 <field name="department_id"/>
                 <field name="email"/>
 
-                <filter string="💼 Active Contacts" name="active" domain="[('active', '=', True)]"/>
-                <filter string="<i class="fa fa-check-circle text-success"/> Approvers" name="approvers" domain="[('approval_authority', '=', True)]"/>
-                <filter string="📧 Email Notifications" name="email_notifications" domain="[('email_notifications', '=', True)]"/>
+                <filter string=" Active Contacts" name="active" domain="[('active', '=', True)]"/>
+                <filter string=" Approvers" name="approvers" domain="[('approval_authority', '=', True)]"/>
+                <filter string=" Email Notifications" name="email_notifications" domain="[('email_notifications', '=', True)]"/>
 
                 <separator/>
                 <filter string="🟢 Under Budget" name="under_budget" domain="[('budget_utilization', '&amp;lt;', 75)]"/>
@@ -296,10 +296,10 @@
                 <filter string="🔴 Over Budget" name="over_budget" domain="[('budget_utilization', '&amp;gt;=', 90)]"/>
 
                 <separator/>
-                <filter string="<i class="fa fa-money"/> High Budget" name="high_budget" domain="[('monthly_budget', '&amp;gt;', 10000)]"/>
-                <filter string="<i class="fa fa-bar-chart"/> Medium Budget" name="medium_budget" domain="[('monthly_budget', '&amp;gt;', 1000), ('monthly_budget', '&lt;=', 10000)]"/>
+                <filter string=" High Budget" name="high_budget" domain="[('monthly_budget', '&amp;gt;', 10000)]"/>
+                <filter string=" Medium Budget" name="medium_budget" domain="[('monthly_budget', '&amp;gt;', 1000), ('monthly_budget', '&lt;=', 10000)]"/>
 
-                <group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
+                <group expand="0" string=" Group By">
                     <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Billing Role" name="group_by_role" context="{'group_by': 'billing_role'}"/>
                     <filter string="Budget Range" name="group_by_budget" context="{'group_by': 'budget_range'}"/>
@@ -311,7 +311,7 @@
 
 <!-- List view for ENTERPRISE -->
     <record id="action_department_billing" model="ir.actions.act_window">
-        <field name="name"><i class="fa fa-money"/> Departmental Billing</field>
+        <field name="name"><i class='fa fa-money'/> Departmental Billing</field>
         <field name="res_model">records.department.billing.contact</field>
         <field name="view_mode">kanban,list,form,graph</field>
         <field name="search_view_id" ref="records_department_billing_contact_view_search"/>
@@ -321,19 +321,19 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                <i class="fa fa-money"/> Set up your first departmental billing contact!
+                <i class='fa fa-money'/> Set up your first departmental billing contact!
             </p>
             <p>
                 <b>Enterprise Departmental Billing:</b>
                 <br/>
-                • 💼 Multi-level departmental cost allocation<br/>
-                • <i class="fa fa-bar-chart"/> Real-time budget tracking and alerts<br/>
-                • <i class="fa fa-check-circle text-success"/> Hierarchical approval workflows<br/>
-                • 📧 Automated billing notifications<br/>
-                • <i class="fa fa-clipboard"/> Comprehensive budget reporting<br/>
-                • <i class="fa fa-bullseye"/> Role-based billing authorization<br/>
-                • <i class="fa fa-line-chart"/> Budget variance analysis and forecasting<br/>
-                • <i class="fa fa-mobile"/> Mobile-optimized budget management
+                • <i class='fa fa-briefcase'/> Multi-level departmental cost allocation<br/>
+                • <i class='fa fa-bar-chart'/> Real-time budget tracking and alerts<br/>
+                • <i class='fa fa-check-circle text-success'/> Hierarchical approval workflows<br/>
+                • <i class='fa fa-envelope'/> Automated billing notifications<br/>
+                • <i class='fa fa-clipboard'/> Comprehensive budget reporting<br/>
+                • <i class='fa fa-bullseye'/> Role-based billing authorization<br/>
+                • <i class='fa fa-line-chart'/> Budget variance analysis and forecasting<br/>
+                • <i class='fa fa-mobile'/> Mobile-optimized budget management
 </p>
 </field>
 </record>

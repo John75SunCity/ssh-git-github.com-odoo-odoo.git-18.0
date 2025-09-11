@@ -22,7 +22,7 @@
         <div class="o_kanban_card_header">
             <div class="o_kanban_card_header_title">
                 <div class="o_primary">
-                    <strong><i class="fa fa-box"/>                        <field name="name"/>
+                    <strong><i class='fa fa-box'/>                        <field name="name"/>
                     </strong>
                 </div>
                 <div class="o_secondary">
@@ -31,7 +31,7 @@
             </div>
             <div class="o_kanban_manage_button_section">
                 <a class="o_kanban_manage_toggle_button" href="#">
-<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+<i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
 
                 </a>
             </div>
@@ -40,46 +40,46 @@
             <div class="row">
                 <div class="col-8">
                     <div>
-<i class="fa fa-cubes" aria-hidden="true"/>
+<i class='fa fa-cubes' aria-hidden="true"/>
 
  Qty: <field name="product_qty"/>
                     </div>
                     <div>
-<i class="fa fa-calendar" aria-hidden="true"/>
+<i class='fa fa-calendar' aria-hidden="true"/>
 
  Created: <field name="create_date"/>
                     </div>
 <div t-if="record.expiration_date.raw_value">
-<i class="fa fa-clock-o" aria-hidden="true"/>
+<i class='fa fa-clock-o' aria-hidden="true"/>
 
  Expires: <field name="expiration_date"/>
 </div>
 </div>
 <div class="col-4">
 <span class="badge badge-info" t-if="record.ref.raw_value">
-                                                <i class="fa fa-link"/>    <field name="ref"/>
+                                                <i class='fa fa-link'"/>    <field name="ref"/>
 </span>
 <span class="badge badge-warning" t-if="record.expiration_date.raw_value and record.expiration_date.raw_value &lt; (new Date()).toISOString()">
-                                                ⚠️ Expired
+                                                <i class='fa fa-warning'"/> Expired
 </span>
 </div>
 </div>
 <div class="row mt-2">
 <div class="col-6">
 <button class="btn btn-primary btn-sm" type="object" name="action_view_stock_moves">
-                                                <i class="fa fa-clipboard"/> Movements
+                                                <i class='fa fa-clipboard'"/> Movements
 </button>
 </div>
 <div class="col-6">
-<button class="btn btn-success btn-sm" type="object" name="action_view_quants">
+<button class="btn btn-success btn-sm" type="object" name="action_view_quants>
                                                 📍 Locations
 </button>
 </div>
 </div>
-</div>
+</div">
 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-<a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Lot</a>
-<a role="menuitem" type="object" name="action_view_stock_moves" class="dropdown-item"><i class="fa fa-clipboard"/> View Movements</a>
+<a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Lot</a>
+<a role="menuitem" type="object" name="action_view_stock_moves" class="dropdown-item"><i class='fa fa-clipboard'/> View Movements</a>
 <a role="menuitem" type="delete" class="dropdown-item">🗑️ Delete</a>
 </div>
 </div>
@@ -95,15 +95,15 @@
     <field name="model">stock.lot</field>
         <field name="arch" type="xml">
 <list decoration-success="product_qty &gt; 0" decoration-warning="expiration_date and expiration_date &lt; context_today" decoration-info="ref != False">
-    <field name="name" string="<i class="fa fa-box"/> Serial/Lot Number"/>
+    <field name="name" string=" Serial/Lot Number"/>
     <field name="product_id" string="🏷️ Product"/>
-    <field name="product_qty" string="<i class="fa fa-bar-chart"/> Quantity"/>
+    <field name="product_qty" string=" Quantity"/>
     <field name="product_uom_id" string="📏 UoM"/>
-    <field name="create_date" string="<i class="fa fa-calendar"/> Created"/>
+    <field name="create_date" string=" Created"/>
 
 <field name="expiration_date" string="⏰ Expiration" optional="show"/>
-<field name="ref" string="<i class="fa fa-link"/> Reference" optional="hide"/>
-<field name="company_id" string="<i class="fa fa-building"/> Company" groups="base.group_multi_company" optional="hide"/>
+<field name="ref" string=" Reference" optional="hide"/>
+<field name="company_id" string=" Company" groups="base.group_multi_company" optional="hide"/>
 <button name="action_view_stock_moves" type="object" string="Movements" icon="fa-exchange" class="btn-link" title="View Stock Movements"/>
 
 </list>
@@ -117,22 +117,22 @@
         <field name="arch" type="xml">
         <form>
             <header>
-<button name="action_view_stock_moves" type="object" string="<i class="fa fa-clipboard"/> View Movements" class="btn-primary"/>
+<button name="action_view_stock_moves" type="object" string=" View Movements" class="btn-primary"/>
 </header>
 <sheet>
-<div class="oe_button_box" name="button_box">
+<div class="oe_button_box" name="button_box>
 <!-- Smart buttons for related records -->
 </div>
 
-<group>
-<group string="<i class="fa fa-box"/> Lot/Serial Information">
+<group">
+<group string=" Lot/Serial Information">
     <field name="name" placeholder="e.g., LOT-2024-001"/>
 
 <field name="product_id" required="1"/>
 <field name="ref"/>
 <field name="company_id" groups="base.group_multi_company"/>
 </group>
-<group string="<i class="fa fa-bar-chart"/> Inventory Details">
+<group string=" Inventory Details">
 <field name="product_qty" readonly="1"/>
 <field name="product_uom_id"/>
 <field name="create_date"/>
@@ -141,7 +141,7 @@
 </group>
 
 <notebook>
-<page string="<i class="fa fa-clipboard"/> Stock Movements" name="movements">
+<page string=" Stock Movements" name="movements">
 <field name="stock_move_ids" readonly="1">
     <list>
         <field name="date"/>
@@ -154,7 +154,7 @@
 </list>
 </field>
 </page>
-<page string="<i class="fa fa-box"/> Stock Locations" name="locations">
+<page string=" Stock Locations" name="locations">
 <field name="quant_ids" readonly="1">
     <list>
         <field name="location_id"/>
@@ -166,7 +166,7 @@
 </list>
 </field>
 </page>
-<page string="<i class="fa fa-pencil"/> Notes &amp; Description" name="notes">
+<page string=" Notes &amp; Description" name="notes">
     <field name="note" placeholder="Additional information about this lot/serial number..."/>
 </page>
 </notebook>
@@ -191,23 +191,23 @@
         <field name="ref"/>
         <field name="create_date"/>
 
-        <filter string="<i class="fa fa-box"/> In Stock" name="in_stock" domain="[('product_qty', '&gt;', 0)]"/>
+        <filter string=" In Stock" name="in_stock" domain="[('product_qty', '&gt;', 0)]"/>
         <filter string="📤 Out of Stock" name="out_of_stock" domain="[('product_qty', '=', 0)]"/>
 
         <separator/>
-        <filter string="⚠️ Expired" name="expired" domain="[('expiration_date', '&lt;', context_today)]"/>
-        <filter string="🔔 Expiring Soon (30 days)" name="expiring_soon" domain="[('expiration_date', '&lt;=', (context_today + datetime.timedelta(days=30)).strftime('%Y-%m-%d')), ('expiration_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]"/>
-        <filter string="🕒 Valid" name="valid" domain="[('expiration_date', '&gt;=', context_today)]"/>
+        <filter string=" Expired" name="expired" domain="[('expiration_date', '&lt;', context_today)]"/>
+        <filter string=" Expiring Soon (30 days)" name="expiring_soon" domain="[('expiration_date', '&lt;=', (context_today + datetime.timedelta(days=30)).strftime('%Y-%m-%d')), ('expiration_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]"/>
+        <filter string=" Valid" name="valid" domain="[('expiration_date', '&gt;=', context_today)]"/>
 
         <separator/>
-        <filter string="<i class="fa fa-link"/> With Reference" name="with_reference" domain="[('ref', '!=', False)]"/>
+        <filter string=" With Reference" name="with_reference" domain="[('ref', '!=', False)]"/>
 
         <separator/>
-        <filter string="<i class="fa fa-calendar"/> Created Today" name="created_today" domain="[('create_date', '&gt;=', context_today)]"/>
+        <filter string=" Created Today" name="created_today" domain="[('create_date', '&gt;=', context_today)]"/>
         <filter string="📆 Created This Week" name="created_this_week" domain="[('create_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
         <filter string="🗓️ Created This Month" name="created_this_month" domain="[('create_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
 
-        <group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
+        <group expand="0" string=" Group By">
             <filter string="Product" name="group_by_product" context="{'group_by': 'product_id'}"/>
             <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
             <filter string="Creation Date" name="group_by_create_date" context="{'group_by': 'create_date:month'}"/>
@@ -219,7 +219,7 @@
 
 <!-- Action for Stock Lots -->
 <record id="action_stock_lot" model="ir.actions.act_window">
-<field name="name"><i class="fa fa-box"/> Serial Numbers / Lots</field>
+<field name="name"><i class='fa fa-box'/> Serial Numbers / Lots</field>
 <field name="res_model">stock.lot</field>
 <field name="view_mode">kanban,list,form</field>
 <field name="search_view_id" ref="stock_lot_view_search"/>
@@ -228,18 +228,18 @@
             }</field>
 <field name="help" type="html">
     <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-box"/> Create your first serial number or lot!
+                    <i class='fa fa-box'/> Create your first serial number or lot!
     </p>
     <p>
         <b>Records Management Inventory Tracking:</b>
         <br/>
-                    • <i class="fa fa-box"/> Complete serial number and lot management<br/>
-                    • <i class="fa fa-link"/> Integration with Records Management system<br/>
-                    • <i class="fa fa-bar-chart"/> Real-time stock movement tracking<br/>
+                    • <i class='fa fa-box'/> Complete serial number and lot management<br/>
+                    • <i class='fa fa-link'/> Integration with Records Management system<br/>
+                    • <i class='fa fa-bar-chart'/> Real-time stock movement tracking<br/>
                     • ⏰ Expiration date monitoring and alerts<br/>
                     • 🏷️ Product and reference tracking<br/>
-                    • <i class="fa fa-clipboard"/> Complete audit trail and history<br/>
-                    • <i class="fa fa-building"/> Multi-company support
+                    • <i class='fa fa-clipboard'/> Complete audit trail and history<br/>
+                    • <i class='fa fa-building'/> Multi-company support
 </p>
 </field>
 </record>

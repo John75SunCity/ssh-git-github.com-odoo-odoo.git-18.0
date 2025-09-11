@@ -32,7 +32,7 @@
         <field name="arch" type="xml">
             <form string="System Diagram Data">
 <header>
-    <button name="action_generate_diagram" type="object" string="🔄 Generate Diagram" class="btn-primary"/>
+    <button name="action_generate_diagram" type="object" string=" Generate Diagram" class="btn-primary"/>
     <button name="action_export_data" type="object" string="📤 Export Data" class="btn-secondary"/>
     <button name="action_clear_cache" type="object" string="🗑️ Clear Cache" class="btn-warning"/>
     <field name="state" widget="statusbar" statusbar_visible="draft,generated,cached"/>
@@ -58,13 +58,13 @@
                         </h1>
                     </div>
 <group>
-    <group name="search_config" string="<i class="fa fa-bullseye"/> Search Configuration">
+    <group name="search_config" string=" Search Configuration">
         <field name="search_type" widget="radio"/>
         <field name="search_query" placeholder="Enter search target (user, model, or company)"/>
         <field name="show_access_only" string="Access Rights Focus"/>
         <field name="include_inactive" string="Include Inactive Records"/>
     </group>
-    <group name="system_info" string="<i class="fa fa-bar-chart"/> System Information">
+    <group name="system_info" string=" System Information">
         <field name="company_id" groups="base.group_multi_company"/>
         <field name="user_id" string="Created by"/>
         <field name="create_date" string="Generated Date"/>
@@ -85,13 +85,13 @@
         </group>
     </page>
 
-    <page name="edges_data" string="<i class="fa fa-link"/> Edges Data">
+    <page name="edges_data" string=" Edges Data">
         <group>
             <field name="edges_data" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
         </group>
     </page>
 
-    <page name="advanced_config" string="⚙️ Advanced Configuration">
+    <page name="advanced_config" string=" Advanced Configuration">
         <group>
             <group name="layout_settings" string="Layout Settings">
                 <field name="layout_algorithm" string="Layout Algorithm"/>
@@ -106,7 +106,7 @@
         </group>
     </page>
 
-    <page name="performance_stats" string="<i class="fa fa-line-chart"/> Performance Statistics">
+    <page name="performance_stats" string=" Performance Statistics">
         <group>
             <field name="generation_time" string="Generation Time (ms)" readonly="1"/>
             <field name="cache_size" string="Cache Size (KB)" readonly="1"/>
@@ -141,19 +141,19 @@
     <!-- Filters -->
     <filter name="user_diagrams" string="🧑 User Analysis" domain="[('search_type', '=', 'user')]"/>
     <filter name="model_diagrams" string="🏗️ Model Structure" domain="[('search_type', '=', 'model')]"/>
-    <filter name="company_diagrams" string="<i class="fa fa-building"/> Company Overview" domain="[('search_type', '=', 'company')]"/>
+    <filter name="company_diagrams" string=" Company Overview" domain="[('search_type', '=', 'company')]"/>
 
     <separator/>
 
-    <filter name="access_focus" string="<i class="fa fa-lock"/> Access Rights Focus" domain="[('show_access_only', '=', True)]"/>
-    <filter name="include_inactive" string="<i class="fa fa-clipboard"/> Include Inactive" domain="[('include_inactive', '=', True)]"/>
+    <filter name="access_focus" string=" Access Rights Focus" domain="[('show_access_only', '=', True)]"/>
+    <filter name="include_inactive" string=" Include Inactive" domain="[('include_inactive', '=', True)]"/>
 
     <separator/>
 
     <filter name="recent" string="🕐 Recent (Last 7 days)" domain="[('create_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-    <filter name="my_diagrams" string="<i class="fa fa-user"/> My Diagrams" domain="[('user_id', '=', uid)]"/>
+    <filter name="my_diagrams" string=" My Diagrams" domain="[('user_id', '=', uid)]"/>
 
-    <group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
+    <group expand="0" string=" Group By">
         <filter name="group_by_type" string="Diagram Type" context="{'group_by': 'search_type'}"/>
         <filter name="group_by_user" string="Created By" context="{'group_by': 'user_id'}"/>
         <filter name="group_by_date" string="Creation Date" context="{'group_by': 'create_date'}"/>
@@ -194,7 +194,7 @@
                                     <span class="badge badge-pill float-right" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
                                         <t t-if="record.search_type.raw_value == 'user'">🧑 User</t>
                                         <t t-elif="record.search_type.raw_value == 'model'">🏗️ Model</t>
-                                        <t t-else=""><i class="fa fa-building"/> Company</t>
+                                        <t t-else=""><i class='fa fa-building'/> Company</t>
                                     </span>
                                 </div>
                             </div>
@@ -216,12 +216,12 @@
                                 <!-- Statistics -->
                                 <div class="mt8">
                                     <span class="badge badge-light mr8">
-                                        <i class="fa fa-circle-o text-primary"/>
+                                        <i class='fa fa-circle-o text-primary'/>
                                         <field name="node_count"/>
  Nodes
                                     </span>
                                     <span class="badge badge-light">
-                                        <i class="fa fa-link text-success"/>
+                                        <i class='fa fa-link text-success'/>
                                         <field name="edge_count"/>
  Edges
                                     </span>
@@ -231,19 +231,19 @@
                                 <div class="mt8">
                                     <t t-if="record.state.raw_value == 'cached'">
                                         <span class="badge badge-success">
-                                            <i class="fa fa-check"/>
+                                            <i class='fa fa-check'/>
  Cached
                                         </span>
                                     </t>
                                     <t t-elif="record.state.raw_value == 'generated'">
                                         <span class="badge badge-info">
-                                            <i class="fa fa-cog"/>
+                                            <i class='fa fa-cog'/>
  Generated
                                         </span>
                                     </t>
                                     <t t-else="">
                                         <span class="badge badge-warning">
-                                            <i class="fa fa-clock-o"/>
+                                            <i class='fa fa-clock-o'/>
  Draft
                                         </span>
                                     </t>
@@ -259,7 +259,7 @@
                                 </div>
                                 <div class="oe_kanban_bottom_right">
                                     <button name="action_generate_diagram" type="object" class="btn btn-sm btn-primary">
-                                        <i class="fa fa-refresh"/>
+                                        <i class='fa fa-refresh'/>
  Generate
                                     </button>
                                 </div>
@@ -276,14 +276,14 @@
 <!-- WINDOW ACTIONS -->
 <!-- ============================================================================ -->
     <record id="action_system_diagram_data" model="ir.actions.act_window">
-<field name="name"><i class="fa fa-bar-chart"/> System Diagrams</field>
+<field name="name"><i class='fa fa-bar-chart'/> System Diagrams</field>
         <field name="res_model">system.diagram.data</field>
 <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
 <p class="o_view_nocontent_create">
-    <strong><i class="fa fa-bullseye"/> Create Your First System Diagram</strong>
+    <strong><i class='fa fa-bullseye'/> Create Your First System Diagram</strong>
 </p>
 <p>
                 System diagrams help visualize your Odoo architecture, user access patterns, and model relationships.
@@ -294,7 +294,7 @@
     <br/>
                 🧑    <strong>User Analysis:</strong> Shows user access rights and permissions<br/>
                 🏗️<strong>Model Structure:</strong> Displays model relationships and dependencies<br/>
-                <i class="fa fa-building"/><strong>Company Overview:</strong> Complete system architecture for your company
+                <i class='fa fa-building'/><strong>Company Overview:</strong> Complete system architecture for your company
             </p>
         </field>
     </record>
@@ -317,7 +317,7 @@
 </record>
 
 <record id="action_system_diagram_company_overview" model="ir.actions.act_window">
-    <field name="name"><i class="fa fa-building"/> Company System Overview</field>
+    <field name="name"><i class='fa fa-building'/> Company System Overview</field>
     <field name="res_model">system.diagram.data</field>
     <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('search_type', '=', 'company')]</field>
@@ -432,11 +432,11 @@
                     <!-- Status indicators -->
                     <div class="mt8">
                         <span class="badge badge-light mr8" t-if="record.nodes_data.raw_value">
-                            <i class="fa fa-circle-o text-success"/>
+                            <i class='fa fa-circle-o text-success'"/>
  Nodes Ready
                         </span>
                         <span class="badge badge-light" t-if="record.edges_data.raw_value">
-                            <i class="fa fa-link text-success"/>
+                            <i class='fa fa-link text-success'"/>
  Edges Ready
                         </span>
                     </div>
@@ -451,7 +451,7 @@
                     </div>
                     <div class="oe_kanban_bottom_right">
                         <button name="action_generate_diagram" type="object" class="btn btn-primary btn-sm">
-                            <i class="fa fa-sitemap"/>
+                            <i class='fa fa-sitemap'/>
  Open
                         </button>
                     </div>
@@ -481,13 +481,13 @@
 
 <sheet>
 <div class="oe_button_box" name="button_box">
-<button name="action_view_related_users" type="object" class="oe_stat_button" icon="fa-users" invisible="search_type != 'user'">>
+<button name="action_view_related_users" type="object" class="oe_stat_button" icon="fa-users" invisible="search_type != 'user'>">
         <div class="o_field_widget o_stat_info">
             <span class="o_stat_text">Related Users</span>
         </div>
     </button>
 
-<button name="action_view_related_models" type="object" class="oe_stat_button" icon="fa-database" invisible="search_type != 'model'">>
+<button name="action_view_related_models" type="object" class="oe_stat_button" icon="fa-database" invisible="search_type != 'model'>">
         <div class="o_field_widget o_stat_info">
             <span class="o_stat_text">Related Models</span>
         </div>
@@ -513,21 +513,21 @@
 </group>
 
 <notebook>
-<page string="<i class="fa fa-bar-chart"/> Diagram Visualization" name="diagram_viz">
+<page string=" Diagram Visualization" name="diagram_viz">
 <div class="alert alert-info" role="status" invisible="nodes_data != False or edges_data != False">
-        <i class="fa fa-info-circle"/>
+        <i class='fa fa-info-circle'"/>
 
                             Click <strong>"Generate Interactive Flowchart"</strong> to create the diagram visualization.
     </div>
 
 <group invisible="nodes_data == False or edges_data == False">
         <div class="text-center mb16">
-            <button name="action_generate_diagram" string="🚀 Launch Interactive Flowchart" type="object" class="btn-primary btn-lg"/>
+            <button name="action_generate_diagram" string=" Launch Interactive Flowchart" type="object" class="btn-primary btn-lg"/>
         </div>
     </group>
 </page>
 
-<page string="<i class="fa fa-wrench"/> Technical Data" name="technical_data">
+<page string=" Technical Data" name="technical_data">
                         <group>
 <group string="Node Data">
     <field name="nodes_data" widget="ace" options="{'mode': 'json', 'theme': 'monokai'}" placeholder='{"nodes": [{"id": "node1", "label": "Example Node"}]}'/>
@@ -538,7 +538,7 @@
 </group>
 </page>
 
-<page string="⚙️ Advanced Configuration" name="advanced_config">
+<page string=" Advanced Configuration" name="advanced_config">
     <group>
 <field name="diagram_config" widget="ace" options="{'mode': 'json', 'theme': 'github'}" placeholder='{"layout": {"hierarchical": true}, "interaction": {"hover": true}}'/>
 </group>
@@ -546,30 +546,30 @@
     <h5>Configuration Templates</h5>
     <div class="row">
         <div class="col-md-4">
-            <button name="action_load_user_template" string="<i class="fa fa-user"/> User Access Template" type="object" class="btn btn-outline-primary btn-block"/>
+            <button name="action_load_user_template" string=" User Access Template" type="object" class="btn btn-outline-primary btn-block"/>
         </div>
         <div class="col-md-4">
             <button name="action_load_model_template" string="🏗️ Model Structure Template" type="object" class="btn btn-outline-success btn-block"/>
         </div>
         <div class="col-md-4">
-            <button name="action_load_system_template" string="<i class="fa fa-globe"/> System Overview Template" type="object" class="btn btn-outline-info btn-block"/>
+            <button name="action_load_system_template" string=" System Overview Template" type="object" class="btn btn-outline-info btn-block"/>
         </div>
     </div>
 </div>
 </page>
-<page string="<i class="fa fa-clipboard"/> Export &amp; Share" name="export_share">
+<page string=" Export &amp; Share" name="export_share">
     <group>
 <group string="Export Options">
     <div>
         <button name="action_export_png" string="📷 Export as PNG" type="object" class="btn btn-outline-primary mr8"/>
-        <button name="action_export_pdf" string="<i class="fa fa-file-o"/> Export as PDF" type="object" class="btn btn-outline-secondary mr8"/>
+        <button name="action_export_pdf" string=" Export as PDF" type="object" class="btn btn-outline-secondary mr8"/>
         <button name="action_export_json" string="💾 Export Data (JSON)" type="object" class="btn btn-outline-info"/>
     </div>
 </group>
 <group string="Share Options">
     <div>
-        <button name="action_generate_share_link" string="<i class="fa fa-link"/> Generate Share Link" type="object" class="btn btn-outline-success mr8"/>
-        <button name="action_email_diagram" string="📧 Email Diagram" type="object" class="btn btn-outline-warning"/>
+        <button name="action_generate_share_link" string=" Generate Share Link" type="object" class="btn btn-outline-success mr8"/>
+        <button name="action_email_diagram" string=" Email Diagram" type="object" class="btn btn-outline-warning"/>
     </div>
 </group>
 </group>
@@ -588,7 +588,7 @@
 <!-- ENHANCED ACTIONS -->
 <!-- ============================================================================ -->
 <record id="action_system_flowchart" model="ir.actions.act_window">
-<field name="name"><i class="fa fa-bar-chart"/> System Architecture Flowchart</field>
+<field name="name"><i class='fa fa-bar-chart'/> System Architecture Flowchart</field>
 <field name="res_model">system.diagram.data</field>
 <field name="view_mode">kanban,list,form</field>
 <field name="target">current</field>
@@ -599,7 +599,7 @@
     }</field>
 <field name="help" type="html">
     <p class="o_view_nocontent_smiling_face">
-🚀 Create Your First Interactive System Flowchart!
+<i class='fa fa-rocket'/> Create Your First Interactive System Flowchart!
 </p>
 <div class="row">
     <div class="col-md-8 offset-md-2">
@@ -609,10 +609,10 @@
         </p>
 <h5>✨ Key Features:</h5>
 <ul class="list-unstyled">
-    <li><i class="fa fa-bullseye"/>        <strong>Real-time Access Rights</strong> - Visual indicators for permissions</li>
-    <li><i class="fa fa-search"/>        <strong>Interactive Search</strong> - Find users, models, and companies instantly</li>
+    <li><i class='fa fa-bullseye'/>        <strong>Real-time Access Rights</strong> - Visual indicators for permissions</li>
+    <li><i class='fa fa-search'/>        <strong>Interactive Search</strong> - Find users, models, and companies instantly</li>
     <li>🏗️        <strong>Hierarchical Layout</strong> - Clear system structure visualization</li>
-    <li><i class="fa fa-bar-chart"/>        <strong>Detailed Analytics</strong> - Click nodes for comprehensive information</li>
+    <li><i class='fa fa-bar-chart'/>        <strong>Detailed Analytics</strong> - Click nodes for comprehensive information</li>
     <li>📤        <strong>Export Ready</strong> - Save diagrams for documentation and presentations</li>
 </ul>
 <div class="text-center mt24">
@@ -625,7 +625,7 @@
 
 <!-- Quick Launch Actions for Different Scenarios -->
 <record id="action_system_flowchart_user_analysis" model="ir.actions.act_window">
-    <field name="name"><i class="fa fa-user"/> User Access Analysis</field>
+    <field name="name"><i class='fa fa-user'/> User Access Analysis</field>
     <field name="res_model">system.diagram.data</field>
     <field name="view_mode">form</field>
     <field name="target">new</field>
@@ -651,7 +651,7 @@
 </record>
 
 <record id="action_system_flowchart_company_overview" model="ir.actions.act_window">
-    <field name="name"><i class="fa fa-building"/> Company System Overview</field>
+    <field name="name"><i class='fa fa-building'/> Company System Overview</field>
     <field name="res_model">system.diagram.data</field>
     <field name="view_mode">form</field>
     <field name="target">new</field>
@@ -665,7 +665,7 @@
 
 <!-- Modern Client Action for Interactive Flowchart -->
 <record id="action_system_flowchart_interactive" model="ir.actions.client">
-    <field name="name"><i class="fa fa-bullseye"/> Interactive System Flowchart</field>
+    <field name="name"><i class='fa fa-bullseye'/> Interactive System Flowchart</field>
     <field name="tag">records_management.system_flowchart_interactive</field>
     <field name="target">current</field>
     <field name="params" eval="{'fullscreen': True, 'withControlPanel': True}"/>
@@ -674,28 +674,28 @@
 <!-- ============================================================================ -->
 <!-- ENHANCED MENU STRUCTURE -->
 <!-- ============================================================================ -->
-<menuitem id="menu_system_architecture" name="<i class="fa fa-bar-chart"/> System Architecture" parent="records_management.menu_records_management_root" sequence="20" groups="records_management.group_records_manager"/>
+<menuitem id="menu_system_architecture" name="<i class='fa fa-bar-chart'"/> System Architecture" parent="records_management.menu_records_management_root" sequence="20" groups="records_management.group_records_manager"/>
 
 <!-- Main System Analysis Submenu -->
-<menuitem id="menu_system_analysis" name="<i class="fa fa-search"/> System Analysis" parent="menu_system_architecture" sequence="10"/>
+<menuitem id="menu_system_analysis" name="<i class='fa fa-search'"/> System Analysis" parent="menu_system_architecture" sequence="10"/>
 
 <!-- Interactive Flowchart Options -->
-<menuitem id="menu_system_flowchart_main" name="<i class="fa fa-bullseye"/> Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
+<menuitem id="menu_system_flowchart_main" name="<i class='fa fa-bullseye'"/> Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
 
-<menuitem id="menu_system_flowchart_user" name="<i class="fa fa-user"/> User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
+<menuitem id="menu_system_flowchart_user" name="<i class='fa fa-user'"/> User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
 
 <menuitem id="menu_system_flowchart_model" name="🏗️ Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>
 
 
-<menuitem id="menu_system_flowchart_company" name="<i class="fa fa-building"/> Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>
+<menuitem id="menu_system_flowchart_company" name="<i class='fa fa-building'"/> Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>
 
 
 <!-- Quick Access for Users -->
-<menuitem id="menu_system_overview_quick" name="<i class="fa fa-clipboard"/> System Overview" parent="records_management.menu_records_management_root" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
+<menuitem id="menu_system_overview_quick" name="<i class='fa fa-clipboard'"/> System Overview" parent="records_management.menu_records_management_root" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
 
 
 <!-- Configuration Menu -->
-<menuitem id="menu_system_flowchart_config" name="⚙️ Flowchart Configuration" parent="records_management.menu_records_configuration" action="action_system_flowchart" sequence="45" groups="records_management.group_records_manager"/>
+<menuitem id="menu_system_flowchart_config" name="<i class='fa fa-cog'"/> Flowchart Configuration" parent="records_management.menu_records_configuration" action="action_system_flowchart" sequence="45" groups="records_management.group_records_manager"/>
 
 
 </data>

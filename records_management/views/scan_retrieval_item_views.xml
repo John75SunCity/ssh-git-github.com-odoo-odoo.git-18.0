@@ -23,7 +23,7 @@
                         <div class="o_kanban_card_header">
                             <div class="o_kanban_card_header_title">
                                 <div class="o_primary">
-                                    <strong><i class="fa fa-file-o"/>                                        <field name="name"/>
+                                    <strong><i class='fa fa-file-o'/>                                        <field name="name"/>
                                     </strong>
                                 </div>
                                 <div class="o_secondary">
@@ -32,7 +32,7 @@
                             </div>
                             <div class="o_kanban_manage_button_section">
                                 <a class="o_kanban_manage_toggle_button" href="#">
-<i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
+<i class='fa fa-ellipsis-v' role="img" aria-label="Manage" title="Manage"/>
 
                                 </a>
                             </div>
@@ -41,33 +41,33 @@
                             <div class="row">
                                 <div class="col-8">
                                     <div t-if="record.barcode.raw_value">
-<i class="fa fa-barcode" title="Barcode" aria-label="Barcode" role="img"/>
+<i class='fa fa-barcode' title="Barcode" aria-label="Barcode" role="img"/>
 
                                         <field name="barcode"/>
                                     </div>
                                     <div t-if="record.scan_date.raw_value">
-<i class="fa fa-calendar" title="Scan Date" aria-label="Scan Date" role="img"/>
+<i class='fa fa-calendar' title="Scan Date" aria-label="Scan Date" role="img"/>
 
  Scanned: <field name="scan_date"/>
                                     </div>
                                     <div t-if="record.assigned_user_id.raw_value">
-<i class="fa fa-user" title="User" aria-label="User" role="img"/>
+<i class='fa fa-user' title="User" aria-label="User" role="img"/>
 
                                         <field name="assigned_user_id"/>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <span class="badge badge-primary" t-if="record.priority.raw_value == 'high'">
-                                            <i class="fa fa-bolt"/> High Priority
+                                            <i class='fa fa-bolt'"/> High Priority
                                     </span>
                                     <span class="badge badge-info" t-if="record.priority.raw_value == 'medium'">
-                                            <i class="fa fa-clipboard"/> Medium
+                                            <i class='fa fa-clipboard'"/> Medium
                                     </span>
                                     <span class="badge badge-secondary" t-if="record.priority.raw_value == 'low'">
-                                            <i class="fa fa-pencil"/> Low
+                                            <i class='fa fa-pencil'"/> Low
                                     </span>
                                     <div t-if="record.retrieval_work_order_id.raw_value">
-                                        <small><i class="fa fa-link"/> Work Order Linked</small>
+                                        <small><i class='fa fa-link'/> Work Order Linked</small>
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +133,7 @@
                         </h1>
                     </div>
 <group>
-    <group name="main_info" string="<i class="fa fa-file-o"/> Document Information">
+    <group name="main_info" string=" Document Information">
         <field name="barcode" widget="barcode"/>
         <field name="document_type"/>
         <field name="document_description"/>
@@ -141,7 +141,7 @@
         <field name="file_size" widget="float" digits="[12,2]"/>
         <field name="scan_quality"/>
     </group>
-    <group name="assignment" string="<i class="fa fa-user"/> Assignment &amp; Priority">
+    <group name="assignment" string=" Assignment &amp; Priority">
         <field name="priority" widget="priority"/>
         <field name="assigned_user_id" widget="many2one_avatar_user"/>
         <field name="retrieval_work_order_id"/>
@@ -151,7 +151,7 @@
     </group>
 </group>
 
-<group name="metadata" string="<i class="fa fa-building"/> System Information">
+<group name="metadata" string=" System Information">
     <group>
         <field name="company_id" groups="base.group_multi_company"/>
         <field name="create_uid" readonly="1"/>
@@ -165,14 +165,14 @@
 </group>
 
 <notebook>
-    <page string="<i class="fa fa-pencil"/> Processing Notes" name="notes">
+    <page string=" Processing Notes" name="notes">
         <field name="processing_notes" placeholder="Add processing notes, scan issues, or special instructions..."/>
     </page>
     <page string="📎 Attachments" name="attachments">
         <field name="scanned_document_attachment" widget="binary"/>
         <field name="additional_attachments" widget="many2many_binary"/>
     </page>
-    <page string="<i class="fa fa-bar-chart"/> Quality Control" name="quality">
+    <page string=" Quality Control" name="quality">
         <group>
             <group>
                 <field name="quality_check_passed"/>
@@ -211,22 +211,22 @@
 <field name="company_id" groups="base.group_multi_company"/>
 
 <separator/>
-<filter string="<i class="fa fa-pencil"/> Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-<filter string="<i class="fa fa-bolt"/> In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
-<filter string="<i class="fa fa-check-circle text-success"/> Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+<filter string=" Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string=" In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+<filter string=" Completed" name="completed" domain="[('state', '=', 'completed')]"/>
 
 <separator/>
-<filter string="🔥 High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-<filter string="<i class="fa fa-clipboard"/> Medium Priority" name="medium_priority" domain="[('priority', '=', 'medium')]"/>
-<filter string="<i class="fa fa-pencil"/> Low Priority" name="low_priority" domain="[('priority', '=', 'low')]"/>
+<filter string=" High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
+<filter string=" Medium Priority" name="medium_priority" domain="[('priority', '=', 'medium')]"/>
+<filter string=" Low Priority" name="low_priority" domain="[('priority', '=', 'low')]"/>
 
 <separator/>
-<filter string="<i class="fa fa-user"/> My Items" name="my_items" domain="[('assigned_user_id', '=', uid)]"/>
-<filter string="<i class="fa fa-clipboard"/> Unassigned" name="unassigned" domain="[('assigned_user_id', '=', False)]"/>
-<filter string="<i class="fa fa-check-circle text-success"/> Quality Passed" name="quality_passed" domain="[('quality_check_passed', '=', True)]"/>
+<filter string=" My Items" name="my_items" domain="[('assigned_user_id', '=', uid)]"/>
+<filter string=" Unassigned" name="unassigned" domain="[('assigned_user_id', '=', False)]"/>
+<filter string=" Quality Passed" name="quality_passed" domain="[('quality_check_passed', '=', True)]"/>
 
 <separator/>
-<filter string="<i class="fa fa-calendar"/> Scanned Today" name="scanned_today" domain="[('scan_date', '&gt;=', context_today)]"/>
+<filter string=" Scanned Today" name="scanned_today" domain="[('scan_date', '&gt;=', context_today)]"/>
 <filter string="📆 Scanned This Week" name="scanned_this_week" domain="[('scan_date', '&gt;=', (context_today - relativedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
 <filter string="🗓️ Scanned This Month" name="scanned_this_month" domain="[('scan_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
 
@@ -234,7 +234,7 @@
 <filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today), ('state', 'not in', ['completed', 'cancelled'])]"/>
 <filter string="🚨 Due Today" name="due_today" domain="[('expected_completion_date', '=', context_today)]"/>
 
-<group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
+<group expand="0" string=" Group By">
     <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
     <filter string="Document Type" name="group_by_document_type" context="{'group_by': 'document_type'}"/>
     <filter string="Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
@@ -250,7 +250,7 @@
 
 <!-- Enhanced Action Window -->
     <record id="action_scan_retrieval_item" model="ir.actions.act_window">
-        <field name="name"><i class="fa fa-file-o"/> Scan Retrieval Items</field>
+        <field name="name"><i class='fa fa-file-o'/> Scan Retrieval Items</field>
         <field name="res_model">scan.retrieval.item</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="scan_retrieval_item_view_search"/>
@@ -260,20 +260,20 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                <i class="fa fa-file-o"/> Create your first scan retrieval item!
+                <i class='fa fa-file-o'/> Create your first scan retrieval item!
             </p>
             <p>
                 <b>Document Scanning &amp; Retrieval System:</b>
                 <br/>
-                • <i class="fa fa-file-o"/> Complete document scanning workflow management<br/>
-                • <i class="fa fa-search"/> Advanced barcode recognition and tracking<br/>
-                • <i class="fa fa-bolt"/> Priority-based processing with user assignment<br/>
-                • <i class="fa fa-bar-chart"/> Quality control with automated validation<br/>
-                • <i class="fa fa-link"/> Integration with work orders and FSM<br/>
-                • <i class="fa fa-line-chart"/> Real-time progress tracking and analytics<br/>
+                • <i class='fa fa-file-o'/> Complete document scanning workflow management<br/>
+                • <i class='fa fa-search'/> Advanced barcode recognition and tracking<br/>
+                • <i class='fa fa-bolt'/> Priority-based processing with user assignment<br/>
+                • <i class='fa fa-bar-chart'/> Quality control with automated validation<br/>
+                • <i class='fa fa-link'/> Integration with work orders and FSM<br/>
+                • <i class='fa fa-line-chart'/> Real-time progress tracking and analytics<br/>
                 • 💾 Secure document storage with version control<br/>
-                • <i class="fa fa-clipboard"/> Comprehensive audit trails and compliance<br/>
-                • 🚀 AI-ready OCR and content analysis capabilities
+                • <i class='fa fa-clipboard'/> Comprehensive audit trails and compliance<br/>
+                • <i class='fa fa-rocket'/> AI-ready OCR and content analysis capabilities
             </p>
         </field>
     </record>
