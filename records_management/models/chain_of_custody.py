@@ -818,6 +818,21 @@ class ChainOfCustody(models.Model):
             }
         )
 
+    def action_view_audit_logs(self):
+        """View audit logs related to this custody record."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Audit Logs"),
+            "res_model": "naid.audit.log",
+            "view_mode": "list,form",
+            "domain": [("custody_id", "=", self.id)],
+            "context": {
+                "default_custody_id": self.id,
+                "default_event_type": "custody_event",
+            },
+        }
+
     # Reporting Methods
     def generate_custody_report(self):
         """Generate comprehensive custody report."""
