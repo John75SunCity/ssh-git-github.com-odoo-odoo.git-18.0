@@ -210,7 +210,7 @@
                         </page>
                         <page string="Shipping and Transport" name="shipping">
                             <group>
-                                <group string="🚛 Transport Details">
+                                <group string="Transport Details">
                                     <field name="shipping_date" widget="date"/>
                                     <field name="delivery_date" widget="date"/>
                                     <field name="transport_company"/>
@@ -218,7 +218,7 @@
                                     <field name="truck_license_plate"/>
                                     <field name="trailer_number"/>
                                 </group>
-                                <group string="📍 Delivery Information">
+                                <group string="Delivery Information">
                                     <field name="destination_address"/>
                                     <field name="delivery_contact"/>
                                     <field name="delivery_phone"/>
