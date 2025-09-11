@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
 import random
 import string
 
-from odoo import _, api, fields, models
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
 
 class StockMoveSMSValidation(models.Model):
+    """SMS validation for stock movements"""
     _name = 'stock.move.sms.validation'
     _description = 'Stock Move SMS Validation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
@@ -94,8 +96,9 @@ class StockMoveSMSValidation(models.Model):
         return ''.join(random.choices(string.digits, k=length))
 
     def action_send_sms(self):
-        """Sends the validation code via SMS to the responsible user."""
+        """Send SMS validation message"""
         self.ensure_one()
+
         if not self.user_id.mobile:
             raise UserError(_("The responsible user (%s) does not have a mobile number configured.", self.user_id.name))
 
