@@ -1,330 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-<!-- ============================================================================ -->
-<!-- SYSTEM DIAGRAM DATA - LIST VIEW -->
-<!-- ============================================================================ -->
+    <!-- ============================================================================ -->
+    <!-- SYSTEM DIAGRAM DATA - LIST VIEW -->
+    <!-- ============================================================================ -->
     <record id="system_diagram_data_view_tree" model="ir.ui.view">
         <field name="name">system.diagram.data.view.tree</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-<list string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
+            <list string="System Diagrams" decoration-info="search_type=='user'" decoration-success="search_type=='model'" decoration-warning="search_type=='company'">
                 <field name="name"/>
-<field name="search_type" widget="badge"/>
-<field name="search_query"/>
-<field name="show_access_only" widget="boolean_toggle"/>
-<field name="node_count" string="Nodes"/>
-<field name="edge_count" string="Edges"/>
-<field name="create_date" string="Created"/>
-<field name="company_id" groups="base.group_multi_company"/>
-<button name="action_generate_diagram" type="object" string="Generate" class="btn-primary" icon="fa-refresh"/>
-
+                <field name="search_type" widget="badge"/>
+                <field name="search_query"/>
+                <field name="show_access_only" widget="boolean_toggle"/>
+                <field name="node_count" string="Nodes"/>
+                <field name="edge_count" string="Edges"/>
+                <field name="create_date" string="Created"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <button name="action_generate_diagram" type="object" string="Generate" class="btn-primary" icon="fa-refresh"/>
             </list>
         </field>
     </record>
 
-<!-- ============================================================================ -->
-<!-- SYSTEM DIAGRAM DATA - FORM VIEW -->
-<!-- ============================================================================ -->
+    <!-- ============================================================================ -->
+    <!-- SYSTEM DIAGRAM DATA - FORM VIEW -->
+    <!-- ============================================================================ -->
     <record id="system_diagram_data_view_form" model="ir.ui.view">
         <field name="name">system.diagram.data.view.form</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
             <form string="System Diagram Data">
-<header>
-    <button name="action_generate_diagram" type="object" string="Generate Diagram" class="btn-primary"/>
-    <button name="action_export_data" type="object" string="📤 Export Data" class="btn-secondary"/>
-    <button name="action_clear_cache" type="object" string="Clear Cache" class="btn-warning"/>
-    <field name="state" widget="statusbar" statusbar_visible="draft,generated,cached"/>
-</header>
+                <header>
+                    <button name="action_generate_diagram" type="object" string="Generate Diagram" class="btn-primary"/>
+                    <button name="action_export_data" type="object" string="<i class='fa fa-share'></i> Export Data" class="btn-secondary"/>
+                    <button name="action_clear_cache" type="object" string="Clear Cache" class="btn-warning"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,generated,cached"/>
+                </header>
                 <sheet>
-<div class="oe_button_box" name="button_box">
-    <button class="oe_stat_button" type="action" icon="fa-sitemap">
-<field name="node_count" string="Nodes" widget="statinfo"/>
-
-    </button>
-    <button class="oe_stat_button" type="action" icon="fa-link">
-<field name="edge_count" string="Edges" widget="statinfo"/>
-
-    </button>
-</div>
-
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="action" icon="fa-sitemap">
+                            <field name="node_count" string="Nodes" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="action" icon="fa-link">
+                            <field name="edge_count" string="Edges" widget="statinfo"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
-<label for="name" class="oe_edit_only"/>
-
+                        <label for="name" class="oe_edit_only"/>
                         <h1>
-<field name="name" placeholder="System Diagram Name..."/>
-
+                            <field name="name" placeholder="System Diagram Name..."/>
                         </h1>
                     </div>
-<group>
-    <group name="search_config" string="Search Configuration">
-        <field name="search_type" widget="radio"/>
-        <field name="search_query" placeholder="Enter search target (user, model, or company)"/>
-        <field name="show_access_only" string="Access Rights Focus"/>
-        <field name="include_inactive" string="Include Inactive Records"/>
-    </group>
-    <group name="system_info" string="System Information">
-        <field name="company_id" groups="base.group_multi_company"/>
-        <field name="user_id" string="Created by"/>
-        <field name="create_date" string="Generated Date"/>
-        <field name="cache_timestamp" string="Cache Updated" widget="datetime"/>
-    </group>
-</group>
-
-<notebook>
-    <page name="diagram_preview" string="<i class="fa fa-picture-o" aria-hidden="true"></i> Diagram Preview">
-        <group>
-            <field name="diagram_html" widget="html" nolabel="1"/>
-        </group>
-    </page>
-
-    <page name="nodes_data" string="🔵 Nodes Data">
-        <group>
-            <field name="nodes_data" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
-        </group>
-    </page>
-
-    <page name="edges_data" string="Edges Data">
-        <group>
-            <field name="edges_data" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
-        </group>
-    </page>
-
-    <page name="advanced_config" string="Advanced Configuration">
-        <group>
-            <group name="layout_settings" string="Layout Settings">
-                <field name="layout_algorithm" string="Layout Algorithm"/>
-                <field name="node_spacing" string="Node Spacing"/>
-                <field name="edge_length" string="Edge Length"/>
-            </group>
-            <group name="filter_settings" string="Filter Settings">
-                <field name="max_depth" string="Maximum Depth"/>
-                <field name="exclude_system_models" string="Exclude System Models"/>
-                <field name="group_by_module" string="Group by Module"/>
-            </group>
-        </group>
-    </page>
-
-    <page name="performance_stats" string="Performance Statistics">
-        <group>
-            <field name="generation_time" string="Generation Time (ms)" readonly="1"/>
-            <field name="cache_size" string="Cache Size (KB)" readonly="1"/>
-            <field name="last_access" string="Last Accessed" readonly="1"/>
-        </group>
-    </page>
-</notebook>
+                    <group>
+                        <group name="search_config" string="Search Configuration">
+                            <field name="search_type" widget="radio"/>
+                            <field name="search_query" placeholder="Enter search target (user, model, or company)"/>
+                            <field name="show_access_only" string="Access Rights Focus"/>
+                            <field name="include_inactive" string="Include Inactive Records"/>
+                        </group>
+                        <group name="system_info" string="System Information">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="user_id" string="Created by"/>
+                            <field name="create_date" string="Generated Date"/>
+                            <field name="cache_timestamp" string="Cache Updated" widget="datetime"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="diagram_preview" string="<i class='fa fa-picture-o'></i> Diagram Preview">
+                            <group>
+                                <field name="diagram_html" widget="html" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page name="nodes_data" string="Nodes Data">
+                            <group>
+                                <field name="nodes_data" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page name="edges_data" string="Edges Data">
+                            <group>
+                                <field name="edges_data" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
+                            </group>
+                        </page>
+                        <page name="advanced_config" string="Advanced Configuration">
+                            <group>
+                                <group name="layout_settings" string="Layout Settings">
+                                    <field name="layout_algorithm" string="Layout Algorithm"/>
+                                    <field name="node_spacing" string="Node Spacing"/>
+                                    <field name="edge_length" string="Edge Length"/>
+                                </group>
+                                <group name="filter_settings" string="Filter Settings">
+                                    <field name="max_depth" string="Maximum Depth"/>
+                                    <field name="exclude_system_models" string="Exclude System Models"/>
+                                    <field name="group_by_module" string="Group by Module"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="performance_stats" string="Performance Statistics">
+                            <group>
+                                <field name="generation_time" string="Generation Time (ms)" readonly="1"/>
+                                <field name="cache_size" string="Cache Size (KB)" readonly="1"/>
+                                <field name="last_access" string="Last Accessed" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
-<div class="oe_chatter">
-    <field name="message_follower_ids"/>
-    <field name="activity_ids"/>
-    <field name="message_ids"/>
-</div>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>
-
-<!-- ============================================================================ -->
-<!-- SYSTEM DIAGRAM DATA - SEARCH VIEW -->
-<!-- ============================================================================ -->
-    <record id="system_diagram_data_view_search" model="ir.ui.view">
-        <field name="name">system.diagram.data.view.search</field>
-        <field name="model">system.diagram.data</field>
-        <field name="arch" type="xml">
-<search string="System Diagrams Search">
-    <field name="name" string="Diagram Name" filter_domain="[('name', 'ilike', self)]"/>
-    <field name="search_query" string="Search Target"/>
-    <field name="search_type" string="Diagram Type"/>
-
-    <separator/>
-
-    <!-- Filters -->
-    <filter name="user_diagrams" string="🧑 User Analysis" domain="[('search_type', '=', 'user')]"/>
-    <filter name="model_diagrams" string="<i class="fa fa-building-o" aria-hidden="true"></i> Model Structure" domain="[('search_type', '=', 'model')]"/>
-    <filter name="company_diagrams" string="Company Overview" domain="[('search_type', '=', 'company')]"/>
-
-    <separator/>
-
-    <filter name="access_focus" string="Access Rights Focus" domain="[('show_access_only', '=', True)]"/>
-    <filter name="include_inactive" string="Include Inactive" domain="[('include_inactive', '=', True)]"/>
-
-    <separator/>
-
-    <filter name="recent" string="🕐 Recent (Last 7 days)" domain="[('create_date', '>=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-    <filter name="my_diagrams" string="My Diagrams" domain="[('user_id', '=', uid)]"/>
-
-    <group expand="0" string="Group By">
-        <filter name="group_by_type" string="Diagram Type" context="{'group_by': 'search_type'}"/>
-        <filter name="group_by_user" string="Created By" context="{'group_by': 'user_id'}"/>
-        <filter name="group_by_date" string="Creation Date" context="{'group_by': 'create_date'}"/>
-        <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
-
-                </group>
-            </search>
-        </field>
-    </record>
-
-<!-- ============================================================================ -->
-<!-- SYSTEM DIAGRAM DATA - KANBAN VIEW -->
-<!-- ============================================================================ -->
-<record id="system_diagram_data_view_kanban" model="ir.ui.view">
-    <field name="name">system.diagram.data.view.kanban</field>
-    <field name="model">system.diagram.data</field>
-        <field name="arch" type="xml">
-        <kanban string="System Architecture Diagrams" class="o_kanban_dashboard">
-            <field name="name"/>
-            <field name="search_type"/>
-            <field name="search_query"/>
-            <field name="show_access_only"/>
-            <field name="node_count"/>
-            <field name="edge_count"/>
-            <field name="create_date"/>
-            <field name="state"/>
-
-            <templates>
-<t t-name="card">
-                    <div class="oe_kanban_card oe_kanban_global_click">
-                        <div class="oe_kanban_content">
-                            <!-- Header -->
-                            <div class="o_kanban_record_top mb16">
-                                <div class="o_kanban_record_headings">
-                                    <strong class="o_kanban_record_title">
-                                        <field name="name"/>
-                                    </strong>
-                                    <span class="badge badge-pill float-right" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
-                                        <t t-if="record.search_type.raw_value == 'user'">🧑 User</t>
-                                        <t t-elif="record.search_type.raw_value == 'model'"><i class="fa fa-building-o" aria-hidden="true"></i> Model</t>
-                                        <t t-else=""><i class='fa fa-building'/> Company</t>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Content -->
-                            <div class="o_kanban_record_body">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <span class="text-muted">Target: </span>
-                                        <strong>
-                                            <field name="search_query"/>
-                                        </strong>
-                                    </div>
-                                    <div class="col-4 text-right">
-                                        <field name="show_access_only" widget="boolean_toggle"/>
-                                    </div>
-                                </div>
-
-                                <!-- Statistics -->
-                                <div class="mt8">
-                                    <span class="badge badge-light mr8">
-                                        <i class='fa fa-circle-o text-primary'/>
-                                        <field name="node_count"/>
- Nodes
-                                    </span>
-                                    <span class="badge badge-light">
-                                        <i class='fa fa-link text-success'/>
-                                        <field name="edge_count"/>
- Edges
-                                    </span>
-                                </div>
-
-                                <!-- Status indicators -->
-                                <div class="mt8">
-                                    <t t-if="record.state.raw_value == 'cached'">
-                                        <span class="badge badge-success">
-                                            <i class='fa fa-check'/>
- Cached
-                                        </span>
-                                    </t>
-                                    <t t-elif="record.state.raw_value == 'generated'">
-                                        <span class="badge badge-info">
-                                            <i class='fa fa-cog'/>
- Generated
-                                        </span>
-                                    </t>
-                                    <t t-else="">
-                                        <span class="badge badge-warning">
-                                            <i class='fa fa-clock-o'/>
- Draft
-                                        </span>
-                                    </t>
-                                </div>
-                            </div>
-
-                            <!-- Footer with actions -->
-                            <div class="o_kanban_record_bottom mt16">
-                                <div class="oe_kanban_bottom_left">
-                                    <small class="text-muted">
-                                        <field name="create_date" widget="relative"/>
-                                    </small>
-                                </div>
-                                <div class="oe_kanban_bottom_right">
-                                    <button name="action_generate_diagram" type="object" class="btn btn-sm btn-primary">
-                                        <i class='fa fa-refresh'/>
- Generate
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </t>
-            </templates>
-        </kanban>
-    </field>
-</record>
-
-<!-- ============================================================================ -->
-<!-- WINDOW ACTIONS -->
-<!-- ============================================================================ -->
-    <record id="action_system_diagram_data" model="ir.actions.act_window">
-<field name="name"><i class='fa fa-bar-chart'/> System Diagrams</field>
-        <field name="res_model">system.diagram.data</field>
-<field name="view_mode">kanban,list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-<p class="o_view_nocontent_create">
-    <strong><i class='fa fa-bullseye'/> Create Your First System Diagram</strong>
-</p>
-<p>
-                System diagrams help visualize your Odoo architecture, user access patterns, and model relationships.
-                Click the "New" button to create your first interactive system diagram.
-</p>
-<p>
-    <strong>Diagram Types:</strong>
-    <br/>
-                🧑    <strong>User Analysis:</strong> Shows user access rights and permissions<br/>
-                <i class="fa fa-building-o" aria-hidden="true"></i><strong>Model Structure:</strong> Displays model relationships and dependencies<br/>
-                <i class='fa fa-building'/><strong>Company Overview:</strong> Complete system architecture for your company
-            </p>
-        </field>
-    </record>
-
-<!-- Specialized actions for different diagram types -->
-<record id="action_system_diagram_user_analysis" model="ir.actions.act_window">
-    <field name="name">🧑 User Access Analysis</field>
-    <field name="res_model">system.diagram.data</field>
-    <field name="view_mode">kanban,list,form</field>
-    <field name="domain">[('search_type', '=', 'user')]</field>
-    <field name="context">{'default_search_type': 'user', 'default_show_access_only': True}</field>
-</record>
-
-<record id="action_system_diagram_model_explorer" model="ir.actions.act_window">
-    <field name="name"><i class="fa fa-building-o" aria-hidden="true"></i> Model Structure Explorer</field>
-    <field name="res_model">system.diagram.data</field>
-    <field name="view_mode">kanban,list,form</field>
-    <field name="domain">[('search_type', '=', 'model')]</field>
-    <field name="context">{'default_search_type': 'model'}</field>
-</record>
-
-<record id="action_system_diagram_company_overview" model="ir.actions.act_window">
-    <field name="name"><i class='fa fa-building'/> Company System Overview</field>
-    <field name="res_model">system.diagram.data</field>
-    <field name="view_mode">kanban,list,form</field>
-    <field name="domain">[('search_type', '=', 'company')]</field>
-    <field name="context">{'default_search_type': 'company'}</field>
-</record>
-
-<data>
 
     <!-- ============================================================================ -->
     <!-- SYSTEM DIAGRAM DATA - SEARCH VIEW -->
@@ -333,371 +119,282 @@
         <field name="name">system.diagram.data.view.search</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-            <search string="System Flowchart Search">
+            <search string="System Diagrams Search">
                 <field name="name" string="Diagram Name" filter_domain="[('name', 'ilike', self)]"/>
-                <field name="search_query" string="Search Query"/>
-                <field name="search_type" string="Search Type"/>
-
+                <field name="search_query" string="Search Target"/>
+                <field name="search_type" string="Diagram Type"/>
                 <separator/>
-                <filter name="access_only" string="Access Rights Only" domain="[('show_access_only', '=', True)]"/>
-                <filter name="with_nodes" string="Has Diagram Data" domain="[('nodes_data', '!=', False)]"/>
-
+                <!-- Filters -->
+                <filter name="user_diagrams" string="<i class='fa fa-user'></i> User Analysis" domain="[('search_type', '=', 'user')]"/>
+                <filter name="model_diagrams" string="<i class='fa fa-building-o'></i> Model Structure" domain="[('search_type', '=', 'model')]"/>
+                <filter name="company_diagrams" string="Company Overview" domain="[('search_type', '=', 'company')]"/>
                 <separator/>
-                <filter name="user_focused" string="User Focused" domain="[('search_type', '=', 'user')]"/>
-                <filter name="model_focused" string="Model Focused" domain="[('search_type', '=', 'model')]"/>
-                <filter name="company_focused" string="Company Focused" domain="[('search_type', '=', 'company')]"/>
-
+                <filter name="access_focus" string="Access Rights Focus" domain="[('show_access_only', '=', True)]"/>
+                <filter name="include_inactive" string="Include Inactive" domain="[('include_inactive', '=', True)]"/>
+                <separator/>
+                <filter name="recent" string="<i class='fa fa-clock-o'></i> Recent (Last 7 days)" domain="[('create_date', '>=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="my_diagrams" string="My Diagrams" domain="[('user_id', '=', uid)]"/>
                 <group expand="0" string="Group By">
-                    <filter string="Search Type" name="group_search_type" domain="[]" context="{'group_by': 'search_type'}"/>
-                    <filter string="Access Filter" name="group_access" domain="[]" context="{'group_by': 'show_access_only'}"/>
+                    <filter name="group_by_type" string="Diagram Type" context="{'group_by': 'search_type'}"/>
+                    <filter name="group_by_user" string="Created By" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_by_date" string="Creation Date" context="{'group_by': 'create_date'}"/>
+                    <filter name="group_by_company" string="Company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
                 </group>
             </search>
         </field>
     </record>
 
     <!-- ============================================================================ -->
-    <!-- SYSTEM DIAGRAM DATA - LIST VIEW (Enhanced) -->
+    <!-- SYSTEM DIAGRAM DATA - KANBAN VIEW -->
     <!-- ============================================================================ -->
-    <record id="system_diagram_data_view_tree" model="ir.ui.view">
-        <field name="name">system.diagram.data.view.tree</field>
+    <record id="system_diagram_data_view_kanban" model="ir.ui.view">
+        <field name="name">system.diagram.data.view.kanban</field>
         <field name="model">system.diagram.data</field>
         <field name="arch" type="xml">
-            <list string="System Architecture Diagrams" decoration-success="nodes_data and edges_data" decoration-warning="not nodes_data or not edges_data" create="true" edit="true" delete="true">
-                <field name="name" string="Diagram Name"/>
-                <field name="search_type" string="Focus Type" widget="badge"/>
-                <field name="search_query" string="Query/Target"/>
-                <field name="show_access_only" string="Access Only" widget="boolean_toggle"/>
-
-                <!-- Status indicators -->
-                <field name="nodes_data" invisible="1"/>
-                <field name="edges_data" invisible="1"/>
-                <field name="create_date" string="Created" widget="date"/>
-
-                <!-- Action buttons -->
-                <button name="action_generate_diagram" type="object" title="Generate Interactive Flowchart" icon="fa-sitemap" class="btn-primary"/>
-                <button name="action_export_diagram" type="object" title="Export Diagram Data" icon="fa-download" class="btn-secondary"/>
-                <button name="action_refresh_data" type="object" title="Refresh Diagram Data" icon="fa-refresh" class="btn-outline-primary"/>
-            </list>
+            <kanban string="System Architecture Diagrams" class="o_kanban_dashboard">
+                <field name="name"/>
+                <field name="search_type"/>
+                <field name="search_query"/>
+                <field name="show_access_only"/>
+                <field name="node_count"/>
+                <field name="edge_count"/>
+                <field name="create_date"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <!-- Header -->
+                                <div class="o_kanban_record_top mb16">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <span class="badge badge-pill float-right" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
+                                            <t t-if="record.search_type.raw_value == 'user'"><i class='fa fa-user'></i> User</t>
+                                            <t t-elif="record.search_type.raw_value == 'model'"><i class='fa fa-building-o'></i> Model</t>
+                                            <t t-else=""><i class='fa fa-building'></i> Company</t>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- Content -->
+                                <div class="o_kanban_record_body">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <span class="text-muted">Target: </span>
+                                            <strong>
+                                                <field name="search_query"/>
+                                            </strong>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <field name="show_access_only" widget="boolean_toggle"/>
+                                        </div>
+                                    </div>
+                                    <!-- Statistics -->
+                                    <div class="mt8">
+                                        <span class="badge badge-light mr8">
+                                            <i class='fa fa-circle-o text-primary'></i>
+                                            <field name="node_count"/>
+                                            Nodes
+                                        </span>
+                                        <span class="badge badge-light">
+                                            <i class='fa fa-link text-success'></i>
+                                            <field name="edge_count"/>
+                                            Edges
+                                        </span>
+                                    </div>
+                                    <!-- Status indicators -->
+                                    <div class="mt8">
+                                        <t t-if="record.state.raw_value == 'cached'">
+                                            <span class="badge badge-success">
+                                                <i class='fa fa-check'></i>
+                                                Cached
+                                            </span>
+                                        </t>
+                                        <t t-elif="record.state.raw_value == 'generated'">
+                                            <span class="badge badge-info">
+                                                <i class='fa fa-cog'></i>
+                                                Generated
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge badge-warning">
+                                                <i class='fa fa-clock-o'></i>
+                                                Draft
+                                            </span>
+                                        </t>
+                                    </div>
+                                </div>
+                                <!-- Footer with actions -->
+                                <div class="o_kanban_record_bottom mt16">
+                                    <div class="oe_kanban_bottom_left">
+                                        <small class="text-muted">
+                                            <field name="create_date" widget="relative"/>
+                                        </small>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <button name="action_generate_diagram" type="object" class="btn btn-sm btn-primary">
+                                            <i class='fa fa-refresh'></i>
+                                            Generate
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
 
-<!-- ============================================================================ -->
-<!-- SYSTEM DIAGRAM DATA - KANBAN VIEW -->
-<!-- ============================================================================ -->
-<record id="system_diagram_data_view_kanban" model="ir.ui.view">
-<field name="name">system.diagram.data.view.kanban</field>
-<field name="model">system.diagram.data</field>
-        <field name="arch" type="xml">
-<kanban string="System Architecture Diagrams" class="o_kanban_dashboard">
-    <field name="name"/>
+    <!-- ============================================================================ -->
+    <!-- WINDOW ACTIONS -->
+    <!-- ============================================================================ -->
+    <record id="action_system_diagram_data" model="ir.actions.act_window">
+        <field name="name"><i class='fa fa-bar-chart'></i> System Diagrams</field>
+        <field name="res_model">system.diagram.data</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_create">
+                <strong><i class='fa fa-bullseye'></i> Create Your First System Diagram</strong>
+            </p>
+            <p>
+                System diagrams help visualize your Odoo architecture, user access patterns, and model relationships.
+                Click the "New" button to create your first interactive system diagram.
+            </p>
+            <p>
+                <strong>Diagram Types:</strong>
+                <br/>
+                <i class='fa fa-user'></i> <strong>User Analysis:</strong> Shows user access rights and permissions<br/>
+                <i class='fa fa-building-o'></i> <strong>Model Structure:</strong> Displays model relationships and dependencies<br/>
+                <i class='fa fa-building'></i> <strong>Company Overview:</strong> Complete system architecture for your company
+            </p>
+        </field>
+    </record>
 
-<field name="search_type"/>
+    <!-- Specialized actions for different diagram types -->
+    <record id="action_system_diagram_user_analysis" model="ir.actions.act_window">
+        <field name="name"><i class='fa fa-user'></i> User Access Analysis</field>
+        <field name="res_model">system.diagram.data</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('search_type', '=', 'user')]</field>
+        <field name="context">{'default_search_type': 'user', 'default_show_access_only': True}</field>
+    </record>
 
-<field name="search_query"/>
+    <record id="action_system_diagram_model_explorer" model="ir.actions.act_window">
+        <field name="name"><i class='fa fa-building-o'></i> Model Structure Explorer</field>
+        <field name="res_model">system.diagram.data</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('search_type', '=', 'model')]</field>
+        <field name="context">{'default_search_type': 'model'}</field>
+    </record>
 
-<field name="show_access_only"/>
-<field name="nodes_data"/>
-<field name="edges_data"/>
+    <record id="action_system_diagram_company_overview" model="ir.actions.act_window">
+        <field name="name"><i class='fa fa-building'></i> Company System Overview</field>
+        <field name="res_model">system.diagram.data</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('search_type', '=', 'company')]</field>
+        <field name="context">{'default_search_type': 'company'}</field>
+    </record>
 
-<field name="create_date"/>
-
-<templates>
-<t t-name="card">
-        <div class="oe_kanban_card oe_kanban_global_click">
-            <div class="oe_kanban_content">
-                <!-- Header -->
-                <div class="o_kanban_record_top mb16">
-                    <div class="o_kanban_record_headings">
-                        <strong class="o_kanban_record_title">
-                            <field name="name"/>
-                        </strong>
-                        <span class="badge badge-pill" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
-                            <field name="search_type"/>
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Content -->
-                <div class="o_kanban_record_body">
-                    <div class="row">
-                        <div class="col-8">
-                            <span class="text-muted">Target: </span>
-                            <field name="search_query"/>
-                        </div>
-                        <div class="col-4 text-right">
-                            <field name="show_access_only" widget="boolean_toggle"/>
-                        </div>
-                    </div>
-
-                    <!-- Status indicators -->
-                    <div class="mt8">
-                        <span class="badge badge-light mr8" t-if="record.nodes_data.raw_value">
-                            <i class='fa fa-circle-o text-success'"/>
- Nodes Ready
-                        </span>
-                        <span class="badge badge-light" t-if="record.edges_data.raw_value">
-                            <i class='fa fa-link text-success'"/>
- Edges Ready
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Footer with actions -->
-                <div class="o_kanban_record_bottom mt16">
-                    <div class="oe_kanban_bottom_left">
-                        <span class="text-muted">
-                            <field name="create_date" widget="date"/>
-                        </span>
-                    </div>
-                    <div class="oe_kanban_bottom_right">
-                        <button name="action_generate_diagram" type="object" class="btn btn-primary btn-sm">
-                            <i class='fa fa-sitemap'/>
- Open
-                        </button>
+    <!-- ============================================================================ -->
+    <!-- ENHANCED ACTIONS -->
+    <!-- ============================================================================ -->
+    <record id="action_system_flowchart" model="ir.actions.act_window">
+        <field name="name"><i class='fa fa-bar-chart'></i> System Architecture Flowchart</field>
+        <field name="res_model">system.diagram.data</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="target">current</field>
+        <field name="context">{
+            'search_default_with_nodes': 1,
+            'default_search_type': 'user',
+            'default_show_access_only': True
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                <i class='fa fa-rocket'></i> Create Your First Interactive System Flowchart!
+            </p>
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <p class="lead">
+                        Visualize your Records Management System architecture with interactive,
+                        real-time flowcharts showing models, users, access rights, and relationships.
+                    </p>
+                    <h5>Key Features:</h5>
+                    <ul class="list-unstyled">
+                        <li><i class='fa fa-bullseye'></i> <strong>Real-time Access Rights</strong> - Visual indicators for permissions</li>
+                        <li><i class='fa fa-search'></i> <strong>Interactive Search</strong> - Find users, models, and companies instantly</li>
+                        <li><i class='fa fa-building-o'></i> <strong>Hierarchical Layout</strong> - Clear system structure visualization</li>
+                        <li><i class='fa fa-bar-chart'></i> <strong>Detailed Analytics</strong> - Click nodes for comprehensive information</li>
+                        <li><i class='fa fa-share'></i> <strong>Export Ready</strong> - Save diagrams for documentation and presentations</li>
+                    </ul>
+                    <div class="text-center mt24">
+                        <p class="text-muted">Ready to explore your system architecture?</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </t>
-</templates>
-</kanban>
-</field>
-</record>
+        </field>
+    </record>
 
-<!-- ============================================================================ -->
-<!-- SYSTEM DIAGRAM DATA - ENHANCED FORM VIEW -->
-<!-- ============================================================================ -->
-<record id="system_diagram_data_view_form" model="ir.ui.view">
-    <field name="name">system.diagram.data.view.form</field>
-    <field name="model">system.diagram.data</field>
-        <field name="arch" type="xml">
-        <form string="System Diagram Configuration">
-<header>
-    <button name="action_generate_diagram" string="Generate Interactive Flowchart" type="object" class="btn-primary"/>
-    <button name="action_export_diagram" string="Export Diagram" type="object" class="btn-secondary"/>
-    <button name="action_refresh_data" string="Refresh Data" type="object" class="btn-outline-primary"/>
-    <button name="action_validate_config" string="Validate Configuration" type="object" class="btn-outline-success"/>
-</header>
+    <!-- Quick Launch Actions for Different Scenarios -->
+    <record id="action_system_flowchart_user_analysis" model="ir.actions.act_window">
+        <field name="name"><i class='fa fa-user'></i> User Access Analysis</field>
+        <field name="res_model">system.diagram.data</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{
+            'default_name': 'User Access Analysis',
+            'default_search_type': 'user',
+            'default_show_access_only': True,
+            'form_view_initial_mode': 'edit'
+        }</field>
+    </record>
 
-<sheet>
-<div class="oe_button_box" name="button_box">
-<button name="action_view_related_users" type="object" class="oe_stat_button" icon="fa-users" invisible="search_type != 'user'>">
-        <div class="o_field_widget o_stat_info">
-            <span class="o_stat_text">Related Users</span>
-        </div>
-    </button>
+    <record id="action_system_flowchart_model_explorer" model="ir.actions.act_window">
+        <field name="name"><i class='fa fa-building-o'></i> Model Structure Explorer</field>
+        <field name="res_model">system.diagram.data</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{
+            'default_name': 'Model Structure Analysis',
+            'default_search_type': 'model',
+            'default_show_access_only': False,
+            'form_view_initial_mode': 'edit'
+        }</field>
+    </record>
 
-<button name="action_view_related_models" type="object" class="oe_stat_button" icon="fa-database" invisible="search_type != 'model'>">
-        <div class="o_field_widget o_stat_info">
-            <span class="o_stat_text">Related Models</span>
-        </div>
-    </button>
-</div>
+    <record id="action_system_flowchart_company_overview" model="ir.actions.act_window">
+        <field name="name"><i class='fa fa-building'></i> Company System Overview</field>
+        <field name="res_model">system.diagram.data</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{
+            'default_name': 'Company System Overview',
+            'default_search_type': 'company',
+            'default_show_access_only': False,
+            'form_view_initial_mode': 'edit'
+        }</field>
+    </record>
 
-<widget name="web_ribbon" title="Configuration Valid" bg_color="bg-success" invisible="nodes_data == False"/>
+    <!-- Modern Client Action for Interactive Flowchart -->
+    <record id="action_system_flowchart_interactive" model="ir.actions.client">
+        <field name="name"><i class='fa fa-bullseye'></i> Interactive System Flowchart</field>
+        <field name="tag">records_management.system_flowchart_interactive</field>
+        <field name="target">current</field>
+        <field name="params" eval="{'fullscreen': True, 'withControlPanel': True}"/>
+    </record>
 
-
-<group>
-<group string="Basic Configuration">
-    <field name="name" placeholder="e.g., User Access Analysis - John Doe"/>
-    <field name="search_type" widget="radio" options="{'horizontal': true}"/>
-<field name="search_query" placeholder="Enter user name, model name, or company" required="search_type in ['user','model','company']"/>
-
-
-
-</group>
-<group string="Display Options">
-    <field name="show_access_only" widget="boolean_toggle"/>
-    <field name="active" widget="boolean_toggle"/>
-</group>
-</group>
-
-<notebook>
-<page string="Diagram Visualization" name="diagram_viz">
-<div class="alert alert-info" role="status" invisible="nodes_data != False or edges_data != False">
-        <i class='fa fa-info-circle'"/>
-
-                            Click <strong>"Generate Interactive Flowchart"</strong> to create the diagram visualization.
-    </div>
-
-<group invisible="nodes_data == False or edges_data == False">
-        <div class="text-center mb16">
-            <button name="action_generate_diagram" string="Launch Interactive Flowchart" type="object" class="btn-primary btn-lg"/>
-        </div>
-    </group>
-</page>
-
-<page string="Technical Data" name="technical_data">
-                        <group>
-<group string="Node Data">
-    <field name="nodes_data" widget="ace" options="{'mode': 'json', 'theme': 'monokai'}" placeholder='{"nodes": [{"id": "node1", "label": "Example Node"}]}'/>
-</group>
-<group string="Edge Data">
-    <field name="edges_data" widget="ace" options="{'mode': 'json', 'theme': 'monokai'}" placeholder='{"edges": [{"from": "node1", "to": "node2"}]}'/>
-</group>
-</group>
-</page>
-
-<page string="Advanced Configuration" name="advanced_config">
-    <group>
-<field name="diagram_config" widget="ace" options="{'mode': 'json', 'theme': 'github'}" placeholder='{"layout": {"hierarchical": true}, "interaction": {"hover": true}}'/>
-</group>
-<div class="mt16">
-    <h5>Configuration Templates</h5>
-    <div class="row">
-        <div class="col-md-4">
-            <button name="action_load_user_template" string="User Access Template" type="object" class="btn btn-outline-primary btn-block"/>
-        </div>
-        <div class="col-md-4">
-            <button name="action_load_model_template" string="<i class="fa fa-building-o" aria-hidden="true"></i> Model Structure Template" type="object" class="btn btn-outline-success btn-block"/>
-        </div>
-        <div class="col-md-4">
-            <button name="action_load_system_template" string="System Overview Template" type="object" class="btn btn-outline-info btn-block"/>
-        </div>
-    </div>
-</div>
-</page>
-<page string="Export &amp; Share" name="export_share">
-    <group>
-<group string="Export Options">
-    <div>
-        <button name="action_export_png" string="📷 Export as PNG" type="object" class="btn btn-outline-primary mr8"/>
-        <button name="action_export_pdf" string="Export as PDF" type="object" class="btn btn-outline-secondary mr8"/>
-        <button name="action_export_json" string="💾 Export Data (JSON)" type="object" class="btn btn-outline-info"/>
-    </div>
-</group>
-<group string="Share Options">
-    <div>
-        <button name="action_generate_share_link" string="Generate Share Link" type="object" class="btn btn-outline-success mr8"/>
-        <button name="action_email_diagram" string="Email Diagram" type="object" class="btn btn-outline-warning"/>
-    </div>
-</group>
-</group>
-</page>
-</notebook>
-</sheet>
-<div class="oe_chatter">
-    <field name="message_follower_ids"/>
-    <field name="message_ids"/>
-</div>
-</form>
-</field>
-</record>
-
-<!-- ============================================================================ -->
-<!-- ENHANCED ACTIONS -->
-<!-- ============================================================================ -->
-<record id="action_system_flowchart" model="ir.actions.act_window">
-<field name="name"><i class='fa fa-bar-chart'/> System Architecture Flowchart</field>
-<field name="res_model">system.diagram.data</field>
-<field name="view_mode">kanban,list,form</field>
-<field name="target">current</field>
-<field name="context">{
-        'search_default_with_nodes': 1,
-        'default_search_type': 'user',
-        'default_show_access_only': True
-    }</field>
-<field name="help" type="html">
-    <p class="o_view_nocontent_smiling_face">
-<i class='fa fa-rocket'/> Create Your First Interactive System Flowchart!
-</p>
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <p class="lead">
-                    Visualize your Records Management System architecture with interactive,
-                    real-time flowcharts showing models, users, access rights, and relationships.
-        </p>
-<h5>✨ Key Features:</h5>
-<ul class="list-unstyled">
-    <li><i class='fa fa-bullseye'/>        <strong>Real-time Access Rights</strong> - Visual indicators for permissions</li>
-    <li><i class='fa fa-search'/>        <strong>Interactive Search</strong> - Find users, models, and companies instantly</li>
-    <li><i class="fa fa-building-o" aria-hidden="true"></i>        <strong>Hierarchical Layout</strong> - Clear system structure visualization</li>
-    <li><i class='fa fa-bar-chart'/>        <strong>Detailed Analytics</strong> - Click nodes for comprehensive information</li>
-    <li>📤        <strong>Export Ready</strong> - Save diagrams for documentation and presentations</li>
-</ul>
-<div class="text-center mt24">
-    <p class="text-muted">Ready to explore your system architecture?</p>
-</div>
-</div>
-</div>
-</field>
-</record>
-
-<!-- Quick Launch Actions for Different Scenarios -->
-<record id="action_system_flowchart_user_analysis" model="ir.actions.act_window">
-    <field name="name"><i class='fa fa-user'/> User Access Analysis</field>
-    <field name="res_model">system.diagram.data</field>
-    <field name="view_mode">form</field>
-    <field name="target">new</field>
-    <field name="context">{
-        'default_name': 'User Access Analysis',
-        'default_search_type': 'user',
-        'default_show_access_only': True,
-        'form_view_initial_mode': 'edit'
-    }</field>
-</record>
-
-<record id="action_system_flowchart_model_explorer" model="ir.actions.act_window">
-    <field name="name"><i class="fa fa-building-o" aria-hidden="true"></i> Model Structure Explorer</field>
-    <field name="res_model">system.diagram.data</field>
-    <field name="view_mode">form</field>
-    <field name="target">new</field>
-    <field name="context">{
-        'default_name': 'Model Structure Analysis',
-        'default_search_type': 'model',
-        'default_show_access_only': False,
-        'form_view_initial_mode': 'edit'
-    }</field>
-</record>
-
-<record id="action_system_flowchart_company_overview" model="ir.actions.act_window">
-    <field name="name"><i class='fa fa-building'/> Company System Overview</field>
-    <field name="res_model">system.diagram.data</field>
-    <field name="view_mode">form</field>
-    <field name="target">new</field>
-    <field name="context">{
-        'default_name': 'Company System Overview',
-        'default_search_type': 'company',
-        'default_show_access_only': False,
-        'form_view_initial_mode': 'edit'
-    }</field>
-</record>
-
-<!-- Modern Client Action for Interactive Flowchart -->
-<record id="action_system_flowchart_interactive" model="ir.actions.client">
-    <field name="name"><i class='fa fa-bullseye'/> Interactive System Flowchart</field>
-    <field name="tag">records_management.system_flowchart_interactive</field>
-    <field name="target">current</field>
-    <field name="params" eval="{'fullscreen': True, 'withControlPanel': True}"/>
-</record>
-
-<!-- ============================================================================ -->
-<!-- ENHANCED MENU STRUCTURE -->
-<!-- ============================================================================ -->
-<menuitem id="menu_system_architecture" name="<i class='fa fa-bar-chart'"/> System Architecture" parent="records_management.menu_records_management_root" sequence="20" groups="records_management.group_records_manager"/>
-
-<!-- Main System Analysis Submenu -->
-<menuitem id="menu_system_analysis" name="<i class='fa fa-search'"/> System Analysis" parent="menu_system_architecture" sequence="10"/>
-
-<!-- Interactive Flowchart Options -->
-<menuitem id="menu_system_flowchart_main" name="<i class='fa fa-bullseye'"/> Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
-
-<menuitem id="menu_system_flowchart_user" name="<i class='fa fa-user'"/> User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
-
-<menuitem id="menu_system_flowchart_model" name="<i class="fa fa-building-o" aria-hidden="true"></i> Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>
-
-
-<menuitem id="menu_system_flowchart_company" name="<i class='fa fa-building'"/> Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>
-
-
-<!-- Quick Access for Users -->
-<menuitem id="menu_system_overview_quick" name="<i class='fa fa-clipboard'"/> System Overview" parent="records_management.menu_records_management_root" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
-
-
-<!-- Configuration Menu -->
-<menuitem id="menu_system_flowchart_config" name="<i class='fa fa-cog'"/> Flowchart Configuration" parent="records_management.menu_records_configuration" action="action_system_flowchart" sequence="45" groups="records_management.group_records_manager"/>
-
-
-</data>
-
+    <!-- ============================================================================ -->
+    <!-- ENHANCED MENU STRUCTURE -->
+    <!-- ============================================================================ -->
+    <menuitem id="menu_system_architecture" name="<i class='fa fa-bar-chart'></i> System Architecture" parent="records_management.menu_records_management_root" sequence="20" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_system_analysis" name="<i class='fa fa-search'></i> System Analysis" parent="menu_system_architecture" sequence="10"/>
+    <menuitem id="menu_system_flowchart_main" name="<i class='fa fa-bullseye'></i> Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
+    <menuitem id="menu_system_flowchart_user" name="<i class='fa fa-user'></i> User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
+    <menuitem id="menu_system_flowchart_model" name="<i class='fa fa-building-o'></i> Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>
+    <menuitem id="menu_system_flowchart_company" name="<i class='fa fa-building'></i> Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>
+    <menuitem id="menu_system_overview_quick" name="<i class='fa fa-clipboard'></i> System Overview" parent="records_management.menu_records_management_root" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
+    <menuitem id="menu_system_flowchart_config" name="<i class='fa fa-cog'></i> Flowchart Configuration" parent="records_management.menu_records_configuration" action="action_system_flowchart" sequence="45" groups="records_management.group_records_manager"/>
 </odoo>

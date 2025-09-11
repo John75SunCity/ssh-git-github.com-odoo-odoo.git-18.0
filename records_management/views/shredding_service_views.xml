@@ -43,7 +43,7 @@
                                         Chain of Custody
                                     </span>
                                     <span class="badge badge-info" t-if="record.witness_destruction.raw_value">
-                                        👁️ Witness Required
+                                        Witness Required
                                     </span>
                                 </div>
                             </div>

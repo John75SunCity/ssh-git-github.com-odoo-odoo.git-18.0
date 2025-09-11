@@ -224,7 +224,7 @@
 <!-- Converted states="product_category=='shred_bin'" to invisible condition -->
 <page string="Shred Bin Configuration" name="shred_config" invisible="product_category != 'shred_bin'">
                         <group>
-                            <group string="🗂️ Shredding Specifications">
+                            <group string="Shredding Specifications">
                                 <field name="shred_security_level"/>
                                 <field name="naid_compliant" widget="boolean_toggle"/>
                                 <field name="witness_destruction" widget="boolean_toggle"/>

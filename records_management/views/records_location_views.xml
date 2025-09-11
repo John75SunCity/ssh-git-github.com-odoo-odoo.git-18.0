@@ -85,13 +85,13 @@
             <field name="model">records.location</field>
             <field name="arch" type="xml">
                 <list decoration-success="current_utilization &lt; storage_capacity * 0.8" decoration-warning="current_utilization &gt;= storage_capacity * 0.8 and current_utilization &lt; storage_capacity" decoration-danger="current_utilization &gt;= storage_capacity">
-                    <field name="name" string=" Location Name"/>
-                    <field name="location_type" string=" Type"/>
-                    <field name="storage_capacity" string="🔢 Capacity"/>
-                    <field name="current_utilization" string=" Current Usage"/>
-                    <field name="available_spaces" string="🆓 Available Spaces"/>
-                    <field name="utilization_percentage" string=" Utilization %" widget="percentage"/>
-                    <field name="active" string=" Active"/>
+                    <field name="name" string="Location Name"/>
+                    <field name="location_type" string="Type"/>
+                    <field name="storage_capacity" string="Capacity"/>
+                    <field name="current_utilization" string="Current Usage"/>
+                    <field name="available_spaces" string="Available Spaces"/>
+                    <field name="utilization_percentage" string="Utilization %" widget="percentage"/>
+                    <field name="active" string="Active"/>
                     <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
                 </list>
             </field>
@@ -104,8 +104,8 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_view_containers" type="object" string=" View Containers" class="btn-primary"/>
-                        <button name="action_location_report" type="object" string=" Generate Report" class="btn-secondary"/>
+                        <button name="action_view_containers" type="object" string="View Containers" class="btn-primary"/>
+                        <button name="action_location_report" type="object" string="Generate Report" class="btn-secondary"/>
                         <field name="active" widget="boolean_toggle"/>
                     </header>
                     <sheet>
@@ -133,12 +133,12 @@
                         </div>
 
                         <group>
-                            <group string=" Location Information">
+                            <group string="Location Information">
                                 <field name="name" placeholder="e.g., Building A - Section 1"/>
                                 <field name="location_type"/>
                                 <field name="parent_location_id" string="Parent Location"/>
                             </group>
-                            <group string=" Capacity &amp; Usage">
+                            <group string="Capacity &amp; Usage">
                                 <field name="storage_capacity"/>
                                 <field name="current_utilization"/>
                                 <field name="available_spaces"/>
@@ -147,7 +147,7 @@
                         </group>
 
                         <notebook>
-                            <page name="containers" string=" Stored Containers">
+                            <page name="containers" string="Stored Containers">
                                 <field name="container_ids" mode="list">
                                     <list>
                                         <field name="name"/>
@@ -157,7 +157,7 @@
                                     </list>
                                 </field>
                             </page>
-                            <page name="details" string=" Details &amp; Notes">
+                            <page name="details" string="Details &amp; Notes">
                                 <group>
                                     <field name="description" placeholder="Location description and special instructions..."/>
                                     <field name="access_instructions"/>
@@ -185,18 +185,18 @@
                     <field name="location_type"/>
 
                     <filter name="available_space" string="&lt;i class=&quot;fa fa-circle text-success&quot;&gt;&lt;/i&gt; Available Space" domain="[('available_spaces', '&gt;', 0)]"/>
-                    <filter name="near_capacity" string="🟡 Near Capacity" domain="[('utilization_percentage', '&gt;=', 80)]"/>
-                    <filter name="at_capacity" string="🔴 At Capacity" domain="[('current_utilization', '&gt;=', 'storage_capacity')]"/>
+                    <filter name="near_capacity" string="<i class='fa fa-exclamation-triangle'></i> Near Capacity" domain="[('utilization_percentage', '&gt;=', 80)]"/>
+                    <filter name="at_capacity" string="At Capacity" domain="[('current_utilization', '&gt;=', 'storage_capacity')]"/>
 
                     <separator/>
-                    <filter name="optimal_load" string=" Optimal Load (20-80%)" domain="[('utilization_percentage', '&gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
-                    <filter name="lots_of_space" string="🆓 Lots of Space (&gt;10)" domain="[('available_spaces', '&gt;', 10)]"/>
+                    <filter name="optimal_load" string="Optimal Load (20-80%)" domain="[('utilization_percentage', '&gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
+                    <filter name="lots_of_space" string="<i class='fa fa-thumbs-up'></i> Lots of Space (&gt;10)" domain="[('available_spaces', '&gt;', 10)]"/>
 
                     <separator/>
-                    <filter name="active" string=" Active Locations" domain="[('active', '=', True)]"/>
-                    <filter name="inactive" string="📁 Archived Locations" domain="[('active', '=', False)]"/>
+                    <filter name="active" string="Active Locations" domain="[('active', '=', True)]"/>
+                    <filter name="inactive" string="<i class='fa fa-folder'></i> Archived Locations" domain="[('active', '=', False)]"/>
 
-                    <group string=" Group By" expand="0">
+                    <group string="Group By" expand="0">
                         <filter name="group_by_type" string="Type" context="{'group_by': 'location_type'}"/>
                         <filter name="group_by_parent" string="Parent Location" context="{'group_by': 'parent_location_id'}"/>
                     </group>
@@ -206,7 +206,7 @@
 
         <!-- Action for ENTERPRISE -->
         <record id="action_records_location" model="ir.actions.act_window">
-            <field name="name"><i class='fa fa-building'/> Storage Locations</field>
+            <field name="name"><i class='fa fa-building'></i> Storage Locations</field>
             <field name="res_model">records.location</field>
             <field name="view_mode">kanban,list,form</field>
             <field name="search_view_id" ref="records_location_view_search"/>
@@ -216,20 +216,18 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class='fa fa-building'/> Create your first storage location!
+                    <i class='fa fa-building'></i> Create your first storage location!
                 </p>
                 <p>
                     <b>Enterprise Storage Management:</b>
                     <br/>
-                    • <i class='fa fa-box'/> Track box locations with visual kanban boards<br/>
-                    • <i class='fa fa-bar-chart'/> Monitor capacity utilization in real-time<br/>
-                    • <i class='fa fa-search'/> Smart search with advanced filters<br/>
-                    • <i class='fa fa-building'/> Hierarchical location organization<br/>
-                    • <i class='fa fa-mobile'/> Mobile-optimized for facility operations
+                    • <i class='fa fa-box'></i> Track box locations with visual kanban boards<br/>
+                    • <i class='fa fa-bar-chart'></i> Monitor capacity utilization in real-time<br/>
+                    • <i class='fa fa-search'></i> Smart search with advanced filters<br/>
+                    • <i class='fa fa-building'></i> Hierarchical location organization<br/>
+                    • <i class='fa fa-mobile'></i> Mobile-optimized for facility operations
                 </p>
             </field>
         </record>
-    </data>
-</odoo>
     </data>
 </odoo>

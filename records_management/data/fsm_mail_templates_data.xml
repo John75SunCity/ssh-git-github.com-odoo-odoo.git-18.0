@@ -45,7 +45,7 @@ ${object.company_id.name}</p>
             <field name="body_html"><![CDATA[
                 <div style="font-family: Arial, sans-serif; margin: 0; padding: 20px;">
                     <div style="background-color: #28a745; color: white; padding: 15px; border-radius: 8px 8px 0 0;">
-                        <h2 style="margin: 0;">🚛 Route Optimization Complete</h2>
+                        <h2 style="margin: 0;"><i class="fa fa-truck" aria-hidden="true"></i> Route Optimization Complete</h2>
                     </div>
 
                     <div style="border: 1px solid #28a745; border-top: none; padding: 20px; border-radius: 0 0 8px 8px;">
@@ -53,7 +53,7 @@ ${object.company_id.name}</p>
                         <p>Your route <strong>${object.name}</strong> has been optimized and is ready for execution.</p>
 
                         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
-                            <h4 style="color: #28a745; margin-top: 0;">📋 Route Summary</h4>
+                            <h4 style="color: #28a745; margin-top: 0;"><i class="fa fa-clipboard" aria-hidden="true"></i> Route Summary</h4>
                             <ul style="margin: 0; padding-left: 20px;">
                                 <li><strong>Total Stops:</strong> ${len(object.pickup_request_ids)} locations</li>
                                 <li><strong>Estimated Duration:</strong> ${object.estimated_duration} hours</li>
@@ -63,7 +63,7 @@ ${object.company_id.name}</p>
                         </div>
 
                         <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; border-radius: 5px; margin: 15px 0;">
-                            <p style="margin: 0; color: #856404;"><strong>⏰ Departure Time:</strong> ${object.start_time}</p>
+                            <p style="margin: 0; color: #856404;"><strong><i class="fa fa-clock-o" aria-hidden="true"></i> Departure Time:</strong> ${object.start_time}</p>
                         </div>
 
                         <p>Please review the optimized route and contact dispatch if you have any questions.</p>
@@ -129,7 +129,7 @@ ${object.company_id.name}</p>
                         % endif
 
                         <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                            <h4 style="color: #155724; margin-top: 0;">📋 Next Steps</h4>
+                            <h4 style="color: #155724; margin-top: 0;"><i class="fa fa-clipboard" aria-hidden="true"></i> Next Steps</h4>
                             <ul style="color: #155724; margin-bottom: 0;">
                                 <li>Service documentation will be available in your portal</li>
                                 <li>Invoice will be processed according to your billing schedule</li>
@@ -163,13 +163,13 @@ ${object.company_id.name}</p>
         <record id="mail_template_fsm_equipment_maintenance" model="mail.template">
             <field name="name">FSM: Equipment Maintenance Due</field>
             <field name="model_id" ref="maintenance.model_maintenance_equipment"/>
-            <field name="subject">🔧 Equipment Maintenance Required: ${object.name}</field>
+            <field name="subject">Equipment Maintenance Required: ${object.name}</field>
             <field name="email_from">maintenance@suncityshred.com</field>
             <field name="email_to">${object.responsible_user_id.email}</field>
             <field name="body_html"><![CDATA[
                 <div style="font-family: Arial, sans-serif; margin: 0; padding: 20px;">
                     <div style="background-color: #ffc107; color: #212529; padding: 15px; text-align: center; border-radius: 8px 8px 0 0;">
-                        <h2 style="margin: 0;">🔧 Equipment Maintenance Alert</h2>
+                        <h2 style="margin: 0;"><i class="fa fa-wrench" aria-hidden="true"></i> Equipment Maintenance Alert</h2>
                     </div>
 
                     <div style="border: 1px solid #ffc107; border-top: none; padding: 20px; border-radius: 0 0 8px 8px;">
@@ -177,7 +177,7 @@ ${object.company_id.name}</p>
                         <p>Equipment <strong>${object.name}</strong> requires scheduled maintenance.</p>
 
                         <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 15px 0;">
-                            <h4 style="color: #856404; margin-top: 0;">⚠️ Maintenance Details</h4>
+                            <h4 style="color: #856404; margin-top: 0;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Maintenance Details</h4>
                             <ul style="color: #856404; margin-bottom: 0;">
                                 <li><strong>Equipment:</strong> ${object.name} (${object.equipment_type})</li>
                                 <li><strong>Last Maintenance:</strong> ${object.last_maintenance_date or 'Never'}</li>
@@ -188,7 +188,7 @@ ${object.company_id.name}</p>
 
                         % if object.maintenance_notes:
                         <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
-                            <h4 style="color: #495057; margin-top: 0;">📋 Maintenance Notes</h4>
+                            <h4 style="color: #495057; margin-top: 0;"><i class="fa fa-clipboard" aria-hidden="true"></i> Maintenance Notes</h4>
                             <p style="color: #495057; margin-bottom: 0;">${object.maintenance_notes}</p>
                         </div>
                         % endif
@@ -213,13 +213,13 @@ ${object.company_id.name}</p>
         <record id="mail_template_fsm_vehicle_inspection" model="mail.template">
             <field name="name">FSM: Vehicle Inspection Due</field>
             <field name="model_id" ref="fleet.model_fleet_vehicle"/>
-            <field name="subject">🚛 Vehicle Inspection Required: ${object.name}</field>
+            <field name="subject"><i class="fa fa-truck" aria-hidden="true"></i> Vehicle Inspection Required: ${object.name}</field>
             <field name="email_from">fleet@suncityshred.com</field>
             <field name="email_to">${object.driver_id.work_email if object.driver_id else 'fleet@suncityshred.com'}</field>
             <field name="body_html"><![CDATA[
                 <div style="font-family: Arial, sans-serif; margin: 0; padding: 20px;">
                     <div style="background-color: #dc3545; color: white; padding: 15px; text-align: center; border-radius: 8px 8px 0 0;">
-                        <h2 style="margin: 0;">🚛 Vehicle Inspection Due</h2>
+                        <h2 style="margin: 0;"><i class="fa fa-truck" aria-hidden="true"></i> Vehicle Inspection Due</h2>
                     </div>
 
                     <div style="border: 1px solid #dc3545; border-top: none; padding: 20px; border-radius: 0 0 8px 8px;">
@@ -249,7 +249,7 @@ ${object.company_id.name}</p>
                         </div>
 
                         <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; border-radius: 5px; margin: 15px 0;">
-                            <p style="margin: 0; color: #856404;"><strong>⚠️ Important:</strong> Vehicle cannot be used for customer services until inspection is completed.</p>
+                            <p style="margin: 0; color: #856404;"><strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Important:</strong> Vehicle cannot be used for customer services until inspection is completed.</p>
                         </div>
 
                         <p>Please schedule the inspection immediately to maintain service availability.</p>

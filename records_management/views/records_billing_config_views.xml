@@ -113,7 +113,7 @@
                                         </span">
                                         <span class="badge" t-att-class="record.active.raw_value ? 'badge-primary' : 'badge-secondary'">
                                             <t t-if="record.active.raw_value"><i class="fa fa-circle text-success"></i> Active</t>
-                                            <t t-else="">⭕ Inactive</t>
+                                            <t t-else="">Inactive</t>
                                         </span>
                                     </div>
                                 </div>
@@ -415,7 +415,7 @@
                 <field name="service_category"/>
 
                 <filter string="<i class="fa fa-circle text-success"></i> Active" name="active" domain="[('active', '=', True)]"/>
-                <filter string="⭕ Inactive" name="inactive" domain="[('active', '=', False)]"/>
+                <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
 
                 <separator/>
                 <filter string="<i class="fa fa-robot"></i> Auto Billing" name="auto_billing" domain="[('auto_billing', '=', True)]"/>
@@ -423,7 +423,7 @@
 
                 <separator/>
                 <filter string="Monthly" name="monthly" domain="[('billing_frequency', '=', 'monthly')]"/>
-                <filter string="📆 Quarterly" name="quarterly" domain="[('billing_frequency', '=', 'quarterly')]"/>
+                <filter string="Quarterly" name="quarterly" domain="[('billing_frequency', '=', 'quarterly')]"/>
                 <filter string="Annual" name="annual" domain="[('billing_frequency', '=', 'annual')]"/>
 
                 <separator/>

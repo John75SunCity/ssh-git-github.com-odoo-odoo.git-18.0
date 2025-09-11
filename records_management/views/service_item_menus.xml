@@ -2,10 +2,9 @@
 <odoo>
     <data>
         <!-- ============================================================================ -->
-        <!-- ============================================================================ -->
         <!-- SERVICE ITEMS SECTION (Enhanced with comprehensive structure) -->
         <!-- ============================================================================ -->
-        <menuitem id="menu_service_item_main" name="🛠️ Service Items" parent="menu_records_configuration" sequence="30"/>
+        <menuitem id="menu_service_item_main" name="Service Items" parent="menu_records_configuration" sequence="30"/>
 
         <!-- Service Items Dashboard -->
         <menuitem id="menu_service_item_dashboard" name="&lt;i class='fa fa-bar-chart'/&gt; Service Items Dashboard" parent="menu_service_item_main" action="action_service_item_dashboard" sequence="1" groups="records_management.group_records_manager"/>

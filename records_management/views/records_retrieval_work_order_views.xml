@@ -52,7 +52,7 @@
                             </page>
                             <page name="tracking" string=" Tracking &amp; History">
                                 <group>
-                                    <group name="timestamps" string="⏰ Timestamps">
+                                    <group name="timestamps" string="Timestamps">
                                         <field name="create_date" readonly="1"/>
                                         <field name="write_date" readonly="1"/>
                                     </group>

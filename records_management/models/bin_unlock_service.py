@@ -182,6 +182,11 @@ class BinUnlockService(models.Model):
         domain=lambda self: [('model', '=', self._name)]
     )
 
+    # ------------------------------------------------------------------
+    # PARTS RELATION
+    # ------------------------------------------------------------------
+    part_ids = fields.One2many('unlock.service.part', 'service_id', string='Parts Used')
+
     # ============================================================================
     # COMPUTE METHODS
     # ============================================================================
@@ -207,6 +212,41 @@ class BinUnlockService(models.Model):
                 record.actual_duration = duration.total_seconds() / 3600.0
             else:
                 record.actual_duration = 0.0
+
+    # ============================================================================
+    # CONSTRAINTS
+    # ============================================================================
+    @api.constrains('scheduled_date', 'request_date', 'completion_date')
+    def _check_dates(self):
+        for record in self:
+            if record.scheduled_date and record.request_date and record.scheduled_date < record.request_date:
+                raise ValidationError(_('Scheduled date cannot be before the request date.'))
+            if record.service_start_time and record.scheduled_date and record.service_start_time < record.scheduled_date:
+                raise ValidationError(_('Start time cannot be before the scheduled date.'))
+            if record.completion_date and record.service_start_time and record.completion_date < record.service_start_time:
+                raise ValidationError(_('Completion date cannot be before the start time.'))
+
+    @api.constrains('estimated_duration', 'actual_duration')
+    def _check_duration(self):
+        for record in self:
+            if record.estimated_duration and record.estimated_duration < 0:
+                raise ValidationError(_('Estimated duration cannot be negative.'))
+            if record.actual_duration and record.actual_duration < 0:
+                raise ValidationError(_('Actual duration cannot be negative.'))
+
+    @api.constrains('service_cost', 'emergency_surcharge')
+    def _check_costs(self):
+        for record in self:
+            if record.service_cost and record.service_cost < 0:
+                raise ValidationError(_('Service cost cannot be negative.'))
+            if record.emergency_surcharge and record.emergency_surcharge < 0:
+                raise ValidationError(_('Emergency surcharge cannot be negative.'))
+
+    @api.constrains('witness_required', 'witness_name')
+    def _check_witness_requirements(self):
+        for record in self:
+            if record.witness_required and not record.witness_name:
+                raise ValidationError(_('A witness name is required when a witness is marked as required.'))
 
     # ============================================================================
     # ORM OVERRIDES
@@ -365,40 +405,3 @@ class BinUnlockService(models.Model):
                 'description': _("Bin Unlock Service: %s for %s" % (action, self.name)),
                 'naid_compliant': self.naid_compliant,
             })
-
-    @api.constrains('scheduled_date', 'request_date', 'completion_date')
-    def _check_dates(self):
-        for record in self:
-            if record.scheduled_date and record.request_date and record.scheduled_date < record.request_date:
-                raise ValidationError(_('Scheduled date cannot be before the request date.'))
-            if record.service_start_time and record.scheduled_date and record.service_start_time < record.scheduled_date:
-                raise ValidationError(_('Start time cannot be before the scheduled date.'))
-            if record.completion_date and record.service_start_time and record.completion_date < record.service_start_time:
-                raise ValidationError(_('Completion date cannot be before the start time.'))
-
-    @api.constrains('estimated_duration', 'actual_duration')
-    def _check_duration(self):
-        for record in self:
-            if record.estimated_duration and record.estimated_duration < 0:
-                raise ValidationError(_('Estimated duration cannot be negative.'))
-            if record.actual_duration and record.actual_duration < 0:
-                raise ValidationError(_('Actual duration cannot be negative.'))
-
-    @api.constrains('service_cost', 'emergency_surcharge')
-    def _check_costs(self):
-        for record in self:
-            if record.service_cost and record.service_cost < 0:
-                raise ValidationError(_('Service cost cannot be negative.'))
-            if record.emergency_surcharge and record.emergency_surcharge < 0:
-                raise ValidationError(_('Emergency surcharge cannot be negative.'))
-
-    @api.constrains('witness_required', 'witness_name')
-    def _check_witness_requirements(self):
-        for record in self:
-            if record.witness_required and not record.witness_name:
-                raise ValidationError(_('A witness name is required when a witness is marked as required.'))
-
-    # ------------------------------------------------------------------
-    # PARTS RELATION
-    # ------------------------------------------------------------------
-    part_ids = fields.One2many('unlock.service.part', 'service_id', string='Parts Used')

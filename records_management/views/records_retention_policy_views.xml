@@ -391,8 +391,8 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
                 <filter string="Legal Hold" name="legal_hold" domain="[('is_legal_hold', '=', True)]"/>
                 <filter string="Is Template" name="is_template" domain="[('is_template', '=', True)]"/>
                 <filter string="🌍 Is Global" name="is_global" domain="[('is_global', '=', True)]"/>
-                <filter string="⏰ Expired" name="expired" domain="[('is_expired', '=', True)]"/>
-                <filter string="⏰ Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                <filter string="Expired" name="expired" domain="[('is_expired', '=', True)]"/>
+                <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
 
                 <separator/>
                 <filter string="Has Documents" name="has_documents" domain="[('document_count', '">', 0)]"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
+<odoo>
     <data>
         <!-- Portal Model XML ID definitions for security rules -->
         <record id="model_customer_feedback" model="ir.model">
@@ -113,22 +113,25 @@
                                 </span>
                                 % else:
                                 <span style="padding: 3px 8px; border-radius: 3px; color: white; background-color: #6c757d;">
+                                    ${object.state.replace('_', ' ').title()}
+                                </span>
+                                % endif
+                            </td>
+                        </tr>
                         <tr t-if="object.assigned_to">
                             <td><strong>Assigned To:</strong></td>
                             <td t-esc="object.assigned_to.name"/>
                         </tr>
+                        <tr>
                             <td><strong>Last Updated:</strong></td>
                             <td>${object.write_date}</td>
-                    <p t-if="object.state == 'completed'" style="color: #28a745; font-weight: bold;">✓ Your request has been completed successfully!</p>
-                    <p t-if="object.state == 'in_progress'" style="color: #ffc107; font-weight: bold;">⏳ Your request is currently being processed.</p>
                         </tr>
-                        % endif
                     </table>
 
                     % if object.state == 'completed':
-                    <p style="color: #28a745; font-weight: bold;">✓ Your request has been completed successfully!</p>
+                    <p style="color: #28a745; font-weight: bold;"><i class="fa fa-check" aria-hidden="true"></i> Your request has been completed successfully!</p>
                     % elif object.state == 'in_progress':
-                    <p style="color: #ffc107; font-weight: bold;">⏳ Your request is currently being processed.</p>
+                    <p style="color: #ffc107; font-weight: bold;"><i class="fa fa-clock-o" aria-hidden="true"></i> Your request is currently being processed.</p>
                     % endif
 
                     <p>
@@ -238,7 +241,7 @@
                     </table>
 
                     <p style="color: #007cba; font-weight: bold;">
-                        ✓ Pickup confirmed! Our team will arrive during the scheduled time window.
+                        <i class="fa fa-check" aria-hidden="true"></i> Pickup confirmed! Our team will arrive during the scheduled time window.
                     </p>
 
                     <p><strong>Important:</strong> Please ensure materials are properly prepared and accessible for pickup.</p>
@@ -295,7 +298,7 @@
                     </table>
 
                     <p style="color: #dc3545; font-weight: bold;">
-                        🔒 NAID AAA Compliance: This audit ensures adherence to NAID AAA certification standards.
+                        <i class="fa fa-lock" aria-hidden="true"></i> NAID AAA Compliance: This audit ensures adherence to NAID AAA certification standards.
                     </p>
 
                     <p><strong>Preparation Required:</strong> Please have all relevant documentation and personnel available.</p>
@@ -355,7 +358,7 @@
                         </div>
 
                         <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                            <h4 style="color: #856404; margin-top: 0;">🔒 NAID AAA Certified</h4>
+                            <h4 style="color: #856404; margin-top: 0;"><i class="fa fa-lock" aria-hidden="true"></i> NAID AAA Certified</h4>
                             <p style="color: #856404; margin-bottom: 0;">Your documents are protected by our NAID AAA certification, ensuring the highest standards of security and compliance.</p>
                         </div>
 
@@ -369,9 +372,9 @@
 
                         <p>If you have any questions, our team is here to help:</p>
                         <ul style="list-style: none; padding: 0;">
-                            <li>📧 Email: support@suncityshred.com</li>
-                            <li>📞 Phone: (555) 123-SHRED</li>
-                            <li>🌐 Portal: <a href="${ctx.get('base_url', '')}/web/login">Customer Portal</a></li>
+                            <li><i class="fa fa-envelope" aria-hidden="true"></i> Email: support@suncityshred.com</li>
+                            <li><i class="fa fa-phone" aria-hidden="true"></i> Phone: (555) 123-SHRED</li>
+                            <li><i class="fa fa-globe" aria-hidden="true"></i> Portal: <a href="${ctx.get('base_url', '')}/web/login">Customer Portal</a></li>
                         </ul>
 
                         <p>Thank you for choosing Sun City Shred for your secure document management needs.</p>
@@ -403,7 +406,7 @@
             <field name="body_html"><![CDATA[
                 <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
                     <div style="background-color: #28a745; color: white; padding: 20px; text-align: center;">
-                        <h2 style="margin: 0;">✅ Service Completed Successfully</h2>
+                        <h2 style="margin: 0;"><i class="fa fa-check" aria-hidden="true"></i> Service Completed Successfully</h2>
                     </div>
 
                     <div style="padding: 25px;">
@@ -434,7 +437,7 @@
 
                         % if object.request_type in ['destruction', 'shredding']:
                         <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                            <h4 style="color: #856404; margin-top: 0;">🏆 NAID Destruction Certificate</h4>
+                            <h4 style="color: #856404; margin-top: 0;"><i class="fa fa-trophy" aria-hidden="true"></i> NAID Destruction Certificate</h4>
                             <p style="color: #856404; margin-bottom: 10px;">Your destruction certificate is now available for download. This certificate provides legal proof of secure destruction according to NAID AAA standards.</p>
                             <p style="text-align: center;">
                                 <a href="${ctx.get('base_url', '')}/my/certificates/${object.id}" style="background-color: #ffc107; color: #212529; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
@@ -480,11 +483,11 @@
             <field name="model_id" ref="records_management.model_portal_request"/>
             <field name="email_from">emergency@suncityshred.com</field>
             <field name="email_to">${object.partner_id.email}</field>
-            <field name="subject"><i class="fa fa-exclamation-triangle"></i> URGENT: ${object.name} - Immediate Attention Required</field>
+            <field name="subject"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> URGENT: ${object.name} - Immediate Attention Required</field>
             <field name="body_html"><![CDATA[
                 <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
                     <div style="background-color: #dc3545; color: white; padding: 20px; text-align: center;">
-                        <h1 style="margin: 0; font-size: 24px;"><i class="fa fa-exclamation-triangle text-danger"></i> URGENT NOTIFICATION</h1>
+                        <h1 style="margin: 0; font-size: 24px;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> URGENT NOTIFICATION</h1>
                         <p style="margin: 10px 0 0 0; font-size: 16px;">Immediate attention required for your request</p>
                     </div>
 
@@ -493,7 +496,7 @@
                         <p>This is an emergency notification regarding your service request:</p>
 
                         <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                            <h3 style="color: #721c24; margin-top: 0;">⚠️ Emergency Details</h3>
+                            <h3 style="color: #721c24; margin-top: 0;"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Emergency Details</h3>
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
                                     <td style="padding: 8px; border-bottom: 1px solid #f5c6cb;"><strong>Request ID:</strong></td>
@@ -515,7 +518,7 @@
                         </div>
 
                         <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                            <h4 style="color: #856404; margin-top: 0;">📞 Immediate Action Required</h4>
+                            <h4 style="color: #856404; margin-top: 0;"><i class="fa fa-phone" aria-hidden="true"></i> Immediate Action Required</h4>
                             <p style="color: #856404;">Please contact our emergency response team immediately:</p>
                             <ul style="color: #856404;">
                                 <li><strong>Emergency Hotline:</strong> (555) 123-HELP</li>
@@ -530,7 +533,7 @@
 
                         <p style="text-align: center; margin: 30px 0;">
                             <a href="tel:5551234357" style="background-color: #dc3545; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-size: 18px; font-weight: bold;">
-                                📞 CALL NOW: (555) 123-HELP
+                                <i class="fa fa-phone" aria-hidden="true"></i> CALL NOW: (555) 123-HELP
                             </a>
                         </p>
 
@@ -551,11 +554,11 @@
             <field name="model_id" ref="base.model_res_partner"/>
             <field name="email_from">maintenance@suncityshred.com</field>
             <field name="email_to">${object.email}</field>
-            <field name="subject">Scheduled Maintenance Notice - Portal Access</field>
+            <field name="subject"><i class="fa fa-wrench" aria-hidden="true"></i> Scheduled Maintenance Notice - Portal Access</field>
             <field name="body_html"><![CDATA[
                 <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
                     <div style="background-color: #ffc107; color: #212529; padding: 20px; text-align: center;">
-                        <h2 style="margin: 0;">🔧 Scheduled Maintenance Notice</h2>
+                        <h2 style="margin: 0;"><i class="fa fa-wrench" aria-hidden="true"></i> Scheduled Maintenance Notice</h2>
                     </div>
 
                     <div style="padding: 25px;">
@@ -563,7 +566,7 @@
                         <p>We will be performing scheduled maintenance on our customer portal system to improve performance and security.</p>
 
                         <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                            <h3 style="color: #856404; margin-top: 0;">📅 Maintenance Schedule</h3>
+                            <h3 style="color: #856404; margin-top: 0;"><i class="fa fa-calendar" aria-hidden="true"></i> Maintenance Schedule</h3>
                             <table style="width: 100%; border-collapse: collapse;">
                                 <tr>
                                     <td style="padding: 8px; border-bottom: 1px solid #ffeaa7;"><strong>Start Time:</strong></td>
@@ -593,7 +596,7 @@
                         </ul>
 
                         <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                            <h4 style="color: #0c5460; margin-top: 0;">✨ Improvements Include:</h4>
+                            <h4 style="color: #0c5460; margin-top: 0;">Improvements Include:</h4>
                             <ul style="color: #0c5460; margin-bottom: 0;">
                                 <li>Enhanced security features</li>
                                 <li>Faster page loading times</li>
@@ -605,8 +608,8 @@
                         <h4 style="color: #dc3545;">Emergency Contact</h4>
                         <p>If you have an urgent need during maintenance hours, please contact:</p>
                         <ul style="list-style: none; padding: 0;">
-                            <li>📞 Emergency Line: (555) 123-HELP</li>
-                            <li>📧 Emergency Email: emergency@suncityshred.com</li>
+                            <li><i class="fa fa-phone" aria-hidden="true"></i> Emergency Line: (555) 123-HELP</li>
+                            <li><i class="fa fa-envelope" aria-hidden="true"></i> Emergency Email: emergency@suncityshred.com</li>
                         </ul>
 
                         <p>We apologize for any inconvenience and thank you for your patience as we work to improve your experience.</p>

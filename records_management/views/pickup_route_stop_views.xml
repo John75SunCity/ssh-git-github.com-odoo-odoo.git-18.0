@@ -84,7 +84,7 @@
                                                 <span class="badge badge-success"><i class="fa fa-check-circle text-success"/> Completed</span>
                                             </div>
                                             <div t-if="record.state.raw_value == 'skipped'">
-                                                <span class="badge badge-secondary">⏭️ Skipped</span>
+                                                <span class="badge badge-secondary">Skipped</span>
                                             </div>
                                         </div>
                                     </div>
@@ -320,7 +320,7 @@
                     • &lt;i class="fa fa-clock-o"&gt; Real-time scheduling and duration tracking<br/>
                     • 👨‍&lt;i class="fa fa-briefcase"&gt; Contact management and access instructions<br/>
                     • <i class="fa fa-box"/> Estimated vs actual box and weight tracking<br/>
-                    • ✍️ Digital signatures for completion verification<br/>
+                    • Digital signatures for completion verification<br/>
                     • &lt;i class="fa fa-camera"&gt; Photo documentation and barcode scanning<br/>
                     • &lt;i class="fa fa-bell"&gt; Automated notifications and status updates<br/>
                     • <i class="fa fa-bar-chart"/> Performance analytics and time optimization<br/>

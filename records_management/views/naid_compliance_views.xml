@@ -23,7 +23,7 @@
                                             <strong><i class='fa fa-trophy'/> <field name="name"/></strong>
                                         </div>
                                         <div class="o_secondary">
-                                            🎖️ NAID <field name="naid_level"/>
+                                            <i class="fa fa-certificate" aria-hidden="true"></i> NAID <field name="naid_level"/>
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
@@ -93,10 +93,10 @@
                       decoration-info="naid_level == 'AAA'">
                     <field name="name" string="Compliance Record"/>
                     <field name="facility_name" string="Facility"/>
-                    <field name="naid_level" string="🎖️ NAID Level" widget="badge"/>
+                    <field name="naid_level" string="NAID Level" widget="badge"/>
                     <field name="compliance_status" string="Status" widget="badge"/>
                     <field name="certification_date" string="Certified"/>
-                    <field name="expiry_date" string="⏰ Expires"/>
+                    <field name="expiry_date" string="Expires"/>
                     <field name="certificate_valid" string="Valid" widget="boolean_toggle"/>
                     <field name="audit_required" string="Audit Due" widget="boolean_toggle"/>
                     <field name="last_audit_date" string="Last Audit"/>
@@ -174,7 +174,7 @@
                         </group>
 
                         <notebook>
-                            <page string="🎖️ NAID Standards" name="standards">
+                            <page string="NAID Standards" name="standards">
                                 <group>
                                     <group string="&lt;i class=&quot;fa fa-shield&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; Physical Security">
                                         <field name="physical_security_score"/>
@@ -342,7 +342,7 @@
                     <filter string="Certified" name="certified" domain="[('compliance_status', '=', 'certified')]"/>
                     <filter string="Pending Audit" name="pending_audit" domain="[('compliance_status', '=', 'pending_audit')]"/>
                     <filter string="Non-Compliant" name="non_compliant" domain="[('compliance_status', '=', 'non_compliant')]"/>
-                    <filter string="⏰ Expired" name="expired" domain="[('compliance_status', '=', 'expired')]"/>
+                    <filter string="Expired" name="expired" domain="[('compliance_status', '=', 'expired')]"/>
 
                     <separator/>
                     <filter string="NAID AAA" name="naid_aa" domain="[('naid_level', '=', 'AAA')]"/>
@@ -387,7 +387,7 @@
                 </p>
                 <p>
                     <b>Enterprise NAID AAA Compliance Management:</b><br/>
-                    • 🎖️ Complete NAID AAA/AA/A certification tracking<br/>
+                    • <i class="fa fa-certificate" aria-hidden="true"></i> Complete NAID AAA/AA/A certification tracking<br/>
                     • <i class='fa fa-search'/> Automated audit scheduling and management<br/>
                     • <i class="fa fa-certificate"></i> Digital certificate generation and tracking<br/>
                     • <i class="fa fa-shield" aria-hidden="true"></i> Comprehensive security standards compliance<br/>

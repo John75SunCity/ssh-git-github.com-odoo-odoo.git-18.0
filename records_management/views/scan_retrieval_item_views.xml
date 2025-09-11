@@ -22,13 +22,14 @@
                                 <div class="o_kanban_card_header">
                                     <div class="o_kanban_card_header_title">
                                         <div class="o_primary">
-                                            <strong><i class='fa fa-file-o'/>
+                                            <strong>
+                                                <i class='fa fa-file-o'/>
                                                 <field name="name"/>
                                             </strong>
                                         </div>
                                         <div class="o_secondary">
-                                            <i class="fa fa-tag">
-                                                <field name="document_type"/>
+                                            <i class="fa fa-tag"/>
+                                            <field name="document_type"/>
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
@@ -55,16 +56,18 @@
                                         </div>
                                         <div class="col-4">
                                             <span class="badge badge-primary" t-if="record.priority.raw_value == 'high'">
-                                                <i class='fa fa-bolt'"/> High Priority
+                                                <i class='fa fa-bolt'></i> High Priority
                                             </span>
                                             <span class="badge badge-info" t-if="record.priority.raw_value == 'medium'">
-                                                <i class='fa fa-clipboard'"/> Medium
+                                                <i class='fa fa-clipboard'></i> Medium
                                             </span>
                                             <span class="badge badge-secondary" t-if="record.priority.raw_value == 'low'">
-                                                <i class='fa fa-pencil'"/> Low
+                                                <i class='fa fa-pencil'></i> Low
                                             </span>
                                             <div t-if="record.retrieval_work_order_id.raw_value">
-                                                <small><i class='fa fa-link'/> Work Order Linked</small>
+                                                <small>
+                                                    <i class='fa fa-link'></i> Work Order Linked
+                                                </small>
                                             </div>
                                         </div>
                                     </div>
@@ -156,7 +159,7 @@
                             <page string="Processing Notes" name="notes">
                                 <field name="processing_notes" placeholder="Add processing notes, scan issues, or special instructions..."/>
                             </page>
-                            <page string="📎 Attachments" name="attachments">
+                            <page string="Attachments" name="attachments">
                                 <field name="scanned_document_attachment" widget="binary"/>
                                 <field name="additional_attachments" widget="many2many_binary"/>
                             </page>
@@ -211,11 +214,11 @@
                     <filter string="Quality Passed" name="quality_passed" domain="[('quality_check_passed', '=', True)]"/>
                     <separator/>
                     <filter string="Scanned Today" name="scanned_today" domain="[('scan_date', '>=', context_today)]"/>
-                    <filter string="📆 Scanned This Week" name="scanned_this_week" domain="[('scan_date', '>=', (context_today - relativedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Scanned This Week" name="scanned_this_week" domain="[('scan_date', '>=', (context_today - relativedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
                     <filter string="Scanned This Month" name="scanned_this_month" domain="[('scan_date', '>=', context_today.strftime('%Y-%m-01'))]"/>
                     <separator/>
-                    <filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '<', context_today), ('state', 'not in', ['completed', 'cancelled'])]"/>
-                    <filter string="<i class="fa fa-exclamation-triangle text-danger"></i> Due Today" name="due_today" domain="[('expected_completion_date', '=', context_today)]"/>
+                    <filter string="Overdue" name="overdue" domain="[('expected_completion_date', '<', context_today), ('state', 'not in', ['completed', 'cancelled'])]"/>
+                    <filter string='<i class="fa fa-exclamation-triangle text-danger"></i> Due Today' name="due_today" domain="[('expected_completion_date', '=', context_today)]"/>
                     <group expand="0" string="Group By">
                         <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Document Type" name="group_by_document_type" context="{'group_by': 'document_type'}"/>
@@ -231,7 +234,7 @@
 
         <!-- Enhanced Action Window -->
         <record id="action_scan_retrieval_item" model="ir.actions.act_window">
-            <field name="name"><i class='fa fa-file-o'/> Scan Retrieval Items</field>
+            <field name="name"><i class='fa fa-file-o'></i> Scan Retrieval Items</field>
             <field name="res_model">scan.retrieval.item</field>
             <field name="view_mode">kanban,list,form</field>
             <field name="search_view_id" ref="scan_retrieval_item_view_search"/>
@@ -241,28 +244,25 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class='fa fa-file-o'/> Create your first scan retrieval item!
+                    <i class='fa fa-file-o'></i> Create your first scan retrieval item!
                 </p>
                 <p>
                     <b>Document Scanning &amp; Retrieval System:</b>
                     <br/>
-                    • <i class='fa fa-file-o'/> Complete document scanning workflow management<br/>
-                    • <i class='fa fa-search'/> Advanced barcode recognition and tracking<br/>
-                    • <i class='fa fa-bolt'/> Priority-based processing with user assignment<br/>
-                    • <i class='fa fa-bar-chart'/> Quality control with automated validation<br/>
-                    • <i class='fa fa-link'/> Integration with work orders and FSM<br/>
-                    • <i class='fa fa-line-chart'/> Real-time progress tracking and analytics<br/>
-                    • 💾 Secure document storage with version control<br/>
-                    • <i class='fa fa-clipboard'/> Comprehensive audit trails and compliance<br/>
-                    • <i class='fa fa-rocket'/> AI-ready OCR and content analysis capabilities
+                    • <i class='fa fa-file-o'></i> Complete document scanning workflow management<br/>
+                    • <i class='fa fa-search'></i> Advanced barcode recognition and tracking<br/>
+                    • <i class='fa fa-bolt'></i> Priority-based processing with user assignment<br/>
+                    • <i class='fa fa-bar-chart'></i> Quality control with automated validation<br/>
+                    • <i class='fa fa-link'></i> Integration with work orders and FSM<br/>
+                    • <i class='fa fa-line-chart'></i> Real-time progress tracking and analytics<br/>
+                    • <i class='fa fa-hdd-o'></i> Secure document storage with version control<br/>
+                    • <i class='fa fa-clipboard'></i> Comprehensive audit trails and compliance<br/>
+                    • <i class='fa fa-rocket'></i> AI-ready OCR and content analysis capabilities
                 </p>
             </field>
         </record>
     </data>
 </odoo>
-                <i class='fa fa-file-o'/> Create your first scan retrieval item!
-            </p>
-            <p>
                 <b>Document Scanning &amp; Retrieval System:</b>
                 <br/>
                 • <i class='fa fa-file-o'/> Complete document scanning workflow management<br/>
