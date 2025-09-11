@@ -23,13 +23,13 @@
 <form string="Reject Temporary Inventory">
                 <sheet>
 <group>
-<field name="inventory_id" readonly="true"/>
-<field name="rejection_reason" placeholder="%(Enter rejection reason...)s"/>
+    <field name="inventory_id" readonly="true"/>
 
+<field name="rejection_reason" placeholder="Enter rejection reason..."/>
 </group>
 <footer>
-    <button name="action_confirm_rejection" string="Confirm Rejection" type="object" class="btn-primary"/>
-    <button string="Cancel" class="btn-secondary" special="cancel"/>
+<button name="action_confirm_rejection" string="Confirm Rejection" type="object" class="btn-primary"/>
+<button string="Cancel" class="btn-secondary" special="cancel"/>
 </footer>
                 </sheet>
             </form>
@@ -68,4 +68,3 @@
 </data>
 
 </odoo>
-
