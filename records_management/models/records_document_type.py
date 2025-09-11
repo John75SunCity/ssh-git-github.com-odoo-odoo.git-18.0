@@ -1,5 +1,5 @@
 import logging
-from dateutil.relativedelta import relativedelta
+from datetime import datetime, timedelta
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
@@ -292,7 +292,18 @@ class RecordsDocumentType(models.Model):
         self.ensure_one()
         if not creation_date or not self.effective_retention_years:
             return None
-        return creation_date + relativedelta(years=self.effective_retention_years)
+
+        # Convert date to datetime if needed for calculation
+        if isinstance(creation_date, str):
+            creation_date = datetime.strptime(creation_date, '%Y-%m-%d').date()
+        elif isinstance(creation_date, datetime):
+            creation_date = creation_date.date()
+
+        # Calculate retention end date by adding years (approximating with 365 days per year)
+        retention_days = self.effective_retention_years * 365
+        retention_date = creation_date + timedelta(days=retention_days)
+
+        return retention_date
 
     def is_eligible_for_destruction(self, document_date):
         self.ensure_one()
