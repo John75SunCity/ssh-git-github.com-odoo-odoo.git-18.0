@@ -187,11 +187,23 @@
     "scm.showChangesSummary": true,
     "scm.alwaysShowActions": true,
     "scm.inputFontFamily": "default",
-    "terminal.integrated.shell.osx": "/bin/zsh",
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.profiles.osx": {
+        "zsh": {
+            "path": "/bin/zsh",
+            "args": ["-l"]
+        },
+        "bash": {
+            "path": "/bin/bash",
+            "args": ["-l"]
+        }
+    },
     "terminal.integrated.env.osx": {
         "PYTHONPATH": "${workspaceFolder}/records_management:${workspaceFolder}/records_management_fsm:${workspaceFolder}/addons",
         "PYTHONUNBUFFERED": "1"
     },
+    "terminal.integrated.inheritEnv": true,
+    "terminal.integrated.automationShell.osx": "/bin/zsh",
     "python.defaultInterpreterPath": "/usr/bin/python3",
     "python.pythonPath": "/usr/bin/python3",
     "extensions.ignoreRecommendations": false,

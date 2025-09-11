@@ -3,9 +3,9 @@
     <data>
 <!-- ENTERPRISE VISITOR POS WIZARD - Advanced Walk-In Customer Processing &amp; Audit Integration -->
 
-    <!-- Form view for visitor.pos.wizard -->
-    <record id="visitor_pos_wizard_view_form" model="ir.ui.view">
-        <field name="name">visitor.pos.wizard.view.form</field>
+<!-- Form view for visitor.pos.wizard - Fixed for cache refresh -->
+<record id="visitor_pos_wizard_view_form_cache_fix" model="ir.ui.view">
+    <field name="name">visitor.pos.wizard.view.form.cache.fix</field>
         <field name="model">visitor.pos.wizard</field>
         <field name="arch" type="xml">
             <form string="Visitor POS Processing Wizard">
@@ -71,17 +71,10 @@
 <!-- Additional summary fields can be added here as the model expands -->
 </group>
 </group>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
+</sheet>
             </form>
         </field>
-    </record>
-
-<!-- FIXED: Corrected list view element name -->
+</record><!-- FIXED: Corrected list view element name -->
     <record id="visitor_pos_wizard_view_tree" model="ir.ui.view">
         <field name="name">visitor.pos.wizard.view.tree</field>
         <field name="model">visitor.pos.wizard</field>
@@ -188,7 +181,8 @@ Streamline walk-in customer processing with integrated POS transactions.
         <field name="name">Process Walk-In Visitor</field>
         <field name="res_model">visitor.pos.wizard</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="visitor_pos_wizard_view_form"/>
+<field name="view_id" ref="visitor_pos_wizard_view_form_cache_fix"/>
+
         <field name="target">new</field>
 <field name="context">{}</field>
     </record>
