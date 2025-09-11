@@ -184,17 +184,17 @@
                     <field name="name" string="Location" filter_domain="['|', ('name', 'ilike', self), ('description', 'ilike', self)]"/>
                     <field name="location_type"/>
 
-                    <filter name="available_space" string="&lt;i class=&quot;fa fa-circle text-success&quot;&gt;&lt;/i&gt; Available Space" domain="[('available_spaces', '&gt;', 0)]"/>
-                    <filter name="near_capacity" string="<i class='fa fa-exclamation-triangle'></i> Near Capacity" domain="[('utilization_percentage', '&gt;=', 80)]"/>
+                    <filter name="available_space" string="Available Space" domain="[('available_spaces', '&gt;', 0)]"/>
+                    <filter name="near_capacity" string="Near Capacity" domain="[('utilization_percentage', '&gt;=', 80)]"/>
                     <filter name="at_capacity" string="At Capacity" domain="[('current_utilization', '&gt;=', 'storage_capacity')]"/>
 
                     <separator/>
                     <filter name="optimal_load" string="Optimal Load (20-80%)" domain="[('utilization_percentage', '&gt;=', 20), ('utilization_percentage', '&lt;=', 80)]"/>
-                    <filter name="lots_of_space" string="<i class='fa fa-thumbs-up'></i> Lots of Space (&gt;10)" domain="[('available_spaces', '&gt;', 10)]"/>
+                    <filter name="lots_of_space" string="Lots of Space (&gt;10)" domain="[('available_spaces', '&gt;', 10)]"/>
 
                     <separator/>
                     <filter name="active" string="Active Locations" domain="[('active', '=', True)]"/>
-                    <filter name="inactive" string="<i class='fa fa-folder'></i> Archived Locations" domain="[('active', '=', False)]"/>
+                    <filter name="inactive" string="Archived Locations" domain="[('active', '=', False)]"/>
 
                     <group string="Group By" expand="0">
                         <filter name="group_by_type" string="Type" context="{'group_by': 'location_type'}"/>

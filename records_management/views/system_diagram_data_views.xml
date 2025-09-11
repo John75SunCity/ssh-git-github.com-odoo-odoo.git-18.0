@@ -31,7 +31,7 @@
             <form string="System Diagram Data">
                 <header>
                     <button name="action_generate_diagram" type="object" string="Generate Diagram" class="btn-primary"/>
-                    <button name="action_export_data" type="object" string="<i class='fa fa-share'></i> Export Data" class="btn-secondary"/>
+                    <button name="action_export_data" type="object" string="Export Data" class="btn-secondary"/>
                     <button name="action_clear_cache" type="object" string="Clear Cache" class="btn-warning"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,generated,cached"/>
                 </header>
@@ -65,7 +65,7 @@
                         </group>
                     </group>
                     <notebook>
-                        <page name="diagram_preview" string="<i class='fa fa-picture-o'></i> Diagram Preview">
+                        <page name="diagram_preview" string="Diagram Preview">
                             <group>
                                 <field name="diagram_html" widget="html" nolabel="1"/>
                             </group>
@@ -125,14 +125,14 @@
                 <field name="search_type" string="Diagram Type"/>
                 <separator/>
                 <!-- Filters -->
-                <filter name="user_diagrams" string="<i class='fa fa-user'></i> User Analysis" domain="[('search_type', '=', 'user')]"/>
-                <filter name="model_diagrams" string="<i class='fa fa-building-o'></i> Model Structure" domain="[('search_type', '=', 'model')]"/>
+                <filter name="user_diagrams" string="User Analysis" domain="[('search_type', '=', 'user')]"/>
+                <filter name="model_diagrams" string="Model Structure" domain="[('search_type', '=', 'model')]"/>
                 <filter name="company_diagrams" string="Company Overview" domain="[('search_type', '=', 'company')]"/>
                 <separator/>
                 <filter name="access_focus" string="Access Rights Focus" domain="[('show_access_only', '=', True)]"/>
                 <filter name="include_inactive" string="Include Inactive" domain="[('include_inactive', '=', True)]"/>
                 <separator/>
-                <filter name="recent" string="<i class='fa fa-clock-o'></i> Recent (Last 7 days)" domain="[('create_date', '>=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="recent" string="Recent (Last 7 days)" domain="[('create_date', '>=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 <filter name="my_diagrams" string="My Diagrams" domain="[('user_id', '=', uid)]"/>
                 <group expand="0" string="Group By">
                     <filter name="group_by_type" string="Diagram Type" context="{'group_by': 'search_type'}"/>
@@ -389,12 +389,12 @@
     <!-- ============================================================================ -->
     <!-- ENHANCED MENU STRUCTURE -->
     <!-- ============================================================================ -->
-    <menuitem id="menu_system_architecture" name="<i class='fa fa-bar-chart'></i> System Architecture" parent="records_management.menu_records_management_root" sequence="20" groups="records_management.group_records_manager"/>
-    <menuitem id="menu_system_analysis" name="<i class='fa fa-search'></i> System Analysis" parent="menu_system_architecture" sequence="10"/>
-    <menuitem id="menu_system_flowchart_main" name="<i class='fa fa-bullseye'></i> Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
-    <menuitem id="menu_system_flowchart_user" name="<i class='fa fa-user'></i> User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
-    <menuitem id="menu_system_flowchart_model" name="<i class='fa fa-building-o'></i> Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>
-    <menuitem id="menu_system_flowchart_company" name="<i class='fa fa-building'></i> Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>
-    <menuitem id="menu_system_overview_quick" name="<i class='fa fa-clipboard'></i> System Overview" parent="records_management.menu_records_management_root" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
-    <menuitem id="menu_system_flowchart_config" name="<i class='fa fa-cog'></i> Flowchart Configuration" parent="records_management.menu_records_configuration" action="action_system_flowchart" sequence="45" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_system_architecture" name="System Architecture" parent="records_management.menu_records_management_root" sequence="20" groups="records_management.group_records_manager"/>
+    <menuitem id="menu_system_analysis" name="System Analysis" parent="menu_system_architecture" sequence="10"/>
+    <menuitem id="menu_system_flowchart_main" name="Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
+    <menuitem id="menu_system_flowchart_user" name="User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
+    <menuitem id="menu_system_flowchart_model" name="Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>
+    <menuitem id="menu_system_flowchart_company" name="Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>
+    <menuitem id="menu_system_overview_quick" name="System Overview" parent="records_management.menu_records_management_root" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
+    <menuitem id="menu_system_flowchart_config" name="Flowchart Configuration" parent="records_management.menu_records_configuration" action="action_system_flowchart" sequence="45" groups="records_management.group_records_manager"/>
 </odoo>

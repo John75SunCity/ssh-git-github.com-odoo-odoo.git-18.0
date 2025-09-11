@@ -387,28 +387,7 @@
         </record>
 
         <!-- Menus -->
-        <menuitem id="menu_bin_key_management" name="&lt;i class='fa fa-key'/&gt; Bin Key Management" parent="records_management.menu_records_management_root" action="action_bin_key_management" sequence="10"/>
-        <menuitem id="menu_bin_unlock_services" name="&lt;i class='fa fa-unlock-alt'/&gt; Unlock Services" parent="records_management.menu_records_management_root" action="action_bin_unlock_service" sequence="11"/>
+        <menuitem id="menu_bin_key_management" name="Bin Key Management" parent="records_management.menu_records_management_root" action="action_bin_key_management" sequence="10"/>
+        <menuitem id="menu_bin_unlock_services" name="Unlock Services" parent="records_management.menu_records_management_root" action="action_bin_unlock_service" sequence="11"/>
     </data>
-</odoo>
-        </p>
-        <p>
-            <strong>Service Features:</strong>
-            <br/>
-                    • Automated billing integration<br/>
-                    • Photo documentation support<br/>
-                    • Technician assignment tracking<br/>
-                    • Customer notification system<br/>
-                    • Complete audit trails
-</p>
-</field>
-</record>
-
-<!-- Menus -->
-<menuitem id="menu_bin_key_management" name="&lt;i class='fa fa-key'/&gt; Bin Key Management" parent="records_management.menu_records_management_root" action="action_bin_key_management" sequence="10"/>
-<menuitem id="menu_bin_unlock_services" name="&lt;i class='fa fa-unlock-alt'/&gt; Unlock Services" parent="records_management.menu_records_management_root" action="action_bin_unlock_service" sequence="11"/>
-
-
-
-</data>
 </odoo>

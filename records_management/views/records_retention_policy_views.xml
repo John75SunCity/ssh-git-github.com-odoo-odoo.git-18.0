@@ -342,10 +342,10 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Policy</a>
-                                <a role="menuitem" type="object" name="action_view_rules" class="dropdown-item"><i class='fa fa-clipboard'/> View Rules</a>
-<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'"><i class='fa fa-check-circle text-success'"/> Activate</a>
-<a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state not in ('draft', 'active')>📁 Archive</a">
+                                <a role="menuitem" type="edit" class="dropdown-item">Edit Policy</a>
+                                <a role="menuitem" type="object" name="action_view_rules" class="dropdown-item">View Rules</a>
+                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">Activate</a>
+                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state not in ('draft', 'active')">Archive</a>
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="object" name="action_create_new_version" class="dropdown-item"><i class='fa fa-pencil'/> New Version</a>
                             </div>
@@ -395,8 +395,8 @@ invisible="state != 'archived'" groups="records_management.group_records_manager
                 <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
 
                 <separator/>
-                <filter string="Has Documents" name="has_documents" domain="[('document_count', '">', 0)]"/>
-                <filter string="Has Rules" name="has_rules" domain="[('rule_count', '">', 0)]"/>
+                <filter string="Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
+                <filter string="Has Rules" name="has_rules" domain="[('rule_count', '>', 0)]"/>
                 <filter string="Has Children" name="has_children" domain="[('child_policy_ids', '!=', [])]"/>
                 <filter string="Has Tags" name="has_tags" domain="[('tag_ids', '!=', [])]"/>
 

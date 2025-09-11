@@ -331,12 +331,3 @@
         </record>
     </data>
 </odoo>
-                • <i class="fa fa-bar-chart"/> Performance analytics and time optimization<br/>
-                • <i class="fa fa-truck"></i> Route sequence optimization and coordination<br/>
-                • <i class="fa fa-clipboard"/> NAID compliance and audit trail management
-            </p>
-        </field>
-    </record>
-</data>
-
-</odoo>

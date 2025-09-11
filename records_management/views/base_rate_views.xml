@@ -258,9 +258,9 @@
 
                     </header>
                     <sheet>
-<div class="alert alert-info" role="status" invisible="analysis_complete == True>
-                            <strong>Revenue Forecasting Tool</strong">
-                            <br"/>
+                        <div class="alert alert-info" role="status" invisible="analysis_complete == True">
+                            <strong>Revenue Forecasting Tool</strong>
+                            <br/>
                             Configure your scenario parameters below and click "Run Forecast Analysis" to see the potential revenue impact.
                         </div>
 
@@ -396,9 +396,9 @@
                         <button name="action_cancel_implementation" string="Cancel" type="object" class="btn-secondary"/>
                     </header>
                     <sheet>
-                        <div class="alert alert-warning" role="alert>
-                            <strong"><i class='fa fa-warning'"/> Rate Change Implementation</strong>
-                            <br"/>
+                        <div class="alert alert-warning" role="alert">
+                            <strong>Rate Change Implementation</strong>
+                            <br/>
                             Please review the details below before implementing rate changes.
                         </div>
 

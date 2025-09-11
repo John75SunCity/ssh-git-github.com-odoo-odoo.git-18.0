@@ -156,36 +156,3 @@
         </record>
     </data>
 </odoo>
-        <field name="search_view_id" ref="visitor_pos_wizard_view_search"/>
-<field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Process your first walk-in visitor!
-            </p>
-            <p>
-Streamline walk-in customer processing with integrated POS transactions.
-                Create POS orders directly from visitor information with automated customer linking.
-            </p>
-            <p>
-                <strong>Key Features:</strong><br/>
-                • Seamless visitor-to-customer conversion<br/>
-• Integrated POS order creation<br/>
-                • Automated pricing from customer pricelists<br/>
-                • Simple product/service selection
-            </p>
-        </field>
-    </record>
-
-<!-- Action wizard -->
-    <record id="action_visitor_pos_processing_wizard" model="ir.actions.act_window">
-        <field name="name">Process Walk-In Visitor</field>
-        <field name="res_model">visitor.pos.wizard</field>
-        <field name="view_mode">form</field>
-<field name="view_id" ref="visitor_pos_wizard_view_form"/>
-
-
-        <field name="target">new</field>
-<field name="context">{}</field>
-    </record>
-</data>
-</odoo>

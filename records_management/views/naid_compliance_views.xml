@@ -50,19 +50,19 @@
                                                 <t t-else=""><i class='fa fa-times-circle text-danger'/> Invalid</t>
                                             </span>
                                             <span class="badge badge-warning" t-if="record.audit_required.raw_value">
-                                                <i class='fa fa-search'"/> Audit Due
+                                                Audit Due
                                             </span>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-6">
                                             <button class="btn btn-primary btn-sm" type="object" name="action_conduct_audit">
-                                                <i class='fa fa-search'"/> Audit
+                                                Audit
                                             </button>
                                         </div>
                                         <div class="col-6">
                                             <button class="btn btn-success btn-sm" type="object" name="action_renew_certificate">
-                                                <i class='fa fa-exchange'"/> Renew
+                                                Renew
                                             </button>
                                         </div>
                                     </div>
@@ -400,5 +400,4 @@
             </field>
         </record>
     </data>
-</odoo>
 </odoo>

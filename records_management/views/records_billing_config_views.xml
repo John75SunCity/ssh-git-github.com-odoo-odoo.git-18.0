@@ -108,11 +108,11 @@
 </div>
                                     </div>
                                     <div class="col-4">
-                                        <span class="badge badge-success" t-if="record.auto_billing.raw_value>
-                                            <i class="fa fa-robot"></i> Auto
-                                        </span">
+                                        <span class="badge badge-success" t-if="record.auto_billing.raw_value">
+                                            Auto
+                                        </span>
                                         <span class="badge" t-att-class="record.active.raw_value ? 'badge-primary' : 'badge-secondary'">
-                                            <t t-if="record.active.raw_value"><i class="fa fa-circle text-success"></i> Active</t>
+                                            <t t-if="record.active.raw_value">Active</t>
                                             <t t-else="">Inactive</t>
                                         </span>
                                     </div>
@@ -120,12 +120,12 @@
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <button class="btn btn-primary btn-sm" type="object" name="action_generate_invoice">
-                                            <i class='fa fa-file-o'"/> Invoice
+                                            Invoice
                                         </button>
                                     </div>
                                     <div class="col-6">
                                         <button class="btn btn-success btn-sm" type="object" name="action_view_analytics">
-                                            <i class='fa fa-bar-chart'"/> Analytics
+                                            Analytics
                                         </button>
                                     </div>
                                 </div>
@@ -153,13 +153,13 @@
             <list decoration-success="active == True and auto_billing == True"
                   decoration-warning="billing_model == 'custom'"
                   decoration-info="payment_terms == 'net_30'">
-                <field name="name" string="<i class="fa fa-credit-card"></i> Configuration Name"/>
+                <field name="name" string="Configuration Name"/>
                 <field name="partner_id" string="Customer"/>
                 <field name="billing_model" string="Billing Model" widget="badge"/>
                 <field name="base_rate" string="Base Rate"/>
                 <field name="billing_frequency" string="Frequency"/>
-                <field name="payment_terms" string="<i class="fa fa-credit-card"></i> Payment Terms"/>
-                <field name="auto_billing" string="<i class="fa fa-robot"></i> Auto Billing" widget="boolean_toggle"/>
+                <field name="payment_terms" string="Payment Terms"/>
+                <field name="auto_billing" string="Auto Billing" widget="boolean_toggle"/>
                 <field name="active" string="Status" widget="boolean_toggle"/>
                 <field name="last_invoice_date" string="Last Invoice"/>
                 <button name="action_generate_invoice" type="object" string="Invoice"
@@ -179,7 +179,7 @@
                 <header>
                     <button name="action_generate_invoice" type="object" string="Generate Invoice" class="btn-primary"/>
                     <button name="action_configure_rates" type="object" string="Configure Rates" class="btn-secondary"/>
-                    <button name="action_test_billing" type="object" string="<i class="fa fa-flask"></i> Test Billing" class="btn-info"/>
+                    <button name="action_test_billing" type="object" string="Test Billing" class="btn-info"/>
                     <button name="action_view_analytics" type="object" string="View Analytics" class="btn-success"/>
                     <button name="action_view_invoices" type="object" string="View Invoices" class="btn-secondary"/>
                     <button name="action_view_billing_history" type="object" string="View Billing History" class="btn-secondary"/>
@@ -205,7 +205,7 @@
                     </div>
 
                     <group>
-                        <group string="<i class="fa fa-credit-card"></i> Billing Configuration">
+                        <group string="Billing Configuration">
                             <field name="name" placeholder="e.g., Standard Storage Billing"/>
                             <field name="partner_id"/>
                             <field name="billing_model"/>
@@ -226,7 +226,7 @@
                             <field name="next_billing_date"/>
                             <field name="auto_billing"/>
                         </group>
-                        <group string="<i class="fa fa-credit-card"></i> Payment Terms">
+                        <group string="Payment Terms">
                             <field name="payment_terms"/>
                             <field name="payment_method"/>
                             <field name="late_fee_percentage"/>
@@ -414,11 +414,11 @@
                 <field name="billing_model"/>
                 <field name="service_category"/>
 
-                <filter string="<i class="fa fa-circle text-success"></i> Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="Inactive" name="inactive" domain="[('active', '=', False)]"/>
 
                 <separator/>
-                <filter string="<i class="fa fa-robot"></i> Auto Billing" name="auto_billing" domain="[('auto_billing', '=', True)]"/>
+                <filter string="Auto Billing" name="auto_billing" domain="[('auto_billing', '=', True)]"/>
                 <filter string="Manual Billing" name="manual_billing" domain="[('auto_billing', '=', False)]"/>
 
                 <separator/>
@@ -429,7 +429,7 @@
                 <separator/>
                 <filter string="High Value (&amp;gt;$1000)" name="high_value" domain="[('base_rate', '&amp;gt;', 1000)]"/>
                 <filter string="Due This Week" name="due_this_week"
-                        domain="[('next_billing_date', '&amp;gt;=', context_today), ('next_billing_date', '<=', (context_today + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                        domain="[('next_billing_date', '&gt;=', context_today), ('next_billing_date', '&lt;=', (context_today + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
 
                 <group expand="0" string="Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
@@ -444,7 +444,7 @@
 
     <!-- List view for ENTERPRISE -->
     <record id="action_billing_config" model="ir.actions.act_window">
-        <field name="name"><i class="fa fa-credit-card"></i> Billing Configuration</field>
+        <field name="name">Billing Configuration</field>
         <field name="res_model">records.billing.config</field>
         <field name="view_mode">kanban,list,form,calendar</field>
         <field name="search_view_id" ref="records_billing_config_view_search"/>

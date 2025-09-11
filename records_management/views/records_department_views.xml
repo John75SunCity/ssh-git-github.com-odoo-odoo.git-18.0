@@ -137,8 +137,8 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                 <filter string="📁 Archived" name="archived" domain="[('state', '=', 'archived')]"/>
 
                 <separator/>
-                <filter string="Has Containers" name="has_containers" domain="[('container_count', '">', 0)]"/>
-                <filter string="Has Documents" name="has_documents" domain="[('document_count', '">', 0)]"/>
+                <filter string="Has Containers" name="has_containers" domain="[('container_count', '>', 0)]"/>
+                <filter string="Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
                 <filter string="Has Users" name="has_users" domain="[('user_ids', '!=', False)]"/>
 
                 <group expand="0" string="Group By">
@@ -213,12 +213,12 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Department</a>
-                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class='fa fa-box'/> View Containers</a>
-                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item"><i class='fa fa-file-o'/> View Documents</a>
+                                <a role="menuitem" type="edit" class="dropdown-item">Edit Department</a>
+                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">View Containers</a>
+                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">View Documents</a>
                                 <div class="dropdown-divider"/>
-<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'"><i class='fa fa-check-circle text-success'"/> Activate</a>
-<a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state != 'active'>📁 Archive</a>
+                                <a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">Activate</a>
+                                <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state != 'active'">Archive</a>
                             </div>
                         </div>
                     </t>
@@ -227,9 +227,9 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
         </field>
     </record>
 
-    <!-- Action for records.department --">
+    <!-- Action for records.department -->
     <record id="action_records_department" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-building'/> Customer Departments</field>
+        <field name="name">Customer Departments</field>
         <field name="res_model">records.department</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="records_department_view_search"/>

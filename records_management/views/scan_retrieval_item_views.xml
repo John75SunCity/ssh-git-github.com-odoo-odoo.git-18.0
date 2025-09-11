@@ -217,8 +217,8 @@
                     <filter string="Scanned This Week" name="scanned_this_week" domain="[('scan_date', '>=', (context_today - relativedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
                     <filter string="Scanned This Month" name="scanned_this_month" domain="[('scan_date', '>=', context_today.strftime('%Y-%m-01'))]"/>
                     <separator/>
-                    <filter string="Overdue" name="overdue" domain="[('expected_completion_date', '<', context_today), ('state', 'not in', ['completed', 'cancelled'])]"/>
-                    <filter string='<i class="fa fa-exclamation-triangle text-danger"></i> Due Today' name="due_today" domain="[('expected_completion_date', '=', context_today)]"/>
+                    <filter string="Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today), ('state', 'not in', ['completed', 'cancelled'])]"/>
+                    <filter string='Due Today' name="due_today" domain="[('expected_completion_date', '=', context_today)]"/>
                     <group expand="0" string="Group By">
                         <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Document Type" name="group_by_document_type" context="{'group_by': 'document_type'}"/>
@@ -262,21 +262,4 @@
             </field>
         </record>
     </data>
-</odoo>
-                <b>Document Scanning &amp; Retrieval System:</b>
-                <br/>
-                • <i class='fa fa-file-o'/> Complete document scanning workflow management<br/>
-                • <i class='fa fa-search'/> Advanced barcode recognition and tracking<br/>
-                • <i class='fa fa-bolt'/> Priority-based processing with user assignment<br/>
-                • <i class='fa fa-bar-chart'/> Quality control with automated validation<br/>
-                • <i class='fa fa-link'/> Integration with work orders and FSM<br/>
-                • <i class='fa fa-line-chart'/> Real-time progress tracking and analytics<br/>
-                • 💾 Secure document storage with version control<br/>
-                • <i class='fa fa-clipboard'/> Comprehensive audit trails and compliance<br/>
-                • <i class='fa fa-rocket'/> AI-ready OCR and content analysis capabilities
-            </p>
-        </field>
-    </record>
-
-</data>
 </odoo>
