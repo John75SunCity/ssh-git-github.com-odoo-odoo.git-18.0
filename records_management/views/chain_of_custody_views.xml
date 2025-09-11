@@ -96,15 +96,11 @@
                             <group string="Items in Transfer">
                                 <field name="document_id"/>
                                 <field name="container_id"/>
-                                <field name="item_count"/>
-                                <field name="total_weight"/>
-                                <field name="special_handling_required"/>
                             </group>
                             <group string="Transfer Details">
-                                <field name="transfer_status"/>
-                                <field name="tracking_number"/>
-                                <field name="insurance_value" widget="monetary"/>
-                                <field name="currency_id" invisible="1"/>
+                                <field name="reason"/>
+                                <field name="conditions"/>
+                                <field name="verification_code"/>
                             </group>
                         </group>
 
