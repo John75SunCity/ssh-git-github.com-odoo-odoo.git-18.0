@@ -6,10 +6,10 @@
             <field name="name">destruction.certificate.view.tree</field>
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
-                <list string="Destruction Certificates" default_order="issue_date desc">
+<list string="Destruction Certificates" default_order="certificate_date desc">
                     <field name="name"/>
-                    <field name="issue_date"/>
-                    <field name="certificate_number"/>
+<field name="certificate_date"/>
+
                     <field name="partner_id"/>
                     <field name="state"/>
                     <field name="company_id" groups="base.group_multi_company"/>
@@ -63,10 +63,12 @@
 
                         <group>
                             <group string="🆔 Certificate Information">
-                                <field name="certificate_number"/>
+<field name="name"/>
+
                                 <field name="partner_id"/>
                                 <field name="department_id"/>
-                                <field name="issue_date"/>
+<field name="certificate_date"/>
+
                                 <field name="expiry_date"/>
                                 <field name="state"/>
                             </group>
@@ -197,7 +199,8 @@
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_certificate_dashboard">
-                    <field name="certificate_number"/>
+<field name="name"/>
+
                     <field name="partner_id"/>
                     <field name="destruction_date"/>
                     <field name="naid_verified"/>
@@ -210,7 +213,8 @@
                                 <div class="o_kanban_card_header">
                                     <div class="o_kanban_card_header_title">
                                         <div class="o_primary">
-                                            <strong>🆔 <field name="certificate_number"/></strong>
+<strong>🆔    <field name="name"/>
+</strong>
                                         </div>
                                         <div class="o_secondary">
                                             👤 <field name="partner_id"/>
@@ -286,7 +290,8 @@
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="certificate_number" string="Certificate #" filter_domain="[('certificate_number', 'ilike', self)]"/>
+<field name="name" string="Certificate #" filter_domain="[('name', 'ilike', self)]"/>
+
                     <field name="partner_id"/>
                     <field name="authorized_by_id"/>
                     <field name="destruction_method"/>
@@ -313,7 +318,8 @@
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Destruction Method" name="group_by_method" context="{'group_by': 'destruction_method'}"/>
                         <filter string="Authorized By" name="group_by_authorized" context="{'group_by': 'authorized_by_id'}"/>
-                        <filter string="Issue Month" name="group_by_issue_month" context="{'group_by': 'issue_date:month'}"/>
+<filter string="Certificate Month" name="group_by_certificate_month" context="{'group_by': 'certificate_date:month'}"/>
+
                         <filter string="Expiry Month" name="group_by_expiry_month" context="{'group_by': 'expiry_date:month'}"/>
                     </group>
                 </search>
@@ -326,7 +332,8 @@
             <field name="model">destruction.certificate</field>
             <field name="arch" type="xml">
                 <calendar string="📅 Destruction Certificate Schedule" date_start="destruction_date" color="state">
-                    <field name="certificate_number"/>
+<field name="name"/>
+
                     <field name="partner_id"/>
                     <field name="destruction_method"/>
                     <field name="total_revenue"/>
