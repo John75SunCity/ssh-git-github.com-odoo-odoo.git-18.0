@@ -22,6 +22,7 @@ from . import bin_key_unlock_service
 from . import bin_unlock_service
 from . import calendar_event
 from . import certificate_template_data
+from . import naid_audit_log
 from . import chain_of_custody
 from . import chain_of_custody_event
 from . import chain_of_custody_item
@@ -80,7 +81,6 @@ from . import media_type
 from . import mobile_dashboard_widget
 from . import mobile_dashboard_widget_category
 from . import mobile_photo
-from . import naid_audit_log
 from . import naid_audit_requirement
 from . import naid_audit_verification_wizard
 from . import naid_certificate
