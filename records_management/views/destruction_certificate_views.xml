@@ -124,6 +124,9 @@
 <field name="destruction_type"/>
 <field name="containers_processed"/>
 
+<field name="naid_certificate_id"/>
+
+
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
@@ -168,9 +171,10 @@
                                         </div>
                                         <div class="col-4">
                                             <div class="text-center">
-                                                <field name="naid_verified" widget="boolean"/>
-                                                <div t-if="record.naid_verified.raw_value" class="text-success">
-<i class="fa fa-shield" title="NAID Verified" aria-label="NAID Verified" role="img"/>
+<field name="state" widget="label_selection"/>
+<div t-if="record.naid_certificate_id.raw_value" class="text-success mt-1">
+    <i class="fa fa-shield" title="NAID Certified" aria-label="NAID Certified" role="img"/>
+
                                                     NAID
                                                 </div>
                                             </div>
@@ -282,28 +286,11 @@ Create your first destruction certificate!
 <p>
 <b>NAID AAA Compliant Destruction Certificates:</b>
 <br/>
-                    • Unique certificate numbering system<br/>
-                    • NAID verification and compliance tracking<br/>
-                    • Multi-signature authorization process<br/>
-                    • Detailed item-by-item destruction records<br/>
-                    • Complete chain of custody integration<br/>
-                    • Financial tracking and profitability analysis<br/>
-                    • Automated expiry and renewal management<br/>
-                    • Full audit trail for regulatory compliance
-</p>
-</field>
-</record>
 
-<!-- Menu item for destruction certificates -->
-<menuitem id="menu_destruction_certificates" name="Destruction Certificates" parent="records_management.menu_records_compliance" action="action_destruction_certificate" sequence="25"/>
-</data>
-</odoo>
-                    🗑️ Create your first destruction certificate!
-                </p>
-                <p>
-                    <b>NAID AAA Compliant Destruction Certificates:</b>
-                    <br/>
-                    • 🆔 Unique certificate numbering system<br/>
+
+• 🆔 Unique certificate numbering system<br/>
+
+
                     • ✅ NAID verification and compliance tracking<br/>
                     • 👥 Multi-signature authorization process<br/>
                     • 📋 Detailed item-by-item destruction records<br/>
@@ -321,5 +308,6 @@ Create your first destruction certificate!
                   parent="records_management.menu_records_compliance"
                   action="action_destruction_certificate"
                   sequence="25"/>
+
     </data>
 </odoo>
