@@ -71,7 +71,6 @@ from . import inventory_item_retrieval_line
 from . import inventory_item_type
 from . import invoice_generation_log
 from . import key_inventory
-from . import key_restriction_checker
 from . import location_group
 from . import location_report_wizard
 from . import maintenance_equipment
@@ -216,7 +215,6 @@ from . import revenue_forecast
 from . import revenue_forecast_line
 from . import revenue_forecaster
 from . import revenue_forecasting_reports
-from . import rate_change_confirmation_wizard
 from . import rm_module_configurator
 from . import route_optimizer
 from . import scan_digital_asset
