@@ -213,7 +213,7 @@ ${object.company_id.name}</p>
         <record id="mail_template_fsm_vehicle_inspection" model="mail.template">
             <field name="name">FSM: Vehicle Inspection Due</field>
             <field name="model_id" ref="fleet.model_fleet_vehicle"/>
-            <field name="subject"><i class="fa fa-truck" aria-hidden="true"></i> Vehicle Inspection Required: ${object.name}</field>
+            <field name="subject">Vehicle Inspection Required: ${object.name}</field>
             <field name="email_from">fleet@suncityshred.com</field>
             <field name="email_to">${object.driver_id.work_email if object.driver_id else 'fleet@suncityshred.com'}</field>
             <field name="body_html"><![CDATA[
