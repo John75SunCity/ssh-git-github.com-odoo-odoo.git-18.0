@@ -10,10 +10,9 @@
         <field name="arch" type="xml">
             <form string="Visitor POS Processing Wizard">
                 <header>
-                    <button name="action_process_visitor" string="Process Visitor" type="object" class="btn-primary" confirm="Are you sure you want to process this visitor?"/>
-                    <button name="action_create_pos_order" string="Create POS Order" type="object" class="btn-success"/>
-                    <button name="action_link_existing_order" string="Link Existing Order" type="object" class="btn-info"/>
-                    <button name="action_cancel" string="Cancel" type="object" class="btn-secondary" special="cancel"/>
+<button name="action_create_pos_order" string="Create POS Order" type="object" class="btn-primary"/>
+<button string="Cancel" class="btn-secondary" special="cancel"/>
+
                 </header>
                 <sheet>
                     <div class="oe_title">
