@@ -164,7 +164,6 @@
         "views/records_bulk_user_import_views.xml",
         "views/records_category_views.xml",
         "views/records_center_location_views.xml",
-        "views/records_chain_of_custody_views.xml",
         "views/records_config_setting_views.xml",
         "views/records_config_settings_views.xml",
         "views/records_container_content_views.xml",
