@@ -78,7 +78,7 @@
 
                         <notebook>
 <page string="📋 Destruction Events" name="events">
-    <field name="event_ids" context="{'default_certificate_id': active_id}">
+<field name="event_ids">
         <list>
             <field name="name"/>
             <field name="date"/>
@@ -122,11 +122,12 @@
 <field name="name"/>
 
                     <field name="partner_id"/>
-                    <field name="destruction_date"/>
-                    <field name="naid_verified"/>
+<field name="certificate_date"/>
+
                     <field name="state"/>
-                    <field name="total_revenue"/>
-                    <field name="expiry_date"/>
+<field name="destruction_type"/>
+<field name="containers_processed"/>
+
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
@@ -151,19 +152,19 @@
                                     <div class="row">
                                         <div class="col-8">
                                             <div>
-<i class="fa fa-calendar" title="Destruction Date" aria-label="Destruction Date" role="img"/>
+<i class="fa fa-calendar" title="Certificate Date" aria-label="Certificate Date" role="img"/>
+<field name="certificate_date"/>
 
-                                                <field name="destruction_date"/>
                                             </div>
                                             <div>
-<i class="fa fa-money" title="Total Revenue" aria-label="Total Revenue" role="img"/>
+<i class="fa fa-truck" title="Destruction Type" aria-label="Destruction Type" role="img"/>
+<field name="destruction_type"/>
 
-                                                <field name="total_revenue" widget="monetary"/>
                                             </div>
-                                            <div t-if="record.expiry_date.raw_value">
-<i class="fa fa-clock-o" title="Expiry Date" aria-label="Expiry Date" role="img"/>
-
-                                                <field name="expiry_date"/>
+<div>
+    <i class="fa fa-archive" title="Containers Processed" aria-label="Containers Processed" role="img"/>
+    <field name="containers_processed"/>
+ containers
                                             </div>
                                         </div>
                                         <div class="col-4">
