@@ -3,15 +3,7 @@
 <data>
 <!-- Kanban view for Paper -->
 <record id="paper_bale_view_kanban" model="ir.ui.view">
-<field name="name">paper.bale.view.ka    <field name="movement_ids" mode="tree">
-    <list>
-        <field name="name"/>
-        <field name="movement_date"/>
-        <field name="from_location_id"/>
-        <field name="to_location_id"/>
-        <field name="user_id"/>
-    </list>
-</field>ld>
+<field name="name">paper.bale.view.kanban</field>
     <field name="model">paper.bale</field>
     <field name="arch" type="xml">
 <kanban default_group_by="state" class="o_kanban_paper_bale_dashboard">
