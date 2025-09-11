@@ -321,7 +321,7 @@
 
         <!-- Enhanced Action Window for Chain of Custody -->
         <record id="action_chain_of_custody" model="ir.actions.act_window">
-            <field name="name"><i class="fa fa-link" role="img" aria-label="Chain of Custody"/> Chain of Custody</field>
+<field name="name">Chain of Custody</field>
             <field name="res_model">chain.of.custody</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search"/>
@@ -332,22 +332,10 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    <i class="fa fa-link" role="img" aria-label="Chain of Custody"/> Start managing chain of custody transfers!
-                </p>
-                <p>
-                    <b>NAID AAA Compliant Chain of Custody Management:</b>
-                    <br/>
-                    • <i class="fa fa-link" role="img" aria-label="Transfer tracking"/> Complete custody transfer tracking with signatures<br/>
-                    • <i class="fa fa-check-square-o" role="img" aria-label="NAID compliance"/> NAID compliance verification and certification<br/>
-                    • <i class="fa fa-lock" role="img" aria-label="Security"/> Multi-level security with verification codes<br/>
-                    • <i class="fa fa-map-marker" role="img" aria-label="Location transfer"/> Location-to-location transfer management<br/>
-                    • <i class="fa fa-users" role="img" aria-label="Custodian handoff"/> Custodian handoff with witness verification<br/>
-                    • <i class="fa fa-file-text-o" role="img" aria-label="Audit trails"/> Comprehensive audit trails for all transfers<br/>
-                    • <i class="fa fa-clock-o" role="img" aria-label="Analytics"/> Transfer timing and efficiency analytics<br/>
-                    • <i class="fa fa-bar-chart" role="img" aria-label="Risk assessment"/> Risk assessment and compliance scoring<br/>
-                    • <i class="fa fa-warning" role="img" aria-label="Alerts"/> Automated alerts for overdue transfers
+Create a new Chain of Custody record to track document and container transfers.
                 </p>
             </field>
         </record>
+
     </data>
 </odoo>
