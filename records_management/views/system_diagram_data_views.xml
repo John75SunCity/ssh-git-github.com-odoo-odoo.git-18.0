@@ -73,7 +73,7 @@
 </group>
 
 <notebook>
-    <page name="diagram_preview" string="🖼️ Diagram Preview">
+    <page name="diagram_preview" string="<i class="fa fa-picture-o" aria-hidden="true"></i> Diagram Preview">
         <group>
             <field name="diagram_html" widget="html" nolabel="1"/>
         </group>
@@ -140,7 +140,7 @@
 
     <!-- Filters -->
     <filter name="user_diagrams" string="🧑 User Analysis" domain="[('search_type', '=', 'user')]"/>
-    <filter name="model_diagrams" string="🏗️ Model Structure" domain="[('search_type', '=', 'model')]"/>
+    <filter name="model_diagrams" string="<i class="fa fa-building-o" aria-hidden="true"></i> Model Structure" domain="[('search_type', '=', 'model')]"/>
     <filter name="company_diagrams" string="Company Overview" domain="[('search_type', '=', 'company')]"/>
 
     <separator/>
@@ -193,7 +193,7 @@
                                     </strong>
                                     <span class="badge badge-pill float-right" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
                                         <t t-if="record.search_type.raw_value == 'user'">🧑 User</t>
-                                        <t t-elif="record.search_type.raw_value == 'model'">🏗️ Model</t>
+                                        <t t-elif="record.search_type.raw_value == 'model'"><i class="fa fa-building-o" aria-hidden="true"></i> Model</t>
                                         <t t-else=""><i class='fa fa-building'/> Company</t>
                                     </span>
                                 </div>
@@ -293,7 +293,7 @@
     <strong>Diagram Types:</strong>
     <br/>
                 🧑    <strong>User Analysis:</strong> Shows user access rights and permissions<br/>
-                🏗️<strong>Model Structure:</strong> Displays model relationships and dependencies<br/>
+                <i class="fa fa-building-o" aria-hidden="true"></i><strong>Model Structure:</strong> Displays model relationships and dependencies<br/>
                 <i class='fa fa-building'/><strong>Company Overview:</strong> Complete system architecture for your company
             </p>
         </field>
@@ -309,7 +309,7 @@
 </record>
 
 <record id="action_system_diagram_model_explorer" model="ir.actions.act_window">
-    <field name="name">🏗️ Model Structure Explorer</field>
+    <field name="name"><i class="fa fa-building-o" aria-hidden="true"></i> Model Structure Explorer</field>
     <field name="res_model">system.diagram.data</field>
     <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('search_type', '=', 'model')]</field>
@@ -549,7 +549,7 @@
             <button name="action_load_user_template" string="User Access Template" type="object" class="btn btn-outline-primary btn-block"/>
         </div>
         <div class="col-md-4">
-            <button name="action_load_model_template" string="🏗️ Model Structure Template" type="object" class="btn btn-outline-success btn-block"/>
+            <button name="action_load_model_template" string="<i class="fa fa-building-o" aria-hidden="true"></i> Model Structure Template" type="object" class="btn btn-outline-success btn-block"/>
         </div>
         <div class="col-md-4">
             <button name="action_load_system_template" string="System Overview Template" type="object" class="btn btn-outline-info btn-block"/>
@@ -611,7 +611,7 @@
 <ul class="list-unstyled">
     <li><i class='fa fa-bullseye'/>        <strong>Real-time Access Rights</strong> - Visual indicators for permissions</li>
     <li><i class='fa fa-search'/>        <strong>Interactive Search</strong> - Find users, models, and companies instantly</li>
-    <li>🏗️        <strong>Hierarchical Layout</strong> - Clear system structure visualization</li>
+    <li><i class="fa fa-building-o" aria-hidden="true"></i>        <strong>Hierarchical Layout</strong> - Clear system structure visualization</li>
     <li><i class='fa fa-bar-chart'/>        <strong>Detailed Analytics</strong> - Click nodes for comprehensive information</li>
     <li>📤        <strong>Export Ready</strong> - Save diagrams for documentation and presentations</li>
 </ul>
@@ -638,7 +638,7 @@
 </record>
 
 <record id="action_system_flowchart_model_explorer" model="ir.actions.act_window">
-    <field name="name">🏗️ Model Structure Explorer</field>
+    <field name="name"><i class="fa fa-building-o" aria-hidden="true"></i> Model Structure Explorer</field>
     <field name="res_model">system.diagram.data</field>
     <field name="view_mode">form</field>
     <field name="target">new</field>
@@ -684,7 +684,7 @@
 
 <menuitem id="menu_system_flowchart_user" name="<i class='fa fa-user'"/> User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
 
-<menuitem id="menu_system_flowchart_model" name="🏗️ Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>
+<menuitem id="menu_system_flowchart_model" name="<i class="fa fa-building-o" aria-hidden="true"></i> Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>
 
 
 <menuitem id="menu_system_flowchart_company" name="<i class='fa fa-building'"/> Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>

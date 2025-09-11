@@ -335,7 +335,7 @@
                 • 👨‍&lt;i class="fa fa-briefcase"&gt; Driver and vehicle assignment with capacity tracking<br/>
                 • &lt;i class="fa fa-clock-o"&gt; Real-time tracking and ETA calculations<br/>
                 • <i class="fa fa-bar-chart"/> Performance analytics and fuel consumption monitoring<br/>
-                • 🗺️ GPS integration with live location updates<br/>
+                • <i class="fa fa-map" aria-hidden="true"></i> GPS integration with live location updates<br/>
                 • <i class="fa fa-clipboard"/> NAID compliance and audit trail management<br/>
                 • <i class="fa fa-mobile"/> Mobile-friendly interface for drivers<br/>
                 • &lt;i class="fa fa-bell"&gt; Automated notifications and status updates<br/>

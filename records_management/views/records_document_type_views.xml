@@ -293,7 +293,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                 <filter string="🏥 HIPAA Protected" name="hipaa" domain="[('hipaa_protected', '=', True)]"/>
                 <filter string="SOX Compliant" name="sox" domain="[('sox_compliance', '=', True)]"/>
                 <filter string="🇪🇺 GDPR Applicable" name="gdpr" domain="[('gdpr_applicable', '=', True)]"/>
-                <filter string="🛡️ NAID Compliant" name="naid" domain="[('naid_compliance', '=', True)]"/>
+                <filter string="<i class="fa fa-shield" aria-hidden="true"></i> NAID Compliant" name="naid" domain="[('naid_compliance', '=', True)]"/>
 
                 <separator/>
                 <filter string="Has Documents" name="has_documents" domain="[('document_count', '">', 0)]"/>

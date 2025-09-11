@@ -142,7 +142,7 @@
     </group>
 </page>
 
-<page name="compliance" string="🛡️ NAID Compliance">
+<page name="compliance" string="<i class="fa fa-shield" aria-hidden="true"></i> NAID Compliance">
     <group>
         <group name="naid_info" string="NAID Requirements">
             <field name="naid_level"/>

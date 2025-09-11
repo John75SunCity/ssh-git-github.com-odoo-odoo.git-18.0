@@ -176,7 +176,7 @@ invisible="naid_level != 'AAA'">
                     <notebook>
                         <page string="🎖️ NAID Standards" name="standards">
                             <group>
-                                <group string="🛡️ Physical Security">
+                                <group string="<i class="fa fa-shield" aria-hidden="true"></i> Physical Security">
                                     <field name="physical_security_score"/>
                                     <field name="access_control_verified"/>
                                     <field name="surveillance_system"/>
@@ -231,7 +231,7 @@ invisible="naid_level != 'AAA'">
                                 </list>
                             </field>
                         </page>
-                        <page string="🛡️ Destruction Records" name="destructions">
+                        <page string="<i class="fa fa-shield" aria-hidden="true"></i> Destruction Records" name="destructions">
                             <field name="destruction_record_ids" mode="list">
                                 <list>
                                     <field name="destruction_date"/>
@@ -391,7 +391,7 @@ invisible="naid_level != 'AAA'">
                 • 🎖️ Complete NAID AAA/AA/A certification tracking<br/>
                 • <i class='fa fa-search'/> Automated audit scheduling and management<br/>
                 • 📜 Digital certificate generation and tracking<br/>
-                • 🛡️ Comprehensive security standards compliance<br/>
+                • <i class="fa fa-shield" aria-hidden="true"></i> Comprehensive security standards compliance<br/>
                 • <i class='fa fa-users'/> Multi-level personnel security verification<br/>
                 • <i class='fa fa-bar-chart'/> Real-time performance metrics and analytics<br/>
                 • <i class='fa fa-bell'/> Proactive expiry and renewal notifications<br/>
