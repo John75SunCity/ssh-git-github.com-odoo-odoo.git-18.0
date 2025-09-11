@@ -47,6 +47,9 @@ development-tools/monitoring-system/
 development-tools/backups/
 development-tools/*_backup/
 
+# Admin tools (optional - uncomment next line to exclude from production)
+# admin-tools/
+
 # Analysis and debugging files
 current_analysis.txt
 current_field_status.txt

@@ -248,6 +248,7 @@
         "**/development-tools": true,
         "**/testing-workspace": true,
         "**/backup": true,
+        "**/admin-tools": true,
         "**/*.pyc": true,
         "**/.git": true,
         "**/.vscode": true
@@ -262,13 +263,10 @@
         "**/Thumbs.db": true,
         "**/development-tools": true,
         "**/testing-workspace": true,
-        "**/backup": true
+        "**/backup": true,
+        "**/admin-tools": true
     },
-    "python.analysis.exclude": [
-        "development-tools",
-        "testing-workspace",
-        "backup"
-    ],
+    "python.analysis.exclude": ["development-tools", "testing-workspace", "backup", "admin-tools"],
     "python.testing.pytestEnabled": true,
     "python.testing.unittestEnabled": true,
     "python.testing.pytestArgs": [
@@ -347,7 +345,8 @@
         "**/venv312/**": true,
         "**/development-tools/**": true,
         "**/backup/**": true,
-        "**/testing-workspace/**": true
+        "**/testing-workspace/**": true,
+        "**/admin-tools/**": true
     },
     "task.allowAutomaticTasks": "on",
     "task.quickOpen.detail": true,
