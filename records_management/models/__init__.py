@@ -156,7 +156,6 @@ from . import records_billing_rate
 from . import records_bulk_user_import
 from . import records_category
 from . import records_center_location
-from . import records_chain_of_custody
 from . import records_config_settings
 from . import records_container
 from . import records_container_content_line
