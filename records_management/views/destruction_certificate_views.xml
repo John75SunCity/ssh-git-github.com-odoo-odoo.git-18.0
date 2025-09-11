@@ -35,90 +35,49 @@
                         <field name="state" widget="statusbar" statusbar_visible="draft,issued,active,expired,revoked"/>
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box">
-<button class="oe_stat_button" icon="fa-file-text-o" title="Certificate Items">
-                                <field name="certificate_item_count" string="Certificate Items" widget="statinfo"/>
-                            </button>
-<button class="oe_stat_button" icon="fa-money" title="Total Profit">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="total_profit" widget="monetary"/>
-                                    </span>
-                                    <span class="o_stat_text">Total Profit</span>
-                                </div>
-                            </button>
-<button class="oe_stat_button" icon="fa-calendar" invisible="not expiry_date" title="Expiry Date">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="days_until_expiry"/>
-                                    </span>
-                                    <span class="o_stat_text">Days to Expiry</span>
-                                </div>
-                            </button>
-                        </div>
-
-                        <group>
+<div class="oe_button_box" name="button_box">
+</div>
+<group>
                             <group string="🆔 Certificate Information">
 <field name="name"/>
 
-                                <field name="partner_id"/>
-                                <field name="department_id"/>
+<field name="partner_id"/>
+
+
 <field name="certificate_date"/>
 
-                                <field name="expiry_date"/>
                                 <field name="state"/>
                             </group>
                             <group string="🗑️ Destruction Details">
-                                <field name="destruction_date"/>
-                                <field name="destruction_method"/>
-                                <field name="destruction_facility"/>
-                                <field name="destruction_weight" widget="numeric"/>
-                                <field name="naid_verified" widget="boolean_toggle"/>
+<field name="destruction_type"/>
+<field name="weight_processed" widget="numeric"/>
+<field name="containers_processed"/>
+
 <field name="naid_certificate_number" placeholder="Official NAID certificate number (if applicable)"/>
 
                             </group>
                         </group>
 
                         <group>
-                            <group string="👥 Authorized Personnel">
-                                <field name="authorized_by_id"/>
-<!-- Corrected: witness_ids (non-existent) -> witness_id (Many2one) -->
-<field name="witness_id"/>
+<group string="👥 Personnel">
+    <field name="compliance_officer_id"/>
+    <field name="witness_id"/>
 
-                                <field name="operator_id"/>
-                                <field name="supervisor_id"/>
+
+<field name="operator_certification_id"/>
+
                             </group>
-                            <group string="💰 Financial Summary">
-                                <field name="total_revenue" widget="monetary"/>
-                                <field name="total_cost" widget="monetary"/>
-                                <field name="total_profit" widget="monetary"/>
-                                <field name="currency_id" invisible="1"/>
+<group string="� Related Records">
+    <field name="fsm_task_id"/>
+    <field name="work_order_id"/>
+    <field name="invoice_id"/>
+    <field name="naid_certificate_id"/>
+
                             </group>
                         </group>
 
                         <notebook>
-                            <page string="📋 Certificate Items" name="items">
-                                <field name="certificate_item_ids">
-                                    <list>
-                                        <field name="document_id"/>
-                                        <field name="container_id"/>
-                                        <field name="quantity"/>
-                                        <field name="weight"/>
-                                        <field name="description"/>
-                                    </list>
-                                    <form>
-                                        <group>
-                                            <field name="document_id"/>
-                                            <field name="container_id"/>
-                                            <field name="quantity"/>
-                                            <field name="weight"/>
-                                            <field name="description"/>
-                                        </group>
-                                    </form>
-                                </field>
-                            </page>
-
-<page string="Events" name="events">
+<page string="📋 Destruction Events" name="events">
     <field name="event_ids" context="{'default_certificate_id': active_id}">
         <list>
             <field name="name"/>
@@ -128,65 +87,30 @@
             <field name="shredded_items"/>
             <field name="quantity"/>
             <field name="unit_of_measure"/>
-        </list>
-        <form>
-            <group>
-                <field name="name"/>
-                <field name="date"/>
-                <field name="time"/>
-                <field name="technician_id"/>
-                <field name="requestor_id"/>
-                <field name="location_type"/>
-                <field name="shredded_items"/>
-                <field name="quantity"/>
-                <field name="unit_of_measure"/>
-                <field name="notes"/>
-            </group>
-        </form>
-    </field>
+</list>
+<form>
+<group>
+    <field name="name"/>
+    <field name="date"/>
+    <field name="time"/>
+    <field name="technician_id"/>
+    <field name="requestor_id"/>
+    <field name="location_type"/>
+    <field name="shredded_items"/>
+    <field name="quantity"/>
+    <field name="unit_of_measure"/>
+    <field name="notes"/>
+</group>
+</form>
+</field>
 </page>
-
-<page string="Chain of Custody" name="custody">
-                                <field name="custody_event_ids">
-                                    <list>
-                                        <field name="event_date"/>
-                                        <field name="event_type"/>
-                                        <field name="responsible_person"/>
-                                        <field name="location"/>
-                                        <field name="signature_verified"/>
-                                        <field name="notes"/>
-                                    </list>
-                                </field>
-                            </page>
-
-                            <page string="📋 Audit Trail" name="audit">
-                                <field name="audit_log_ids">
-                                    <list>
-                                        <field name="event_date"/>
-                                        <field name="event_type"/>
-                                        <field name="user_id"/>
-                                        <field name="description"/>
-                                        <field name="ip_address"/>
-                                    </list>
-                                </field>
-                            </page>
-
-                            <page string="📝 Notes &amp; Documentation" name="notes">
-                                <group>
-                                    <field name="notes" placeholder="Additional notes about the destruction process, special handling requirements, or compliance verification..."/>
-                                    <field name="special_handling_notes"/>
-                                    <field name="compliance_notes"/>
-                                </group>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids"/>
-                        <field name="activity_ids"/>
-                        <field name="message_ids"/>
-                    </div>
-                </form>
-            </field>
+<page string="📄 Notes" name="notes">
+    <field name="notes" nolabel="1" placeholder="Certificate notes and additional information..."/>
+</page>
+</notebook>
+</sheet>
+</form>
+</field>
         </record>
 
         <!-- Kanban View for Destruction Certificates -->
