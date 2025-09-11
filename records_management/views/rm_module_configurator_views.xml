@@ -8,17 +8,17 @@
         <field name="model">rm.module.configurator</field>
         <field name="arch" type="xml">
 <list decoration-info="active == True" decoration-muted="active == False" decoration-success="value_boolean == True" decoration-warning="value_boolean == False">
-                <field name="name" string="🔧 Configuration Name"/>
+                <field name="name" string="<i class="fa fa-wrench"/> Configuration Name"/>
                 <field name="category" widget="badge"/>
                 <field name="config_key" string="🔑 Key"/>
-                <field name="description" string="📝 Description"/>
-                <field name="value_boolean" widget="boolean_toggle" string="✅ Enabled"/>
-                <field name="value_text" string="📋 Value" optional="hide"/>
+                <field name="description" string="<i class="fa fa-pencil"/> Description"/>
+                <field name="value_boolean" widget="boolean_toggle" string="<i class="fa fa-check-circle text-success"/> Enabled"/>
+                <field name="value_text" string="<i class="fa fa-clipboard"/> Value" optional="hide"/>
                 <field name="sequence" widget="priority"/>
                 <field name="active" widget="boolean_toggle"/>
                 <field name="company_id" groups="base.group_multi_company" optional="hide"/>
-                <field name="modified_by_id" widget="many2one_avatar_user" string="👤 Owner" optional="hide"/>
-                <field name="last_modified" string="📅 Modified" optional="hide"/>
+                <field name="modified_by_id" widget="many2one_avatar_user" string="<i class="fa fa-user"/> Owner" optional="hide"/>
+                <field name="last_modified" string="<i class="fa fa-calendar"/> Modified" optional="hide"/>
             </list>
         </field>
     </record>
@@ -30,7 +30,7 @@
         <field name="arch" type="xml">
 <form string="⚙️ RM Module Configurator">
     <header>
-<button name="action_activate_config" string="✅ Activate" type="object" class="btn-primary" invisible="active == True"/>
+<button name="action_activate_config" string="<i class="fa fa-check-circle text-success"/> Activate" type="object" class="btn-primary" invisible="active == True"/>
 
 <button name="action_deactivate_config" string="⏸️ Deactivate" type="object" class="btn-secondary" invisible="active == False"/>
 
@@ -44,7 +44,7 @@
     </button>
 </div>
 
-<widget name="web_ribbon" title="🔒 System Configuration" bg_color="bg-info"/>
+<widget name="web_ribbon" title="<i class="fa fa-lock"/> System Configuration" bg_color="bg-info"/>
 
                     <div class="oe_title">
 <label for="name" class="oe_edit_only" string="Configuration Name"/>
@@ -59,15 +59,15 @@
 </h3>
                     </div>
 <group>
-    <group string="🔧 Basic Configuration">
+    <group string="<i class="fa fa-wrench"/> Basic Configuration">
         <field name="config_key" string="🔑 Configuration Key"/>
         <field name="category" string="📂 Category" widget="selection"/>
-        <field name="sequence" widget="priority" string="⚡ Priority"/>
+        <field name="sequence" widget="priority" string="<i class="fa fa-bolt"/> Priority"/>
         <field name="config_type" string="� Type" widget="selection"/>
     </group>
-    <group string="👤 Ownership &amp; Access">
+    <group string="<i class="fa fa-user"/> Ownership &amp; Access">
         <field name="company_id" groups="base.group_multi_company"/>
-        <field name="modified_by_id" string="👤 Configuration Owner"/>
+        <field name="modified_by_id" string="<i class="fa fa-user"/> Configuration Owner"/>
     </group>
 </group>
 
@@ -127,17 +127,17 @@
         <field name="name">rm.module.configurator.view.search</field>
         <field name="model">rm.module.configurator</field>
         <field name="arch" type="xml">
-<search string="🔍 Configuration Search">
-    <field name="name" string="🔧 Name" filter_domain="[('name', 'ilike', self)]"/>
+<search string="<i class="fa fa-search"/> Configuration Search">
+    <field name="name" string="<i class="fa fa-wrench"/> Name" filter_domain="[('name', 'ilike', self)]"/>
     <field name="config_key" string="🔑 Key" filter_domain="[('config_key', 'ilike', self)]"/>
     <field name="category" string="📂 Category"/>
-    <field name="description" string="📝 Description" filter_domain="[('description', 'ilike', self)]"/>
+    <field name="description" string="<i class="fa fa-pencil"/> Description" filter_domain="[('description', 'ilike', self)]"/>
     <field name="company_id" groups="base.group_multi_company"/>
     <field name="modified_by_id" string="Owner"/>
 
     <separator/>
 
-    <filter string="✅ Active" name="filter_active" domain="[('active', '=', True)]"/>
+    <filter string="<i class="fa fa-check-circle text-success"/> Active" name="filter_active" domain="[('active', '=', True)]"/>
     <filter string="⏸️ Inactive" name="filter_inactive" domain="[('active', '=', False)]"/>
     <filter string="Disabled Features" name="filter_disabled" domain="[('value_boolean', '=', False)]"/>
     <filter string="Enabled Features" name="filter_enabled" domain="[('value_boolean', '=', True)]"/>
@@ -145,34 +145,34 @@
     <separator/>
 
     <filter string="🎨 UI Configurations" name="filter_ui" domain="[('category', 'in', ['ui_customization', 'field_visibility'])]"/>
-    <filter string="🔧 Feature Toggles" name="filter_features" domain="[('category', '=', 'feature_toggles')]"/>
-    <filter string="🔒 Security Settings" name="filter_security" domain="[('category', '=', 'security_settings')]"/>
-    <filter string="💰 Billing Options" name="filter_billing" domain="[('category', '=', 'billing_options')]"/>
-    <filter string="📱 Mobile Features" name="filter_mobile" domain="[('category', '=', 'mobile_features')]"/>
-    <filter string="📊 Reporting Options" name="filter_reporting" domain="[('category', '=', 'reporting_options')]"/>
-    <filter string="🔗 Integrations" name="filter_integrations" domain="[('category', '=', 'integration_settings')]"/>
+    <filter string="<i class="fa fa-wrench"/> Feature Toggles" name="filter_features" domain="[('category', '=', 'feature_toggles')]"/>
+    <filter string="<i class="fa fa-lock"/> Security Settings" name="filter_security" domain="[('category', '=', 'security_settings')]"/>
+    <filter string="<i class="fa fa-money"/> Billing Options" name="filter_billing" domain="[('category', '=', 'billing_options')]"/>
+    <filter string="<i class="fa fa-mobile"/> Mobile Features" name="filter_mobile" domain="[('category', '=', 'mobile_features')]"/>
+    <filter string="<i class="fa fa-bar-chart"/> Reporting Options" name="filter_reporting" domain="[('category', '=', 'reporting_options')]"/>
+    <filter string="<i class="fa fa-link"/> Integrations" name="filter_integrations" domain="[('category', '=', 'integration_settings')]"/>
     <filter string="⚖️ Compliance" name="filter_compliance" domain="[('category', '=', 'compliance_features')]"/>
 
     <separator/>
 
-    <filter string="⚡ High Priority" name="filter_high_priority" domain="[('priority', '=', '3')]"/>
-    <filter string="🔒 System Configs" name="filter_system" domain="[('is_system_config', '=', True)]"/>
+    <filter string="<i class="fa fa-bolt"/> High Priority" name="filter_high_priority" domain="[('priority', '=', '3')]"/>
+    <filter string="<i class="fa fa-lock"/> System Configs" name="filter_system" domain="[('is_system_config', '=', True)]"/>
     <filter string="My Configurations" name="filter_my_configs" domain="[('modified_by_id', '=', uid)]"/>
-    <filter string="🏢 My Company" name="filter_my_company" domain="[('company_id', '=', company_id)]"/>
+    <filter string="<i class="fa fa-building"/> My Company" name="filter_my_company" domain="[('company_id', '=', company_id)]"/>
 
     <separator/>
 
-    <filter string="📅 Recent" name="filter_recent" domain="[('create_date', '>=', (context_today - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+    <filter string="<i class="fa fa-calendar"/> Recent" name="filter_recent" domain="[('create_date', '>=', (context_today - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
     <filter string="🕒 Recently Modified" name="filter_recently_modified" domain="[('last_modified', '>=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
 
-    <group expand="0" string="📊 Group By">
+    <group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
         <filter string="📂 Category" name="group_by_category" context="{'group_by': 'category'}"/>
-        <filter string="🏢 Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+        <filter string="<i class="fa fa-building"/> Company" name="group_by_company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
         <filter string="Owner" name="group_by_user" context="{'group_by': 'modified_by_id'}"/>
-        <filter string="⚡ Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
-        <filter string="🔧 Configuration Type" name="group_by_type" context="{'group_by': 'config_type'}"/>
-        <filter string="✅ Status" name="group_by_status" context="{'group_by': 'active'}"/>
-        <filter string="📅 Creation Date" name="group_by_create_date" context="{'group_by': 'create_date:month'}"/>
+        <filter string="<i class="fa fa-bolt"/> Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>
+        <filter string="<i class="fa fa-wrench"/> Configuration Type" name="group_by_type" context="{'group_by': 'config_type'}"/>
+        <filter string="<i class="fa fa-check-circle text-success"/> Status" name="group_by_status" context="{'group_by': 'active'}"/>
+        <filter string="<i class="fa fa-calendar"/> Creation Date" name="group_by_create_date" context="{'group_by': 'create_date:month'}"/>
     </group>
 </search>
         </field>
@@ -208,7 +208,7 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <span class="badge badge-pill" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'">
-                                            <t t-if="record.active.raw_value">✅ Active</t>
+                                            <t t-if="record.active.raw_value"><i class="fa fa-check-circle text-success"/> Active</t>
                                             <t t-else="">⏸️ Inactive</t>
                                         </span>
                                         <span class="badge badge-pill badge-info" t-if="record.value_boolean.raw_value">
@@ -243,7 +243,7 @@
                             </div>
                             <div class="oe_kanban_bottom_right">
                                 <div t-if="record.company_id.raw_value" groups="base.group_multi_company">
-                                        🏢                                    <field name="company_id"/>
+                                        <i class="fa fa-building"/>                                    <field name="company_id"/>
                                 </div>
                             </div>
                         </div>
@@ -270,17 +270,17 @@
                 ⚙️ Welcome to the Records Management Configurator!
 </p>
 <p>
-    <b>🎯 Centralized Configuration Management:</b>
+    <b><i class="fa fa-bullseye"/> Centralized Configuration Management:</b>
     <br/>
-                • 🔧    <b>Feature Toggles:</b> Enable/disable optional functionality across the system<br/>
+                • <i class="fa fa-wrench"/>    <b>Feature Toggles:</b> Enable/disable optional functionality across the system<br/>
                 • 🎨<b>UI Customization:</b> Control field visibility and interface elements<br/>
-                • 🔒<b>Security Settings:</b> Configure access controls and permissions<br/>
-                • 💰<b>Billing Options:</b> Manage financial and billing configurations<br/>
-                • 📱<b>Mobile Features:</b> Control mobile app and FSM functionality<br/>
-                • 📊<b>Reporting:</b> Configure analytics and report generation<br/>
-                • 🔗<b>Integrations:</b> Manage external system connections<br/>
+                • <i class="fa fa-lock"/><b>Security Settings:</b> Configure access controls and permissions<br/>
+                • <i class="fa fa-money"/><b>Billing Options:</b> Manage financial and billing configurations<br/>
+                • <i class="fa fa-mobile"/><b>Mobile Features:</b> Control mobile app and FSM functionality<br/>
+                • <i class="fa fa-bar-chart"/><b>Reporting:</b> Configure analytics and report generation<br/>
+                • <i class="fa fa-link"/><b>Integrations:</b> Manage external system connections<br/>
                 • ⚖️<b>Compliance:</b> NAID and regulatory compliance controls<br/>
-                • 🏢<b>Department-Specific:</b> Multi-tenant configuration management
+                • <i class="fa fa-building"/><b>Department-Specific:</b> Multi-tenant configuration management
 </p>
 <p>
 <i>🚀 This centralized configurator ensures consistent system behavior and provides granular control over all Records Management features.</i>
@@ -290,7 +290,7 @@
 
 <!-- Dashboard Action -->
 <record id="action_rm_module_configurator_dashboard" model="ir.actions.act_window">
-    <field name="name">📊 Configuration Dashboard</field>
+    <field name="name"><i class="fa fa-bar-chart"/> Configuration Dashboard</field>
     <field name="res_model">rm.module.configurator</field>
     <field name="view_mode">kanban</field>
     <field name="view_id" ref="rm_module_configurator_view_kanban"/>

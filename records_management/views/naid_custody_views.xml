@@ -86,16 +86,16 @@
                             </div>
 <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div>
-                                    📄 <field name="document_id"/>
+                                    <i class="fa fa-file-o"/> <field name="document_id"/>
                                 </div>
                                 <div>
-                                    👤 <field name="user_id"/>
+                                    <i class="fa fa-user"/> <field name="user_id"/>
                                 </div>
                                 <div>
                                     📍 <field name="location_id"/>
                                 </div>
                                 <div t-if="record.signature_verified.raw_value">
-                                    ✅ <span class="text-success">Verified</span>
+                                    <i class="fa fa-check-circle text-success"/> <span class="text-success">Verified</span>
                                 </div>
                             </div>
                         </div>

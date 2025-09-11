@@ -161,7 +161,7 @@
                 </div>
 
                 <group>
-                    <group name="product_details" string="📦 Product Details">
+                    <group name="product_details" string="<i class="fa fa-box"/> Product Details">
                         <field name="product_code"/>
                         <field name="capacity" widget="float"/>
                         <field name="dimensions"/>
@@ -180,7 +180,7 @@
                 </group>
 
                 <group>
-                    <group name="pricing" string="💰 Pricing Configuration">
+                    <group name="pricing" string="<i class="fa fa-money"/> Pricing Configuration">
                         <field name="storage_rate" widget="monetary"/>
                         <field name="shred_rate" widget="monetary"/>
                         <field name="setup_fee" widget="monetary"/>
@@ -188,7 +188,7 @@
                         <field name="volume_discount_threshold"/>
                         <field name="volume_discount_rate" widget="percentage"/>
                     </group>
-                    <group name="analytics" string="📊 Analytics">
+                    <group name="analytics" string="<i class="fa fa-bar-chart"/> Analytics">
                         <field name="monthly_volume"/>
                         <field name="monthly_revenue" widget="monetary"/>
                         <field name="average_storage_duration" widget="float"/>
@@ -201,21 +201,21 @@
 <!-- Converted states="product_category=='storage_box'" to invisible condition -->
 <page string="Container Configuration" name="storage_config" invisible="product_category != 'container_box'">
                         <group>
-                            <group string="📦 Storage Specifications">
+                            <group string="<i class="fa fa-box"/> Storage Specifications">
                                 <field name="climate_controlled" widget="boolean_toggle"/>
                                 <field name="fireproof_rating"/>
                                 <field name="security_level"/>
                                 <field name="stackable" widget="boolean_toggle"/>
                                 <field name="max_stack_height"/>
                             </group>
-                            <group string="📄 Document Types">
+                            <group string="<i class="fa fa-file-o"/> Document Types">
                                 <field name="suitable_document_types" widget="many2many_tags"/>
                                 <field name="max_file_folders"/>
                                 <field name="recommended_retention_years"/>
                                 <field name="access_frequency"/>
                             </group>
                         </group>
-                        <separator string="📋 Storage Box Assignment"/>
+                        <separator string="<i class="fa fa-clipboard"/> Storage Box Assignment"/>
                         <group>
 <field name="container_id" string="Assigned Container"/>
 
@@ -243,9 +243,9 @@
 <!-- Removed shred_bin_ids list: relation field not implemented on barcode.product -->
                     </page>
                     <page string="Pricing Rules" name="pricing_rules">
-                        <separator string="💰 Pricing Tier Configuration"/>
+                        <separator string="<i class="fa fa-money"/> Pricing Tier Configuration"/>
 <!-- Removed pricing_tier_ids list: relation field not implemented on barcode.product -->
-                        <separator string="📅 Seasonal Pricing"/>
+                        <separator string="<i class="fa fa-calendar"/> Seasonal Pricing"/>
 <!-- Removed seasonal_pricing_ids list: relation field not implemented on barcode.product -->
                     </page>
                     <page string="Barcode Generation" name="barcode_generation">
@@ -256,14 +256,14 @@
                                 <field name="total_generated"/>
                                 <field name="generation_batch_size"/>
                             </group>
-                            <group string="📋 Validation Rules">
+                            <group string="<i class="fa fa-clipboard"/> Validation Rules">
                                 <field name="validate_format" widget="boolean_toggle"/>
                                 <field name="validate_uniqueness" widget="boolean_toggle"/>
                                 <field name="validate_check_digit" widget="boolean_toggle"/>
                                 <field name="allowed_characters"/>
                             </group>
                         </group>
-                        <separator string="📝 Generation History"/>
+                        <separator string="<i class="fa fa-pencil"/> Generation History"/>
 <!-- Removed generation_history_ids list: inverse relation not defined on barcode.product (history references product via product_id) -->
                     </page>
                 </notebook>
@@ -339,7 +339,7 @@
 
     <!-- ACTION: Barcode Product Management -->
     <record id="action_barcode_product" model="ir.actions.act_window">
-        <field name="name">📦 Barcode Product Management</field>
+        <field name="name"><i class="fa fa-box"/> Barcode Product Management</field>
         <field name="res_model">barcode.product</field>
         <field name="view_mode">kanban,list,form,graph,pivot</field>
         <field name="search_view_id" ref="barcode_product_view_search"/>
@@ -349,7 +349,7 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                📦 Create your first barcode product configuration!
+                <i class="fa fa-box"/> Create your first barcode product configuration!
             </p>
             <p>
                 Configure barcode patterns and pricing for storage box types and shred bin sizes.

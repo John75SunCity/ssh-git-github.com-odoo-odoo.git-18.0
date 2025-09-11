@@ -25,21 +25,21 @@
 <form string="Location Report Wizard">
                 <sheet>
                     <div class="oe_title">
-<h1>📊 Location Utilization Report</h1>
+<h1><i class="fa fa-bar-chart"/> Location Utilization Report</h1>
                     </div>
 <group>
     <group string="📍 Location Selection">
         <field name="location_id"/>
         <field name="include_child_locations"/>
     </group>
-    <group string="📅 Report Settings">
+    <group string="<i class="fa fa-calendar"/> Report Settings">
         <field name="report_date"/>
         <field name="company_id"/>
     </group>
 </group>
                 </sheet>
 <footer>
-    <button name="action_print_report" type="object" string="📊 Generate Report" class="btn-primary"/>
+    <button name="action_print_report" type="object" string="<i class="fa fa-bar-chart"/> Generate Report" class="btn-primary"/>
     <button string="Cancel" class="btn-secondary" special="cancel"/>
 </footer>
             </form>

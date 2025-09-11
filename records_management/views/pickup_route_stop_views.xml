@@ -81,7 +81,7 @@
                                         <span class="badge badge-warning">🚛 In Progress</span>
                                     </div>
                                     <div t-if="record.state.raw_value == 'completed'">
-                                        <span class="badge badge-success">✅ Completed</span>
+                                        <span class="badge badge-success"><i class="fa fa-check-circle text-success"/> Completed</span>
                                     </div>
                                     <div t-if="record.state.raw_value == 'skipped'">
                                         <span class="badge badge-secondary">⏭️ Skipped</span>
@@ -327,13 +327,13 @@
                 • 📍 Precise location tracking with GPS coordinates<br/>
                 • ⏱️ Real-time scheduling and duration tracking<br/>
                 • 👨‍💼 Contact management and access instructions<br/>
-                • 📦 Estimated vs actual box and weight tracking<br/>
+                • <i class="fa fa-box"/> Estimated vs actual box and weight tracking<br/>
                 • ✍️ Digital signatures for completion verification<br/>
                 • 📸 Photo documentation and barcode scanning<br/>
                 • 🔔 Automated notifications and status updates<br/>
-                • 📊 Performance analytics and time optimization<br/>
+                • <i class="fa fa-bar-chart"/> Performance analytics and time optimization<br/>
                 • 🚛 Route sequence optimization and coordination<br/>
-                • 📋 NAID compliance and audit trail management
+                • <i class="fa fa-clipboard"/> NAID compliance and audit trail management
             </p>
         </field>
     </record>

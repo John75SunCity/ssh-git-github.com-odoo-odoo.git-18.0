@@ -59,7 +59,7 @@
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
                                     <span class="badge badge-pill badge-info">
-                                        💰 <field name="pricelist_id"/>
+                                        <i class="fa fa-money"/> <field name="pricelist_id"/>
                                     </span>
                                 </div>
                                 <div class="oe_kanban_bottom_right">

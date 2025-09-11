@@ -82,7 +82,7 @@
                                         <strong>💳 <field name="name"/></strong>
                                     </div>
                                     <div class="o_secondary">
-                                        👤 <field name="partner_id"/>
+                                        <i class="fa fa-user"/> <field name="partner_id"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
@@ -120,23 +120,23 @@
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <button class="btn btn-primary btn-sm" type="object" name="action_generate_invoice">
-                                            📄 Invoice
+                                            <i class="fa fa-file-o"/> Invoice
                                         </button>
                                     </div>
                                     <div class="col-6">
                                         <button class="btn btn-success btn-sm" type="object" name="action_view_analytics">
-                                            📊 Analytics
+                                            <i class="fa fa-bar-chart"/> Analytics
                                         </button>
                                     </div>
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Config</a>
-                                <a role="menuitem" type="object" name="action_view_billing_history" class="dropdown-item">📋 Billing History</a>
-                                <a role="menuitem" type="object" name="action_configure_rates" class="dropdown-item">💰 Configure Rates</a>
+                                <a role="menuitem" type="object" name="action_view_billing_history" class="dropdown-item"><i class="fa fa-clipboard"/> Billing History</a>
+                                <a role="menuitem" type="object" name="action_configure_rates" class="dropdown-item"><i class="fa fa-money"/> Configure Rates</a>
                                 <a role="menuitem" type="object" name="action_test_billing" class="dropdown-item">🧪 Test Billing</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item">📋 Duplicate</a>
+                                <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item"><i class="fa fa-clipboard"/> Duplicate</a>
                             </div>
                         </div>
                     </t>
@@ -154,14 +154,14 @@
                   decoration-warning="billing_model == 'custom'"
                   decoration-info="payment_terms == 'net_30'">
                 <field name="name" string="💳 Configuration Name"/>
-                <field name="partner_id" string="👤 Customer"/>
+                <field name="partner_id" string="<i class="fa fa-user"/> Customer"/>
                 <field name="billing_model" string="💼 Billing Model" widget="badge"/>
-                <field name="base_rate" string="💰 Base Rate"/>
-                <field name="billing_frequency" string="📅 Frequency"/>
+                <field name="base_rate" string="<i class="fa fa-money"/> Base Rate"/>
+                <field name="billing_frequency" string="<i class="fa fa-calendar"/> Frequency"/>
                 <field name="payment_terms" string="💳 Payment Terms"/>
                 <field name="auto_billing" string="🤖 Auto Billing" widget="boolean_toggle"/>
-                <field name="active" string="🎯 Status" widget="boolean_toggle"/>
-                <field name="last_invoice_date" string="📄 Last Invoice"/>
+                <field name="active" string="<i class="fa fa-bullseye"/> Status" widget="boolean_toggle"/>
+                <field name="last_invoice_date" string="<i class="fa fa-file-o"/> Last Invoice"/>
                 <button name="action_generate_invoice" type="object" string="Invoice"
                         icon="fa-file-text" class="btn-link"/>
                 <button name="action_view_analytics" type="object" string="Analytics"
@@ -177,12 +177,12 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_generate_invoice" type="object" string="📄 Generate Invoice" class="btn-primary"/>
-                    <button name="action_configure_rates" type="object" string="💰 Configure Rates" class="btn-secondary"/>
+                    <button name="action_generate_invoice" type="object" string="<i class="fa fa-file-o"/> Generate Invoice" class="btn-primary"/>
+                    <button name="action_configure_rates" type="object" string="<i class="fa fa-money"/> Configure Rates" class="btn-secondary"/>
                     <button name="action_test_billing" type="object" string="🧪 Test Billing" class="btn-info"/>
-                    <button name="action_view_analytics" type="object" string="📊 View Analytics" class="btn-success"/>
-                    <button name="action_view_invoices" type="object" string="📄 View Invoices" class="btn-secondary"/>
-                    <button name="action_view_billing_history" type="object" string="📋 View Billing History" class="btn-secondary"/>
+                    <button name="action_view_analytics" type="object" string="<i class="fa fa-bar-chart"/> View Analytics" class="btn-success"/>
+                    <button name="action_view_invoices" type="object" string="<i class="fa fa-file-o"/> View Invoices" class="btn-secondary"/>
+                    <button name="action_view_billing_history" type="object" string="<i class="fa fa-clipboard"/> View Billing History" class="btn-secondary"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -211,7 +211,7 @@
                             <field name="billing_model"/>
                             <field name="service_category"/>
                         </group>
-                        <group string="💰 Pricing Structure">
+                        <group string="<i class="fa fa-money"/> Pricing Structure">
                             <field name="base_rate"/>
                             <field name="currency_id"/>
                             <field name="rate_unit"/>
@@ -220,7 +220,7 @@
                     </group>
 
                     <group>
-                        <group string="📅 Billing Schedule">
+                        <group string="<i class="fa fa-calendar"/> Billing Schedule">
                             <field name="billing_frequency"/>
                             <field name="billing_cycle_start"/>
                             <field name="next_billing_date"/>
@@ -235,7 +235,7 @@
                     </group>
 
                     <notebook>
-                        <page string="💰 Rate Structure" name="rates">
+                        <page string="<i class="fa fa-money"/> Rate Structure" name="rates">
                             <field name="billing_rate_ids" mode="list">
                                 <list editable="bottom">
                                     <field name="service_type"/>
@@ -249,15 +249,15 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="📊 Usage Tracking" name="usage">
+                        <page string="<i class="fa fa-bar-chart"/> Usage Tracking" name="usage">
                             <group>
-                                <group string="📦 Storage Metrics">
+                                <group string="<i class="fa fa-box"/> Storage Metrics">
                                     <field name="track_box_storage"/>
                                     <field name="track_document_count"/>
                                     <field name="track_access_frequency"/>
                                     <field name="track_special_handling"/>
                                 </group>
-                                <group string="🚚 Service Metrics">
+                                <group string="<i class="fa fa-truck"/> Service Metrics">
                                     <field name="track_pickup_delivery"/>
                                     <field name="track_retrieval_requests"/>
                                     <field name="track_destruction_services"/>
@@ -276,9 +276,9 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="📄 Invoice Generation" name="invoicing">
+                        <page string="<i class="fa fa-file-o"/> Invoice Generation" name="invoicing">
                             <group>
-                                <group string="📝 Invoice Settings">
+                                <group string="<i class="fa fa-pencil"/> Invoice Settings">
                                     <field name="invoice_template_id"/>
                                     <field name="consolidate_charges"/>
                                     <field name="prorate_monthly"/>
@@ -303,7 +303,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="🎯 Discounts &amp; Promotions" name="discounts">
+                        <page string="<i class="fa fa-bullseye"/> Discounts &amp; Promotions" name="discounts">
                             <field name="discount_rule_ids" mode="list">
                                 <list editable="bottom">
                                     <field name="rule_name"/>
@@ -317,15 +317,15 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="📊 Revenue Analytics" name="analytics">
+                        <page string="<i class="fa fa-bar-chart"/> Revenue Analytics" name="analytics">
                             <group>
-                                <group string="💰 Revenue Metrics">
+                                <group string="<i class="fa fa-money"/> Revenue Metrics">
                                     <field name="monthly_revenue" readonly="1"/>
                                     <field name="quarterly_revenue" readonly="1"/>
                                     <field name="annual_revenue" readonly="1"/>
                                     <field name="average_monthly_billing" readonly="1"/>
                                 </group>
-                                <group string="📈 Performance Indicators">
+                                <group string="<i class="fa fa-line-chart"/> Performance Indicators">
                                     <field name="billing_accuracy_rate" readonly="1"/>
                                     <field name="collection_rate" readonly="1"/>
                                     <field name="payment_delay_average" readonly="1"/>
@@ -345,13 +345,13 @@
                         </page>
                         <page string="🔔 Notifications &amp; Alerts" name="notifications">
                             <group>
-                                <group string="📱 Alert Settings">
+                                <group string="<i class="fa fa-mobile"/> Alert Settings">
                                     <field name="billing_failure_alerts"/>
                                     <field name="payment_overdue_alerts"/>
                                     <field name="usage_threshold_alerts"/>
                                     <field name="revenue_variance_alerts"/>
                                 </group>
-                                <group string="👥 Recipients">
+                                <group string="<i class="fa fa-users"/> Recipients">
                                     <field name="finance_team_notifications"/>
                                     <field name="manager_notifications"/>
                                     <field name="customer_notifications"/>
@@ -359,15 +359,15 @@
                                 </group>
                             </group>
                         </page>
-                        <page string="🔧 Advanced Configuration" name="advanced">
+                        <page string="<i class="fa fa-wrench"/> Advanced Configuration" name="advanced">
                             <group>
-                                <group string="🔗 Integration Settings">
+                                <group string="<i class="fa fa-link"/> Integration Settings">
                                     <field name="accounting_system_sync"/>
                                     <field name="payment_gateway_integration"/>
                                     <field name="tax_calculation_method"/>
                                     <field name="multi_currency_support"/>
                                 </group>
-                                <group string="🔐 Security &amp; Compliance">
+                                <group string="<i class="fa fa-unlock"/> Security &amp; Compliance">
                                     <field name="audit_trail_enabled"/>
                                     <field name="data_retention_period"/>
                                     <field name="encryption_enabled"/>
@@ -391,7 +391,7 @@
         <field name="name">records.billing.config.view.calendar</field>
         <field name="model">records.billing.config</field>
         <field name="arch" type="xml">
-            <calendar string="📅 Billing Schedule"
+            <calendar string="<i class="fa fa-calendar"/> Billing Schedule"
                       date_start="next_billing_date"
                       color="billing_model">
                 <field name="name"/>
@@ -419,19 +419,19 @@
 
                 <separator/>
                 <filter string="🤖 Auto Billing" name="auto_billing" domain="[('auto_billing', '=', True)]"/>
-                <filter string="📋 Manual Billing" name="manual_billing" domain="[('auto_billing', '=', False)]"/>
+                <filter string="<i class="fa fa-clipboard"/> Manual Billing" name="manual_billing" domain="[('auto_billing', '=', False)]"/>
 
                 <separator/>
-                <filter string="📅 Monthly" name="monthly" domain="[('billing_frequency', '=', 'monthly')]"/>
+                <filter string="<i class="fa fa-calendar"/> Monthly" name="monthly" domain="[('billing_frequency', '=', 'monthly')]"/>
                 <filter string="📆 Quarterly" name="quarterly" domain="[('billing_frequency', '=', 'quarterly')]"/>
                 <filter string="🗓️ Annual" name="annual" domain="[('billing_frequency', '=', 'annual')]"/>
 
                 <separator/>
-                <filter string="💰 High Value (&amp;gt;$1000)" name="high_value" domain="[('base_rate', '&amp;gt;', 1000)]"/>
-                <filter string="⚡ Due This Week" name="due_this_week"
+                <filter string="<i class="fa fa-money"/> High Value (&amp;gt;$1000)" name="high_value" domain="[('base_rate', '&amp;gt;', 1000)]"/>
+                <filter string="<i class="fa fa-bolt"/> Due This Week" name="due_this_week"
                         domain="[('next_billing_date', '&amp;gt;=', context_today), ('next_billing_date', '&lt;=', (context_today + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
 
-                <group expand="0" string="📊 Group By">
+                <group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Billing Model" name="group_by_model" context="{'group_by': 'billing_model'}"/>
                     <filter string="Service Category" name="group_by_category" context="{'group_by': 'service_category'}"/>
@@ -457,15 +457,15 @@
             </p>
             <p>
                 <b>Enterprise Billing Management System:</b><br/>
-                • 💰 Flexible multi-tier rate structures<br/>
+                • <i class="fa fa-money"/> Flexible multi-tier rate structures<br/>
                 • 🤖 Automated billing and invoice generation<br/>
-                • 📊 Real-time usage tracking and analytics<br/>
-                • 🎯 Advanced discount and promotion management<br/>
-                • 📅 Flexible billing cycles and schedules<br/>
+                • <i class="fa fa-bar-chart"/> Real-time usage tracking and analytics<br/>
+                • <i class="fa fa-bullseye"/> Advanced discount and promotion management<br/>
+                • <i class="fa fa-calendar"/> Flexible billing cycles and schedules<br/>
                 • 💳 Multiple payment method support<br/>
                 • 📧 Automated notifications and reminders<br/>
-                • 🔗 Seamless accounting system integration<br/>
-                • 📈 Comprehensive revenue analytics and reporting
+                • <i class="fa fa-link"/> Seamless accounting system integration<br/>
+                • <i class="fa fa-line-chart"/> Comprehensive revenue analytics and reporting
             </p>
         </field>
     </record>

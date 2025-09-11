@@ -26,17 +26,17 @@
 <t t-name="card">
                     <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.color.raw_value ? 'oe_kanban_color_' + record.color.raw_value : ''}">
                         <div class="o_kanban_card_header">
-                            <strong>🚚                                <field name="name"/>
+                            <strong><i class="fa fa-truck"/>                                <field name="name"/>
                             </strong>
                             <span class="float-end">
                                 <field name="priority" widget="priority"/>
                             </span>
-                            <div class="text-muted">👤 <field name="user_id"/>
+                            <div class="text-muted"><i class="fa fa-user"/> <field name="user_id"/>
                             </div>
                         </div>
 <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                             <div class="mb-2">
-                                <strong>📅 Date:</strong>
+                                <strong><i class="fa fa-calendar"/> Date:</strong>
                                 <field name="route_date" widget="date"/>
                                 <br/>
                                 <strong>🚗 Vehicle:</strong>
@@ -48,7 +48,7 @@
                                 <strong>⏱️ Est. Duration:</strong>
                                 <field name="estimated_duration"/> hrs
                                 <br/>
-                                <strong>🎯 FSM Status:</strong>
+                                <strong><i class="fa fa-bullseye"/> FSM Status:</strong>
 <field name="fsm_state" invisible="fsm_state == False"/>
 
                             </div>
@@ -56,7 +56,7 @@
                                 <span class="badge badge-danger">🚨 Urgent Route</span>
                             </div>
                             <div t-if="record.state.raw_value == 'completed'">
-                                <span class="badge badge-success">✅ Completed</span>
+                                <span class="badge badge-success"><i class="fa fa-check-circle text-success"/> Completed</span>
                             </div>
                         </div>
                         <div class="o_kanban_card_footer">
@@ -231,10 +231,10 @@
         <p><strong>FSM Integration Benefits:</strong></p>
         <ul>
             <li>🔄 Automated task creation and synchronization</li>
-            <li>📱 Mobile FSM app support for drivers</li>
-            <li>📊 Standard Odoo project management workflows</li>
+            <li><i class="fa fa-mobile"/> Mobile FSM app support for drivers</li>
+            <li><i class="fa fa-bar-chart"/> Standard Odoo project management workflows</li>
             <li>⏰ Advanced scheduling and dependency management</li>
-            <li>📈 Performance tracking and analytics</li>
+            <li><i class="fa fa-line-chart"/> Performance tracking and analytics</li>
         </ul>
     </div>
 </page>
@@ -326,7 +326,7 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                🚚 Create your first Pickup Route!
+                <i class="fa fa-truck"/> Create your first Pickup Route!
             </p>
             <p>
                 <b>Advanced Pickup Route Management:</b>
@@ -334,12 +334,12 @@
                 • 📍 Intelligent route planning and optimization<br/>
                 • 👨‍💼 Driver and vehicle assignment with capacity tracking<br/>
                 • ⏱️ Real-time tracking and ETA calculations<br/>
-                • 📊 Performance analytics and fuel consumption monitoring<br/>
+                • <i class="fa fa-bar-chart"/> Performance analytics and fuel consumption monitoring<br/>
                 • 🗺️ GPS integration with live location updates<br/>
-                • 📋 NAID compliance and audit trail management<br/>
-                • 📱 Mobile-friendly interface for drivers<br/>
+                • <i class="fa fa-clipboard"/> NAID compliance and audit trail management<br/>
+                • <i class="fa fa-mobile"/> Mobile-friendly interface for drivers<br/>
                 • 🔔 Automated notifications and status updates<br/>
-                • 📈 Customer satisfaction tracking and reporting<br/>
+                • <i class="fa fa-line-chart"/> Customer satisfaction tracking and reporting<br/>
                 • 🚛 Multi-stop route coordination with time optimization
             </p>
         </field>

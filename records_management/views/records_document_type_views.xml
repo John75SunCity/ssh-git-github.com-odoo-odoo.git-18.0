@@ -8,15 +8,15 @@
         <field name="arch" type="xml">
             <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
                 <field name="sequence" widget="handle"/>
-                <field name="name" string="📄 Document Type"/>
+                <field name="name" string="<i class="fa fa-file-o"/> Document Type"/>
                 <field name="code" string="🔢 Code"/>
                 <field name="category" string="📂 Category"/>
-                <field name="confidentiality_level" string="🔒 Security Level"/>
-                <field name="effective_retention_years" string="📅 Retention (Years)"/>
-                <field name="document_count" string="📊 Documents" widget="integer"/>
-                <field name="container_count" string="📦 Containers" widget="integer"/>
-                <field name="state" string="🎯 Status" widget="badge"/>
-                <field name="active" string="✅ Active"/>
+                <field name="confidentiality_level" string="<i class="fa fa-lock"/> Security Level"/>
+                <field name="effective_retention_years" string="<i class="fa fa-calendar"/> Retention (Years)"/>
+                <field name="document_count" string="<i class="fa fa-bar-chart"/> Documents" widget="integer"/>
+                <field name="container_count" string="<i class="fa fa-box"/> Containers" widget="integer"/>
+                <field name="state" string="<i class="fa fa-bullseye"/> Status" widget="badge"/>
+                <field name="active" string="<i class="fa fa-check-circle text-success"/> Active"/>
 <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link" title="View Documents"/>
 
             </list>
@@ -64,7 +64,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                     </div>
 
                     <group>
-                        <group string="📄 Basic Information">
+                        <group string="<i class="fa fa-file-o"/> Basic Information">
                             <field name="name" required="1"/>
                             <field name="code" required="1"/>
                             <field name="description"/>
@@ -72,7 +72,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                             <field name="category" required="1"/>
                             <field name="active" widget="boolean_toggle"/>
                         </group>
-                        <group string="🏢 Organization">
+                        <group string="<i class="fa fa-building"/> Organization">
                             <field name="parent_type_id"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                             <field name="partner_id"/>
@@ -82,14 +82,14 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                     </group>
 
                     <group>
-                        <group string="🔒 Security &amp; Compliance">
+                        <group string="<i class="fa fa-lock"/> Security &amp; Compliance">
                             <field name="confidentiality_level" required="1"/>
                             <field name="naid_compliance" widget="boolean_toggle"/>
                             <field name="hipaa_protected" widget="boolean_toggle"/>
                             <field name="sox_compliance" widget="boolean_toggle"/>
                             <field name="gdpr_applicable" widget="boolean_toggle"/>
                         </group>
-                        <group string="📅 Retention &amp; Destruction">
+                        <group string="<i class="fa fa-calendar"/> Retention &amp; Destruction">
                             <field name="default_retention_years"/>
                             <field name="retention_policy_id"/>
                             <field name="effective_retention_years" readonly="1"/>
@@ -99,7 +99,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                     </group>
 
                     <group>
-                        <group string="📦 Physical Requirements">
+                        <group string="<i class="fa fa-box"/> Physical Requirements">
                             <field name="max_box_weight"/>
                             <field name="storage_requirements"/>
                             <field name="handling_instructions"/>
@@ -114,10 +114,10 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                     </group>
 
                     <notebook>
-                        <page string="📋 Regulatory Requirements" name="regulatory">
+                        <page string="<i class="fa fa-clipboard"/> Regulatory Requirements" name="regulatory">
                             <field name="regulatory_requirements" placeholder="Specific regulatory requirements and compliance notes..."/>
                         </page>
-                        <page string="📄 Documents" name="documents">
+                        <page string="<i class="fa fa-file-o"/> Documents" name="documents">
                             <field name="document_ids" mode="list" limit="20">
                                 <list>
                                     <field name="name"/>
@@ -128,7 +128,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 </list>
                             </field>
                         </page>
-                        <page string="📦 Containers" name="containers">
+                        <page string="<i class="fa fa-box"/> Containers" name="containers">
                             <field name="container_ids" mode="list" limit="20">
                                 <list>
                                     <field name="name"/>
@@ -138,7 +138,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 </list>
                             </field>
                         </page>
-                        <page string="👥 Child Types" name="children">
+                        <page string="<i class="fa fa-users"/> Child Types" name="children">
                             <field name="child_type_ids" mode="list">
                                 <list>
                                     <field name="name"/>
@@ -149,7 +149,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 </list>
                             </field>
                         </page>
-                        <page string="📋 Retention Rules" name="retention">
+                        <page string="<i class="fa fa-clipboard"/> Retention Rules" name="retention">
                             <field name="retention_rule_ids" mode="list">
                                 <list>
                                     <field name="name"/>
@@ -219,14 +219,14 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                     <div class="col-6">
                                         <div class="text-center">
                                             <span class="badge badge-primary">
-                                                <field name="document_count"/> 📄
+                                                <field name="document_count"/> <i class="fa fa-file-o"/>
                                             </span>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="text-center">
                                             <span class="badge badge-info">
-                                                <field name="container_count"/> 📦
+                                                <field name="container_count"/> <i class="fa fa-box"/>
                                             </span>
                                         </div>
                                     </div>
@@ -252,8 +252,8 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Type</a>
-                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">📄 View Documents</a>
-<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">✅ Activate</a>
+                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item"><i class="fa fa-file-o"/> View Documents</a>
+<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'"><i class="fa fa-check-circle text-success"/> Activate</a>
 <a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'">⚠️ Deprecate</a>
                                 <div class="dropdown-divider"/>
 <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')">📁 Archive</a>
@@ -279,33 +279,33 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                 <field name="partner_id"/>
                 <field name="department_id"/>
 
-                <filter string="✅ Active Types" name="active" domain="[('active', '=', True)]"/>
+                <filter string="<i class="fa fa-check-circle text-success"/> Active Types" name="active" domain="[('active', '=', True)]"/>
                 <filter string="📁 Archived Types" name="inactive" domain="[('active', '=', False)]"/>
 
                 <separator/>
-                <filter string="📝 Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="🎯 Active" name="active_state" domain="[('state', '=', 'active')]"/>
+                <filter string="<i class="fa fa-pencil"/> Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="<i class="fa fa-bullseye"/> Active" name="active_state" domain="[('state', '=', 'active')]"/>
                 <filter string="⚠️ Deprecated" name="deprecated" domain="[('state', '=', 'deprecated')]"/>
-                <filter string="📦 Archived" name="archived" domain="[('state', '=', 'archived')]"/>
+                <filter string="<i class="fa fa-box"/> Archived" name="archived" domain="[('state', '=', 'archived')]"/>
 
                 <separator/>
-                <filter string="🔒 High Security" name="high_security" domain="[('confidentiality_level', 'in', ['restricted', 'top_secret'])]"/>
+                <filter string="<i class="fa fa-lock"/> High Security" name="high_security" domain="[('confidentiality_level', 'in', ['restricted', 'top_secret'])]"/>
                 <filter string="🏥 HIPAA Protected" name="hipaa" domain="[('hipaa_protected', '=', True)]"/>
-                <filter string="📊 SOX Compliant" name="sox" domain="[('sox_compliance', '=', True)]"/>
+                <filter string="<i class="fa fa-bar-chart"/> SOX Compliant" name="sox" domain="[('sox_compliance', '=', True)]"/>
                 <filter string="🇪🇺 GDPR Applicable" name="gdpr" domain="[('gdpr_applicable', '=', True)]"/>
                 <filter string="🛡️ NAID Compliant" name="naid" domain="[('naid_compliance', '=', True)]"/>
 
                 <separator/>
-                <filter string="📄 Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
-                <filter string="📦 Has Containers" name="has_containers" domain="[('container_count', '>', 0)]"/>
-                <filter string="👥 Has Children" name="has_children" domain="[('child_count', '>', 0)]"/>
+                <filter string="<i class="fa fa-file-o"/> Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
+                <filter string="<i class="fa fa-box"/> Has Containers" name="has_containers" domain="[('container_count', '>', 0)]"/>
+                <filter string="<i class="fa fa-users"/> Has Children" name="has_children" domain="[('child_count', '>', 0)]"/>
 
                 <separator/>
-                <filter string="🔐 Encryption Required" name="encryption" domain="[('encryption_required', '=', True)]"/>
+                <filter string="<i class="fa fa-unlock"/> Encryption Required" name="encryption" domain="[('encryption_required', '=', True)]"/>
                 <filter string="📷 Digital Copy Required" name="digital_copy" domain="[('digital_copy_required', '=', True)]"/>
                 <filter string="🏷️ Barcode Required" name="barcode" domain="[('barcode_required', '=', True)]"/>
 
-                <group expand="0" string="📊 Group By">
+                <group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
                     <filter string="Category" name="group_category" context="{'group_by': 'category'}"/>
                     <filter string="Security Level" name="group_security" context="{'group_by': 'confidentiality_level'}"/>
                     <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
@@ -320,24 +320,24 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
 
     <!-- Action for records.document.type -->
     <record id="action_records_document_type" model="ir.actions.act_window">
-        <field name="name">📄 Document Types</field>
+        <field name="name"><i class="fa fa-file-o"/> Document Types</field>
         <field name="res_model">records.document.type</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="records_document_type_view_search"/>
         <field name="context">{'search_default_active': 1, 'search_default_active_state': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                📄 Create your first document type!
+                <i class="fa fa-file-o"/> Create your first document type!
             </p>
             <p>
                 <b>Document Type Management:</b>
                 <br/>
                 • 📂 Organize documents by category and security level<br/>
-                • 🔒 Configure compliance requirements (NAID, HIPAA, SOX, GDPR)<br/>
-                • 📅 Set retention policies and destruction schedules<br/>
-                • 📦 Define physical storage requirements<br/>
+                • <i class="fa fa-lock"/> Configure compliance requirements (NAID, HIPAA, SOX, GDPR)<br/>
+                • <i class="fa fa-calendar"/> Set retention policies and destruction schedules<br/>
+                • <i class="fa fa-box"/> Define physical storage requirements<br/>
                 • ⚙️ Configure indexing, barcoding, and encryption settings<br/>
-                • 🏆 NAID AAA certified document classification system
+                • <i class="fa fa-trophy"/> NAID AAA certified document classification system
             </p>
         </field>
     </record>

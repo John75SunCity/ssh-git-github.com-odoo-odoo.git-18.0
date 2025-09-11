@@ -148,7 +148,7 @@
                     </div>
 
                     <group>
-                        <group name="load_details" string="📦 Load Details">
+                        <group name="load_details" string="<i class="fa fa-box"/> Load Details">
                             <field name="total_weight" widget="float"/>
                             <field name="bale_count"/>
                             <field name="average_bale_weight" widget="float"/>
@@ -156,7 +156,7 @@
                             <field name="moisture_content" widget="percentage"/>
                             <field name="contamination_level"/>
                         </group>
-                        <group name="market_details" string="💰 Market Details">
+                        <group name="market_details" string="<i class="fa fa-money"/> Market Details">
                             <field name="market_price_per_ton" widget="monetary"/>
                             <field name="estimated_revenue" widget="monetary"/>
                             <field name="actual_sale_price" widget="monetary" invisible="state != 'sold'"/>
@@ -229,13 +229,13 @@
                         </page>
                         <page string="Documentation" name="documentation">
                             <group>
-                                <group string="📄 Sales Documentation">
+                                <group string="<i class="fa fa-file-o"/> Sales Documentation">
                                     <field name="bill_of_lading"/>
                                     <field name="sales_contract_number"/>
                                     <field name="invoice_number" invisible="state != 'sold'"/>
                                     <field name="payment_terms"/>
                                 </group>
-                                <group string="📊 Quality Documentation">
+                                <group string="<i class="fa fa-bar-chart"/> Quality Documentation">
                                     <field name="quality_certificate"/>
                                     <field name="weight_certificate"/>
                                     <field name="moisture_test_report"/>

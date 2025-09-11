@@ -217,8 +217,8 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
     <field name="arch" type="xml">
         <form string="Bin Unlock Service">
             <header>
-                <button name="action_create_invoice" string="💰 Create Invoice" type="object" class="btn-primary" invisible="billable == False or invoice_created == True"/>
-                <button name="action_mark_completed" string="✅ Mark Completed" type="object" class="btn-success" invisible="completed == True"/>
+                <button name="action_create_invoice" string="<i class="fa fa-money"/> Create Invoice" type="object" class="btn-primary" invisible="billable == False or invoice_created == True"/>
+                <button name="action_mark_completed" string="<i class="fa fa-check-circle text-success"/> Mark Completed" type="object" class="btn-success" invisible="completed == True"/>
             </header>
             <sheet>
                 <div class="oe_title">

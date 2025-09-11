@@ -72,7 +72,7 @@
                         </h1>
                     </div>
 <group>
-    <group name="coordinator_info" string="👤 Coordinator Information">
+    <group name="coordinator_info" string="<i class="fa fa-user"/> Coordinator Information">
         <field name="employee_id" options="{'no_create': True}"/>
         <field name="department_id"/>
         <field name="coordinator_type"/>
@@ -90,15 +90,15 @@
 </group>
 
 <notebook>
-    <page name="work_orders" string="📋 Work Orders">
+    <page name="work_orders" string="<i class="fa fa-clipboard"/> Work Orders">
         <group>
-            <group name="workload_stats" string="📊 Workload Statistics">
+            <group name="workload_stats" string="<i class="fa fa-bar-chart"/> Workload Statistics">
                 <field name="active_work_orders"/>
                 <field name="completed_work_orders"/>
                 <field name="pending_assignments"/>
                 <field name="average_completion_time"/>
             </group>
-            <group name="performance_metrics" string="⚡ Performance Metrics">
+            <group name="performance_metrics" string="<i class="fa fa-bolt"/> Performance Metrics">
                 <field name="success_rate" widget="percentage"/>
                 <field name="customer_satisfaction"/>
                 <field name="on_time_completion_rate" widget="percentage"/>
@@ -119,15 +119,15 @@
 </field>
 </page>
 
-<page name="skills_certifications" string="🏆 Skills &amp; Certifications">
+<page name="skills_certifications" string="<i class="fa fa-trophy"/> Skills &amp; Certifications">
     <group>
-        <group name="skills" string="🎯 Skills &amp; Specializations">
+        <group name="skills" string="<i class="fa fa-bullseye"/> Skills &amp; Specializations">
             <field name="skill_level"/>
             <field name="years_experience"/>
             <field name="training_completed"/>
             <field name="next_training_date"/>
         </group>
-        <group name="availability" string="📅 Availability">
+        <group name="availability" string="<i class="fa fa-calendar"/> Availability">
             <field name="work_schedule"/>
             <field name="time_zone"/>
             <field name="overtime_approved"/>
@@ -147,7 +147,7 @@
 </field>
 </page>
 
-<page name="equipment_tools" string="🔧 Equipment &amp; Tools">
+<page name="equipment_tools" string="<i class="fa fa-wrench"/> Equipment &amp; Tools">
     <group>
         <group name="equipment_access" string="🚛 Equipment Access">
             <field name="vehicle_access"/>
@@ -174,15 +174,15 @@
 </field>
 </page>
 
-<page name="audit_tracking" string="📋 Audit &amp; Tracking">
+<page name="audit_tracking" string="<i class="fa fa-clipboard"/> Audit &amp; Tracking">
     <group>
-        <group name="audit_info" string="🔍 Audit Information">
+        <group name="audit_info" string="<i class="fa fa-search"/> Audit Information">
             <field name="user_id"/>
             <field name="company_id" groups="base.group_multi_company"/>
             <field name="create_date"/>
             <field name="write_date"/>
         </group>
-        <group name="tracking_info" string="📈 Tracking Information">
+        <group name="tracking_info" string="<i class="fa fa-line-chart"/> Tracking Information">
             <field name="last_login"/>
             <field name="total_hours_logged"/>
             <field name="productivity_score"/>

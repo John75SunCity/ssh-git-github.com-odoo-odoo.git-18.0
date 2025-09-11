@@ -21,7 +21,7 @@
             <div class="o_kanban_card_header_title">
                 <div class="o_primary">
 <strong>
-    <span aria-hidden="true">📦</span>
+    <span aria-hidden="true"><i class="fa fa-box"/></span>
     <span class="sr-only">Bale</span>
     <field name="name"/>
 </strong>
@@ -58,7 +58,7 @@ Grade:<field name="paper_grade"/>
 </div>
 <div class="col-4">
 <span class="badge badge-success" t-if="record.state.raw_value == 'shipped'">
-                                                🚚 Shipped
+                                                <i class="fa fa-truck"/> Shipped
 </span>
 <span class="badge" t-att-class="record.paper_grade.raw_value === 'wht' ? 'badge-success' : record.paper_grade.raw_value === 'mix' ? 'badge-warning' : 'badge-secondary'">
     <field name="paper_grade"/>
@@ -73,16 +73,16 @@ Grade:<field name="paper_grade"/>
 </div>
 <div class="col-6">
 <button class="btn btn-success btn-sm" type="object" name="action_load_trailer">
-                                                🚚 Load
+                                                <i class="fa fa-truck"/> Load
 </button>
 </div>
 </div>
 </div>
 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Bale</a>
-<a role="menuitem" type="object" name="action_quality_inspection" class="dropdown-item">🔍 Quality Check</a>
+<a role="menuitem" type="object" name="action_quality_inspection" class="dropdown-item"><i class="fa fa-search"/> Quality Check</a>
 <a role="menuitem" type="object" name="action_print_label" class="dropdown-item">🏷️ Print Label</a>
-<a role="menuitem" type="object" name="action_view_source_documents" class="dropdown-item">📄 Source Documents</a>
+<a role="menuitem" type="object" name="action_view_source_documents" class="dropdown-item"><i class="fa fa-file-o"/> Source Documents</a>
 <div class="dropdown-divider"/>
 
 </div>
@@ -99,15 +99,15 @@ Grade:<field name="paper_grade"/>
     <field name="model">paper.bale</field>
     <field name="arch" type="xml">
 <list decoration-success="state == 'shipped'" decoration-warning="state == 'weighed'" decoration-info="paper_grade == 'wht'">
-    <field name="name" string="📦 Bale ID"/>
+    <field name="name" string="<i class="fa fa-box"/> Bale ID"/>
     <field name="bale_number" string="🏷️ Bale Number"/>
 
-<field name="source_date" string="📅 Created"/>
+<field name="source_date" string="<i class="fa fa-calendar"/> Created"/>
 <field name="weight" string="⚖️ Weight (kg)"/>
 <field name="paper_grade" string="⭐ Grade" widget="badge"/>
-<field name="source_type" string="📄 Source Type"/>
-<field name="location_id" string="🏢 Location"/>
-<field name="state" string="🎯 Status" widget="badge"/>
+<field name="source_type" string="<i class="fa fa-file-o"/> Source Type"/>
+<field name="location_id" string="<i class="fa fa-building"/> Location"/>
+<field name="state" string="<i class="fa fa-bullseye"/> Status" widget="badge"/>
 <button name="action_weigh_bale" type="object" string="Weigh" icon="fa-balance-scale" class="btn-link" title="Weigh Bale"
 invisible="state in ('weighed', 'shipped')"/>
 <button name="action_load_trailer" type="object" string="Load" icon="fa-truck" class="btn-link" title="Load on Trailer"
@@ -125,8 +125,8 @@ invisible="state == 'shipped'"/>
             <header>
                 <button name="action_weigh_bale" type="object" string="⚖️ Weigh Bale"
 class="btn-primary" invisible="state in ('weighed', 'shipped')"/>
-<button name="action_quality_inspection" type="object" string="🔍 Quality Inspection" class="btn-secondary"/>
-<button name="action_load_trailer" type="object" string="🚚 Load on Trailer"
+<button name="action_quality_inspection" type="object" string="<i class="fa fa-search"/> Quality Inspection" class="btn-secondary"/>
+<button name="action_load_trailer" type="object" string="<i class="fa fa-truck"/> Load on Trailer"
 class="btn-info" invisible="state == 'shipped'"/>
 <button name="action_print_label" type="object" string="🏷️ Print Label" class="btn-success"/>
 
@@ -143,14 +143,14 @@ class="btn-info" invisible="state == 'shipped'"/>
 </div>
 
 <group>
-    <group string="📦 Bale Identification">
+    <group string="<i class="fa fa-box"/> Bale Identification">
         <field name="name" placeholder="e.g., BALE-2024-001"/>
         <field name="bale_number"/>
 
 <field name="weigh_date"/>
 <field name="location_id"/>
 </group>
-<group string="📄 Paper Classification">
+<group string="<i class="fa fa-file-o"/> Paper Classification">
 <field name="paper_grade"/>
 
 <field name="source_type"/>
@@ -161,13 +161,13 @@ class="btn-info" invisible="state == 'shipped'"/>
 </group>
 
 <notebook>
-<page string="📄 Source Information" name="source_info">
+<page string="<i class="fa fa-file-o"/> Source Information" name="source_info">
     <group>
 <field name="source_notes" placeholder="Add source details..."/>
 
 </group>
 </page>
-<page string="🔍 Inspections" name="inspections">
+<page string="<i class="fa fa-search"/> Inspections" name="inspections">
     <field name="inspection_ids" mode="tree">
 <list>
             <field name="name"/>
@@ -178,7 +178,7 @@ class="btn-info" invisible="state == 'shipped'"/>
 </list>
 </field>
 </page>
-<page string="📋 Movements" name="movements">
+<page string="<i class="fa fa-clipboard"/> Movements" name="movements">
     <field name="movement_ids" mode="tree">
 <list>
             <field name="name"/>
@@ -218,10 +218,10 @@ class="btn-info" invisible="state == 'shipped'"/>
 <field name="location_id"/>
 
 
-<filter string="📦 Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="<i class="fa fa-box"/> Draft" name="draft" domain="[('state', '=', 'draft')]"/>
 <filter string="⚖️ Weighed" name="weighed" domain="[('state', '=', 'weighed')]"/>
-<filter string="📦 In Stock" name="in_stock" domain="[('state', '=', 'in_stock')]"/>
-<filter string="🚚 Shipped" name="shipped" domain="[('state', '=', 'shipped')]"/>
+<filter string="<i class="fa fa-box"/> In Stock" name="in_stock" domain="[('state', '=', 'in_stock')]"/>
+<filter string="<i class="fa fa-truck"/> Shipped" name="shipped" domain="[('state', '=', 'shipped')]"/>
 
 
 <separator/>
@@ -233,7 +233,7 @@ class="btn-info" invisible="state == 'shipped'"/>
 
 <separator/>
 
-<filter string="📅 Today" name="today" domain="[('source_date', '=', context_today.strftime('%Y-%m-%d'))]"/>
+<filter string="<i class="fa fa-calendar"/> Today" name="today" domain="[('source_date', '=', context_today.strftime('%Y-%m-%d'))]"/>
 
 <filter string="📆 This Week" name="this_week"
 domain="[('source_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')),
@@ -241,7 +241,7 @@ domain="[('source_date', '&gt;=', (context_today - datetime.timedelta(days=conte
 <filter string="🗓️ This Month" name="this_month"
 domain="[('source_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
 
-<group expand="0" string="📊 Group By">
+<group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
 <filter string="Status" name="group_by_status" context="{'group_by': 'state'}"/>
 <filter string="Paper Grade" name="group_by_grade" context="{'group_by': 'paper_grade'}"/>
 <filter string="Source Type" name="group_by_source_type" context="{'group_by': 'source_type'}"/>
@@ -254,7 +254,7 @@ domain="[('source_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
 
 <!-- Action for Paper Bales -->
 <record id="action_paper_bale" model="ir.actions.act_window">
-    <field name="name">📦 Paper Bales</field>
+    <field name="name"><i class="fa fa-box"/> Paper Bales</field>
     <field name="res_model">paper.bale</field>
 <field name="view_mode">kanban,tree,form</field>
 <field name="search_view_id" ref="paper_bale_view_search"/>
@@ -263,18 +263,18 @@ domain="[('source_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
             }</field>
 <field name="help" type="html">
     <p class="o_view_nocontent_smiling_face">
-                    📦 Process your first paper bale!
+                    <i class="fa fa-box"/> Process your first paper bale!
     </p>
     <p>
         <b>Enterprise Paper Bale Management:</b>
         <br/>
                     • ⚖️ Precision weight tracking and measurement<br/>
                     • ⭐ Comprehensive quality control and grading<br/>
-                    • 📄 Complete source document traceability<br/>
-                    • 🚚 Advanced trailer loading optimization<br/>
-                    • 🔍 Real-time quality inspection workflows<br/>
+                    • <i class="fa fa-file-o"/> Complete source document traceability<br/>
+                    • <i class="fa fa-truck"/> Advanced trailer loading optimization<br/>
+                    • <i class="fa fa-search"/> Real-time quality inspection workflows<br/>
 
-• 📊 Performance analytics and efficiency metrics<br/>
+• <i class="fa fa-bar-chart"/> Performance analytics and efficiency metrics<br/>
                     • ♻️ Sustainable recycling process management
 </p>
 </field>

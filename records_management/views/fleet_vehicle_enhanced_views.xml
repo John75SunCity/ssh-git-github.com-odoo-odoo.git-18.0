@@ -51,7 +51,7 @@ invisible="records_operational_status != 'out_of_service'">
 
                     <separator string="Records Vehicle Configuration"/>
 <div class="alert alert-info" role="status">
-                        <h4>🚚 Records Vehicle Types:</h4>
+                        <h4><i class="fa fa-truck"/> Records Vehicle Types:</h4>
                         <ul>
                             <li><strong>Standard Pickup:</strong> Regular document pickup and delivery</li>
                             <li><strong>Secure Transport:</strong> NAID-compliant secure document transport</li>
@@ -65,7 +65,7 @@ invisible="records_operational_status != 'out_of_service'">
                             <strong>⚠️ NAID Compliance Required:</strong> Secure transport vehicles must be NAID compliant.
                         </div>
 <div class="alert alert-success" role="status" invisible="naid_compliant == False">
-                            <strong>✅ NAID Compliant:</strong> This vehicle meets security standards for document transport.
+                            <strong><i class="fa fa-check-circle text-success"/> NAID Compliant:</strong> This vehicle meets security standards for document transport.
                         </div>
                     </group>
                 </page>
@@ -113,10 +113,10 @@ invisible="records_operational_status != 'out_of_service'">
                         <t t-esc="record.records_vehicle_type.value"/>
                     </span>
                     <span t-if="record.naid_compliant.raw_value" class="badge badge-success">
-                        🔒 NAID
+                        <i class="fa fa-lock"/> NAID
                     </span>
                     <span t-if="record.max_container_capacity.raw_value" class="badge badge-secondary">
-                        📦 <t t-esc="record.max_container_capacity.value"/> containers
+                        <i class="fa fa-box"/> <t t-esc="record.max_container_capacity.value"/> containers
                     </span>
                 </div>
             </div>
@@ -177,19 +177,19 @@ invisible="records_operational_status != 'out_of_service'">
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                🚚 Add your first Records Management Vehicle!
+                <i class="fa fa-truck"/> Add your first Records Management Vehicle!
             </p>
             <p>
                 <b>Records Fleet Management:</b>
                 <br/>
-                • 🔧 Leverage standard Odoo fleet management<br/>
-                • 📦 Specialized container capacity tracking<br/>
-                • 🔒 NAID compliance monitoring<br/>
+                • <i class="fa fa-wrench"/> Leverage standard Odoo fleet management<br/>
+                • <i class="fa fa-box"/> Specialized container capacity tracking<br/>
+                • <i class="fa fa-lock"/> NAID compliance monitoring<br/>
                 • 🛣️ Route assignment and tracking<br/>
-                • 📱 Mobile-ready vehicle status updates<br/>
-                • 📊 Performance analytics and reporting<br/>
+                • <i class="fa fa-mobile"/> Mobile-ready vehicle status updates<br/>
+                • <i class="fa fa-bar-chart"/> Performance analytics and reporting<br/>
                 • ⚙️ Maintenance scheduling integration<br/>
-                • 💰 Fuel cost tracking and optimization<br/>
+                • <i class="fa fa-money"/> Fuel cost tracking and optimization<br/>
             </p>
         </field>
     </record>

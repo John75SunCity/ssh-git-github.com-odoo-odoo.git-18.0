@@ -23,11 +23,11 @@
 <t t-name="card">
                         <div class="oe_kanban_card oe_kanban_global_click">
                             <div class="o_kanban_card_header">
-                                <strong>📋 <field name="name"/></strong>
+                                <strong><i class="fa fa-clipboard"/> <field name="name"/></strong>
                                 <span class="float-end">
                                     <field name="priority" widget="priority"/>
                                 </span>
-                                <div class="text-muted">👤 <field name="partner_id"/></div>
+                                <div class="text-muted"><i class="fa fa-user"/> <field name="partner_id"/></div>
                             </div>
 <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                 <div class="mb-2">
@@ -41,16 +41,16 @@
                                     <span class="badge badge-danger">🔥 Urgent Priority</span>
                                 </div>
                                 <div t-if="record.priority.raw_value == '2'">
-                                    <span class="badge badge-warning">⚡ High Priority</span>
+                                    <span class="badge badge-warning"><i class="fa fa-bolt"/> High Priority</span>
                                 </div>
                                 <div t-if="record.state.raw_value == 'submitted'">
                                     <span class="badge badge-info">⏳ Awaiting Approval</span>
                                 </div>
                                 <div t-if="record.state.raw_value == 'approved'">
-                                    <span class="badge badge-success">✅ Approved</span>
+                                    <span class="badge badge-success"><i class="fa fa-check-circle text-success"/> Approved</span>
                                 </div>
                                 <div t-if="record.requires_naid_compliance.raw_value">
-                                    <span class="badge badge-primary">🔒 NAID Compliant</span>
+                                    <span class="badge badge-primary"><i class="fa fa-lock"/> NAID Compliant</span>
                                 </div>
                             </div>
                         </div>
@@ -145,7 +145,7 @@
                     </group>
 
                     <notebook>
-                        <page string="📋 Request Details">
+                        <page string="<i class="fa fa-clipboard"/> Request Details">
                             <group>
                                 <group string="Description">
                                     <field name="description" placeholder="Detailed description of the request..." nolabel="1"/>
@@ -161,7 +161,7 @@
                                 </group>
                             </group>
                         </page>
-                        <page string="🔒 Compliance &amp; Signatures">
+                        <page string="<i class="fa fa-lock"/> Compliance &amp; Signatures">
                             <group>
                                 <group string="Customer Signature">
                                     <field name="customer_signature" widget="signature"/>
@@ -263,20 +263,20 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                🌐 Create your first Portal Request!
+                <i class="fa fa-globe"/> Create your first Portal Request!
             </p>
             <p>
                 <b>Enterprise Portal Request Management:</b>
                 <br/>
-                • 📝 Streamlined customer request processing<br/>
+                • <i class="fa fa-pencil"/> Streamlined customer request processing<br/>
                 • 🔄 Advanced workflow automation and approvals<br/>
-                • 📊 Real-time status tracking and notifications<br/>
-                • 🔗 Full integration with Records Management system<br/>
-                • 👥 Collaborative request handling with activity tracking<br/>
-                • 📈 Comprehensive analytics and reporting<br/>
-                • ⚡ Automated notifications and escalations<br/>
-                • 🔒 NAID compliance and audit trail management<br/>
-                • 📱 Mobile-friendly portal access and management
+                • <i class="fa fa-bar-chart"/> Real-time status tracking and notifications<br/>
+                • <i class="fa fa-link"/> Full integration with Records Management system<br/>
+                • <i class="fa fa-users"/> Collaborative request handling with activity tracking<br/>
+                • <i class="fa fa-line-chart"/> Comprehensive analytics and reporting<br/>
+                • <i class="fa fa-bolt"/> Automated notifications and escalations<br/>
+                • <i class="fa fa-lock"/> NAID compliance and audit trail management<br/>
+                • <i class="fa fa-mobile"/> Mobile-friendly portal access and management
             </p>
         </field>
     </record>

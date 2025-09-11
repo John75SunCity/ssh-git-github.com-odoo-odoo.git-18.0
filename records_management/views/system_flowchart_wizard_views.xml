@@ -10,7 +10,7 @@
                 <button name="action_previous_step" string="← Back" type="object" invisible="step == 'welcome'" class="btn btn-secondary"/>
                 <button name="action_next_step" string="Next →" type="object" invisible="step in ('complete', 'preview')" class="btn btn-primary"/>
                 <button name="action_open_flowchart" string="🚀 Generate Flowchart" type="object" invisible="step != 'preview'" class="btn btn-success btn-lg"/>
-                <button name="action_open_flowchart" string="📊 Open Flowchart" type="object" invisible="step != 'complete'" class="btn btn-primary btn-lg"/>
+                <button name="action_open_flowchart" string="<i class="fa fa-bar-chart"/> Open Flowchart" type="object" invisible="step != 'complete'" class="btn btn-primary btn-lg"/>
                 <field name="step" widget="statusbar" statusbar_visible="welcome,configure,preview,complete" statusbar_colors='{"welcome":"blue","configure":"orange","preview":"yellow","complete":"green"}'/>
             </header>
             <sheet>

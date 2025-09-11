@@ -33,14 +33,14 @@
 </div>
 
 <group>
-    <group string="📄 Documents to Process">
+    <group string="<i class="fa fa-file-o"/> Documents to Process">
         <field name="document_count" string="Number of Documents"/>
 <field name="operation_type" readonly="1"/>
 
         <field name="document_ids" widget="many2many_tags" readonly="1" options="{'no_create': True, 'no_edit': True}"/>
     </group>
 
-<group string="🔐 Security Verification">
+<group string="<i class="fa fa-unlock"/> Security Verification">
     <div class="alert alert-secondary" role="status">
 <i class="fa fa-shield" title="Security Protection"/>
 
@@ -53,7 +53,7 @@
 </group>
 
 <div class="mt-3">
-    <h4>📋 Selected Documents:</h4>
+    <h4><i class="fa fa-clipboard"/> Selected Documents:</h4>
     <field name="document_ids" mode="list" nolabel="1">
 <list decoration-success="is_permanent == True" decoration-muted="is_permanent == False">
     <field name="name"/>

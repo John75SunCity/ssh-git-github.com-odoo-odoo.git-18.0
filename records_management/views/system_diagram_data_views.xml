@@ -58,13 +58,13 @@
                         </h1>
                     </div>
 <group>
-    <group name="search_config" string="🎯 Search Configuration">
+    <group name="search_config" string="<i class="fa fa-bullseye"/> Search Configuration">
         <field name="search_type" widget="radio"/>
         <field name="search_query" placeholder="Enter search target (user, model, or company)"/>
         <field name="show_access_only" string="Access Rights Focus"/>
         <field name="include_inactive" string="Include Inactive Records"/>
     </group>
-    <group name="system_info" string="📊 System Information">
+    <group name="system_info" string="<i class="fa fa-bar-chart"/> System Information">
         <field name="company_id" groups="base.group_multi_company"/>
         <field name="user_id" string="Created by"/>
         <field name="create_date" string="Generated Date"/>
@@ -85,7 +85,7 @@
         </group>
     </page>
 
-    <page name="edges_data" string="🔗 Edges Data">
+    <page name="edges_data" string="<i class="fa fa-link"/> Edges Data">
         <group>
             <field name="edges_data" widget="ace" options="{'mode': 'json'}" nolabel="1"/>
         </group>
@@ -106,7 +106,7 @@
         </group>
     </page>
 
-    <page name="performance_stats" string="📈 Performance Statistics">
+    <page name="performance_stats" string="<i class="fa fa-line-chart"/> Performance Statistics">
         <group>
             <field name="generation_time" string="Generation Time (ms)" readonly="1"/>
             <field name="cache_size" string="Cache Size (KB)" readonly="1"/>
@@ -141,19 +141,19 @@
     <!-- Filters -->
     <filter name="user_diagrams" string="🧑 User Analysis" domain="[('search_type', '=', 'user')]"/>
     <filter name="model_diagrams" string="🏗️ Model Structure" domain="[('search_type', '=', 'model')]"/>
-    <filter name="company_diagrams" string="🏢 Company Overview" domain="[('search_type', '=', 'company')]"/>
+    <filter name="company_diagrams" string="<i class="fa fa-building"/> Company Overview" domain="[('search_type', '=', 'company')]"/>
 
     <separator/>
 
-    <filter name="access_focus" string="🔒 Access Rights Focus" domain="[('show_access_only', '=', True)]"/>
-    <filter name="include_inactive" string="📋 Include Inactive" domain="[('include_inactive', '=', True)]"/>
+    <filter name="access_focus" string="<i class="fa fa-lock"/> Access Rights Focus" domain="[('show_access_only', '=', True)]"/>
+    <filter name="include_inactive" string="<i class="fa fa-clipboard"/> Include Inactive" domain="[('include_inactive', '=', True)]"/>
 
     <separator/>
 
     <filter name="recent" string="🕐 Recent (Last 7 days)" domain="[('create_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-    <filter name="my_diagrams" string="👤 My Diagrams" domain="[('user_id', '=', uid)]"/>
+    <filter name="my_diagrams" string="<i class="fa fa-user"/> My Diagrams" domain="[('user_id', '=', uid)]"/>
 
-    <group expand="0" string="📊 Group By">
+    <group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
         <filter name="group_by_type" string="Diagram Type" context="{'group_by': 'search_type'}"/>
         <filter name="group_by_user" string="Created By" context="{'group_by': 'user_id'}"/>
         <filter name="group_by_date" string="Creation Date" context="{'group_by': 'create_date'}"/>
@@ -194,7 +194,7 @@
                                     <span class="badge badge-pill float-right" t-attf-class="badge-{{record.search_type.raw_value == 'user' and 'primary' or record.search_type.raw_value == 'model' and 'success' or 'info'}}">
                                         <t t-if="record.search_type.raw_value == 'user'">🧑 User</t>
                                         <t t-elif="record.search_type.raw_value == 'model'">🏗️ Model</t>
-                                        <t t-else="">🏢 Company</t>
+                                        <t t-else=""><i class="fa fa-building"/> Company</t>
                                     </span>
                                 </div>
                             </div>
@@ -276,14 +276,14 @@
 <!-- WINDOW ACTIONS -->
 <!-- ============================================================================ -->
     <record id="action_system_diagram_data" model="ir.actions.act_window">
-<field name="name">📊 System Diagrams</field>
+<field name="name"><i class="fa fa-bar-chart"/> System Diagrams</field>
         <field name="res_model">system.diagram.data</field>
 <field name="view_mode">kanban,list,form</field>
         <field name="domain">[]</field>
         <field name="context">{}</field>
         <field name="help" type="html">
 <p class="o_view_nocontent_create">
-    <strong>🎯 Create Your First System Diagram</strong>
+    <strong><i class="fa fa-bullseye"/> Create Your First System Diagram</strong>
 </p>
 <p>
                 System diagrams help visualize your Odoo architecture, user access patterns, and model relationships.
@@ -294,7 +294,7 @@
     <br/>
                 🧑    <strong>User Analysis:</strong> Shows user access rights and permissions<br/>
                 🏗️<strong>Model Structure:</strong> Displays model relationships and dependencies<br/>
-                🏢<strong>Company Overview:</strong> Complete system architecture for your company
+                <i class="fa fa-building"/><strong>Company Overview:</strong> Complete system architecture for your company
             </p>
         </field>
     </record>
@@ -317,7 +317,7 @@
 </record>
 
 <record id="action_system_diagram_company_overview" model="ir.actions.act_window">
-    <field name="name">🏢 Company System Overview</field>
+    <field name="name"><i class="fa fa-building"/> Company System Overview</field>
     <field name="res_model">system.diagram.data</field>
     <field name="view_mode">kanban,list,form</field>
     <field name="domain">[('search_type', '=', 'company')]</field>
@@ -513,7 +513,7 @@
 </group>
 
 <notebook>
-<page string="📊 Diagram Visualization" name="diagram_viz">
+<page string="<i class="fa fa-bar-chart"/> Diagram Visualization" name="diagram_viz">
 <div class="alert alert-info" role="status" invisible="nodes_data != False or edges_data != False">
         <i class="fa fa-info-circle"/>
 
@@ -527,7 +527,7 @@
     </group>
 </page>
 
-<page string="🔧 Technical Data" name="technical_data">
+<page string="<i class="fa fa-wrench"/> Technical Data" name="technical_data">
                         <group>
 <group string="Node Data">
     <field name="nodes_data" widget="ace" options="{'mode': 'json', 'theme': 'monokai'}" placeholder='{"nodes": [{"id": "node1", "label": "Example Node"}]}'/>
@@ -546,29 +546,29 @@
     <h5>Configuration Templates</h5>
     <div class="row">
         <div class="col-md-4">
-            <button name="action_load_user_template" string="👤 User Access Template" type="object" class="btn btn-outline-primary btn-block"/>
+            <button name="action_load_user_template" string="<i class="fa fa-user"/> User Access Template" type="object" class="btn btn-outline-primary btn-block"/>
         </div>
         <div class="col-md-4">
             <button name="action_load_model_template" string="🏗️ Model Structure Template" type="object" class="btn btn-outline-success btn-block"/>
         </div>
         <div class="col-md-4">
-            <button name="action_load_system_template" string="🌐 System Overview Template" type="object" class="btn btn-outline-info btn-block"/>
+            <button name="action_load_system_template" string="<i class="fa fa-globe"/> System Overview Template" type="object" class="btn btn-outline-info btn-block"/>
         </div>
     </div>
 </div>
 </page>
-<page string="📋 Export &amp; Share" name="export_share">
+<page string="<i class="fa fa-clipboard"/> Export &amp; Share" name="export_share">
     <group>
 <group string="Export Options">
     <div>
         <button name="action_export_png" string="📷 Export as PNG" type="object" class="btn btn-outline-primary mr8"/>
-        <button name="action_export_pdf" string="📄 Export as PDF" type="object" class="btn btn-outline-secondary mr8"/>
+        <button name="action_export_pdf" string="<i class="fa fa-file-o"/> Export as PDF" type="object" class="btn btn-outline-secondary mr8"/>
         <button name="action_export_json" string="💾 Export Data (JSON)" type="object" class="btn btn-outline-info"/>
     </div>
 </group>
 <group string="Share Options">
     <div>
-        <button name="action_generate_share_link" string="🔗 Generate Share Link" type="object" class="btn btn-outline-success mr8"/>
+        <button name="action_generate_share_link" string="<i class="fa fa-link"/> Generate Share Link" type="object" class="btn btn-outline-success mr8"/>
         <button name="action_email_diagram" string="📧 Email Diagram" type="object" class="btn btn-outline-warning"/>
     </div>
 </group>
@@ -588,7 +588,7 @@
 <!-- ENHANCED ACTIONS -->
 <!-- ============================================================================ -->
 <record id="action_system_flowchart" model="ir.actions.act_window">
-<field name="name">📊 System Architecture Flowchart</field>
+<field name="name"><i class="fa fa-bar-chart"/> System Architecture Flowchart</field>
 <field name="res_model">system.diagram.data</field>
 <field name="view_mode">kanban,list,form</field>
 <field name="target">current</field>
@@ -609,10 +609,10 @@
         </p>
 <h5>✨ Key Features:</h5>
 <ul class="list-unstyled">
-    <li>🎯        <strong>Real-time Access Rights</strong> - Visual indicators for permissions</li>
-    <li>🔍        <strong>Interactive Search</strong> - Find users, models, and companies instantly</li>
+    <li><i class="fa fa-bullseye"/>        <strong>Real-time Access Rights</strong> - Visual indicators for permissions</li>
+    <li><i class="fa fa-search"/>        <strong>Interactive Search</strong> - Find users, models, and companies instantly</li>
     <li>🏗️        <strong>Hierarchical Layout</strong> - Clear system structure visualization</li>
-    <li>📊        <strong>Detailed Analytics</strong> - Click nodes for comprehensive information</li>
+    <li><i class="fa fa-bar-chart"/>        <strong>Detailed Analytics</strong> - Click nodes for comprehensive information</li>
     <li>📤        <strong>Export Ready</strong> - Save diagrams for documentation and presentations</li>
 </ul>
 <div class="text-center mt24">
@@ -625,7 +625,7 @@
 
 <!-- Quick Launch Actions for Different Scenarios -->
 <record id="action_system_flowchart_user_analysis" model="ir.actions.act_window">
-    <field name="name">👤 User Access Analysis</field>
+    <field name="name"><i class="fa fa-user"/> User Access Analysis</field>
     <field name="res_model">system.diagram.data</field>
     <field name="view_mode">form</field>
     <field name="target">new</field>
@@ -651,7 +651,7 @@
 </record>
 
 <record id="action_system_flowchart_company_overview" model="ir.actions.act_window">
-    <field name="name">🏢 Company System Overview</field>
+    <field name="name"><i class="fa fa-building"/> Company System Overview</field>
     <field name="res_model">system.diagram.data</field>
     <field name="view_mode">form</field>
     <field name="target">new</field>
@@ -665,7 +665,7 @@
 
 <!-- Modern Client Action for Interactive Flowchart -->
 <record id="action_system_flowchart_interactive" model="ir.actions.client">
-    <field name="name">🎯 Interactive System Flowchart</field>
+    <field name="name"><i class="fa fa-bullseye"/> Interactive System Flowchart</field>
     <field name="tag">records_management.system_flowchart_interactive</field>
     <field name="target">current</field>
     <field name="params" eval="{'fullscreen': True, 'withControlPanel': True}"/>
@@ -674,24 +674,24 @@
 <!-- ============================================================================ -->
 <!-- ENHANCED MENU STRUCTURE -->
 <!-- ============================================================================ -->
-<menuitem id="menu_system_architecture" name="📊 System Architecture" parent="records_management.menu_records_management_root" sequence="20" groups="records_management.group_records_manager"/>
+<menuitem id="menu_system_architecture" name="<i class="fa fa-bar-chart"/> System Architecture" parent="records_management.menu_records_management_root" sequence="20" groups="records_management.group_records_manager"/>
 
 <!-- Main System Analysis Submenu -->
-<menuitem id="menu_system_analysis" name="🔍 System Analysis" parent="menu_system_architecture" sequence="10"/>
+<menuitem id="menu_system_analysis" name="<i class="fa fa-search"/> System Analysis" parent="menu_system_architecture" sequence="10"/>
 
 <!-- Interactive Flowchart Options -->
-<menuitem id="menu_system_flowchart_main" name="🎯 Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
+<menuitem id="menu_system_flowchart_main" name="<i class="fa fa-bullseye"/> Interactive Flowcharts" parent="menu_system_analysis" action="action_system_flowchart" sequence="10"/>
 
-<menuitem id="menu_system_flowchart_user" name="👤 User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
+<menuitem id="menu_system_flowchart_user" name="<i class="fa fa-user"/> User Access Analysis" parent="menu_system_analysis" action="action_system_flowchart_user_analysis" sequence="20"/>
 
 <menuitem id="menu_system_flowchart_model" name="🏗️ Model Structure Explorer" parent="menu_system_analysis" action="action_system_flowchart_model_explorer" sequence="30"/>
 
 
-<menuitem id="menu_system_flowchart_company" name="🏢 Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>
+<menuitem id="menu_system_flowchart_company" name="<i class="fa fa-building"/> Company Overview" parent="menu_system_analysis" action="action_system_flowchart_company_overview" sequence="40"/>
 
 
 <!-- Quick Access for Users -->
-<menuitem id="menu_system_overview_quick" name="📋 System Overview" parent="records_management.menu_records_management_root" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
+<menuitem id="menu_system_overview_quick" name="<i class="fa fa-clipboard"/> System Overview" parent="records_management.menu_records_management_root" action="action_system_flowchart_interactive" sequence="5" groups="records_management.group_records_user"/>
 
 
 <!-- Configuration Menu -->

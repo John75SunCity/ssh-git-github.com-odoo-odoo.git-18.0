@@ -36,21 +36,21 @@
                             <field name="notes"/>
                         </group>
                         <notebook>
-                            <page name="details" string="📋 Details">
+                            <page name="details" string="<i class="fa fa-clipboard"/> Details">
                                 <group>
-                                    <group name="dates" string="📅 Scheduling">
+                                    <group name="dates" string="<i class="fa fa-calendar"/> Scheduling">
 <field name="completion_date" readonly="state != 'in_progress'"/>
 
                                     </group>
-                                    <group name="financials" string="💰 Financial Information">
+                                    <group name="financials" string="<i class="fa fa-money"/> Financial Information">
                                         <field name="currency_id" invisible="1"/>
                                         <!-- Future: Add cost/billing fields -->
                                     </group>
                                 </group>
-                                <separator string="📝 Retrieval Instructions"/>
+                                <separator string="<i class="fa fa-pencil"/> Retrieval Instructions"/>
                                 <field name="message_ids" widget="mail_thread"/>
                             </page>
-                            <page name="tracking" string="📊 Tracking &amp; History">
+                            <page name="tracking" string="<i class="fa fa-bar-chart"/> Tracking &amp; History">
                                 <group>
                                     <group name="timestamps" string="⏰ Timestamps">
                                         <field name="create_date" readonly="1"/>

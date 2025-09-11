@@ -8,12 +8,12 @@
         <field name="model">records.department</field>
         <field name="arch" type="xml">
             <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
-                <field name="display_name" string="🏢 Department"/>
-                <field name="partner_id" string="👤 Customer"/>
+                <field name="display_name" string="<i class="fa fa-building"/> Department"/>
+                <field name="partner_id" string="<i class="fa fa-user"/> Customer"/>
                 <field name="code" string="🔢 Code"/>
-                <field name="container_count" string="📦 Containers" widget="integer"/>
-                <field name="document_count" string="📄 Documents" widget="integer"/>
-                <field name="state" string="🎯 Status" widget="badge"/>
+                <field name="container_count" string="<i class="fa fa-box"/> Containers" widget="integer"/>
+                <field name="document_count" string="<i class="fa fa-file-o"/> Documents" widget="integer"/>
+                <field name="state" string="<i class="fa fa-bullseye"/> Status" widget="badge"/>
                 <field name="user_id" string="👨‍💼 Responsible"/>
                 <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
                 <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link"/>
@@ -60,14 +60,14 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                     </div>
 
                     <group>
-                        <group string="🏢 Department Information">
+                        <group string="<i class="fa fa-building"/> Department Information">
                             <field name="name" required="1"/>
                             <field name="code" required="1"/>
                             <field name="partner_id" required="1"/>
                             <field name="user_id"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
-                        <group string="📊 Analytics &amp; Status">
+                        <group string="<i class="fa fa-bar-chart"/> Analytics &amp; Status">
                             <field name="state"/>
                             <field name="active" widget="boolean_toggle"/>
                             <field name="container_count" readonly="1"/>
@@ -76,10 +76,10 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                     </group>
 
                     <notebook>
-                        <page string="👥 Users &amp; Access" name="users">
+                        <page string="<i class="fa fa-users"/> Users &amp; Access" name="users">
                             <field name="user_ids" widget="many2many_tags" nolabel="1"/>
                         </page>
-                        <page string="💰 Billing Contacts" name="billing">
+                        <page string="<i class="fa fa-money"/> Billing Contacts" name="billing">
                             <field name="billing_contact_ids">
                                 <list>
                                     <field name="name"/>
@@ -89,7 +89,7 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                 </list>
                             </field>
                         </page>
-                        <page string="📦 Recent Containers" name="containers">
+                        <page string="<i class="fa fa-box"/> Recent Containers" name="containers">
                             <field name="container_ids" mode="list" limit="10">
                                 <list>
                                     <field name="name"/>
@@ -99,7 +99,7 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                 </list>
                             </field>
                         </page>
-                        <page string="📄 Recent Documents" name="documents">
+                        <page string="<i class="fa fa-file-o"/> Recent Documents" name="documents">
                             <field name="document_ids" mode="list" limit="10">
                                 <list>
                                     <field name="name"/>
@@ -132,16 +132,16 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                 <field name="user_id"/>
                 <field name="state"/>
 
-                <filter string="📋 Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string="✅ Active" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="<i class="fa fa-clipboard"/> Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="<i class="fa fa-check-circle text-success"/> Active" name="active" domain="[('state', '=', 'active')]"/>
                 <filter string="📁 Archived" name="archived" domain="[('state', '=', 'archived')]"/>
 
                 <separator/>
-                <filter string="🏢 Has Containers" name="has_containers" domain="[('container_count', '>', 0)]"/>
-                <filter string="📄 Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
-                <filter string="👥 Has Users" name="has_users" domain="[('user_ids', '!=', False)]"/>
+                <filter string="<i class="fa fa-building"/> Has Containers" name="has_containers" domain="[('container_count', '>', 0)]"/>
+                <filter string="<i class="fa fa-file-o"/> Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
+                <filter string="<i class="fa fa-users"/> Has Users" name="has_users" domain="[('user_ids', '!=', False)]"/>
 
-                <group expand="0" string="📊 Group By">
+                <group expand="0" string="<i class="fa fa-bar-chart"/> Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                     <filter string="Responsible" name="group_by_user" context="{'group_by': 'user_id'}"/>
@@ -190,14 +190,14 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                     <div class="col-6">
                                         <div class="text-center">
                                             <span class="badge badge-primary">
-                                                <field name="container_count"/> 📦
+                                                <field name="container_count"/> <i class="fa fa-box"/>
                                             </span>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="text-center">
                                             <span class="badge badge-info">
-                                                <field name="document_count"/> 📄
+                                                <field name="document_count"/> <i class="fa fa-file-o"/>
                                             </span>
                                         </div>
                                     </div>
@@ -214,10 +214,10 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
                                 <a role="menuitem" type="edit" class="dropdown-item">✏️ Edit Department</a>
-                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item">📦 View Containers</a>
-                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">📄 View Documents</a>
+                                <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class="fa fa-box"/> View Containers</a>
+                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item"><i class="fa fa-file-o"/> View Documents</a>
                                 <div class="dropdown-divider"/>
-<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">✅ Activate</a>
+<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'"><i class="fa fa-check-circle text-success"/> Activate</a>
 <a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state != 'active'">📁 Archive</a>
                             </div>
                         </div>
@@ -229,23 +229,23 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
 
     <!-- Action for records.department -->
     <record id="action_records_department" model="ir.actions.act_window">
-        <field name="name">🏢 Customer Departments</field>
+        <field name="name"><i class="fa fa-building"/> Customer Departments</field>
         <field name="res_model">records.department</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="records_department_view_search"/>
         <field name="context">{'search_default_active': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                🏢 Create your first customer department!
+                <i class="fa fa-building"/> Create your first customer department!
             </p>
             <p>
                 <b>Department Management:</b>
                 <br/>
-                • 👥 Organize customer departments with user access control<br/>
-                • 📦 Track containers and documents by department<br/>
-                • 💰 Manage billing contacts and approval workflows<br/>
-                • 📊 Monitor department activity and analytics<br/>
-                • 🔐 Control access with granular permissions
+                • <i class="fa fa-users"/> Organize customer departments with user access control<br/>
+                • <i class="fa fa-box"/> Track containers and documents by department<br/>
+                • <i class="fa fa-money"/> Manage billing contacts and approval workflows<br/>
+                • <i class="fa fa-bar-chart"/> Monitor department activity and analytics<br/>
+                • <i class="fa fa-unlock"/> Control access with granular permissions
             </p>
         </field>
     </record>

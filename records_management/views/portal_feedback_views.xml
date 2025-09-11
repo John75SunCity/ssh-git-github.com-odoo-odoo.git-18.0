@@ -28,7 +28,7 @@
                                     <field name="state" widget="label_selection" options="{'classes': {'new': 'primary', 'in_progress': 'info', 'resolved': 'success', 'closed': 'secondary'}}"/>
                                 </span>
                                 <div class="text-muted">
-                                    👤 <field name="partner_id"/> | <field name="feedback_type"/>
+                                    <i class="fa fa-user"/> <field name="partner_id"/> | <field name="feedback_type"/>
                                 </div>
                             </div>
                             <div class="o_kanban_record_body">
@@ -46,7 +46,7 @@
                                 <field name="activity_ids" widget="kanban_activity"/>
                             </div>
                             <div class="o_kanban_record_bottom">
-                                <span class="badge badge-pill badge-info">📅 <field name="create_date" widget="date"/></span>
+                                <span class="badge badge-pill badge-info"><i class="fa fa-calendar"/> <field name="create_date" widget="date"/></span>
                                 <div class="oe_kanban_bottom_right">
 <img t-att-src="kanban_image('res.users', 'avatar_128', record.assigned_to_id.raw_value)" t-att-title="record.assigned_to_id.value" class="oe_kanban_avatar o_image_24_cover" t-if="record.assigned_to_id.raw_value" alt="Assigned User"/>
 
@@ -203,7 +203,7 @@
         <field name="context">{'search_default_needs_response': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                📝 No customer feedback yet!
+                <i class="fa fa-pencil"/> No customer feedback yet!
             </p>
             <p>Customer feedback will appear here when submitted through the portal.</p>
         </field>

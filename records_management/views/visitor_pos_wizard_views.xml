@@ -25,7 +25,7 @@
                     </div>
 
                     <group>
-                        <group name="visitor_info" string="👤 Visitor Information">
+                        <group name="visitor_info" string="<i class="fa fa-user"/> Visitor Information">
 <field name="visitor_id" required="1" options="{'no_create': True}" widget="many2one"/>
 
 
@@ -37,7 +37,7 @@
                     </group>
 
                     <group>
-<group name="customer_data" string="👥 Customer Data Management">
+<group name="customer_data" string="<i class="fa fa-users"/> Customer Data Management">
 <field name="partner_id" options="{'no_create': False}" widget="many2one" readonly="create_new_customer == True"/>
 
 <field name="create_new_customer" widget="boolean_toggle"/>
