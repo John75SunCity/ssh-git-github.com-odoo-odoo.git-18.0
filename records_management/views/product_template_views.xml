@@ -1,380 +1,380 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- List view for ENTERPRISE -->
+        <!-- List view for ENTERPRISE -->
 
-    <!-- Kanban view for Product -->
-    <record id="product_template_view_kanban" model="ir.ui.view">
-        <field name="name">product.template.view.kanban</field>
-        <field name="model">product.template</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="categ_id" class="o_kanban_product_template_dashboard">
-                <field name="name"/>
-                <field name="categ_id"/>
-                <field name="list_price"/>
-                <field name="default_code"/>
-                <field name="type"/>
-                <field name="active"/>
-                <field name="sale_ok"/>
-                <field name="purchase_ok"/>
-                <templates>
-                    <t t-name="card">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_kanban_card_header">
-                                <div class="o_kanban_card_header_title">
-                                    <div class="o_primary">
-                                        <strong><i class='fa fa-briefcase'/>                                            <field name="name"/>
-                                        </strong>
+        <!-- Kanban view for Product -->
+        <record id="product_template_view_kanban" model="ir.ui.view">
+            <field name="name">product.template.view.kanban</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="categ_id" class="o_kanban_product_template_dashboard">
+                    <field name="name"/>
+                    <field name="categ_id"/>
+                    <field name="list_price"/>
+                    <field name="default_code"/>
+                    <field name="type"/>
+                    <field name="active"/>
+                    <field name="sale_ok"/>
+                    <field name="purchase_ok"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong><i class='fa fa-briefcase'/> <field name="name"/></strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            <i class="fa fa-tag"/> <field name="default_code"/>
+                                        </div>
                                     </div>
-                                    <div class="o_secondary">
-                                        <i class="fa fa-tag">                                        <field name="default_code"/>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#">
+                                            <i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
+                                        </a>
                                     </div>
                                 </div>
-                                <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#">
-<i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
-
-                                    </a>
-                                </div>
-                            </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <div>
-<i class='fa fa-folder' aria-hidden="true"/>
-
-                                            <field name="categ_id"/>
+                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div>
+                                                <i class='fa fa-folder' aria-hidden="true"/>
+                                                <field name="categ_id"/>
+                                            </div>
+                                            <div>
+                                                <i class='fa fa-cube' aria-hidden="true"/>
+                                                Type: <field name="type"/>
+                                            </div>
+                                            <div class="mt-1">
+                                                <span class="badge badge-success" t-if="record.sale_ok.raw_value">
+                                                    <i class='fa fa-money'/> Sellable
+                                                </span>
+                                                <span class="badge badge-info" t-if="record.purchase_ok.raw_value">
+                                                    <i class="fa fa-shopping-cart"></i> Purchasable
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div>
-<i class='fa fa-cube' aria-hidden="true"/>
-
- Type: <field name="type"/>
-                                        </div>
-                                        <div class="mt-1">
-                                            <span class="badge badge-success" t-if="record.sale_ok.raw_value">
-                                                <i class='fa fa-money'"/> Sellable
+                                        <div class="col-4 text-right">
+                                            <div class="text-primary font-weight-bold">
+                                                <i class="fa fa-dollar-sign"></i> $ <field name="list_price"/>
+                                            </div>
+                                            <span class="badge" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'">
+                                                <t t-if="record.active.raw_value"><i class="fa fa-circle text-success"></i> Active</t>
+                                                <t t-else="">⭕ Inactive</t>
                                             </span>
-                                            <span class="badge badge-info" t-if="record.purchase_ok.raw_value>
-                                                🛒 Purchasable
-                                            </span>
                                         </div>
-                                    </div">
-                                    <div class="col-4 text-right">
-                                        <div class="text-primary font-weight-bold">
-                                            💵 $                                            <field name="list_price"/>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-6">
+                                            <button class="btn btn-primary btn-sm" type="object" name="action_view_sales">
+                                                <i class='fa fa-bar-chart'/> Sales
+                                            </button>
                                         </div>
-                                        <span class="badge" t-att-class="record.active.raw_value ? 'badge-success' : 'badge-secondary'">
-                                            <t t-if="record.active.raw_value">🟢 Active</t>
-                                            <t t-else="">⭕ Inactive</t>
-                                        </span>
+                                        <div class="col-6">
+                                            <button class="btn btn-success btn-sm" type="object" name="action_configure_pricing">
+                                                <i class='fa fa-money'/> Pricing
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row mt-2">
-                                    <div class="col-6">
-                                        <button class="btn btn-primary btn-sm" type="object" name="action_view_sales">
-                                            <i class='fa fa-bar-chart'"/> Sales
-                                        </button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button class="btn btn-success btn-sm" type="object" name="action_configure_pricing">
-                                            <i class='fa fa-money'"/> Pricing
-                                        </button>
-                                    </div>
+                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Product</a>
+                                    <a role="menuitem" type="object" name="action_view_sales" class="dropdown-item"><i class='fa fa-bar-chart'/> View Sales</a>
+                                    <a role="menuitem" type="object" name="action_configure_variants" class="dropdown-item"><i class='fa fa-bullseye'/> Configure Variants</a>
+                                    <a role="menuitem" type="object" name="action_pricing_rules" class="dropdown-item"><i class='fa fa-money'/> Pricing Rules</a>
+                                    <div class="dropdown-divider"/>
+                                    <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item"><i class='fa fa-clipboard'/> Duplicate</a>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Product</a>
-                                <a role="menuitem" type="object" name="action_view_sales" class="dropdown-item"><i class='fa fa-bar-chart'/> View Sales</a>
-                                <a role="menuitem" type="object" name="action_configure_variants" class="dropdown-item"><i class='fa fa-bullseye'/> Configure Variants</a>
-                                <a role="menuitem" type="object" name="action_pricing_rules" class="dropdown-item"><i class='fa fa-money'/> Pricing Rules</a>
-                                <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item"><i class='fa fa-clipboard'/> Duplicate</a>
-                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- List view for Enhanced -->
+        <record id="product_template_view_tree" model="ir.ui.view">
+            <field name="name">product.template.view.tree</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <list decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
+                    <field name="name" string="Product Name"/>
+                    <field name="default_code" string="Internal Reference"/>
+                    <field name="categ_id" string="Category"/>
+                    <field name="type" string="Type" widget="badge"/>
+                    <field name="list_price" string="&lt;i class=&quot;fa fa-dollar-sign&quot;&gt;&lt;/i&gt; Sale Price"/>
+                    <field name="standard_price" string="Cost"/>
+                    <field name="uom_id" string="📏 Unit of Measure"/>
+                    <field name="sale_ok" string="Can be Sold" widget="boolean_toggle"/>
+                    <field name="purchase_ok" string="&lt;i class=&quot;fa fa-shopping-cart&quot;&gt;&lt;/i&gt; Can be Purchased" widget="boolean_toggle"/>
+                    <field name="active" string="Status" widget="boolean_toggle"/>
+                    <button name="action_view_sales" type="object" string="Sales" icon="fa-line-chart" class="btn-link"/>
+                    <button name="action_configure_pricing" type="object" string="Pricing" icon="fa-money" class="btn-link"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form view for Enhanced -->
+        <record id="product_template_view_form" model="ir.ui.view">
+            <field name="name">product.template.view.form</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_view_sales" type="object" string="View Sales History" class="btn-primary"/>
+                        <button name="action_configure_variants" type="object" string="Configure Variants" class="btn-secondary"/>
+                        <button name="action_pricing_rules" type="object" string="Pricing Rules" class="btn-info"/>
+                        <button name="action_update_costs" type="object" string="Update Costs" class="btn-success"/>
+                        <field name="active" widget="boolean_button" options="{'terminology': {'string_true': '<i class="fa fa-circle text-success"></i> Active', 'string_false': '⭕ Archived'}}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" string="Product Name"/>
+                            <h1>
+                                <field name="name" placeholder="e.g., Records Storage Service"/>
+                            </h1>
                         </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
 
-    <!-- List view for Enhanced -->
-    <record id="product_template_view_tree" model="ir.ui.view">
-        <field name="name">product.template.view.tree</field>
-        <field name="model">product.template</field>
-        <field name="arch" type="xml">
-            <list decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
-                <field name="name" string="Product Name"/>
-                <field name="default_code" string="Internal Reference"/>
-                <field name="categ_id" string="Category"/>
-                <field name="type" string="Type" widget="badge"/>
-                <field name="list_price" string="💵 Sale Price"/>
-                <field name="standard_price" string="Cost"/>
-                <field name="uom_id" string="📏 Unit of Measure"/>
-                <field name="sale_ok" string="Can be Sold" widget="boolean_toggle"/>
-                <field name="purchase_ok" string="🛒 Can be Purchased" widget="boolean_toggle"/>
-                <field name="active" string="Status" widget="boolean_toggle"/>
-                <button name="action_view_sales" type="object" string="Sales" icon="fa-line-chart" class="btn-link"/>
-                <button name="action_configure_pricing" type="object" string="Pricing" icon="fa-money" class="btn-link"/>
-            </list>
-        </field>
-    </record>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_sales" icon="fa-line-chart">
+                                <field name="sales_count" string="Sales Orders" widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_view_variants" icon="fa-th">
+                                <field name="product_variant_count" string="Variants" widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-money">
+                                <field name="price_history_count" string="Price Changes" widget="statinfo"/>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-star" invisible="not is_featured_service">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value"><i class='fa fa-star'/></span>
+                                    <span class="o_stat_text">Featured</span>
+                                </div>
+                            </button>
+                        </div>
 
-    <!-- Form view for Enhanced -->
-    <record id="product_template_view_form" model="ir.ui.view">
-        <field name="name">product.template.view.form</field>
-        <field name="model">product.template</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <button name="action_view_sales" type="object" string="View Sales History" class="btn-primary"/>
-                    <button name="action_configure_variants" type="object" string="Configure Variants" class="btn-secondary"/>
-                    <button name="action_pricing_rules" type="object" string="Pricing Rules" class="btn-info"/>
-                    <button name="action_update_costs" type="object" string="Update Costs" class="btn-success"/>
-                    <field name="active" widget="boolean_button" options="{'terminology': {'string_true': '🟢 Active', 'string_false': '⭕ Archived'}}"/>
-                </header>
-                <sheet>
-                    <div class="oe_title">
-                        <label for="name" string="Product Name"/>
-                        <h1>
-                            <field name="name" placeholder="e.g., Records Storage Service"/>
-                        </h1>
+                        <notebook>
+                            <page string="General Information" name="general">
+                                <group>
+                                    <group string="Basic Information">
+                                        <field name="default_code" placeholder="e.g., RMS-001"/>
+                                        <field name="categ_id"/>
+                                        <field name="type"/>
+                                    </group>
+                                    <group string="Service Settings">
+                                        <field name="sale_ok"/>
+                                        <field name="purchase_ok"/>
+                                        <field name="can_be_expensed" invisible="type != 'service'"/>
+                                        <field name="is_featured_service"/>
+                                    </group>
+                                </group>
+                                <field name="description" placeholder="Detailed description of the records management service..."/>
+                            </page>
+                            <page string="Sales &amp;amp; Pricing" name="sales">
+                                <group>
+                                    <group string="&lt;i class=&quot;fa fa-dollar-sign&quot;&gt;&lt;/i&gt; Pricing Information">
+                                        <field name="list_price" widget="monetary"/>
+                                        <field name="standard_price" widget="monetary"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="price_margin"/>
+                                    </group>
+                                    <group string="📏 Units &amp;amp; Measurements">
+                                        <field name="uom_id"/>
+                                        <field name="uom_po_id"/>
+                                        <field name="weight" invisible="type != 'product'"/>
+                                        <field name="volume" invisible="type != 'product'"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Cost Structure">
+                                        <field name="base_cost"/>
+                                        <field name="labor_cost"/>
+                                        <field name="material_cost"/>
+                                        <field name="overhead_cost"/>
+                                    </group>
+                                    <group string="Billing Settings">
+                                        <field name="billing_frequency"/>
+                                        <field name="minimum_billing_period"/>
+                                        <field name="prorate_partial_periods"/>
+                                        <field name="auto_invoice"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Records Management" name="records_management">
+                                <group>
+                                    <group string="Document Services">
+                                        <field name="document_storage_included"/>
+                                        <field name="max_documents_included"/>
+                                        <field name="additional_document_cost"/>
+                                        <field name="digital_conversion_included"/>
+                                    </group>
+                                    <group string="Storage Services">
+                                        <field name="box_storage_included"/>
+                                        <field name="max_boxes_included"/>
+                                        <field name="additional_box_cost"/>
+                                        <field name="climate_controlled"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="Destruction Services">
+                                        <field name="shredding_included"/>
+                                        <field name="naid_compliance_level"/>
+                                        <field name="witness_destruction"/>
+                                        <field name="certificate_of_destruction"/>
+                                    </group>
+                                    <group string="Logistics Services">
+                                        <field name="pickup_delivery_included"/>
+                                        <field name="emergency_retrieval"/>
+                                        <field name="same_day_service"/>
+                                        <field name="geographic_coverage"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Service Level Agreement" name="sla">
+                                <group>
+                                    <group string="Response Times">
+                                        <field name="standard_response_time"/>
+                                        <field name="emergency_response_time"/>
+                                        <field name="document_retrieval_time"/>
+                                        <field name="box_retrieval_time"/>
+                                    </group>
+                                    <group string="Service Guarantees">
+                                        <field name="uptime_guarantee"/>
+                                        <field name="security_guarantee"/>
+                                        <field name="compliance_guarantee"/>
+                                        <field name="data_recovery_guarantee"/>
+                                    </group>
+                                </group>
+                                <field name="sla_terms" placeholder="Detailed Service Level Agreement terms and conditions..."/>
+                            </page>
+                            <page string="Product Variants" name="variants">
+                                <field name="product_variant_ids" mode="list">
+                                    <list>
+                                        <field name="default_code"/>
+                                        <field name="display_name"/>
+                                        <field name="lst_price"/>
+                                        <field name="standard_price"/>
+                                        <field name="qty_available" invisible="parent.type != 'product'"/>
+                                        <field name="active"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Analytics" name="analytics">
+                                <group>
+                                    <group string="Sales Performance">
+                                        <field name="total_sales_ytd" readonly="1"/>
+                                        <field name="total_revenue_ytd" readonly="1"/>
+                                        <field name="average_sale_price" readonly="1"/>
+                                        <field name="profit_margin" readonly="1"/>
+                                    </group>
+                                    <group string="Timeline Metrics">
+                                        <field name="first_sale_date" readonly="1"/>
+                                        <field name="last_sale_date" readonly="1"/>
+                                        <field name="sales_velocity" readonly="1"/>
+                                        <field name="customer_retention_rate" readonly="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Configuration" name="configuration">
+                                <group>
+                                    <group string="Template Settings">
+                                        <field name="is_template_service"/>
+                                        <field name="template_category"/>
+                                        <field name="customization_allowed"/>
+                                        <field name="requires_approval"/>
+                                    </group>
+                                    <group string="Integration">
+                                        <field name="external_service_id"/>
+                                        <field name="api_integration"/>
+                                        <field name="sync_enabled"/>
+                                        <field name="webhook_notifications"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
                     </div>
+                </form>
+            </field>
+        </record>
 
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_sales" icon="fa-line-chart">
-                            <field name="sales_count" string="Sales Orders" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_view_variants" icon="fa-th">
-                            <field name="product_variant_count" string="Variants" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" type="object" name="action_view_pricing_history" icon="fa-money">
-                            <field name="price_history_count" string="Price Changes" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" icon="fa-star" invisible="not is_featured_service>">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value"><i class='fa fa-star'/></span>
-                                <span class="o_stat_text">Featured</span>
-                            </div>
-                        </button>
-                    </div>
+        <!-- Search view for Enhanced -->
+        <record id="product_template_view_search" model="ir.ui.view">
+            <field name="name">product.template.view.search</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Product"/>
+                    <field name="default_code"/>
+                    <field name="categ_id"/>
+                    <field name="type"/>
 
-                    <notebook>
-                        <page string="General Information" name="general">
-                            <group>
-                                <group string="Basic Information">
-                                    <field name="default_code" placeholder="e.g., RMS-001"/>
-                                    <field name="categ_id"/>
-                                    <field name="type"/>
-                                </group>
-                                <group string="Service Settings">
-                                    <field name="sale_ok"/>
-                                    <field name="purchase_ok"/>
-                                    <field name="can_be_expensed" invisible="type != 'service'"/>
-                                    <field name="is_featured_service"/>
-                                </group>
-                            </group>
-                            <field name="description" placeholder="Detailed description of the records management service..."/>
-                        </page>
-                        <page string="Sales &amp;amp; Pricing" name="sales">
-                            <group>
-                                <group string="💵 Pricing Information">
-                                    <field name="list_price" widget="monetary"/>
-                                    <field name="standard_price" widget="monetary"/>
-                                    <field name="currency_id" invisible="1"/>
-                                    <field name="price_margin"/>
-                                </group>
-                                <group string="📏 Units &amp;amp; Measurements">
-                                    <field name="uom_id"/>
-                                    <field name="uom_po_id"/>
-                                    <field name="weight" invisible="type != 'product'"/>
-                                    <field name="volume" invisible="type != 'product'"/>
-                                </group>
-                            </group>
-                            <group>
-                                <group string="Cost Structure">
-                                    <field name="base_cost"/>
-                                    <field name="labor_cost"/>
-                                    <field name="material_cost"/>
-                                    <field name="overhead_cost"/>
-                                </group>
-                                <group string="Billing Settings">
-                                    <field name="billing_frequency"/>
-                                    <field name="minimum_billing_period"/>
-                                    <field name="prorate_partial_periods"/>
-                                    <field name="auto_invoice"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Records Management" name="records_management">
-                            <group>
-                                <group string="Document Services">
-                                    <field name="document_storage_included"/>
-                                    <field name="max_documents_included"/>
-                                    <field name="additional_document_cost"/>
-                                    <field name="digital_conversion_included"/>
-                                </group>
-                                <group string="Storage Services">
-                                    <field name="box_storage_included"/>
-                                    <field name="max_boxes_included"/>
-                                    <field name="additional_box_cost"/>
-                                    <field name="climate_controlled"/>
-                                </group>
-                            </group>
-                            <group>
-                                <group string="Destruction Services">
-                                    <field name="shredding_included"/>
-                                    <field name="naid_compliance_level"/>
-                                    <field name="witness_destruction"/>
-                                    <field name="certificate_of_destruction"/>
-                                </group>
-                                <group string="Logistics Services">
-                                    <field name="pickup_delivery_included"/>
-                                    <field name="emergency_retrieval"/>
-                                    <field name="same_day_service"/>
-                                    <field name="geographic_coverage"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Service Level Agreement" name="sla">
-                            <group>
-                                <group string="Response Times">
-                                    <field name="standard_response_time"/>
-                                    <field name="emergency_response_time"/>
-                                    <field name="document_retrieval_time"/>
-                                    <field name="box_retrieval_time"/>
-                                </group>
-                                <group string="Service Guarantees">
-                                    <field name="uptime_guarantee"/>
-                                    <field name="security_guarantee"/>
-                                    <field name="compliance_guarantee"/>
-                                    <field name="data_recovery_guarantee"/>
-                                </group>
-                            </group>
-                            <field name="sla_terms" placeholder="Detailed Service Level Agreement terms and conditions..."/>
-                        </page>
-                        <page string="Product Variants" name="variants">
-                            <field name="product_variant_ids" mode="list">
-                                <list>
-                                    <field name="default_code"/>
-                                    <field name="display_name"/>
-                                    <field name="lst_price"/>
-                                    <field name="standard_price"/>
-                                    <field name="qty_available" invisible="parent.type != 'product'"/>
-                                    <field name="active"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Analytics" name="analytics">
-                            <group>
-                                <group string="Sales Performance">
-                                    <field name="total_sales_ytd" readonly="1"/>
-                                    <field name="total_revenue_ytd" readonly="1"/>
-                                    <field name="average_sale_price" readonly="1"/>
-                                    <field name="profit_margin" readonly="1"/>
-                                </group>
-                                <group string="Timeline Metrics">
-                                    <field name="first_sale_date" readonly="1"/>
-                                    <field name="last_sale_date" readonly="1"/>
-                                    <field name="sales_velocity" readonly="1"/>
-                                    <field name="customer_retention_rate" readonly="1"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Configuration" name="configuration">
-                            <group>
-                                <group string="Template Settings">
-                                    <field name="is_template_service"/>
-                                    <field name="template_category"/>
-                                    <field name="customization_allowed"/>
-                                    <field name="requires_approval"/>
-                                </group>
-                                <group string="Integration">
-                                    <field name="external_service_id"/>
-                                    <field name="api_integration"/>
-                                    <field name="sync_enabled"/>
-                                    <field name="webhook_notifications"/>
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
+                    <filter string="🟢 Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="⭕ Archived" name="archived" domain="[('active', '=', False)]"/>
 
-    <!-- Search view for Enhanced -->
-    <record id="product_template_view_search" model="ir.ui.view">
-        <field name="name">product.template.view.search</field>
-        <field name="model">product.template</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name" string="Product"/>
-                <field name="default_code"/>
-                <field name="categ_id"/>
-                <field name="type"/>
+                    <separator/>
+                    <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok', '=', True)]"/>ive" domain="[('active', '=', True)]"/>
+                    <filter string="&lt;i class=&quot;fa fa-shopping-cart&quot;&gt;&lt;/i&gt; Can be Purchased" name="purchase_ok" domain="[('purchase_ok', '=', True)]"/>
+                    <filter string="Services" name="services" domain="[('type', '=', 'service')]"/>
+                    <filter string="Products" name="products" domain="[('type', '=', 'product')]"/>
 
-                <filter string="🟢 Active" name="active" domain="[('active', '=', True)]"/>
-                <filter string="⭕ Archived" name="archived" domain="[('active', '=', False)]"/>
+                    <separator/>
+                    <filter string="Featured Services" name="featured" domain="[('is_featured_service', '=', True)]"/>
+                    <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliance_level', 'in', ['A', 'AA', 'AAA'])]"/>
+                    <filter string="Document Services" name="document_services" domain="[('document_storage_included', '=', True)]"/>
+                    <filter string="Destruction Services" name="destruction_services" domain="[('shredding_included', '=', True)]"/>
 
-                <separator/>
-                <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok', '=', True)]"/>
-                <filter string="🛒 Can be Purchased" name="purchase_ok" domain="[('purchase_ok', '=', True)]"/>
-                <filter string="Services" name="services" domain="[('type', '=', 'service')]"/>
-                <filter string="Products" name="products" domain="[('type', '=', 'product')]"/>
+                    <separator/>
+                    <filter string="High Value (&amp;gt;$100)" name="high_value" domain="[('list_price', '&amp;gt;', 100)]"/>
+                    <filter string="Top Performers" name="top_performers" domain="[('total_sales_ytd', '&amp;gt;', 0)]"/>
 
-                <separator/>
-                <filter string="Featured Services" name="featured" domain="[('is_featured_service', '=', True)]"/>
-                <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliance_level', 'in', ['A', 'AA', 'AAA'])]"/>
-                <filter string="Document Services" name="document_services" domain="[('document_storage_included', '=', True)]"/>
-                <filter string="Destruction Services" name="destruction_services" domain="[('shredding_included', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Category" name="group_by_category" context="{'group_by': 'categ_id'}"/>
+                        <filter string="Product Type" name="group_by_type" context="{'group_by': 'type'}"/>
+                        <filter string="NAID Level" name="group_by_naid" context="{'group_by': 'naid_compliance_level'}"/>
+                        <filter string="Can be Sold" name="group_by_sale" context="{'group_by': 'sale_ok'}"/>
+                        <filter string="Price Range" name="group_by_price" context="{'group_by': 'price_range'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
-                <separator/>
-                <filter string="High Value (&amp;gt;$100)" name="high_value" domain="[('list_price', '&amp;gt;', 100)]"/>
-                <filter string="Top Performers" name="top_performers" domain="[('total_sales_ytd', '&amp;gt;', 0)]"/>
-
-                <group expand="0" string="Group By">
-                    <filter string="Category" name="group_by_category" context="{'group_by': 'categ_id'}"/>
-                    <filter string="Product Type" name="group_by_type" context="{'group_by': 'type'}"/>
-                    <filter string="NAID Level" name="group_by_naid" context="{'group_by': 'naid_compliance_level'}"/>
-                    <filter string="Can be Sold" name="group_by_sale" context="{'group_by': 'sale_ok'}"/>
-                    <filter string="Price Range" name="group_by_price" context="{'group_by': 'price_range'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <!-- List view for ENTERPRISE -->
-    <record id="action_product_template_records" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-briefcase'/> Records Management Products</field>
-        <field name="res_model">product.template</field>
-        <field name="view_mode">kanban,list,form</field>
-        <field name="search_view_id" ref="view_product_template_records_search"/>
-        <field name="context">{
-            'search_default_active': 1,
-            'search_default_sale_ok': 1
-        }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                <i class='fa fa-briefcase'/> Create your first records management service!
-            </p>
-            <p>
-                <b>Enterprise Service Catalog Management:</b>
-                <br/>
-                • <i class='fa fa-clipboard'/> Complete records management service portfolio<br/>
-                • <i class='fa fa-money'/> Advanced pricing rules and cost structures<br/>
-                • <i class='fa fa-trophy'/> NAID compliance service configuration<br/>
-                • <i class='fa fa-bar-chart'/> Service Level Agreement management<br/>
-                • <i class='fa fa-bullseye'/> Multi-variant service offerings<br/>
-                • <i class='fa fa-line-chart'/> Real-time sales analytics and performance<br/>
-                • <i class='fa fa-wrench'/> Flexible service customization options<br/>
-                • <i class='fa fa-box'/> Integrated storage and destruction services<br/>
-                • <i class='fa fa-truck'/> Logistics and emergency retrieval services
-</p>
+        <!-- List view for ENTERPRISE -->
+        <record id="action_product_template_records" model="ir.actions.act_window">
+            <field name="name"><i class='fa fa-briefcase'/> Records Management Products</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="product_template_view_search"/>
+            <field name="context">{
+                'search_default_active': 1,
+                'search_default_sale_ok': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    <i class='fa fa-briefcase'/> Create your first records management service!
+                </p>
+                <p>
+                    <b>Enterprise Service Catalog Management:</b>
+                    <br/>
+                    • <i class='fa fa-clipboard'/> Complete records management service portfolio<br/>
+                    • <i class='fa fa-money'/> Advanced pricing rules and cost structures<br/>
+                    • <i class='fa fa-trophy'/> NAID compliance service configuration<br/>
+                    • <i class='fa fa-bar-chart'/> Service Level Agreement management<br/>
+                    • <i class='fa fa-bullseye'/> Multi-variant service offerings<br/>
+                    • <i class='fa fa-line-chart'/> Real-time sales analytics and performance<br/>
+                    • <i class='fa fa-wrench'/> Flexible service customization options<br/>
+                    • <i class='fa fa-box'/> Integrated storage and destruction services<br/>
+                    • <i class='fa fa-truck'/> Logistics and emergency retrieval services
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
 </field>
 </record>
 </data>

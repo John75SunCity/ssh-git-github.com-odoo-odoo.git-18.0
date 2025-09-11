@@ -79,7 +79,7 @@
                             <div class="o_kanban_card_header">
                                 <div class="o_kanban_card_header_title">
                                     <div class="o_primary">
-                                        <strong>💳 <field name="name"/></strong>
+                                        <strong><i class="fa fa-credit-card"></i> <field name="name"/></strong>
                                     </div>
                                     <div class="o_secondary">
                                         <i class='fa fa-user'/> <field name="partner_id"/>
@@ -109,10 +109,10 @@
                                     </div>
                                     <div class="col-4">
                                         <span class="badge badge-success" t-if="record.auto_billing.raw_value>
-                                            🤖 Auto
+                                            <i class="fa fa-robot"></i> Auto
                                         </span">
                                         <span class="badge" t-att-class="record.active.raw_value ? 'badge-primary' : 'badge-secondary'">
-                                            <t t-if="record.active.raw_value">🟢 Active</t>
+                                            <t t-if="record.active.raw_value"><i class="fa fa-circle text-success"></i> Active</t>
                                             <t t-else="">⭕ Inactive</t>
                                         </span>
                                     </div>
@@ -134,7 +134,7 @@
                                 <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Config</a>
                                 <a role="menuitem" type="object" name="action_view_billing_history" class="dropdown-item"><i class='fa fa-clipboard'/> Billing History</a>
                                 <a role="menuitem" type="object" name="action_configure_rates" class="dropdown-item"><i class='fa fa-money'/> Configure Rates</a>
-                                <a role="menuitem" type="object" name="action_test_billing" class="dropdown-item">🧪 Test Billing</a>
+                                <a role="menuitem" type="object" name="action_test_billing" class="dropdown-item"><i class="fa fa-flask"></i> Test Billing</a>
                                 <div class="dropdown-divider"/>
                                 <a role="menuitem" type="object" name="action_duplicate" class="dropdown-item"><i class='fa fa-clipboard'/> Duplicate</a>
                             </div>
@@ -153,13 +153,13 @@
             <list decoration-success="active == True and auto_billing == True"
                   decoration-warning="billing_model == 'custom'"
                   decoration-info="payment_terms == 'net_30'">
-                <field name="name" string="💳 Configuration Name"/>
+                <field name="name" string="<i class="fa fa-credit-card"></i> Configuration Name"/>
                 <field name="partner_id" string="Customer"/>
                 <field name="billing_model" string="Billing Model" widget="badge"/>
                 <field name="base_rate" string="Base Rate"/>
                 <field name="billing_frequency" string="Frequency"/>
-                <field name="payment_terms" string="💳 Payment Terms"/>
-                <field name="auto_billing" string="🤖 Auto Billing" widget="boolean_toggle"/>
+                <field name="payment_terms" string="<i class="fa fa-credit-card"></i> Payment Terms"/>
+                <field name="auto_billing" string="<i class="fa fa-robot"></i> Auto Billing" widget="boolean_toggle"/>
                 <field name="active" string="Status" widget="boolean_toggle"/>
                 <field name="last_invoice_date" string="Last Invoice"/>
                 <button name="action_generate_invoice" type="object" string="Invoice"
@@ -179,7 +179,7 @@
                 <header>
                     <button name="action_generate_invoice" type="object" string="Generate Invoice" class="btn-primary"/>
                     <button name="action_configure_rates" type="object" string="Configure Rates" class="btn-secondary"/>
-                    <button name="action_test_billing" type="object" string="🧪 Test Billing" class="btn-info"/>
+                    <button name="action_test_billing" type="object" string="<i class="fa fa-flask"></i> Test Billing" class="btn-info"/>
                     <button name="action_view_analytics" type="object" string="View Analytics" class="btn-success"/>
                     <button name="action_view_invoices" type="object" string="View Invoices" class="btn-secondary"/>
                     <button name="action_view_billing_history" type="object" string="View Billing History" class="btn-secondary"/>
@@ -198,14 +198,14 @@
                         <button class="oe_stat_button" icon="fa-check-circle"
                                 invisible="not auto_billing">
                             <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">🤖</span>
+                                <span class="o_stat_value"><i class="fa fa-robot"></i></span>
                                 <span class="o_stat_text">Automated</span>
                             </div>
                         </button>
                     </div>
 
                     <group>
-                        <group string="💳 Billing Configuration">
+                        <group string="<i class="fa fa-credit-card"></i> Billing Configuration">
                             <field name="name" placeholder="e.g., Standard Storage Billing"/>
                             <field name="partner_id"/>
                             <field name="billing_model"/>
@@ -226,7 +226,7 @@
                             <field name="next_billing_date"/>
                             <field name="auto_billing"/>
                         </group>
-                        <group string="💳 Payment Terms">
+                        <group string="<i class="fa fa-credit-card"></i> Payment Terms">
                             <field name="payment_terms"/>
                             <field name="payment_method"/>
                             <field name="late_fee_percentage"/>
@@ -414,11 +414,11 @@
                 <field name="billing_model"/>
                 <field name="service_category"/>
 
-                <filter string="🟢 Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="<i class="fa fa-circle text-success"></i> Active" name="active" domain="[('active', '=', True)]"/>
                 <filter string="⭕ Inactive" name="inactive" domain="[('active', '=', False)]"/>
 
                 <separator/>
-                <filter string="🤖 Auto Billing" name="auto_billing" domain="[('auto_billing', '=', True)]"/>
+                <filter string="<i class="fa fa-robot"></i> Auto Billing" name="auto_billing" domain="[('auto_billing', '=', True)]"/>
                 <filter string="Manual Billing" name="manual_billing" domain="[('auto_billing', '=', False)]"/>
 
                 <separator/>
@@ -444,7 +444,7 @@
 
     <!-- List view for ENTERPRISE -->
     <record id="action_billing_config" model="ir.actions.act_window">
-        <field name="name">💳 Billing Configuration</field>
+        <field name="name"><i class="fa fa-credit-card"></i> Billing Configuration</field>
         <field name="res_model">records.billing.config</field>
         <field name="view_mode">kanban,list,form,calendar</field>
         <field name="search_view_id" ref="records_billing_config_view_search"/>
@@ -453,16 +453,16 @@
         }</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                💳 Create your first billing configuration!
+                <i class="fa fa-credit-card"></i> Create your first billing configuration!
             </p>
             <p>
                 <b>Enterprise Billing Management System:</b><br/>
                 • <i class='fa fa-money'/> Flexible multi-tier rate structures<br/>
-                • 🤖 Automated billing and invoice generation<br/>
+                • <i class="fa fa-robot"></i> Automated billing and invoice generation<br/>
                 • <i class='fa fa-bar-chart'/> Real-time usage tracking and analytics<br/>
                 • <i class='fa fa-bullseye'/> Advanced discount and promotion management<br/>
                 • <i class='fa fa-calendar'/> Flexible billing cycles and schedules<br/>
-                • 💳 Multiple payment method support<br/>
+                • <i class="fa fa-credit-card"></i> Multiple payment method support<br/>
                 • <i class='fa fa-envelope'/> Automated notifications and reminders<br/>
                 • <i class='fa fa-link'/> Seamless accounting system integration<br/>
                 • <i class='fa fa-line-chart'/> Comprehensive revenue analytics and reporting

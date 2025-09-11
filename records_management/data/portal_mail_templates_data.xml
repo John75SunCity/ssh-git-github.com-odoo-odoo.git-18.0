@@ -78,7 +78,7 @@
                     <p>Best regards,<br/>
                     Sun City Shred Portal System</p>
                 </div>
-            ]]>        </field>
+            ]]></field>
             <field name="auto_delete" eval="True"/>
             <field name="lang">${object.partner_id.lang or 'en_US'}</field>
         </record>
@@ -142,7 +142,7 @@
                     <p>Best regards,<br/>
                     Sun City Shred Team</p>
                 </div>
-            ]]>        </field>
+            ]]></field>
             <field name="auto_delete" eval="True"/>
             <field name="lang">${object.partner_id.lang}</field>
         </record>
@@ -189,7 +189,7 @@
                     <p>Best regards,<br/>
                     Website Contact System</p>
                 </div>
-            ]]>        </field>
+            ]]></field>
             <field name="auto_delete" eval="True"/>
             <field name="lang">${object.partner_id.lang}</field>
         </record>
@@ -254,7 +254,7 @@
                     <p>Best regards,<br/>
                     Sun City Shred Operations Team</p>
                 </div>
-            ]]>        </field>
+            ]]></field>
             <field name="auto_delete" eval="True"/>
             <field name="lang">${object.partner_id.lang}</field>
         </record>
@@ -312,7 +312,7 @@
                     NAID Compliance Team<br/>
                     Sun City Shred</p>
                 </div>
-            ]]>        </field>
+            ]]></field>
             <field name="auto_delete" eval="False"/>
             <field name="lang">${object.partner_id.lang}</field>
         </record>
@@ -480,11 +480,11 @@
             <field name="model_id" ref="records_management.model_portal_request"/>
             <field name="email_from">emergency@suncityshred.com</field>
             <field name="email_to">${object.partner_id.email}</field>
-            <field name="subject">🚨 URGENT: ${object.name} - Immediate Attention Required</field>
+            <field name="subject"><i class="fa fa-exclamation-triangle"></i> URGENT: ${object.name} - Immediate Attention Required</field>
             <field name="body_html"><![CDATA[
                 <div style="margin: 0px; padding: 0px; font-family: Arial, sans-serif;">
                     <div style="background-color: #dc3545; color: white; padding: 20px; text-align: center;">
-                        <h1 style="margin: 0; font-size: 24px;">🚨 URGENT NOTIFICATION</h1>
+                        <h1 style="margin: 0; font-size: 24px;"><i class="fa fa-exclamation-triangle text-danger"></i> URGENT NOTIFICATION</h1>
                         <p style="margin: 10px 0 0 0; font-size: 16px;">Immediate attention required for your request</p>
                     </div>
 

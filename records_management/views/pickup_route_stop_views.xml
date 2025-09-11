@@ -1,338 +1,338 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
+        <!-- Enhanced Kanban view for Pickup Route Stops -->
+        <record id="pickup_route_stop_view_kanban" model="ir.ui.view">
+            <field name="name">pickup.route.stop.view.kanban</field>
+            <field name="model">pickup.route.stop</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="state" class="o_kanban_pickup_route_stop">
+                    <field name="display_name"/>
+                    <field name="route_id"/>
+                    <field name="partner_id"/>
+                    <field name="address"/>
+                    <field name="planned_arrival"/>
+                    <field name="actual_arrival"/>
+                    <field name="state"/>
+                    <field name="sequence"/>
+                    <field name="planned_duration"/>
+                    <field name="actual_duration"/>
+                    <field name="pickup_request_id"/>
+                    <field name="completion_status"/>
+                    <templates>
+                        <t t-name="card">
+                            <div t-attf-class="oe_kanban_card oe_kanban_global_click oe_kanban_color_#{kanban_getcolor(record.color.raw_value)}">
+                                <div class="o_kanban_card_header">
+                                    <div class="o_kanban_card_header_title">
+                                        <div class="o_primary">
+                                            <strong>
+                                                <field name="display_name"/>
+                                            </strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            <i class="fa fa-map-marker"/>
+                                            <field name="partner_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_card_header_right">
+                                        <div class="badge badge-pill" t-att-title="record.priority.value">
+                                            <field name="priority" widget="priority"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Sequence:</strong> #
+                                            <field name="stop_sequence"/>
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>Route:</strong>
+                                            <field name="pickup_route_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-1">
+                                        <div class="col-12">
+                                            <i class="fa fa-clock-o"/>
+                                            <strong>Scheduled:</strong>
+                                            <field name="scheduled_time" widget="datetime"/>
+                                        </div>
+                                    </div>
+                                    <div t-if="record.actual_time.raw_value" class="row mt-1">
+                                        <div class="col-12">
+                                            <i class="fa fa-check-circle text-success"/>
+                                            <strong>Actual:</strong>
+                                            <field name="actual_time" widget="datetime"/>
+                                        </div>
+                                    </div>
+                                    <div t-if="record.pickup_request_id.raw_value" class="row mt-1">
+                                        <div class="col-12">
+                                            <i class="fa fa-file-text-o"/>
+                                            <strong>Request:</strong>
+                                            <field name="pickup_request_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <div t-if="record.state.raw_value == 'pending'">
+                                                <span class="badge badge-info">⏳ Pending</span>
+                                            </div>
+                                            <div t-if="record.state.raw_value == 'in_progress'">
+                                                <span class="badge badge-warning"><i class="fa fa-truck"></i> In Progress</span>
+                                            </div>
+                                            <div t-if="record.state.raw_value == 'completed'">
+                                                <span class="badge badge-success"><i class="fa fa-check-circle text-success"/> Completed</span>
+                                            </div>
+                                            <div t-if="record.state.raw_value == 'skipped'">
+                                                <span class="badge badge-secondary">⏭️ Skipped</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_footer">
+                                    <div class="text-muted small">
+                                        <i class="fa fa-clock-o"/>
+                                        Last updated: <field name="write_date" widget="relative"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
 
-<data>
-<!-- Enhanced Kanban view for Pickup Route Stops -->
-<record id="pickup_route_stop_view_kanban" model="ir.ui.view">
-    <field name="name">pickup.route.stop.view.kanban</field>
-    <field name="model">pickup.route.stop</field>
-        <field name="arch" type="xml">
-        <kanban default_group_by="state" class="o_kanban_pickup_route_stop">
-            <field name="display_name"/>
-            <field name="route_id"/>
-            <field name="partner_id"/>
-            <field name="address"/>
-            <field name="planned_arrival"/>
-            <field name="actual_arrival"/>
-            <field name="state"/>
-            <field name="sequence"/>
-            <field name="planned_duration"/>
-            <field name="actual_duration"/>
-            <field name="pickup_request_id"/>
-            <field name="completion_status"/>
-            <templates>
-<t t-name="card">
-                    <div t-attf-class="oe_kanban_card oe_kanban_global_click oe_kanban_color_#{kanban_getcolor(record.color.raw_value)}">
-                        <div class="o_kanban_card_header">
-                            <div class="o_kanban_card_header_title">
-                                <div class="o_primary">
-                                    <strong>
-                                        <field name="display_name"/>
-                                    </strong>
+        <!-- Enhanced List view for Pickup Route Stops -->
+        <record id="pickup_route_stop_view_tree" model="ir.ui.view">
+            <field name="name">pickup.route.stop.view.tree</field>
+            <field name="model">pickup.route.stop</field>
+            <field name="arch" type="xml">
+                <list decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" decoration-danger="priority == 'urgent'">
+                    <field name="stop_sequence"/>
+                    <field name="name"/>
+                    <field name="pickup_route_id"/>
+                    <field name="partner_id"/>
+                    <field name="address"/>
+                    <field name="scheduled_time"/>
+                    <field name="actual_time"/>
+                    <field name="estimated_duration" widget="float_time"/>
+                    <field name="actual_duration" widget="float_time"/>
+                    <field name="state" widget="badge" decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'"/>
+                    <field name="priority" widget="priority"/>
+                    <field name="pickup_request_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Enhanced Form view for Pickup Route Stops -->
+        <record id="pickup_route_stop_view_form" model="ir.ui.view">
+            <field name="name">pickup.route.stop.view.form</field>
+            <field name="model">pickup.route.stop</field>
+            <field name="arch" type="xml">
+                <form string="Pickup Route Stop">
+                    <header>
+                        <button name="action_start_stop" type="object" string="Start Stop" class="btn-primary" invisible="state != 'pending'"/>
+                        <button name="action_complete_stop" type="object" string="Complete Stop" class="btn-success" invisible="state != 'in_progress'"/>
+                        <button name="action_skip_stop" type="object" string="Skip Stop" class="btn-secondary" invisible="state in ['completed', 'skipped']"/>
+                        <button name="action_reset_to_pending" type="object" string="Reset to Pending" class="btn-secondary" invisible="state == 'pending'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="pending,in_progress,completed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_pickup_request" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="pickup_request_id == False">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">View</span>
+                                    <span class="o_stat_text">Request</span>
                                 </div>
-                                <div class="o_secondary">
-                                    <i class="fa fa-map-marker"/>
-                                    <field name="partner_id"/>
+                            </button>
+                            <button name="action_view_route" type="object" class="oe_stat_button" icon="fa-road">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">View</span>
+                                    <span class="o_stat_text">Route</span>
                                 </div>
-                            </div>
-                            <div class="o_kanban_card_header_right">
-                                <div class="badge badge-pill" t-att-title="record.priority.value">
-                                    <field name="priority" widget="priority"/>
-                                </div>
-                            </div>
+                            </button>
                         </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                            <div class="row">
-                                <div class="col-6">
-                                    <strong>Sequence:</strong> #                                    <field name="stop_sequence"/>
-                                </div>
-                                <div class="col-6">
-                                    <strong>Route:</strong>
-                                    <field name="pickup_route_id"/>
-                                </div>
-                            </div>
-                            <div class="row mt-1">
-                                <div class="col-12">
-                                    <i class="fa fa-clock-o"/>
-                                    <strong>Scheduled:</strong>
-                                    <field name="scheduled_time" widget="datetime"/>
-                                </div>
-                            </div>
-                            <div t-if="record.actual_time.raw_value" class="row mt-1">
-                                <div class="col-12">
-                                    <i class="fa fa-check-circle text-success"/>
-                                    <strong>Actual:</strong>
-                                    <field name="actual_time" widget="datetime"/>
-                                </div>
-                            </div>
-                            <div t-if="record.pickup_request_id.raw_value" class="row mt-1">
-                                <div class="col-12">
-                                    <i class="fa fa-file-text-o"/>
-                                    <strong>Request:</strong>
-                                    <field name="pickup_request_id"/>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-12">
-                                    <div t-if="record.state.raw_value == 'pending'">
-                                        <span class="badge badge-info">⏳ Pending</span>
-                                    </div>
-                                    <div t-if="record.state.raw_value == 'in_progress'">
-                                        <span class="badge badge-warning">🚛 In Progress</span>
-                                    </div>
-                                    <div t-if="record.state.raw_value == 'completed'">
-                                        <span class="badge badge-success"><i class="fa fa-check-circle text-success"/> Completed</span>
-                                    </div>
-                                    <div t-if="record.state.raw_value == 'skipped'">
-                                        <span class="badge badge-secondary">⏭️ Skipped</span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name" placeholder="Stop Name..."/>
+                            </h1>
                         </div>
-                        <div class="o_kanban_card_footer">
-                            <div class="text-muted small">
-                                <i class="fa fa-clock-o"/>
-                                    Last updated: <field name="write_date" widget="relative"/>
-                            </div>
-                        </div>
+                        <group>
+                            <group name="basic_info" string="Basic Information">
+                                <field name="pickup_route_id" required="1"/>
+                                <field name="stop_sequence"/>
+                                <field name="partner_id" required="1"/>
+                                <field name="pickup_request_id"/>
+                                <field name="priority"/>
+                                <field name="color"/>
+                            </group>
+                            <group name="timing" string="Timing Information">
+                                <field name="scheduled_time" required="1"/>
+                                <field name="actual_time" readonly="1"/>
+                                <field name="estimated_duration" widget="float_time"/>
+                                <field name="actual_duration" widget="float_time" readonly="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Location Details" name="location">
+                                <group>
+                                    <group name="address_info" string="Address Information">
+                                        <field name="address" required="1"/>
+                                        <field name="city"/>
+                                        <field name="state_id"/>
+                                        <field name="zip"/>
+                                        <field name="country_id"/>
+                                    </group>
+                                    <group name="location_coordinates" string="GPS Coordinates">
+                                        <field name="latitude"/>
+                                        <field name="longitude"/>
+                                        <field name="location_accuracy"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Pickup Details" name="pickup_details">
+                                <group>
+                                    <group name="contact_info" string="Contact Information">
+                                        <field name="contact_person"/>
+                                        <field name="contact_phone"/>
+                                        <field name="contact_email"/>
+                                    </group>
+                                    <group name="access_info" string="Access Information">
+                                        <field name="access_instructions"/>
+                                        <field name="special_requirements"/>
+                                        <field name="delivery_instructions"/>
+                                    </group>
+                                </group>
+                                <group name="items_info" string="Items Information">
+                                    <field name="estimated_boxes"/>
+                                    <field name="actual_boxes" readonly="1"/>
+                                    <field name="estimated_weight"/>
+                                    <field name="actual_weight" readonly="1"/>
+                                </group>
+                            </page>
+                            <page string="Completion Details" name="completion" invisible="state in ['pending', 'in_progress']">
+                                <group>
+                                    <group name="completion_info" string="Completion Information">
+                                        <field name="completion_notes"/>
+                                        <field name="driver_signature"/>
+                                        <field name="customer_signature"/>
+                                    </group>
+                                    <group name="verification" string="Verification">
+                                        <field name="photos_taken"/>
+                                        <field name="verification_code"/>
+                                        <field name="barcode_scanned"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="System Information" name="system_info">
+                                <group>
+                                    <group name="tracking" string="Tracking Information">
+                                        <field name="create_date" readonly="1"/>
+                                        <field name="write_date" readonly="1"/>
+                                        <field name="create_uid" readonly="1"/>
+                                        <field name="write_uid" readonly="1"/>
+                                    </group>
+                                    <group name="company" string="Company Information">
+                                        <field name="company_id" groups="base.group_multi_company"/>
+                                        <field name="user_id"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
                     </div>
-                </t>
-            </templates>
-        </kanban>
-    </field>
-</record>
+                </form>
+            </field>
+        </record>
 
-<!-- Enhanced List view for Pickup Route Stops -->
-    <record id="pickup_route_stop_view_tree" model="ir.ui.view">
-        <field name="name">pickup.route.stop.view.tree</field>
-        <field name="model">pickup.route.stop</field>
-        <field name="arch" type="xml">
-<list decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'" decoration-danger="priority == 'urgent'">
-    <field name="stop_sequence"/>
+        <!-- Enhanced Search view for Pickup Route Stops -->
+        <record id="pickup_route_stop_view_search" model="ir.ui.view">
+            <field name="name">pickup.route.stop.view.search</field>
+            <field name="model">pickup.route.stop</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="pickup_route_id"/>
+                    <field name="partner_id"/>
+                    <field name="address"/>
+                    <field name="pickup_request_id"/>
+                    <field name="contact_person"/>
+                    <separator/>
+                    <filter string="Pending" name="pending" domain="[('state', '=', 'pending')]"/>
+                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <filter string="Skipped" name="skipped" domain="[('state', '=', 'skipped')]"/>
+                    <separator/>
+                    <filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
+                    <filter string="Urgent" name="urgent" domain="[('priority', '=', 'urgent')]"/>
+                    <separator/>
+                    <filter string="Today" name="today" domain="[('scheduled_time', '>=', context_today.strftime('%Y-%m-%d')), ('scheduled_time', '&lt;', (context_today + relativedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Week" name="this_week" domain="[('scheduled_time', '>=', (context_today - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Overdue" name="overdue" domain="[('scheduled_time', '&lt;', context_today.strftime('%Y-%m-%d')), ('state', 'in', ['pending', 'in_progress'])]"/>
+                    <separator/>
+                    <filter string="My Stops" name="my_stops" domain="[('user_id', '=', uid)]"/>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <separator/>
+                    <filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('my_activity_date_deadline', '&lt;', context_today)]" help="Show all records which have next action date is before today"/>
+                    <filter invisible="1" string="Today Activities" name="activities_today" domain="[('my_activity_date_deadline', '=', context_today)]"/>
+                    <filter invisible="1" string="Future Activities" name="activities_upcoming_all" domain="[('my_activity_date_deadline', '&gt;', context_today)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="state" context="{'group_by': 'state'}"/>
+                        <filter string="Priority" name="priority" context="{'group_by': 'priority'}"/>
+                        <filter string="Route" name="pickup_route" context="{'group_by': 'pickup_route_id'}"/>
+                        <filter string="Customer" name="partner" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Assigned User" name="user" context="{'group_by': 'user_id'}"/>
+                        <filter string="Company" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                        <separator/>
+                        <filter string="Scheduled Date" name="scheduled_date" context="{'group_by': 'scheduled_time:day'}"/>
+                        <filter string="Scheduled Week" name="scheduled_week" context="{'group_by': 'scheduled_time:week'}"/>
+                        <filter string="Scheduled Month" name="scheduled_month" context="{'group_by': 'scheduled_time:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
-                <field name="name"/>
-<field name="pickup_route_id"/>
-<field name="partner_id"/>
-<field name="address"/>
-<field name="scheduled_time"/>
-<field name="actual_time"/>
-<field name="estimated_duration" widget="float_time"/>
-<field name="actual_duration" widget="float_time"/>
-<field name="state" widget="badge" decoration-info="state == 'pending'" decoration-warning="state == 'in_progress'" decoration-success="state == 'completed'" decoration-muted="state == 'skipped'"/>
-<field name="priority" widget="priority"/>
-<field name="pickup_request_id"/>
-<field name="company_id" groups="base.group_multi_company"/>
-
-            </list>
-        </field>
-    </record>
-
-<!-- Enhanced Form view for Pickup Route Stops -->
-    <record id="pickup_route_stop_view_form" model="ir.ui.view">
-        <field name="name">pickup.route.stop.view.form</field>
-        <field name="model">pickup.route.stop</field>
-        <field name="arch" type="xml">
-            <form string="Pickup Route Stop">
-<header>
-<button name="action_start_stop" type="object" string="Start Stop" class="btn-primary" invisible="state != 'pending'"/>
-
-<button name="action_complete_stop" type="object" string="Complete Stop" class="btn-success" invisible="state != 'in_progress'"/>
-
-<button name="action_skip_stop" type="object" string="Skip Stop" class="btn-secondary" invisible="state in ['completed', 'skipped']"/>
-
-<button name="action_reset_to_pending" type="object" string="Reset to Pending" class="btn-secondary" invisible="state == 'pending'"/>
-
-    <field name="state" widget="statusbar" statusbar_visible="pending,in_progress,completed"/>
-</header>
-                <sheet>
-<div class="oe_button_box" name="button_box">
-<button name="action_view_pickup_request" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="pickup_request_id == False">
-        <div class="o_field_widget o_stat_info">
-            <span class="o_stat_text">View</span>
-            <span class="o_stat_text">Request</span>
-        </div>
-    </button>
-    <button name="action_view_route" type="object" class="oe_stat_button" icon="fa-road">
-        <div class="o_field_widget o_stat_info">
-            <span class="o_stat_text">View</span>
-            <span class="o_stat_text">Route</span>
-        </div>
-    </button>
-</div>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-<field name="name" placeholder="Stop Name..."/>
-
-                        </h1>
-                    </div>
-<group>
-    <group name="basic_info" string="Basic Information">
-        <field name="pickup_route_id" required="1"/>
-        <field name="stop_sequence"/>
-        <field name="partner_id" required="1"/>
-        <field name="pickup_request_id"/>
-        <field name="priority"/>
-        <field name="color"/>
-    </group>
-    <group name="timing" string="Timing Information">
-        <field name="scheduled_time" required="1"/>
-        <field name="actual_time" readonly="1"/>
-        <field name="estimated_duration" widget="float_time"/>
-        <field name="actual_duration" widget="float_time" readonly="1"/>
-    </group>
-</group>
-<notebook>
-    <page string="Location Details" name="location">
-        <group>
-            <group name="address_info" string="Address Information">
-                <field name="address" required="1"/>
-                <field name="city"/>
-                <field name="state_id"/>
-                <field name="zip"/>
-                <field name="country_id"/>
-            </group>
-            <group name="location_coordinates" string="GPS Coordinates">
-                <field name="latitude"/>
-                <field name="longitude"/>
-                <field name="location_accuracy"/>
-            </group>
-        </group>
-    </page>
-    <page string="Pickup Details" name="pickup_details">
-        <group>
-            <group name="contact_info" string="Contact Information">
-                <field name="contact_person"/>
-                <field name="contact_phone"/>
-                <field name="contact_email"/>
-            </group>
-            <group name="access_info" string="Access Information">
-                <field name="access_instructions"/>
-                <field name="special_requirements"/>
-                <field name="delivery_instructions"/>
-            </group>
-        </group>
-        <group name="items_info" string="Items Information">
-            <field name="estimated_boxes"/>
-            <field name="actual_boxes" readonly="1"/>
-            <field name="estimated_weight"/>
-            <field name="actual_weight" readonly="1"/>
-        </group>
-    </page>
-<page string="Completion Details" name="completion" invisible="state in ['pending', 'in_progress']">
-        <group>
-            <group name="completion_info" string="Completion Information">
-                <field name="completion_notes"/>
-                <field name="driver_signature"/>
-                <field name="customer_signature"/>
-            </group>
-            <group name="verification" string="Verification">
-                <field name="photos_taken"/>
-                <field name="verification_code"/>
-                <field name="barcode_scanned"/>
-            </group>
-        </group>
-    </page>
-    <page string="System Information" name="system_info">
-        <group>
-            <group name="tracking" string="Tracking Information">
-                <field name="create_date" readonly="1"/>
-                <field name="write_date" readonly="1"/>
-                <field name="create_uid" readonly="1"/>
-                <field name="write_uid" readonly="1"/>
-            </group>
-            <group name="company" string="Company Information">
-                <field name="company_id" groups="base.group_multi_company"/>
-                <field name="user_id"/>
-            </group>
-        </group>
-    </page>
-</notebook>
-                </sheet>
-<div class="oe_chatter">
-    <field name="message_follower_ids"/>
-    <field name="activity_ids"/>
-    <field name="message_ids"/>
-</div>
-            </form>
-        </field>
-    </record>
-
-<!-- Enhanced Search view for Pickup Route Stops -->
-    <record id="pickup_route_stop_view_search" model="ir.ui.view">
-        <field name="name">pickup.route.stop.view.search</field>
-        <field name="model">pickup.route.stop</field>
-        <field name="arch" type="xml">
-            <search>
-<field name="name" filter_domain="[('name', 'ilike', self)]"/>
-<field name="pickup_route_id"/>
-<field name="partner_id"/>
-<field name="address"/>
-<field name="pickup_request_id"/>
-<field name="contact_person"/>
-<separator/>
-<filter string="Pending" name="pending" domain="[('state', '=', 'pending')]"/>
-<filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
-<filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
-<filter string="Skipped" name="skipped" domain="[('state', '=', 'skipped')]"/>
-<separator/>
-<filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-<filter string="Urgent" name="urgent" domain="[('priority', '=', 'urgent')]"/>
-<separator/>
-<filter string="Today" name="today" domain="[('scheduled_time', '>=', context_today.strftime('%Y-%m-%d')), ('scheduled_time', '&lt;', (context_today + relativedelta(days=1)).strftime('%Y-%m-%d'))]"/>
-<filter string="This Week" name="this_week" domain="[('scheduled_time', '>=', (context_today - relativedelta(weeks=1)).strftime('%Y-%m-%d'))]"/>
-<filter string="Overdue" name="overdue" domain="[('scheduled_time', '&lt;', context_today.strftime('%Y-%m-%d')), ('state', 'in', ['pending', 'in_progress'])]"/>
-<separator/>
-<filter string="My Stops" name="my_stops" domain="[('user_id', '=', uid)]"/>
-<filter string="Active" name="active" domain="[('active', '=', True)]"/>
-<separator/>
-<filter invisible="1" string="Late Activities" name="activities_overdue" domain="[('my_activity_date_deadline', '&lt;', context_today)]" help="Show all records which have next action date is before today"/>
-<filter invisible="1" string="Today Activities" name="activities_today" domain="[('my_activity_date_deadline', '=', context_today)]"/>
-<filter invisible="1" string="Future Activities" name="activities_upcoming_all" domain="[('my_activity_date_deadline', '&gt;', context_today)]"/>
-<group expand="0" string="Group By">
-    <filter string="Status" name="state" context="{'group_by': 'state'}"/>
-    <filter string="Priority" name="priority" context="{'group_by': 'priority'}"/>
-    <filter string="Route" name="pickup_route" context="{'group_by': 'pickup_route_id'}"/>
-    <filter string="Customer" name="partner" context="{'group_by': 'partner_id'}"/>
-    <filter string="Assigned User" name="user" context="{'group_by': 'user_id'}"/>
-    <filter string="Company" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
-    <separator/>
-    <filter string="Scheduled Date" name="scheduled_date" context="{'group_by': 'scheduled_time:day'}"/>
-    <filter string="Scheduled Week" name="scheduled_week" context="{'group_by': 'scheduled_time:week'}"/>
-    <filter string="Scheduled Month" name="scheduled_month" context="{'group_by': 'scheduled_time:month'}"/>
-
-                </group>
-            </search>
-        </field>
-    </record>
-
-<!-- Enhanced Action for Pickup Route Stops -->
-    <record id="action_pickup_route_stop" model="ir.actions.act_window">
-<field name="name">Pickup Route Stops</field>
-        <field name="res_model">pickup.route.stop</field>
-<field name="view_mode">kanban,list,form</field>
-        <field name="domain">[]</field>
-<field name="context">{
-            'default_user_id': uid,
-            'search_default_active': 1,
-            'search_default_today': 1
-        }</field>
-        <field name="help" type="html">
-<p class="o_view_nocontent_smiling_face">
-                🛑 Create your first Pickup Route Stop!
-</p>
-<p>
-    <b>Advanced Route Stop Management:</b>
-    <br/>
-                • 📍 Precise location tracking with GPS coordinates<br/>
-                • &lt;i class="fa fa-clock-o"&gt; Real-time scheduling and duration tracking<br/>
-                • 👨‍&lt;i class="fa fa-briefcase"&gt; Contact management and access instructions<br/>
-                • <i class="fa fa-box"/> Estimated vs actual box and weight tracking<br/>
-                • ✍️ Digital signatures for completion verification<br/>
-                • &lt;i class="fa fa-camera"&gt; Photo documentation and barcode scanning<br/>
-                • &lt;i class="fa fa-bell"&gt; Automated notifications and status updates<br/>
+        <!-- Enhanced Action for Pickup Route Stops -->
+        <record id="action_pickup_route_stop" model="ir.actions.act_window">
+            <field name="name">Pickup Route Stops</field>
+            <field name="res_model">pickup.route.stop</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{
+                'default_user_id': uid,
+                'search_default_active': 1,
+                'search_default_today': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    🛑 Create your first Pickup Route Stop!
+                </p>
+                <p>
+                    <b>Advanced Route Stop Management:</b>
+                    <br/>
+                    • <i class="fa fa-map-marker-alt"></i> Precise location tracking with GPS coordinates<br/>
+                    • &lt;i class="fa fa-clock-o"&gt; Real-time scheduling and duration tracking<br/>
+                    • 👨‍&lt;i class="fa fa-briefcase"&gt; Contact management and access instructions<br/>
+                    • <i class="fa fa-box"/> Estimated vs actual box and weight tracking<br/>
+                    • ✍️ Digital signatures for completion verification<br/>
+                    • &lt;i class="fa fa-camera"&gt; Photo documentation and barcode scanning<br/>
+                    • &lt;i class="fa fa-bell"&gt; Automated notifications and status updates<br/>
+                    • <i class="fa fa-bar-chart"/> Performance analytics and time optimization<br/>
+                    • <i class="fa fa-truck"></i> Route sequence optimization and coordination<br/>
+                    • <i class="fa fa-clipboard"/> NAID compliance and audit trail management
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
                 • <i class="fa fa-bar-chart"/> Performance analytics and time optimization<br/>
-                • 🚛 Route sequence optimization and coordination<br/>
+                • <i class="fa fa-truck"></i> Route sequence optimization and coordination<br/>
                 • <i class="fa fa-clipboard"/> NAID compliance and audit trail management
             </p>
         </field>

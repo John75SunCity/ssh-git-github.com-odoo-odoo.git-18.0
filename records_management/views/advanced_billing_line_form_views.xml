@@ -2,8 +2,8 @@
 <odoo>
     <data>
         <!-- Form view for advanced.billing.line (simple version) -->
-<record id="advanced_billing_line_view_form_simple" model="ir.ui.view">
-    <field name="name">advanced.billing.line.view.form.simple</field>
+<record id="advanced_billing_line_view_form" model="ir.ui.view">
+    <field name="name">advanced.billing.line.view.form</field>
             <field name="priority">10</field>
             <field name="model">advanced.billing.line</field>
             <field name="arch" type="xml">
@@ -47,8 +47,8 @@
         </record>
 
         <!-- Form view for advanced.billing.line (detailed version) -->
-<record id="advanced_billing_line_view_form" model="ir.ui.view">
-    <field name="name">advanced.billing.line.view.form</field>
+<record id="advanced_billing_line_view_form_detailed" model="ir.ui.view">
+    <field name="name">advanced.billing.line.view.form.detailed</field>
             <field name="priority">20</field>
             <field name="model">advanced.billing.line</field>
             <field name="arch" type="xml">
