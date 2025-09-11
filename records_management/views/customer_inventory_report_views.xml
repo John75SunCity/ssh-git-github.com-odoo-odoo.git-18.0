@@ -185,8 +185,7 @@
 
         <!-- Menu Item -->
         <menuitem id="menu_customer_inventory_report"
-                  name="Inventory Reports"
-                  parent="records_management.menu_reports"
+name="Customer Inventory Reports" parent="menu_records_reporting"
                   action="customer_inventory_report_action"
                   sequence="10"/>
 
