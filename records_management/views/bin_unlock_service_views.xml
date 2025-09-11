@@ -52,10 +52,11 @@
 </xpath>
 <!-- Warning banner -->
 <xpath expr="//sheet" position="before">
-    <div class="alert alert-warning" role="alert" invisible="key_issuance_allowed == True or id == False>
-        <strong>🚨 Key Restriction Warning:</strong">
+<div class="alert alert-warning" role="alert" invisible="key_issuance_allowed == True or id == False">
+    <strong>🚨 Key Restriction Warning:</strong>
 This customer is restricted from receiving bin keys. Use bin unlock service instead.
-<br"/>
+<br/>
+
 
 <field name="key_restriction_reason" readonly="1" nolabel="1"/>
 </div>
@@ -104,7 +105,8 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
         <xpath expr="//filter[@name='supplier']" position="after">
             <separator/>
             <filter name="key_restricted" string="Key Restricted" domain="[('key_issuance_allowed', '=', False)]"/>
-            <filter name="recent_restrictions" string="Recently Restricted" domain="[('key_restriction_date', '">=', (context_today-relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+<filter name="recent_restrictions" string="Recently Restricted" domain="[('key_restriction_date', '&gt;=', (context_today-relativedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+
         </xpath>
     </field>
 </record>
@@ -286,10 +288,12 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
     <field name="inherit_id" ref="bin_unlock_service_view_form"/>
     <field name="arch" type="xml">
 <xpath expr="//sheet" position="before">
-<div class="alert alert-info" role="status" invisible="customer_key_restricted == False>
-        <strong"><i class='fa fa-key'"/> Key Restricted Customer:</strong>
+<div class="alert alert-info" role="status" invisible="customer_key_restricted == False">
+    <strong>
+        <i class='fa fa-key'></i> Key Restricted Customer:</strong>
                         This customer is not allowed to receive bin keys.
-        <br"/>
+<br/>
+
         <strong>Restriction Reason:</strong>
         <field name="key_restriction_reason" readonly="1" nolabel="1"/>
         <br/>
@@ -401,8 +405,9 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
 </record>
 
 <!-- Menus -->
-<menuitem id="menu_bin_key_management" name="<i class='fa fa-key'"/> Bin Key Management" parent="records_management.menu_records_management_root" action="action_bin_key_management" sequence="10"/>
-<menuitem id="menu_bin_unlock_services" name="🔓 Unlock Services" parent="records_management.menu_records_management_root" action="action_bin_unlock_service" sequence="11"/>
+<menuitem id="menu_bin_key_management" name="&lt;i class='fa fa-key'/&gt; Bin Key Management" parent="records_management.menu_records_management_root" action="action_bin_key_management" sequence="10"/>
+<menuitem id="menu_bin_unlock_services" name="&lt;i class='fa fa-unlock-alt'/&gt; Unlock Services" parent="records_management.menu_records_management_root" action="action_bin_unlock_service" sequence="11"/>
+
 
 
 </data>

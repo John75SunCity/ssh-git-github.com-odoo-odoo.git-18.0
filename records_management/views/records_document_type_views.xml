@@ -9,7 +9,8 @@
             <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-warning="state == 'deprecated'" decoration-info="state == 'draft'">
                 <field name="sequence" widget="handle"/>
                 <field name="name" string="Document Type"/>
-                <field name="code" string="🔢 Code"/>
+<field name="code" string="Code"/>
+
                 <field name="category" string="Category"/>
                 <field name="confidentiality_level" string="Security Level"/>
                 <field name="effective_retention_years" string="Retention (Years)"/>
@@ -209,7 +210,8 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 </div>
                                 <div class="o_kanban_manage_button_section">
                                     <a class="o_kanban_manage_toggle_button" href="#" title="More options">
-<i class='fa fa-ellipsis-v' role="img" aria-label="More options"/>
+<i class="fa fa-ellipsis-v" role="img" aria-label="More options"/>
+
 
                                     </a>
                                 </div>
@@ -219,14 +221,18 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                     <div class="col-6">
                                         <div class="text-center">
                                             <span class="badge badge-primary">
-                                                <field name="document_count"/> <i class='fa fa-file-o'/>
+<field name="document_count"/>
+<i class="fa fa-file-o"/>
+
                                             </span>
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="text-center">
                                             <span class="badge badge-info">
-                                                <field name="container_count"/> <i class='fa fa-box'/>
+<field name="container_count"/>
+<i class="fa fa-box"/>
+
                                             </span>
                                         </div>
                                     </div>
@@ -234,7 +240,8 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 <div class="row mt-2">
                                     <div class="col-12">
                                         <small class="text-muted">
-<i class='fa fa-shield' aria-hidden="true"/>
+<i class="fa fa-shield" aria-hidden="true"/>
+
 
                                             <field name="confidentiality_level"/>
                                         </small>
@@ -243,7 +250,8 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 <div class="row mt-1">
                                     <div class="col-12">
                                         <small class="text-muted">
-<i class='fa fa-clock' aria-hidden="true"/>
+<i class="fa fa-clock" aria-hidden="true"/>
+
 
                                             <field name="effective_retention_years"/> years
                                         </small>
@@ -251,12 +259,20 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                                 </div>
                             </div>
                             <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Type</a>
-                                <a role="menuitem" type="object" name="action_view_documents" class="dropdown-item"><i class='fa fa-file-o'/> View Documents</a>
-<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'"><i class='fa fa-check-circle text-success'"/> Activate</a>
-<a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'"><i class='fa fa-warning'"/> Deprecate</a>
+<a role="menuitem" type="edit" class="dropdown-item">
+    <i class="fa fa-edit"/>
+ Edit Type</a>
+<a role="menuitem" type="object" name="action_view_documents" class="dropdown-item">
+    <i class="fa fa-file-o"/>
+ View Documents</a>
+<a role="menuitem" type="object" name="action_activate" class="dropdown-item" invisible="state != 'draft'">
+    <i class="fa fa-check-circle text-success"/>
+ Activate</a>
+<a role="menuitem" type="object" name="action_deprecate" class="dropdown-item" invisible="state != 'active'">
+    <i class="fa fa-warning"/>
+ Deprecate</a>
                                 <div class="dropdown-divider"/>
-<a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')>📁 Archive</a>
+<a role="menuitem" type="object" name="action_archive" class="dropdown-item" invisible="state in ('draft', 'deprecated')">📁 Archive</a>
                             </div>
                         </div>
                     </t>
@@ -265,7 +281,7 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
         </field>
     </record>
 
-    <!-- Search view for records.document.type --">
+<!-- Search view for records.document.type -->
     <record id="records_document_type_view_search" model="ir.ui.view">
         <field name="name">records.document.type.view.search</field>
         <field name="model">records.document.type</field>
@@ -280,7 +296,8 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
                 <field name="department_id"/>
 
                 <filter string="Active Types" name="active" domain="[('active', '=', True)]"/>
-                <filter string="📁 Archived Types" name="inactive" domain="[('active', '=', False)]"/>
+<filter string="Archived Types" name="inactive" domain="[('active', '=', False)]"/>
+
 
                 <separator/>
                 <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
@@ -290,19 +307,23 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
 
                 <separator/>
                 <filter string="High Security" name="high_security" domain="[('confidentiality_level', 'in', ['restricted', 'top_secret'])]"/>
-                <filter string="🏥 HIPAA Protected" name="hipaa" domain="[('hipaa_protected', '=', True)]"/>
+<filter string="HIPAA Protected" name="hipaa" domain="[('hipaa_protected', '=', True)]"/>
+
                 <filter string="SOX Compliant" name="sox" domain="[('sox_compliance', '=', True)]"/>
-                <filter string="🇪🇺 GDPR Applicable" name="gdpr" domain="[('gdpr_applicable', '=', True)]"/>
-                <filter string="<i class="fa fa-shield" aria-hidden="true"></i> NAID Compliant" name="naid" domain="[('naid_compliance', '=', True)]"/>
+<filter string="GDPR Applicable" name="gdpr" domain="[('gdpr_applicable', '=', True)]"/>
+<filter string="NAID Compliant" name="naid" domain="[('naid_compliance', '=', True)]"/>
+
 
                 <separator/>
-                <filter string="Has Documents" name="has_documents" domain="[('document_count', '">', 0)]"/>
-                <filter string="Has Containers" name="has_containers" domain="[('container_count', '">', 0)]"/>
-                <filter string="Has Children" name="has_children" domain="[('child_count', '">', 0)]"/>
+<filter string="Has Documents" name="has_documents" domain="[('document_count', '>', 0)]"/>
+<filter string="Has Containers" name="has_containers" domain="[('container_count', '>', 0)]"/>
+<filter string="Has Children" name="has_children" domain="[('child_count', '>', 0)]"/>
+
 
                 <separator/>
                 <filter string="Encryption Required" name="encryption" domain="[('encryption_required', '=', True)]"/>
-                <filter string="📷 Digital Copy Required" name="digital_copy" domain="[('digital_copy_required', '=', True)]"/>
+<filter string="Digital Copy Required" name="digital_copy" domain="[('digital_copy_required', '=', True)]"/>
+
                 <filter string="Barcode Required" name="barcode" domain="[('barcode_required', '=', True)]"/>
 
                 <group expand="0" string="Group By">
@@ -320,27 +341,26 @@ invisible="state in ('draft', 'deprecated')" groups="records_management.group_re
 
     <!-- Action for records.document.type -->
     <record id="action_records_document_type" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-file-o'/> Document Types</field>
+<field name="name">Document Types</field>
         <field name="res_model">records.document.type</field>
         <field name="view_mode">kanban,list,form</field>
         <field name="search_view_id" ref="records_document_type_view_search"/>
         <field name="context">{'search_default_active': 1, 'search_default_active_state': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                <i class='fa fa-file-o'/> Create your first document type!
+Create your first document type!
             </p>
             <p>
                 <b>Document Type Management:</b>
                 <br/>
-                • <i class='fa fa-folder'/> Organize documents by category and security level<br/>
-                • <i class='fa fa-lock'/> Configure compliance requirements (NAID, HIPAA, SOX, GDPR)<br/>
-                • <i class='fa fa-calendar'/> Set retention policies and destruction schedules<br/>
-                • <i class='fa fa-box'/> Define physical storage requirements<br/>
-                • <i class='fa fa-cog'/> Configure indexing, barcoding, and encryption settings<br/>
-                • <i class='fa fa-trophy'/> NAID AAA certified document classification system
-            </p>
-        </field>
-    </record>
+• Organize documents by category and security level<br/>
+                • Configure compliance requirements (NAID, HIPAA, SOX, GDPR)<br/>
+                • Set retention policies and destruction schedules<br/>
+                • Define physical storage requirements<br/>
+                • Configure indexing, barcoding, and encryption settings<br/>
+                • NAID AAA certified document classification system
+</p>
+</field>
+</record>
 </data>
-
 </odoo>

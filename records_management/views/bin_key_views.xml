@@ -226,8 +226,9 @@
 
     <separator/>
 
-    <filter string="Maintenance Due" name="maintenance_due" domain="[('next_maintenance_due', '<=', context_today)]"/>
-    <filter string="Overdue Returns" name="overdue_returns" domain="[('expected_return_date', '<', context_today), ('status', '=', 'assigned')]"/>
+<filter string="Maintenance Due" name="maintenance_due" domain="[('next_maintenance_due', '&lt;=', context_today)]"/>
+<filter string="Overdue Returns" name="overdue_returns" domain="[('expected_return_date', '&lt;', context_today), ('status', '=', 'assigned')]"/>
+
 
     <separator/>
 
@@ -265,3 +266,4 @@ Click to create a new bin key.
 </data>
 
 </odoo>
+

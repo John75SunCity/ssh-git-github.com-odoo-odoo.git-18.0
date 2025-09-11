@@ -27,7 +27,9 @@
 </strong>
 </div>
 <div class="o_secondary">
-                                            <i class="fa fa-tag"><field name="bale_number"/>
+<i class="fa fa-tag">
+    <field name="bale_number"/>
+</i>
 </div>
 </div>
 <div class="o_kanban_manage_button_section">
@@ -58,7 +60,8 @@ Grade:<field name="paper_grade"/>
 </div>
 <div class="col-4">
 <span class="badge badge-success" t-if="record.state.raw_value == 'shipped'">
-                                                <i class='fa fa-truck'"/> Shipped
+<i class="fa fa-truck" />
+ Shipped
 </span>
 <span class="badge" t-att-class="record.paper_grade.raw_value === 'wht' ? 'badge-success' : record.paper_grade.raw_value === 'mix' ? 'badge-warning' : 'badge-secondary'">
     <field name="paper_grade"/>
@@ -68,12 +71,14 @@ Grade:<field name="paper_grade"/>
 <div class="row mt-2">
 <div class="col-6">
 <button class="btn btn-primary btn-sm" type="object" name="action_weigh_bale">
-                                                <i class='fa fa-balance-scale'"/> Weigh
+<i class="fa fa-balance-scale" />
+ Weigh
 </button>
 </div>
 <div class="col-6">
 <button class="btn btn-success btn-sm" type="object" name="action_load_trailer">
-                                                <i class='fa fa-truck'"/> Load
+<i class="fa fa-truck" />
+ Load
 </button>
 </div>
 </div>
@@ -81,7 +86,9 @@ Grade:<field name="paper_grade"/>
 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
 <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Bale</a>
 <a role="menuitem" type="object" name="action_quality_inspection" class="dropdown-item"><i class='fa fa-search'/> Quality Check</a>
-<a role="menuitem" type="object" name="action_print_label" class="dropdown-item"><i class="fa fa-tag"> Print Label</a>
+<a role="menuitem" type="object" name="action_print_label" class="dropdown-item">
+    <i class="fa fa-tag" />
+ Print Label</a>
 <a role="menuitem" type="object" name="action_view_source_documents" class="dropdown-item"><i class='fa fa-file-o'/> Source Documents</a>
 <div class="dropdown-divider"/>
 
@@ -236,8 +243,8 @@ class="btn-info" invisible="state == 'shipped'"/>
 <filter string="Today" name="today" domain="[('source_date', '=', context_today.strftime('%Y-%m-%d'))]"/>
 
 <filter string="📆 This Week" name="this_week"
-domain="[('source_date', '>=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')),
-                                    ('source_date', '<=', (context_today + datetime.timedelta(days=6-context_today.weekday())).strftime('%Y-%m-%d'))]"/>
+domain="[('source_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')),
+                                    ('source_date', '&lt;=', (context_today + datetime.timedelta(days=6-context_today.weekday())).strftime('%Y-%m-%d'))]"/>
 <filter string="This Month" name="this_month"
 domain="[('source_date', '>=', context_today.strftime('%Y-%m-01'))]"/>
 
@@ -275,7 +282,8 @@ domain="[('source_date', '>=', context_today.strftime('%Y-%m-01'))]"/>
                     • <i class='fa fa-search'/> Real-time quality inspection workflows<br/>
 
 • <i class='fa fa-bar-chart'/> Performance analytics and efficiency metrics<br/>
-                    • <i class="fa fa-recycle"> Sustainable recycling process management
+•<i class="fa fa-recycle" />
+ Sustainable recycling process management
 </p>
 </field>
 </record>

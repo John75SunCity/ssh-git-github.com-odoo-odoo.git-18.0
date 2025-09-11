@@ -3,340 +3,316 @@
     <data>
 <!-- Enhanced Departmental Billing Contact Views -->
 
-<!-- List view -->
-    <record id="records_department_billing_contact_view_tree" model="ir.ui.view">
-        <field name="name">records.department.billing.contact.view.tree</field>
-        <field name="model">records.department.billing.contact</field>
-        <field name="arch" type="xml">
-            <list>
-                <field name="name"/>
-            </list>
-        </field>
-    </record>
-
-    <!-- Form view -->
-    <record id="records_department_billing_contact_view_form" model="ir.ui.view">
-        <field name="name">records.department.billing.contact.view.form</field>
-        <field name="model">records.department.billing.contact</field>
-        <field name="arch" type="xml">
-            <form string="Records Department Billing Contact">
-                <sheet>
-                    <div class="oe_title">
-                        <label for="name"/>
-                        <h1>
-                            <field name="name" placeholder="Name..."/>
-                        </h1>
-                    </div>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Search view for base.rate -->
-    <record id="records_department_billing_contact_view_search" model="ir.ui.view">
-        <field name="name">records.department.billing.contact.view.search</field>
-        <field name="model">records.department.billing.contact</field>
-        <field name="arch" type="xml">
-            <search>
-                <group expand="1" string="Group By">
-                    <filter string="Name" name="name" domain="[]" context="{'group_by':'name'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-<!-- List view for Action -->
-    <record id="action_records_department_billing_contact" model="ir.actions.act_window">
-        <field name="name">Records Department Billing Contact</field>
-        <field name="res_model">records.department.billing.contact</field>
-        <field name="view_mode">list,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
-        <field name="help" type="html">
-            <p class="oe_view_nocontent_create">
-                There is no examples click here to add new Records Department Billing Contact.
-            </p>
-        </field>
-    </record>
-
-<!-- List view for ENTERPRISE -->
-
-    <!-- Kanban view for Departmental -->
-    <record id="records_department_billing_contact_view_kanban" model="ir.ui.view">
-        <field name="name">records.department.billing.contact.view.kanban</field>
-        <field name="model">records.department.billing.contact</field>
-        <field name="arch" type="xml">
-            <kanban default_group_by="department_id" class="o_kanban_billing_dashboard">
-                <field name="contact_name"/>
-                <field name="department_id"/>
-                <field name="billing_role"/>
-                <field name="monthly_budget"/>
-                <field name="current_month_charges"/>
-                <field name="budget_utilization"/>
-                <field name="approval_authority"/>
-                <templates>
-                    <t t-name="card">
-                        <div class="oe_kanban_card oe_kanban_global_click">
-                            <div class="o_kanban_card_header">
-                                <div class="o_kanban_card_header_title">
-                                    <div class="o_primary">
-                                        <strong><i class='fa fa-briefcase'/>                                            <field name="contact_name"/>
-                                        </strong>
-                                    </div>
-                                    <div class="o_secondary">
-                                        <i class='fa fa-building'/>                                        <field name="department_id"/>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_manage_button_section">
-                                    <a class="o_kanban_manage_toggle_button" href="#">
-<i class='fa fa-ellipsis-v' role="img" aria-label="More options" title="More options"/>
-
-                                    </a>
-                                </div>
-                            </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <div>
-<i class='fa fa-user-circle' aria-hidden="true"/>
-
-                                            <field name="billing_role"/>
-                                        </div>
-                                        <div>
-<i class='fa fa-dollar' aria-hidden="true"/>
-
- Budget: $<field name="monthly_budget"/>
-                                        </div>
-                                        <div>
-<i class='fa fa-credit-card' aria-hidden="true"/>
-
- Used: $<field name="current_month_charges"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <span class="badge" t-att-class="record.budget_utilization.raw_value &amp;gt; 90 ? 'badge-danger' : record.budget_utilization.raw_value > 75 ? 'badge-warning' : 'badge-success'">
-                                            <field name="budget_utilization"/>
-% Used
-                                        </span>
-                                        <span class="badge badge-primary" t-if="record.approval_authority.raw_value">
-                                            <i class='fa fa-check-circle text-success'"/> Approver
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-12">
-                                        <button class="btn btn-info btn-sm" type="object" name="action_view_approvals">
-                                            <i class='fa fa-check-circle text-success'"/> Approvals
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                <a role="menuitem" type="edit" class="dropdown-item"><i class='fa fa-edit'/> Edit Contact</a>
-                                <a role="menuitem" type="object" name="action_view_approvals" class="dropdown-item"><i class='fa fa-check-circle text-success'/> View Approvals</a>
-                                <a role="menuitem" type="object" name="action_budget_report" class="dropdown-item"><i class='fa fa-clipboard'/> Budget Report</a>
-                                <div class="dropdown-divider"/>
-                                <a role="menuitem" type="object" name="action_send_bill_notification" class="dropdown-item"><i class='fa fa-envelope'/> Send Bill Notification</a>
-                            </div>
-                        </div>
-                    </t>
-                </templates>
-            </kanban>
-        </field>
-    </record>
-
-<!-- List view for Enhanced -->
+<!-- Tree view -->
 <record id="records_department_billing_contact_view_tree" model="ir.ui.view">
     <field name="name">records.department.billing.contact.view.tree</field>
-        <field name="model">records.department.billing.contact</field>
-        <field name="arch" type="xml">
-            <list decoration-danger="budget_utilization &amp;gt; 90" decoration-warning="budget_utilization &amp;gt; 75" decoration-success="budget_utilization &amp;lt;= 50">
-                <field name="contact_name" string="Contact"/>
-                <field name="department_id" string="Department"/>
-                <field name="billing_role" string="Role"/>
-                <field name="email" string="Email"/>
-                <field name="phone" string="Phone"/>
-                <field name="monthly_budget" string="Monthly Budget" sum="Total Budget"/>
-                <field name="current_month_charges" string="💳 Current Charges" sum="Total Charges"/>
-                <field name="budget_utilization" string="Utilization %" widget="percentage"/>
-                <field name="approval_authority" string="Approver" widget="boolean_toggle"/>
-                <field name="active" string="Active" widget="boolean_toggle"/>
-                <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link"/>
-            </list>
-        </field>
-    </record>
+    <field name="model">records.department.billing.contact</field>
+    <field name="arch" type="xml">
+<tree decoration-danger="budget_utilization &gt; 90" decoration-warning="budget_utilization &gt; 75" decoration-success="budget_utilization &lt;= 50">
+    <field name="contact_name" string="Contact"/>
+    <field name="department_id" string="Department"/>
+    <field name="billing_role" string="Role"/>
+    <field name="email" string="Email"/>
+    <field name="phone" string="Phone"/>
+    <field name="monthly_budget" string="Monthly Budget" sum="Total Budget"/>
 
-    <!-- Form view for Enhanced -->
-    <record id="records_department_billing_contact_view_form" model="ir.ui.view">
-        <field name="name">records.department.billing.contact.view.form</field>
-        <field name="model">records.department.billing.contact</field>
-        <field name="arch" type="xml">
-            <form>
-                <header>
-                    <button name="action_budget_report" type="object" string="Generate Budget Report" class="btn-primary"/>
-                    <button name="action_send_bill_notification" type="object" string="Send Bill Notification" class="btn-secondary"/>
-                    <field name="active" widget="boolean_toggle"/>
-                </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" type="object" name="action_view_approvals" icon="fa-check-circle">
-                            <field name="approval_count" string="Approvals" widget="statinfo"/>
-                        </button>
-                        <button class="oe_stat_button" icon="fa-percent">
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
-                                    <field name="budget_utilization"/>
-%</span>
-                                <span class="o_stat_text">Budget Used</span>
+<field name="current_month_charges" string="Current Charges" sum="Total Charges"/>
+<field name="budget_utilization" string="Utilization %" widget="percentage"/>
+<field name="approval_authority" string="Approver" widget="boolean_toggle"/>
+<field name="active" string="Active" widget="boolean_toggle"/>
+
+
+<button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link"/>
+
+</tree>
+</field>
+</record>
+
+<!-- Form view -->
+<record id="records_department_billing_contact_view_form" model="ir.ui.view">
+    <field name="name">records.department.billing.contact.view.form</field>
+    <field name="model">records.department.billing.contact</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+<button name="action_budget_report" type="object" string="Generate Budget Report" class="btn-primary" icon="fa-file-pdf-o"/>
+<button name="action_send_bill_notification" type="object" string="Send Bill Notification" class="btn-secondary" icon="fa-envelope"/>
+<field name="active" widget="boolean_toggle"/>
+</header>
+<sheet>
+<div class="oe_button_box" name="button_box">
+    <button class="oe_stat_button" type="object" name="action_view_approvals" icon="fa-check-circle">
+        <field name="approval_count" string="Approvals" widget="statinfo"/>
+    </button>
+    <button class="oe_stat_button" icon="fa-percent">
+        <div class="o_field_widget o_stat_info">
+            <span class="o_stat_value">
+                <field name="budget_utilization"/>
+
+%
+</span>
+<span class="o_stat_text">Budget Used</span>
+</div>
+</button>
+</div>
+
+<group>
+    <group string="Contact Information">
+        <field name="contact_name" placeholder="Contact Full Name"/>
+        <field name="department_id"/>
+        <field name="billing_role"/>
+        <field name="email" widget="email"/>
+        <field name="phone" widget="phone"/>
+    </group>
+<group string="Budget &amp; Authority">
+    <field name="monthly_budget"/>
+    <field name="current_month_charges"/>
+    <field name="budget_utilization" widget="percentage"/>
+    <field name="approval_authority" widget="boolean_toggle"/>
+    <field name="approval_limit"/>
+</group>
+</group>
+
+<notebook>
+    <page string="Approval History" name="approvals">
+<field name="approval_history_ids" mode="tree">
+    <tree>
+        <field name="approval_date"/>
+        <field name="charge_amount"/>
+        <field name="service_description"/>
+        <field name="vendor"/>
+        <field name="approval_notes"/>
+
+</tree>
+</field>
+</page>
+<page string="Budget Analysis" name="budget">
+<group>
+<group string="Current Period">
+<field name="current_month_budget"/>
+<field name="current_month_actual"/>
+<field name="current_month_variance"/>
+<field name="current_month_forecast"/>
+</group>
+<group string="Year to Date">
+<field name="ytd_budget"/>
+<field name="ytd_actual"/>
+<field name="ytd_variance"/>
+<field name="ytd_variance_percentage"/>
+</group>
+</group>
+</page>
+<page string="Notifications" name="notifications">
+<group>
+<group string="Alert Settings">
+<field name="budget_alert_threshold"/>
+<field name="email_notifications"/>
+<field name="weekly_reports"/>
+<field name="monthly_statements"/>
+</group>
+<group string="CC Recipients">
+<field name="cc_finance_team"/>
+<field name="cc_department_head"/>
+<field name="cc_additional_emails"/>
+</group>
+</group>
+</page>
+</notebook>
+</sheet>
+<div class="oe_chatter">
+<field name="message_follower_ids"/>
+<field name="activity_ids"/>
+<field name="message_ids"/>
+</div>
+</form>
+</field>
+</record>
+
+<!-- Kanban view -->
+<record id="records_department_billing_contact_view_kanban" model="ir.ui.view">
+    <field name="name">records.department.billing.contact.view.kanban</field>
+    <field name="model">records.department.billing.contact</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="department_id" class="o_kanban_billing_dashboard">
+            <field name="contact_name"/>
+            <field name="department_id"/>
+            <field name="billing_role"/>
+            <field name="monthly_budget"/>
+            <field name="current_month_charges"/>
+            <field name="budget_utilization"/>
+            <field name="approval_authority"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div class="oe_kanban_card oe_kanban_global_click">
+                        <div class="o_kanban_card_header">
+                            <div class="o_kanban_card_header_title">
+                                <div class="o_primary">
+                                    <strong>
+                                        <i class="fa fa-briefcase"/>
+                                        <field name="contact_name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_secondary">
+                                    <i class="fa fa-building"/>
+                                    <field name="department_id"/>
+                                </div>
                             </div>
-                        </button>
+                            <div class="o_kanban_manage_button_section">
+                                <a class="o_kanban_manage_toggle_button" href="#">
+                                    <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div>
+                                        <i class="fa fa-user"/>
+                                        <field name="billing_role"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-money"/>
+ Budget: $<field name="monthly_budget"/>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-credit-card"/>
+ Used: $<field name="current_month_charges"/>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <span class="badge" t-att-class="record.budget_utilization.raw_value &gt; 90 ? 'badge-danger' : record.budget_utilization.raw_value > 75 ? 'badge-warning' : 'badge-success'">
+                                        <field name="budget_utilization"/>
+% Used
+                                    </span>
+                                    <span class="badge badge-primary" t-if="record.approval_authority.raw_value">
+                                        <i class="fa fa-check-circle"/>
+ Approver
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <button class="btn btn-info btn-sm" type="object" name="action_view_approvals">
+                                        <i class="fa fa-check-circle"/>
+ Approvals
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                            <a role="menuitem" type="edit" class="dropdown-item">
+                                <i class="fa fa-edit"/>
+ Edit Contact</a>
+                            <a role="menuitem" type="object" name="action_view_approvals" class="dropdown-item">
+                                <i class="fa fa-check-circle"/>
+ View Approvals</a>
+                            <a role="menuitem" type="object" name="action_budget_report" class="dropdown-item">
+                                <i class="fa fa-file-text-o"/>
+ Budget Report</a>
+                            <div class="dropdown-divider"/>
+                            <a role="menuitem" type="object" name="action_send_bill_notification" class="dropdown-item">
+                                <i class="fa fa-envelope"/>
+ Send Bill Notification</a>
+                        </div>
                     </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
 
-                    <group>
-                        <group string="Contact Information">
-                            <field name="contact_name" placeholder="Contact Full Name"/>
-                            <field name="department_id"/>
-                            <field name="billing_role"/>
-                            <field name="email" widget="email"/>
-                            <field name="phone" widget="phone"/>
-                        </group>
-                        <group string="Budget &amp;amp; Authority">
-                            <field name="monthly_budget"/>
-                            <field name="current_month_charges"/>
-                            <field name="budget_utilization" widget="percentage"/>
-                            <field name="approval_authority" widget="boolean_toggle"/>
-                            <field name="approval_limit"/>
-                        </group>
-                    </group>
+<!-- Graph view -->
+<record id="records_department_billing_contact_view_graph" model="ir.ui.view">
+    <field name="name">records.department.billing.contact.view.graph</field>
+    <field name="model">records.department.billing.contact</field>
+    <field name="arch" type="xml">
+        <graph string="Department Budget Analytics">
+            <field name="department_id" type="row"/>
+            <field name="monthly_budget" type="measure"/>
+            <field name="current_month_charges" type="measure"/>
+        </graph>
+    </field>
+</record>
 
-                    <notebook>
-                        <page string="Approval History" name="approvals">
-                            <field name="approval_history_ids" mode="list">
-                                <list>
-                                    <field name="approval_date"/>
-                                    <field name="charge_amount"/>
-                                    <field name="service_description"/>
-                                    <field name="vendor"/>
-                                    <field name="approval_notes"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Budget Analysis" name="budget">
-                            <group>
-                                <group string="Current Period">
-                                    <field name="current_month_budget"/>
-                                    <field name="current_month_actual"/>
-                                    <field name="current_month_variance"/>
-                                    <field name="current_month_forecast"/>
-                                </group>
-                                <group string="Year to Date">
-                                    <field name="ytd_budget"/>
-                                    <field name="ytd_actual"/>
-                                    <field name="ytd_variance"/>
-                                    <field name="ytd_variance_percentage"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Notifications" name="notifications">
-                            <group>
-                                <group string="Alert Settings">
-                                    <field name="budget_alert_threshold"/>
-                                    <field name="email_notifications"/>
-                                    <field name="weekly_reports"/>
-                                    <field name="monthly_statements"/>
-                                </group>
-                                <group string="CC Recipients">
-                                    <field name="cc_finance_team"/>
-                                    <field name="cc_department_head"/>
-                                    <field name="cc_additional_emails"/>
-                                </group>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="activity_ids"/>
-                    <field name="message_ids"/>
-                </div>
-            </form>
-        </field>
-    </record>
+<!-- Search view -->
+<record id="records_department_billing_contact_view_search" model="ir.ui.view">
+    <field name="name">records.department.billing.contact.view.search</field>
+    <field name="model">records.department.billing.contact</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="contact_name" string="Contact"/>
+            <field name="department_id"/>
+            <field name="email"/>
 
-<!-- List view for Graph -->
-    <record id="records_department_billing_contact_view_graph" model="ir.ui.view">
-        <field name="name">records.department.billing.contact.view.graph</field>
-        <field name="model">records.department.billing.contact</field>
-        <field name="arch" type="xml">
-            <graph string="Department Budget Analytics">
-                <field name="department_id" type="row"/>
-                <field name="monthly_budget" type="measure"/>
-                <field name="current_month_charges" type="measure"/>
-            </graph>
-        </field>
-    </record>
 
-    <!-- Search view for Enhanced -->
-    <record id="records_department_billing_contact_view_search" model="ir.ui.view">
-        <field name="name">records.department.billing.contact.view.search</field>
-        <field name="model">records.department.billing.contact</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="contact_name" string="Contact"/>
-                <field name="department_id"/>
-                <field name="email"/>
 
-                <filter string="Active Contacts" name="active" domain="[('active', '=', True)]"/>
-                <filter string="Approvers" name="approvers" domain="[('approval_authority', '=', True)]"/>
-                <filter string="Email Notifications" name="email_notifications" domain="[('email_notifications', '=', True)]"/>
+<filter string="Active Contacts" name="active" domain="[('active', '=', True)]"/>
+<filter string="Approvers" name="approvers" domain="[('approval_authority', '=', True)]"/>
+<filter string="Email Notifications" name="email_notifications" domain="[('email_notifications', '=', True)]"/>
 
-                <separator/>
-                <filter string="🟢 Under Budget" name="under_budget" domain="[('budget_utilization', '&amp;lt;', 75)]"/>
-                <filter string="🟡 Near Budget" name="near_budget" domain="[('budget_utilization', '&amp;gt;=', 75), ('budget_utilization', '<', 90)]"/>
-                <filter string="🔴 Over Budget" name="over_budget" domain="[('budget_utilization', '&amp;gt;=', 90)]"/>
 
-                <separator/>
-                <filter string="High Budget" name="high_budget" domain="[('monthly_budget', '&amp;gt;', 10000)]"/>
-                <filter string="Medium Budget" name="medium_budget" domain="[('monthly_budget', '&amp;gt;', 1000), ('monthly_budget', '<=', 10000)]"/>
 
-                <group expand="0" string="Group By">
-                    <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
-                    <filter string="Billing Role" name="group_by_role" context="{'group_by': 'billing_role'}"/>
-                    <filter string="Budget Range" name="group_by_budget" context="{'group_by': 'budget_range'}"/>
-                    <filter string="Approval Authority" name="group_by_approval" context="{'group_by': 'approval_authority'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+<separator/>
 
-<!-- List view for ENTERPRISE -->
-    <record id="action_department_billing" model="ir.actions.act_window">
-        <field name="name"><i class='fa fa-money'/> Departmental Billing</field>
-        <field name="res_model">records.department.billing.contact</field>
-        <field name="view_mode">kanban,list,form,graph</field>
-        <field name="search_view_id" ref="records_department_billing_contact_view_search"/>
-        <field name="context">{
-            'search_default_active': 1,
-            'search_default_under_budget': 1
-        }</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                <i class='fa fa-money'/> Set up your first departmental billing contact!
-            </p>
-            <p>
-                <b>Enterprise Departmental Billing:</b>
-                <br/>
-                • <i class='fa fa-briefcase'/> Multi-level departmental cost allocation<br/>
-                • <i class='fa fa-bar-chart'/> Real-time budget tracking and alerts<br/>
-                • <i class='fa fa-check-circle text-success'/> Hierarchical approval workflows<br/>
-                • <i class='fa fa-envelope'/> Automated billing notifications<br/>
-                • <i class='fa fa-clipboard'/> Comprehensive budget reporting<br/>
-                • <i class='fa fa-bullseye'/> Role-based billing authorization<br/>
-                • <i class='fa fa-line-chart'/> Budget variance analysis and forecasting<br/>
-                • <i class='fa fa-mobile'/> Mobile-optimized budget management
+<filter string="Under Budget" name="under_budget" domain="[('budget_utilization', '&lt;', 75)]"/>
+<filter string="Near Budget" name="near_budget" domain="[('budget_utilization', '&gt;=', 75), ('budget_utilization', '&lt;', 90)]"/>
+<filter string="Over Budget" name="over_budget" domain="[('budget_utilization', '&gt;=', 90)]"/>
+
+
+<separator/>
+
+<filter string="High Budget" name="high_budget" domain="[('monthly_budget', '&gt;', 10000)]"/>
+<filter string="Medium Budget" name="medium_budget" domain="[('monthly_budget', '&gt;', 1000), ('monthly_budget', '&lt;=', 10000)]"/>
+
+
+<group expand="0" string="Group By">
+    <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
+    <filter string="Billing Role" name="group_by_role" context="{'group_by': 'billing_role'}"/>
+    <filter string="Budget Range" name="group_by_budget" context="{'group_by': 'budget_range'}"/>
+    <filter string="Approval Authority" name="group_by_approval" context="{'group_by': 'approval_authority'}"/>
+</group>
+</search>
+</field>
+</record>
+
+<!-- Action -->
+<record id="action_department_billing" model="ir.actions.act_window">
+<field name="name">Departmental Billing</field>
+<field name="res_model">records.department.billing.contact</field>
+<field name="view_mode">kanban,tree,form,graph</field>
+<field name="search_view_id" ref="records_department_billing_contact_view_search"/>
+<field name="context">{
+                'search_default_active': 1,
+                'search_default_under_budget': 1
+            }</field>
+<field name="help" type="html">
+    <p class="o_view_nocontent_smiling_face">
+<i class="fa fa-money fa-3x"/>
+<br/>
+        Set up your first departmental billing contact!
+</p>
+<p>
+<b>Enterprise Departmental Billing:</b>
+<br/>
+
+•<i class="fa fa-briefcase"/>
+ Multi-level departmental cost allocation<br/>
+                    •<i class="fa fa-bar-chart"/>
+ Real-time budget tracking and alerts<br/>
+                    •<i class="fa fa-check-circle"/>
+ Hierarchical approval workflows<br/>
+                    •<i class="fa fa-envelope"/>
+ Automated billing notifications<br/>
+                    •<i class="fa fa-file-text-o"/>
+ Comprehensive budget reporting<br/>
+                    •<i class="fa fa-bullseye"/>
+ Role-based billing authorization<br/>
+                    •<i class="fa fa-line-chart"/>
+ Budget variance analysis and forecasting<br/>
+                    •<i class="fa fa-mobile"/>
+ Mobile-optimized budget management
 </p>
 </field>
 </record>
 </data>
-
 </odoo>

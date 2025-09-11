@@ -37,10 +37,11 @@ System Architecture Flowchart</h1>
     <field name="config_valid" readonly="1"/>
 </group>
 </div>
-<div invisible="step != 'complete'" class="alert alert-success text-center" role="status" aria-live="polite>
-    <h3">
+<div invisible="step != 'complete'" class="alert alert-success text-center" role="status" aria-live="polite">
+    <h3>
         <i class='fa fa-check-circle me-2' aria-hidden="true"/>
-Ready to Launch!</h3>
+Ready to Launch!
+</h3>
     <p class="mb-0">Your interactive flowchart configuration is complete and ready to use.</p>
 </div>
 </sheet>

@@ -10,24 +10,28 @@
             <header>
                 <h1>
 <span invisible="operation_type != 'set'">
-                                <i class="fa fa-shield" aria-hidden="true"></i> Mark Documents as PERMANENT
+Mark Documents as PERMANENT
                     </span>
 <span invisible="operation_type != 'remove'">
-                                <i class='fa fa-warning'/> Remove PERMANENT Flag (Admin Only)
+Remove PERMANENT Flag (Admin Only)
                     </span>
                 </h1>
             </header>
             <sheet>
-<div class="alert alert-info" role="status" invisible="operation_type != 'set'>
-                    <strong><i class="fa fa-shield" aria-hidden="true"></i> PERMANENT RECORD PROTECTION</strong">
-                    <br"/>
+<div class="alert alert-info" role="status" invisible="operation_type != 'set'">
+    <strong>
+        PERMANENT RECORD PROTECTION</strong>
+    <br />
+
                             Documents marked as permanent will be <strong>excluded from all destruction schedules</strong>
                             and shredding rotations. This action requires password verification for security.
                 </div>
 
-<div class="alert alert-warning" role="alert" invisible="operation_type != 'remove'>
-    <strong"><i class='fa fa-warning'"/> ADMINISTRATOR SECURITY WARNING</strong>
-    <br"/>
+<div class="alert alert-warning" role="alert" invisible="operation_type != 'remove'">
+    <strong>
+         ADMINISTRATOR SECURITY WARNING</strong>
+    <br />
+
                             You are about to <strong>remove permanent protection</strong> from documents.
                             This will allow them to be included in destruction schedules again.
 </div>
@@ -42,10 +46,12 @@
 
 <group string="Security Verification">
     <div class="alert alert-secondary" role="status">
-<i class='fa fa-shield' title="Security Protection"/>
+<i class='fa fa-shield' title="Security Protection" />
+
 
         <strong>Password Required:</strong>
-        <br"/>
+<br />
+
                                     Enter your user password to confirm this security-sensitive action.
     </div>
     <field name="user_password" password="True" placeholder="Enter your password"/>
@@ -61,7 +67,8 @@
 <field name="storage_box_id"/>
 
 
-<field name="is_permanent" string="<i class="fa fa-shield" aria-hidden="true"></i> Currently Permanent" widget="boolean"/>
+<field name="is_permanent" string="Currently Permanent" widget="boolean"/>
+
 <field name="permanent_user_id" string="Set By" invisible="not is_permanent"/>
 <field name="permanent_date" string="Set Date" invisible="not is_permanent"/>
 </list>
@@ -69,7 +76,8 @@
 </div>
 </sheet>
 <footer>
-<button name="action_apply_changes" type="object" string="<i class="fa fa-shield" aria-hidden="true"></i> Confirm Permanent Flag" class="btn-primary" invisible="operation_type != 'set'"/>
+<button name="action_apply_changes" type="object" string="Confirm Permanent Flag" class="btn-primary" invisible="operation_type != 'set'"/>
+
 <button name="action_apply_changes" type="object" string="Remove Permanent Flag" class="btn-warning" invisible="operation_type != 'remove'"/>
 
 <button string="Cancel" class="btn-secondary" special="cancel"/>
