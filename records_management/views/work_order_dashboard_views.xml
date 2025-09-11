@@ -3,7 +3,7 @@
 
 <data>
 <!-- ============================================================================ -->
-<!-- UNIFIED WORK ORDER DASHBOARD -->
+<!--        <field name="domain">[('date_deadline', '&lt;', context_today.strftime('%Y-%m-%d')), ('stage_id.name', '!=', 'Completed'), ('project_id.name', 'ilike', 'work order')]</field>UNIFIED WORK ORDER DASHBOARD -->
 <!-- ============================================================================ -->
 
     <!-- Work Order Dashboard Action - All Types -->
@@ -142,7 +142,7 @@
         <field name="name">Overdue Work Orders</field>
         <field name="res_model">project.task</field>
         <field name="view_mode">list,form</field>
-<field name="domain">[('date_deadline', '&lt;', context_today().strftime('%Y-%m-%d')), ('stage_id.name', '!=', 'Completed'), ('project_id.name', 'ilike', 'work order')]</field>
+<field name="domain">[('date_deadline', '&lt;', context_today.strftime('%Y-%m-%d')), ('stage_id.name', '!=', 'Completed'), ('project_id.name', 'ilike', 'work order')]</field>
         <field name="context">{'search_default_group_project': 1}</field>
     </record>
 
@@ -151,7 +151,7 @@
         <field name="name">Today's Work Orders</field>
         <field name="res_model">project.task</field>
         <field name="view_mode">kanban,list,form</field>
-<field name="domain">[('date_deadline', '=', context_today().strftime('%Y-%m-%d')), ('project_id.name', 'ilike', 'work order')]</field>
+<field name="domain">[('date_deadline', '=', context_today.strftime('%Y-%m-%d')), ('project_id.name', 'ilike', 'work order')]</field>
         <field name="context">{'search_default_open': 1}</field>
     </record>
 </data>

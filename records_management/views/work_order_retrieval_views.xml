@@ -191,9 +191,10 @@
 <separator/>
 <filter string="High Priority" name="high_priority" domain="[('priority', '=', '3')]"/>
 <filter string="My Retrievals" name="my_retrievals" domain="[('assigned_technician_id', '=', uid)]"/>
-<filter string="Today" name="today" domain="[('retrieval_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
-<filter string="This Week" name="this_week" domain="[('retrieval_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
-                                            ('retrieval_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+<filter string="Today" name="today" domain="[('retrieval_date', '=', context_today.strftime('%Y-%m-%d'))]"/>
+<filter string="This Week" name="this_week" domain="[('retrieval_date', '&gt;=', (context_today - datetime.timedelta(days=context_today.weekday())).strftime('%Y-%m-%d')),
+                                            ('retrieval_date', '&lt;=', (context_today + datetime.timedelta(days=6-context_today.weekday())).strftime('%Y-%m-%d'))]"/>
+
 <separator/>
 <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
 <group expand="0" string="Group By">
