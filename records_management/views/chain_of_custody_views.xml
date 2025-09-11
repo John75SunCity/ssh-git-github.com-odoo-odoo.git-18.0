@@ -1,29 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-<!-- Enhanced Tree View for Chain of Custody -->
+        <!-- Enhanced Tree View for Chain of Custody -->
         <record id="chain_of_custody_view_tree" model="ir.ui.view">
             <field name="name">chain.of.custody.view.tree</field>
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
-<tree decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'cancelled'" decoration-info="naid_compliant == True">
+                <tree decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'cancelled'" decoration-info="naid_compliant == True">
                     <field name="name" string="Transfer Reference"/>
-<field name="transfer_type" string="Type"/>
-
+                    <field name="transfer_type" string="Type"/>
                     <field name="document_id" string="Document"/>
                     <field name="container_id" string="Container"/>
-<field name="from_custodian_id" string="From"/>
-<field name="to_custodian_id" string="To"/>
-
+                    <field name="from_custodian_id" string="From"/>
+                    <field name="to_custodian_id" string="To"/>
                     <field name="transfer_date" string="Transfer Date"/>
                     <field name="state" string="Status" widget="badge"/>
-<field name="naid_compliant" string="NAID" widget="boolean_toggle"/>
-
+                    <field name="naid_compliant" string="NAID" widget="boolean_toggle"/>
                     <field name="security_level" string="Security"/>
-<button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'" title="Confirm Transfer"/>
-<button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'in_transit'" title="Complete Transfer"/>
-
-</tree>
+                    <button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'" title="Confirm Transfer"/>
+                    <button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'in_transit'" title="Complete Transfer"/>
+                </tree>
             </field>
         </record>
 
@@ -35,28 +31,24 @@
                 <form>
                     <header>
                         <button name="action_confirm_transfer" type="object" string="Confirm Transfer" class="btn-primary" invisible="state != 'draft'"/>
-<button name="action_start_transfer" type="object" string="Start Transfer" class="btn-info" invisible="state not in ['draft', 'pending']"/>
-<button name="action_complete_transfer" type="object" string="Complete Transfer" class="btn-success" invisible="state != 'in_transit'"/>
-
+                        <button name="action_start_transfer" type="object" string="Start Transfer" class="btn-info" invisible="state not in ['draft', 'pending']"/>
+                        <button name="action_complete_transfer" type="object" string="Complete Transfer" class="btn-success" invisible="state != 'in_transit'"/>
                         <button name="action_reject_transfer" type="object" string="Reject Transfer" class="btn-danger" invisible="state in ['completed', 'cancelled']"/>
-<button name="action_cancel_transfer" type="object" string="Cancel Transfer" class="btn-warning" invisible="state in ['completed', 'cancelled']"/>
-
-<field name="state" widget="statusbar" statusbar_visible="draft,pending,in_transit,completed,verified,cancelled"/>
-
+                        <button name="action_cancel_transfer" type="object" string="Cancel Transfer" class="btn-warning" invisible="state in ['completed', 'cancelled']"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,in_transit,completed,verified,cancelled"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
-<button class="oe_stat_button" icon="fa-file-text-o" name="action_view_audit_logs" type="object" title="Audit Logs">
-    <field name="audit_log_count" widget="statinfo" string="Audit Logs"/>
-
+                            <button class="oe_stat_button" icon="fa-file-text-o" name="action_view_audit_logs" type="object" title="Audit Logs">
+                                <field name="audit_log_count" widget="statinfo" string="Audit Logs"/>
                             </button>
-<button class="oe_stat_button" icon="fa-shield" invisible="not naid_compliant" title="NAID Compliance">
+                            <button class="oe_stat_button" icon="fa-shield" invisible="not naid_compliant" title="NAID Compliance">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">NAID</span>
                                     <span class="o_stat_text">Compliant</span>
                                 </div>
                             </button>
-<button class="oe_stat_button" icon="fa-clock-o" invisible="not transfer_duration" title="Transfer Duration">
+                            <button class="oe_stat_button" icon="fa-clock-o" invisible="not transfer_duration" title="Transfer Duration">
                                 <div class="o_field_widget o_stat_info">
                                     <span class="o_stat_value">
                                         <field name="transfer_duration"/>
@@ -85,7 +77,7 @@
                         </group>
 
                         <group>
-<group string="Location Transfer">
+                            <group string="Location Transfer">
                                 <field name="from_location_id"/>
                                 <field name="to_location_id"/>
                                 <field name="transfer_distance"/>
@@ -93,10 +85,9 @@
                                 <field name="carrier_id"/>
                             </group>
                             <group string="Custody Transfer">
-<field name="from_custodian_id"/>
-<field name="to_custodian_id"/>
-<field name="witness_id"/>
-
+                                <field name="from_custodian_id"/>
+                                <field name="to_custodian_id"/>
+                                <field name="witness_id"/>
                                 <field name="authorized_by_id"/>
                             </group>
                         </group>
@@ -124,10 +115,10 @@
                                     <field name="special_instructions" placeholder="Special handling instructions, security requirements..."/>
                                     <field name="compliance_notes" placeholder="NAID compliance notes and verification details..."/>
                                 </group>
-</page>
+                            </page>
                             <page string="Chain of Custody Events" name="events">
                                 <field name="custody_event_ids">
-<tree>
+                                    <tree>
                                         <field name="event_date"/>
                                         <field name="event_type"/>
                                         <field name="responsible_person"/>
@@ -136,28 +127,25 @@
                                         <field name="temperature"/>
                                         <field name="humidity"/>
                                         <field name="notes"/>
-</tree>
+                                    </tree>
                                 </field>
-</page>
+                            </page>
                             <page string="Audit Trail" name="audit">
                                 <field name="audit_log_ids">
-<tree>
-    <field name="event_date"/>
-    <field name="action_type"/>
-
+                                    <tree>
+                                        <field name="event_date"/>
+                                        <field name="action_type"/>
                                         <field name="user_id"/>
                                         <field name="description"/>
-<field name="old_value"/>
-<field name="new_value"/>
-
-<field name="ip_address"/>
-
-</tree>
+                                        <field name="old_value"/>
+                                        <field name="new_value"/>
+                                        <field name="ip_address"/>
+                                    </tree>
                                 </field>
-</page>
+                            </page>
                             <page string="Transfer Items" name="items">
                                 <field name="transfer_item_ids">
-<tree>
+                                    <tree>
                                         <field name="document_id"/>
                                         <field name="container_id"/>
                                         <field name="item_type"/>
@@ -165,9 +153,9 @@
                                         <field name="condition"/>
                                         <field name="serial_number"/>
                                         <field name="value" widget="monetary"/>
-</tree>
+                                    </tree>
                                 </field>
-</page>
+                            </page>
                             <page string="Transfer Analytics" name="analytics">
                                 <group>
                                     <group string="Timing">
@@ -202,9 +190,8 @@
                 <kanban default_group_by="state" class="o_kanban_custody_dashboard">
                     <field name="name"/>
                     <field name="transfer_type"/>
-<field name="from_custodian_id"/>
-<field name="to_custodian_id"/>
-
+                    <field name="from_custodian_id"/>
+                    <field name="to_custodian_id"/>
                     <field name="transfer_date"/>
                     <field name="state"/>
                     <field name="naid_compliant"/>
@@ -212,7 +199,7 @@
                     <field name="document_id"/>
                     <field name="container_id"/>
                     <templates>
-<t t-name="kanban-box">
+                        <t t-name="kanban-box">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_card_header">
                                     <div class="o_kanban_card_header_title">
@@ -220,39 +207,30 @@
                                             <strong><field name="name"/></strong>
                                         </div>
                                         <div class="o_secondary">
-<i class="fa fa-exchange" role="img" aria-label="Transfer type"/>
-<field name="transfer_type"/>
-
+                                            <i class="fa fa-exchange" role="img" aria-label="Transfer type"/> <field name="transfer_type"/>
                                         </div>
                                     </div>
                                     <div class="o_kanban_manage_button_section">
                                         <a class="o_kanban_manage_toggle_button" href="#">
-<i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
-
+                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
                                         </a>
                                     </div>
                                 </div>
-<div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
+                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
                                     <div class="row">
                                         <div class="col-6">
                                             <div>
-<i class="fa fa-user" role="img" aria-label="From"/>
-<field name="from_custodian_id"/>
-<i class="fa fa-long-arrow-right" role="img" aria-label="To"/>
-<field name="to_custodian_id"/>
-
+                                                <i class="fa fa-user" role="img" aria-label="From"/> <field name="from_custodian_id"/>
+                                                <i class="fa fa-long-arrow-right" role="img" aria-label="To"/> <field name="to_custodian_id"/>
                                             </div>
                                             <div>
-<i class="fa fa-calendar" role="img" aria-label="Transfer date"/>
-<field name="transfer_date"/>
-
+                                                <i class="fa fa-calendar" role="img" aria-label="Transfer date"/> <field name="transfer_date"/>
                                             </div>
                                         </div>
                                         <div class="col-6">
-<div class="text-center">
+                                            <div class="text-center">
                                                 <div t-if="record.naid_compliant.raw_value" class="text-success">
-<i class="fa fa-shield" role="img" aria-label="NAID compliant"/>
- NAID
+                                                    <i class="fa fa-shield" role="img" aria-label="NAID compliant"/> NAID
                                                 </div>
                                             </div>
                                             <div class="text-center mt-1">
@@ -265,53 +243,35 @@
                                     <div class="row mt-2">
                                         <div class="col-12">
                                             <div t-if="record.document_id.raw_value or record.container_id.raw_value">
-<i class="fa fa-file-text-o" role="img" aria-label="Document"/>
-<field name="document_id"/>
-<i class="fa fa-cube" role="img" aria-label="Container"/>
-<field name="container_id"/>
-
+                                                <i class="fa fa-file-text-o" role="img" aria-label="Document"/> <field name="document_id"/>
+                                                <i class="fa fa-cube" role="img" aria-label="Container"/> <field name="container_id"/>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-6">
                                             <button class="btn btn-primary btn-sm" type="object" name="action_confirm_transfer" t-if="record.state.raw_value == 'draft'">
-<i class="fa fa-check"/>
- Confirm
+                                                <i class="fa fa-check"/> Confirm
                                             </button>
                                             <button class="btn btn-success btn-sm" type="object" name="action_complete_transfer" t-if="record.state.raw_value == 'in_transit'">
-<i class="fa fa-check-circle"/>
- Complete
+                                                <i class="fa fa-check-circle"/> Complete
                                             </button>
                                         </div>
                                         <div class="col-6">
-<button class="btn btn-info btn-sm" type="object" name="action_start_transfer" t-if="record.state.raw_value in ['draft', 'pending']">
-<i class="fa fa-rocket"/>
- Start
+                                            <button class="btn btn-info btn-sm" type="object" name="action_start_transfer" t-if="record.state.raw_value in ['draft', 'pending']">
+                                                <i class="fa fa-rocket"/> Start
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-<a role="menuitem" type="edit" class="dropdown-item">
-    <i class="fa fa-pencil"/>
- Edit Transfer</a>
-<a role="menuitem" type="object" name="action_confirm_transfer" class="dropdown-item">
-    <i class="fa fa-check"/>
- Confirm Transfer</a>
-<a role="menuitem" type="object" name="action_start_transfer" class="dropdown-item">
-    <i class="fa fa-rocket"/>
- Start Transfer</a>
-<a role="menuitem" type="object" name="action_complete_transfer" class="dropdown-item">
-    <i class="fa fa-check-circle"/>
- Complete Transfer</a>
+                                    <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-pencil"/> Edit Transfer</a>
+                                    <a role="menuitem" type="object" name="action_confirm_transfer" class="dropdown-item"><i class="fa fa-check"/> Confirm Transfer</a>
+                                    <a role="menuitem" type="object" name="action_start_transfer" class="dropdown-item"><i class="fa fa-rocket"/> Start Transfer</a>
+                                    <a role="menuitem" type="object" name="action_complete_transfer" class="dropdown-item"><i class="fa fa-check-circle"/> Complete Transfer</a>
                                     <div class="dropdown-divider"/>
-<a role="menuitem" type="object" name="action_reject_transfer" class="dropdown-item">
-    <i class="fa fa-times"/>
- Reject Transfer</a>
-<a role="menuitem" type="object" name="action_cancel_transfer" class="dropdown-item">
-    <i class="fa fa-ban"/>
- Cancel Transfer</a>
+                                    <a role="menuitem" type="object" name="action_reject_transfer" class="dropdown-item"><i class="fa fa-times"/> Reject Transfer</a>
+                                    <a role="menuitem" type="object" name="action_cancel_transfer" class="dropdown-item"><i class="fa fa-ban"/> Cancel Transfer</a>
                                 </div>
                             </div>
                         </t>
@@ -327,36 +287,29 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name" string="Transfer Reference" filter_domain="[('name', 'ilike', self)]"/>
-<field name="from_custodian_id"/>
-<field name="to_custodian_id"/>
-
+                    <field name="from_custodian_id"/>
+                    <field name="to_custodian_id"/>
                     <field name="document_id"/>
                     <field name="container_id"/>
                     <field name="transfer_type"/>
-<field name="verification_code"/>
-
+                    <field name="verification_code"/>
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-<filter string="Pending" name="pending" domain="[('state', '=', 'pending')]"/>
-
+                    <filter string="Pending" name="pending" domain="[('state', '=', 'pending')]"/>
                     <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
-<filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
-
-<filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
-
+                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
                     <separator/>
                     <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
                     <filter string="High Security" name="high_security" domain="[('security_level', '=', 'high')]"/>
                     <filter string="Signature Required" name="signature_required" domain="[('signature_required', '=', True)]"/>
                     <filter string="Special Handling" name="special_handling" domain="[('special_handling_required', '=', True)]"/>
-<filter string="Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
-<filter string="High Risk" name="high_risk" domain="[('risk_level', '=', 'high')]"/>
-
+                    <filter string="Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="High Risk" name="high_risk" domain="[('risk_level', '=', 'high')]"/>
                     <group expand="0" string="Group By">
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Transfer Type" name="group_by_type" context="{'group_by': 'transfer_type'}"/>
-<filter string="From Custodian" name="group_by_from" context="{'group_by': 'from_custodian_id'}"/>
-<filter string="To Custodian" name="group_by_to" context="{'group_by': 'to_custodian_id'}"/>
-
+                        <filter string="From Custodian" name="group_by_from" context="{'group_by': 'from_custodian_id'}"/>
+                        <filter string="To Custodian" name="group_by_to" context="{'group_by': 'to_custodian_id'}"/>
                         <filter string="Security Level" name="group_by_security" context="{'group_by': 'security_level'}"/>
                         <filter string="Transfer Month" name="group_by_month" context="{'group_by': 'transfer_date:month'}"/>
                         <filter string="From Location" name="group_by_from_location" context="{'group_by': 'from_location_id'}"/>
@@ -368,9 +321,7 @@
 
         <!-- Enhanced Action Window for Chain of Custody -->
         <record id="action_chain_of_custody" model="ir.actions.act_window">
-<field name="name">
-    <i class="fa fa-link" role="img" aria-label="Chain of Custody"/>
- Chain of Custody</field>
+            <field name="name"><i class="fa fa-link" role="img" aria-label="Chain of Custody"/> Chain of Custody</field>
             <field name="res_model">chain.of.custody</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search"/>
@@ -381,30 +332,20 @@
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-<i class="fa fa-link" role="img" aria-label="Chain of Custody"/>
- Start managing chain of custody transfers!
+                    <i class="fa fa-link" role="img" aria-label="Chain of Custody"/> Start managing chain of custody transfers!
                 </p>
                 <p>
                     <b>NAID AAA Compliant Chain of Custody Management:</b>
                     <br/>
-•<i class="fa fa-link" role="img" aria-label="Transfer tracking"/>
- Complete custody transfer tracking with signatures<br/>
-                    •<i class="fa fa-check-square-o" role="img" aria-label="NAID compliance"/>
- NAID compliance verification and certification<br/>
-                    •<i class="fa fa-lock" role="img" aria-label="Security"/>
- Multi-level security with verification codes<br/>
-                    •<i class="fa fa-map-marker" role="img" aria-label="Location transfer"/>
- Location-to-location transfer management<br/>
-                    •<i class="fa fa-users" role="img" aria-label="Custodian handoff"/>
- Custodian handoff with witness verification<br/>
-                    •<i class="fa fa-file-text-o" role="img" aria-label="Audit trails"/>
- Comprehensive audit trails for all transfers<br/>
-                    •<i class="fa fa-clock-o" role="img" aria-label="Analytics"/>
- Transfer timing and efficiency analytics<br/>
-                    •<i class="fa fa-bar-chart" role="img" aria-label="Risk assessment"/>
- Risk assessment and compliance scoring<br/>
-                    •<i class="fa fa-warning" role="img" aria-label="Alerts"/>
- Automated alerts for overdue transfers
+                    • <i class="fa fa-link" role="img" aria-label="Transfer tracking"/> Complete custody transfer tracking with signatures<br/>
+                    • <i class="fa fa-check-square-o" role="img" aria-label="NAID compliance"/> NAID compliance verification and certification<br/>
+                    • <i class="fa fa-lock" role="img" aria-label="Security"/> Multi-level security with verification codes<br/>
+                    • <i class="fa fa-map-marker" role="img" aria-label="Location transfer"/> Location-to-location transfer management<br/>
+                    • <i class="fa fa-users" role="img" aria-label="Custodian handoff"/> Custodian handoff with witness verification<br/>
+                    • <i class="fa fa-file-text-o" role="img" aria-label="Audit trails"/> Comprehensive audit trails for all transfers<br/>
+                    • <i class="fa fa-clock-o" role="img" aria-label="Analytics"/> Transfer timing and efficiency analytics<br/>
+                    • <i class="fa fa-bar-chart" role="img" aria-label="Risk assessment"/> Risk assessment and compliance scoring<br/>
+                    • <i class="fa fa-warning" role="img" aria-label="Alerts"/> Automated alerts for overdue transfers
                 </p>
             </field>
         </record>
