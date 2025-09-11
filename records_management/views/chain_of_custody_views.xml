@@ -7,18 +7,18 @@
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
 <list decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'cancelled'" decoration-info="naid_compliant == True">
-                    <field name="name" string=" Transfer Reference"/>
-<field name="transfer_type" string=" Type"/>
+                    <field name="name" string="Transfer Reference"/>
+<field name="transfer_type" string="Type"/>
 
-                    <field name="document_id" string=" Document"/>
-                    <field name="container_id" string=" Container"/>
-<field name="from_custodian_id" string=" From"/>
-<field name="to_custodian_id" string=" To"/>
+                    <field name="document_id" string="Document"/>
+                    <field name="container_id" string="Container"/>
+<field name="from_custodian_id" string="From"/>
+<field name="to_custodian_id" string="To"/>
 
-                    <field name="transfer_date" string=" Transfer Date"/>
-                    <field name="state" string=" Status" widget="badge"/>
-                    <field name="naid_compliant" string=" NAID" widget="boolean"/>
-                    <field name="security_level" string=" Security"/>
+                    <field name="transfer_date" string="Transfer Date"/>
+                    <field name="state" string="Status" widget="badge"/>
+                    <field name="naid_compliant" string="NAID" widget="boolean"/>
+                    <field name="security_level" string="Security"/>
 <button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'" title="Confirm Transfer"/>
 <button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'in_transit'" title="Complete Transfer"/>
 
@@ -34,13 +34,13 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_confirm_transfer" type="object" string=" Confirm Transfer" class="btn-primary" invisible="state != 'draft'"/>
-<button name="action_start_transfer" type="object" string=" Start Transfer" class="btn-info" invisible="state not in ['draft', 'pending']"/>
-<button name="action_complete_transfer" type="object" string=" Complete Transfer" class="btn-success" invisible="state != 'in_transit'"/>
+                        <button name="action_confirm_transfer" type="object" string="Confirm Transfer" class="btn-primary" invisible="state != 'draft'"/>
+<button name="action_start_transfer" type="object" string="Start Transfer" class="btn-info" invisible="state not in ['draft', 'pending']"/>
+<button name="action_complete_transfer" type="object" string="Complete Transfer" class="btn-success" invisible="state != 'in_transit'"/>
 
 
-                        <button name="action_reject_transfer" type="object" string=" Reject Transfer" class="btn-danger" invisible="state in ['completed', 'cancelled']"/>
-<button name="action_cancel_transfer" type="object" string=" Cancel Transfer" class="btn-warning" invisible="state in ['completed', 'cancelled']"/>
+                        <button name="action_reject_transfer" type="object" string="Reject Transfer" class="btn-danger" invisible="state in ['completed', 'cancelled']"/>
+<button name="action_cancel_transfer" type="object" string="Cancel Transfer" class="btn-warning" invisible="state in ['completed', 'cancelled']"/>
 
 <field name="state" widget="statusbar" statusbar_visible="draft,pending,in_transit,completed,verified,cancelled"/>
 
@@ -67,7 +67,7 @@
                         </div>
 
                         <group>
-                            <group string=" Transfer Information">
+                            <group string="Transfer Information">
                                 <field name="name"/>
                                 <field name="transfer_type"/>
                                 <field name="transfer_method"/>
@@ -75,7 +75,7 @@
                                 <field name="expected_completion_date"/>
                                 <field name="actual_completion_date" readonly="1"/>
                             </group>
-                            <group string=" Security &amp; Compliance">
+                            <group string="Security &amp; Compliance">
                                 <field name="security_level"/>
                                 <field name="signature_required" widget="boolean_toggle"/>
                                 <field name="verification_code"/>
@@ -92,7 +92,7 @@
                                 <field name="transport_method"/>
                                 <field name="carrier_id"/>
                             </group>
-                            <group string=" Custody Transfer">
+                            <group string="Custody Transfer">
 <field name="from_custodian_id"/>
 <field name="to_custodian_id"/>
 <field name="witness_id"/>
@@ -102,14 +102,14 @@
                         </group>
 
                         <group>
-                            <group string=" Items in Transfer">
+                            <group string="Items in Transfer">
                                 <field name="document_id"/>
                                 <field name="container_id"/>
                                 <field name="item_count"/>
                                 <field name="total_weight"/>
                                 <field name="special_handling_required"/>
                             </group>
-                            <group string=" Transfer Details">
+                            <group string="Transfer Details">
                                 <field name="transfer_status"/>
                                 <field name="tracking_number"/>
                                 <field name="insurance_value" widget="monetary"/>
@@ -118,7 +118,7 @@
                         </group>
 
                         <notebook>
-                            <page string=" Transfer Documentation" name="documentation">
+                            <page string="Transfer Documentation" name="documentation">
                                 <group>
                                     <field name="transfer_purpose" placeholder="Purpose and justification for this transfer..."/>
                                     <field name="special_instructions" placeholder="Special handling instructions, security requirements..."/>
@@ -126,7 +126,7 @@
                                 </group>
                             </page>
 
-                            <page string=" Chain of Custody Events" name="events">
+                            <page string="Chain of Custody Events" name="events">
                                 <field name="custody_event_ids">
                                     <list>
                                         <field name="event_date"/>
@@ -153,7 +153,7 @@
                                 </field>
                             </page>
 
-                            <page string=" Audit Trail" name="audit">
+                            <page string="Audit Trail" name="audit">
                                 <field name="audit_log_ids">
                                     <list>
 <field name="event_date"/>
@@ -170,7 +170,7 @@
                                 </field>
                             </page>
 
-                            <page string=" Transfer Items" name="items">
+                            <page string="Transfer Items" name="items">
                                 <field name="transfer_item_ids">
                                     <list>
                                         <field name="document_id"/>
@@ -196,15 +196,15 @@
                                 </field>
                             </page>
 
-                            <page string=" Transfer Analytics" name="analytics">
+                            <page string="Transfer Analytics" name="analytics">
                                 <group>
-                                    <group string=" Timing">
+                                    <group string="Timing">
                                         <field name="transfer_duration"/>
                                         <field name="delay_reason"/>
                                         <field name="estimated_duration"/>
                                         <field name="actual_duration"/>
                                     </group>
-                                    <group string=" Metrics">
+                                    <group string="Metrics">
                                         <field name="transfer_efficiency"/>
                                         <field name="compliance_score"/>
                                         <field name="risk_level"/>
@@ -346,23 +346,23 @@
                     <field name="transfer_type"/>
                     <field name="verification_code"/>
 
-                    <filter string=" Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
 <filter string="⏳ Pending" name="pending" domain="[('state', '=', 'pending')]"/>
 
-                    <filter string=" In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
-<filter string=" Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
+<filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
 
-                    <filter string=" Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                    <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
 
                     <separator/>
-                    <filter string=" NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
-                    <filter string=" High Security" name="high_security" domain="[('security_level', '=', 'high')]"/>
-                    <filter string=" Signature Required" name="signature_required" domain="[('signature_required', '=', True)]"/>
-                    <filter string=" Special Handling" name="special_handling" domain="[('special_handling_required', '=', True)]"/>
-                    <filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today)]"/>
+                    <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
+                    <filter string="High Security" name="high_security" domain="[('security_level', '=', 'high')]"/>
+                    <filter string="Signature Required" name="signature_required" domain="[('signature_required', '=', True)]"/>
+                    <filter string="Special Handling" name="special_handling" domain="[('special_handling_required', '=', True)]"/>
+                    <filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '<', context_today)]"/>
                     <filter string="🚨 High Risk" name="high_risk" domain="[('risk_level', '=', 'high')]"/>
 
-                    <group expand="0" string=" Group By">
+                    <group expand="0" string="Group By">
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Transfer Type" name="group_by_type" context="{'group_by': 'transfer_type'}"/>
 <filter string="From Custodian" name="group_by_from" context="{'group_by': 'from_custodian_id'}"/>

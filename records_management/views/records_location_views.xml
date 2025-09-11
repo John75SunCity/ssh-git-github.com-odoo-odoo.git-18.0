@@ -73,7 +73,7 @@
                                 <a role="menuitem" type="object" name="action_view_containers" class="dropdown-item"><i class='fa fa-box'/> View Containers</a>
                                 <a role="menuitem" type="object" name="action_location_report" class="dropdown-item"><i class='fa fa-bar-chart'/> Location Report</a>
                                 <div class="dropdown-divider"/>
-                                <a role="menuitem" type="delete" class="dropdown-item">🗑️ Archive</a>
+                                <a role="menuitem" type="delete" class="dropdown-item">&lt;i class="fa fa-trash"&gt; Archive</a>
                             </div>
                         </t>
                     </templates>

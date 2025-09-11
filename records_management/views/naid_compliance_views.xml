@@ -93,15 +93,15 @@
                   decoration-warning="compliance_status == 'pending_audit'"
                   decoration-danger="certificate_valid == False or expiry_date &amp;lt; context_today"
                   decoration-info="naid_level == 'AAA'">
-                <field name="name" string=" Compliance Record"/>
-                <field name="facility_name" string=" Facility"/>
+                <field name="name" string="Compliance Record"/>
+                <field name="facility_name" string="Facility"/>
                 <field name="naid_level" string="🎖️ NAID Level" widget="badge"/>
-                <field name="compliance_status" string=" Status" widget="badge"/>
-                <field name="certification_date" string=" Certified"/>
+                <field name="compliance_status" string="Status" widget="badge"/>
+                <field name="certification_date" string="Certified"/>
                 <field name="expiry_date" string="⏰ Expires"/>
-                <field name="certificate_valid" string=" Valid" widget="boolean_toggle"/>
-                <field name="audit_required" string=" Audit Due" widget="boolean_toggle"/>
-                <field name="last_audit_date" string=" Last Audit"/>
+                <field name="certificate_valid" string="Valid" widget="boolean_toggle"/>
+                <field name="audit_required" string="Audit Due" widget="boolean_toggle"/>
+                <field name="last_audit_date" string="Last Audit"/>
                 <button name="action_conduct_audit" type="object" string="Audit"
                         icon="fa-search" class="btn-link"
                         invisible="not audit_required"/>
@@ -116,11 +116,11 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_conduct_audit" type="object" string=" Conduct Audit"
+                    <button name="action_conduct_audit" type="object" string="Conduct Audit"
                             class="btn-primary" invisible="not audit_required"/>
                     <button name="action_generate_certificate" type="object" string="📜 Generate Certificate" class="btn-secondary"/>
-                    <button name="action_renew_certificate" type="object" string=" Renew Certificate" class="btn-info"/>
-                    <button name="action_compliance_report" type="object" string=" Compliance Report" class="btn-success"/>
+                    <button name="action_renew_certificate" type="object" string="Renew Certificate" class="btn-info"/>
+                    <button name="action_compliance_report" type="object" string="Compliance Report" class="btn-success"/>
                     <field name="compliance_status" widget="statusbar" statusbar_visible="draft,pending_audit,certified,non_compliant,expired"/>
                 </header>
                 <sheet>
@@ -144,13 +144,13 @@ invisible="naid_level != 'AAA'">
                     </div>
 
                     <group>
-                        <group string=" NAID Certification">
+                        <group string="NAID Certification">
                             <field name="name" placeholder="e.g., NAID-2024-AAA-001"/>
                             <field name="naid_level"/>
                             <field name="naid_member_id"/>
                             <field name="facility_name"/>
                         </group>
-                        <group string=" Certification Timeline">
+                        <group string="Certification Timeline">
                             <field name="certification_date"/>
                             <field name="expiry_date"/>
                             <field name="certificate_valid"/>
@@ -159,13 +159,13 @@ invisible="naid_level != 'AAA'">
                     </group>
 
                     <group>
-                        <group string=" Audit Requirements">
+                        <group string="Audit Requirements">
                             <field name="audit_required"/>
                             <field name="last_audit_date"/>
                             <field name="next_audit_date"/>
                             <field name="audit_frequency"/>
                         </group>
-                        <group string=" Compliance Team">
+                        <group string="Compliance Team">
                             <field name="compliance_officer"/>
                             <field name="facility_manager"/>
                             <field name="security_officer"/>
@@ -182,7 +182,7 @@ invisible="naid_level != 'AAA'">
                                     <field name="surveillance_system"/>
                                     <field name="secure_storage"/>
                                 </group>
-                                <group string=" Personnel Security">
+                                <group string="Personnel Security">
                                     <field name="personnel_screening"/>
                                     <field name="background_checks"/>
                                     <field name="training_completed"/>
@@ -190,13 +190,13 @@ invisible="naid_level != 'AAA'">
                                 </group>
                             </group>
                             <group>
-                                <group string=" Information Security">
+                                <group string="Information Security">
                                     <field name="information_handling"/>
                                     <field name="chain_of_custody"/>
                                     <field name="destruction_verification"/>
                                     <field name="certificate_tracking"/>
                                 </group>
-                                <group string=" Operational Security">
+                                <group string="Operational Security">
                                     <field name="equipment_certification"/>
                                     <field name="process_verification"/>
                                     <field name="quality_control"/>
@@ -204,7 +204,7 @@ invisible="naid_level != 'AAA'">
                                 </group>
                             </group>
                         </page>
-                        <page string=" Audit History" name="audits">
+                        <page string="Audit History" name="audits">
                             <field name="audit_history_ids" mode="list">
                                 <list>
                                     <field name="audit_date"/>
@@ -244,7 +244,7 @@ invisible="naid_level != 'AAA'">
                                 </list>
                             </field>
                         </page>
-                        <page string=" Compliance Checklist" name="checklist">
+                        <page string="Compliance Checklist" name="checklist">
                             <field name="compliance_checklist_ids" mode="list">
                                 <list editable="bottom">
                                     <field name="requirement_name"/>
@@ -257,15 +257,15 @@ invisible="naid_level != 'AAA'">
                                 </list>
                             </field>
                         </page>
-                        <page string=" Performance Metrics" name="metrics">
+                        <page string="Performance Metrics" name="metrics">
                             <group>
-                                <group string=" Compliance Metrics">
+                                <group string="Compliance Metrics">
                                     <field name="overall_compliance_score" readonly="1"/>
                                     <field name="security_score" readonly="1"/>
                                     <field name="operational_score" readonly="1"/>
                                     <field name="documentation_score" readonly="1"/>
                                 </group>
-                                <group string=" Timeline Metrics">
+                                <group string="Timeline Metrics">
                                     <field name="days_since_last_audit" readonly="1"/>
                                     <field name="days_until_expiry" readonly="1"/>
                                     <field name="compliance_trend" readonly="1"/>
@@ -283,15 +283,15 @@ invisible="naid_level != 'AAA'">
                                 </list>
                             </field>
                         </page>
-                        <page string=" Notifications" name="notifications">
+                        <page string="Notifications" name="notifications">
                             <group>
-                                <group string=" Alert Settings">
+                                <group string="Alert Settings">
                                     <field name="expiry_notification"/>
                                     <field name="audit_reminder"/>
                                     <field name="compliance_alerts"/>
                                     <field name="renewal_reminder"/>
                                 </group>
-                                <group string=" Recipients">
+                                <group string="Recipients">
                                     <field name="notification_recipients"/>
                                     <field name="escalation_contacts"/>
                                     <field name="management_alerts"/>
@@ -315,7 +315,7 @@ invisible="naid_level != 'AAA'">
         <field name="name">naid.compliance.view.calendar</field>
         <field name="model">naid.compliance</field>
         <field name="arch" type="xml">
-            <calendar string=" NAID Audit Schedule"
+            <calendar string="NAID Audit Schedule"
                       date_start="next_audit_date"
                       date_stop="expiry_date"
                       color="naid_level">
@@ -339,28 +339,28 @@ invisible="naid_level != 'AAA'">
                 <field name="naid_member_id"/>
                 <field name="compliance_officer"/>
 
-                <filter string=" Certified" name="certified" domain="[('compliance_status', '=', 'certified')]"/>
-                <filter string=" Pending Audit" name="pending_audit" domain="[('compliance_status', '=', 'pending_audit')]"/>
-                <filter string=" Non-Compliant" name="non_compliant" domain="[('compliance_status', '=', 'non_compliant')]"/>
+                <filter string="Certified" name="certified" domain="[('compliance_status', '=', 'certified')]"/>
+                <filter string="Pending Audit" name="pending_audit" domain="[('compliance_status', '=', 'pending_audit')]"/>
+                <filter string="Non-Compliant" name="non_compliant" domain="[('compliance_status', '=', 'non_compliant')]"/>
                 <filter string="⏰ Expired" name="expired" domain="[('compliance_status', '=', 'expired')]"/>
 
                 <separator/>
-                <filter string=" NAID AAA" name="naid_aa" domain="[('naid_level', '=', 'AAA')]"/>
+                <filter string="NAID AAA" name="naid_aa" domain="[('naid_level', '=', 'AAA')]"/>
                 <filter string="🥈 NAID AA" name="naid_aa" domain="[('naid_level', '=', 'AA')]"/>
                 <filter string="🥉 NAID A" name="naid_a" domain="[('naid_level', '=', 'A')]"/>
 
                 <separator/>
-                <filter string=" Valid Certificates" name="valid_certs" domain="[('certificate_valid', '=', True)]"/>
-                <filter string=" Audit Required" name="audit_required" domain="[('audit_required', '=', True)]"/>
-                <filter string=" Auto Renewal" name="auto_renewal" domain="[('auto_renewal', '=', True)]"/>
+                <filter string="Valid Certificates" name="valid_certs" domain="[('certificate_valid', '=', True)]"/>
+                <filter string="Audit Required" name="audit_required" domain="[('audit_required', '=', True)]"/>
+                <filter string="Auto Renewal" name="auto_renewal" domain="[('auto_renewal', '=', True)]"/>
 
                 <separator/>
-                <filter string=" Expiring Soon (30 days)" name="expiring_soon"
-                        domain="[('expiry_date', '&amp;lt;=', (context_today + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '&gt;=', context_today.strftime('%Y-%m-%d'))]"/>
-                <filter string=" Overdue Audit" name="overdue_audit"
+                <filter string="Expiring Soon (30 days)" name="expiring_soon"
+                        domain="[('expiry_date', '&amp;lt;=', (context_today + relativedelta(days=30)).strftime('%Y-%m-%d')), ('expiry_date', '>=', context_today.strftime('%Y-%m-%d'))]"/>
+                <filter string="Overdue Audit" name="overdue_audit"
                         domain="[('next_audit_date', '&amp;lt;', context_today.strftime('%Y-%m-%d'))]"/>
 
-                <group expand="0" string=" Group By">
+                <group expand="0" string="Group By">
                     <filter string="NAID Level" name="group_by_naid_level" context="{'group_by': 'naid_level'}"/>
                     <filter string="Compliance Status" name="group_by_status" context="{'group_by': 'compliance_status'}"/>
                     <filter string="Facility" name="group_by_facility" context="{'group_by': 'facility_name'}"/>

@@ -33,14 +33,14 @@
 </div>
 
 <group>
-    <group string=" Documents to Process">
+    <group string="Documents to Process">
         <field name="document_count" string="Number of Documents"/>
 <field name="operation_type" readonly="1"/>
 
         <field name="document_ids" widget="many2many_tags" readonly="1" options="{'no_create': True, 'no_edit': True}"/>
     </group>
 
-<group string=" Security Verification">
+<group string="Security Verification">
     <div class="alert alert-secondary" role="status">
 <i class='fa fa-shield' title="Security Protection"/>
 
@@ -70,7 +70,7 @@
 </sheet>
 <footer>
 <button name="action_apply_changes" type="object" string="🛡️ Confirm Permanent Flag" class="btn-primary" invisible="operation_type != 'set'"/>
-<button name="action_apply_changes" type="object" string=" Remove Permanent Flag" class="btn-warning" invisible="operation_type != 'remove'"/>
+<button name="action_apply_changes" type="object" string="Remove Permanent Flag" class="btn-warning" invisible="operation_type != 'remove'"/>
 
 <button string="Cancel" class="btn-secondary" special="cancel"/>
 </footer>

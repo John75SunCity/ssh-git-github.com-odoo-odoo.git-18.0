@@ -250,11 +250,11 @@
             <field name="arch" type="xml">
                 <form string="Revenue Forecaster">
                     <header>
-<button name="action_run_forecast" string=" Run Forecast Analysis" type="object" class="oe_highlight" invisible="analysis_complete == True"/>
+<button name="action_run_forecast" string="Run Forecast Analysis" type="object" class="oe_highlight" invisible="analysis_complete == True"/>
 
-<button name="action_export_forecast" string=" Export to Excel" type="object" invisible="analysis_complete == False"/>
+<button name="action_export_forecast" string="Export to Excel" type="object" invisible="analysis_complete == False"/>
 
-<button name="action_apply_scenario" string=" Apply Rate Changes" type="object" class="oe_highlight" invisible="analysis_complete == False" confirm="This will implement the forecasted rate changes. Are you sure?"/>
+<button name="action_apply_scenario" string="Apply Rate Changes" type="object" class="oe_highlight" invisible="analysis_complete == False" confirm="This will implement the forecasted rate changes. Are you sure?"/>
 
                     </header>
                     <sheet>
@@ -389,9 +389,9 @@
             <field name="arch" type="xml">
                 <form string="Rate Change Implementation">
                     <header>
-<button name="action_approve_changes" string=" Approve Changes" type="object" class="oe_highlight" invisible="approved_by != False" groups="records_management.group_records_manager"/>
+<button name="action_approve_changes" string="Approve Changes" type="object" class="oe_highlight" invisible="approved_by != False" groups="records_management.group_records_manager"/>
 
-<button name="action_implement_changes" string=" Implement Changes" type="object" class="oe_highlight" invisible="(approved_by == False) or (requires_approval == True)" confirm="This will implement the rate changes. This action cannot be undone. Are you sure?"/>
+<button name="action_implement_changes" string="Implement Changes" type="object" class="oe_highlight" invisible="(approved_by == False) or (requires_approval == True)" confirm="This will implement the rate changes. This action cannot be undone. Are you sure?"/>
 
                         <button name="action_cancel_implementation" string="Cancel" type="object" class="btn-secondary"/>
                     </header>

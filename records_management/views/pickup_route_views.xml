@@ -45,7 +45,7 @@
                                 <strong>📍 Stops:</strong>
                                 <field name="total_stops"/>
                                 <br/>
-                                <strong>⏱️ Est. Duration:</strong>
+                                <strong>&lt;i class="fa fa-clock-o"&gt; Est. Duration:</strong>
                                 <field name="estimated_duration"/> hrs
                                 <br/>
                                 <strong><i class="fa fa-bullseye"/> FSM Status:</strong>
@@ -230,7 +230,7 @@
 <div class="alert alert-info" role="status">
         <p><strong>FSM Integration Benefits:</strong></p>
         <ul>
-            <li>🔄 Automated task creation and synchronization</li>
+            <li>&lt;i class="fa fa-refresh"&gt; Automated task creation and synchronization</li>
             <li><i class="fa fa-mobile"/> Mobile FSM app support for drivers</li>
             <li><i class="fa fa-bar-chart"/> Standard Odoo project management workflows</li>
             <li>⏰ Advanced scheduling and dependency management</li>
@@ -332,13 +332,13 @@
                 <b>Advanced Pickup Route Management:</b>
                 <br/>
                 • 📍 Intelligent route planning and optimization<br/>
-                • 👨‍💼 Driver and vehicle assignment with capacity tracking<br/>
-                • ⏱️ Real-time tracking and ETA calculations<br/>
+                • 👨‍&lt;i class="fa fa-briefcase"&gt; Driver and vehicle assignment with capacity tracking<br/>
+                • &lt;i class="fa fa-clock-o"&gt; Real-time tracking and ETA calculations<br/>
                 • <i class="fa fa-bar-chart"/> Performance analytics and fuel consumption monitoring<br/>
                 • 🗺️ GPS integration with live location updates<br/>
                 • <i class="fa fa-clipboard"/> NAID compliance and audit trail management<br/>
                 • <i class="fa fa-mobile"/> Mobile-friendly interface for drivers<br/>
-                • 🔔 Automated notifications and status updates<br/>
+                • &lt;i class="fa fa-bell"&gt; Automated notifications and status updates<br/>
                 • <i class="fa fa-line-chart"/> Customer satisfaction tracking and reporting<br/>
                 • 🚛 Multi-stop route coordination with time optimization
             </p>

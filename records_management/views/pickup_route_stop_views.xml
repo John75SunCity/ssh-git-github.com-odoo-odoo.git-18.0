@@ -325,12 +325,12 @@
     <b>Advanced Route Stop Management:</b>
     <br/>
                 • 📍 Precise location tracking with GPS coordinates<br/>
-                • ⏱️ Real-time scheduling and duration tracking<br/>
-                • 👨‍💼 Contact management and access instructions<br/>
+                • &lt;i class="fa fa-clock-o"&gt; Real-time scheduling and duration tracking<br/>
+                • 👨‍&lt;i class="fa fa-briefcase"&gt; Contact management and access instructions<br/>
                 • <i class="fa fa-box"/> Estimated vs actual box and weight tracking<br/>
                 • ✍️ Digital signatures for completion verification<br/>
-                • 📸 Photo documentation and barcode scanning<br/>
-                • 🔔 Automated notifications and status updates<br/>
+                • &lt;i class="fa fa-camera"&gt; Photo documentation and barcode scanning<br/>
+                • &lt;i class="fa fa-bell"&gt; Automated notifications and status updates<br/>
                 • <i class="fa fa-bar-chart"/> Performance analytics and time optimization<br/>
                 • 🚛 Route sequence optimization and coordination<br/>
                 • <i class="fa fa-clipboard"/> NAID compliance and audit trail management

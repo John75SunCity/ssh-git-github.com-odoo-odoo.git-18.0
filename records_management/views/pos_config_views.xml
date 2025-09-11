@@ -42,7 +42,7 @@
                                     <div class="col-12">
                                         <div t-if="record.current_session_id.raw_value">
                                             <strong>Current Session:</strong><br/>
-                                            <span class="badge badge-success">🔄 Active</span>
+                                            <span class="badge badge-success">&lt;i class="fa fa-refresh"&gt; Active</span>
                                             <field name="session_user_id"/><br/>
                                             <small>Session: <field name="current_session_state"/></small>
                                         </div>

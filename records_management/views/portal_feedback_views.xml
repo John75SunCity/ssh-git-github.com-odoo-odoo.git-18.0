@@ -41,7 +41,7 @@
                                     <div class="col-6"><small>Assigned: <field name="assigned_to_id"/></small></div>
                                 </div>
                                 <div t-if="record.priority.raw_value == 'high'" class="mt-2">
-                                    <span class="badge badge-danger">🔥 High Priority</span>
+                                    <span class="badge badge-danger">&lt;i class="fa fa-fire"&gt; High Priority</span>
                                 </div>
                                 <field name="activity_ids" widget="kanban_activity"/>
                             </div>

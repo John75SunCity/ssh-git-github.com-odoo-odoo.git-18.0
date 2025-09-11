@@ -62,7 +62,7 @@ invisible="records_operational_status != 'out_of_service'">
 
                     <group string="Capacity &amp; Compliance">
 <div class="alert alert-warning" invisible="(records_vehicle_type != 'secure_transport') or (naid_compliant == True)">
-                            <strong>⚠️ NAID Compliance Required:</strong> Secure transport vehicles must be NAID compliant.
+                            <strong>&lt;i class="fa fa-warning"&gt; NAID Compliance Required:</strong> Secure transport vehicles must be NAID compliant.
                         </div>
 <div class="alert alert-success" role="status" invisible="naid_compliant == False">
                             <strong><i class="fa fa-check-circle text-success"/> NAID Compliant:</strong> This vehicle meets security standards for document transport.
@@ -185,10 +185,10 @@ invisible="records_operational_status != 'out_of_service'">
                 • <i class="fa fa-wrench"/> Leverage standard Odoo fleet management<br/>
                 • <i class="fa fa-box"/> Specialized container capacity tracking<br/>
                 • <i class="fa fa-lock"/> NAID compliance monitoring<br/>
-                • 🛣️ Route assignment and tracking<br/>
+                • &lt;i class="fa fa-road"&gt; Route assignment and tracking<br/>
                 • <i class="fa fa-mobile"/> Mobile-ready vehicle status updates<br/>
                 • <i class="fa fa-bar-chart"/> Performance analytics and reporting<br/>
-                • ⚙️ Maintenance scheduling integration<br/>
+                • &lt;i class="fa fa-cog"&gt; Maintenance scheduling integration<br/>
                 • <i class="fa fa-money"/> Fuel cost tracking and optimization<br/>
             </p>
         </field>

@@ -114,7 +114,7 @@
                                         </div>
                                     </div>
                                     <div class="col-4">
-                                        <span class="badge" t-att-class="record.budget_utilization.raw_value &amp;gt; 90 ? 'badge-danger' : record.budget_utilization.raw_value &gt; 75 ? 'badge-warning' : 'badge-success'">
+                                        <span class="badge" t-att-class="record.budget_utilization.raw_value &amp;gt; 90 ? 'badge-danger' : record.budget_utilization.raw_value > 75 ? 'badge-warning' : 'badge-success'">
                                             <field name="budget_utilization"/>
 % Used
                                         </span>
@@ -151,16 +151,16 @@
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
             <list decoration-danger="budget_utilization &amp;gt; 90" decoration-warning="budget_utilization &amp;gt; 75" decoration-success="budget_utilization &amp;lt;= 50">
-                <field name="contact_name" string=" Contact"/>
-                <field name="department_id" string=" Department"/>
-                <field name="billing_role" string=" Role"/>
-                <field name="email" string=" Email"/>
-                <field name="phone" string=" Phone"/>
-                <field name="monthly_budget" string=" Monthly Budget" sum="Total Budget"/>
+                <field name="contact_name" string="Contact"/>
+                <field name="department_id" string="Department"/>
+                <field name="billing_role" string="Role"/>
+                <field name="email" string="Email"/>
+                <field name="phone" string="Phone"/>
+                <field name="monthly_budget" string="Monthly Budget" sum="Total Budget"/>
                 <field name="current_month_charges" string="💳 Current Charges" sum="Total Charges"/>
-                <field name="budget_utilization" string=" Utilization %" widget="percentage"/>
-                <field name="approval_authority" string=" Approver" widget="boolean_toggle"/>
-                <field name="active" string=" Active" widget="boolean_toggle"/>
+                <field name="budget_utilization" string="Utilization %" widget="percentage"/>
+                <field name="approval_authority" string="Approver" widget="boolean_toggle"/>
+                <field name="active" string="Active" widget="boolean_toggle"/>
                 <button name="action_budget_report" type="object" string="Budget Report" icon="fa-file-pdf-o" class="btn-link"/>
             </list>
         </field>
@@ -173,8 +173,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_budget_report" type="object" string=" Generate Budget Report" class="btn-primary"/>
-                    <button name="action_send_bill_notification" type="object" string=" Send Bill Notification" class="btn-secondary"/>
+                    <button name="action_budget_report" type="object" string="Generate Budget Report" class="btn-primary"/>
+                    <button name="action_send_bill_notification" type="object" string="Send Bill Notification" class="btn-secondary"/>
                     <field name="active" widget="boolean_toggle"/>
                 </header>
                 <sheet>
@@ -193,14 +193,14 @@
                     </div>
 
                     <group>
-                        <group string=" Contact Information">
+                        <group string="Contact Information">
                             <field name="contact_name" placeholder="Contact Full Name"/>
                             <field name="department_id"/>
                             <field name="billing_role"/>
                             <field name="email" widget="email"/>
                             <field name="phone" widget="phone"/>
                         </group>
-                        <group string=" Budget &amp;amp; Authority">
+                        <group string="Budget &amp;amp; Authority">
                             <field name="monthly_budget"/>
                             <field name="current_month_charges"/>
                             <field name="budget_utilization" widget="percentage"/>
@@ -210,7 +210,7 @@
                     </group>
 
                     <notebook>
-                        <page string=" Approval History" name="approvals">
+                        <page string="Approval History" name="approvals">
                             <field name="approval_history_ids" mode="list">
                                 <list>
                                     <field name="approval_date"/>
@@ -221,15 +221,15 @@
                                 </list>
                             </field>
                         </page>
-                        <page string=" Budget Analysis" name="budget">
+                        <page string="Budget Analysis" name="budget">
                             <group>
-                                <group string=" Current Period">
+                                <group string="Current Period">
                                     <field name="current_month_budget"/>
                                     <field name="current_month_actual"/>
                                     <field name="current_month_variance"/>
                                     <field name="current_month_forecast"/>
                                 </group>
-                                <group string=" Year to Date">
+                                <group string="Year to Date">
                                     <field name="ytd_budget"/>
                                     <field name="ytd_actual"/>
                                     <field name="ytd_variance"/>
@@ -237,15 +237,15 @@
                                 </group>
                             </group>
                         </page>
-                        <page string=" Notifications" name="notifications">
+                        <page string="Notifications" name="notifications">
                             <group>
-                                <group string=" Alert Settings">
+                                <group string="Alert Settings">
                                     <field name="budget_alert_threshold"/>
                                     <field name="email_notifications"/>
                                     <field name="weekly_reports"/>
                                     <field name="monthly_statements"/>
                                 </group>
-                                <group string=" CC Recipients">
+                                <group string="CC Recipients">
                                     <field name="cc_finance_team"/>
                                     <field name="cc_department_head"/>
                                     <field name="cc_additional_emails"/>
@@ -268,7 +268,7 @@
         <field name="name">records.department.billing.contact.view.graph</field>
         <field name="model">records.department.billing.contact</field>
         <field name="arch" type="xml">
-            <graph string=" Department Budget Analytics">
+            <graph string="Department Budget Analytics">
                 <field name="department_id" type="row"/>
                 <field name="monthly_budget" type="measure"/>
                 <field name="current_month_charges" type="measure"/>
@@ -286,20 +286,20 @@
                 <field name="department_id"/>
                 <field name="email"/>
 
-                <filter string=" Active Contacts" name="active" domain="[('active', '=', True)]"/>
-                <filter string=" Approvers" name="approvers" domain="[('approval_authority', '=', True)]"/>
-                <filter string=" Email Notifications" name="email_notifications" domain="[('email_notifications', '=', True)]"/>
+                <filter string="Active Contacts" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Approvers" name="approvers" domain="[('approval_authority', '=', True)]"/>
+                <filter string="Email Notifications" name="email_notifications" domain="[('email_notifications', '=', True)]"/>
 
                 <separator/>
                 <filter string="🟢 Under Budget" name="under_budget" domain="[('budget_utilization', '&amp;lt;', 75)]"/>
-                <filter string="🟡 Near Budget" name="near_budget" domain="[('budget_utilization', '&amp;gt;=', 75), ('budget_utilization', '&lt;', 90)]"/>
+                <filter string="🟡 Near Budget" name="near_budget" domain="[('budget_utilization', '&amp;gt;=', 75), ('budget_utilization', '<', 90)]"/>
                 <filter string="🔴 Over Budget" name="over_budget" domain="[('budget_utilization', '&amp;gt;=', 90)]"/>
 
                 <separator/>
-                <filter string=" High Budget" name="high_budget" domain="[('monthly_budget', '&amp;gt;', 10000)]"/>
-                <filter string=" Medium Budget" name="medium_budget" domain="[('monthly_budget', '&amp;gt;', 1000), ('monthly_budget', '&lt;=', 10000)]"/>
+                <filter string="High Budget" name="high_budget" domain="[('monthly_budget', '&amp;gt;', 10000)]"/>
+                <filter string="Medium Budget" name="medium_budget" domain="[('monthly_budget', '&amp;gt;', 1000), ('monthly_budget', '<=', 10000)]"/>
 
-                <group expand="0" string=" Group By">
+                <group expand="0" string="Group By">
                     <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Billing Role" name="group_by_role" context="{'group_by': 'billing_role'}"/>
                     <filter string="Budget Range" name="group_by_budget" context="{'group_by': 'budget_range'}"/>

@@ -177,8 +177,8 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
             <filter string="Not Invoiced" name="not_invoiced" domain="[('invoice_created', '=', False)]"/>
             <separator/>
             <filter string="Today" name="today" domain="[('service_date', '=', context_today)]"/>
-            <filter string="This Week" name="this_week" domain="[('service_date', '&gt;=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-            <filter string="This Month" name="this_month" domain="[('service_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
+            <filter string="This Week" name="this_week" domain="[('service_date', '>=', (context_today - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+            <filter string="This Month" name="this_month" domain="[('service_date', '>=', context_today.strftime('%Y-%m-01'))]"/>
             <group expand="1" string="Group By">
                 <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
                 <filter string="Technician" name="group_technician" context="{'group_by': 'technician_id'}"/>
@@ -217,8 +217,8 @@ This customer is restricted from receiving bin keys. Use bin unlock service inst
     <field name="arch" type="xml">
         <form string="Bin Unlock Service">
             <header>
-                <button name="action_create_invoice" string=" Create Invoice" type="object" class="btn-primary" invisible="billable == False or invoice_created == True"/>
-                <button name="action_mark_completed" string=" Mark Completed" type="object" class="btn-success" invisible="completed == True"/>
+                <button name="action_create_invoice" string="Create Invoice" type="object" class="btn-primary" invisible="billable == False or invoice_created == True"/>
+                <button name="action_mark_completed" string="Mark Completed" type="object" class="btn-success" invisible="completed == True"/>
             </header>
             <sheet>
                 <div class="oe_title">

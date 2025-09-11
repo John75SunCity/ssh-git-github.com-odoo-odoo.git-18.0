@@ -8,12 +8,12 @@
         <field name="model">records.department</field>
         <field name="arch" type="xml">
             <list decoration-success="state == 'active'" decoration-muted="state == 'archived'" decoration-info="state == 'draft'">
-                <field name="display_name" string=" Department"/>
-                <field name="partner_id" string=" Customer"/>
+                <field name="display_name" string="Department"/>
+                <field name="partner_id" string="Customer"/>
                 <field name="code" string="🔢 Code"/>
-                <field name="container_count" string=" Containers" widget="integer"/>
-                <field name="document_count" string=" Documents" widget="integer"/>
-                <field name="state" string=" Status" widget="badge"/>
+                <field name="container_count" string="Containers" widget="integer"/>
+                <field name="document_count" string="Documents" widget="integer"/>
+                <field name="state" string="Status" widget="badge"/>
                 <field name="user_id" string="👨‍ Responsible"/>
                 <button name="action_view_containers" type="object" string="View Containers" icon="fa-cube" class="btn-link"/>
                 <button name="action_view_documents" type="object" string="View Documents" icon="fa-file" class="btn-link"/>
@@ -60,14 +60,14 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                     </div>
 
                     <group>
-                        <group string=" Department Information">
+                        <group string="Department Information">
                             <field name="name" required="1"/>
                             <field name="code" required="1"/>
                             <field name="partner_id" required="1"/>
                             <field name="user_id"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
-                        <group string=" Analytics &amp; Status">
+                        <group string="Analytics &amp; Status">
                             <field name="state"/>
                             <field name="active" widget="boolean_toggle"/>
                             <field name="container_count" readonly="1"/>
@@ -76,10 +76,10 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                     </group>
 
                     <notebook>
-                        <page string=" Users &amp; Access" name="users">
+                        <page string="Users &amp; Access" name="users">
                             <field name="user_ids" widget="many2many_tags" nolabel="1"/>
                         </page>
-                        <page string=" Billing Contacts" name="billing">
+                        <page string="Billing Contacts" name="billing">
                             <field name="billing_contact_ids">
                                 <list>
                                     <field name="name"/>
@@ -89,7 +89,7 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                 </list>
                             </field>
                         </page>
-                        <page string=" Recent Containers" name="containers">
+                        <page string="Recent Containers" name="containers">
                             <field name="container_ids" mode="list" limit="10">
                                 <list>
                                     <field name="name"/>
@@ -99,7 +99,7 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                                 </list>
                             </field>
                         </page>
-                        <page string=" Recent Documents" name="documents">
+                        <page string="Recent Documents" name="documents">
                             <field name="document_ids" mode="list" limit="10">
                                 <list>
                                     <field name="name"/>
@@ -132,16 +132,16 @@ invisible="state != 'active'" groups="records_management.group_records_manager"/
                 <field name="user_id"/>
                 <field name="state"/>
 
-                <filter string=" Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                <filter string=" Active" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
                 <filter string="📁 Archived" name="archived" domain="[('state', '=', 'archived')]"/>
 
                 <separator/>
-                <filter string=" Has Containers" name="has_containers" domain="[('container_count', '">', 0)]"/>
-                <filter string=" Has Documents" name="has_documents" domain="[('document_count', '">', 0)]"/>
-                <filter string=" Has Users" name="has_users" domain="[('user_ids', '!=', False)]"/>
+                <filter string="Has Containers" name="has_containers" domain="[('container_count', '">', 0)]"/>
+                <filter string="Has Documents" name="has_documents" domain="[('document_count', '">', 0)]"/>
+                <filter string="Has Users" name="has_users" domain="[('user_ids', '!=', False)]"/>
 
-                <group expand="0" string=" Group By">
+                <group expand="0" string="Group By">
                     <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                     <filter string="Responsible" name="group_by_user" context="{'group_by': 'user_id'}"/>

@@ -27,7 +27,7 @@
                                     </strong>
                                 </div>
                                 <div class="o_secondary">
-                                        🏷️                                    <field name="document_type"/>
+                                        <i class="fa fa-tag">                                    <field name="document_type"/>
                                 </div>
                             </div>
                             <div class="o_kanban_manage_button_section">
@@ -133,7 +133,7 @@
                         </h1>
                     </div>
 <group>
-    <group name="main_info" string=" Document Information">
+    <group name="main_info" string="Document Information">
         <field name="barcode" widget="barcode"/>
         <field name="document_type"/>
         <field name="document_description"/>
@@ -141,7 +141,7 @@
         <field name="file_size" widget="float" digits="[12,2]"/>
         <field name="scan_quality"/>
     </group>
-    <group name="assignment" string=" Assignment &amp; Priority">
+    <group name="assignment" string="Assignment &amp; Priority">
         <field name="priority" widget="priority"/>
         <field name="assigned_user_id" widget="many2one_avatar_user"/>
         <field name="retrieval_work_order_id"/>
@@ -151,7 +151,7 @@
     </group>
 </group>
 
-<group name="metadata" string=" System Information">
+<group name="metadata" string="System Information">
     <group>
         <field name="company_id" groups="base.group_multi_company"/>
         <field name="create_uid" readonly="1"/>
@@ -165,14 +165,14 @@
 </group>
 
 <notebook>
-    <page string=" Processing Notes" name="notes">
+    <page string="Processing Notes" name="notes">
         <field name="processing_notes" placeholder="Add processing notes, scan issues, or special instructions..."/>
     </page>
     <page string="📎 Attachments" name="attachments">
         <field name="scanned_document_attachment" widget="binary"/>
         <field name="additional_attachments" widget="many2many_binary"/>
     </page>
-    <page string=" Quality Control" name="quality">
+    <page string="Quality Control" name="quality">
         <group>
             <group>
                 <field name="quality_check_passed"/>
@@ -211,30 +211,30 @@
 <field name="company_id" groups="base.group_multi_company"/>
 
 <separator/>
-<filter string=" Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-<filter string=" In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
-<filter string=" Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+<filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+<filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+<filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
 
 <separator/>
-<filter string=" High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
-<filter string=" Medium Priority" name="medium_priority" domain="[('priority', '=', 'medium')]"/>
-<filter string=" Low Priority" name="low_priority" domain="[('priority', '=', 'low')]"/>
+<filter string="High Priority" name="high_priority" domain="[('priority', '=', 'high')]"/>
+<filter string="Medium Priority" name="medium_priority" domain="[('priority', '=', 'medium')]"/>
+<filter string="Low Priority" name="low_priority" domain="[('priority', '=', 'low')]"/>
 
 <separator/>
-<filter string=" My Items" name="my_items" domain="[('assigned_user_id', '=', uid)]"/>
-<filter string=" Unassigned" name="unassigned" domain="[('assigned_user_id', '=', False)]"/>
-<filter string=" Quality Passed" name="quality_passed" domain="[('quality_check_passed', '=', True)]"/>
+<filter string="My Items" name="my_items" domain="[('assigned_user_id', '=', uid)]"/>
+<filter string="Unassigned" name="unassigned" domain="[('assigned_user_id', '=', False)]"/>
+<filter string="Quality Passed" name="quality_passed" domain="[('quality_check_passed', '=', True)]"/>
 
 <separator/>
-<filter string=" Scanned Today" name="scanned_today" domain="[('scan_date', '&gt;=', context_today)]"/>
-<filter string="📆 Scanned This Week" name="scanned_this_week" domain="[('scan_date', '&gt;=', (context_today - relativedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
-<filter string="🗓️ Scanned This Month" name="scanned_this_month" domain="[('scan_date', '&gt;=', context_today.strftime('%Y-%m-01'))]"/>
+<filter string="Scanned Today" name="scanned_today" domain="[('scan_date', '>=', context_today)]"/>
+<filter string="📆 Scanned This Week" name="scanned_this_week" domain="[('scan_date', '>=', (context_today - relativedelta(days=context_today.weekday())).strftime('%Y-%m-%d'))]"/>
+<filter string="Scanned This Month" name="scanned_this_month" domain="[('scan_date', '>=', context_today.strftime('%Y-%m-01'))]"/>
 
 <separator/>
-<filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today), ('state', 'not in', ['completed', 'cancelled'])]"/>
+<filter string="⏰ Overdue" name="overdue" domain="[('expected_completion_date', '<', context_today), ('state', 'not in', ['completed', 'cancelled'])]"/>
 <filter string="🚨 Due Today" name="due_today" domain="[('expected_completion_date', '=', context_today)]"/>
 
-<group expand="0" string=" Group By">
+<group expand="0" string="Group By">
     <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
     <filter string="Document Type" name="group_by_document_type" context="{'group_by': 'document_type'}"/>
     <filter string="Priority" name="group_by_priority" context="{'group_by': 'priority'}"/>

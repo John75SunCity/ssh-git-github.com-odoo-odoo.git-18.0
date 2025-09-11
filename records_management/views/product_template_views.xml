@@ -27,7 +27,7 @@
                                         </strong>
                                     </div>
                                     <div class="o_secondary">
-                                        🏷️                                        <field name="default_code"/>
+                                        <i class="fa fa-tag">                                        <field name="default_code"/>
                                     </div>
                                 </div>
                                 <div class="o_kanban_manage_button_section">
@@ -103,16 +103,16 @@
         <field name="model">product.template</field>
         <field name="arch" type="xml">
             <list decoration-success="sale_ok == True and active == True" decoration-warning="type == 'service'" decoration-info="purchase_ok == True">
-                <field name="name" string=" Product Name"/>
-                <field name="default_code" string="🏷️ Internal Reference"/>
-                <field name="categ_id" string=" Category"/>
-                <field name="type" string=" Type" widget="badge"/>
+                <field name="name" string="Product Name"/>
+                <field name="default_code" string="Internal Reference"/>
+                <field name="categ_id" string="Category"/>
+                <field name="type" string="Type" widget="badge"/>
                 <field name="list_price" string="💵 Sale Price"/>
-                <field name="standard_price" string=" Cost"/>
+                <field name="standard_price" string="Cost"/>
                 <field name="uom_id" string="📏 Unit of Measure"/>
-                <field name="sale_ok" string=" Can be Sold" widget="boolean_toggle"/>
+                <field name="sale_ok" string="Can be Sold" widget="boolean_toggle"/>
                 <field name="purchase_ok" string="🛒 Can be Purchased" widget="boolean_toggle"/>
-                <field name="active" string=" Status" widget="boolean_toggle"/>
+                <field name="active" string="Status" widget="boolean_toggle"/>
                 <button name="action_view_sales" type="object" string="Sales" icon="fa-line-chart" class="btn-link"/>
                 <button name="action_configure_pricing" type="object" string="Pricing" icon="fa-money" class="btn-link"/>
             </list>
@@ -126,10 +126,10 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_view_sales" type="object" string=" View Sales History" class="btn-primary"/>
-                    <button name="action_configure_variants" type="object" string=" Configure Variants" class="btn-secondary"/>
-                    <button name="action_pricing_rules" type="object" string=" Pricing Rules" class="btn-info"/>
-                    <button name="action_update_costs" type="object" string=" Update Costs" class="btn-success"/>
+                    <button name="action_view_sales" type="object" string="View Sales History" class="btn-primary"/>
+                    <button name="action_configure_variants" type="object" string="Configure Variants" class="btn-secondary"/>
+                    <button name="action_pricing_rules" type="object" string="Pricing Rules" class="btn-info"/>
+                    <button name="action_update_costs" type="object" string="Update Costs" class="btn-success"/>
                     <field name="active" widget="boolean_button" options="{'terminology': {'string_true': '🟢 Active', 'string_false': '⭕ Archived'}}"/>
                 </header>
                 <sheet>
@@ -159,14 +159,14 @@
                     </div>
 
                     <notebook>
-                        <page string=" General Information" name="general">
+                        <page string="General Information" name="general">
                             <group>
-                                <group string=" Basic Information">
+                                <group string="Basic Information">
                                     <field name="default_code" placeholder="e.g., RMS-001"/>
                                     <field name="categ_id"/>
                                     <field name="type"/>
                                 </group>
-                                <group string=" Service Settings">
+                                <group string="Service Settings">
                                     <field name="sale_ok"/>
                                     <field name="purchase_ok"/>
                                     <field name="can_be_expensed" invisible="type != 'service'"/>
@@ -175,7 +175,7 @@
                             </group>
                             <field name="description" placeholder="Detailed description of the records management service..."/>
                         </page>
-                        <page string=" Sales &amp;amp; Pricing" name="sales">
+                        <page string="Sales &amp;amp; Pricing" name="sales">
                             <group>
                                 <group string="💵 Pricing Information">
                                     <field name="list_price" widget="monetary"/>
@@ -191,13 +191,13 @@
                                 </group>
                             </group>
                             <group>
-                                <group string=" Cost Structure">
+                                <group string="Cost Structure">
                                     <field name="base_cost"/>
                                     <field name="labor_cost"/>
                                     <field name="material_cost"/>
                                     <field name="overhead_cost"/>
                                 </group>
-                                <group string=" Billing Settings">
+                                <group string="Billing Settings">
                                     <field name="billing_frequency"/>
                                     <field name="minimum_billing_period"/>
                                     <field name="prorate_partial_periods"/>
@@ -205,15 +205,15 @@
                                 </group>
                             </group>
                         </page>
-                        <page string=" Records Management" name="records_management">
+                        <page string="Records Management" name="records_management">
                             <group>
-                                <group string=" Document Services">
+                                <group string="Document Services">
                                     <field name="document_storage_included"/>
                                     <field name="max_documents_included"/>
                                     <field name="additional_document_cost"/>
                                     <field name="digital_conversion_included"/>
                                 </group>
-                                <group string=" Storage Services">
+                                <group string="Storage Services">
                                     <field name="box_storage_included"/>
                                     <field name="max_boxes_included"/>
                                     <field name="additional_box_cost"/>
@@ -221,13 +221,13 @@
                                 </group>
                             </group>
                             <group>
-                                <group string="🗑️ Destruction Services">
+                                <group string="Destruction Services">
                                     <field name="shredding_included"/>
                                     <field name="naid_compliance_level"/>
                                     <field name="witness_destruction"/>
                                     <field name="certificate_of_destruction"/>
                                 </group>
-                                <group string=" Logistics Services">
+                                <group string="Logistics Services">
                                     <field name="pickup_delivery_included"/>
                                     <field name="emergency_retrieval"/>
                                     <field name="same_day_service"/>
@@ -235,15 +235,15 @@
                                 </group>
                             </group>
                         </page>
-                        <page string=" Service Level Agreement" name="sla">
+                        <page string="Service Level Agreement" name="sla">
                             <group>
-                                <group string=" Response Times">
+                                <group string="Response Times">
                                     <field name="standard_response_time"/>
                                     <field name="emergency_response_time"/>
                                     <field name="document_retrieval_time"/>
                                     <field name="box_retrieval_time"/>
                                 </group>
-                                <group string=" Service Guarantees">
+                                <group string="Service Guarantees">
                                     <field name="uptime_guarantee"/>
                                     <field name="security_guarantee"/>
                                     <field name="compliance_guarantee"/>
@@ -252,7 +252,7 @@
                             </group>
                             <field name="sla_terms" placeholder="Detailed Service Level Agreement terms and conditions..."/>
                         </page>
-                        <page string=" Product Variants" name="variants">
+                        <page string="Product Variants" name="variants">
                             <field name="product_variant_ids" mode="list">
                                 <list>
                                     <field name="default_code"/>
@@ -264,15 +264,15 @@
                                 </list>
                             </field>
                         </page>
-                        <page string=" Analytics" name="analytics">
+                        <page string="Analytics" name="analytics">
                             <group>
-                                <group string=" Sales Performance">
+                                <group string="Sales Performance">
                                     <field name="total_sales_ytd" readonly="1"/>
                                     <field name="total_revenue_ytd" readonly="1"/>
                                     <field name="average_sale_price" readonly="1"/>
                                     <field name="profit_margin" readonly="1"/>
                                 </group>
-                                <group string=" Timeline Metrics">
+                                <group string="Timeline Metrics">
                                     <field name="first_sale_date" readonly="1"/>
                                     <field name="last_sale_date" readonly="1"/>
                                     <field name="sales_velocity" readonly="1"/>
@@ -280,15 +280,15 @@
                                 </group>
                             </group>
                         </page>
-                        <page string=" Configuration" name="configuration">
+                        <page string="Configuration" name="configuration">
                             <group>
-                                <group string=" Template Settings">
+                                <group string="Template Settings">
                                     <field name="is_template_service"/>
                                     <field name="template_category"/>
                                     <field name="customization_allowed"/>
                                     <field name="requires_approval"/>
                                 </group>
-                                <group string=" Integration">
+                                <group string="Integration">
                                     <field name="external_service_id"/>
                                     <field name="api_integration"/>
                                     <field name="sync_enabled"/>
@@ -322,22 +322,22 @@
                 <filter string="⭕ Archived" name="archived" domain="[('active', '=', False)]"/>
 
                 <separator/>
-                <filter string=" Can be Sold" name="sale_ok" domain="[('sale_ok', '=', True)]"/>
+                <filter string="Can be Sold" name="sale_ok" domain="[('sale_ok', '=', True)]"/>
                 <filter string="🛒 Can be Purchased" name="purchase_ok" domain="[('purchase_ok', '=', True)]"/>
-                <filter string=" Services" name="services" domain="[('type', '=', 'service')]"/>
-                <filter string=" Products" name="products" domain="[('type', '=', 'product')]"/>
+                <filter string="Services" name="services" domain="[('type', '=', 'service')]"/>
+                <filter string="Products" name="products" domain="[('type', '=', 'product')]"/>
 
                 <separator/>
-                <filter string=" Featured Services" name="featured" domain="[('is_featured_service', '=', True)]"/>
-                <filter string=" NAID Compliant" name="naid_compliant" domain="[('naid_compliance_level', 'in', ['A', 'AA', 'AAA'])]"/>
-                <filter string=" Document Services" name="document_services" domain="[('document_storage_included', '=', True)]"/>
-                <filter string="🗑️ Destruction Services" name="destruction_services" domain="[('shredding_included', '=', True)]"/>
+                <filter string="Featured Services" name="featured" domain="[('is_featured_service', '=', True)]"/>
+                <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliance_level', 'in', ['A', 'AA', 'AAA'])]"/>
+                <filter string="Document Services" name="document_services" domain="[('document_storage_included', '=', True)]"/>
+                <filter string="Destruction Services" name="destruction_services" domain="[('shredding_included', '=', True)]"/>
 
                 <separator/>
-                <filter string=" High Value (&amp;gt;$100)" name="high_value" domain="[('list_price', '&amp;gt;', 100)]"/>
-                <filter string=" Top Performers" name="top_performers" domain="[('total_sales_ytd', '&amp;gt;', 0)]"/>
+                <filter string="High Value (&amp;gt;$100)" name="high_value" domain="[('list_price', '&amp;gt;', 100)]"/>
+                <filter string="Top Performers" name="top_performers" domain="[('total_sales_ytd', '&amp;gt;', 0)]"/>
 
-                <group expand="0" string=" Group By">
+                <group expand="0" string="Group By">
                     <filter string="Category" name="group_by_category" context="{'group_by': 'categ_id'}"/>
                     <filter string="Product Type" name="group_by_type" context="{'group_by': 'type'}"/>
                     <filter string="NAID Level" name="group_by_naid" context="{'group_by': 'naid_compliance_level'}"/>
