@@ -2,11 +2,11 @@
 <odoo>
     <data>
         <!-- Enhanced List View for Chain of Custody -->
-    <record id="chain_of_custody_view_list" model="ir.ui.view">
+        <record id="chain_of_custody_view_list" model="ir.ui.view">
             <field name="name">chain.of.custody.view.list</field>
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
-                <tree decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'cancelled'" decoration-info="naid_compliant == True">
+                <list decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'cancelled'" decoration-info="naid_compliant == True">
                     <field name="name" string="Transfer Reference"/>
                     <field name="transfer_type" string="Type"/>
                     <field name="document_id" string="Document"/>
@@ -19,7 +19,7 @@
                     <field name="security_level" string="Security"/>
                     <button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'" title="Confirm Transfer"/>
                     <button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'in_transit'" title="Complete Transfer"/>
-                </tree>
+                </list>
             </field>
         </record>
 
