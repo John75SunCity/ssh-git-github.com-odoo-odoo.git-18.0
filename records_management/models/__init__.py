@@ -23,9 +23,9 @@ from . import bin_unlock_service
 from . import calendar_event
 from . import certificate_template_data
 from . import naid_audit_log
-from . import chain_of_custody
 from . import chain_of_custody_event
 from . import chain_of_custody_item
+from . import chain_of_custody
 from . import container_access_activity
 from . import container_access_document
 from . import container_access_photo

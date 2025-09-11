@@ -131,17 +131,7 @@
                                 </field>
                             </page>
                             <page string="Audit Trail" name="audit">
-                                <field name="audit_log_ids">
-                                    <tree>
-                                        <field name="event_date"/>
-                                        <field name="action_type"/>
-                                        <field name="user_id"/>
-                                        <field name="description"/>
-                                        <field name="old_value"/>
-                                        <field name="new_value"/>
-                                        <field name="ip_address"/>
-                                    </tree>
-                                </field>
+                                <field name="audit_log_ids"/>
                             </page>
                             <page string="Transfer Items" name="items">
                                 <field name="transfer_item_ids">
