@@ -284,19 +284,20 @@ class ChainOfCustodyItem(models.Model):
                 result.append((rec.id, label))
         return result
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Override create to update related records"""
-        item = super().create(vals)
+        items = super().create(vals_list)
 
         # Update document/container location if transferring
-        if item.to_location_id:
-            if item.document_id and hasattr(item.document_id, 'location_id'):
-                item.document_id.location_id = item.to_location_id
-            elif item.container_id and hasattr(item.container_id, 'location_id'):
-                item.container_id.location_id = item.to_location_id
+        for item in items:
+            if item.to_location_id:
+                if item.document_id and hasattr(item.document_id, 'location_id'):
+                    item.document_id.location_id = item.to_location_id
+                elif item.container_id and hasattr(item.container_id, 'location_id'):
+                    item.container_id.location_id = item.to_location_id
 
-        return item
+        return items
 
     def write(self, vals):
         """Override write to track location changes"""
