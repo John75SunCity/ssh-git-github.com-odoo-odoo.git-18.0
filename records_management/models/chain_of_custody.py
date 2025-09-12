@@ -956,7 +956,6 @@ class ChainOfCustody(models.Model):
             'by_type': {},
             'by_state': {},
         }
-
         # Count by transfer type
         for transfer_type, label in dict(self._fields['transfer_type'].selection).items():
             count = self.search_count(domain + [('transfer_type', '=', transfer_type)])
@@ -972,12 +971,38 @@ class ChainOfCustody(models.Model):
         return stats
 
     def _build_related_domain(self, record, operator=None, sequence_value=None):
-        """Build domain for related custody records based on container or document."""
+        """Build domain for related custody records based on container or document.
+        
+        Args:
+            record: The custody record to build domain for
+            operator: Comparison operator for sequence ('>', '<', '=', etc.)
+            sequence_value: The sequence value to compare against
+            
+        Returns:
+            list: Domain filter list for searching related records
+        """
         domain = []
+
+        # Ensure we have a valid record with at least one relation
+        if not record:
+            return domain
+
+        # Build domain based on related container or document
         if record.container_id:
             domain.append(("container_id", "=", record.container_id.id))
         elif record.document_id:
             domain.append(("document_id", "=", record.document_id.id))
-        if operator and sequence_value is not None:
-            domain.append(("sequence", operator, sequence_value))
+        else:
+            # If no container or document, return empty domain to avoid broad searches
+            _logger.warning(f"Custody record {record.id} has no container_id or document_id for domain building")
+            return []
+
+        # Add sequence filter if both operator and value are provided
+        if operator is not None and sequence_value is not None:
+            # Validate operator is a string and one of the expected values
+            if isinstance(operator, str) and operator in ['>', '<', '>=', '<=', '=', '!=']:
+                domain.append(("sequence", operator, sequence_value))
+            else:
+                _logger.warning(f"Invalid operator '{operator}' in _build_related_domain, skipping sequence filter")
+
         return domain
