@@ -727,6 +727,10 @@ class ChainOfCustody(models.Model):
         ('satisfied', 'Satisfied'),
         ('very_satisfied', 'Very Satisfied'),
     ], string='Customer Satisfaction')
+    humidity_controlled = fields.Boolean(
+        string='Humidity Controlled',
+        help='Indicates this transfer required humidity control.'
+    )
     # Environmental aggregates (used in analytics/environmental notebook pages)
     min_temperature = fields.Float(
         string='Min Temperature (°C)',
@@ -994,65 +998,57 @@ class ChainOfCustody(models.Model):
             else:
                 record.display_name = record.name or "New Custody Record"
 
-    @api.depends("transfer_date", "state")
+    @api.depends("transfer_date", "actual_completion_date", "state")
     def _compute_duration(self):
         """Compute duration of custody transfer."""
         for record in self:
-            if not record.transfer_date:
-                record.duration_hours = 0.0
-                continue
-
-            if record.state == "completed":
-                # Only calculate duration if related to a container or document
-                if not record.container_id and not record.document_id:
-                    record.duration_hours = 0.0
-                    continue
-
-                domain = self._build_related_domain(record, ">", record.sequence)
-                next_transfer = self.search(domain, order="sequence asc", limit=1)
-
-                if next_transfer and next_transfer.transfer_date:
-                    end_time = next_transfer.transfer_date
-                else:
-                    # Use current time if no next transfer
-                    end_time = fields.Datetime.now()
-
-                duration = end_time - record.transfer_date
+            if record.state in ('completed', 'verified') and record.transfer_date and record.actual_completion_date:
+                duration = record.actual_completion_date - record.transfer_date
                 record.duration_hours = max(0.0, duration.total_seconds() / 3600)
             else:
                 record.duration_hours = 0.0
 
     @api.depends("sequence", "container_id", "document_id")
     def _compute_next_transfer(self):
-        """Compute next transfer in the chain."""
+        """Compute next transfer in the chain.
+        
+        NOTE: This method is inefficient due to search in a loop. It is kept for
+        compatibility if other parts of the system rely on it, but should be
+        refactored or removed if possible.
+        """
         for record in self:
             if not record.container_id and not record.document_id:
                 record.next_transfer_id = False
                 continue
 
             domain = self._build_related_domain(record, ">", record.sequence)
-            record.next_transfer_id = self.search(domain, order="sequence asc", limit=1)
+            next_transfer = self.search(domain, order="sequence asc", limit=1)
+            record.next_transfer_id = next_transfer if next_transfer else False
 
     @api.depends("sequence", "container_id", "document_id")
     def _compute_previous_transfer(self):
-        """Compute previous transfer in the chain."""
+        """Compute previous transfer in the chain.
+        
+        NOTE: This method is inefficient due to search in a loop. It is kept for
+        compatibility if other parts of the system rely on it, but should be
+        refactored or removed if possible.
+        """
         for record in self:
             if not record.container_id and not record.document_id:
                 record.previous_transfer_id = False
                 continue
 
             domain = self._build_related_domain(record, "<", record.sequence)
-            record.previous_transfer_id = self.search(
+            prev_transfer = self.search(
                 domain, order="sequence desc", limit=1
             )
+            record.previous_transfer_id = prev_transfer if prev_transfer else False
 
-    @api.depends("sequence", "container_id", "document_id")
+    @api.depends("transfer_type")
     def _compute_is_final(self):
         """Compute if this is the final transfer."""
         for record in self:
-            record.is_final_transfer = (
-                record.transfer_type == "destruction" or not record.next_transfer_id
-            )
+            record.is_final_transfer = record.transfer_type == "destruction"
 
     @api.depends("container_id", "document_id")
     def _compute_related_counts(self):
@@ -1450,13 +1446,17 @@ class ChainOfCustody(models.Model):
     def _build_related_domain(self, record, operator=None, sequence_value=None):
         """Build domain for related custody records based on container or document.
 
+        If both container and document are specified on the record, this method
+        builds a domain to find other custody records related to *either* of them.
+        This ensures a complete chain of custody is retrieved.
+
         Args:
-            record: The custody record to build domain for
-            operator: Comparison operator for sequence ('>', '<', '=', etc.)
-            sequence_value: The sequence value to compare against
+            record: The custody record to build domain for.
+            operator: Comparison operator for sequence ('>', '<', '=', etc.).
+            sequence_value: The sequence value to compare against.
 
         Returns:
-            list: Domain filter list for searching related records
+            list: Domain filter list for searching related records.
         """
         domain = []
 
@@ -1464,10 +1464,17 @@ class ChainOfCustody(models.Model):
         if not record:
             return domain
 
+        has_container = bool(record.container_id)
+        has_document = bool(record.document_id)
+
         # Build domain based on related container or document
-        if record.container_id:
+        if has_container and has_document:
+            domain.extend(['|',
+                           ("container_id", "=", record.container_id.id),
+                           ("document_id", "=", record.document_id.id)])
+        elif has_container:
             domain.append(("container_id", "=", record.container_id.id))
-        elif record.document_id:
+        elif has_document:
             domain.append(("document_id", "=", record.document_id.id))
         else:
             # If no container or document, return empty domain to avoid broad searches
