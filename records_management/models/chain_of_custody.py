@@ -526,13 +526,13 @@ class ChainOfCustody(models.Model):
     actual_duration = fields.Float(
         string="Actual Duration (Hrs)",
         compute="_compute_durations_and_efficiency",
-        store=False,
+        store=True,
         help="Hours between transfer_date and completion (or now if completed absent timestamp).",
     )
     transfer_efficiency = fields.Float(
         string="Transfer Efficiency (%)",
         compute="_compute_durations_and_efficiency",
-        store=False,
+        store=True,
         help="(Estimated / Actual) * 100 capped at 100 (0 if missing inputs).",
     )
     compliance_score = fields.Float(
