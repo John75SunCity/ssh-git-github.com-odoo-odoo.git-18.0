@@ -96,14 +96,14 @@ class ChainOfCustody(models.Model):
 
     # Custody Parties
     from_custodian_id = fields.Many2one(
-        comodel_name="res.user",
+        comodel_name="res.users",
         string="From Custodian",
         tracking=True,
         help="Previous custodian releasing custody",
     )
 
     to_custodian_id = fields.Many2one(
-        comodel_name="res.user",
+        comodel_name="res.users",
         string="To Custodian",
         required=True,
         tracking=True,
@@ -111,7 +111,7 @@ class ChainOfCustody(models.Model):
     )
 
     witness_id = fields.Many2one(
-        comodel_name="res.user",
+        comodel_name="res.users",
         string="Witness",
         tracking=True,
         help="Witness to the custody transfer",
@@ -229,7 +229,7 @@ class ChainOfCustody(models.Model):
     )
 
     authorized_by_id = fields.Many2one(
-        comodel_name="res.user",
+        comodel_name="res.users",
         string="Authorized By",
         help="User who authorized this transfer",
     )
@@ -275,7 +275,7 @@ class ChainOfCustody(models.Model):
     )
 
     verified_by_id = fields.Many2one(
-        comodel_name="res.user",
+        comodel_name="res.users",
         string="Verified By",
         help="User who verified this transfer",
     )
@@ -331,7 +331,7 @@ class ChainOfCustody(models.Model):
         default=False,
     )
     compliance_officer_id = fields.Many2one(
-        comodel_name="res.user",
+        comodel_name="res.users",
         string="Compliance Officer",
         help="Officer responsible for compliance verification.",
     )
@@ -972,12 +972,12 @@ class ChainOfCustody(models.Model):
 
     def _build_related_domain(self, record, operator=None, sequence_value=None):
         """Build domain for related custody records based on container or document.
-        
+
         Args:
             record: The custody record to build domain for
             operator: Comparison operator for sequence ('>', '<', '=', etc.)
             sequence_value: The sequence value to compare against
-            
+
         Returns:
             list: Domain filter list for searching related records
         """
