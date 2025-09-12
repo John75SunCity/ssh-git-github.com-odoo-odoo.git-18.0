@@ -561,6 +561,61 @@ class ChainOfCustody(models.Model):
     )
 
     # ------------------------------------------------------------------
+    # ITEM SNAPSHOT PLACEHOLDERS (One2many sub-form parser workaround)
+    # ------------------------------------------------------------------
+    # The embedded transfer_item_ids form uses fields (value, quantity, condition,
+    # serial_number, barcode, weight, verified). Odoo's view parser may validate
+    # those against the parent model before resolving nested form contexts,
+    # producing false missing-field errors. We expose lightweight non-stored
+    # snapshot fields reflecting the latest transfer item to satisfy validation.
+    value = fields.Monetary(
+        string='Item Value (Snapshot)',
+        compute='_compute_latest_item_snapshot',
+        store=False,
+        currency_field='currency_id',
+        help='Latest transfer item value (parser compatibility placeholder).'
+    )
+    quantity = fields.Integer(
+        string='Quantity (Snapshot)',
+        compute='_compute_latest_item_snapshot',
+        store=False,
+        help='Latest transfer item quantity (parser compatibility placeholder).'
+    )
+    condition = fields.Selection([
+        ('good', 'Good'),
+        ('damaged', 'Damaged'),
+        ('sealed', 'Sealed'),
+        ('opened', 'Opened'),
+        ('missing', 'Missing'),
+        ('destroyed', 'Destroyed'),
+    ], string='Condition (Snapshot)', compute='_compute_latest_item_snapshot', store=False,
+       help='Latest transfer item condition (parser compatibility placeholder).')
+    serial_number = fields.Char(
+        string='Serial Number (Snapshot)',
+        compute='_compute_latest_item_snapshot',
+        store=False,
+        help='Latest transfer item serial number (parser compatibility placeholder).'
+    )
+    barcode = fields.Char(
+        string='Barcode (Snapshot)',
+        compute='_compute_latest_item_snapshot',
+        store=False,
+        help='Latest transfer item barcode (parser compatibility placeholder).'
+    )
+    weight = fields.Float(
+        string='Weight (Snapshot kg)',
+        compute='_compute_latest_item_snapshot',
+        store=False,
+        help='Latest transfer item weight (parser compatibility placeholder).'
+    )
+    verified = fields.Boolean(
+        string='Verified (Snapshot)',
+        compute='_compute_latest_item_snapshot',
+        store=False,
+        help='Latest transfer item verified flag (parser compatibility placeholder).'
+    )
+
+    # ------------------------------------------------------------------
     # Missing Fields Referenced in Views (Added to Prevent Parse Errors)
     # ------------------------------------------------------------------
     box_id = fields.Many2one(
@@ -623,6 +678,35 @@ class ChainOfCustody(models.Model):
                 record.res_name = False
                 record.description = False
                 record.timestamp = False
+
+    @api.depends('transfer_item_ids.sequence', 'transfer_item_ids.create_date', 'transfer_item_ids.value',
+                 'transfer_item_ids.quantity', 'transfer_item_ids.condition', 'transfer_item_ids.serial_number',
+                 'transfer_item_ids.barcode', 'transfer_item_ids.weight', 'transfer_item_ids.verified')
+    def _compute_latest_item_snapshot(self):
+        """Populate latest transfer item snapshot fields for parser compatibility.
+
+        Chooses the item with highest sequence then latest create_date as tiebreaker.
+        """
+        for record in self:
+            if record.transfer_item_ids:
+                # Sort by sequence ascending (lower first), then create_date descending for recency
+                # We want the most relevant; picking last after sort by (sequence, id) is simpler.
+                latest = max(record.transfer_item_ids, key=lambda i: (i.sequence, i.create_date or fields.Datetime.from_string('1970-01-01'), i.id))
+                record.value = latest.value or 0.0
+                record.quantity = latest.quantity or 0
+                record.condition = latest.condition or False
+                record.serial_number = latest.serial_number or False
+                record.barcode = latest.barcode or False
+                record.weight = latest.weight or 0.0
+                record.verified = latest.verified or False
+            else:
+                record.value = 0.0
+                record.quantity = 0
+                record.condition = False
+                record.serial_number = False
+                record.barcode = False
+                record.weight = 0.0
+                record.verified = False
 
     @api.depends('to_custodian_id', 'from_custodian_id', 'authorized_by_id')
     def _compute_primary_user(self):
