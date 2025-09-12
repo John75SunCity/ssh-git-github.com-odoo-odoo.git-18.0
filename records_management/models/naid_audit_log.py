@@ -156,10 +156,11 @@ class NAIDAuditLog(models.Model):
     # BUSINESS LOGIC
     # ============================================================================
     @api.model
-    def create_log(self, description, action_type, record=None, user_id=None, old_value=None, new_value=None, value_json=None, event_date=None):
+    def create_log(self, description, action_type, record=None, user_id=None, old_value=None, new_value=None, value_json=None, event_date=None, **kwargs):
         """
         Central method to create a new audit log entry.
         This should be called from other models whenever a significant action occurs.
+        :param **kwargs: Can contain any other field values for naid.audit.log.
         """
         if user_id is None:
             user_id = self.env.user.id
@@ -180,6 +181,10 @@ class NAIDAuditLog(models.Model):
                 'res_model': record._name,
                 'res_id': record.id,
             })
+
+        # Allow dynamically passing any other log fields
+        vals.update(kwargs)
+
         return self.create(vals)
 
     # ============================================================================
@@ -199,11 +204,6 @@ class NAIDAuditLog(models.Model):
     def unlink(self):
         """Prevent deletion of audit logs."""
         raise UserError(_("NAID Audit logs are immutable and cannot be deleted."))
-        raise UserError(_("NAID Audit logs are immutable and cannot be deleted."))
-                vals['name'] = self.env['ir.sequence'].next_by_code('naid.audit.log') or _('New')
-        return super().create(vals_list)
-
-    def write(self, vals):
         """Prevent modification of audit logs."""
         raise UserError(_("NAID Audit logs are immutable and cannot be modified."))
 
