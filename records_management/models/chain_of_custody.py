@@ -544,11 +544,23 @@ class ChainOfCustody(models.Model):
         string="Related Documents", compute="_compute_related_counts"
     )
 
+    transfer_item_count = fields.Integer(
+        string="Transfer Items Count",
+        compute="_compute_transfer_item_count",
+        help="Number of items in this custody transfer"
+    )
+
     # Computed Methods
     @api.depends("audit_log_ids")
     def _compute_audit_log_count(self):
         for record in self:
             record.audit_log_count = len(record.audit_log_ids)
+
+    @api.depends("transfer_item_ids")
+    def _compute_transfer_item_count(self):
+        """Compute count of transfer items."""
+        for record in self:
+            record.transfer_item_count = len(record.transfer_item_ids)
 
     @api.depends("name", "transfer_type", "to_custodian_id")
     def _compute_display_name(self):
@@ -811,6 +823,20 @@ class ChainOfCustody(models.Model):
             "context": {
                 "default_custody_id": self.id,
                 "default_event_type": "custody_event",
+            },
+        }
+
+    def action_view_transfer_items(self):
+        """View transfer items related to this custody record."""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Transfer Items"),
+            "res_model": "chain.of.custody.item",
+            "view_mode": "list,form",
+            "domain": [("custody_id", "=", self.id)],
+            "context": {
+                "default_custody_id": self.id,
             },
         }
 
