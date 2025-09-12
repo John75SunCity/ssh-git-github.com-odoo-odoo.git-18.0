@@ -439,7 +439,7 @@ class ChainOfCustody(models.Model):
     # Represents the responsible user of the most recent related custody event.
     responsible_user_id = fields.Many2one(
         comodel_name='res.users',
-        string='Responsible User',
+        string='Responsible System User',
         compute='_compute_responsible_user',
         store=False,
         help='Latest custody event responsible user (derived from custody events).'

@@ -166,12 +166,13 @@
                             <page string="Audit Trail" name="audit">
                                 <field name="audit_log_ids" readonly="1">
                                     <tree>
-                                        <field name="timestamp"/>
-                                        <field name="action"/>
+                                        <!-- Adjusted to use valid naid.audit.log fields -->
+                                        <field name="event_date"/>
+                                        <field name="action_type"/>
                                         <field name="user_id"/>
-                                        <field name="model_name"/>
-                                        <field name="record_id"/>
-                                        <field name="details"/>
+                                        <field name="res_model" optional="hide"/>
+                                        <field name="res_name"/>
+                                        <field name="description"/>
                                     </tree>
                                 </field>
                             </page>
@@ -404,7 +405,7 @@
                     <filter string="Low Efficiency" name="low_efficiency" domain="[('transfer_efficiency', '&lt;', 70)]"/>
                     <separator/>
                     <filter string="My Transfers" name="my_transfers" domain="[('create_uid', '=', uid)]"/>
-                    <filter string="My Department" name="my_department" domain="[('partner_id.records_department_users.user_id', '=', uid)]"/>
+                    <filter string="My Department" name="my_department" domain="[('partner_id.child_ids.records_department_users.user_id', '=', uid)]"/>
                     <group expand="0" string="Group By">
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
