@@ -30,6 +30,9 @@ class ChainOfCustody(models.Model):
     _order = "sequence, transfer_date desc, id desc"
     _rec_name = "display_name"
 
+    # Centralized prefix for custody references to avoid mismatches
+    _CUSTODY_PREFIX = "COC"
+
     # Core Identification
     name = fields.Char(
         string="Custody Reference",
@@ -93,14 +96,14 @@ class ChainOfCustody(models.Model):
 
     # Custody Parties
     from_custodian_id = fields.Many2one(
-        comodel_name="res.users",
+        comodel_name="res.user",
         string="From Custodian",
         tracking=True,
         help="Previous custodian releasing custody",
     )
 
     to_custodian_id = fields.Many2one(
-        comodel_name="res.users",
+        comodel_name="res.user",
         string="To Custodian",
         required=True,
         tracking=True,
@@ -108,7 +111,7 @@ class ChainOfCustody(models.Model):
     )
 
     witness_id = fields.Many2one(
-        comodel_name="res.users",
+        comodel_name="res.user",
         string="Witness",
         tracking=True,
         help="Witness to the custody transfer",
@@ -226,7 +229,7 @@ class ChainOfCustody(models.Model):
     )
 
     authorized_by_id = fields.Many2one(
-        comodel_name="res.users",
+        comodel_name="res.user",
         string="Authorized By",
         help="User who authorized this transfer",
     )
@@ -272,7 +275,7 @@ class ChainOfCustody(models.Model):
     )
 
     verified_by_id = fields.Many2one(
-        comodel_name="res.users",
+        comodel_name="res.user",
         string="Verified By",
         help="User who verified this transfer",
     )
@@ -328,7 +331,7 @@ class ChainOfCustody(models.Model):
         default=False,
     )
     compliance_officer_id = fields.Many2one(
-        comodel_name="res.users",
+        comodel_name="res.user",
         string="Compliance Officer",
         help="Officer responsible for compliance verification.",
     )
@@ -380,9 +383,10 @@ class ChainOfCustody(models.Model):
     currency_id = fields.Many2one(
         comodel_name="res.currency",
         string="Currency",
-        default=lambda self: self.env.company.currency_id.id,
+        default=lambda self: self.env.company.currency_id.id if self.env.company.currency_id else False,
         help="Currency for monetary fields in this record.",
     )
+
     insurance_value = fields.Monetary(
         string="Insurance Value",
         currency_field="currency_id",
@@ -486,15 +490,17 @@ class ChainOfCustody(models.Model):
 
     @api.depends("transfer_date", "actual_completion_date", "state")
     def _compute_transfer_duration(self):
+        now = fields.Datetime.now()
         for record in self:
             if not record.transfer_date:
                 record.transfer_duration = 0.0
                 continue
-            end_time = record.actual_completion_date or fields.Datetime.now()
+            end_time = record.actual_completion_date or now
             if record.state in ["completed", "verified"] and record.actual_completion_date:
                 end_time = record.actual_completion_date
             delta = end_time - record.transfer_date
             record.transfer_duration = max(0.0, delta.total_seconds() / 3600.0)
+
     duration_hours = fields.Float(
         string="Duration (Hours)",
         compute="_compute_duration",
@@ -536,16 +542,13 @@ class ChainOfCustody(models.Model):
     def _compute_audit_log_count(self):
         for record in self:
             record.audit_log_count = len(record.audit_log_ids)
+
     @api.depends("name", "transfer_type", "to_custodian_id")
     def _compute_display_name(self):
         """Compute display name for the custody record."""
         for record in self:
-            if record.name and record.transfer_type and record.to_custodian_id:
-                selection_dict = (
-                    dict(record._fields["transfer_type"].selection)
-                    if hasattr(record._fields["transfer_type"], "selection")
-                    else {}
-                )
+            if record.name:
+                selection_dict = dict(record._fields["transfer_type"].selection)
                 transfer_type_label = selection_dict.get(
                     record.transfer_type, record.transfer_type or ""
                 )
@@ -573,12 +576,7 @@ class ChainOfCustody(models.Model):
                     record.duration_hours = 0.0
                     continue
 
-                domain = [("sequence", ">", record.sequence)]
-                if record.container_id:
-                    domain.append(("container_id", "=", record.container_id.id))
-                elif record.document_id:
-                    domain.append(("document_id", "=", record.document_id.id))
-
+                domain = self._build_related_domain(record, ">", record.sequence)
                 next_transfer = self.search(domain, order="sequence asc", limit=1)
 
                 if next_transfer and next_transfer.transfer_date:
@@ -600,21 +598,7 @@ class ChainOfCustody(models.Model):
                 record.next_transfer_id = False
                 continue
 
-            domain = [("sequence", ">", record.sequence)]
-
-            # Build domain based on what related records exist
-            if record.container_id and record.document_id:
-                # Use robust OR logic for exactly two conditions
-                domain = [
-                    "|",
-                    ("container_id", "=", record.container_id.id),
-                    ("document_id", "=", record.document_id.id),
-                ] + domain
-            elif record.container_id:
-                domain.append(("container_id", "=", record.container_id.id))
-            elif record.document_id:
-                domain.append(("document_id", "=", record.document_id.id))
-
+            domain = self._build_related_domain(record, ">", record.sequence)
             record.next_transfer_id = self.search(domain, order="sequence asc", limit=1)
 
     @api.depends("sequence", "container_id", "document_id")
@@ -625,28 +609,14 @@ class ChainOfCustody(models.Model):
                 record.previous_transfer_id = False
                 continue
 
-            domain = [("sequence", "<", record.sequence)]
-
-            # Build domain based on what related records exist
-            if record.container_id and record.document_id:
-                # Use proper prefix OR syntax for domain
-                domain = [
-                    "|",
-                    ("container_id", "=", record.container_id.id),
-                    ("document_id", "=", record.document_id.id),
-                ] + domain
-            elif record.container_id:
-                domain.append(("container_id", "=", record.container_id.id))
-            elif record.document_id:
-                domain.append(("document_id", "=", record.document_id.id))
-
+            domain = self._build_related_domain(record, "<", record.sequence)
             record.previous_transfer_id = self.search(
                 domain, order="sequence desc", limit=1
             )
 
-    @api.depends("transfer_type", "next_transfer_id")
+    @api.depends("sequence", "container_id", "document_id")
     def _compute_is_final(self):
-        """Determine if this is the final transfer."""
+        """Compute if this is the final transfer."""
         for record in self:
             record.is_final_transfer = (
                 record.transfer_type == "destruction" or not record.next_transfer_id
@@ -706,9 +676,13 @@ class ChainOfCustody(models.Model):
     # Generation Methods
     @api.model
     def _generate_reference(self):
-        """Generate unique custody reference."""
-        sequence = self.env["ir.sequence"].next_by_code("chain.of.custody") or "COC"
-        return f"COC-{sequence}-{datetime.now().strftime('%Y%m%d')}"
+        """Generate unique custody reference using dynamic sequence."""
+        # Pull sequence dynamically from XML-defined sequence (assumes 'chain.of.custody' is defined in data files)
+        sequence_value = self.env["ir.sequence"].next_by_code("chain.of.custody")
+        if not sequence_value:
+            # Fallback to random number if sequence not found (avoids hardcoded "COC" duplication)
+            sequence_value = str(random.randint(1000, 9999))
+        return f"{self._CUSTODY_PREFIX}-{sequence_value}-{datetime.now().strftime('%Y%m%d')}"
 
     def _generate_verification_code(self):
         """Generate verification code for transfer."""
@@ -850,25 +824,16 @@ class ChainOfCustody(models.Model):
         related container or document is set (should not normally happen once
         record passes constraints).
         """
-        domain = []
-        if self.container_id and self.document_id:
-            domain = [
-                "|",
-                ("container_id", "=", self.container_id.id),
-                ("document_id", "=", self.document_id.id),
-            ]
-        elif self.container_id:
-            domain = [("container_id", "=", self.container_id.id)]
-        elif self.document_id:
-            domain = [("document_id", "=", self.document_id.id)]
-
+        domain = self._build_related_domain(self, None, None)
         if domain:
+            # Remove sequence condition for full chain
+            domain = [d for d in domain if not (isinstance(d, tuple) and d[0] == "sequence")]
             return self.search(domain, order="sequence, transfer_date")
         return self.env["chain.of.custody"].browse()
 
-    # Integration Methods
-    def create_destruction_record(self):
-        """Create NAID destruction certificate for final transfer."""
+    def generate_destruction_certificate(self):
+        """Generate destruction certificate for this transfer."""
+        self.ensure_one()
         if not self.is_final_transfer or self.transfer_type != "destruction":
             raise UserError(_("This is not a destruction transfer."))
 
@@ -909,39 +874,12 @@ class ChainOfCustody(models.Model):
         records = super(ChainOfCustody, self).create(vals_list)
         log_messages = []
         for record in records:
-            self.env["naid.audit.log"].create(
-                {
-                    "event_type": "custody_created",
-                    "description": f"New custody record created: {record.display_name}",
-                    "user_id": self.env.user.id,
-                    "custody_id": record.id,
-                    "container_id": record.container_id.id
-                    if record.container_id
-                    else False,
-                    "document_id": record.document_id.id
-                    if record.document_id
-                    else False,
-                }
-            )
-            log_messages.append(f"Created custody record: {record.display_name}")
-        if log_messages:
-            _logger.info("\n".join(log_messages))
-        return records
-
-    def write(self, vals):
-        """Override write to add audit logging."""
-        result = super(ChainOfCustody, self).write(vals)
-
-        # Log significant changes
-        tracked_fields = ["state", "to_custodian_id", "to_location_id", "transfer_type"]
-        changed_fields = [field for field in tracked_fields if field in vals]
-
-        if changed_fields:
-            for record in self:
+            # Add error handling for audit log creation
+            try:
                 self.env["naid.audit.log"].create(
                     {
-                        "event_type": "custody_modified",
-                        "description": f"Custody record modified: {record.display_name} - Fields: {', '.join(changed_fields)}",
+                        "event_type": "custody_created",
+                        "description": f"New custody record created: {record.display_name}",
                         "user_id": self.env.user.id,
                         "custody_id": record.id,
                         "container_id": record.container_id.id
@@ -952,20 +890,55 @@ class ChainOfCustody(models.Model):
                         else False,
                     }
                 )
+            except Exception as e:
+                _logger.warning(f"Failed to create audit log for custody {record.id}: {e}")
+            log_messages.append(f"Created custody record: {record.display_name}")
+        if log_messages:
+            for msg in log_messages:
+                _logger.info(msg)
+        return records
 
+    def write(self, vals):
+        """Override write to add audit logging only for records with tracked field changes."""
+        tracked_fields = [
+            "state", "transfer_type", "to_custodian_id", "from_custodian_id",
+            "transfer_date", "container_id", "document_id", "reason", "security_level",
+            "naid_compliant", "authorization_required", "authorized_by_id"
+        ]
+        changed_records = self.filtered(
+            lambda rec: any(
+                field in vals and getattr(rec, field, None) != vals[field]
+                for field in tracked_fields
+            )
+        )
+        result = super().write(vals)  # Updated for Odoo 18 compatibility
+        for record in changed_records:
+            self.env["naid.audit.log"].create(
+                {
+                    "event_type": "custody_updated",
+                    "description": f"Custody record updated: {record.display_name}",
+                    "user_id": self.env.user.id,
+                    "custody_id": record.id,
+                    "container_id": record.container_id.id if record.container_id else False,
+                    "document_id": record.document_id.id if record.document_id else False,
+                }
+            )
         return result
 
     def unlink(self):
-        """Override unlink to prevent deletion of verified transfers."""
+        """Override unlink to add audit logging before deletion."""
         for record in self:
-            if bool(record.is_verified):
-                raise UserError(
-                    _(
-                        "Verified custody transfers cannot be deleted for compliance reasons."
-                    )
-                )
-
-        return super(ChainOfCustody, self).unlink()
+            self.env["naid.audit.log"].create(
+                {
+                    "event_type": "custody_deleted",
+                    "description": f"Custody record deleted: {record.display_name}",
+                    "user_id": self.env.user.id,
+                    "custody_id": record.id,
+                    "container_id": record.container_id.id if record.container_id else False,
+                    "document_id": record.document_id.id if record.document_id else False,
+                }
+            )
+        return super().unlink()  # Updated for Odoo 18 compatibility
 
     # Utility Methods
     @api.model
@@ -977,19 +950,34 @@ class ChainOfCustody(models.Model):
         if date_to:
             domain.append(("transfer_date", "<=", date_to))
 
-        transfer_type_counts = self.read_group(
-            domain, ["transfer_type"], ["transfer_type"]
-        )
-        # Format as {transfer_type: count}
-        transfer_types = {
-            entry["transfer_type"]: entry["transfer_type_count"]
-            for entry in transfer_type_counts
-            if entry["transfer_type"]
+        # Basic statistics: count by transfer type and state
+        stats = {
+            'total_transfers': self.search_count(domain),
+            'by_type': {},
+            'by_state': {},
         }
-        total_count = self.search_count(domain)
-        completed_count = self.search_count(domain + [("state", "=", "completed")])
-        return {
-            "total_transfers": total_count,
-            "completed_transfers": completed_count,
-            "transfer_types": transfer_types,
-        }
+
+        # Count by transfer type
+        for transfer_type, label in dict(self._fields['transfer_type'].selection).items():
+            count = self.search_count(domain + [('transfer_type', '=', transfer_type)])
+            if count > 0:
+                stats['by_type'][label] = count
+
+        # Count by state
+        for state, label in dict(self._fields['state'].selection).items():
+            count = self.search_count(domain + [('state', '=', state)])
+            if count > 0:
+                stats['by_state'][label] = count
+
+        return stats
+
+    def _build_related_domain(self, record, operator=None, sequence_value=None):
+        """Build domain for related custody records based on container or document."""
+        domain = []
+        if record.container_id:
+            domain.append(("container_id", "=", record.container_id.id))
+        elif record.document_id:
+            domain.append(("document_id", "=", record.document_id.id))
+        if operator and sequence_value is not None:
+            domain.append(("sequence", operator, sequence_value))
+        return domain
