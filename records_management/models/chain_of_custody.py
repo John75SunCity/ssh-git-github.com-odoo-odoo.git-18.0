@@ -595,12 +595,42 @@ class ChainOfCustody(models.Model):
         ('very_satisfied', 'Very Satisfied'),
     ], string='Customer Satisfaction')
     # Environmental aggregates (used in analytics/environmental notebook pages)
-    min_temperature = fields.Float(string='Min Temperature (°C)')
-    max_temperature = fields.Float(string='Max Temperature (°C)')
-    avg_temperature = fields.Float(string='Avg Temperature (°C)')
-    min_humidity = fields.Float(string='Min Humidity (%)')
-    max_humidity = fields.Float(string='Max Humidity (%)')
-    avg_humidity = fields.Float(string='Avg Humidity (%)')
+    min_temperature = fields.Float(
+        string='Min Temperature (°C)',
+        compute='_compute_environmental_aggregates',
+        store=False,
+        help='Minimum temperature observed across custody events + primary reading.'
+    )
+    max_temperature = fields.Float(
+        string='Max Temperature (°C)',
+        compute='_compute_environmental_aggregates',
+        store=False,
+        help='Maximum temperature observed across custody events + primary reading.'
+    )
+    avg_temperature = fields.Float(
+        string='Avg Temperature (°C)',
+        compute='_compute_environmental_aggregates',
+        store=False,
+        help='Average temperature derived from all available readings.'
+    )
+    min_humidity = fields.Float(
+        string='Min Humidity (%)',
+        compute='_compute_environmental_aggregates',
+        store=False,
+        help='Minimum humidity observed across custody events + primary reading.'
+    )
+    max_humidity = fields.Float(
+        string='Max Humidity (%)',
+        compute='_compute_environmental_aggregates',
+        store=False,
+        help='Maximum humidity observed across custody events + primary reading.'
+    )
+    avg_humidity = fields.Float(
+        string='Avg Humidity (%)',
+        compute='_compute_environmental_aggregates',
+        store=False,
+        help='Average humidity derived from all available readings.'
+    )
 
     @api.depends("transfer_date", "actual_completion_date", "state")
     def _compute_transfer_duration(self):
@@ -632,7 +662,7 @@ class ChainOfCustody(models.Model):
     # ------------------------------------------------------------------
     # METRIC COMPUTES
     # ------------------------------------------------------------------
-    @api.depends('transfer_item_ids.weight', 'transfer_item_ids.id')
+    @api.depends('transfer_item_ids.weight')
     def _compute_item_metrics(self):
         for record in self:
             items = record.transfer_item_ids
@@ -655,28 +685,110 @@ class ChainOfCustody(models.Model):
             else:
                 record.transfer_efficiency = 0.0
 
-    @api.depends('naid_compliant', 'signature_verified', 'security_level', 'audit_log_ids.action_type')
+    @api.depends(
+        'naid_compliant', 'signature_verified', 'security_level', 'audit_log_ids.action_type',
+        'quality_check_passed', 'damage_reported', 'risk_level', 'temperature_controlled',
+        'min_temperature', 'max_temperature', 'min_humidity', 'max_humidity'
+    )
     def _compute_compliance_score(self):
-        # Simple heuristic weighting; can be replaced by advanced rules later
+        """Heuristic 0-100 compliance score.
+
+        Weighting rationale (tunable):
+          - Base NAID compliance flag: 35
+          - Valid signature verification: +15
+          - Security level: 8–18 (progressive)
+          - Quality check passed: +10
+          - No damage reported: +8 (penalty if damage)
+          - Risk level adjustment: low +5 / medium 0 / high -10
+          - Audit diversity bonus: up to +12 (unique action types *3)
+          - Environmental control adherence (if temperature/humidity controlled): up to +7
+            (within safe bands adds points, excursions reduce or zero this portion)
+        """
+        sec_map = {
+            'standard': 8,
+            'high': 12,
+            'confidential': 14,
+            'secret': 16,
+            'top_secret': 18,
+        }
         for record in self:
             score = 0
+            # Core compliance pillars
             if record.naid_compliant:
-                score += 40
+                score += 35
             if record.signature_verified:
-                score += 20
-            # Security level weighting
-            sec_map = {
-                'standard': 10,
-                'high': 15,
-                'confidential': 18,
-                'secret': 20,
-                'top_secret': 22,
-            }
-            score += sec_map.get(record.security_level or 'standard', 10)
-            # Audit activity bonus (up to 20)
-            activity_types = set(record.audit_log_ids.mapped('action_type')) if record.audit_log_ids else set()
-            score += min(20, len(activity_types) * 4)
-            record.compliance_score = float(min(100, score))
+                score += 15
+            score += sec_map.get(record.security_level or 'standard', 8)
+
+            # Operational quality signals
+            if record.quality_check_passed:
+                score += 10
+            if record.damage_reported:
+                # Penalty instead of bonus
+                score -= 8
+            else:
+                score += 8  # Affirmative confidence when no damage
+
+            # Risk level modulation
+            if record.risk_level == 'low':
+                score += 5
+            elif record.risk_level == 'high':
+                score -= 10
+
+            # Audit trail diversity (unique action types)
+            if record.audit_log_ids:
+                activity_types = set(record.audit_log_ids.mapped('action_type'))
+                score += min(12, len(activity_types) * 3)
+
+            # Environmental adherence (only if flagged controlled)
+            env_bonus = 0
+            if record.temperature_controlled or record.min_temperature or record.max_temperature:
+                # Acceptable band example: 2°C to 30°C
+                if record.min_temperature is not None and record.max_temperature is not None:
+                    if 2 <= record.min_temperature and record.max_temperature <= 30:
+                        env_bonus += 4
+                    else:
+                        env_bonus -= 3
+            if record.humidity_controlled or record.min_humidity or record.max_humidity:
+                # Acceptable band example: 15% to 65%
+                if record.min_humidity is not None and record.max_humidity is not None:
+                    if 15 <= record.min_humidity and record.max_humidity <= 65:
+                        env_bonus += 3
+                    else:
+                        env_bonus -= 2
+            score += env_bonus
+
+            # Clamp final
+            record.compliance_score = float(max(0, min(100, score)))
+
+    @api.depends('temperature', 'humidity', 'custody_event_ids.temperature', 'custody_event_ids.humidity')
+    def _compute_environmental_aggregates(self):
+        """Aggregate temperature & humidity stats from primary record + events.
+
+        Non-stored for real-time analytics; safe as volume per record expected small.
+        """
+        for record in self:
+            temps = []
+            hums = []
+            if record.temperature not in (None, False):
+                temps.append(record.temperature)
+            if record.humidity not in (None, False):
+                hums.append(record.humidity)
+            if record.custody_event_ids:
+                temps.extend([t for t in record.custody_event_ids.mapped('temperature') if t not in (None, False)])
+                hums.extend([h for h in record.custody_event_ids.mapped('humidity') if h not in (None, False)])
+            if temps:
+                record.min_temperature = min(temps)
+                record.max_temperature = max(temps)
+                record.avg_temperature = sum(temps)/len(temps)
+            else:
+                record.min_temperature = record.max_temperature = record.avg_temperature = 0.0
+            if hums:
+                record.min_humidity = min(hums)
+                record.max_humidity = max(hums)
+                record.avg_humidity = sum(hums)/len(hums)
+            else:
+                record.min_humidity = record.max_humidity = record.avg_humidity = 0.0
 
     previous_transfer_id = fields.Many2one(
         comodel_name="chain.of.custody",
