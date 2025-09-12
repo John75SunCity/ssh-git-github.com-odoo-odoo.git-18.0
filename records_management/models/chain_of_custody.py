@@ -431,6 +431,14 @@ class ChainOfCustody(models.Model):
         string="Event Type",
         help="Categorization of the primary custody event represented by this record.",
     )
+    # View parser is currently attributing audit log inline tree column 'action_type'
+    # to the parent model during validation (Odoo quirk when One2many tree columns
+    # were previously invalid). Provide a lightweight placeholder so the form view
+    # loads; business meaning lives on naid.audit.log.action_type.
+    action_type = fields.Char(
+        string="Action Type (Placeholder)",
+        help="Non-persisted placeholder to satisfy form view parsing. Actual action types are stored on related audit log entries.",
+    )
     responsible_person = fields.Char(
         string="Responsible Person",
         help="Non-user textual identifier when the responsible individual isn't a system user.",

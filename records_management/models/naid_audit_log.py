@@ -32,51 +32,66 @@ class NAIDAuditLog(models.Model):
 
     description = fields.Text(string='Description', required=True, readonly=True)
 
-    # ------------------------------------------------------------------
-    # Legacy Compatibility / View Placeholder Fields
-    # ------------------------------------------------------------------
-    # Some existing event / item code (and possibly views prior to cleanup)
-    # referenced generic field names like 'action', 'event_type', 'notes',
-    # and 'timestamp'. They were not present on this model, causing ParseErrors
-    # when the custody view attempted to render an inline audit log tree with
-    # those columns. We add lightweight aliases below to stabilize view parsing
-    # and keep backward compatibility with any pending data loads.
     action = fields.Char(
-        string='Action (Legacy)',
-        help='Legacy action identifier kept for backward compatibility.'
+        string='Action',
+        help='Action identifier.'
     )
     event_type = fields.Char(
-        string='Event Type (Legacy)',
-        help='Legacy free-form event_type preserved for historical records.'
+        string='Event Type',
+        help='Free-form event type for historical records.'
     )
     notes = fields.Text(
-        string='Notes (Legacy)',
-        help='Legacy free-form notes field preserved for historical import compatibility.'
+        string='Notes',
+        help='Free-form notes field for historical import compatibility.'
     )
     timestamp = fields.Datetime(
-        string='Timestamp (Legacy)',
-        help='Legacy timestamp field (prefer event_date for new records).'
+        string='Timestamp',
+        help='Timestamp field (prefer event_date for new records).'
     )
-    # Frequently referenced location + item linkage placeholders from legacy logging snippets
     location_id = fields.Many2one(
         comodel_name='records.location',
-        string='Location (Legacy)',
-        help='Legacy single location reference (prefer contextual from/to fields in related models).'
+        string='Location',
+        help='Single location reference.'
     )
     old_location_id = fields.Many2one(
         comodel_name='records.location',
-        string='Old Location (Legacy)',
-        help='Legacy previous location reference used in item/location change logs.'
+        string='Old Location',
+        help='Previous location reference used in item/location change logs.'
     )
     new_location_id = fields.Many2one(
         comodel_name='records.location',
-        string='New Location (Legacy)',
-        help='Legacy new location reference used in item/location change logs.'
+        string='New Location',
+        help='New location reference used in item/location change logs.'
     )
     item_id = fields.Many2one(
         comodel_name='chain.of.custody.item',
-        string='Custody Item (Legacy)',
-        help='Legacy linkage to a custody item for location/value changes.'
+        string='Custody Item',
+        help='Linkage to a custody item for location/value changes.'
+    )
+    container_id = fields.Many2one(
+        comodel_name='records.container',
+        string='Container',
+        help='Linkage to a records container.'
+    )
+    from_location_id = fields.Many2one(
+        comodel_name='records.location',
+        string='From Location',
+        help='"From" location for transfer events.'
+    )
+    to_location_id = fields.Many2one(
+        comodel_name='records.location',
+        string='To Location',
+        help='"To" location for transfer events.'
+    )
+    from_user_id = fields.Many2one(
+        comodel_name='res.users',
+        string='From User',
+        help='"From" user for custody hand-offs.'
+    )
+    to_user_id = fields.Many2one(
+        comodel_name='res.users',
+        string='To User',
+        help='"To" user for custody hand-offs.'
     )
 
     # Polymorphic relationship to link to any model record
@@ -141,12 +156,11 @@ class NAIDAuditLog(models.Model):
     # BUSINESS LOGIC
     # ============================================================================
     @api.model
-    def action_log(self, description, action_type, record=None, user_id=None, old_value=None, new_value=None, value_json=None, event_date=None):
+    def create_log(self, description, action_type, record=None, user_id=None, old_value=None, new_value=None, value_json=None, event_date=None):
         """
         Central method to create a new audit log entry.
         This should be called from other models whenever a significant action occurs.
         """
-    # Not ensure_one since it's a model-level creator returning new record
         if user_id is None:
             user_id = self.env.user.id
 
@@ -175,6 +189,17 @@ class NAIDAuditLog(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('naid.audit.log') or _('New')
+        return super().create(vals_list)
+
+    def write(self, vals):
+        """Prevent modification of audit logs."""
+        raise UserError(_("NAID Audit logs are immutable and cannot be modified."))
+
+    def unlink(self):
+        """Prevent deletion of audit logs."""
+        raise UserError(_("NAID Audit logs are immutable and cannot be deleted."))
+        raise UserError(_("NAID Audit logs are immutable and cannot be deleted."))
                 vals['name'] = self.env['ir.sequence'].next_by_code('naid.audit.log') or _('New')
         return super().create(vals_list)
 
