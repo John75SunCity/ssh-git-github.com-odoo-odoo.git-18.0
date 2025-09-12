@@ -127,7 +127,7 @@
                                 </group>
                             </page>
                             <page string="Chain of Custody Events" name="events">
-                                <field name="custody_event_ids" context="{'default_custody_id': active_id, 'default_partner_id': partner_id}">
+                                <field name="custody_event_ids" context="{'default_custody_id': id, 'default_partner_id': partner_id}">
                                     <tree editable="bottom">
                                         <field name="event_date"/>
                                         <field name="event_type"/>
@@ -180,7 +180,7 @@
                                 </field>
                             </page>
                             <page string="Transfer Items" name="items">
-                                <field name="transfer_item_ids" context="{'default_custody_id': active_id}">
+                                <field name="transfer_item_ids" context="{'default_custody_id': id}">
                                     <tree editable="bottom">
                                         <field name="document_id"/>
                                         <field name="container_id"/>
