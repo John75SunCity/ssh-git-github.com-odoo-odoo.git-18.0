@@ -169,7 +169,6 @@
                                         <!-- Full set after adding legacy compatibility fields -->
                                         <field name="event_date"/>
                                         <field name="action_type"/>
-                                        <field name="action" optional="hide"/>
                                         <field name="user_id"/>
                                         <field name="event_type" optional="hide"/>
                                         <field name="res_model" optional="hide"/>
