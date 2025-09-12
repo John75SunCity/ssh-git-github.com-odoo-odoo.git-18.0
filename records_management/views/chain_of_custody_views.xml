@@ -166,13 +166,17 @@
                             <page string="Audit Trail" name="audit">
                                 <field name="audit_log_ids" readonly="1">
                                     <tree>
-                                        <!-- Adjusted to use valid naid.audit.log fields -->
+                                        <!-- Full set after adding legacy compatibility fields -->
                                         <field name="event_date"/>
                                         <field name="action_type"/>
+                                        <field name="action" optional="hide"/>
                                         <field name="user_id"/>
+                                        <field name="event_type" optional="hide"/>
                                         <field name="res_model" optional="hide"/>
                                         <field name="res_name"/>
                                         <field name="description"/>
+                                        <field name="notes" optional="hide"/>
+                                        <field name="timestamp" optional="hide"/>
                                     </tree>
                                 </field>
                             </page>

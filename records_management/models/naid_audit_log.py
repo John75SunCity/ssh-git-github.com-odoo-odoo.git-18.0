@@ -32,6 +32,53 @@ class NAIDAuditLog(models.Model):
 
     description = fields.Text(string='Description', required=True, readonly=True)
 
+    # ------------------------------------------------------------------
+    # Legacy Compatibility / View Placeholder Fields
+    # ------------------------------------------------------------------
+    # Some existing event / item code (and possibly views prior to cleanup)
+    # referenced generic field names like 'action', 'event_type', 'notes',
+    # and 'timestamp'. They were not present on this model, causing ParseErrors
+    # when the custody view attempted to render an inline audit log tree with
+    # those columns. We add lightweight aliases below to stabilize view parsing
+    # and keep backward compatibility with any pending data loads.
+    action = fields.Char(
+        string='Action (Legacy)',
+        help='Legacy action identifier kept for backward compatibility.'
+    )
+    event_type = fields.Char(
+        string='Event Type (Legacy)',
+        help='Legacy free-form event_type preserved for historical records.'
+    )
+    notes = fields.Text(
+        string='Notes (Legacy)',
+        help='Legacy free-form notes field preserved for historical import compatibility.'
+    )
+    timestamp = fields.Datetime(
+        string='Timestamp (Legacy)',
+        help='Legacy timestamp field (prefer event_date for new records).'
+    )
+    # Frequently referenced location + item linkage placeholders from legacy logging snippets
+    location_id = fields.Many2one(
+        comodel_name='records.location',
+        string='Location (Legacy)',
+        help='Legacy single location reference (prefer contextual from/to fields in related models).'
+    )
+    old_location_id = fields.Many2one(
+        comodel_name='records.location',
+        string='Old Location (Legacy)',
+        help='Legacy previous location reference used in item/location change logs.'
+    )
+    new_location_id = fields.Many2one(
+        comodel_name='records.location',
+        string='New Location (Legacy)',
+        help='Legacy new location reference used in item/location change logs.'
+    )
+    item_id = fields.Many2one(
+        comodel_name='chain.of.custody.item',
+        string='Custody Item (Legacy)',
+        help='Legacy linkage to a custody item for location/value changes.'
+    )
+
     # Polymorphic relationship to link to any model record
     res_model = fields.Char(string='Related Model', readonly=True)
     res_id = fields.Integer(string='Related Record ID', readonly=True)
