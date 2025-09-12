@@ -252,8 +252,8 @@ class ChainOfCustodyItem(models.Model):
 
     def action_update_location(self, new_location_id):
         """Update item location and track in audit log"""
-    self.ensure_one()
-    if not new_location_id:
+        self.ensure_one()
+        if not new_location_id:
             return False
 
         old_location = self.to_location_id
