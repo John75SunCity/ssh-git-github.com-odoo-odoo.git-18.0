@@ -169,6 +169,13 @@ class ChainOfCustody(models.Model):
         help="Request that triggered this custody transfer",
     )
 
+    # Customer/Partner relationship
+    partner_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Customer",
+        help="Customer associated with this custody transfer",
+    )
+
     destruction_certificate_id = fields.Many2one(
         comodel_name="naid.certificate",
         string="Destruction Certificate",
