@@ -108,6 +108,7 @@ expected_invoices.txt
 *.txt
 !requirements.txt
 development-tools/PHASE_2_ENHANCEMENT_ROADMAP.md
+admin-tools/development-tools/analysis-reports/scan_results.json
 
 # Do NOT ignore real model files
 !records_management/models/advanced_billing_line.py

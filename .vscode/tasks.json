@@ -40,7 +40,7 @@
 		{
 			"label": "Run Comprehensive Field Analysis",
 			"type": "shell",
-			"command": "/opt/homebrew/bin/python3.12",
+			"command": "python3",
 			"args": [
 				"development-tools/analysis-reports/comprehensive_field_analysis.py"
 			],
