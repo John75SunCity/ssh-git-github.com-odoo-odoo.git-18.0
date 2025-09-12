@@ -274,7 +274,8 @@
                     <field name="risk_level"/>
                     <field name="transfer_efficiency"/>
                     <templates>
-                        <t t-name="kanban-box">
+                        <!-- Odoo 18 deprecation: use 'card' instead of legacy 'kanban-box' template name -->
+                        <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_card_header">
                                     <div class="o_kanban_card_header_title">
@@ -408,7 +409,19 @@
                     <filter string="Low Efficiency" name="low_efficiency" domain="[('transfer_efficiency', '&lt;', 70)]"/>
                     <separator/>
                     <filter string="My Transfers" name="my_transfers" domain="[('create_uid', '=', uid)]"/>
-                    <filter string="My Department" name="my_department" domain="[('partner_id.child_ids.records_department_users.user_id', '=', uid)]"/>
+                                        <!-- Fixed domain: original referenced nonexistent partner -> child -> records_department_users relation.
+                                                 Use OR across possible department linkage paths:
+                                                     1) Department directly on custody record (department_id if later added)
+                                                     2) Department through related container
+                                                     3) Department through related document
+                                                     4) Any department of the partner (partner.department_ids.user_ids)
+                                        -->
+                                        <filter string="My Department" name="my_department"
+                                                        domain="['|','|','|',
+                                                                            ('department_id.user_ids','in',uid),
+                                                                            ('container_id.department_id.user_ids','in',uid),
+                                                                            ('document_id.department_id.user_ids','in',uid),
+                                                                            ('partner_id.department_ids.user_ids','in',uid)]"/>
                     <group expand="0" string="Group By">
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
