@@ -442,7 +442,7 @@ class ChainOfCustody(models.Model):
     # Functional aggregate of the latest related audit log action_type.
     action_type = fields.Char(
         string="Latest Action Type",
-        compute="_compute_latest_action_type",
+        compute="_compute_action_type",
         store=False,
         readonly=True,
         help="Most recent audit log action_type for quick visibility (not stored).",
@@ -646,7 +646,7 @@ class ChainOfCustody(models.Model):
     # COMPUTES: Lightweight helper aggregates for view fields
     # ------------------------------------------------------------------
     @api.depends('audit_log_ids.action_type', 'audit_log_ids.event_date')
-    def _compute_latest_action_type(self):
+    def _compute_action_type(self):
         for record in self:
             # choose newest by event_date (fallback to create_date ordering already on One2many)
             latest = False
