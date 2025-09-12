@@ -134,7 +134,6 @@
                                     <tree>
                                         <field name="document_id"/>
                                         <field name="container_id"/>
-                                        <field name="item_type"/>
                                         <field name="quantity"/>
                                         <field name="condition"/>
                                         <field name="serial_number"/>
