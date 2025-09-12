@@ -495,6 +495,55 @@ class ChainOfCustody(models.Model):
         help="Items included in this custody transfer.",
     )
 
+    # ------------------------------------------------------------------
+    # Missing Fields Referenced in Views (Added to Prevent Parse Errors)
+    # ------------------------------------------------------------------
+    box_id = fields.Many2one(
+        comodel_name='records.storage.box',
+        string='Storage Box',
+        help='Primary storage box associated with this custody record (if applicable).'
+    )
+    inventory_document_id = fields.Many2one(
+        comodel_name='records.document',
+        string='Inventory Document',
+        help='Inventory document generated or referenced during this custody transfer.'
+    )
+    temperature_controlled = fields.Boolean(
+        string='Temperature Controlled',
+        help='Indicates this transfer required temperature control.'
+    )
+    delivery_notes = fields.Text(
+        string='Delivery Notes',
+        help='Additional delivery notes and special requirements.'
+    )
+    cost_estimate = fields.Monetary(
+        string='Cost Estimate',
+        currency_field='currency_id',
+        help='Estimated cost associated with this custody transfer.'
+    )
+    quality_check_passed = fields.Boolean(
+        string='Quality Check Passed',
+        help='Indicates whether quality checks were passed.'
+    )
+    damage_reported = fields.Boolean(
+        string='Damage Reported',
+        help='Indicates whether any damage was reported.'
+    )
+    customer_satisfaction = fields.Selection([
+        ('very_dissatisfied', 'Very Dissatisfied'),
+        ('dissatisfied', 'Dissatisfied'),
+        ('neutral', 'Neutral'),
+        ('satisfied', 'Satisfied'),
+        ('very_satisfied', 'Very Satisfied'),
+    ], string='Customer Satisfaction')
+    # Environmental aggregates (used in analytics/environmental notebook pages)
+    min_temperature = fields.Float(string='Min Temperature (°C)')
+    max_temperature = fields.Float(string='Max Temperature (°C)')
+    avg_temperature = fields.Float(string='Avg Temperature (°C)')
+    min_humidity = fields.Float(string='Min Humidity (%)')
+    max_humidity = fields.Float(string='Max Humidity (%)')
+    avg_humidity = fields.Float(string='Avg Humidity (%)')
+
     @api.depends("transfer_date", "actual_completion_date", "state")
     def _compute_transfer_duration(self):
         now = fields.Datetime.now()

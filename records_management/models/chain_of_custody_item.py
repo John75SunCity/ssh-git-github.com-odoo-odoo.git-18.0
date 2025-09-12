@@ -142,9 +142,10 @@ class ChainOfCustodyItem(models.Model):
 
     # Computed fields for display
     display_name_computed = fields.Char(
-        string='Display Name',
+        string='Computed Display Name',
         compute='_compute_display_name_computed',
-        store=True,
+        store=False,
+        help='Runtime descriptive label combining item, serial/barcode, type and quantity.'
     )
 
     @api.depends('quantity', 'value')
@@ -251,7 +252,8 @@ class ChainOfCustodyItem(models.Model):
 
     def action_update_location(self, new_location_id):
         """Update item location and track in audit log"""
-        if not new_location_id:
+    self.ensure_one()
+    if not new_location_id:
             return False
 
         old_location = self.to_location_id

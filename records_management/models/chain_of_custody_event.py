@@ -77,9 +77,10 @@ class ChainOfCustodyEvent(models.Model):
         string='Responsible Person',
         help="Person responsible for this custody event"
     )
+    # Renamed label to avoid duplication with possible similarly named fields
     responsible_user_id = fields.Many2one(
         comodel_name='res.users',
-        string='Responsible User',
+        string='Responsible System User',
         default=lambda self: self.env.user,
         help="System user responsible for this event"
     )
@@ -130,10 +131,12 @@ class ChainOfCustodyEvent(models.Model):
         help="Hours elapsed since the previous event in this custody chain"
     )
 
+    # Use a distinct label to avoid duplicate label warning with core display_name
     display_name_computed = fields.Char(
-        string='Display Name',
+        string='Computed Display Name',
         compute='_compute_display_name',
-        store=True
+        store=False,
+        help="Descriptive name (not stored) to avoid compute/store mismatch with core display_name"
     )
 
     @api.depends('event_date', 'custody_id.custody_event_ids')
@@ -184,6 +187,7 @@ class ChainOfCustodyEvent(models.Model):
                         'user_id': event.responsible_user_id.id or self.env.user.id,
                         'timestamp': event.event_date,
                         'location_id': event.to_location_id.id if event.to_location_id else False,
+                        # Translation pattern per project policy: interpolate after _()
                         'notes': _('Custody event created: %s') % event.event_type,
                     })
                 except Exception as e:
