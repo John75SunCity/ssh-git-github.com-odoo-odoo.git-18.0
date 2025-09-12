@@ -435,6 +435,15 @@ class ChainOfCustody(models.Model):
         string="Responsible Person",
         help="Non-user textual identifier when the responsible individual isn't a system user.",
     )
+    # Added to satisfy view reference (inline custody events) and allow quick filtering.
+    # Represents the responsible user of the most recent related custody event.
+    responsible_user_id = fields.Many2one(
+        comodel_name='res.users',
+        string='Responsible User',
+        compute='_compute_responsible_user',
+        store=False,
+        help='Latest custody event responsible user (derived from custody events).'
+    )
     location = fields.Char(
         string="Location",
         help="Textual location description captured at the time of custody record creation.",
@@ -708,6 +717,23 @@ class ChainOfCustody(models.Model):
         for record in self:
             record.related_container_count = 1 if record.container_id else 0
             record.related_document_count = 1 if record.document_id else 0
+
+    @api.depends('custody_event_ids.responsible_user_id', 'custody_event_ids.event_date')
+    def _compute_responsible_user(self):
+        """Determine latest responsible user from related events.
+
+        Picks the most recent event having a responsible_user_id. If no events
+        have a user, leaves field empty.
+        """
+        for record in self:
+            user = False
+            if record.custody_event_ids:
+                # Sort events by event_date descending; fallback to id for stability
+                events = record.custody_event_ids.filtered(lambda e: e.responsible_user_id)
+                if events:
+                    # Use max with key for performance vs creating full sorted list
+                    user = max(events, key=lambda e: (e.event_date or fields.Datetime.from_string('1970-01-01'), e.id)).responsible_user_id.id
+            record.responsible_user_id = user
 
     # Validation Methods
     @api.constrains("transfer_date")
