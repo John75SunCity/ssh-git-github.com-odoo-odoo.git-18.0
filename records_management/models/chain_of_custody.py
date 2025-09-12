@@ -363,11 +363,15 @@ class ChainOfCustody(models.Model):
     )
     item_count = fields.Integer(
         string="Item Count",
-        help="Number of discrete items involved in this transfer (informational).",
+        compute="_compute_item_metrics",
+        store=False,
+        help="Computed number of related transfer items.",
     )
     total_weight = fields.Float(
         string="Total Weight (kg)",
-        help="Estimated total weight of items transferred.",
+        compute="_compute_item_metrics",
+        store=False,
+        help="Sum of item weights (kg) from transfer items.",
     )
     special_handling_required = fields.Boolean(
         string="Special Handling Required",
@@ -435,9 +439,22 @@ class ChainOfCustody(models.Model):
     # to the parent model during validation (Odoo quirk when One2many tree columns
     # were previously invalid). Provide a lightweight placeholder so the form view
     # loads; business meaning lives on naid.audit.log.action_type.
+    # Functional aggregate of the latest related audit log action_type.
     action_type = fields.Char(
-        string="Action Type (Placeholder)",
-        help="Non-persisted placeholder to satisfy form view parsing. Actual action types are stored on related audit log entries.",
+        string="Latest Action Type",
+        compute="_compute_latest_action_type",
+        store=False,
+        readonly=True,
+        help="Most recent audit log action_type for quick visibility (not stored).",
+    )
+    # Primary responsible user for this custody record (custodian precedence order).
+    user_id = fields.Many2one(
+        comodel_name='res.users',
+        string='Primary User',
+        compute='_compute_primary_user',
+        store=False,
+        readonly=True,
+        help='Primary responsible user derived from to/from custodian or authorization (not stored).'
     )
     responsible_person = fields.Char(
         string="Responsible Person",
@@ -483,15 +500,21 @@ class ChainOfCustody(models.Model):
     )
     actual_duration = fields.Float(
         string="Actual Duration (Hrs)",
-        help="Actual duration realized (computed or manually entered).",
+        compute="_compute_durations_and_efficiency",
+        store=False,
+        help="Hours between transfer_date and completion (or now if completed absent timestamp).",
     )
     transfer_efficiency = fields.Float(
         string="Transfer Efficiency (%)",
-        help="Efficiency metric (higher is better).",
+        compute="_compute_durations_and_efficiency",
+        store=False,
+        help="(Estimated / Actual) * 100 capped at 100 (0 if missing inputs).",
     )
     compliance_score = fields.Float(
         string="Compliance Score",
-        help="Scored evaluation of compliance processes for this transfer.",
+        compute="_compute_compliance_score",
+        store=False,
+        help="Heuristic 0-100 score from compliance indicators and audit activity.",
     )
     risk_level = fields.Selection(
         [("low", "Low"), ("medium", "Medium"), ("high", "High")],
@@ -538,6 +561,24 @@ class ChainOfCustody(models.Model):
         currency_field='currency_id',
         help='Estimated cost associated with this custody transfer.'
     )
+
+    # ------------------------------------------------------------------
+    # COMPUTES: Lightweight helper aggregates for view fields
+    # ------------------------------------------------------------------
+    @api.depends('audit_log_ids.action_type', 'audit_log_ids.event_date')
+    def _compute_latest_action_type(self):
+        for record in self:
+            # choose newest by event_date (fallback to create_date ordering already on One2many)
+            latest = False
+            # audit_log_ids is ordered (model _order) but we ensure by max on event_date
+            if record.audit_log_ids:
+                latest = max(record.audit_log_ids, key=lambda l: l.event_date or l.create_date or fields.Datetime.from_string('1970-01-01'))
+            record.action_type = latest.action_type if latest else False
+
+    @api.depends('to_custodian_id', 'from_custodian_id', 'authorized_by_id')
+    def _compute_primary_user(self):
+        for record in self:
+            record.user_id = record.to_custodian_id or record.from_custodian_id or record.authorized_by_id
     quality_check_passed = fields.Boolean(
         string='Quality Check Passed',
         help='Indicates whether quality checks were passed.'
@@ -587,6 +628,55 @@ class ChainOfCustody(models.Model):
         compute="_compute_next_transfer",
         help="Next custody transfer in the chain",
     )
+
+    # ------------------------------------------------------------------
+    # METRIC COMPUTES
+    # ------------------------------------------------------------------
+    @api.depends('transfer_item_ids.weight', 'transfer_item_ids.id')
+    def _compute_item_metrics(self):
+        for record in self:
+            items = record.transfer_item_ids
+            record.item_count = len(items)
+            record.total_weight = sum(items.mapped('weight')) if items else 0.0
+
+    @api.depends('transfer_date', 'actual_completion_date', 'estimated_duration', 'state')
+    def _compute_durations_and_efficiency(self):
+        now = fields.Datetime.now()
+        for record in self:
+            if record.transfer_date:
+                end = record.actual_completion_date or (record.state in ['completed','verified'] and now) or now
+                delta = end - record.transfer_date
+                record.actual_duration = max(0.0, delta.total_seconds() / 3600.0)
+            else:
+                record.actual_duration = 0.0
+            if record.actual_duration and record.estimated_duration:
+                ratio = (record.estimated_duration / record.actual_duration) * 100.0
+                record.transfer_efficiency = min(100.0, max(0.0, ratio))
+            else:
+                record.transfer_efficiency = 0.0
+
+    @api.depends('naid_compliant', 'signature_verified', 'security_level', 'audit_log_ids.action_type')
+    def _compute_compliance_score(self):
+        # Simple heuristic weighting; can be replaced by advanced rules later
+        for record in self:
+            score = 0
+            if record.naid_compliant:
+                score += 40
+            if record.signature_verified:
+                score += 20
+            # Security level weighting
+            sec_map = {
+                'standard': 10,
+                'high': 15,
+                'confidential': 18,
+                'secret': 20,
+                'top_secret': 22,
+            }
+            score += sec_map.get(record.security_level or 'standard', 10)
+            # Audit activity bonus (up to 20)
+            activity_types = set(record.audit_log_ids.mapped('action_type')) if record.audit_log_ids else set()
+            score += min(20, len(activity_types) * 4)
+            record.compliance_score = float(min(100, score))
 
     previous_transfer_id = fields.Many2one(
         comodel_name="chain.of.custody",
