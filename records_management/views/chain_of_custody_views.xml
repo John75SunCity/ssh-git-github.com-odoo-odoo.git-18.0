@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <list decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'cancelled'" decoration-info="naid_compliant == True">
                     <field name="name" string="Transfer Reference"/>
+                    <field name="partner_id" string="Customer"/>
                     <field name="transfer_type" string="Type"/>
                     <field name="document_id" string="Document"/>
                     <field name="container_id" string="Container"/>
@@ -17,6 +18,7 @@
                     <field name="state" string="Status" widget="badge"/>
                     <field name="naid_compliant" string="NAID" widget="boolean_toggle"/>
                     <field name="security_level" string="Security"/>
+                    <field name="transfer_efficiency" string="Efficiency %" optional="hide"/>
                     <button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'" title="Confirm Transfer"/>
                     <button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'in_transit'" title="Complete Transfer"/>
                 </list>
@@ -53,14 +55,21 @@
                                     <span class="o_stat_value">
                                         <field name="transfer_duration"/>
                                     </span>
-                                    <span class="o_stat_text">Duration</span>
+                                    <span class="o_stat_text">Hours</span>
                                 </div>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-cubes" name="action_view_transfer_items" type="object" title="Transfer Items">
+                                <field name="transfer_item_count" widget="statinfo" string="Items"/>
+                            </button>
+                            <button class="oe_stat_button" icon="fa-list" name="action_view_custody_events" type="object" title="Custody Events">
+                                <field name="custody_event_count" widget="statinfo" string="Events"/>
                             </button>
                         </div>
 
                         <group>
                             <group string="Transfer Information">
                                 <field name="name"/>
+                                <field name="partner_id" required="1"/>
                                 <field name="transfer_type"/>
                                 <field name="transfer_method"/>
                                 <field name="transfer_date"/>
@@ -73,6 +82,7 @@
                                 <field name="verification_code"/>
                                 <field name="naid_compliant" widget="boolean_toggle"/>
                                 <field name="compliance_officer_id"/>
+                                <field name="risk_level"/>
                             </group>
                         </group>
 
@@ -96,63 +106,136 @@
                             <group string="Items in Transfer">
                                 <field name="document_id"/>
                                 <field name="container_id"/>
+                                <field name="box_id"/>
+                                <field name="inventory_document_id"/>
                             </group>
                             <group string="Transfer Details">
                                 <field name="reason"/>
                                 <field name="conditions"/>
-                                <field name="verification_code"/>
+                                <field name="special_handling_required" widget="boolean_toggle"/>
+                                <field name="temperature_controlled" widget="boolean_toggle"/>
                             </group>
                         </group>
 
                         <notebook>
                             <page string="Transfer Documentation" name="documentation">
                                 <group>
-                                    <field name="transfer_purpose" placeholder="Purpose and justification for this transfer..."/>
-                                    <field name="special_instructions" placeholder="Special handling instructions, security requirements..."/>
-                                    <field name="compliance_notes" placeholder="NAID compliance notes and verification details..."/>
+                                    <field name="transfer_purpose" placeholder="Purpose and justification for this transfer..." widget="text"/>
+                                    <field name="special_instructions" placeholder="Special handling instructions, security requirements..." widget="text"/>
+                                    <field name="compliance_notes" placeholder="NAID compliance notes and verification details..." widget="text"/>
+                                    <field name="delivery_notes" placeholder="Delivery notes and special requirements..." widget="text"/>
                                 </group>
                             </page>
                             <page string="Chain of Custody Events" name="events">
-                                <field name="custody_event_ids">
-                                    <tree>
+                                <field name="custody_event_ids" context="{'default_custody_id': active_id, 'default_partner_id': partner_id}">
+                                    <tree editable="bottom">
                                         <field name="event_date"/>
                                         <field name="event_type"/>
                                         <field name="responsible_person"/>
+                                        <field name="responsible_user_id"/>
+                                        <field name="from_location_id"/>
+                                        <field name="to_location_id"/>
                                         <field name="location"/>
-                                        <field name="signature_verified"/>
-                                        <field name="temperature"/>
-                                        <field name="humidity"/>
+                                        <field name="signature_verified" widget="boolean_toggle"/>
+                                        <field name="temperature" optional="hide"/>
+                                        <field name="humidity" optional="hide"/>
                                         <field name="notes"/>
                                     </tree>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="event_date"/>
+                                                <field name="event_type"/>
+                                                <field name="responsible_person"/>
+                                                <field name="responsible_user_id"/>
+                                                <field name="from_location_id"/>
+                                                <field name="to_location_id"/>
+                                            </group>
+                                            <group>
+                                                <field name="location"/>
+                                                <field name="signature_verified"/>
+                                                <field name="temperature"/>
+                                                <field name="humidity"/>
+                                                <field name="gps_coordinates"/>
+                                            </group>
+                                        </group>
+                                        <field name="notes" placeholder="Event notes and observations..."/>
+                                    </form>
                                 </field>
                             </page>
                             <page string="Audit Trail" name="audit">
-                                <field name="audit_log_ids"/>
+                                <field name="audit_log_ids" readonly="1">
+                                    <tree>
+                                        <field name="timestamp"/>
+                                        <field name="action"/>
+                                        <field name="user_id"/>
+                                        <field name="model_name"/>
+                                        <field name="record_id"/>
+                                        <field name="details"/>
+                                    </tree>
+                                </field>
                             </page>
                             <page string="Transfer Items" name="items">
-                                <field name="transfer_item_ids">
-                                    <tree>
+                                <field name="transfer_item_ids" context="{'default_custody_id': active_id}">
+                                    <tree editable="bottom">
                                         <field name="document_id"/>
                                         <field name="container_id"/>
-                                        <field name="quantity"/>
-                                        <field name="condition"/>
-                                        <field name="serial_number"/>
                                         <field name="value" widget="monetary"/>
+                                        <field name="verified" widget="boolean_toggle"/>
                                     </tree>
+                                    <form>
+                                        <group>
+                                            <group string="Item Information">
+                                                <field name="document_id"/>
+                                                <field name="container_id"/>
+                                                <field name="box_id"/>
+                                                <field name="quantity"/>
+                                                <field name="condition"/>
+                                            </group>
+                                            <group string="Identification">
+                                                <field name="serial_number"/>
+                                                <field name="barcode"/>
+                                                <field name="value" widget="monetary"/>
+                                                <field name="weight"/>
+                                                <field name="verified"/>
+                                            </group>
+                                        </group>
+                                        <field name="notes" placeholder="Item-specific notes and observations..."/>
+                                    </form>
                                 </field>
                             </page>
                             <page string="Transfer Analytics" name="analytics">
                                 <group>
-                                    <group string="Timing">
+                                    <group string="Timing Metrics">
                                         <field name="transfer_duration"/>
                                         <field name="delay_reason"/>
                                         <field name="estimated_duration"/>
                                         <field name="actual_duration"/>
                                     </group>
-                                    <group string="Metrics">
+                                    <group string="Performance Metrics">
                                         <field name="transfer_efficiency"/>
                                         <field name="compliance_score"/>
                                         <field name="risk_level"/>
+                                        <field name="cost_estimate"/>
+                                    </group>
+                                </group>
+                                <group string="Quality Metrics">
+                                    <field name="quality_check_passed" widget="boolean_toggle"/>
+                                    <field name="damage_reported" widget="boolean_toggle"/>
+                                    <field name="customer_satisfaction"/>
+                                </group>
+                            </page>
+                            <page string="Environmental Data" name="environmental" invisible="not temperature_controlled">
+                                <group>
+                                    <group string="Temperature Control">
+                                        <field name="min_temperature"/>
+                                        <field name="max_temperature"/>
+                                        <field name="avg_temperature"/>
+                                    </group>
+                                    <group string="Humidity Control">
+                                        <field name="min_humidity"/>
+                                        <field name="max_humidity"/>
+                                        <field name="avg_humidity"/>
                                     </group>
                                 </group>
                             </page>
@@ -174,6 +257,7 @@
             <field name="arch" type="xml">
                 <kanban default_group_by="state" class="o_kanban_custody_dashboard">
                     <field name="name"/>
+                    <field name="partner_id"/>
                     <field name="transfer_type"/>
                     <field name="from_custodian_id"/>
                     <field name="to_custodian_id"/>
@@ -183,6 +267,8 @@
                     <field name="security_level"/>
                     <field name="document_id"/>
                     <field name="container_id"/>
+                    <field name="risk_level"/>
+                    <field name="transfer_efficiency"/>
                     <templates>
                         <t t-name="kanban-box">
                             <div class="oe_kanban_card oe_kanban_global_click">
@@ -190,6 +276,9 @@
                                     <div class="o_kanban_card_header_title">
                                         <div class="o_primary">
                                             <strong><field name="name"/></strong>
+                                        </div>
+                                        <div class="o_secondary">
+                                            <i class="fa fa-user" role="img" aria-label="Customer"/> <field name="partner_id"/>
                                         </div>
                                         <div class="o_secondary">
                                             <i class="fa fa-exchange" role="img" aria-label="Transfer type"/> <field name="transfer_type"/>
@@ -223,6 +312,11 @@
                                                     <field name="security_level"/>
                                                 </span>
                                             </div>
+                                            <div class="text-center mt-1" t-if="record.risk_level.raw_value">
+                                                <span t-attf-class="badge badge-{{record.risk_level.raw_value == 'high' and 'danger' or record.risk_level.raw_value == 'medium' and 'warning' or 'success'}}">
+                                                    Risk: <field name="risk_level"/>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
@@ -231,6 +325,16 @@
                                                 <i class="fa fa-file-text-o" role="img" aria-label="Document"/> <field name="document_id"/>
                                                 <i class="fa fa-cube" role="img" aria-label="Container"/> <field name="container_id"/>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2" t-if="record.transfer_efficiency.raw_value">
+                                        <div class="col-12">
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar" role="progressbar" t-attf-style="width: {{record.transfer_efficiency.raw_value}}%" t-attf-aria-valuenow="{{record.transfer_efficiency.raw_value}}" aria-valuemin="0" aria-valuemax="100">
+                                                    <span class="sr-only"><field name="transfer_efficiency"/>% Efficiency</span>
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">Efficiency: <field name="transfer_efficiency"/>%</small>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
@@ -255,6 +359,9 @@
                                     <a role="menuitem" type="object" name="action_start_transfer" class="dropdown-item"><i class="fa fa-rocket"/> Start Transfer</a>
                                     <a role="menuitem" type="object" name="action_complete_transfer" class="dropdown-item"><i class="fa fa-check-circle"/> Complete Transfer</a>
                                     <div class="dropdown-divider"/>
+                                    <a role="menuitem" type="object" name="action_view_audit_logs" class="dropdown-item"><i class="fa fa-file-text-o"/> View Audit Logs</a>
+                                    <a role="menuitem" type="object" name="action_view_transfer_items" class="dropdown-item"><i class="fa fa-cubes"/> View Items</a>
+                                    <div class="dropdown-divider"/>
                                     <a role="menuitem" type="object" name="action_reject_transfer" class="dropdown-item"><i class="fa fa-times"/> Reject Transfer</a>
                                     <a role="menuitem" type="object" name="action_cancel_transfer" class="dropdown-item"><i class="fa fa-ban"/> Cancel Transfer</a>
                                 </div>
@@ -272,10 +379,12 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name" string="Transfer Reference" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="partner_id" string="Customer"/>
                     <field name="from_custodian_id"/>
                     <field name="to_custodian_id"/>
                     <field name="document_id"/>
                     <field name="container_id"/>
+                    <field name="box_id"/>
                     <field name="transfer_type"/>
                     <field name="verification_code"/>
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
@@ -288,14 +397,22 @@
                     <filter string="High Security" name="high_security" domain="[('security_level', '=', 'high')]"/>
                     <filter string="Signature Required" name="signature_required" domain="[('signature_required', '=', True)]"/>
                     <filter string="Special Handling" name="special_handling" domain="[('special_handling_required', '=', True)]"/>
+                    <filter string="Temperature Controlled" name="temperature_controlled" domain="[('temperature_controlled', '=', True)]"/>
                     <filter string="Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
                     <filter string="High Risk" name="high_risk" domain="[('risk_level', '=', 'high')]"/>
+                    <filter string="Medium Risk" name="medium_risk" domain="[('risk_level', '=', 'medium')]"/>
+                    <filter string="Low Efficiency" name="low_efficiency" domain="[('transfer_efficiency', '&lt;', 70)]"/>
+                    <separator/>
+                    <filter string="My Transfers" name="my_transfers" domain="[('create_uid', '=', uid)]"/>
+                    <filter string="My Department" name="my_department" domain="[('partner_id.records_department_users.user_id', '=', uid)]"/>
                     <group expand="0" string="Group By">
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                        <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                         <filter string="Transfer Type" name="group_by_type" context="{'group_by': 'transfer_type'}"/>
                         <filter string="From Custodian" name="group_by_from" context="{'group_by': 'from_custodian_id'}"/>
                         <filter string="To Custodian" name="group_by_to" context="{'group_by': 'to_custodian_id'}"/>
                         <filter string="Security Level" name="group_by_security" context="{'group_by': 'security_level'}"/>
+                        <filter string="Risk Level" name="group_by_risk" context="{'group_by': 'risk_level'}"/>
                         <filter string="Transfer Month" name="group_by_month" context="{'group_by': 'transfer_date:month'}"/>
                         <filter string="From Location" name="group_by_from_location" context="{'group_by': 'from_location_id'}"/>
                         <filter string="To Location" name="group_by_to_location" context="{'group_by': 'to_location_id'}"/>
@@ -313,11 +430,38 @@
             <field name="context">{
                 'search_default_draft': 1,
                 'search_default_in_transit': 1,
-                'search_default_naid_compliant': 1
+                'search_default_naid_compliant': 1,
+                'search_default_my_department': 1
             }</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-Create a new Chain of Custody record to track document and container transfers.
+                    Create a new Chain of Custody record to track document and container transfers.
+                </p>
+                <p>
+                    Chain of Custody records provide complete audit trails for NAID AAA compliance,
+                    tracking the movement of documents, containers, and boxes through your system.
+                </p>
+            </field>
+        </record>
+
+        <!-- Action for Customer-specific Chain of Custody -->
+        <record id="action_chain_of_custody_customer" model="ir.actions.act_window">
+            <field name="name">Customer Chain of Custody</field>
+            <field name="res_model">chain.of.custody</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="chain_of_custody_view_search"/>
+            <field name="domain">[('partner_id', '=', active_id)]</field>
+            <field name="context">{
+                'default_partner_id': active_id,
+                'search_default_draft': 1,
+                'search_default_in_transit': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No chain of custody records found for this customer.
+                </p>
+                <p>
+                    Create a new transfer record to track document and container movements.
                 </p>
             </field>
         </record>
