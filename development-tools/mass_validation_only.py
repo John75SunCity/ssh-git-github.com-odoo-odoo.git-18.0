@@ -353,14 +353,64 @@ class MassViewFieldValidator:
         # Get all content from arch field including child elements
         arch_content = ET.tostring(arch_field, encoding='unicode')
 
-        # Use regex to find all field references in the XML string
-        field_matches = re.findall(r'<field[^>]*name=[\'"]([^\'"]+)[\'"]', arch_content)
+        # Use regex to find all field references in the XML string WITH line numbers
+        lines = arch_content.split('\n')
+        for line_num, line in enumerate(lines, 1):
+            field_matches = re.finditer(r'<field[^>]*name=[\'"]([^\'"]+)[\'"]', line)
 
-        for field_name in field_matches:
-            # Skip view structure fields and system fields
-            if field_name in self.system_fields or field_name == 'arch':
-                continue
-            self._validate_field_reference(field_name, model_name, file_path)
+            for match in field_matches:
+                field_name = match.group(1)
+                # Skip view structure fields and system fields
+                if field_name in self.system_fields or field_name == 'arch':
+                    continue
+
+                # Enhanced validation with line number
+                self._validate_field_reference_enhanced(field_name, model_name, file_path, line_num, line.strip())
+
+    def _validate_field_reference_enhanced(self, field_name, model_name, file_path, line_num, line_context):
+        """Enhanced field validation with better error reporting"""
+        # First check if it's a system field that exists in all models
+        if field_name in self.system_fields:
+            return
+
+        # Check if the model exists in our scanned models
+        if model_name not in self.model_fields:
+            # Check if it's a core Odoo model that we should know about
+            if model_name in self.core_odoo_fields:
+                # Add core Odoo model fields to our known models
+                self.model_fields[model_name] = self.core_odoo_fields[model_name]
+            else:
+                self.field_errors.append({
+                    'file': os.path.basename(file_path),
+                    'model': model_name,
+                    'field': field_name,
+                    'line': line_num,
+                    'context': line_context,
+                    'error': f'Field "{field_name}" does not exist in model "{model_name}" - Deployment Error Risk!',
+                    'type': 'missing_model'
+                })
+                return
+
+        model_fields = self.model_fields[model_name]
+
+        if field_name not in model_fields:
+            # Find similar field names
+            similar_fields = [f for f in model_fields if field_name.lower() in f.lower() or f.lower() in field_name.lower()]
+
+            # Check for common correction patterns
+            suggested_correction = self.common_corrections.get(field_name)
+
+            self.field_errors.append({
+                'file': os.path.basename(file_path),
+                'model': model_name,
+                'field': field_name,
+                'line': line_num,
+                'context': line_context,
+                'error': f'Field "{field_name}" does not exist in model "{model_name}" - DEPLOYMENT ERROR RISK!',
+                'similar_fields': similar_fields[:5],  # Show top 5 similar fields
+                'suggested_correction': suggested_correction,
+                'type': 'missing_field'
+            })
 
     def _check_fontawesome_accessibility(self, content, file_path):
         """Check for FontAwesome icons missing title attributes"""
@@ -602,10 +652,16 @@ class MassViewFieldValidator:
 
             error_count = 0
 
-            # Show field errors
+            # Show field errors with enhanced details
             for i, error in enumerate(self.field_errors[:10]):
                 error_count += 1
-                print(f"{error_count}. [FIELD] {error['file']} - {error['model']}.{error['field']}")
+                if 'line' in error:
+                    print(f"{error_count}. [FIELD] {error['file']}:{error['line']} - {error['model']}.{error['field']}")
+                    print(f"   Context: {error['context']}")
+                    print(f"   Error: {error['error']}")
+                else:
+                    print(f"{error_count}. [FIELD] {error['file']} - {error['model']}.{error['field']}")
+
                 if 'suggested_correction' in error and error['suggested_correction']:
                     print(f"   💡 Fix: {error['field']} → {error['suggested_correction']}")
                 elif 'similar_fields' in error and error['similar_fields']:
