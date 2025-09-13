@@ -28,7 +28,7 @@
                                     <field name="state" widget="label_selection" options="{'classes': {'new': 'primary', 'in_progress': 'info', 'resolved': 'success', 'closed': 'secondary'}}"/>
                                 </span>
                                 <div class="text-muted">
-                                    <i class="fa fa-user"/> <field name="partner_id"/> | <field name="feedback_type"/>
+                                    <i class="fa fa-user" title="Customer"/> <field name="partner_id"/> | <field name="feedback_type"/>
                                 </div>
                             </div>
                             <div class="o_kanban_record_body">
@@ -46,7 +46,7 @@
                                 <field name="activity_ids" widget="kanban_activity"/>
                             </div>
                             <div class="o_kanban_record_bottom">
-                                <span class="badge badge-pill badge-info"><i class="fa fa-calendar"/> <field name="create_date" widget="date"/></span>
+                                <span class="badge badge-pill badge-info"><i class="fa fa-calendar" title="Created"/> <field name="create_date" widget="date"/></span>
                                 <div class="oe_kanban_bottom_right">
 <img t-att-src="kanban_image('res.users', 'avatar_128', record.assigned_to_id.raw_value)" t-att-title="record.assigned_to_id.value" class="oe_kanban_avatar o_image_24_cover" t-if="record.assigned_to_id.raw_value" alt="Assigned User"/>
 
@@ -66,12 +66,6 @@
         <field name="model">portal.feedback</field>
         <field name="arch" type="xml">
             <list decoration-danger="priority=='high'" decoration-warning="priority=='medium'" decoration-success="state=='resolved'" decoration-muted="state=='closed'" multi_edit="1">
-                <header>
-                    <button name="action_mark_reviewed" type="object" string="Mark Reviewed"/>
-                    <button name="action_respond" type="object" string="Respond"/>
-                    <button name="action_escalate" type="object" string="Escalate"/>
-                    <button name="action_close" type="object" string="Close"/>
-                </header>
                 <field name="name"/>
                 <field name="create_date" widget="date"/>
                 <field name="partner_id"/>

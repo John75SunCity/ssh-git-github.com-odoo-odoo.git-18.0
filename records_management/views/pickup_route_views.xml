@@ -24,13 +24,13 @@
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
                                 <div class="o_kanban_card_header">
-                                    <strong><i class="fa fa-truck"/>
+                                    <strong><i class="fa fa-truck" title="Route"/>
                                         <field name="name"/>
                                     </strong>
                                     <span class="float-end">
                                         <field name="priority" widget="priority"/>
                                     </span>
-                                    <div class="text-muted"><i class="fa fa-user"/>
+                                    <div class="text-muted"><i class="fa fa-user" title="Driver"/>
                                         <field name="user_id"/>
                                     </div>
                                 </div>
