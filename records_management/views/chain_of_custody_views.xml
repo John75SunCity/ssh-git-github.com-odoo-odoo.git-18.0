@@ -63,8 +63,8 @@
                         </group>
                         <notebook>
                             <page string="Events">
-                                <!-- Simplified O2M field (removed inline tree/form to bypass parse validation issue on child fields) -->
-                                <field name="custody_event_ids" mode="tree,form" context="{'default_custody_id': active_id}"/>
+                                <!-- Removed context using active_id to prevent access rights inconsistency warning -->
+                                <field name="custody_event_ids" mode="tree,form"/>
                             </page>
                             <page string="Notes">
                                 <field name="notes" widget="text"/>
