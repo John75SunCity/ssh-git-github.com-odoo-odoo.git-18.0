@@ -10,10 +10,10 @@
             <field name="arch" type="xml">
                 <!-- Stat buttons: insert inside button_box -->
                 <xpath expr="//div[@name='button_box']" position="inside" groups="records_management.group_records_user,records_management.group_records_manager">
-                    <button name="action_view_pickup_routes" type="object" class="oe_stat_button" icon="fa-route" string="Routes" attrs="{'invisible': [('pickup_route_ids','=',False)]}">
+                    <button name="action_view_pickup_routes" type="object" class="oe_stat_button" icon="fa-route" string="Routes" invisible="not pickup_route_ids">
                         <field name="pickup_route_ids" widget="statinfo"/>
                     </button>
-                    <button name="action_set_records_available" type="object" class="oe_stat_button" icon="fa-check-circle" string="Set Available" attrs="{'invisible': [('records_operational_status','!=','out_of_service')]}"/>
+                    <button name="action_set_records_available" type="object" class="oe_stat_button" icon="fa-check-circle" string="Set Available" invisible="records_operational_status != 'out_of_service'"/>
                 </xpath>
 
                 <!-- Add tab in existing notebook -->
@@ -43,10 +43,10 @@
                         </div>
 
                         <group string="Capacity &amp; Compliance">
-                            <div class="alert alert-warning" role="alert" attrs="{'invisible': ['|', ('records_vehicle_type','!=','secure_transport'), ('naid_compliant','=',True)]}">
+                            <div class="alert alert-warning" role="alert" invisible="records_vehicle_type != 'secure_transport' or naid_compliant">
                                 <i class="fa fa-exclamation-triangle"/> NAID compliance required for secure transport vehicles.
                             </div>
-                            <div class="alert alert-success" role="status" attrs="{'invisible': [('naid_compliant','=',False)]}">
+                            <div class="alert alert-success" role="status" invisible="not naid_compliant">
                                 <i class="fa fa-check-circle"/> This vehicle is NAID compliant.
                             </div>
                         </group>
