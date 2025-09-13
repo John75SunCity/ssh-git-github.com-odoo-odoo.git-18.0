@@ -206,7 +206,7 @@
     <!-- List view for Menu -->
     <menuitem id="menu_portal_feedback"
               name="Customer Feedback"
-              parent="records_management.menu_portal_root"
+              parent="records_management.menu_records_portal"
               action="action_portal_feedback"
               sequence="20"/>
 </data>

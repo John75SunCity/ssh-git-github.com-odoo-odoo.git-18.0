@@ -22,7 +22,12 @@ class MassViewFieldValidator:
         self.field_errors = []  # List of field validation errors
         self.accessibility_errors = []  # FontAwesome accessibility issues
         self.method_errors = []  # Missing method errors
+        self.xmlid_errors = []  # Missing XML ID reference errors
         self.manual_review = [] # Complex issues requiring manual review
+
+        # XML ID mappings
+        self.xml_ids = set()  # All defined XML IDs in the module
+        self.external_xml_ids = set()  # XML IDs from dependencies
 
         # Common inherited fields from base Odoo models
         self.inherited_fields = {
@@ -44,8 +49,104 @@ class MassViewFieldValidator:
             'container_id': 'container_ids',  # Many2one vs Many2many pattern
         }
 
-        # Load all model definitions
+        # Load all model definitions and XML IDs
         self._scan_model_definitions()
+        self._scan_xml_ids()
+
+    def _scan_xml_ids(self):
+        """Scan all XML files to build a database of available XML IDs"""
+        print("🔍 Scanning all XML files for XML ID definitions...")
+
+        # Core XML IDs that are always available from base Odoo
+        self.external_xml_ids.update([
+            'base.main_company', 'base.group_user', 'base.group_system', 'base.group_portal',
+            'portal.portal_menu', 'mail.menu_mail_message', 'stock.menu_stock_root',
+            'account.menu_finance', 'sale.menu_sale_root', 'project.menu_main_pm',
+            'hr.menu_hr_root', 'maintenance.menu_maintenance', 'fleet.menu_root',
+            'crm.crm_menu_root', 'purchase.menu_purchase_root', 'repair.menu_repair',
+            'website.main_menu'
+        ])
+
+        # Scan all XML files in the module
+        xml_files = []
+        for root, dirs, files in os.walk(self.base_path):
+            for file in files:
+                if file.endswith('.xml'):
+                    xml_files.append(os.path.join(root, file))
+
+        for xml_file in xml_files:
+            try:
+                tree = ET.parse(xml_file)
+                root = tree.getroot()
+
+                # Find all elements with id attributes
+                for elem in root.iter():
+                    if 'id' in elem.attrib:
+                        xml_id = elem.attrib['id']
+                        # Add both with and without module prefix
+                        self.xml_ids.add(xml_id)
+                        self.xml_ids.add(f"records_management.{xml_id}")
+
+            except ET.ParseError as e:
+                continue  # Skip malformed XML files
+
+        print(f"✅ Found {len(self.xml_ids)} XML IDs in module")
+
+    def _check_xml_id_references(self, content, file_path):
+        """Check for missing XML ID references in menuitem, action, inherit_id etc."""
+        errors = []
+
+        # Patterns to find XML ID references
+        patterns = [
+            (r'parent="([^"]+)"', 'parent'),
+            (r'action="([^"]+)"', 'action'),
+            (r'inherit_id="([^"]+)"', 'inherit_id'),
+            (r'ref="([^"]+)"', 'ref'),
+            (r'res_id="ref\(([^)]+)\)"', 'res_id_ref'),
+        ]
+
+        lines = content.split('\n')
+        for line_num, line in enumerate(lines, 1):
+            for pattern, ref_type in patterns:
+                matches = re.finditer(pattern, line)
+                for match in matches:
+                    xml_id = match.group(1).strip()
+
+                    # Skip if it's a variable or expression
+                    if '(' in xml_id or '+' in xml_id or xml_id.startswith('%('):
+                        continue
+
+                    # Check if XML ID exists
+                    if (xml_id not in self.xml_ids and
+                        xml_id not in self.external_xml_ids and
+                        not xml_id.startswith('__')):  # Skip dynamic IDs
+
+                        # Try to suggest alternatives
+                        suggestions = self._suggest_xml_id_alternatives(xml_id)
+                        suggestion_text = f" → Try: {suggestions[0]}" if suggestions else ""
+
+                        errors.append({
+                            'type': 'XML_ID',
+                            'file': file_path,
+                            'line': line_num,
+                            'error': f"Missing XML ID '{xml_id}' in {ref_type} reference{suggestion_text}",
+                            'context': line.strip()
+                        })
+
+        return errors
+
+    def _suggest_xml_id_alternatives(self, missing_id):
+        """Suggest alternative XML IDs based on similarity"""
+        suggestions = []
+        missing_lower = missing_id.lower()
+
+        # Look for similar XML IDs
+        for xml_id in self.xml_ids:
+            if (missing_lower in xml_id.lower() or
+                any(word in xml_id.lower() for word in missing_lower.split('_'))):
+                suggestions.append(xml_id)
+
+        return suggestions[:3]  # Return top 3 suggestions
 
     def _load_core_odoo_fields(self):
         """Load core Odoo module fields based on manifest dependencies"""
@@ -377,6 +478,10 @@ class MassViewFieldValidator:
                 # NEW: Check action method references
                 self._check_action_methods(content, file_path)
 
+                # NEW: Check XML ID references
+                xmlid_errors = self._check_xml_id_references(content, file_path)
+                self.xmlid_errors.extend(xmlid_errors)
+
             except ET.ParseError as e:
                 self.field_errors.append({
                     'file': os.path.basename(file_path),
@@ -399,13 +504,15 @@ class MassViewFieldValidator:
         total_field_errors = len(self.field_errors)
         total_accessibility_errors = len(self.accessibility_errors)
         total_method_errors = len(self.method_errors)
-        total_errors = total_field_errors + total_accessibility_errors + total_method_errors
+        total_xmlid_errors = len(self.xmlid_errors)
+        total_errors = total_field_errors + total_accessibility_errors + total_method_errors + total_xmlid_errors
         manual_reviews = len(self.manual_review)
 
         print(f"📊 Scan complete:")
         print(f"   - Field errors found: {total_field_errors}")
         print(f"   - FontAwesome accessibility errors: {total_accessibility_errors}")
         print(f"   - Missing method errors: {total_method_errors}")
+        print(f"   - XML ID reference errors: {total_xmlid_errors}")
         print(f"   - Total errors: {total_errors}")
         print(f"   - Manual review needed: {manual_reviews}")
         print(f"   - AUTO-FIXES DISABLED - Validation only mode")        # Group errors by file for targeted fixes
@@ -415,6 +522,8 @@ class MassViewFieldValidator:
         for error in self.accessibility_errors:
             errors_by_file[error['file']].append(error)
         for error in self.method_errors:
+            errors_by_file[error['file']].append(error)
+        for error in self.xmlid_errors:
             errors_by_file[error['file']].append(error)
 
         # Save detailed report
@@ -427,6 +536,7 @@ class MassViewFieldValidator:
             f.write(f"Field errors found: {total_field_errors}\n")
             f.write(f"FontAwesome accessibility errors: {total_accessibility_errors}\n")
             f.write(f"Missing method errors: {total_method_errors}\n")
+            f.write(f"XML ID reference errors: {total_xmlid_errors}\n")
             f.write(f"Total errors: {total_errors}\n")
             f.write(f"Manual review needed: {manual_reviews}\n")
             f.write(f"AUTO-FIXES: DISABLED (Pure validation mode)\n\n")
@@ -469,6 +579,12 @@ class MassViewFieldValidator:
                                     f.write(f"    Available actions: {', '.join(error['available_actions'])}\n")
                                 f.write(f"    💡 Fix: Add method to {error['model']} or remove button\n")
 
+                            elif error_type == 'XML_ID':
+                                f.write(f"    Line: {error['line']}\n")
+                                f.write(f"    Error: {error['error']}\n")
+                                f.write(f"    Context: {error['context']}\n")
+                                f.write(f"    💡 Fix: Create missing XML ID or correct reference\n")
+
                             f.write("\n")
 
             if self.manual_review:
@@ -508,6 +624,13 @@ class MassViewFieldValidator:
                 error_count += 1
                 print(f"{error_count}. [METHOD] {error['file']} - {error['model']}.{error['action']}")
                 print(f"   💡 Fix: Add method to model or remove button")
+                print()
+
+            # Show XML ID errors
+            for i, error in enumerate(self.xmlid_errors[:5]):
+                error_count += 1
+                print(f"{error_count}. [XML_ID] {error['file']} - {error['error']}")
+                print(f"   💡 Fix: Create missing XML ID or fix reference")
                 print()
 
 def main():

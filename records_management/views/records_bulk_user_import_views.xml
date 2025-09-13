@@ -71,6 +71,6 @@
         </record>
 
         <!-- Menu Item -->
-        <menuitem id="records_bulk_user_import_menu" name="Bulk User Import" parent="records_management.menu_root" action="records_bulk_user_import_action" groups="records_management.group_records_manager"/>
+        <menuitem id="records_bulk_user_import_menu" name="Bulk User Import" parent="records_management.menu_records_management_root" action="records_bulk_user_import_action" groups="records_management.group_records_manager"/>
     </data>
 </odoo>
