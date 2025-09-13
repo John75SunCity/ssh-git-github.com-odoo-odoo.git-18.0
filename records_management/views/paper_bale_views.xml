@@ -120,7 +120,7 @@
                                         <field name="name"/>
                                         <field name="inspection_date"/>
                                         <field name="inspector_id"/>
-                                        <field name="quality_grade"/>
+                                        <field name="inspection_type"/>
                                         <field name="passed"/>
                                     </list>
                                 </field>
