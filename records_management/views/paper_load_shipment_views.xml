@@ -223,7 +223,7 @@
         </record>
 
         <!-- Menu items -->
-        <menuitem id="menu_paper_recycling" name="Paper Recycling" parent="records_management_main_menu" sequence="25" groups="records_management.group_records_user"/>
+        <menuitem id="menu_paper_recycling" name="Paper Recycling" parent="menu_records_management_root" sequence="25" groups="records_management.group_records_user"/>
 
         <menuitem id="menu_load_shipments" name="Load Shipments" parent="menu_paper_recycling" action="action_paper_load_shipment" sequence="20" groups="records_management.group_records_user"/>
 
