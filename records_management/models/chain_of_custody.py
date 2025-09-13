@@ -175,6 +175,14 @@ class ChainOfCustody(models.Model):
         help="Documents involved in this custody transfer",
     )
 
+    # Event History (reintroduced to satisfy compute dependency in chain.of.custody.event)
+    custody_event_ids = fields.One2many(
+        comodel_name="chain.of.custody.event",
+        inverse_name="custody_id",
+        string="Custody Events",
+        help="Chronological list of custody events linked to this record for audit and duration computations.",
+    )
+
     # State and Status
     state = fields.Selection(
         [
