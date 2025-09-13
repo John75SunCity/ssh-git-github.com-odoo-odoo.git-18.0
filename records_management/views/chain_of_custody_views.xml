@@ -93,8 +93,8 @@
                     <field name="to_custodian_id"/>
                     <field name="transfer_date"/>
                     <field name="state"/>
-                    <field name="document_id"/>
-                    <field name="container_id"/>
+                    <field name="document_ids"/>
+                    <field name="container_ids"/>
                     <templates>
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
