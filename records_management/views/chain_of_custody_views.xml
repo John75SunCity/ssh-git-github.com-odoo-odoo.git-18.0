@@ -1,247 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Enhanced List View for Chain of Custody -->
+        <!-- Simplified List View (only existing fields) -->
         <record id="chain_of_custody_view_list" model="ir.ui.view">
             <field name="name">chain.of.custody.view.list</field>
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
-                <list decoration-success="state == 'completed'" decoration-warning="state == 'in_transit'" decoration-danger="state == 'cancelled'" decoration-info="naid_compliant == True">
-                    <field name="name" string="Transfer Reference"/>
-                    <field name="partner_id" string="Customer"/>
-                    <field name="transfer_type" string="Type"/>
-                    <field name="document_ids" string="Documents" widget="many2many_tags"/>
-                    <field name="container_ids" string="Containers" widget="many2many_tags"/>
-                    <field name="from_custodian_id" string="From"/>
-                    <field name="to_custodian_id" string="To"/>
-                    <field name="transfer_date" string="Transfer Date"/>
-                    <field name="state" string="Status" widget="badge"/>
-                    <field name="naid_compliant" string="NAID" widget="boolean_toggle"/>
-                    <field name="security_level" string="Security"/>
-                    <field name="transfer_efficiency" string="Efficiency %" optional="hide"/>
-                    <button name="action_confirm_transfer" type="object" string="Confirm" icon="fa-check" class="btn-link" invisible="state != 'draft'" title="Confirm Transfer"/>
-                    <button name="action_complete_transfer" type="object" string="Complete" icon="fa-check-circle" class="btn-link" invisible="state != 'in_transit'" title="Complete Transfer"/>
+                <list decoration-success="state == 'completed'" decoration-warning="state == 'in_progress'" decoration-danger="state == 'cancelled'">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="transfer_type"/>
+                    <field name="document_ids" widget="many2many_tags" optional="hide"/>
+                    <field name="container_ids" widget="many2many_tags" optional="hide"/>
+                    <field name="from_custodian_id" optional="hide"/>
+                    <field name="to_custodian_id"/>
+                    <field name="transfer_date"/>
+                    <field name="state" widget="badge"/>
+                    <button name="action_start" type="object" string="Start" class="btn-link" icon="fa-play" invisible="state != 'draft'"/>
+                    <button name="action_complete" type="object" string="Complete" class="btn-link" icon="fa-check" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="btn-link" icon="fa-times" invisible="state in ['completed','cancelled']"/>
                 </list>
             </field>
         </record>
 
-        <!-- Enhanced Form View for Chain of Custody -->
+        <!-- Simplified Form View -->
         <record id="chain_of_custody_view_form" model="ir.ui.view">
             <field name="name">chain.of.custody.view.form</field>
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_confirm_transfer" type="object" string="Confirm Transfer" class="btn-primary" invisible="state != 'draft'"/>
-                        <button name="action_start_transfer" type="object" string="Start Transfer" class="btn-info" invisible="state not in ['draft', 'pending']"/>
-                        <button name="action_complete_transfer" type="object" string="Complete Transfer" class="btn-success" invisible="state != 'in_transit'"/>
-                        <button name="action_reject_transfer" type="object" string="Reject Transfer" class="btn-danger" invisible="state in ['completed', 'cancelled']"/>
-                        <button name="action_cancel_transfer" type="object" string="Cancel Transfer" class="btn-warning" invisible="state in ['completed', 'cancelled']"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,pending,in_transit,completed,verified,cancelled"/>
+                        <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="action_complete" type="object" string="Complete" class="btn-success" invisible="state != 'in_progress'"/>
+                        <button name="action_cancel" type="object" string="Cancel" class="btn-danger" invisible="state in ['completed','cancelled']"/>
+                        <button name="action_reset_to_draft" type="object" string="Reset to Draft" class="btn-secondary" invisible="state == 'draft'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed,cancelled"/>
                     </header>
                     <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button class="oe_stat_button" icon="fa-file-text-o" name="action_view_audit_logs" type="object" title="Audit Logs">
-                                <field name="audit_log_count" widget="statinfo" string="Audit Logs"/>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-shield" invisible="not naid_compliant" title="NAID Compliance">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">NAID</span>
-                                    <span class="o_stat_text">Compliant</span>
-                                </div>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-clock-o" invisible="not transfer_duration" title="Transfer Duration">
-                                <div class="o_field_widget o_stat_info">
-                                    <span class="o_stat_value">
-                                        <field name="transfer_duration"/>
-                                    </span>
-                                    <span class="o_stat_text">Hours</span>
-                                </div>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-cubes" name="action_view_transfer_items" type="object" title="Transfer Items">
-                                <field name="transfer_item_count" widget="statinfo" string="Items"/>
-                            </button>
-                            <button class="oe_stat_button" icon="fa-list" name="action_view_custody_events" type="object" title="Custody Events">
-                                <field name="custody_event_count" widget="statinfo" string="Events"/>
-                            </button>
-                        </div>
-
                         <group>
                             <group string="Transfer Information">
                                 <field name="name"/>
-                                <field name="partner_id" required="1"/>
                                 <field name="transfer_type"/>
-                                <field name="transfer_method"/>
                                 <field name="transfer_date"/>
-                                <field name="expected_completion_date"/>
-                                <field name="actual_completion_date" readonly="1"/>
+                                <field name="department_id"/>
+                                <field name="partner_id" readonly="1"/>
                             </group>
-                            <group string="Security &amp; Compliance">
-                                <field name="security_level"/>
-                                <field name="signature_required" widget="boolean_toggle"/>
-                                <field name="verification_code"/>
-                                <field name="naid_compliant" widget="boolean_toggle"/>
-                                <field name="compliance_officer_id"/>
-                                <field name="risk_level"/>
-                            </group>
-                        </group>
-
-                        <group>
-                            <group string="Location Transfer">
-                                <field name="from_location_id"/>
-                                <field name="to_location_id"/>
-                                <field name="transfer_distance"/>
-                                <field name="transport_method"/>
-                                <field name="carrier_id"/>
-                            </group>
-                            <group string="Custody Transfer">
+                            <group string="Custodians">
                                 <field name="from_custodian_id"/>
                                 <field name="to_custodian_id"/>
                                 <field name="witness_id"/>
-                                <field name="authorized_by_id"/>
                             </group>
                         </group>
-
                         <group>
-                            <group string="Items in Transfer">
+                            <group string="Locations">
+                                <field name="from_location_id"/>
+                                <field name="to_location_id"/>
+                            </group>
+                            <group string="Items">
                                 <field name="document_ids" widget="many2many_tags" options="{'no_create': True}"/>
                                 <field name="container_ids" widget="many2many_tags" options="{'no_create': True}"/>
-                                <field name="box_id"/>
-                                <field name="inventory_document_id"/>
-                            </group>
-                            <group string="Transfer Details">
-                                <field name="reason"/>
-                                <field name="conditions"/>
-                                <field name="special_handling_required" widget="boolean_toggle"/>
-                                <field name="temperature_controlled" widget="boolean_toggle"/>
                             </group>
                         </group>
-
                         <notebook>
-                            <page string="Transfer Documentation" name="documentation">
-                                <group>
-                                    <field name="transfer_purpose" placeholder="Purpose and justification for this transfer..." widget="text"/>
-                                    <field name="special_instructions" placeholder="Special handling instructions, security requirements..." widget="text"/>
-                                    <field name="compliance_notes" placeholder="NAID compliance notes and verification details..." widget="text"/>
-                                    <field name="delivery_notes" placeholder="Delivery notes and special requirements..." widget="text"/>
-                                </group>
-                            </page>
-                            <page string="Chain of Custody Events" name="events">
-                                    <field name="custody_event_ids">
-                                        <tree editable="bottom">
-                                            <field name="event_date"/>
-                                            <field name="event_type"/>
-                                            <field name="responsible_person"/>
-                                            <field name="responsible_user_id"/>
-                                            <field name="from_location_id"/>
-                                            <field name="to_location_id"/>
-                                            <field name="location"/>
-                                            <field name="signature_verified" widget="boolean_toggle"/>
-                                            <field name="temperature" optional="hide"/>
-                                            <field name="humidity" optional="hide"/>
-                                            <field name="notes"/>
-                                        </tree>
-                                        <form>
-                                            <group>
-                                                <group>
-                                                    <field name="event_date"/>
-                                                    <field name="event_type"/>
-                                                    <field name="responsible_person"/>
-                                                    <field name="responsible_user_id"/>
-                                                    <field name="from_location_id"/>
-                                                    <field name="to_location_id"/>
-                                                </group>
-                                                <group>
-                                                    <field name="location"/>
-                                                    <field name="signature_verified"/>
-                                                    <field name="temperature"/>
-                                                    <field name="humidity"/>
-                                                    <field name="gps_coordinates"/>
-                                                </group>
-                                            </group>
-                                            <field name="notes" placeholder="Event notes and observations..."/>
-                                        </form>
-                                    </field>
-                            </page>
-                            <page string="Audit Trail" name="audit">
-                                <field name="audit_log_ids" readonly="1">
-                                    <tree>
-                                        <!-- Full set after adding legacy compatibility fields -->
-                                        <field name="event_date"/>
-                                        <field name="action_type"/>
-                                        <field name="user_id"/>
-                                        <field name="event_type" optional="hide"/>
-                                        <field name="res_model" optional="hide"/>
-                                        <field name="res_name"/>
-                                        <field name="description"/>
-                                        <field name="notes" optional="hide"/>
-                                        <field name="timestamp" optional="hide"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Transfer Items" name="items">
-                                <field name="transfer_item_ids">
+                            <page string="Events">
+                                <field name="custody_event_ids">
                                     <tree editable="bottom">
-                                        <field name="document_id"/>
-                                        <field name="container_id"/>
-                                        <field name="value" widget="monetary"/>
-                                        <field name="verified" widget="boolean_toggle"/>
+                                        <field name="event_date"/>
+                                        <field name="event_type"/>
+                                        <field name="responsible_user_id"/>
+                                        <field name="from_location_id"/>
+                                        <field name="to_location_id"/>
+                                        <field name="location"/>
+                                        <field name="notes"/>
                                     </tree>
                                     <form>
                                         <group>
-                                            <group string="Item Information">
-                                                <field name="document_id"/>
-                                                <field name="container_id"/>
-                                                <field name="box_id"/>
-                                                <field name="quantity"/>
-                                                <field name="condition"/>
+                                            <group>
+                                                <field name="event_date"/>
+                                                <field name="event_type"/>
+                                                <field name="responsible_user_id"/>
                                             </group>
-                                            <group string="Identification">
-                                                <field name="serial_number"/>
-                                                <field name="barcode"/>
-                                                <field name="value" widget="monetary"/>
-                                                <field name="weight"/>
-                                                <field name="verified"/>
+                                            <group>
+                                                <field name="from_location_id"/>
+                                                <field name="to_location_id"/>
+                                                <field name="location"/>
                                             </group>
                                         </group>
-                                        <field name="notes" placeholder="Item-specific notes and observations..."/>
+                                        <field name="notes"/>
                                     </form>
                                 </field>
                             </page>
-                            <page string="Transfer Analytics" name="analytics">
-                                <group>
-                                    <group string="Timing Metrics">
-                                        <field name="transfer_duration"/>
-                                        <field name="delay_reason"/>
-                                        <field name="estimated_duration"/>
-                                        <field name="actual_duration"/>
-                                    </group>
-                                    <group string="Performance Metrics">
-                                        <field name="transfer_efficiency"/>
-                                        <field name="compliance_score"/>
-                                        <field name="risk_level"/>
-                                        <field name="cost_estimate"/>
-                                    </group>
-                                </group>
-                                <group string="Quality Metrics">
-                                    <field name="quality_check_passed" widget="boolean_toggle"/>
-                                    <field name="damage_reported" widget="boolean_toggle"/>
-                                    <field name="customer_satisfaction"/>
-                                </group>
-                            </page>
-                            <page string="Environmental Data" name="environmental" invisible="not temperature_controlled">
-                                <group>
-                                    <group string="Temperature Control">
-                                        <field name="min_temperature"/>
-                                        <field name="max_temperature"/>
-                                        <field name="avg_temperature"/>
-                                    </group>
-                                    <group string="Humidity Control">
-                                        <field name="min_humidity"/>
-                                        <field name="max_humidity"/>
-                                        <field name="avg_humidity"/>
-                                    </group>
-                                </group>
+                            <page string="Notes">
+                                <field name="notes" widget="text"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -254,12 +104,12 @@
             </field>
         </record>
 
-        <!-- Kanban View for Chain of Custody -->
+    <!-- Simplified Kanban View -->
         <record id="chain_of_custody_view_kanban" model="ir.ui.view">
             <field name="name">chain.of.custody.view.kanban</field>
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="state" class="o_kanban_custody_dashboard">
+                <kanban default_group_by="state">
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="transfer_type"/>
@@ -267,113 +117,22 @@
                     <field name="to_custodian_id"/>
                     <field name="transfer_date"/>
                     <field name="state"/>
-                    <field name="naid_compliant"/>
-                    <field name="security_level"/>
-                    <!-- Updated: use Many2many document/container sets -->
                     <field name="document_ids"/>
                     <field name="container_ids"/>
-                    <field name="risk_level"/>
-                    <field name="transfer_efficiency"/>
                     <templates>
-                        <!-- Odoo 18 deprecation: use 'card' instead of legacy 'kanban-box' template name -->
                         <t t-name="card">
                             <div class="oe_kanban_card oe_kanban_global_click">
-                                <div class="o_kanban_card_header">
-                                    <div class="o_kanban_card_header_title">
-                                        <div class="o_primary">
-                                            <strong><field name="name"/></strong>
-                                        </div>
-                                        <div class="o_secondary">
-                                            <i class="fa fa-user" role="img" aria-label="Customer"/> <field name="partner_id"/>
-                                        </div>
-                                        <div class="o_secondary">
-                                            <i class="fa fa-exchange" role="img" aria-label="Transfer type"/> <field name="transfer_type"/>
-                                        </div>
-                                    </div>
-                                    <div class="o_kanban_manage_button_section">
-                                        <a class="o_kanban_manage_toggle_button" href="#">
-                                            <i class="fa fa-ellipsis-v" role="img" aria-label="More options" title="More options"/>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_card_content" t-att-title="record.display_name.raw_value" t-att-aria-label="record.display_name.raw_value" role="group">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div>
-                                                <i class="fa fa-user" role="img" aria-label="From"/> <field name="from_custodian_id"/>
-                                                <i class="fa fa-long-arrow-right" role="img" aria-label="To"/> <field name="to_custodian_id"/>
-                                            </div>
-                                            <div>
-                                                <i class="fa fa-calendar" role="img" aria-label="Transfer date"/> <field name="transfer_date"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="text-center">
-                                                <div t-if="record.naid_compliant.raw_value" class="text-success">
-                                                    <i class="fa fa-shield" role="img" aria-label="NAID compliant"/> NAID
-                                                </div>
-                                            </div>
-                                            <div class="text-center mt-1">
-                                                <span t-attf-class="badge badge-{{record.security_level.raw_value == 'high' and 'danger' or record.security_level.raw_value == 'medium' and 'warning' or 'info'}}">
-                                                    <field name="security_level"/>
-                                                </span>
-                                            </div>
-                                            <div class="text-center mt-1" t-if="record.risk_level.raw_value">
-                                                <span t-attf-class="badge badge-{{record.risk_level.raw_value == 'high' and 'danger' or record.risk_level.raw_value == 'medium' and 'warning' or 'success'}}">
-                                                    Risk: <field name="risk_level"/>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-12">
-                                            <div t-if="(record.document_ids.raw_value and record.document_ids.raw_value.length) or (record.container_ids.raw_value and record.container_ids.raw_value.length)">
-                                                <span t-if="record.document_ids.raw_value and record.document_ids.raw_value.length">
-                                                    <i class="fa fa-file-text-o" role="img" aria-label="Documents"/> <field name="document_ids"/>
-                                                </span>
-                                                <span t-if="record.container_ids.raw_value and record.container_ids.raw_value.length" class="ms-2">
-                                                    <i class="fa fa-cube" role="img" aria-label="Containers"/> <field name="container_ids"/>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2" t-if="record.transfer_efficiency.raw_value">
-                                        <div class="col-12">
-                                            <div class="progress" style="height: 10px;">
-                                                <div class="progress-bar" role="progressbar" t-attf-style="width: {{record.transfer_efficiency.raw_value}}%" t-attf-aria-valuenow="{{record.transfer_efficiency.raw_value}}" aria-valuemin="0" aria-valuemax="100">
-                                                    <span class="sr-only"><field name="transfer_efficiency"/>% Efficiency</span>
-                                                </div>
-                                            </div>
-                                            <small class="text-muted">Efficiency: <field name="transfer_efficiency"/>%</small>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
-                                        <div class="col-6">
-                                            <button class="btn btn-primary btn-sm" type="object" name="action_confirm_transfer" t-if="record.state.raw_value == 'draft'">
-                                                <i class="fa fa-check"/> Confirm
-                                            </button>
-                                            <button class="btn btn-success btn-sm" type="object" name="action_complete_transfer" t-if="record.state.raw_value == 'in_transit'">
-                                                <i class="fa fa-check-circle"/> Complete
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button class="btn btn-info btn-sm" type="object" name="action_start_transfer" t-if="record.state.raw_value in ['draft', 'pending']">
-                                                <i class="fa fa-rocket"/> Start
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                    <a role="menuitem" type="edit" class="dropdown-item"><i class="fa fa-pencil"/> Edit Transfer</a>
-                                    <a role="menuitem" type="object" name="action_confirm_transfer" class="dropdown-item"><i class="fa fa-check"/> Confirm Transfer</a>
-                                    <a role="menuitem" type="object" name="action_start_transfer" class="dropdown-item"><i class="fa fa-rocket"/> Start Transfer</a>
-                                    <a role="menuitem" type="object" name="action_complete_transfer" class="dropdown-item"><i class="fa fa-check-circle"/> Complete Transfer</a>
-                                    <div class="dropdown-divider"/>
-                                    <a role="menuitem" type="object" name="action_view_audit_logs" class="dropdown-item"><i class="fa fa-file-text-o"/> View Audit Logs</a>
-                                    <a role="menuitem" type="object" name="action_view_transfer_items" class="dropdown-item"><i class="fa fa-cubes"/> View Items</a>
-                                    <div class="dropdown-divider"/>
-                                    <a role="menuitem" type="object" name="action_reject_transfer" class="dropdown-item"><i class="fa fa-times"/> Reject Transfer</a>
-                                    <a role="menuitem" type="object" name="action_cancel_transfer" class="dropdown-item"><i class="fa fa-ban"/> Cancel Transfer</a>
+                                <strong><field name="name"/></strong>
+                                <div><field name="partner_id"/> - <field name="transfer_type"/></div>
+                                <div><field name="from_custodian_id"/> → <field name="to_custodian_id"/></div>
+                                <div><field name="transfer_date"/></div>
+                                <div t-if="record.document_ids.raw_value and record.document_ids.raw_value.length">Docs: <field name="document_ids"/></div>
+                                <div t-if="record.container_ids.raw_value and record.container_ids.raw_value.length">Containers: <field name="container_ids"/></div>
+                                <div class="mt-1"><span class="badge" t-esc="record.state.raw_value"/></div>
+                                <div class="mt-2">
+                                    <button type="object" name="action_start" class="btn btn-primary btn-sm" t-if="record.state.raw_value == 'draft'">Start</button>
+                                    <button type="object" name="action_complete" class="btn btn-success btn-sm" t-if="record.state.raw_value == 'in_progress'">Complete</button>
+                                    <button type="object" name="action_cancel" class="btn btn-danger btn-sm" t-if="record.state.raw_value not in ['completed','cancelled']">Cancel</button>
                                 </div>
                             </div>
                         </t>
@@ -382,79 +141,44 @@
             </field>
         </record>
 
-        <!-- Search View for Chain of Custody -->
+        <!-- Simplified Search View -->
         <record id="chain_of_custody_view_search" model="ir.ui.view">
             <field name="name">chain.of.custody.view.search</field>
             <field name="model">chain.of.custody</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="name" string="Transfer Reference" filter_domain="[('name', 'ilike', self)]"/>
-                    <field name="partner_id" string="Customer"/>
+                    <field name="name"/>
+                    <field name="partner_id"/>
                     <field name="from_custodian_id"/>
                     <field name="to_custodian_id"/>
+                    <field name="transfer_type"/>
                     <field name="document_ids"/>
                     <field name="container_ids"/>
-                    <field name="box_id"/>
-                    <field name="transfer_type"/>
-                    <field name="verification_code"/>
                     <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
-                    <filter string="Pending" name="pending" domain="[('state', '=', 'pending')]"/>
-                    <filter string="In Transit" name="in_transit" domain="[('state', '=', 'in_transit')]"/>
+                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
                     <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
                     <filter string="Cancelled" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
                     <separator/>
-                    <filter string="NAID Compliant" name="naid_compliant" domain="[('naid_compliant', '=', True)]"/>
-                    <filter string="High Security" name="high_security" domain="[('security_level', '=', 'high')]"/>
-                    <filter string="Signature Required" name="signature_required" domain="[('signature_required', '=', True)]"/>
-                    <filter string="Special Handling" name="special_handling" domain="[('special_handling_required', '=', True)]"/>
-                    <filter string="Temperature Controlled" name="temperature_controlled" domain="[('temperature_controlled', '=', True)]"/>
-                    <filter string="Overdue" name="overdue" domain="[('expected_completion_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter string="High Risk" name="high_risk" domain="[('risk_level', '=', 'high')]"/>
-                    <filter string="Medium Risk" name="medium_risk" domain="[('risk_level', '=', 'medium')]"/>
-                    <filter string="Low Efficiency" name="low_efficiency" domain="[('transfer_efficiency', '&lt;', 70)]"/>
-                    <separator/>
                     <filter string="My Transfers" name="my_transfers" domain="[('create_uid', '=', uid)]"/>
-                                        <!-- Fixed domain: original referenced nonexistent partner -> child -> records_department_users relation.
-                                                 Use OR across possible department linkage paths:
-                                                     1) Department directly on custody record (department_id if later added)
-                                                     2) Department through related container
-                                                     3) Department through related document
-                                                     4) Any department of the partner (partner.department_ids.user_ids)
-                                        -->
-                                        <filter string="My Department" name="my_department"
-                                                        domain="['|','|','|',
-                                                                            ('department_id.user_ids','in',uid),
-                                                                            ('container_ids.department_id.user_ids','in',uid),
-                                                                            ('document_ids.department_id.user_ids','in',uid),
-                                                                            ('partner_id.department_ids.user_ids','in',uid)]"/>
                     <group expand="0" string="Group By">
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
                         <filter string="Customer" name="group_by_customer" context="{'group_by': 'partner_id'}"/>
                         <filter string="Transfer Type" name="group_by_type" context="{'group_by': 'transfer_type'}"/>
                         <filter string="From Custodian" name="group_by_from" context="{'group_by': 'from_custodian_id'}"/>
                         <filter string="To Custodian" name="group_by_to" context="{'group_by': 'to_custodian_id'}"/>
-                        <filter string="Security Level" name="group_by_security" context="{'group_by': 'security_level'}"/>
-                        <filter string="Risk Level" name="group_by_risk" context="{'group_by': 'risk_level'}"/>
                         <filter string="Transfer Month" name="group_by_month" context="{'group_by': 'transfer_date:month'}"/>
-                        <filter string="From Location" name="group_by_from_location" context="{'group_by': 'from_location_id'}"/>
-                        <filter string="To Location" name="group_by_to_location" context="{'group_by': 'to_location_id'}"/>
                     </group>
                 </search>
             </field>
         </record>
 
-        <!-- Enhanced Action Window for Chain of Custody -->
+    <!-- Action Window for Chain of Custody -->
         <record id="action_chain_of_custody" model="ir.actions.act_window">
             <field name="name">Chain of Custody</field>
             <field name="res_model">chain.of.custody</field>
             <field name="view_mode">kanban,list,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search"/>
-            <field name="context">{
-                'search_default_draft': 1,
-                'search_default_in_transit': 1,
-                'search_default_naid_compliant': 1,
-                'search_default_my_department': 1
-            }</field>
+            <field name="context">{'search_default_draft': 1, 'search_default_in_progress': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Create a new Chain of Custody record to track document and container transfers.
@@ -466,18 +190,14 @@
             </field>
         </record>
 
-        <!-- Action for Customer-specific Chain of Custody -->
+    <!-- Action for Customer-specific Chain of Custody -->
         <record id="action_chain_of_custody_customer" model="ir.actions.act_window">
             <field name="name">Customer Chain of Custody</field>
             <field name="res_model">chain.of.custody</field>
             <field name="view_mode">kanban,list,form</field>
             <field name="search_view_id" ref="chain_of_custody_view_search"/>
             <field name="domain">[('partner_id', '=', active_id)]</field>
-            <field name="context">{
-                'default_partner_id': active_id,
-                'search_default_draft': 1,
-                'search_default_in_transit': 1
-            }</field>
+            <field name="context">{'default_partner_id': active_id, 'search_default_draft': 1, 'search_default_in_progress': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     No chain of custody records found for this customer.
