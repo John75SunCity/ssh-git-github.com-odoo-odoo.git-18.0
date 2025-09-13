@@ -6,13 +6,13 @@
         <record id="location_group_view_tree" model="ir.ui.view">
             <field name="name">location.group.view.tree</field>
             <field name="model">location.group</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <list string="Location Group">
-                    name
-                    code
-                    manager_id
-                    company_id
-                    active
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="manager_id"/>
+                    <field name="company_id"/>
+                    <field name="active"/>
                 </list>
             </field>
         </record>
@@ -21,16 +21,16 @@
         <record id="location_group_view_form" model="ir.ui.view">
             <field name="name">location.group.view.form</field>
             <field name="model">location.group</field>
-        <field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <form string="Location Group">
                     <sheet>
                         <group>
-                            name
-                            code
-                            description
-                            manager_id
-                            company_id
-                            active
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="description"/>
+                            <field name="manager_id"/>
+                            <field name="company_id"/>
+                            <field name="active"/>
                         </group>
                     </sheet>
                 </form>
