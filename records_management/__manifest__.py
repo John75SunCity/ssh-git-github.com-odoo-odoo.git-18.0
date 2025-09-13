@@ -139,7 +139,7 @@
     # Ensure destruction event action loads before certificate referencing it
     "views/destruction_event_views.xml",
         "views/destruction_certificate_views.xml",
-        "views/fleet_vehicle_enhanced_views.xml",
+        "views/records_work_vehicle_views.xml",
         "views/inventory_adjustment_reason_views.xml",
         "views/inventory_item_destruction_views.xml",
         "views/inventory_item_location_transfer_views.xml",
