@@ -125,7 +125,7 @@
         "editor.insertSpaces": true,
         "editor.detectIndentation": false,
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "vscode.json-language-features"
     },
     "[yaml]": {
         "editor.tabSize": 2,
@@ -362,5 +362,6 @@
     "editor.guides.highlightActiveIndentation": true,
     "editor.guides.indentation": true,
     "cSpell.words": ["naid"],
-    "Odoo.selectedProfile": "default"
+    "Odoo.selectedProfile": "default",
+    "codeQL.githubDatabase.update": "never"
 }
