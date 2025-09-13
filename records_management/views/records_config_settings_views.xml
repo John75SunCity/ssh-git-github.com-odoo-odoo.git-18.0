@@ -8,22 +8,11 @@
         <field name="arch" type="xml">
                 <form string="Records Management Settings" class="oe_form_configuration">
                     <header>
-                        <button name="action_test_notification_settings"
-                                string="Test Notifications"
-                                type="object"
-                                class="btn-secondary"
-                                groups="records_management.group_records_manager"/>
-                        <button name="action_run_compliance_audit"
-                                string="Run Compliance Audit"
-                                type="object"
-                                class="btn-secondary"
-                                groups="records_management.group_records_manager"/>
-                        <button name="action_reset_all_settings"
-                                string="Reset to Defaults"
-                                type="object"
-                                class="btn-secondary"
-                                confirm="This will reset all settings to recommended defaults. Are you sure?"
-                                groups="records_management.group_records_manager"/>
+                        <!-- Action buttons removed - methods don't exist in res.config.settings model -->
+                        <!-- TODO: Implement these methods if needed:
+                             - action_test_notification_settings
+                             - action_run_compliance_audit
+                             - action_reset_all_settings -->
                     </header>
 
                     <sheet>
