@@ -36,6 +36,9 @@
                     </header>
                     <sheet>
 <div class="oe_button_box" name="button_box">
+    <button name="%(records_management.action_destruction_event)d" type="action" class="oe_stat_button" icon="fa-bolt">
+        <field name="event_count" widget="statinfo" string="Events"/>
+    </button>
 </div>
 <group>
 <group string="Certificate Information">
@@ -45,11 +48,10 @@
 
 <field name="certificate_date"/>
 
-                                <field name="state"/>
                             </group>
 <group string="Destruction Details">
     <field name="destruction_type"/>
-    <field name="weight_processed" widget="numeric"/>
+    <field name="weight_processed"/>
     <field name="containers_processed"/>
     <field name="naid_certificate_number" placeholder="Official NAID certificate number (if applicable)"/>
     <field name="destruction_confirmed" invisible="1"/>
@@ -161,7 +163,7 @@ Print
                                             </button>
                                         </div>
                                         <div class="col-6">
-<button class="btn btn-info btn-sm" type="object" name="action_print_certificate">
+<button class="btn btn-info btn-sm" type="object" name="action_send_notification">
 Notify
                                             </button>
                                         </div>
@@ -171,7 +173,7 @@ Notify
 <a role="menuitem" type="edit" class="dropdown-item">Edit Certificate</a>
 <a role="menuitem" type="object" name="action_view_details" class="dropdown-item">View Details</a>
 <a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">Print Certificate</a>
-<a role="menuitem" type="object" name="action_print_certificate" class="dropdown-item">Send Notification</a>
+<a role="menuitem" type="object" name="action_send_notification" class="dropdown-item">Send Notification</a>
                                     <div class="dropdown-divider"/>
 <a role="menuitem" type="object" name="action_revoke_certificate" class="dropdown-item" invisible="state not in ['issued', 'active']">Revoke Certificate</a>
                                 </div>
