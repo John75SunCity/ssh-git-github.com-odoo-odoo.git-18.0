@@ -175,6 +175,7 @@ class ChainOfCustody(models.Model):
         help="Documents involved in this custody transfer",
     )
 
+
     # Event History (reintroduced to satisfy compute dependency in chain.of.custody.event)
     custody_event_ids = fields.One2many(
         comodel_name="chain.of.custody.event",
@@ -231,6 +232,7 @@ class ChainOfCustody(models.Model):
             )
             record.display_name = f"{record.name} ({transfer_type_display})"
 
+
     def action_start(self):
         self.ensure_one()
         if self.state != "draft":
@@ -244,7 +246,9 @@ class ChainOfCustody(models.Model):
         self.write({"state": "completed"})
 
     def action_cancel(self):
-        self.write({"state": "cancelled"})
+    self.ensure_one()
+    self.write({"state": "cancelled"})
 
     def action_reset_to_draft(self):
-        self.write({"state": "draft"})
+    self.ensure_one()
+    self.write({"state": "draft"})

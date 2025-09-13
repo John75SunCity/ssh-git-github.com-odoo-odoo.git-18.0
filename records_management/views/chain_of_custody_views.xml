@@ -10,8 +10,8 @@
                     <field name="name" string="Transfer Reference"/>
                     <field name="partner_id" string="Customer"/>
                     <field name="transfer_type" string="Type"/>
-                    <field name="document_id" string="Document"/>
-                    <field name="container_id" string="Container"/>
+                    <field name="document_ids" string="Documents" widget="many2many_tags"/>
+                    <field name="container_ids" string="Containers" widget="many2many_tags"/>
                     <field name="from_custodian_id" string="From"/>
                     <field name="to_custodian_id" string="To"/>
                     <field name="transfer_date" string="Transfer Date"/>
@@ -104,8 +104,8 @@
 
                         <group>
                             <group string="Items in Transfer">
-                                <field name="document_id"/>
-                                <field name="container_id"/>
+                                <field name="document_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                                <field name="container_ids" widget="many2many_tags" options="{'no_create': True}"/>
                                 <field name="box_id"/>
                                 <field name="inventory_document_id"/>
                             </group>
@@ -127,41 +127,41 @@
                                 </group>
                             </page>
                             <page string="Chain of Custody Events" name="events">
-                                <field name="custody_event_ids">
-                                    <tree editable="bottom">
-                                        <field name="event_date"/>
-                                        <field name="event_type"/>
-                                        <field name="responsible_person"/>
-                                        <field name="responsible_user_id"/>
-                                        <field name="from_location_id"/>
-                                        <field name="to_location_id"/>
-                                        <field name="location"/>
-                                        <field name="signature_verified" widget="boolean_toggle"/>
-                                        <field name="temperature" optional="hide"/>
-                                        <field name="humidity" optional="hide"/>
-                                        <field name="notes"/>
-                                    </tree>
-                                    <form>
-                                        <group>
+                                    <field name="custody_event_ids">
+                                        <tree editable="bottom">
+                                            <field name="event_date"/>
+                                            <field name="event_type"/>
+                                            <field name="responsible_person"/>
+                                            <field name="responsible_user_id"/>
+                                            <field name="from_location_id"/>
+                                            <field name="to_location_id"/>
+                                            <field name="location"/>
+                                            <field name="signature_verified" widget="boolean_toggle"/>
+                                            <field name="temperature" optional="hide"/>
+                                            <field name="humidity" optional="hide"/>
+                                            <field name="notes"/>
+                                        </tree>
+                                        <form>
                                             <group>
-                                                <field name="event_date"/>
-                                                <field name="event_type"/>
-                                                <field name="responsible_person"/>
-                                                <field name="responsible_user_id"/>
-                                                <field name="from_location_id"/>
-                                                <field name="to_location_id"/>
+                                                <group>
+                                                    <field name="event_date"/>
+                                                    <field name="event_type"/>
+                                                    <field name="responsible_person"/>
+                                                    <field name="responsible_user_id"/>
+                                                    <field name="from_location_id"/>
+                                                    <field name="to_location_id"/>
+                                                </group>
+                                                <group>
+                                                    <field name="location"/>
+                                                    <field name="signature_verified"/>
+                                                    <field name="temperature"/>
+                                                    <field name="humidity"/>
+                                                    <field name="gps_coordinates"/>
+                                                </group>
                                             </group>
-                                            <group>
-                                                <field name="location"/>
-                                                <field name="signature_verified"/>
-                                                <field name="temperature"/>
-                                                <field name="humidity"/>
-                                                <field name="gps_coordinates"/>
-                                            </group>
-                                        </group>
-                                        <field name="notes" placeholder="Event notes and observations..."/>
-                                    </form>
-                                </field>
+                                            <field name="notes" placeholder="Event notes and observations..."/>
+                                        </form>
+                                    </field>
                             </page>
                             <page string="Audit Trail" name="audit">
                                 <field name="audit_log_ids" readonly="1">
@@ -269,8 +269,9 @@
                     <field name="state"/>
                     <field name="naid_compliant"/>
                     <field name="security_level"/>
-                    <field name="document_id"/>
-                    <field name="container_id"/>
+                    <!-- Updated: use Many2many document/container sets -->
+                    <field name="document_ids"/>
+                    <field name="container_ids"/>
                     <field name="risk_level"/>
                     <field name="transfer_efficiency"/>
                     <templates>
@@ -326,9 +327,13 @@
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-12">
-                                            <div t-if="record.document_id.raw_value or record.container_id.raw_value">
-                                                <i class="fa fa-file-text-o" role="img" aria-label="Document"/> <field name="document_id"/>
-                                                <i class="fa fa-cube" role="img" aria-label="Container"/> <field name="container_id"/>
+                                            <div t-if="(record.document_ids.raw_value and record.document_ids.raw_value.length) or (record.container_ids.raw_value and record.container_ids.raw_value.length)">
+                                                <span t-if="record.document_ids.raw_value and record.document_ids.raw_value.length">
+                                                    <i class="fa fa-file-text-o" role="img" aria-label="Documents"/> <field name="document_ids"/>
+                                                </span>
+                                                <span t-if="record.container_ids.raw_value and record.container_ids.raw_value.length" class="ms-2">
+                                                    <i class="fa fa-cube" role="img" aria-label="Containers"/> <field name="container_ids"/>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -387,8 +392,8 @@
                     <field name="partner_id" string="Customer"/>
                     <field name="from_custodian_id"/>
                     <field name="to_custodian_id"/>
-                    <field name="document_id"/>
-                    <field name="container_id"/>
+                    <field name="document_ids"/>
+                    <field name="container_ids"/>
                     <field name="box_id"/>
                     <field name="transfer_type"/>
                     <field name="verification_code"/>
@@ -419,8 +424,8 @@
                                         <filter string="My Department" name="my_department"
                                                         domain="['|','|','|',
                                                                             ('department_id.user_ids','in',uid),
-                                                                            ('container_id.department_id.user_ids','in',uid),
-                                                                            ('document_id.department_id.user_ids','in',uid),
+                                                                            ('container_ids.department_id.user_ids','in',uid),
+                                                                            ('document_ids.department_id.user_ids','in',uid),
                                                                             ('partner_id.department_ids.user_ids','in',uid)]"/>
                     <group expand="0" string="Group By">
                         <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
