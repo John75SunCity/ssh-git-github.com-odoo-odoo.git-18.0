@@ -7,7 +7,8 @@
             <field name="name">fleet.vehicle.view.form.inherit.records</field>
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
-            <field name="arch" type="xml" groups="records_management.group_records_user,records_management.group_records_manager">
+            <field name="groups_id" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
+            <field name="arch" type="xml">
                 <!-- Stat buttons: insert inside button_box -->
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button name="action_view_pickup_routes" type="object" class="oe_stat_button" icon="fa-route" string="Routes" attrs="{'invisible': [('pickup_route_ids','=',False)]}">
@@ -68,7 +69,8 @@
             <field name="name">fleet.vehicle.view.tree.inherit.records</field>
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_tree"/>
-            <field name="arch" type="xml" groups="records_management.group_records_user,records_management.group_records_manager">
+            <field name="groups_id" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
+            <field name="arch" type="xml">
                 <xpath expr="//tree//field[@name='license_plate']" position="after">
                     <field name="records_vehicle_type" optional="show"/>
                     <field name="records_operational_status" optional="show"/>
@@ -83,7 +85,8 @@
             <field name="name">fleet.vehicle.view.kanban.inherit.records</field>
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_kanban"/>
-            <field name="arch" type="xml" groups="records_management.group_records_user,records_management.group_records_manager">
+            <field name="groups_id" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
+            <field name="arch" type="xml">
                 <!-- Insert badges in lower footer area -->
                 <xpath expr="//div[contains(@class,'oe_kanban_bottom_left')]" position="inside">
                     <span t-if="record.records_vehicle_type.raw_value" class="badge badge-info me-1">
@@ -104,7 +107,8 @@
             <field name="name">fleet.vehicle.view.search.inherit.records</field>
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_view_search"/>
-            <field name="arch" type="xml" groups="records_management.group_records_user,records_management.group_records_manager">
+            <field name="groups_id" eval="[(4, ref('records_management.group_records_user')), (4, ref('records_management.group_records_manager'))]"/>
+            <field name="arch" type="xml">
                 <xpath expr="//search/field[@name='driver_id']" position="after">
                     <field name="records_vehicle_type"/>
                     <field name="records_operational_status"/>
